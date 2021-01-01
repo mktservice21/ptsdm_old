@@ -1,0 +1,87 @@
+body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 13px;
+    border: 0px solid #000;
+}
+table.example_2 {
+    color: #000;
+    font-family: Helvetica, Arial, sans-serif;
+    width: 98%;
+    border-collapse:
+    collapse; border-spacing: 0;
+    font-size: 11px;
+    border: 1px solid #000;
+}
+
+table.example_2 td, table.example_2 th {
+    border: 1px solid #000; /* No more visible border */
+    height: 25px;
+    transition: all 0.3s;  /* Simple transition for hover effect */
+}
+
+table.example_2 th {
+    background: #DFDFDF;  /* Darken header a bit */
+    font-weight: bold;
+}
+
+table.example_2 td {
+    background: #FAFAFA;
+}
+
+/* Cells in even rows (2,4,6...) are one color */
+tr:nth-child(even) td { background: #F1F1F1; }
+
+/* Cells in odd rows (1,3,5...) are another (excludes header cells)  */
+tr:nth-child(odd) td { background: #FEFEFE; }
+
+tr td:hover.biasa { background: #666; color: #FFF; }
+tr td:hover.left { background: #ccccff; color: #000; }
+
+tr td.center1, td.center2 { text-align: center; }
+
+tr td:hover.center1 { background: #666; color: #FFF; text-align: center; }
+tr td:hover.center2 { background: #ccccff; color: #000; text-align: center; }
+/* Hover cell effect! */
+
+table {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 11px;
+}
+table.tjudul {
+    font-size: 13px;
+    width: 97%;
+}
+
+
+input.e_id, input.e_i {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 13px;
+    background-color: transparent;
+    border: 0px solid #000;
+    height: 20px;
+}
+input.e_id {
+    width: 25px;
+    color: #000;
+    text-align: right;
+}
+input.e_i {
+    width: 40px;
+    color: #000;
+}
+
+#kotakjudul {
+    border: 0px solid #000;
+    width:100%;
+    height: 2.3cm;
+}
+#isikiri {
+    float   : left;
+    width   : 49%;
+    border-left: 0px solid #000;
+}
+#isikanan {
+    text-align: right;
+    float   : right;
+    width   : 49%;
+}

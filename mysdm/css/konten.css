@@ -1,0 +1,190 @@
+.c-kiri {
+    margin-top  : 10px;
+    float   : left;
+    width   : 49%;
+    padding-right   : 10px;
+}
+.c-kanan {
+    margin-top  : 10px;
+    float   : left;
+    width   : 49%;
+    border-left: 1px solid #cccccc;
+}
+
+
+/* Tabel */
+
+.list {
+    width           : 100%;
+    border-collapse : collapse;
+    margin-bottom   : 20px;
+    font-family     : Tahoma;
+    padding-top     : 5px;
+    border          : 0px solid #000000;
+}
+.list td {
+    border-right    : 0px solid #DDDDDD;
+    border-bottom   : 0px solid #DDDDDD;
+    min-width       : 30px;
+}
+.list thead td {
+    background-color    : #E5E5E5;
+    padding             : 0px 5px;
+    text-transform      : capitalize;
+}
+.list thead td a, .list thead td {
+    text-decoration : none;
+    color           : #000000;
+    font-weight     : bold;
+}
+.list tbody td {
+    vertical-align  : middle;
+    padding         : 0px 5px;
+}
+.list .left {
+    text-align  : left;
+    padding     : 15px;
+    font-weight : bold;
+}
+#kotak-multi, #kotak-multi2, #kotak-multi3, #kotak-multi5, #kotak-multi6, #kotak-multi7, #kotak-multi8, #kotak-multi9, #kotak-multi10 {
+    border  : 1px solid #cccccc;
+    height  : 100px;
+    overflow: auto;
+}
+#kotak-multi2, #kotak-multi3 {
+    height  : 170px;
+}
+#kotak-multi5, #kotak-multi6, #kotak-multi7, #kotak-multi8, #kotak-multi9, #kotak-multi10 {
+    height  : 140px;
+}
+#kotak-multi input, #kotak-multi2 input {
+    width   : 15px;
+    height  : 15px;
+}
+#kotak-multi4 {
+    border  : 1px solid #cccccc;
+    height  : 100px;
+    width   : 60%;
+    overflow: auto;
+}
+#kotak-multi11 {
+    border  : 1px solid #cccccc;
+    height  : 50px;
+    width   : 60%;
+    overflow: auto;
+}
+.table .left {
+	text-align: left;
+}
+.table .right {
+	text-align: right;
+}
+.table .center {
+	text-align: center;
+}
+
+#kiri {
+    width           : 1000px;
+    background      : #ffffff;
+}
+
+#kotakbox, #kotakbox_cust, #kotakbox_prod {
+    background-color: #333333;
+    display     : none;
+    position    : absolute;
+    border      : 1px solid #333333;
+    z-index     : 1;
+}
+#t-kotak, #t-kotak_cust, #t-kotak_prod {
+    top         : 5px;
+    left        : 5px;
+}
+#t-kotak .img:hover, #kotakbox_cust .img:hover, #kotakbox_prod .img:hover {
+    cursor: pointer;
+}
+#kotakdalam {
+    padding     : 7px;
+    font-family : Verdana, Arial, Helvetica, sans-serif;
+    height      : 380px;
+    width       : 700px;
+    overflow    : auto;
+}
+#kotakdalam ul li {
+    line-height: 50px;
+}
+#t-kotakradio {
+    border-bottom : 1px solid #cccccc;
+    margin        : 5px 0px 5px 0px;
+}
+.buttonlink {
+    cursor:pointer;
+    border: none;
+}
+
+/*radio
+label {
+    border-radius: 2.5px;
+    border: 1px solid #D1D3D4;
+    font-size: 11px;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+/* hide input 
+input.radio:empty {
+	margin-left: -999px;
+}
+*/
+/* style label */
+input.radio:empty ~ label {
+	position: relative;
+	float: left;
+	line-height: 2em;
+	text-indent: 2.5em;
+	margin-top: 0em;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+input.radio:empty ~ label:before {
+	position: absolute;
+	display: block;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	content: '';
+	width: 2em;
+	background: #D1D3D4;
+	border-radius: 3px 0 0 3px;
+}
+
+/* toggle hover */
+input.radio:hover:not(:checked) ~ label:before {
+	content:'\2714';
+	text-indent: .6em;
+	color: #fff;
+}
+
+input.radio:hover:not(:checked) ~ label {
+	color: #888;
+}
+
+/* toggle on */
+input.radio:checked ~ label:before {
+	content:'\2714';
+	text-indent: .6em;
+	color: #000;
+	background-color: #cccccc;
+}
+
+input.radio:checked ~ label {
+	color: #777;
+}
+
+/* radio focus */
+.jarak {
+    margin-top: 5px;
+}

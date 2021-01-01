@@ -1,0 +1,159 @@
+<?PHP
+    $hari_ini = date("Y-m-d");
+    $tgl_pertama = date('F Y', strtotime($hari_ini));
+    $tgl_terakhir = date('F Y', strtotime($hari_ini));
+    
+    
+    $aksi="eksekusi3.php";
+    //$aksi="mrpt0000001.php";
+?>
+<div class="">
+
+    <div class="page-title"><div class="title_left"><h3>Rekap Surat Permintaan Dana</h3></div></div><div class="clearfix"></div>
+    <!--row-->
+    <div class="row">
+
+        <?php
+
+        ?>
+        <form method='POST' action='<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]"; ?>' id='demo-form2' name='form1' data-parsley-validate class='form-horizontal form-label-left' target="_blank">
+            <div class='col-md-12 col-sm-12 col-xs-12'>
+                <div class='x_panel'>
+
+                    <div class='col-md-12 col-sm-12 col-xs-12'>
+                        <h2>
+                            <button type='button' class='btn btn-success' onclick="disp_confirm('')">Preview</button>
+                            <button type='button' class='btn btn-danger' onclick="disp_confirm('excel')">Excel</button>
+                            <a class='btn btn-default' href="<?PHP echo "?module=home"; ?>">Home</a>
+                        </h2>
+                        <div class='clearfix'></div>
+                    </div>
+
+                    <!--kiri-->
+                    <div class='col-md-6 col-xs-12'>
+                        <div class='x_panel'>
+                            <div class='x_content form-horizontal form-label-left'><br />
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bulan <span class='required'></span></label>
+                                    <div class='col-md-6'>
+                                        <div class="form-group">
+                                            <div class='input-group date' id='cbln01'>
+                                                <input type='text' id='bulan1' name='bulan1' required='required' class='form-control' placeholder='tgl awal' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
+                                                <span class="input-group-addon">
+                                                   <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>s/d. <span class='required'></span></label>
+                                    <div class='col-md-6'>
+                                        <div class="form-group">
+                                            <div class='input-group date' id='cbln02'>
+                                                <input type='text' id='bulan2' name='bulan2' required='required' class='form-control' placeholder='tgl awal' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
+                                                <span class="input-group-addon">
+                                                   <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+
+                            </div>
+                        </div>           
+                    </div>
+
+                </div>
+            </div>
+            
+            
+            <div class='col-md-12 col-sm-12 col-xs-12'>
+                
+                <div class='x_panel'>
+                
+                    
+                    <div class="well" style="overflow: auto; margin-top: -5px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 6px;">
+                        <input onclick="pilihData('approve')" class='btn btn-primary btn-sm' type='button' name='buttonview1' value='Preview Lampiran SPD'>
+                    </div>
+                    
+                    <div id='loading'></div>
+                    <div id='c-data'>
+                        <div class='x_content'>
+                            
+                            <table id='datatable' class='table table-striped table-bordered' width='100%'>
+                                <thead>
+                                    <tr>
+                                        <th width='10px'>No</th>
+                                        <th width='100px'>No Divisi/NOBR</th>
+                                        <th width='50px'>Jumlah</th>
+                                        <th width='30px'>Divisi</th>
+                                        <th width='50px'>Tgl Pengajuan</th>
+                                        <th width='50px'>Bulan</th>
+                                        <th width='30px'>Kode</th>
+                                        <th width='250px'>Sub</th>
+                                        <th width='30px'>Finance</th>
+                                        <th width='30px'>Checker</th>
+                                        <th width='30px'>Approved</th>
+                                        <th width='30px'>Approved</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+            
+        </form>
+
+    </div>
+    <!--end row-->
+</div>
+
+<script>
+    function disp_confirm(pText)  {
+        if (pText == "excel") {
+            document.getElementById("demo-form2").action = "<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]&ket=excel"; ?>";
+            document.getElementById("demo-form2").submit();
+            return 1;
+        }else{
+            document.getElementById("demo-form2").action = "<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]&ket=bukan"; ?>";
+            document.getElementById("demo-form2").submit();
+            return 1;
+        }
+    }
+</script>
+
+<script>
+    $(document).ready(function() {
+        //var eapvpilih=document.getElementById('e_apvpilih').value;
+        //pilihData(eapvpilih);
+    } );
+    
+    function pilihData(ket){
+        var etgl1=document.getElementById('bulan1').value;
+        var etgl2=document.getElementById('bulan2').value;
+        
+        $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+        $.ajax({
+            type:"post",
+            url:"module/laporan_gl/mod_gl_rptspd/viewdatatable.php?module="+ket,
+            data:"eket="+ket+"&uperiode1="+etgl1+"&uperiode2="+etgl2,
+            success:function(data){
+                $("#c-data").html(data);
+                $("#loading").html("");
+            }
+        });
+        
+    }
+</script>

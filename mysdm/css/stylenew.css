@@ -1,0 +1,37 @@
+.form-group, .input-group, .control-label {
+    margin-bottom:3px;
+}
+.control-label {
+    font-size:12px;
+}
+input[type=text] {
+    box-sizing: border-box;
+    color:#000;
+    font-size:12px;
+    height: 30px;
+}
+select.soflow {
+    font-size:12px;
+    height: 30px;
+}
+.disabledDiv {
+    pointer-events: none;
+    opacity: 0.4;
+}
+.btn-primary {
+    width:50px;
+    height:30px;
+    margin-right: 50px;
+}
+/*
+.imgzoom {
+    transition: transform .2s;
+    margin: 0 auto;
+}
+*/
+.imgzoom:hover {
+    -ms-transform: scale(3.5); /* IE 9 */
+    -webkit-transform: scale(3.5); /* Safari 3-8 */
+    transform: scale(3.5);
+    z-index: 0;
+}

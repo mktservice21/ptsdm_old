@@ -15,3 +15,5 @@ mysdm/images/
 mysdm/img/
 mysdm/js/
 mysdm/mpdf7/
+mysdm/templates/menu.php
+mysdm/templates/template.php

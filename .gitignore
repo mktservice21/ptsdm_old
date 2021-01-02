@@ -10,5 +10,7 @@ mysdm/build/
 mysdm/config/koneksimysqli.php
 mysdm/config/koneksimysqli_it.php
 mysdm/config/koneksimysqli_ms.php
-mysdm/images/
 mysdm/fileupload/
+mysdm/images/
+mysdm/img/
+mysdm/js/

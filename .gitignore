@@ -7,5 +7,8 @@ dbase_untuk_import_dbf/
 email/
 js/
 mysdm/build/
+mysdm/config/koneksimysqli.php
+mysdm/config/koneksimysqli_it.php
+mysdm/config/koneksimysqli_ms.php
 mysdm/images/
 mysdm/fileupload/

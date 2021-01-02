@@ -7,6 +7,6 @@ dbase_untuk_import_dbf/
 email/
 js/
 mysdm/build/
-mysdm/config/koneksimysqli.php
 mysdm/images/
 mysdm/fileupload/
+mysdm/css/

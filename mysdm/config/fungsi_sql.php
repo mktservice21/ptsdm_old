@@ -359,7 +359,25 @@ function CariDataKaryawanByCabJbt($ikryid, $ijbt, $iregion) {
 }
 
 
-
+function CariSelisihPeriodeDua($pperiode1, $pperiode2){
+    $pselisihnya=1;
+    
+    $ptgl_mulai_sl  = $pperiode1;
+    $ptgl_selesai_sl=$pperiode2;
+    //convert
+    $ptimeStart = strtotime($ptgl_mulai_sl);
+    $ptimeEnd = strtotime($ptgl_selesai_sl);
+    // Menambah bulan ini + semua bulan pada tahun sebelumnya
+    $pblnselish = (date("Y",$ptimeEnd)-date("Y",$ptimeStart))*12;
+    // hitung selisih bulan
+    $pblnselish += date("m",$ptimeEnd)-date("m",$ptimeStart);
+    
+    
+    $pselisihnya=$pblnselish;
+    
+    return $pselisihnya;
+    
+}
 
 ?>
 

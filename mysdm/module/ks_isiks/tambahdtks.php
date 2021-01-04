@@ -13,6 +13,12 @@ $pidgrpuser=$_SESSION['GROUP'];
 $hari_ini = date("Y-m-d");
 $pbulanpilih = date('F Y', strtotime($hari_ini));
 
+$ptglmulai  = date_create('2020-10-01 00:00:00');
+$ptglsekarang = date_create();
+$pdiff_waktu = date_diff($ptglmulai, $ptglsekarang);
+$pblnselish=$pdiff_waktu->m;
+if (empty($pblnselish)) $pblnselish=0;
+$pblnselish="-".$pblnselish."M";
 
 $pidinput="";
 $pkaryawanid="";
@@ -545,7 +551,8 @@ if ($pidact=="editdata"){
             changeMonth: true,
             changeYear: true,
             dateFormat: 'MM yy',
-            minDate: '-3M',
+            //minDate: '-3M',
+            minDate: '<?PHP echo $pblnselish; ?>',
             onSelect: function(dateStr) {
                 
             },

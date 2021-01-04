@@ -287,16 +287,16 @@
                             . "Edit Ket.</a>";
                     }
 					
-					if ($pdivisi=="HO") {
-						if (empty($apv4) AND empty($ptglfinapv)) {
-							//$cekbox="";
-						}
+                    if ($pdivisi=="HO" AND (int)$pjabat<>38) {
+                        if (empty($apv4) AND empty($ptglfinapv)) {
+                            //$cekbox="";
+                        }
                         
                         $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
                             . "onClick=\"window.open('eksekusi3.php?module=entrybrrutinho&brid=$idno&iprint=print',"
                             . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                             . "$idno</a>";
-					}
+                    }
 					
 					
                     echo "<tr>";

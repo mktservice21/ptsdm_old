@@ -545,7 +545,7 @@ if ($pidact=="editdata"){
             changeMonth: true,
             changeYear: true,
             dateFormat: 'MM yy',
-            minDate: '-2M',
+            minDate: '-3M',
             onSelect: function(dateStr) {
                 
             },

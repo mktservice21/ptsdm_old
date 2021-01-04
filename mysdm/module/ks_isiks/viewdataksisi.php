@@ -158,6 +158,100 @@ if ($pmodule=="viewdataaptdr") {
     
     echo $bolehinput;
     
+}elseif ($pmodule=="viewdatapilihbulan") {
+    
+    $pidkar=$_POST['uidkry'];
+    $piddokt=$_POST['uiddr'];
+    
+    include "../../config/koneksimysqli.php";
+    include "../../config/fungsi_sql.php";
+    $cnit=$cnmy;
+    
+    $pfeldbln="cbln01x";
+    
+    $hari_ini = date("Y-m-d");
+    $pbulanpilih = date('F Y', strtotime($hari_ini));
+
+    $piltgl="";
+    $query = "select * from hrd.ks1_buka where srid='$pidkar' AND dokterid='$piddokt' AND IFNULL(aktif,'')='Y'";
+    $tampil = mysqli_query($cnit, $query);
+    $ketemu = mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $row = mysqli_fetch_array($tampil);
+        $piltgl=$row['bulan'];
+        if ($piltgl=="0000-00-00") $piltgl="";
+    }
+    
+    
+    if (!empty($piltgl)) $ptgl_mulai_sl=$piltgl;
+    else $ptgl_mulai_sl  = '2020-10-01';
+    $ptgl_selesai_sl=date("Y-m-01");
+    
+    $pblnselish=CariSelisihPeriodeDua($ptgl_mulai_sl, $ptgl_selesai_sl);
+    if (empty($pblnselish)) $pblnselish=0;
+    $pblnselish="-".$pblnselish."M";
+    
+    
+    //$pblnselish="-1M";
+    
+    
+    ?>
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bulan </label>
+        <input type="hidden" class="form-control" id='e_bulan2' name='e_bulan2' required='required' placeholder='MMMM yyyy' value='<?PHP echo $pbulanpilih; ?>' Readonly>
+        <div class='col-md-4'>
+            <div class='input-group date' id='<?PHP echo $pfeldbln; ?>'>
+                <input type="text" class="form-control" id='e_bulan' name='e_bulan' required='required' placeholder='MMMM yyyy' value='<?PHP echo $pbulanpilih; ?>' Readonly>
+                <span class='input-group-addon'>
+                    <span class='glyphicon glyphicon-calendar'></span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+
+            $('#e_bulan').datepicker({
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: 'MM yy',
+                //minDate: '-3M',
+                minDate: '<?PHP echo $pblnselish; ?>',
+                onSelect: function(dateStr) {
+
+                },
+                onClose: function() {
+                    var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                    var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                    $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                    ShowDataCN();
+                },
+
+                beforeShow: function() {
+                    if ((selDate = $(this).val()).length > 0) 
+                    {
+                        iYear = selDate.substring(selDate.length - 4, selDate.length);
+                        iMonth = jQuery.inArray(selDate.substring(0, selDate.length - 5), $(this).datepicker('option', 'monthNames'));
+                        $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+                        $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                    }
+                }
+
+            });
+        });
+    </script>
+
+    <style>
+        .ui-datepicker-calendar {
+            display: none;
+        }
+    </style>
+    
+    <?PHP
+    mysqli_close($cnit);
 }
 
 ?>

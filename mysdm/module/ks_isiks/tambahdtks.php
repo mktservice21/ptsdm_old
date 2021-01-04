@@ -13,12 +13,15 @@ $pidgrpuser=$_SESSION['GROUP'];
 $hari_ini = date("Y-m-d");
 $pbulanpilih = date('F Y', strtotime($hari_ini));
 
-$ptglmulai  = date_create('2020-10-01 00:00:00');
-$ptglsekarang = date_create();
-$pdiff_waktu = date_diff($ptglmulai, $ptglsekarang);
-$pblnselish=$pdiff_waktu->m;
+
+$ptgl_mulai_sl  = '2020-10-01';
+$ptgl_selesai_sl=date("Y-m-01");
+
+$pblnselish=CariSelisihPeriodeDua($ptgl_mulai_sl, $ptgl_selesai_sl);
 if (empty($pblnselish)) $pblnselish=0;
 $pblnselish="-".$pblnselish."M";
+
+
 
 $pidinput="";
 $pkaryawanid="";
@@ -120,20 +123,6 @@ if ($pidact=="editdata"){
                                     </div>
                                 </div>
                                 
-                                
-                                
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bulan </label>
-                                    <input type="hidden" class="form-control" id='e_bulan2' name='e_bulan2' required='required' placeholder='MMMM yyyy' value='<?PHP echo $pbulanpilih; ?>' Readonly>
-                                    <div class='col-md-4'>
-                                        <div class='input-group date' id='<?PHP echo $pfeldbln; ?>'>
-                                            <input type="text" class="form-control" id='e_bulan' name='e_bulan' required='required' placeholder='MMMM yyyy' value='<?PHP echo $pbulanpilih; ?>' Readonly>
-                                            <span class='input-group-addon'>
-                                                <span class='glyphicon glyphicon-calendar'></span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
                                 
                                 
                                 <div class='form-group'>
@@ -263,6 +252,20 @@ if ($pidact=="editdata"){
                                     </div>
                                 </div>
                                 
+                                <div id="div_bulan">
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bulan </label>
+                                        <input type="hidden" class="form-control" id='e_bulan2' name='e_bulan2' required='required' placeholder='MMMM yyyy' value='<?PHP echo $pbulanpilih; ?>' Readonly>
+                                        <div class='col-md-4'>
+                                            <div class='input-group date' id='<?PHP echo $pfeldbln; ?>'>
+                                                <input type="text" class="form-control" id='e_bulan' name='e_bulan' required='required' placeholder='MMMM yyyy' value='<?PHP echo $pbulanpilih; ?>' Readonly>
+                                                <span class='input-group-addon'>
+                                                    <span class='glyphicon glyphicon-calendar'></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 
                                 <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
@@ -328,6 +331,9 @@ if ($pidact=="editdata"){
     function ShowDataKry() {
         document.getElementById('e_apt2').value="";
         HapusDataDokter();
+        
+        ShowDataPilihBulan();
+        
         ShowDataApotik();
         ShowDataCN();
     }
@@ -350,6 +356,8 @@ if ($pidact=="editdata"){
     function getDataModalDokter(fildnya1, fildnya2, d1, d2){
         document.getElementById(fildnya1).value=d1;
         document.getElementById(fildnya2).value=d2;
+        ShowDataPilihBulan();
+        
         ShowDataApotik();
         ShowDataCN();
     }
@@ -395,6 +403,20 @@ if ($pidact=="editdata"){
             data:"uiddr="+eiddr+"&uidkry="+eidkry+"&ubln="+ebln,
             success:function(data){
                 document.getElementById('e_cn').value=data;
+            }
+        });
+    }
+    
+    function ShowDataPilihBulan(){
+        var eidkry =document.getElementById('cb_karyawan').value;
+        var eiddr =document.getElementById('e_iddokt').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/ks_isiks/viewdataksisi.php?module=viewdatapilihbulan",
+            data:"uiddr="+eiddr+"&uidkry="+eidkry,
+            success:function(data){
+                $("#div_bulan").html(data);
             }
         });
     }
@@ -560,6 +582,7 @@ if ($pidact=="editdata"){
                 var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                 var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                 $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                ShowDataCN();
             },
 
             beforeShow: function() {

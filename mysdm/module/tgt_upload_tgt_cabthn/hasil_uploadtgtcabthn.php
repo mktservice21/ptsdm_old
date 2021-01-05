@@ -188,16 +188,29 @@
                                 // eksekusi delete data pada cabang aera dibulan tsb.
                                 
                                 if ((DOUBLE)$pperiode_ > 2019) {
-                                    
-                                    $query ="DELETE FROM tgt.targettahun WHERE DATE_FORMAT(bulan,'%Y')='$pperiode_' AND icabangid='$pidcabpil' AND YEAR(bulan)>'2019'";
-                                    mysqli_query($cnms, $query);
-                                    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "Error DELETE DATA : $erropesan"; mysqli_query($cnms, "DROP TABLE $tmp01"); mysqli_close($cnms); exit; }
+                                    if ($pidcabpil=="N" OR $pidcabpil=="B" OR $pidcabpil=="T") {
+                                        
+                                        $query ="DELETE FROM tgt.targettahun_nasional WHERE DATE_FORMAT(bulan,'%Y')='$pperiode_' AND icabangid='$pidcabpil' AND YEAR(bulan)>'2019'";
+                                        mysqli_query($cnms, $query);
+                                        $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "Error DELETE DATA : $erropesan"; mysqli_query($cnms, "DROP TABLE $tmp01"); mysqli_close($cnms); exit; }
 
 
-                                    $query ="INSERT INTO tgt.targettahun (bulan, divprodid, iprodid, hna, qty, value, icabangid)"
-                                            . " SELECT PERIODE, DIVPRODID, KDPROD, PHNA, PQTY, PVALUE, '$pidcabpil' FROM $tmp01 ";
-                                    mysqli_query($cnms, $query);
-                                    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "Error DELETE DATA : $erropesan"; mysqli_query($cnms, "DROP TABLE $tmp01"); mysqli_close($cnms); exit; }
+                                        $query ="INSERT INTO tgt.targettahun_nasional (bulan, divprodid, iprodid, hna, qty, value, icabangid)"
+                                                . " SELECT PERIODE, DIVPRODID, KDPROD, PHNA, PQTY, PVALUE, '$pidcabpil' FROM $tmp01 ";
+                                        mysqli_query($cnms, $query);
+                                        $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "Error DELETE DATA : $erropesan"; mysqli_query($cnms, "DROP TABLE $tmp01"); mysqli_close($cnms); exit; }
+                                        
+                                    }else{
+                                        $query ="DELETE FROM tgt.targettahun WHERE DATE_FORMAT(bulan,'%Y')='$pperiode_' AND icabangid='$pidcabpil' AND YEAR(bulan)>'2019'";
+                                        mysqli_query($cnms, $query);
+                                        $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "Error DELETE DATA : $erropesan"; mysqli_query($cnms, "DROP TABLE $tmp01"); mysqli_close($cnms); exit; }
+
+
+                                        $query ="INSERT INTO tgt.targettahun (bulan, divprodid, iprodid, hna, qty, value, icabangid)"
+                                                . " SELECT PERIODE, DIVPRODID, KDPROD, PHNA, PQTY, PVALUE, '$pidcabpil' FROM $tmp01 ";
+                                        mysqli_query($cnms, $query);
+                                        $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "Error DELETE DATA : $erropesan"; mysqli_query($cnms, "DROP TABLE $tmp01"); mysqli_close($cnms); exit; }
+                                    }
                                     
                                 }
                                 

@@ -420,7 +420,7 @@
                                         <?PHP 
                                         }else{ 
                                             if ($psudahapvdir==true) echo "*) Sudah Approve Direktur Marketing<br/>";
-                                            else echo "*) <span style='color:red;'><b>Belum Approve Direktur Marketing</b></span><br/>";
+                                            else echo "*) <span style='color:red;'><b>Belum Approve COO</b></span><br/>";
                                             
                                             if ($psudahapvdir2==true) echo "*) Sudah Approve Direktur<br/>";
                                             else echo "*) <span style='color:red;'><b>Belum Approve Direktur</b></span><br/>";

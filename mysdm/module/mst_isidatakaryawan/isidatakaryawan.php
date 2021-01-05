@@ -134,7 +134,7 @@
                         
                         
                         <?PHP if ($pilihotc==false) { ?>
-                            <?PHP if ($fgroupidcard=="1") {// OR $fgroupidcard!="24" OR $fgroupidcard!="29" ?>
+                            <?PHP if ($fgroupidcard=="1" OR $fgroupidcard=="24") {// OR $fgroupidcard!="24" OR $fgroupidcard!="29" ?>
                                 <div class='x_title'>
                                     <h2><input class='btn btn-default' type=button value='Tambah Baru'
                                         onclick="window.location.href='<?PHP echo "?module=$_GET[module]&idmenu=$_GET[idmenu]&act=tambahbaru"; ?>';">

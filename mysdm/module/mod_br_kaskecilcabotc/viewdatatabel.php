@@ -44,8 +44,8 @@
                 { "visible": false },
                 { "orderable": false, "targets": 0 },
                 { "orderable": false, "targets": 1 },
-                { className: "text-right", "targets": [7] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7,8] }//nowrap
+                { className: "text-right", "targets": [8] },//right
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7,8,9] }//nowrap
 
             ],
             "language": {
@@ -126,6 +126,7 @@
                     <th width='30px'>BULAN (PERIODE PC)</th>
                     <th width='50px'>NAMA</th>
                     <th width='50px'>CABANG</th>
+                    <th width='50px'>&nbsp;</th>
                     <th width='20px'>JUMLAH</th>
                     <th width='200px'>KETERANGAN</th>
                 </tr>

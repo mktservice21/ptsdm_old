@@ -1,10 +1,12 @@
 <?php
 
 session_start();
-
+    $puserid="";
     if (!isset($_SESSION['USERID'])) {
         //echo "ANDA HARUS LOGIN ULANG....";
         //exit;
+    }else{
+        $puserid=$_SESSION['USERID'];
     }
 
 
@@ -403,10 +405,11 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
     
     if ($act == "input") {
         $pidurut = "0000000000";
-        $query = "select noKary from hrd.setup0";
+        //$query = "select noKary from hrd.setup0";
+        $query = "select max(karyawanid) as noKary from hrd.karyawan";
         $tampil= mysqli_query($cnmy, $query);
         $nrow= mysqli_fetch_array($tampil);
-        $pidurut=$nrow['noKary'];
+        $pidurut=(INT)$nrow['noKary'];
         $pidurut = plus1($pidurut,10);
         if (!empty($pidurut)) $pkodenya=$pidurut;
     }
@@ -429,7 +432,7 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
     
     if ($act == "input" AND !empty($pkodenya) AND $pkodenya<>"0000000000") {
         
-        $query = "INSERT INTO hrd.karyawan (karyawanid, pin, nama, jabatanid, skar, AKTIF)VALUES('$pkodenya', '$ppin', '$pnamakry', '$pjabatanid', '$pstskaryawan', 'Y')";
+        $query = "INSERT INTO hrd.karyawan (karyawanid, pin, nama, jabatanid, skar, AKTIF, user1)VALUES('$pkodenya', '$ppin', '$pnamakry', '$pjabatanid', '$pstskaryawan', 'Y', '$puserid')";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
@@ -438,9 +441,9 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
         
-        $query = "update hrd.setup0 set noKary='$pkodenya' LIMIT 1";
-        mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        //$query = "update hrd.setup0 set noKary='$pkodenya' LIMIT 1";
+        //mysqli_query($cnmy, $query);
+        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
     }
     
@@ -542,9 +545,9 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
         if ($act == "input") {
             if (!empty($pkodenya) AND $pkodenya<>"0000000000") {
                 
-                $query = "update hrd.setup0 set noKary='$pkodenya' LIMIT 1";
-                mysqli_query($cnit, $query);
-                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+                //$query = "update hrd.setup0 set noKary='$pkodenya' LIMIT 1";
+                //mysqli_query($cnit, $query);
+                //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
 
                 mysqli_query($cnit, "call dbmaster.proses_insert_karyawan_dari_ms('$pkodenya')");
             

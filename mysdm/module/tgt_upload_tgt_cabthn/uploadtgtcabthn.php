@@ -76,6 +76,9 @@
                                         <?PHP
                                         echo "<option value=''>-- Pilih --</option>";
                                         
+                                        echo "<option value='N'>Nasional</option>";
+                                        echo "<option value='B'>Barat</option>";
+                                        echo "<option value='T'>Timur</option>";
                                         
                                         $nfil_reg="";
                                         if (!empty($pidregion)) $nfil_reg=" AND region='$pidregion' ";

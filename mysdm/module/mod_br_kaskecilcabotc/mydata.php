@@ -14,12 +14,13 @@ $columns = array(
     0 =>'idkascab',
     1 =>'idkascab',
     2 => 'idkascab',
-    3=> 'tanggal',
-    4=> 'bulan',
+    3=> 'DATE_FORMAT(tanggal,"%Y%m")',
+    4=> 'DATE_FORMAT(bulan,"%Y%m")',
     5=> 'nama_karyawan',
     6=> 'nama_cabangotc',
-    7=> 'jumlah',
-    8=> 'keterangan'
+    7=> 'nama_areaotc',
+    8=> 'jumlah',
+    9=> 'keterangan'
 );
 
 $tgl1="";
@@ -37,7 +38,7 @@ $tgl2= date("Y-m-t", strtotime($tgl2));
 // getting total number records without any search
 $sql = "SELECT idkascab, DATE_FORMAT(tglinput,'%d/%m/%Y') as tanggal, DATE_FORMAT(bulan,'%M %Y') as bulan, "
         . " divisi, FORMAT(jumlah,0,'de_DE') as jumlah, "
-        . " nama_karyawan, icabangid_o, nama_cabangotc, coa4, NAMA4, keterangan, atasan1, tgl_atasan1, atasan2, tgl_atasan2,"
+        . " nama_karyawan, icabangid_o, nama_cabangotc, nama_areaotc, coa4, NAMA4, keterangan, atasan1, tgl_atasan1, atasan2, tgl_atasan2,"
         . " atasan3, tgl_atasan3, atasan4, tgl_atasan4, fin, tgl_fin ";
 $sql.=" FROM dbmaster.v_kaskecilcabang ";
 $sql.=" WHERE IFNULL(stsnonaktif,'') <> 'Y' AND IFNULL(pengajuan,'') IN ('OTC', 'CHC') ";
@@ -58,6 +59,7 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
     $sql.=" AND ( idkascab LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR nama_karyawan LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR nama_cabang LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR nama_areaotc LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR NAMA4 LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR coa4 LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR karyawanid LIKE '%".$requestData['search']['value']."%' ";
@@ -82,6 +84,8 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pidcabang=$row['icabangid_o'];
     $pnamacabang=$row['nama_cabangotc'];
     if (empty($pnamacabang)) $pnamacabang=$pidcabang;
+    
+    $pnmarea=$row['nama_areaotc'];
     
     $pfinid=$row['fin'];
     $patasan1=$row['atasan1'];
@@ -143,6 +147,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $pblnpilih;
     $nestedData[] = $row["nama_karyawan"];
     $nestedData[] = $pnamacabang;
+    $nestedData[] = $pnmarea;
     //$nestedData[] = $row["coa4"]." - ".$row["NAMA4"];
     $nestedData[] = $row["jumlah"];
     $nestedData[] = $row["keterangan"];

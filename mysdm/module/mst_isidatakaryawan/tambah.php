@@ -476,7 +476,7 @@ if ($_GET['act']=="editdata"){
                             <div class='form-group'>
                                 <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>*) Nama <?PHP echo $pketnama; ?><span class='required'></span></label>
                                 <div class='col-xs-9'>
-                                    <input type='text' id='e_nmkaryawan' name='e_nmkaryawan' autocomplete='off' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamakry; ?>' onkeyup="this.value = this.value.toUpperCase()" <?PHP echo $pnamareadonly; ?> >
+                                    <input type='text' id='e_nmkaryawan' name='e_nmkaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamakry; ?>' onkeyup="this.value = this.value.toUpperCase()" <?PHP echo $pnamareadonly; ?> >
                                 </div>
                             </div>
 

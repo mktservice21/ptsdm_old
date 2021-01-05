@@ -23,7 +23,11 @@
     $ptglpilihupload = date("Y-m-d", strtotime($ptglpil));
     $pperiode_ = date("Y", strtotime($ptglpil));
     
-    $query ="select * from tgt.targettahun WHERE DATE_FORMAT(bulan,'%Y')='$pperiode_' AND icabangid='$pidcabpil'";
+    if ($pidcabpil=="N" OR $pidcabpil=="B" OR $pidcabpil=="T") {
+        $query ="select * from tgt.targettahun_nasional WHERE DATE_FORMAT(bulan,'%Y')='$pperiode_' AND icabangid='$pidcabpil'";
+    }else{
+        $query ="select * from tgt.targettahun WHERE DATE_FORMAT(bulan,'%Y')='$pperiode_' AND icabangid='$pidcabpil'";
+    }
     $query = "CREATE TEMPORARY TABLE $tmp01($query)";
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { goto hapusdata; }

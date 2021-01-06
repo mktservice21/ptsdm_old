@@ -318,12 +318,12 @@
                 for ($x=1;$x<=12;$x++) {
                     echo "<th width='50px' align='center'>SALES</th>";
                     echo "<th width='50px' align='center'>DISCOUNT</th>";
-                    echo "<th width='50px' align='center'>RATIO %</th>";
+                    echo "<th width='50px' align='center' nowrap>RATIO %</th>";
                 }
                 ?>
                 <th width='50px' align='center'>TOTAL SALES</th>
                 <th width='50px' align='center'>TOTAL DISCOUNT</th>
-                <th width='50px' align='center'>RATIO %</th>
+                <th width='50px' align='center' nowrap>RATIO %</th>
             </tr>
             
         </thead>

@@ -65,7 +65,7 @@
     
     //end upload dan extract
     
-    unlink("fileupload/slspabrik/$pnmupload.zip");
+    //unlink("fileupload/slspabrik/$pnmupload.zip");
     
     //require('spreadsheet-reader-master/php-excel-reader/excel_reader2.php');
     require('spreadsheet-reader-master/SpreadsheetReader.php');

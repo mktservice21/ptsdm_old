@@ -32,7 +32,7 @@ if ($pilihdarims==true) {
     $now=date("mdYhis");
     $tmp00 =" dbtemp.TMPYTDDAR00_".$karyawanid."_$now ";
     
-    $query = "select * from sls.ytd where bulan='$bulan' $filterregion $filterdivpprod";
+    $query = "select * from sls.ytd where iddaerah NOT IN ('026') AND bulan='$bulan' $filterregion $filterdivpprod";
     $results1 = DB::query("CREATE TEMPORARY TABLE $tmp00 ($query)");
     $query = "UPDATE $tmp00 SET divprodid='ZOTHER' WHERE kategori='OTHER'";
     $results1 = DB::query($query);

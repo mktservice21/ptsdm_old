@@ -31,7 +31,7 @@ if ($pilihdarims==true) {
     
     $now=date("mdYhis");
     $tmp00 =" dbtemp.TMPYTDDAR00_".$karyawanid."_$now ";
-    
+    //daerah 026 tidak masuk ke sales marketing, info bpk yakub dan erika tgl 2021 jan 07
     $query = "select * from sls.ytd where iddaerah NOT IN ('026') AND bulan='$bulan' $filterregion $filterdivpprod";
     $results1 = DB::query("CREATE TEMPORARY TABLE $tmp00 ($query)");
     $query = "UPDATE $tmp00 SET divprodid='ZOTHER' WHERE kategori='OTHER'";

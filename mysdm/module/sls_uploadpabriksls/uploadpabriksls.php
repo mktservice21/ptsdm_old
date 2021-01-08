@@ -43,6 +43,19 @@
                                 </div>
                             </div>
                             
+
+                            
+                            <div class='col-sm-2'>
+                                Tahun
+                                <div class="form-group">
+                                    <select class='form-control input-sm' id="cb_tahun" name="cb_tahun" onchange="">
+                                        <option value="" selected>All</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
                             
                             <div <?PHP echo $phiden; ?> class='col-sm-3'>
                                 Load File (<b>Format File ZIP</b>)
@@ -51,6 +64,8 @@
                                 </div>
                             </div>
 
+                            
+                            
                             <div class='col-sm-3'
                                 <small>&nbsp;</small>
                                <div class="form-group">
@@ -82,6 +97,7 @@
                     function UploadDataKeServer(skey) {
                         var inmfile=document.getElementById("txtnmfile").value;
                         var ijenis=document.getElementById("cb_untuk").value;
+                        var ithn=document.getElementById("cb_tahun").value;
                         var inmjenis="Sales Pabrik";
                         if (ijenis=="R") inmjenis="Sales Retur Pabrik";
                         pText_="Data "+inmjenis+" akan diupload ke server...?";

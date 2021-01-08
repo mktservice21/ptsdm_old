@@ -129,6 +129,7 @@
                     <th width='50px'>&nbsp;</th>
                     <th width='20px'>JUMLAH</th>
                     <th width='200px'>KETERANGAN</th>
+                    <th width='200px'>EDIT TANDA TANGAN</th>
                 </tr>
             </thead>
         </table>

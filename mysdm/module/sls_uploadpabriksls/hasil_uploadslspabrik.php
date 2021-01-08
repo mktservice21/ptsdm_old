@@ -15,6 +15,7 @@
     
     $pnamatext_file="";
     $pjenis=$_POST['cb_untuk'];
+    $ptahun=$_POST['cb_tahun'];
     $pfile = $_FILES['fileToUpload']['name'];
     
     $pnmupload="faktur";
@@ -81,7 +82,11 @@
 	if ($pjenis=="R") {
 	}else{
 		//dipindah karean ada error, kebanyakan data 
-            mysqli_query($cnms, "DELETE FROM sls.pabrik_sales");
+            if (empty($ptahun)) {
+                mysqli_query($cnms, "DELETE FROM sls.pabrik_sales");
+            }else{
+                mysqli_query($cnms, "DELETE FROM sls.pabrik_sales WHERE YEAR(tglfaktur)='$ptahun'");
+            }
             $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { mysqli_close($cnms); echo "Error HAPUS DATA : $erropesan"; exit; }
 
             mysqli_query($cnms, "ALTER TABLE sls.pabrik_sales AUTO_INCREMENT = 1;");
@@ -174,7 +179,11 @@
         
         if ($pjenis=="R") {
             
-            mysqli_query($cnms, "DELETE FROM sls.pabrik_retur");
+            if (empty($ptahun)) {
+                mysqli_query($cnms, "DELETE FROM sls.pabrik_retur");
+            }else{
+                mysqli_query($cnms, "DELETE FROM sls.pabrik_retur WHERE YEAR(tgl_retur)='$ptahun'");
+            }
             $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { mysqli_close($cnms); echo "Error HAPUS DATA : $erropesan"; exit; }
 
             mysqli_query($cnms, "ALTER TABLE sls.pabrik_retur AUTO_INCREMENT = 1;");

@@ -121,6 +121,8 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pedit="<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$idno'>Edit</a>";
     $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$idno')\">";
     
+    $peditttd="<a class='btn btn-dark btn-xs' href='?module=$_GET[module]&act=ttdeditdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$idno'>Edit TTD</a>";
+    
     $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
         . "onClick=\"window.open('eksekusi3.php?module=$_GET[module]&brid=$idno&iprint=print',"
         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
@@ -151,6 +153,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     //$nestedData[] = $row["coa4"]." - ".$row["NAMA4"];
     $nestedData[] = $row["jumlah"];
     $nestedData[] = $row["keterangan"];
+    $nestedData[] = $peditttd;
 
     $data[] = $nestedData;
     $no=$no+1;

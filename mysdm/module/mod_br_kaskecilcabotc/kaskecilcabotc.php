@@ -174,6 +174,10 @@
             case "lihatdata":
                 include "lihatdata.php";
             break;
+
+            case "ttdeditdata":
+                include "editttd.php";
+            break;
         
         }
         ?>

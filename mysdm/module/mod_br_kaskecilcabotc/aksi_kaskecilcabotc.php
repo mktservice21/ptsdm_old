@@ -34,10 +34,27 @@ if ($module=='bgtkaskecilcabangotc' AND $act=='hapus')
     $kodenya=$_GET['id'];
     
     mysqli_query($cnmy, "update $dbname.t_kaskecilcabang set stsnonaktif='Y', userid='$puserid' WHERE idkascab='$kodenya' LIMIT 1");
+    mysqli_close($cnmy);
+    header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
+}
+elseif ($module=='bgtkaskecilcabangotc' AND $act=='simpaneditttd')
+{
+    $kodenya=$_POST['e_id'];
+    if (!empty($kodenya)) {
+        
+        $pimgttd=$_POST['txtgambar'];
+        $query = "update dbttd.t_kaskecilcabang_ttd set gambar='$pimgttd' WHERE idkascab='$kodenya' LIMIT 1";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+    }
+    
+    mysqli_close($cnmy);
     header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
 }
 elseif ($module=='bgtkaskecilcabangotc')
 {
+    
     $puserid=$_SESSION['IDCARD'];
     $kodenya=$_POST['e_id'];
     $pdivisi=$_POST['cb_divisi'];

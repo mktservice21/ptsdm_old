@@ -401,13 +401,14 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
     
     
     include "../../config/koneksimysqli.php";
+    include "../../config/koneksimysqli_it.php";
     
     
     if ($act == "input") {
         $pidurut = "0000000000";
         //$query = "select noKary from hrd.setup0";
         $query = "select max(karyawanid) as noKary from hrd.karyawan";
-        $tampil= mysqli_query($cnmy, $query);
+        $tampil= mysqli_query($cnit, $query);
         $nrow= mysqli_fetch_array($tampil);
         $pidurut=(INT)$nrow['noKary'];
         $pidurut = plus1($pidurut,10);
@@ -433,8 +434,8 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
     if ($act == "input" AND !empty($pkodenya) AND $pkodenya<>"0000000000") {
         
         $query = "INSERT INTO hrd.karyawan (karyawanid, pin, nama, jabatanid, skar, AKTIF, user1)VALUES('$pkodenya', '$ppin', '$pnamakry', '$pjabatanid', '$pstskaryawan', 'Y', '$puserid')";
-        mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnit, $query);
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
         
         $query = "INSERT INTO dbmaster.t_karyawan_posisi (karyawanid, aktif)VALUES('$pkodenya', 'Y')";
         mysqli_query($cnmy, $query);
@@ -442,8 +443,8 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
         
         
         //$query = "update hrd.setup0 set noKary='$pkodenya' LIMIT 1";
-        //mysqli_query($cnmy, $query);
-        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        //mysqli_query($cnit, $query);
+        //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
         
     }
     
@@ -454,82 +455,74 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
         $query_updatehrd1 = "UPDATE hrd.karyawan SET pin='$ppin', skar='$pstskaryawan', jabatanid='$pjabatanid', tempat='$ptlahir', tgllahir='$ptgllahir', "
                 . " alamat1='$palamat1', alamat2='$palamat2', kota='$palamatkota', telp='$ptelprmh', "
                 . " hp='$ptelphp' WHERE karyawanid='$pkodenya' LIMIT 1";
-        mysqli_query($cnmy, $query_updatehrd1);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnit, $query_updatehrd1);
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
 
 
         $query_updatehrd2 = "UPDATE hrd.karyawan SET tglmasuk='$ptglmasuk', tglkeluar='$ptglkeluar', "
                 . " eduid='$ppendidikanid', skar='$pstskaryawan', atasanId='$patasanidpilih', atasanId2='$patasanidpilih2' WHERE karyawanid='$pkodenya' LIMIT 1";
-        mysqli_query($cnmy, $query_updatehrd2);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnit, $query_updatehrd2);
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
 
         $query_updatehrd3 = "UPDATE hrd.karyawan SET divisiid='$pdivisiid1', divisiid2='$pdivisiid2', "
                 . " icabangid='$pcabangid', areaid='$pareaid',"
                 . " agamaid='$pagamaid', jkel='$pjkel' WHERE karyawanid='$pkodenya' LIMIT 1";
-        mysqli_query($cnmy, $query_updatehrd3);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnit, $query_updatehrd3);
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
 
 
 
         $query_updatehrd4 = "UPDATE hrd.karyawan SET pasangan='$ppasnama', pekerjaan='$ppaspekerjaan', "
                 . " tempat2='$ppastempat', tgllahir2='$ppastgllahir' WHERE karyawanid='$pkodenya' LIMIT 1";
-        mysqli_query($cnmy, $query_updatehrd4);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnit, $query_updatehrd4);
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
 
         $query_updatehrd5 = "UPDATE hrd.karyawan SET b_norek='$pbnknorek', b_nama='$pbnknmrek', "
                 . " b_bank='$pbnknama', b_cabang='$pbnkcab', b_kota='$pbnkkota',"
                 . " b_prov='$pbnkprov' WHERE karyawanid='$pkodenya' LIMIT 1";
-        mysqli_query($cnmy, $query_updatehrd5);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnit, $query_updatehrd5);
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
 
-
-        $query = "UPDATE dbmaster.t_karyawan_posisi SET jabatanid='$pjabatanid', "
-                . " divisiid='$pdivisiid1', icabangid='$pcabangid', areaid='$pareaid', atasanid='$patasanidpilih', "
-                . " b_bank='$pbnknama', b_cabang='$pbnkcab', b_norek='$pbnknorek', "
-                . " spv='$pspvid', dm='$pdmid', sm='$psmid', gsm='$pgsmid', "
-                . " divisi1='$pdivisiid1', divisi2='$pdivisiid2' WHERE karyawanid='$pkodenya' LIMIT 1";
-        mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
 
 
         if (!empty($panaknama1)) {
 
-            mysqli_query($cnmy, "DELETE from hrd.anak WHERE karyawanid='$pkodenya'");
+            mysqli_query($cnit, "DELETE from hrd.anak WHERE karyawanid='$pkodenya'");
             
             if (!empty($panaknama1)) {
                 $query = "INSERT INTO hrd.anak (karyawanid, nama, jkel, tempat, tgllahir)VALUES"
                         . " ('$pkodenya', '$panaknama1', '$panakjkel1', '$panaktempat1', '$panaktgllhr1')";
-                mysqli_query($cnmy, $query);
-                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                mysqli_query($cnit, $query);
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
             }
             
             if (!empty($panaknama2)) {
                 $query = "INSERT INTO hrd.anak (karyawanid, nama, jkel, tempat, tgllahir)VALUES"
                         . " ('$pkodenya', '$panaknama2', '$panakjkel2', '$panaktempat2', '$panaktgllhr2')";
-                mysqli_query($cnmy, $query);
-                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                mysqli_query($cnit, $query);
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
             }
             
             if (!empty($panaknama3)) {
                 $query = "INSERT INTO hrd.anak (karyawanid, nama, jkel, tempat, tgllahir)VALUES"
                         . " ('$pkodenya', '$panaknama3', '$panakjkel3', '$panaktempat3', '$panaktgllhr3')";
-                mysqli_query($cnmy, $query);
-                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                mysqli_query($cnit, $query);
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
             }
             
             if (!empty($panaknama4)) {
                 $query = "INSERT INTO hrd.anak (karyawanid, nama, jkel, tempat, tgllahir)VALUES"
                         . " ('$pkodenya', '$panaknama4', '$panakjkel4', '$panaktempat4', '$panaktgllhr4')";
-                mysqli_query($cnmy, $query);
-                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                mysqli_query($cnit, $query);
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
             }
             
             if (!empty($panaknama5)) {
                 $query = "INSERT INTO hrd.anak (karyawanid, nama, jkel, tempat, tgllahir)VALUES"
                         . " ('$pkodenya', '$panaknama5', '$panakjkel5', '$panaktempat5', '$panaktgllhr5')";
-                mysqli_query($cnmy, $query);
-                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                mysqli_query($cnit, $query);
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
             }
             
             
@@ -538,40 +531,49 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
     
     }
     
-    mysqli_close($cnmy);
+    mysqli_close($cnit);
     
     if ($phidupkanprosesinsertkaryawan==true) {
-        include "../../config/koneksimysqli_it.php";
+        include "../../config/koneksimysqli.php";
         if ($act == "input") {
             if (!empty($pkodenya) AND $pkodenya<>"0000000000") {
                 
                 //$query = "update hrd.setup0 set noKary='$pkodenya' LIMIT 1";
-                //mysqli_query($cnit, $query);
-                //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+                //mysqli_query($cnmy, $query);
+                //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
-                mysqli_query($cnit, "call dbmaster.proses_insert_karyawan_dari_ms('$pkodenya')");
-            
+                mysqli_query($cnmy, "call dbmaster.proses_insert_karyawan_dari_it('$pkodenya')");
+        
             }
         }else{
             
-            mysqli_query($cnit, $query_updatehrd1);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+            mysqli_query($cnmy, $query_updatehrd1);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
-            mysqli_query($cnit, $query_updatehrd2);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+            mysqli_query($cnmy, $query_updatehrd2);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
-            mysqli_query($cnit, $query_updatehrd3);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+            mysqli_query($cnmy, $query_updatehrd3);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
-            mysqli_query($cnit, $query_updatehrd4);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+            mysqli_query($cnmy, $query_updatehrd4);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
-            mysqli_query($cnit, $query_updatehrd5);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+            mysqli_query($cnmy, $query_updatehrd5);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
             
         }
-        mysqli_close($cnit);
+        
+        $query = "UPDATE dbmaster.t_karyawan_posisi SET jabatanid='$pjabatanid', "
+                        . " divisiid='$pdivisiid1', icabangid='$pcabangid', areaid='$pareaid', atasanid='$patasanidpilih', "
+                        . " b_bank='$pbnknama', b_cabang='$pbnkcab', b_norek='$pbnknorek', "
+                        . " spv='$pspvid', dm='$pdmid', sm='$psmid', gsm='$pgsmid', "
+                        . " divisi1='$pdivisiid1', divisi2='$pdivisiid2' WHERE karyawanid='$pkodenya' LIMIT 1";
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                
+        mysqli_close($cnmy);
     }
     
     

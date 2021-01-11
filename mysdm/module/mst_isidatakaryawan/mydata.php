@@ -138,7 +138,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     }
     
     
-    if ($pudgroupuser!="1") {// AND $pudgroupuser!="24" AND $pudgroupuser!="29"
+    if ($pudgroupuser!="1" AND $pudgroupuser!="24") {// AND $pudgroupuser!="24" AND $pudgroupuser!="29"
         $pbtneditall ="";
     }
     

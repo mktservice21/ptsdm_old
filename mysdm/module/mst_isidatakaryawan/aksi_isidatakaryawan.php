@@ -451,8 +451,8 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
     
     if (!empty($pkodenya) AND $pkodenya<>"0000000000") {
         
-        //, nama='$pnamakry'
-        $query_updatehrd1 = "UPDATE hrd.karyawan SET pin='$ppin', skar='$pstskaryawan', jabatanid='$pjabatanid', tempat='$ptlahir', tgllahir='$ptgllahir', "
+        
+        $query_updatehrd1 = "UPDATE hrd.karyawan SET pin='$ppin', nama='$pnamakry', skar='$pstskaryawan', jabatanid='$pjabatanid', tempat='$ptlahir', tgllahir='$ptgllahir', "
                 . " alamat1='$palamat1', alamat2='$palamat2', kota='$palamatkota', telp='$ptelprmh', "
                 . " hp='$ptelphp' WHERE karyawanid='$pkodenya' LIMIT 1";
         mysqli_query($cnit, $query_updatehrd1);

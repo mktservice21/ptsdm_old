@@ -299,6 +299,7 @@ if ($_GET['act']=="editdata"){
     
     $pnamareadonly="Readonly";
     $pketnama="<br/><span style='color:red;'>nama tidak bisa diubah</span>";
+    $pnamareadonly=""; $pketnama="";
     
     $pidkaryawan=$_GET['id'];
     

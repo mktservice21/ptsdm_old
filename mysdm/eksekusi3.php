@@ -580,6 +580,8 @@
         include 'module/ks_isiks/aksi_isiproduk.php';
     }elseif ($_GET['module']=='isikartustatusberhasil'){
         include 'module/ks_isiks/berhasilsimapnksisi.php';
+    }elseif ($_GET['module']=='ksisiestimasiki'){
+        include 'module/ks_isiestimasiki/printestks.php';
         
     }elseif ($_GET['module']=='lapbrbykaryawan'){
         include 'module/laporan/lap_br_bykaryawan/aksi_lapbrbykaryawan.php';

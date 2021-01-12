@@ -1,5 +1,8 @@
 <?PHP
     session_start();
+    
+    $ptahun=$_POST['utahun'];
+    echo "<input type='hidden' name='txt_tahun' id='txt_tahun' value='$ptahun'>";
 ?>
 
 <script>
@@ -10,8 +13,9 @@
         var module = urlku.searchParams.get("module");
         var idmenu = urlku.searchParams.get("idmenu");
         var nmun = urlku.searchParams.get("nmun");
-
-        //alert(etgl1);
+        var etahun=document.getElementById('txt_tahun').value;
+        
+        //alert(etahun);
         var dataTable = $('#dtablepilupslspab').DataTable( {
             "processing": true,
             "serverSide": true,
@@ -31,11 +35,11 @@
             "language": {
                 "zeroRecords": "Lihat Page di bawah!!! Jika ada Page, Pilih Page 1...!!! Jika tidak ada Page, maka data KOSONG..."
             },
-            "scrollY": 440,
+            //"scrollY": 440,
             "scrollX": true,
 
             "ajax":{
-                url :"module/sls_uploadpabriksls/mydatasales.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi, // json datasource
+                url :"module/sls_uploadpabriksls/mydatasales.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&utahun="+etahun, // json datasource
                 type: "post",  // method  , by default get
                 data:"module="+module,
                 error: function(){  // error handling

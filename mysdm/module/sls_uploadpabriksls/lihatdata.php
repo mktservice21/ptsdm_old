@@ -15,6 +15,7 @@
     
     $pnamatext_file="";
     $pjenis=$_POST['cb_untuk'];
+    $ptahun=$_POST['cb_tahun'];
     
     $pnmupload="faktur";
     if ($pjenis=="R") $pnmupload="retur";
@@ -26,6 +27,8 @@
         $pjudul="Data Retur Pabrik";
     }
     $aksi="module/sls_uploadpabriksls/aksi_uploadpabriksls.php";
+    
+    echo "<input type='hidden' name='txt_tahun' id='txt_tahun' value='$ptahun'>";
 ?>
 
 
@@ -80,12 +83,13 @@
 
                         function KlikDataTabel() {
                             var ket="";
+                            var etahun=document.getElementById('txt_tahun').value;
 
                             $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                             $.ajax({
                                 type:"post",
                                 url:"module/sls_uploadpabriksls/viewdatatableretur.php?module="+ket,
-                                data:"eket="+ket,
+                                data:"eket="+ket+"&utahun="+etahun,
                                 success:function(data){
                                     $("#c-data").html(data);
                                     $("#loading").html("");
@@ -115,12 +119,13 @@
 
                         function KlikDataTabel() {
                             var ket="";
+                            var etahun=document.getElementById('txt_tahun').value;
 
                             $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                             $.ajax({
                                 type:"post",
                                 url:"module/sls_uploadpabriksls/viewdatatablesales.php?module="+ket,
-                                data:"eket="+ket,
+                                data:"eket="+ket+"&utahun="+etahun,
                                 success:function(data){
                                     $("#c-data").html(data);
                                     $("#loading").html("");

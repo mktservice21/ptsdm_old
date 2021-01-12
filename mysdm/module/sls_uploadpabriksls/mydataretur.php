@@ -28,7 +28,7 @@ $columns = array(
 $sql = "select * from sls.pabrik_retur ";
 $sql.=" WHERE 1=1 ";
 
-//if (!empty($ptahun)) $sql.=" AND YEAR(tgl_retur) ='$ptahun' ";
+if (!empty($ptahun)) $sql.=" AND YEAR(tgl_retur) ='$ptahun' ";
 
 $query=mysqli_query($cnms, $sql) or die("mydata.php: get data");
 $totalData = mysqli_num_rows($query);

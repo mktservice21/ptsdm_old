@@ -807,6 +807,8 @@
         include 'module/ks_listdrmr/listdrmr.php';
     }elseif ($_GET['module']=='ksliatinputksdrbaru'){
         include 'module/ks_lihatinputksdrbaru/lihatinputksdrbaru.php';
+    }elseif ($_GET['module']=='ksisiestimasiki'){
+        include 'module/ks_isiestimasiki/isiestimasiki.php';
         
     }elseif ($_GET['module']=='lapbrbykaryawan'){
         include 'module/laporan/lap_br_bykaryawan/lapbrbykaryawan.php';

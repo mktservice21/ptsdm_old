@@ -114,6 +114,7 @@ if ($pmodule=="viewdatacombocoa") {
         $query = "select b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.$pnmtablekry b where b.icabangid='$icabangid' AND b.aktif = 'Y' "; 
 		$query .= " AND ( IFNULL(b.tglkeluar,'')='' OR IFNULL(b.tglkeluar,'0000-00-00')='0000-00-00' ) ";
     }
+	$query .= " AND b.jabatanId not in ('38') ";
     $query .= " AND b.karyawanid not in ('0000002083') ";
     $query .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ')  "
             . " and LEFT(b.nama,7) NOT IN ('NN DM - ')  "

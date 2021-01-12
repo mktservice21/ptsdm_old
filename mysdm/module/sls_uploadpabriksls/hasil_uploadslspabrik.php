@@ -13,10 +13,14 @@
         $skey=$_GET['skey'];
     }
     
+    
+    
     $pnamatext_file="";
     $pjenis=$_POST['cb_untuk'];
     $ptahun=$_POST['cb_tahun'];
     $pfile = $_FILES['fileToUpload']['name'];
+    
+    echo "<input type='hidden' name='txt_tahun' id='txt_tahun' value='$ptahun'>";
     
     $pnmupload="faktur";
     if ($pjenis=="R") $pnmupload="retur";
@@ -282,12 +286,13 @@
 
                         function KlikDataTabel() {
                             var ket="";
+                            var etahun=document.getElementById('txt_tahun').value;
 
                             $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                             $.ajax({
                                 type:"post",
-                                url:"module/sls_uploadpabriksls/viewdatatableretur.php?module="+ket,
-                                data:"eket="+ket,
+                                url:"module/sls_uploadpabriksls/viewdatatableretur.php?module="+ket+"&utahun="+etahun,
+                                data:"eket="+ket+"&utahun="+etahun,
                                 success:function(data){
                                     $("#c-data").html(data);
                                     $("#loading").html("");
@@ -317,12 +322,13 @@
 
                         function KlikDataTabel() {
                             var ket="";
+                            var etahun=document.getElementById('txt_tahun').value;
 
                             $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                             $.ajax({
                                 type:"post",
-                                url:"module/sls_uploadpabriksls/viewdatatablesales.php?module="+ket,
-                                data:"eket="+ket,
+                                url:"module/sls_uploadpabriksls/viewdatatablesales.php?module="+ket+"&utahun="+etahun,
+                                data:"eket="+ket+"&utahun="+etahun,
                                 success:function(data){
                                     $("#c-data").html(data);
                                     $("#loading").html("");

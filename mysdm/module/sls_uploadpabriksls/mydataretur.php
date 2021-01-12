@@ -4,7 +4,7 @@ include "../../config/koneksimysqli_ms.php";
 include "../../config/fungsi_sql.php";
 
 $pidgroup=$_SESSION['GROUP'];
-
+$ptahun=$_GET['utahun'];
 /// storing  request (ie, get/post) global array to a variable  
 $requestData= $_REQUEST;
 
@@ -27,6 +27,8 @@ $columns = array(
 
 $sql = "select * from sls.pabrik_retur ";
 $sql.=" WHERE 1=1 ";
+
+//if (!empty($ptahun)) $sql.=" AND YEAR(tgl_retur) ='$ptahun' ";
 
 $query=mysqli_query($cnms, $sql) or die("mydata.php: get data");
 $totalData = mysqli_num_rows($query);

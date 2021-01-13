@@ -24,6 +24,10 @@
                     echo "Input $judul";
                 elseif ($pact=="editdata")
                     echo "Edit $judul";
+                elseif ($pact=="duplikaticust")
+                    echo "Copy Data iCust Dari Cabang dan Area Lain";
+                elseif ($pact=="pindahecust")
+                    echo "Pindah eCust Dari Cabang dan Area Lain";
                 else
                     echo "$judul";
                 ?>
@@ -75,18 +79,26 @@
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                     <div class='x_panel'>
                         
-                        <div class='x_title'>
-                            <h2><input class='btn btn-default' type=button value='Tambah Cabang Baru'
-                                onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=tambahbaru"; ?>';">
-                                <small></small>
-                            </h2>
-                            <div class='clearfix'></div>
-                        </div>
                         
                         <form method='POST' action='<?PHP echo "$aksi?module=$pmodule&act=import&idmenu=$pidmenu"; ?>' 
                               id='demo-form2' name='form1' data-parsley-validate class='form-horizontal form-label-left'  
                               enctype='multipart/form-data'>
                             
+                            <div class='col-md-12 col-sm-12 col-xs-12'>
+                                
+                                <div class="well" style="overflow: auto; margin-top: -5px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 6px;">
+                                    <input class='btn btn-default btn-sm' type=button value='Tambah Cabang Baru'
+                                           accept=""onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=tambahbaru"; ?>';">
+                                    
+                                    <input class='btn btn-dark btn-sm' type=button value='Copy iCust Dari Cabang Lain'
+                                           accept=""onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=duplikaticust"; ?>';">
+                                    
+                                    <input class='btn btn-warning btn-sm' type=button value='Pindah eCust Dari Cabang Lain'
+                                           accept=""onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=pindahecust"; ?>';">
+                                </div>
+
+                                
+                            </div>
                             
                             <div class='col-sm-2'>
                                 <small>&nbsp;</small>
@@ -127,10 +139,16 @@
             break;
 
             case "tambahbaru":
-                include "tambah_pin.php";
+                include "tambah_cab.php";
             break;
             case "editdata":
-                include "tambah_pin.php";
+                include "tambah_cab.php";
+            break;
+            case "duplikaticust":
+                include "duplikaticust.php";
+            break;
+            case "pindahecust":
+                include "prosespindahecust.php";
             break;
         
         }

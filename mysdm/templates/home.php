@@ -820,6 +820,8 @@
         include 'module/mod_budget_uploaddatabudget/uploaddatabudget.php';
     }elseif ($_GET['module']=='bgtuploaddatabudgetdivisi'){
         include 'module/mod_budget_uploaddatabudget/aksi_uploaddatabudget.php';
+    }elseif ($_GET['module']=='pindacabareacust'){
+        include 'module/mst_pindahcabareacust/pindahcabareacust.php';
         
         
     }else{

@@ -13,6 +13,20 @@
     $printdate= date("d/m/Y");
     $jamnow=date("H:i:s");
     
+    $pidbr=$_GET['brid'];
+    
+    $sql = "select a.noid, a.tglinput, a.bulan, a.dokterid, a.srid, a.jumlah, a.est_perbln, a.est_roi, a.jml_bulan, a.periode1, a.periode2, 
+        a.periode_ket, a.cn, a.roi, a.notes, b.nama as nama_dokter, c.nama as nama_karyawan  
+        from hrd.t_estimasi_ki as a join hrd.dokter as b on a.dokterid=b.dokterId
+        join hrd.karyawan as c on a.srid=c.karyawanId";
+    $sql .=" where IFNULL(stsnonaktif,'')<>'Y' AND a.noid='$pidbr'";
+    $tampil=mysqli_query($cnmy, $sql);
+    $row= mysqli_fetch_array($tampil);
+    
+    $pjumlah
+    
+    
+    
 ?>
 
 <HTML>

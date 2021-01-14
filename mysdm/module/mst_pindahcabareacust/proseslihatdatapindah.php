@@ -165,7 +165,7 @@
             . " istatus, idisc, sys_now, icabangid_new, areaid_new, icustid_new, userid, idsesi)"
             . " SELECT icabangid, icustid, areaid, nama, alamat1, alamat2, kodepos, contact, "
             . " telp, fax, ikotaid, kota, isektorid, aktif, dispen, user1,oldflag, scode, grp, grp_spp, "
-            . " o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid_hist, iareaid_hist, icustid_hist, "
+            . " o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid as icabangid_hist, areaid as iareaid_hist, icustid as icustid_hist, "
             . " istatus, idisc, sys_now, icabangid_new, areaid_new, LPAD(ifnull(icustid_new,0), 10, '0') as icustid_new, '$pidcard' as userid, '$pidsesion' as idsesi FROM $tmp01";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -263,7 +263,11 @@
                     <th width='10px'>Cabang Id</th>
                     <th width='10px'>eCustId</th>
                     <th width='30px'>Nama</th>
+                    <th width='30px'>CabangId (New)</th>
+                    <th width='30px'>AreaId (New)</th>
                     <th width='30px'>iCustId (New)</th>
+                    <th width='30px'>CabangId (Old)</th>
+                    <th width='30px'>AreaId (Old)</th>
                     <th width='30px'>iCustId (Old)</th>
                 </tr> 
             </thead>
@@ -280,13 +284,17 @@
                     $picustid=$row2['icustid_new'];
                     
                     $picustidold=$row2['icustid'];
-                    
+                    //$pidcabang, $pidarea, $piddaricabang, $piddariarea
                     echo "<tr>";
                     echo "<td nworap>$no</td>";
                     echo "<td nworap>$peccabid</td>";
                     echo "<td nworap>$pecustid</td>";
                     echo "<td nworap>$pnmcust</td>";
+                    echo "<td nworap>$pidcabang</td>";
+                    echo "<td nworap>$pidarea</td>";
                     echo "<td nworap>$picustid</td>";
+                    echo "<td nworap>$piddaricabang</td>";
+                    echo "<td nworap>$piddariarea</td>";
                     echo "<td nworap>$picustidold</td>";
                     echo "</tr>";
                     

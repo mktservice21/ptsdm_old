@@ -42,40 +42,6 @@ $act="duplikaticust";
                                 
                                 
                                 <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pindah Ke Cabang (NEW) <span class='required'></span></label>
-                                    <div class='col-xs-4'>
-                                        <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="showDataArea()" data-live-search="true">
-                                            <?PHP
-                                            echo "<option value='' selected>--Pilih--</option>";
-                                            $query = "select icabangid as icabangid, nama as nama from MKT.icabang WHERE ifnull(aktif,'')<>'N'";
-                                            $query .= " AND left(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
-                                            $query .= " Order by nama";
-                                            $tampil =mysqli_query($cnit, $query);
-                                            while ($irow=mysqli_fetch_array($tampil)){
-                                                $picabang=$irow['icabangid'];
-                                                $pnamacab=$irow['nama'];
-                                                $iidcab=(INT)$picabang;
-                                                echo "<option value='$picabang'>$pnamacab ($iidcab)</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Area (NEW) <span class='required'></span></label>
-                                    <div class='col-xs-4'>
-                                        <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="" data-live-search="true">
-                                            <?PHP
-                                            echo "<option value='' selected>--Pilih--</option>";
-                                            
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <hr/>
-                                <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Dari Cabang (Old) <span class='required'></span></label>
                                     <div class='col-xs-4'>
                                         <select class='form-control input-sm' id='cb_daricabang' name='cb_daricabang' onchange="showDataDariArea()" data-live-search="true">
@@ -108,6 +74,42 @@ $act="duplikaticust";
                                     </div>
                                 </div>
                                 
+                                <hr/>
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pindah Ke Cabang (NEW) <span class='required'></span></label>
+                                    <div class='col-xs-4'>
+                                        <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="showDataArea()" data-live-search="true">
+                                            <?PHP
+                                            echo "<option value='' selected>--Pilih--</option>";
+                                            $query = "select icabangid as icabangid, nama as nama from MKT.icabang WHERE ifnull(aktif,'')<>'N'";
+                                            $query .= " AND left(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
+                                            $query .= " Order by nama";
+                                            $tampil =mysqli_query($cnit, $query);
+                                            while ($irow=mysqli_fetch_array($tampil)){
+                                                $picabang=$irow['icabangid'];
+                                                $pnamacab=$irow['nama'];
+                                                $iidcab=(INT)$picabang;
+                                                echo "<option value='$picabang'>$pnamacab ($iidcab)</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Area (NEW) <span class='required'></span></label>
+                                    <div class='col-xs-4'>
+                                        <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="" data-live-search="true">
+                                            <?PHP
+                                            echo "<option value='' selected>--Pilih--</option>";
+                                            
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                
+                                
                             </div>
                             
                         </div>
@@ -117,7 +119,7 @@ $act="duplikaticust";
                     <div class='col-md-12 col-sm-12 col-xs-12'>
 
                         <div class="well" style="overflow: auto; margin-top: -5px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 6px;">
-                            <button type='button' class='btn btn-success btn-sm' onclick='LihatDataProses()'>Lihat Data</button>
+                            <button type='button' class='btn btn-success btn-sm' onclick='LihatDataProses()'>Query Data</button>
                         </div>
 
 
@@ -220,4 +222,5 @@ $act="duplikaticust";
         });
     }
     
+
 </script>

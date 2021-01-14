@@ -87,14 +87,14 @@
                             <div class='col-md-12 col-sm-12 col-xs-12'>
                                 
                                 <div class="well" style="overflow: auto; margin-top: -5px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 6px;">
-                                    <input class='btn btn-default btn-sm' type=button value='Tambah Cabang Baru'
+                                    <span hidden>
+                                        <input class='btn btn-default btn-sm' type=button value='Tambah Cabang Baru'
                                            accept=""onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=tambahbaru"; ?>';">
-                                    
-                                    <input class='btn btn-dark btn-sm' type=button value='Copy iCust Dari Cabang Lain'
+                                        <input class='btn btn-warning btn-sm' type=button value='Pindah eCust Dari Cabang Lain'
+                                               accept=""onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=pindahecust"; ?>';">
+                                    </span>
+                                    <input class='btn btn-dark btn-sm' type=button value='Pindah Data Customer'
                                            accept=""onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=duplikaticust"; ?>';">
-                                    
-                                    <input class='btn btn-warning btn-sm' type=button value='Pindah eCust Dari Cabang Lain'
-                                           accept=""onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=pindahecust"; ?>';">
                                 </div>
 
                                 

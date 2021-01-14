@@ -399,6 +399,7 @@
                 <th align="center">PENGAJUAN</th>
                 <th align="center">DAERAH</th>
                 <th align="center">KETERANGAN</th>
+                <th align="center">STATUS RELASI</th>
                 <th align="center">REALISASI</th>
                 <th align="center">Credit</th>
                 <th align="center">No.</th>
@@ -456,6 +457,7 @@
                         $piddokter = $row['dokterId'];
                         $pnmdokter = $row['nama_dokter'];
                         $prealisasi1 = $row['realisasi1'];
+                        $prelasidokter = $row['realisasi2'];
                         
                         if (empty($pnmdokter)) $pnmdokter = $row['dokter'];
                         if (empty($pnmdokter)) $pnmdokter=$prealisasi1;
@@ -551,6 +553,7 @@
 
                         echo "<td nowrap>$pdaerah</td>";
                         echo "<td>$paktivitas1</td>";
+                        echo "<td>$prelasidokter</td>";
                         echo "<td>$prealisasi1</td>";
                         echo "<td nowrap align='right'>$pjumlah</td>";
                         
@@ -593,12 +596,13 @@
                         echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
+                        echo "<td></td>";
                         echo "<td nowrap align='right'><b>$tot_perslip_c</b></td>";
                         echo "<td></td>";
                         echo "</tr>";
                         
                         echo "<tr>";
-                        echo "<td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
+                        echo "<td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
                         echo "</tr>";
                         
                     }
@@ -607,7 +611,7 @@
                     
                 }
                 
-                echo "<tr><td colspan='9'></td></tr>";
+                echo "<tr><td colspan='10'></td></tr>";
                 
 						if ($idinputspd=="1976" OR $idinputspd=="2115x") {//
 							$gtotal=(double)$gtotal+1;
@@ -623,6 +627,7 @@
 
 
                     echo "<tr style='font-size:15px;'>";
+                    echo "<td></td>";
                     echo "<td></td>";
                     echo "<td></td>";
                     echo "<td></td>";
@@ -645,6 +650,7 @@
                         echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
+                        echo "<td></td>";
                         echo "<td nowrap><b>REALISASI</b></td>";
                         echo "<td></td>";
                         echo "<td nowrap align='right'><b>$gtotal_real</b></td>";
@@ -653,6 +659,7 @@
 
                         //adjustment
                         echo "<tr style='font-size:15px;'>";
+                        echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
@@ -676,6 +683,7 @@
                     echo "<td></td>";
                     echo "<td></td>";
                     echo "<td></td>";
+                    echo "<td></td>";
                     echo "<td nowrap><b>TOTAL IDR</b></td>";
                     echo "<td></td>";
                     echo "<td nowrap align='right'><b>$gtotal</b></td>";
@@ -687,6 +695,7 @@
                         $gtotal_2=number_format($gtotal_2,0,",",",");
 
                         echo "<tr style='font-size:15px;'>";
+                        echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
@@ -709,6 +718,7 @@
                         echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
+                        echo "<td></td>";
                         echo "<td nowrap><b>TOTAL USD</b></td>";
                         echo "<td></td>";
                         echo "<td nowrap align='right'><b>$gtotal_3</b></td>";
@@ -721,6 +731,7 @@
                         $gtotal_4=number_format($gtotal_4,0,",",",");
 
                         echo "<tr style='font-size:15px;'>";
+                        echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";

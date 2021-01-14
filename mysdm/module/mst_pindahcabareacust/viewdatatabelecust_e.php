@@ -49,7 +49,7 @@
             "serverSide": true,
             //"stateSave": true,
             "order": [[ 0, "desc" ]],
-            "lengthMenu": [[10, 50, 100, 10000000], [10, 50, 100, "All"]],
+            "lengthMenu": [[10, 50, 100, -1], [10, 50, 100, "All"]],
             "displayLength": 10,
             "columnDefs": [
                 { "visible": false },
@@ -125,7 +125,7 @@
 
 <script>
     $(document).ready(function() {
-        TampilkanDataEcustX('', '', '');
+        //TampilkanDataEcustX('', '', '');
     } );
     
     function TampilkanDataEcustX(icab, idarea, icust){

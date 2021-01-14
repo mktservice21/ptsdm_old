@@ -460,6 +460,7 @@
                         $paktivitas2 = $row['aktivitas2'];
                         $prealisasi1 = $row['realisasi1'];
                         $prelasidokter = $row['realisasi2'];
+                        if ($prelasidokter=="0") $prelasidokter="";
                         
                         $pcoa = $row['COA4'];
                         $pnmcoa = $row['NAMA4'];

@@ -133,11 +133,19 @@
 	$num_results = mysqli_num_rows($result);
 	$row = mysqli_fetch_array($result);
 	$tglawal_ = substr($row['tgl'],0,7);
+        
+        //diubah jadi awal bulan ks
+        if (empty($awal)) $awal="0000-00";
+        if ($tglawal_=="0000-00") $tglawal_=$awal;
+        
+        
 	if ($tglawal_=="0000-00") {
 		$tglawal_ = date('Y-').'01';
 		$tahun = date('Y'); 
 		$tahun1 = $tahun - 01;
 		$tglawal1 = $tahun1.'-01'; 
+                
+                
 	} else {
 		$tglawal1 = $tglawal_;
 	}

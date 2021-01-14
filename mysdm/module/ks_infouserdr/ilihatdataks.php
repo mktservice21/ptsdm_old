@@ -135,6 +135,7 @@
 	$tglawal_ = substr($row['tgl'],0,7);
         
         //diubah jadi awal bulan ks
+        if (empty($tglawal_)) $tglawal_="0000-00";
         if (empty($awal)) $awal="0000-00";
         if ($tglawal_=="0000-00") $tglawal_=$awal;
         

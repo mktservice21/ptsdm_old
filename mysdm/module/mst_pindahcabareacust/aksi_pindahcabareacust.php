@@ -8,7 +8,7 @@ session_start();
 $puserid="";
 $pidcard="";
 $pidgroup="";
-$pidsesio="";
+$pidsesion="";
 if (isset($_SESSION['USERID'])) $puserid=$_SESSION['USERID'];
 if (isset($_SESSION['IDCARD'])) $pidcard=$_SESSION['IDCARD'];
 if (isset($_SESSION['GROUP'])) $pidgroup=$_SESSION['GROUP'];
@@ -44,14 +44,15 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
     
     
     
-    echo "icab new : $pidcab, area new : $pidarea<br/>";
-    echo "icab old : $pidoldcab, old new : $pidoldarea<br/>";
+    //echo "icab new : $pidcab, area new : $pidarea<br/>";
+    //echo "icab old : $pidoldcab, old new : $pidoldarea<br/>";
     
-    $query = "select icabangid_new, icustid_new, areaid_new, nama, alamat1, alamat2, kodepos, contact, "
+    $query = "select icabangid_new, icustid_new, areaid_new, "
+            . " nama, alamat1, alamat2, kodepos, contact, "
             . " telp, fax, ikotaid, kota, isektorid, aktif, dispen, user1,oldflag, scode, grp, grp_spp, "
             . " o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid_hist, iareaid_hist, icustid_hist, "
             . " istatus, idisc, sys_now from dbmaster.tmp_pindah_cust WHERE icabangid='$pidoldcab' and areaid='$pidoldarea' "
-            . " AND icabangid_new='$pidcab' and areaid_new='$pidarea' AND IFNULL(selesai,'')<>'Y'";
+            . " AND icabangid_new='$pidcab' and areaid_new='$pidarea' AND IFNULL(selesai,'')<>'Y' AND idsesi='$pidsesion' AND userid='$pidcard'";
     $query = "create  table $tmp00 ($query)";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
@@ -63,13 +64,42 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
             . " a.nama as nama "
             . " from dbmaster.tmp_pindah_ecust as a "
             . " WHERE a.icabangid='$pidoldcab' and a.areaid='$pidoldarea' "
-            . " AND a.icabangid_new='$pidcab' and a.areaid_new='$pidarea' AND IFNULL(a.selesai,'')<>'Y'";
+            . " AND a.icabangid_new='$pidcab' and a.areaid_new='$pidarea' AND IFNULL(a.selesai,'')<>'Y' AND idsesi='$pidsesion' AND userid='$pidcard'";
     $query = "create table $tmp01 ($query)";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+    
+    
+    $query = "insert into MKT.icust(icabangid, icustid, areaid, nama, alamat1, alamat2, kodepos, contact, telp, fax, ikotaid,
+        kota, isektorid, aktif, dispen, user1, oldflag, sys_now, scode, grp, grp_spp,
+	o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid_hist, iareaid_hist, icustid_hist)
+	select icabangid_new, icustid_new, areaid_new, nama, alamat1, alamat2, 
+        kodepos, contact, telp, fax, ikotaid, kota, isektorid, aktif, dispen, '$puserid' as user1, oldflag, now(), scode, grp, grp_spp,
+	o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid_hist, iareaid_hist, icustid_hist
+	from $tmp00";
+    //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+    
+    $query = "UPDATE dbmaster.tmp_pindah_cust SET selesai='Y' WHERE icabangid='$pidoldcab' and areaid='$pidoldarea' "
+            . " AND icabangid_new='$pidcab' and areaid_new='$pidarea' AND IFNULL(selesai,'')<>'Y' AND idsesi='$pidsesion' AND userid='$pidcard'";
+    //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+    
+    
+    
+    $query = "UPDATE MKT.ecust as a JOIN $tmp01 as b on a.icabangid=b.icabangid AND a.areaid=b.areaid AND a.icustid=b.icustid SET "
+            . " a.icabangid=a.icabangid_new, a.areaid=b.areaid_new, a.icustid=b.icustid WHERE a.icabangid='$pidoldcab' AND a.areaid='$pidoldarea'";
+    echo $query;
+    //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+    
+    $query = "UPDATE dbmaster.tmp_pindah_ecust SET selesai='Y' WHERE icabangid='$pidoldcab' and areaid='$pidoldarea' "
+            . " AND icabangid_new='$pidcab' and areaid_new='$pidarea' AND IFNULL(selesai,'')<>'Y' AND idsesi='$pidsesion' AND userid='$pidcard'";
+    //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+    
     
     mysqli_query($cnit, "DROP TABLE $tmp00");
     //mysqli_query($cnit, "DROP TABLE $tmp01");
     mysqli_close($cnit);
+    
+    
+    //header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
     
 }
 

@@ -458,6 +458,7 @@
                         $pnmdokter = $row['nama_dokter'];
                         $prealisasi1 = $row['realisasi1'];
                         $prelasidokter = $row['realisasi2'];
+                        if ($prelasidokter=="0") $prelasidokter="";
                         
                         if (empty($pnmdokter)) $pnmdokter = $row['dokter'];
                         if (empty($pnmdokter)) $pnmdokter=$prealisasi1;

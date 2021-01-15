@@ -1,9 +1,9 @@
 <?php
 session_start();
-include "../../config/koneksimysqli_it.php";
+include "../../config/koneksimysqli.php";
 include "../../config/fungsi_sql.php";
 
-//$cnit=$cnmy;
+$cnit=$cnmy;
 
 $pidgroup=$_SESSION['GROUP'];
 $fkaryawan=$_SESSION['IDCARD'];

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../../config/koneksimysqli.php";
+include "../../config/koneksimysqli_it.php";
 include "../../config/fungsi_sql.php";
 
 $fkaryawan=$_SESSION['IDCARD'];
@@ -36,7 +36,7 @@ $sql = "select a.icabangid as icabangid, a.areaid as areaid, a.icustid as icusti
 $sql .=" where a.icabangid='$picabang' ";
 if (!empty($pidarea)) $sql .=" AND a.areaid='$pidarea' ";
 
-$query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
+$query=mysqli_query($cnit, $sql) or die("mydata.php: get data");
 $totalData = mysqli_num_rows($query);
 $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
 
@@ -50,11 +50,11 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
 }
 
 
-$query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
+$query=mysqli_query($cnit, $sql) or die("mydata.php: get data");
 $totalFiltered = mysqli_num_rows($query); // when there is a search parameter then we have to modify total number filtered rows as per search result. 
 $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]."   ".$requestData['order'][0]['dir']."  LIMIT ".$requestData['start']." ,".$requestData['length']."   ";
 /* $requestData['order'][0]['column'] contains colmun index, $requestData['order'][0]['dir'] contains order such as asc/desc  */	
-$query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
+$query=mysqli_query($cnit, $sql) or die("mydata.php: get data");
 
 
 
@@ -102,7 +102,7 @@ $json_data = array(
 
 echo json_encode($json_data);  // send data as json format
 
-mysqli_close($cnmy);
+mysqli_close($cnit);
 
 ?>
 

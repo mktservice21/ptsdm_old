@@ -5,6 +5,12 @@ $pidmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];
 $pidact=$_GET['act'];
 
+$pidcab_nw=$_SESSION['PNDCSTNWIDCAB'];
+$pidarea_nw=$_SESSION['PNDCSTNWIDARA'];
+$pidcab_ol=$_SESSION['PNDCSTOLIDCAB'];
+$pidarea_ol=$_SESSION['PNDCSTOLIDARA'];
+
+
 $act="duplikaticust";
 
 
@@ -55,7 +61,10 @@ $act="duplikaticust";
                                                 $picabang=$irow['icabangid'];
                                                 $pnamacab=$irow['nama'];
                                                 $iidcab=(INT)$picabang;
-                                                echo "<option value='$picabang'>$pnamacab ($iidcab)</option>";
+                                                if ($picabang==$pidcab_ol)
+                                                    echo "<option value='$picabang' selected>$pnamacab ($iidcab)</option>";
+                                                else
+                                                    echo "<option value='$picabang'>$pnamacab ($iidcab)</option>";
                                             }
                                             ?>
                                         </select>
@@ -67,8 +76,29 @@ $act="duplikaticust";
                                     <div class='col-xs-4'>
                                         <select class='form-control input-sm' id='cb_dariarea' name='cb_dariarea' onchange="" data-live-search="true">
                                             <?PHP
-                                            echo "<option value='' selected>--Pilih--</option>";
                                             
+                                            if (!empty($pidcab_ol)) {
+                                                $pnamacabang= getfieldit("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcab_ol'");
+
+                                                echo "<option value='' selected>-- Pilih Area dari : $pnamacabang --</option>";
+                                                $query = "select DISTINCT a.icabangid as icabangid, a.areaid as areaid, a.nama as nama "
+                                                        . " from MKT.iarea as a JOIN MKT.ecust as b on a.icabangid=b.icabangid AND a.areaid=b.areaid "
+                                                        . " JOIN MKT.icust as c on b.icabangid=c.icabangid AND b.areaid=c.areaid AND b.icustid=c.icustid "
+                                                        . " WHERE a.icabangid='$pidcab_ol' AND IFNULL(a.aktif,'')='Y' ";
+                                                $query .= " Order by nama";
+                                                $tampil =mysqli_query($cnit, $query);
+                                                while ($irow=mysqli_fetch_array($tampil)){
+                                                    $pidarea=$irow['areaid'];
+                                                    $pnamaarea=$irow['nama'];
+                                                    $iidarea=(INT)$pidarea;
+                                                    if ($pidarea==$pidarea_ol)
+                                                        echo "<option value='$pidarea' selected>$pnamaarea ($iidarea)</option>";
+                                                    else
+                                                        echo "<option value='$pidarea'>$pnamaarea ($iidarea)</option>";
+                                                }
+                                            }else{
+                                                echo "<option value='' selected>--Pilih--</option>";
+                                            }
                                             ?>
                                         </select>
                                     </div>
@@ -89,7 +119,10 @@ $act="duplikaticust";
                                                 $picabang=$irow['icabangid'];
                                                 $pnamacab=$irow['nama'];
                                                 $iidcab=(INT)$picabang;
-                                                echo "<option value='$picabang'>$pnamacab ($iidcab)</option>";
+                                                if ($picabang==$pidcab_nw)
+                                                    echo "<option value='$picabang' selected>$pnamacab ($iidcab)</option>";
+                                                else
+                                                    echo "<option value='$picabang'>$pnamacab ($iidcab)</option>";
                                             }
                                             ?>
                                         </select>
@@ -101,8 +134,25 @@ $act="duplikaticust";
                                     <div class='col-xs-4'>
                                         <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="" data-live-search="true">
                                             <?PHP
-                                            echo "<option value='' selected>--Pilih--</option>";
-                                            
+                                            if (!empty($pidcab_nw)) {
+                                                $pnamacabang= getfieldit("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcab_nw'");
+
+                                                echo "<option value='' selected>-- Pilih Area dari : $pnamacabang --</option>";
+                                                $query = "select icabangid as icabangid, areaid as areaid, nama as nama from MKT.iarea WHERE icabangid='$pidcab_nw' AND IFNULL(aktif,'')='Y' ";
+                                                $query .= " Order by nama";
+                                                $tampil =mysqli_query($cnit, $query);
+                                                while ($irow=mysqli_fetch_array($tampil)){
+                                                    $pidarea=$irow['areaid'];
+                                                    $pnamaarea=$irow['nama'];
+                                                    $iidarea=(INT)$pidarea;
+                                                    if ($pidarea==$pidarea_nw)
+                                                        echo "<option value='$pidarea' selected>$pnamaarea ($iidarea)</option>";
+                                                    else
+                                                        echo "<option value='$pidarea'>$pnamaarea ($iidarea)</option>";
+                                                }
+                                            }else{
+                                                echo "<option value='' selected>--Pilih--</option>";
+                                            }
                                             ?>
                                         </select>
                                     </div>

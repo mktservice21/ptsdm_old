@@ -571,7 +571,7 @@
                         ';
                     }elseif ($lvlpengajuan=="FF2" OR $lvlpengajuan=="AD1" OR $lvlpengajuan=="OB1") {
 						
-						if ($lvlpengajuan=="AD1" AND empty($patasan3)) {
+                        if ($lvlpengajuan=="AD1" AND empty($patasan3)) {
 						
                         echo '
                         <tr>
@@ -778,28 +778,66 @@
                         </tr>
                         ';
                     }else{
-                        echo '
-                        <tr>
-                            <td align="center">
-                                Menyetujui :
-                                <br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;
-                                (.................................)
-                            </td>
-                            <td align="center">
-                                Mengetahui :
-                                <br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;
-                                (.................................)
-                            </td>
-                            <td align="center">
-                                Yang Membuat :';
-                                if (!empty($namapengaju))
-                                    echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
-                                else
+                        if ($pkaryawan=="0000002083") {
+                            
+                            echo "<tr>";
+                            
+                                echo "<td align='center'>";
+                                    echo "Menyetujui :";
                                     echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                echo "<b><u>$nama</u></b>";
-                        echo '</td>
-                        </tr>
-                        ';
+                                    echo "(.................................)";
+                                echo "</td>";
+                            
+                            
+                                echo "<td align='center'>";
+                                    echo "Mengetahui :";
+                                    if (!empty($namaspv))
+                                        echo "<br/><img src='images/tanda_tangan_base64/$namaspv' height='$gmrheight'><br/>";
+                                    else
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    echo "<b><u>$nmatasan1</u></b>";
+                                echo "</td>";
+                            
+                                echo "<td align='center'>";
+                                    echo "Yang Membuat :";
+                                    if (!empty($namapengaju))
+                                        echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
+                                    else
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    echo "<b><u>$nama</u></b>";
+                                echo "</td>";
+                                
+                            echo "</tr>";
+                            
+                        }else{
+                        
+                            echo "<tr>";
+                            
+                                echo "<td align='center'>";
+                                    echo "Menyetujui :";
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    echo "(.................................)";
+                                echo "</td>";
+                            
+                            
+                                echo "<td align='center'>";
+                                    echo "Mengetahui :";
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    echo "(.................................)";
+                                echo "</td>";
+                            
+                                echo "<td align='center'>";
+                                    echo "Yang Membuat :";
+                                    if (!empty($namapengaju))
+                                        echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
+                                    else
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    echo "<b><u>$nama</u></b>";
+                                echo "</td>";
+                                
+                            echo "</tr>";
+                            
+                        }
                     }
                     ?>
                 </table>

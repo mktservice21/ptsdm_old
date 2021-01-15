@@ -1,6 +1,6 @@
 <?php
-include "config/koneksimysqli_it.php";
-//$cnit=$cnmy;
+//include "config/koneksimysqli_it.php";
+$cnit=$cnmy;
 
 $pidmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];

@@ -89,7 +89,8 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
             . " dbmaster.tmp_pindah_ecust as c on b.nourut=c.nourut and b.icabangid_new=c.icabangid_new and "
             . " b.areaid_new=c.areaid_new and b.icustid_new=c.icustid_new and "
             . " b.eCustId=c.ecustid and b.CabangId=c.cabangid and b.distid=c.distid SET "
-            . " a.icabangid=a.icabangid_new, a.areaid=b.areaid_new, a.icustid=LPAD(ifnull(b.icustid_new,0), 10, '0'), c.selesai='Y' WHERE "
+            . " a.icabangid=a.icabangid_new, a.areaid=b.areaid_new, a.icustid=LPAD(ifnull(b.icustid_new,0), 10, '0'), c.selesai='Y', "
+            . " a.user1='$puserid', a.daricab='$pidoldcab', a.kecab='$pidcab' WHERE "
             . " a.icabangid='$pidoldcab' AND a.areaid='$pidoldarea'";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     

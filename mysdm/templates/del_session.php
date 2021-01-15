@@ -576,4 +576,11 @@
     $_SESSION['BGTUPDDPT']="";
     $_SESSION['BGTUPDCAB']="";
     
+    
+    //PINDAH CUSTOMER
+    $_SESSION['PNDCSTNWIDCAB']="";
+    $_SESSION['PNDCSTNWIDARA']="";
+    $_SESSION['PNDCSTOLIDCAB']="";
+    $_SESSION['PNDCSTOLIDARA']="";
+    
 ?>

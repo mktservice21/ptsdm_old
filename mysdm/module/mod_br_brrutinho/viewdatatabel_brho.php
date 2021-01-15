@@ -189,7 +189,7 @@
                     
                     
                     if (!empty($t_ats4)) {
-                        if ($pjabatanid=="01") {
+                        if ($pjabatanid=="01" OR $pjabatanid=="34") {
                             
                         }else{
                             $pedit = "";

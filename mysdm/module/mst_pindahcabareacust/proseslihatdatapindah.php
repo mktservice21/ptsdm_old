@@ -42,6 +42,12 @@
     $pnmdaricabang=getfieldcnit("select nama as lcfields from MKT.icabang where icabangid='$piddaricabang'");
     $pnmadarirea=getfieldcnit("select nama as lcfields from MKT.iarea where icabangid='$piddaricabang' AND areaid='$piddariarea'");
     
+    $_SESSION['PNDCSTNWIDCAB']=$pidcabang;
+    $_SESSION['PNDCSTNWIDARA']=$pidarea;
+    $_SESSION['PNDCSTOLIDCAB']=$piddaricabang;
+    $_SESSION['PNDCSTOLIDARA']=$piddariarea;
+    
+    
     echo "<input type='hidden' name='txt_idcab_view' id='txt_idcab_view' value='$pidcabang'>";
     echo "<input type='hidden' name='txt_nmcab_view' id='txt_nmcab_view' value='$pnmcabang'>";
     echo "<input type='hidden' name='txt_idarea_view' id='txt_idarea_view' value='$pidarea'>";

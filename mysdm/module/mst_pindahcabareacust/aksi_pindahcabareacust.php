@@ -37,11 +37,21 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
     $pidoldarea=$_POST['txt_idarea_view_old'];
     
     
+    $_SESSION['PNDCSTNWIDCAB']=$pidcab;
+    $_SESSION['PNDCSTNWIDARA']=$pidarea;
+    $_SESSION['PNDCSTOLIDCAB']=$pidoldcab;
+    $_SESSION['PNDCSTOLIDARA']=$pidoldarea;
+    
+    
     $puserid=$_SESSION['USERID'];
     $now=date("mdYhis");
     $tmp00 =" dbtemp.tmppndcustcbrprs00_".$puserid."_$now ";
     $tmp01 =" dbtemp.tmppndcustcbrprs01_".$puserid."_$now ";
+    $tmp02 =" dbmaster.bcpecust_".$now;
     
+    $query = "select * from MKT.ecust";
+    $query = "create  table $tmp02 ($query)";
+    mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
     
     //echo "icab new : $pidcab, area new : $pidarea<br/>";
@@ -89,7 +99,7 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
             . " dbmaster.tmp_pindah_ecust as c on b.nourut=c.nourut and b.icabangid_new=c.icabangid_new and "
             . " b.areaid_new=c.areaid_new and b.icustid_new=c.icustid_new and "
             . " b.eCustId=c.ecustid and b.CabangId=c.cabangid and b.distid=c.distid SET "
-            . " a.icabangid=a.icabangid_new, a.areaid=b.areaid_new, a.icustid=LPAD(ifnull(b.icustid_new,0), 10, '0'), c.selesai='Y', "
+            . " a.icabangid=b.icabangid_new, a.areaid=b.areaid_new, a.icustid=LPAD(ifnull(b.icustid_new,0), 10, '0'), c.selesai='Y', "
             . " a.user1='$puserid', a.daricab='$pidoldcab', a.kecab='$pidcab' WHERE "
             . " a.icabangid='$pidoldcab' AND a.areaid='$pidoldarea'";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
@@ -99,7 +109,7 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
     mysqli_close($cnit);
     
     
-    //header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
+    header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=duplikaticust');
     
 }
 

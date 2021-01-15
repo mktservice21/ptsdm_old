@@ -10,11 +10,11 @@ session_start();
     $act=$_GET['act'];
     $idmenu=$_GET['idmenu'];
     
-    include "../../config/koneksimysqli_it.php";
+    //include "../../config/koneksimysqli_it.php";
     include "../../config/koneksimysqli.php";
     include "../../config/common.php";
     
-    //$cnit=$cnmy;
+    $cnit=$cnmy;
     
 // Hapus / non aktifkan
 if ($module=='ksdatauser' AND $act=='hapus')

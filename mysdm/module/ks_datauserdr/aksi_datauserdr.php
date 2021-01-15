@@ -144,8 +144,8 @@ elseif ($module=='ksdatauser' AND ($act=='input' OR $act=='update' OR $act=='upd
 
     }
 
-    $result = mysqli_query($cnmy, "CALL dbmaster.proses_data_karyawan_hrd_dokter()");
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }    
+    //$result = mysqli_query($cnmy, "CALL dbmaster.proses_data_karyawan_hrd_dokter()");
+    //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }    
     
     mysqli_close($cnmy);
     mysqli_close($cnit);

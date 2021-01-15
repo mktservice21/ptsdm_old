@@ -47,7 +47,7 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
     //echo "icab new : $pidcab, area new : $pidarea<br/>";
     //echo "icab old : $pidoldcab, old new : $pidoldarea<br/>";
     
-    $query = "select icabangid_new, icustid_new, areaid_new, "
+    $query = "select nourut, icabangid_new, icustid_new, areaid_new, "
             . " nama, alamat1, alamat2, kodepos, contact, "
             . " telp, fax, ikotaid, kota, isektorid, aktif, dispen, user1,oldflag, scode, grp, grp_spp, "
             . " o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid_hist, iareaid_hist, icustid_hist, "
@@ -58,7 +58,7 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
     
     
     //e cabang e custid
-    $query = "select a.distid as distid, a.cabangid as cabangid, a.ecustid as ecustid, "
+    $query = "select a.nourut, a.distid as distid, a.cabangid as cabangid, a.ecustid as ecustid, "
             . " a.icabangid as icabangid, a.areaid as areaid, a.icustid as icustid, "
             . " a.icabangid_new, a.areaid_new, a.icustid_new, "
             . " a.nama as nama "
@@ -76,26 +76,25 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
         kodepos, contact, telp, fax, ikotaid, kota, isektorid, aktif, dispen, '$puserid' as user1, oldflag, now(), scode, grp, grp_spp,
 	o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid_hist, iareaid_hist, icustid_hist
 	from $tmp00";
-    //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+    mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
     $query = "UPDATE dbmaster.tmp_pindah_cust SET selesai='Y' WHERE icabangid='$pidoldcab' and areaid='$pidoldarea' "
             . " AND icabangid_new='$pidcab' and areaid_new='$pidarea' AND IFNULL(selesai,'')<>'Y' AND idsesi='$pidsesion' AND userid='$pidcard'";
-    //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+    mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
     
     
-    $query = "UPDATE MKT.ecust as a JOIN $tmp01 as b on a.icabangid=b.icabangid AND a.areaid=b.areaid AND a.icustid=b.icustid SET "
-            . " a.icabangid=a.icabangid_new, a.areaid=b.areaid_new, a.icustid=b.icustid WHERE a.icabangid='$pidoldcab' AND a.areaid='$pidoldarea'";
-    echo $query;
-    //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
-    
-    $query = "UPDATE dbmaster.tmp_pindah_ecust SET selesai='Y' WHERE icabangid='$pidoldcab' and areaid='$pidoldarea' "
-            . " AND icabangid_new='$pidcab' and areaid_new='$pidarea' AND IFNULL(selesai,'')<>'Y' AND idsesi='$pidsesion' AND userid='$pidcard'";
-    //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
-    
+    $query = "UPDATE MKT.ecust as a JOIN $tmp01 as b on a.icabangid=b.icabangid AND a.areaid=b.areaid AND a.icustid=b.icustid "
+            . " and a.ecustid=b.ecustid and a.CabangId=b.cabangid and a.distid=b.distid JOIN "
+            . " dbmaster.tmp_pindah_ecust as c on b.nourut=c.nourut and b.icabangid_new=c.icabangid_new and "
+            . " b.areaid_new=c.areaid_new and b.icustid_new=c.icustid_new and "
+            . " b.eCustId=c.ecustid and b.CabangId=c.cabangid and b.distid=c.distid SET "
+            . " a.icabangid=a.icabangid_new, a.areaid=b.areaid_new, a.icustid=LPAD(ifnull(b.icustid_new,0), 10, '0'), c.selesai='Y' WHERE "
+            . " a.icabangid='$pidoldcab' AND a.areaid='$pidoldarea'";
+    mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
     mysqli_query($cnit, "DROP TABLE $tmp00");
-    //mysqli_query($cnit, "DROP TABLE $tmp01");
+    mysqli_query($cnit, "DROP TABLE $tmp01");
     mysqli_close($cnit);
     
     

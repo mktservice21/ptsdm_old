@@ -22,7 +22,7 @@
     $pidspd="";
     
     $aksi="eksekusi3.php";
-    include "config/koneksimysqli_it.php";
+    //include "config/koneksimysqli_it.php";
 ?>
 <div class="">
 

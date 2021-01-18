@@ -101,8 +101,8 @@ function CariSudahClosingBRID2($nbrid, $nskode) {
 }
 
 function CariDataKaryawanByRsmAuthCNIT($ikryid, $ijbt, $iregion) {
-    include("config/koneksimysqli_it.php");
-    
+    include("config/koneksimysqli.php");
+    $cnit=$cnmy;
     $pidkaryawan=$ikryid;
     $pidjabatan=$ijbt;
     $pidregion=$iregion;

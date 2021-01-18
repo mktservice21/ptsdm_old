@@ -23,7 +23,8 @@ class DB {
   public static $user = 'root';
   public static $password = 'Ganteng123456';
   //public static $host = 'localhost:3303';
-  public static $host = 'new.marvis.id:3303';
+  //public static $host = 'new.marvis.id:3303';
+  public static $host = '192.168.88.188:3303';
   public static $port = null;
   public static $encoding = 'latin1';
   

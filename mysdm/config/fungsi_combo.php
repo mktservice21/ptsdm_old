@@ -539,6 +539,42 @@ function cComboDistibutorHanya($konek, $selec, $pinsel){
     }
 }
 
+function cComboDistibutorHanyaCnNew($konek, $selec, $pinsel){
+    include $konek."koneksimysqli_ms.php";
+    $fsel="";
+    if (isset($selec)) {
+        $fsel=$selec;
+    }
+    $sql=mysqli_query($cnms, "SELECT distinct Distid as Distid, nama as nama, alamat1 from sls.distrib0 WHERE "
+            . " Distid IN $pinsel order by nama, Distid");
+    echo "<option value=''>--Pilih--</option>";
+    while ($Xt=mysqli_fetch_array($sql)){
+        if ((int)$Xt['Distid']==(int)$fsel)
+            echo "<option value='$Xt[Distid]' selected>$Xt[nama]</option>";
+        else
+            echo "<option value='$Xt[Distid]'>$Xt[nama]</option>";
+    }
+    mysqli_close($cnms);
+}
+
+function cComboDistibutorHanyaCnMs($konek, $selec, $pinsel){
+    include $konek."koneksimysqli.php";
+    $fsel="";
+    if (isset($selec)) {
+        $fsel=$selec;
+    }
+    $sql=mysqli_query($cnmy, "SELECT distinct Distid as Distid, nama as nama, alamat1 from MKT.distrib0 WHERE "
+            . " Distid IN $pinsel order by nama, Distid");
+    echo "<option value=''>--Pilih--</option>";
+    while ($Xt=mysqli_fetch_array($sql)){
+        if ((int)$Xt['Distid']==(int)$fsel)
+            echo "<option value='$Xt[Distid]' selected>$Xt[nama]</option>";
+        else
+            echo "<option value='$Xt[Distid]'>$Xt[nama]</option>";
+    }
+    mysqli_close($cnmy);
+}
+
 function cComboKodePosting($konek, $selec){
     include $konek."koneksimysqli_it.php";
     $fsel="";

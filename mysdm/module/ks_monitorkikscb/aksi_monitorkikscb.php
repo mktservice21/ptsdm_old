@@ -77,15 +77,29 @@ $pbulan = date('F Y', strtotime($pbln));
 
 
 $pnama_cabang= getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcabang'");
-
-
-    $query = "select distinct dokterid as dokterid, mrid as mrid "
-            . " from hrd.br0 WHERE icabangid='$pidcabang' AND IFNULL(stsbr,'')='KI' and 
-        ifnull(batal,'')<>'Y' and ifnull(retur,'')<>'Y' and brid not in 
-        (select distinct IFNULL(brid,'') from hrd.br0_reject) ";
+    /*
+    //IFNULL(a.stsbr,'')='KI'
+    $query = "select distinct a.divprodid, a.dokterid as dokterid, a.mrid as mrid "
+            . " from hrd.br0 as a JOIN hrd.br_kode as b on a.kode=b.kodeid WHERE a.icabangid='$pidcabang' AND IFNULL(b.ks,'')='Y' and 
+        ifnull(a.batal,'')<>'Y' and ifnull(a.retur,'')<>'Y' and a.brid not in 
+        (select distinct IFNULL(brid,'') from hrd.br0_reject) AND IFNULL(a.dokterid,'') NOT IN ('', '(blank)') ";
     
-    //$query .= " AND dokterid='0000022361' and mrid='0000001941' ";
-    
+    //$query .= " AND dokterid='0000005028' and mrid='0000000999' ";
+    //echo $query; goto hapusdata;
+    */
+
+    $query = "select a.divprodid, a.brid, a.mrid as mrid, a.dokterid as dokterid, left(a.tgl,7) as bulan, a.jumlah, a.jumlah1 
+            from hrd.br0 as a JOIN hrd.br_kode as b on a.kode=b.kodeid WHERE a.icabangid='$pidcabang' AND IFNULL(b.ks,'')='Y' and 
+            ifnull(a.batal,'')<>'Y' and ifnull(a.retur,'')<>'Y' and a.brid not in 
+            (select distinct IFNULL(brid,'') from hrd.br0_reject)
+            AND IFNULL(a.dokterid,'') NOT IN ('', '(blank)')";
+    //$query .= " AND a.dokterid='0000028148' and a.mrid='0000001943' ";
+    //echo $query; goto hapusdata;
+    $query = "create TEMPORARY table $tmp02 ($query)";
+    mysqli_query($cnit, $query);
+    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query= "select * from $tmp02";
     $tampil = mysqli_query($cnmy, $query);
     while ($z= mysqli_fetch_array($tampil)) {
         $pniddokt=$z['dokterid'];
@@ -101,26 +115,19 @@ $pnama_cabang= getfield("select nama as lcfields from MKT.icabang WHERE icabangi
 //echo $piddokter; goto hapusdata;
 
 
-$query = "select bulan, srid, dokterid, aptid, apttype, iprodid, qty, hna from hrd.ks1 WHERE 1=1 ";
+$query = "select bulan, srid, dokterid, apttype, sum(qty*hna) as rp from hrd.ks1 WHERE 1=1 ";
 if (!empty($piddokter)) {
     $query .= " AND CONCAT(IFNULL(dokterid,''), IFNULL(srid,'')) IN $piddokter ";
 }
 
 //$query .= " AND dokterid='0000022361' and srid='0000001941' ";
-
+$query .= "GROUP BY 1,2,3,4";
 $query = "create TEMPORARY table $tmp00 ($query)";
 mysqli_query($cnit, $query);
 $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-
-$query = "ALTER TABLE $tmp00 ADD COLUMN rp DECIMAL(20,2), ADD COLUMN cn DECIMAL(20,2), ADD COLUMN cnrp DECIMAL(20,2), ADD COLUMN jmlki DECIMAL(20,2), ADD COLUMN jmlsa DECIMAL(20,2), ADD COLUMN ists VARCHAR(5)";
+$query = "ALTER TABLE $tmp00 ADD COLUMN cn DECIMAL(20,2), ADD COLUMN cnrp DECIMAL(20,2), ADD COLUMN jmlki DECIMAL(20,2), ADD COLUMN jmlsa DECIMAL(20,2), ADD COLUMN ists VARCHAR(5)";
 mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-        $query = "select distinct bulan, srid, dokterid from $tmp00 ";
-        $query = "create TEMPORARY table $tmp05 ($query)";
-        mysqli_query($cnit, $query);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
         $query = "select DISTINCT karyawanid as srid, dokterid as dokterid, tgl as tgl, LEFT(tgl,7) as bulan, awal as awal from hrd.mr_dokt WHERE 1=1 ";
@@ -128,23 +135,29 @@ mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($errop
             $query .= " AND CONCAT(IFNULL(dokterid,''), IFNULL(karyawanid,'')) IN $piddokter ";
         }
         $query = "create TEMPORARY table $tmp06 ($query)";
-        mysqli_query($cnit, $query);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+        $query = "UPDATE $tmp06 SET tgl='0000-00-00', bulan='0000-00' WHERE IFNULL(tgl,'')=''";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp06 as a JOIN $tmp00 as b on a.srid=b.srid AND a.dokterid=b.dokterid SET a.tgl=concat(b.bulan,'-01'), a.bulan=b.bulan WHERE a.tgl='0000-00-00' AND a.bulan='0000-00'";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-        $query = "UPDATE $tmp06 SET tgl=CONCAT('$pthnlalu', '-01-01'), bulan=CONCAT('$pthnlalu', '-01') WHERE IFNULL(tgl,'')='' OR IFNULL(tgl,'0000-00-00')='0000-00-00'";
-        mysqli_query($cnit, $query);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "select tgl, karyawanid, dokterid, awal, cn from hrd.mr_dokt_a WHERE 1=1 ";
+        if (!empty($piddokter)) {
+            $query .= " AND CONCAT(IFNULL(dokterid,''), IFNULL(karyawanid,'')) IN $piddokter ";
+        }
+        $query = "create TEMPORARY table $tmp01 ($query)";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-
-$query = "select tgl, karyawanid, dokterid, awal, cn from hrd.mr_dokt_a WHERE 1=1 ";
-if (!empty($piddokter)) {
-    $query .= " AND CONCAT(IFNULL(dokterid,''), IFNULL(karyawanid,'')) IN $piddokter ";
-}
-$query = "create TEMPORARY table $tmp01 ($query)";
-mysqli_query($cnit, $query);
-$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
+        $query = "UPDATE $tmp01 SET tgl='0000-00-00' WHERE IFNULL(tgl,'')=''";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp01 as a JOIN $tmp00 as b on a.karyawanid=b.srid AND a.dokterid=b.dokterid SET a.tgl=concat(b.bulan,'-01') WHERE a.tgl='0000-00-00'";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
 $query = "SELECT distinct DATE_FORMAT(tgl, '%Y-%m') as tgl, 
         ifnull(karyawanid,'') as karyawanid, ifnull(dokterid,'') as dokterid, ifnull(cn,0) as cn 
         FROM $tmp01 order by tgl asc";
@@ -154,17 +167,14 @@ while ($row= mysqli_fetch_array($tampil)) {
     $pkryid=$row['karyawanid'];
     $pdoktid=$row['dokterid'];
     $pcn=$row['cn'];
-    
+
     if (empty($pcn)) $pcn=0;
-    
+
     $query = "UPDATE $tmp00 SET cn='$pcn' WHERE left(bulan,7)>='$ptgl' AND dokterid='$pdoktid' AND srid='$pkryid'";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+
 }
 
-
-$query = "UPDATE $tmp00 SET rp=IFNULL(qty,0)*IFNULL(hna,0)";
-mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "UPDATE $tmp00 SET cnrp=case when IFNULL(cn,0)=0 then 0 else IFNULL(rp,0)*(IFNULL(cn,0)/100) end";
 mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -174,124 +184,71 @@ mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($errop
 
 $query = "UPDATE $tmp00 SET cnrp=0-IFNULL(cnrp,0)";
 mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
 
 
+    $pfiltsrdandr="";
+    $query = "select distinct bulan, srid, dokterid from $tmp06 order by srid, dokterid, bulan";
+    $tampilc=mysqli_query($cnit, $query);
+    while ($crow= mysqli_fetch_array($tampilc)) {
+        $csrid=$crow['srid'];
+        $cdoktid=$crow['dokterid'];
+        $cblnpl=$crow['bulan'];
 
-$query = "select brid, mrid as mrid, dokterid as dokterid, left(tgl,7) as bulan, jumlah, jumlah1 
-        from hrd.br0 WHERE CONCAT(IFNULL(dokterid,''), IFNULL(mrid,'')) IN $piddokter AND IFNULL(stsbr,'')='KI' and 
-        ifnull(batal,'')<>'Y' and ifnull(retur,'')<>'Y' and brid not in 
-        (select distinct IFNULL(brid,'') from hrd.br0_reject)
-        GROUP BY 1,2,3";
+        $psrdandokt=$csrid."".$cdoktid;
 
-$query = "create TEMPORARY table $tmp02 ($query)";
-mysqli_query($cnit, $query);
-$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        if (!empty($psrdandokt)) {
+            if (strpos($pfiltsrdandr, $psrdandokt)==false) {
+                $pfiltsrdandr .="'".$psrdandokt."',";
+                //echo "$csrid, $cdoktid, $cblnpl<br/>";
 
+                $query = "DELETE FROM $tmp00 WHERE srid='$csrid' AND dokterid='$cdoktid' AND bulan<'$cblnpl'";
+                mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-
-            $pfiltsrdandr="";
-            $query = "select distinct bulan, srid, dokterid from $tmp06 order by srid, dokterid, bulan";
-            $tampilc=mysqli_query($cnit, $query);
-            while ($crow= mysqli_fetch_array($tampilc)) {
-                $csrid=$crow['srid'];
-                $cdoktid=$crow['dokterid'];
-                $cblnpl=$crow['bulan'];
-
-                $psrdandokt=$csrid."".$cdoktid;
-
-                if (!empty($psrdandokt)) {
-                    if (strpos($pfiltsrdandr, $psrdandokt)==false) {
-                        $pfiltsrdandr .="'".$psrdandokt."',";
-                        //echo "$csrid, $cdoktid, $cblnpl<br/>";
-
-                        $query = "DELETE FROM $tmp00 WHERE srid='$csrid' AND dokterid='$cdoktid' AND bulan<'$cblnpl'";
-                        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-                        $query = "DELETE FROM $tmp02 WHERE mrid='$csrid' AND dokterid='$cdoktid' AND bulan<'$cblnpl'";
-                        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-                    }
-                }
-
+                $query = "DELETE FROM $tmp02 WHERE mrid='$csrid' AND dokterid='$cdoktid' AND bulan<'$cblnpl'";
+                mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
             }
+        }
 
 
+    }
+    
+    
 $query = "UPDATE $tmp02 SET jumlah=jumlah1 WHERE IFNULL(jumlah1,0)<>0";
 mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "select mrid as mrid, dokterid as dokterid, bulan, SUM(jumlah) as jumlah 
-        from $tmp02
-        GROUP BY 1,2,3";
+$query = "select a.divprodid, a.mrid as srid, b.nama as nama_karyawan, a.dokterid, c.nama as nama_dokter, 
+        SUM(a.jumlah) as jmlki, CAST(0 as DECIMAL(20,2)) as cnrp, CAST(0 as DECIMAL(20,2)) as jmlsa, CAST(0 as DECIMAL(20,2)) as saldo_akhir 
+        from $tmp02 as a JOIN hrd.karyawan as b on a.mrid=b.karyawanid
+        JOIN hrd.dokter as c on a.dokterid=c.dokterid 
+        GROUP BY 1,2,3,4,5";
 $query = "create TEMPORARY table $tmp03 ($query)";
-mysqli_query($cnit, $query);
-$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-//insert KI
-$query = "insert into $tmp00 (srid, dokterid, bulan, ists, jmlki) 
-        select mrid as mrid, dokterid as dokterid, bulan, 'KI' as ists, SUM(jumlah) as jumlah 
-        from $tmp03
-        GROUP BY 1,2,3,4";
-mysqli_query($cnit, $query);
-$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-
-        $query = "DROP TEMPORARY TABLE $tmp02";
-        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-        //SALDO AWAL
-        $query = "select karyawanid, dokterid, left(tgl,7) as bulan, sum(awal) as awal from hrd.mr_dokt WHERE "
-                . "CONCAT(IFNULL(dokterid,''), IFNULL(karyawanid,'')) IN $piddokter AND IFNULL(awal,0)<>0 GROUP by 1,2,3";
-        $query = "create TEMPORARY table $tmp02 ($query)";
-        //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-    //insert SALDO AWAL
-    $query = "insert into $tmp00 (srid, dokterid, bulan, ists, jmlsa) 
-            select srid as karyawanid, dokterid as dokterid, bulan, 'SA' as ists, SUM(awal) as awal 
-            from $tmp06
-            GROUP BY 1,2,3,4";
-    mysqli_query($cnit, $query);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-$query = "select srid, dokterid, SUM(jmlsa) as jmlsa, SUM(jmlki) as jmlki, sum(cnrp) as cnrp, SUM(IFNULL(jmlsa,0)+IFNULL(jmlki,0)+IFNULL(cnrp,0)) as saldo_akhir   
-    from $tmp00 GROUP BY 1,2";//WHERE bulan<='$pblnpilih'
-$query = "create TEMPORARY table $tmp04 ($query)";
-mysqli_query($cnit, $query);
-$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-
-$query = "DROP TEMPORARY TABLE $tmp01";
 mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+$query = "update $tmp03 as a join (select srid, dokterid, sum(cnrp) as cnrp from $tmp00 GROUP by 1,2) as b on a.srid=b.srid AND a.dokterid=b.dokterid set a.cnrp=b.cnrp";
+mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "select a.srid, b.nama as nama_karyawan, a.dokterid, c.nama as nama_dokter, a.jmlsa, a.jmlki, a.cnrp, a.saldo_akhir "
-        . " FROM $tmp04 as a JOIN hrd.karyawan as b on a.srid=b.karyawanid "
-        . " JOIN hrd.dokter as c on a.dokterid=c.dokterid";
-$query = "create TEMPORARY table $tmp01 ($query)";
-mysqli_query($cnit, $query);
-$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "update $tmp03 as a join (select srid, dokterid, sum(awal) as awal from $tmp06 GROUP by 1,2) as b on a.srid=b.srid AND a.dokterid=b.dokterid set a.jmlsa=b.awal";
+mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "update $tmp03 set saldo_akhir=ifnull(jmlki,0)+ifnull(cnrp,0)+ifnull(jmlsa,0)";
+mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 if (empty($pidrpttype)) {
     
 }else{
     if ($pidrpttype=="M") {//MINUS
-        $query = "DELETE FROM $tmp01 WHERE IFNULL(saldo_akhir,0)>=0";
+        $query = "DELETE FROM $tmp03 WHERE IFNULL(saldo_akhir,0)>=0";
     }elseif ($pidrpttype=="N") {//NOL
-        $query = "DELETE FROM $tmp01 WHERE IFNULL(saldo_akhir,0)<>0";
+        $query = "DELETE FROM $tmp03 WHERE IFNULL(saldo_akhir,0)<>0";
     }else{//PLUS
-        $query = "DELETE FROM $tmp01 WHERE IFNULL(saldo_akhir,0)<=0";
+        $query = "DELETE FROM $tmp03 WHERE IFNULL(saldo_akhir,0)<=0";
     }
     mysqli_query($cnit, $query);
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 }
-
+    
 
 ?>
 
@@ -365,6 +322,7 @@ if (empty($pidrpttype)) {
                 <th align="center" nowrap>No</th>
                 <th align="center" nowrap>Karyawan</th>
                 <th align="center" nowrap>Dokter</th>
+                <th align="center" nowrap>Divisi</th>
                 <th align="center" nowrap>Saldo Awal</th>
                 <th align="center" nowrap>KI</th>
                 <th align="center" nowrap>KS</th>
@@ -378,9 +336,10 @@ if (empty($pidrpttype)) {
             $ptotks=0;
             
             $no=1;
-            $query = "select * from $tmp01 order by nama_karyawan, nama_dokter";
+            $query = "select * from $tmp03 order by nama_karyawan, nama_dokter, divprodid";
             $tampil=mysqli_query($cnit, $query);
             while ($row= mysqli_fetch_array($tampil)) {
+                $ipdivid=$row['divprodid'];
                 $ipkryid=$row['srid'];
                 $ipkrynm=$row['nama_karyawan'];
                 $ipdoktid=$row['dokterid'];
@@ -404,6 +363,7 @@ if (empty($pidrpttype)) {
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$ipkrynm ($ipkryid)</td>";
                 echo "<td nowrap>$ipdoktnm ($ipdoktid)</td>";
+                echo "<td nowrap>$ipdivid</td>";
                 echo "<td nowrap align='right'>$ipjmlsa</td>";
                 echo "<td nowrap align='right'>$ipjmlki</td>";
                 echo "<td nowrap align='right'>$ipcnrp</td>";

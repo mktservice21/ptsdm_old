@@ -9,8 +9,8 @@
     $pidcabang=$_POST['ucab'];
     $pidarea=$_POST['uidarea'];
     
-    $pnamacab=getfieldcnit("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcabang'");
-    $pnmarea=getfieldcnit("select nama as lcfields from MKT.iarea WHERE icabangid='$pidcabang' AND areaid='$pidarea'");
+    $pnamacab=getfieldcnnew("select nama as lcfields from sls.icabang WHERE icabangid='$pidcabang'");
+    $pnmarea=getfieldcnnew("select nama as lcfields from sls.iarea WHERE icabangid='$pidcabang' AND areaid='$pidarea'");
     
     echo "<input type='hidden' name='txt_idcab' id='txt_idcab' value='$pidcabang'>";
     echo "<input type='hidden' name='txt_idarea' id='txt_idarea' value='$pidarea'>";

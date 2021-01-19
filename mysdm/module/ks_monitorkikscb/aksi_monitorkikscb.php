@@ -93,7 +93,7 @@ $pnama_cabang= getfield("select nama as lcfields from MKT.icabang WHERE icabangi
             ifnull(a.batal,'')<>'Y' and ifnull(a.retur,'')<>'Y' and a.brid not in 
             (select distinct IFNULL(brid,'') from hrd.br0_reject)
             AND IFNULL(a.dokterid,'') NOT IN ('', '(blank)')";
-    //$query .= " AND a.dokterid='0000028148' and a.mrid='0000001943' ";
+    //$query .= " AND a.dokterid='0000033528' and a.mrid='0000001888' ";
     //echo $query; goto hapusdata;
     $query = "create TEMPORARY table $tmp02 ($query)";
     mysqli_query($cnit, $query);
@@ -158,6 +158,10 @@ mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($errop
         $query = "UPDATE $tmp01 as a JOIN $tmp00 as b on a.karyawanid=b.srid AND a.dokterid=b.dokterid SET a.tgl=concat(b.bulan,'-01') WHERE a.tgl='0000-00-00'";
         mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
+        
+$query = "UPDATE $tmp00 SET cnrp=0-ifnull(rp,0)";
+mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+/*     
 $query = "SELECT distinct DATE_FORMAT(tgl, '%Y-%m') as tgl, 
         ifnull(karyawanid,'') as karyawanid, ifnull(dokterid,'') as dokterid, ifnull(cn,0) as cn 
         FROM $tmp01 order by tgl asc";
@@ -212,7 +216,7 @@ mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($errop
 
 
     }
-    
+    */
     
 $query = "UPDATE $tmp02 SET jumlah=jumlah1 WHERE IFNULL(jumlah1,0)<>0";
 mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

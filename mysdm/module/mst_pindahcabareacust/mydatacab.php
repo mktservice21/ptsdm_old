@@ -1,7 +1,8 @@
 <?php
 session_start();
-include "../../config/koneksimysqli_it.php";
+include "../../config/koneksimysqli_ms.php";
 include "../../config/fungsi_sql.php";
+$cnit=$cnms;
 
 $fkaryawan=$_SESSION['IDCARD'];
 $fdivisi=$_SESSION['DIVISI'];
@@ -27,7 +28,7 @@ $columns = array(
 
 
 $sql = "select icabangid as icabangid, nama as nama, aktif as aktif "
-        . " FROM MKT.icabang ";
+        . " FROM sls.icabang ";
 $sql .=" where 1=1 ";
 
 $query=mysqli_query($cnit, $sql) or die("mydata.php: get data");

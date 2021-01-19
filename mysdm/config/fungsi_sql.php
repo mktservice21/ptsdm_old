@@ -53,6 +53,32 @@ function getfieldcnit($ssql){
 }
 
 
+function getfieldnew($ssql){
+    include "config/koneksimysqli_ms.php";
+    $sql=mysqli_query($cnms, $ssql);
+    $ketemu=mysqli_num_rows($sql);
+    $z=mysqli_fetch_array($sql);
+    if ($ketemu > 0){
+        return $z['lcfields'];
+    }
+    else {
+        return '';
+    }
+}
+
+function getfieldcnnew($ssql){
+    include "../../config/koneksimysqli_ms.php";
+    $sql=mysqli_query($cnms, $ssql);
+    $ketemu=mysqli_num_rows($sql);
+    $z=mysqli_fetch_array($sql);
+    if ($ketemu > 0){
+        return $z['lcfields'];
+    }
+    else {
+        return '';
+    }
+}
+
 function CariSudahClosingBRID1($nbrid, $nskode) {
     include "config/koneksimysqli.php";
     $query = "select a.bridinput from dbmaster.t_suratdana_br1 a JOIN dbmaster.t_suratdana_br b on a.idinput=b.idinput 

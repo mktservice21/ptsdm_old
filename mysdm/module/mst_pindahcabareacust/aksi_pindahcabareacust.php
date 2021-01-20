@@ -61,7 +61,7 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
             . " nama, alamat1, alamat2, kodepos, contact, "
             . " telp, fax, ikotaid, kota, isektorid, aktif, dispen, user1,oldflag, scode, grp, grp_spp, "
             . " o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid_hist, iareaid_hist, icustid_hist, "
-            . " istatus, idisc, sys_now from dbmaster.tmp_pindah_cust WHERE icabangid='$pidoldcab' and areaid='$pidoldarea' "
+            . " istatus, idisc, sys_now from MKT.tmp_pindah_cust WHERE icabangid='$pidoldcab' and areaid='$pidoldarea' "
             . " AND icabangid_new='$pidcab' and areaid_new='$pidarea' AND IFNULL(selesai,'')<>'Y' AND idsesi='$pidsesion' AND userid='$pidcard'";
     $query = "create  table $tmp00 ($query)";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
@@ -72,7 +72,7 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
             . " a.icabangid as icabangid, a.areaid as areaid, a.icustid as icustid, "
             . " a.icabangid_new, a.areaid_new, a.icustid_new, "
             . " a.nama as nama "
-            . " from dbmaster.tmp_pindah_ecust as a "
+            . " from MKT.tmp_pindah_ecust as a "
             . " WHERE a.icabangid='$pidoldcab' and a.areaid='$pidoldarea' "
             . " AND a.icabangid_new='$pidcab' and a.areaid_new='$pidarea' AND IFNULL(a.selesai,'')<>'Y' AND idsesi='$pidsesion' AND userid='$pidcard'";
     $query = "create table $tmp01 ($query)";
@@ -88,7 +88,7 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
 	from $tmp00";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
-    $query = "UPDATE dbmaster.tmp_pindah_cust SET selesai='Y' WHERE icabangid='$pidoldcab' and areaid='$pidoldarea' "
+    $query = "UPDATE MKT.tmp_pindah_cust SET selesai='Y' WHERE icabangid='$pidoldcab' and areaid='$pidoldarea' "
             . " AND icabangid_new='$pidcab' and areaid_new='$pidarea' AND IFNULL(selesai,'')<>'Y' AND idsesi='$pidsesion' AND userid='$pidcard'";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
@@ -96,7 +96,7 @@ if ($module=='pindacabareacust' AND $act=="prosespindah")
     
     $query = "UPDATE MKT.ecust as a JOIN $tmp01 as b on a.icabangid=b.icabangid AND a.areaid=b.areaid AND a.icustid=b.icustid "
             . " and a.ecustid=b.ecustid and a.CabangId=b.cabangid and a.distid=b.distid JOIN "
-            . " dbmaster.tmp_pindah_ecust as c on b.nourut=c.nourut and b.icabangid_new=c.icabangid_new and "
+            . " MKT.tmp_pindah_ecust as c on b.nourut=c.nourut and b.icabangid_new=c.icabangid_new and "
             . " b.areaid_new=c.areaid_new and b.icustid_new=c.icustid_new and "
             . " b.eCustId=c.ecustid and b.CabangId=c.cabangid and b.distid=c.distid SET "
             . " a.icabangid=b.icabangid_new, a.areaid=b.areaid_new, a.icustid=LPAD(ifnull(b.icustid_new,0), 10, '0'), c.selesai='Y', "

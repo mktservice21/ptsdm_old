@@ -62,8 +62,8 @@ if (empty($puser)) {
     }
     
     //ubah juga di _uploaddata
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
@@ -105,7 +105,7 @@ if (empty($puser)) {
     mysqli_query($cnmy, "create table $dbname.tmp_importprodfile_ipms ($qrycust_mer)");
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSER tmp_importprodfile_ipms mscust $cabang : $erropesan"; exit; }
     
-    $query_upde = "UPDATE MKT.ecust a JOIN $dbname.tmp_importprodfile_ipms b on a.distid='$distributor' AND a.cabangid='$cabang' AND "
+    $query_upde = "UPDATE sls.ecust a JOIN $dbname.tmp_importprodfile_ipms b on a.distid='$distributor' AND a.cabangid='$cabang' AND "
             . " a.ecustid=b.CUSTID SET a.nama=b.CUSTNM, a.alamat1=b.ALAMAT, "
             . " a.kota=b.KOTA, a.ekotaid=b.KOTAID, "
             . " a.esektorid=b.SEKTORID WHERE a.distid='$distributor' AND a.cabangid='$cabang'";
@@ -114,11 +114,11 @@ if (empty($puser)) {
     echo "Data ecust yang berhasil diupdate : " . mysqli_affected_rows($cnmy)."<br/>";
     
     $query_del = "DELETE FROM $dbname.tmp_importprodfile_ipms WHERE CONCAT('$distributor', '$cabang', IFNULL(CUSTID,'')) IN "
-            . " (SELECT CONCAT(IFNULL(distid,''), IFNULL(cabangid,''), IFNULL(ecustid,'')) FROM MKT.ecust WHERE distid='$distributor' AND cabangid='$cabang')";
+            . " (SELECT CONCAT(IFNULL(distid,''), IFNULL(cabangid,''), IFNULL(ecustid,'')) FROM sls.ecust WHERE distid='$distributor' AND cabangid='$cabang')";
     mysqli_query($cnmy, $query_del);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE tmp_importprodfile_ipms mscust $cabang : $erropesan"; exit; }
     
-    $query_inst = "INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,kota,ekotaid,esektorid,subdist) "
+    $query_inst = "INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,kota,ekotaid,esektorid,subdist) "
             . "SELECT DISTINCT '$distributor', '$cabang', CUSTID, CUSTNM, ALAMAT, 'Y', 'Y', KOTA, KOTAID, SEKTORID, '$subdist' "
             . " FROM $dbname.tmp_importprodfile_ipms";
     mysqli_query($cnmy, $query_inst);
@@ -165,7 +165,7 @@ if (empty($puser)) {
         
         
         $cekcust2=mysqli_num_rows(mysqli_query($cnmy, "
-            SELECT * FROM MKT.ecust 
+            SELECT * FROM sls.ecust 
             WHERE distid='$distributor' 
             AND cabangid='$cabang' 
             AND ecustid='$ecust'
@@ -174,7 +174,7 @@ if (empty($puser)) {
         if ($cekcust2<1){
 
             $eksekusi=mysqli_query($cnmy, "
-                INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,kota,ekotaid,esektorid,subdist) 
+                INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,kota,ekotaid,esektorid,subdist) 
                 VALUES('$distributor','$cabang','$ecust','$enama','$alamat','Y','Y','$kota','$kotaid','$sektorid','$subdist')
             ");
 
@@ -186,7 +186,7 @@ if (empty($puser)) {
         }else{
 
             $eksekusi=mysqli_query($cnmy, "
-                UPDATE MKT.ecust 
+                UPDATE sls.ecust 
                 SET nama='$enama', alamat1='$alamat', kota='$kota', ekotaid='$kotaid', esektorid='$sektorid' 
                 WHERE distid='$distributor' 
                 AND cabangid='$cabang' 
@@ -444,12 +444,12 @@ if (empty($puser)) {
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSER tmp_importprodfile_ipms eproduk $cabang : $erropesan"; exit; }
     
     $query_prod_del = "DELETE FROM $dbname.tmp_importprodfile_ipms WHERE CONCAT('$distributor', IFNULL(BRGID,'')) IN "
-            . " (SELECT CONCAT(IFNULL(distid,''), IFNULL(eprodid,'')) FROM MKT.eproduk WHERE distid='$distributor')";
+            . " (SELECT CONCAT(IFNULL(distid,''), IFNULL(eprodid,'')) FROM sls.eproduk WHERE distid='$distributor')";
     mysqli_query($cnmy, $query_prod_del);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE tmp_importprodfile_ipms eproduk $cabang : $erropesan"; exit; }
     
     
-    $query_prod_inst = "INSERT INTO MKT.eproduk(distid,eprodid,nama,satuan,aktif,oldflag) "
+    $query_prod_inst = "INSERT INTO sls.eproduk(distid,eprodid,nama,satuan,aktif,oldflag) "
             . "SELECT DISTINCT '$distributor', BRGID, BRGNM, UNITPCS, 'Y', 'Y' "
             . " FROM $dbname.tmp_importprodfile_ipms";
     mysqli_query($cnmy, $query_prod_inst);
@@ -482,13 +482,13 @@ if (empty($puser)) {
         $brgid=$data1['BRGID'];
         $brgnm=$data1['BRGNM'];
         $unitpcs=$data1['UNITPCS'];
-        $cekbrg=mysqli_num_rows(mysqli_query($cnmy, "SELECT * FROM MKT.eproduk WHERE distid='$distributor' AND eprodid='$brgid'"));
+        $cekbrg=mysqli_num_rows(mysqli_query($cnmy, "SELECT * FROM sls.eproduk WHERE distid='$distributor' AND eprodid='$brgid'"));
         
         //echo "$brgid, $brgnm, $unitpcs, $cekbrg <br/>";
         
         if ($cekbrg<1){
             $eksekusi=mysqli_query($cnmy, "
-                INSERT INTO MKT.eproduk(distid,eprodid,nama,satuan,aktif,oldflag) 
+                INSERT INTO sls.eproduk(distid,eprodid,nama,satuan,aktif,oldflag) 
                 VALUES('$distributor','$brgid','$brgnm','$unitpcs','Y','Y')
             ");
             if ($eksekusi) { 
@@ -605,7 +605,7 @@ if (empty($puser)) {
     
     
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salesspp s 
-        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

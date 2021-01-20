@@ -11,7 +11,7 @@ if ($pmodule=="viewdataareacabang") {
     $cnit=$cnms;
     $pidcabang = $_POST['ucab'];
     
-    $pnamacabang= getfieldcnit("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcabang'");
+    $pnamacabang= getfieldcnnew("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcabang'");
     
     echo "<option value='' selected>-- Pilih Area dari : $pnamacabang --</option>";
     $query = "select icabangid as icabangid, areaid as areaid, nama as nama from MKT.iarea WHERE icabangid='$pidcabang' AND IFNULL(aktif,'')='Y' ";
@@ -32,7 +32,7 @@ if ($pmodule=="viewdataareacabang") {
     
     $pdridcabang = $_POST['udrcab'];
     
-    $pnamacabang= getfieldcnit("select nama as lcfields from MKT.icabang WHERE icabangid='$pdridcabang'");
+    $pnamacabang= getfieldcnnew("select nama as lcfields from MKT.icabang WHERE icabangid='$pdridcabang'");
     
     echo "<option value='' selected>-- Pilih Area dari : $pnamacabang --</option>";
     $query = "select DISTINCT a.icabangid as icabangid, a.areaid as areaid, a.nama as nama "

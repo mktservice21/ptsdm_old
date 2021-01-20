@@ -1,6 +1,6 @@
 <?php
-include "config/koneksimysqli_it.php";
-
+include "config/koneksimysqli_ms.php";
+$cnit=$cnms;
 $pidmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];
 $pidact=$_GET['act'];

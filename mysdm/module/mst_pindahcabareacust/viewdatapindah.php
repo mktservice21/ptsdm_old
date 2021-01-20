@@ -6,9 +6,9 @@ if (isset($_GET['module'])) $pmodule=$_GET['module'];
 
 
 if ($pmodule=="viewdataareacabang") {
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli_ms.php";
     include "../../config/fungsi_sql.php";
-    
+    $cnit=$cnms;
     $pidcabang = $_POST['ucab'];
     
     $pnamacabang= getfieldcnit("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcabang'");
@@ -26,8 +26,9 @@ if ($pmodule=="viewdataareacabang") {
                                             
     mysqli_close($cnit);
 }elseif ($pmodule=="viewdatadariareacabang") {
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli_ms.php";
     include "../../config/fungsi_sql.php";
+    $cnit=$cnms;
     
     $pdridcabang = $_POST['udrcab'];
     

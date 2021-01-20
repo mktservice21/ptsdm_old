@@ -26,9 +26,9 @@ $idmenu=$_GET['idmenu'];
 
 if ($module=='pindacabareacust' AND $act=="prosespindah")
 {
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli_ms.php";
     include "../../config/fungsi_sql.php";
-    
+    $cnit=$cnms;
     
     $pidcab=$_POST['txt_idcab_view'];
     $pidarea=$_POST['txt_idarea_view'];

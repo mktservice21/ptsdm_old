@@ -27,20 +27,20 @@
     }
         
         
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli_ms.php";
     include "../../config/fungsi_sql.php";
-    
+    $cnit=$cnms;
     $pidcabang=$_POST['uicab'];
     $pidarea=$_POST['uiarea'];
     
     $piddaricabang=$_POST['uicabdari'];
     $piddariarea=$_POST['uiareadari'];
     
-    $pnmcabang=getfieldcnit("select nama as lcfields from MKT.icabang where icabangid='$pidcabang'");
-    $pnmarea=getfieldcnit("select nama as lcfields from MKT.iarea where icabangid='$pidcabang' AND areaid='$pidarea'");
+    $pnmcabang=getfieldcnnew("select nama as lcfields from MKT.icabang where icabangid='$pidcabang'");
+    $pnmarea=getfieldcnnew("select nama as lcfields from MKT.iarea where icabangid='$pidcabang' AND areaid='$pidarea'");
     
-    $pnmdaricabang=getfieldcnit("select nama as lcfields from MKT.icabang where icabangid='$piddaricabang'");
-    $pnmadarirea=getfieldcnit("select nama as lcfields from MKT.iarea where icabangid='$piddaricabang' AND areaid='$piddariarea'");
+    $pnmdaricabang=getfieldcnnew("select nama as lcfields from MKT.icabang where icabangid='$piddaricabang'");
+    $pnmadarirea=getfieldcnnew("select nama as lcfields from MKT.iarea where icabangid='$piddaricabang' AND areaid='$piddariarea'");
     
     $_SESSION['PNDCSTNWIDCAB']=$pidcabang;
     $_SESSION['PNDCSTNWIDARA']=$pidarea;

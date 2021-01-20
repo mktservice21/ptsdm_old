@@ -8,7 +8,7 @@
     $pidmenu=$_GET['idmenu'];
     $pidcabang=$_POST['ucab'];
     
-    $pnamacab=getfieldcnit("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcabang'");
+    $pnamacab=getfieldcnnew("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcabang'");
     echo "<input type='hidden' name='txt_idcab' id='txt_idcab' value='$pidcabang'>";
     
     $pnamacabang="";

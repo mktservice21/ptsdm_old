@@ -34,8 +34,8 @@ if (empty($puser)) {
     
     
     //ubah juga di _uploaddata
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
@@ -58,12 +58,12 @@ if (empty($puser)) {
         $satuan=mysqli_real_escape_string($cnmy, $data1['PROD_UOM_PRIN']);
         $hna=$data1['PROD_HNA'];
         
-        $cekproduk=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) FROM MKT.eproduk WHERE distid='$distributor' AND eprodid='$brgid'"));
+        $cekproduk=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) FROM sls.eproduk WHERE distid='$distributor' AND eprodid='$brgid'"));
         $cekproduk=$cekproduk[0];
         if ($cekproduk<1){
             
             mysqli_query($cnmy, "
-                INSERT INTO MKT.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag) 
+                INSERT INTO sls.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag) 
                 VALUES('$distributor','$brgid','$namaproduk','$satuan',$hna,'Y','Y')
                 ");
             
@@ -91,12 +91,12 @@ if (empty($puser)) {
         $alamat=mysqli_real_escape_string($cnmy, $data1['CUST_ADDR1']);
         $kota=mysqli_real_escape_string($cnmy, $data1['CUST_CITY']);
         
-        $cekcust=mysqli_fetch_array(mysqli_query($cnmy, "select count(distid) from MKT.ecust where distid='$distributor' and ecustid='$ecust'"));
+        $cekcust=mysqli_fetch_array(mysqli_query($cnmy, "select count(distid) from sls.ecust where distid='$distributor' and ecustid='$ecust'"));
 
         $cekcust1=$cekcust[0];
         if ($cekcust1<1){
             mysqli_query($cnmy, "
-                INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif) 
+                INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif) 
                 VALUES('$distributor','$cabang','$ecust','$enama','$alamat','$kota','Y','Y')
             ");
 
@@ -152,11 +152,11 @@ if (empty($puser)) {
     
     
     $query1 = "DELETE FROM $dbname.pv_import_produk WHERE CONCAT(IFNULL(PROD_ID,''),'$distributor') in
-            (SELECT DISTINCT CONCAT(IFNULL(eprodid,''),'$distributor') FROM MKT.eproduk WHERE distid='$distributor')";
+            (SELECT DISTINCT CONCAT(IFNULL(eprodid,''),'$distributor') FROM sls.eproduk WHERE distid='$distributor')";
     mysqli_query($cnmy, $query1);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE PROD ADA : $erropesan"; exit; }
     
-    $query2="INSERT INTO MKT.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag)"
+    $query2="INSERT INTO sls.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag)"
             . " SELECT DISTINCT '$distributor', PROD_ID, PROD_NAME, PROD_UOM_PRIN, REPLACE(REPLACE(PROD_HNA, ',', ''), '.00', '') as PROD_HNA, 'Y', 'Y' FROM $dbname.pv_import_produk";
     mysqli_query($cnmy, $query2);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT PROD ADA : $erropesan"; exit; }
@@ -195,7 +195,7 @@ if (empty($puser)) {
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp003");
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "DROP TEMPORARY tmp2 : $erropesan"; exit; }
 		
-		mysqli_query($cnmy, "CREATE TEMPORARY TABLE $temp001 (select distinct distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif from MKT.ecust WHERE distid='$distributor')");
+		mysqli_query($cnmy, "CREATE TEMPORARY TABLE $temp001 (select distinct distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif from sls.ecust WHERE distid='$distributor')");
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "INSERT TEMPORARY CUST ADA : $erropesan"; exit; }
 		
 		mysqli_query($cnmy, "alter table $temp001 add COLUMN noidauto BIGINT(50) NOT NULL AUTO_INCREMENT PRIMARY KEY");
@@ -216,7 +216,7 @@ if (empty($puser)) {
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error CREATE TEMP 3 : $erropesan"; exit; }
 			
 		
-		$queryMKT = "insert into MKT.ecust (distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif) 
+		$queryMKT = "insert into sls.ecust (distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif) 
 			select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
 			from $temp003 as a";
 		mysqli_query($cnmy, $queryMKT);
@@ -228,11 +228,11 @@ if (empty($puser)) {
 		
 	/*
     $query4 = "DELETE FROM $dbname.pv_import_cust WHERE CONCAT(IFNULL(CUST_SHIP_ID,''),'$distributor') in 
-            (SELECT DISTINCT CONCAT(IFNULL(ecustid,''),'$distributor') FROM MKT.ecust WHERE distid='$distributor');";
+            (SELECT DISTINCT CONCAT(IFNULL(ecustid,''),'$distributor') FROM sls.ecust WHERE distid='$distributor');";
     mysqli_query($cnmy, $query4);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE CUST ADA : $erropesan"; exit; }
     
-    $query5 = "INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif)"
+    $query5 = "INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif)"
             . "SELECT DISTINCT '$distributor', BRANCH_ID, CUST_SHIP_ID, CUST_NAME, CUST_ADDR1, CUST_CITY, 'Y', 'Y' FROM $dbname.pv_import_cust";
     mysqli_query($cnmy, $query5);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT CUST ADA : $erropesan"; exit; }
@@ -323,7 +323,7 @@ if (empty($puser)) {
     
     
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salespv s 
-        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

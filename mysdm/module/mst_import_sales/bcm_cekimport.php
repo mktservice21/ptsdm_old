@@ -41,8 +41,8 @@ if (empty($puser)) {
     $target_dir .=$pname_foder_dist."/".$pnmfolder."/";
     
     //ubah juga yang di proesdata_
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true

@@ -45,8 +45,8 @@ if (empty($puser)) {
     $filenameWX = preg_replace("/\.[^.]+$/", "", $filename);
     
     //ubah juga di prosesdata_
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true

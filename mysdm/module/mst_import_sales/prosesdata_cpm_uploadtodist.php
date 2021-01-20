@@ -37,8 +37,8 @@ if (empty($puser)) {
     
     
     //ubah juga di _uploaddata
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
@@ -53,7 +53,7 @@ if (empty($puser)) {
     // // customer
     $qrycust="
         SELECT DISTINCT plgkode custid,nama custnm,alamat,kota
-        FROM $dbname.import_cpm WHERE plgkode NOT IN (SELECT DISTINCT ecustid FROM MKT.ecust WHERE distid = '$distributor')";
+        FROM $dbname.import_cpm WHERE plgkode NOT IN (SELECT DISTINCT ecustid FROM sls.ecust WHERE distid = '$distributor')";
     
     $tampil_cu= mysqli_query($cnmy, $qrycust);
     while ($data1= mysqli_fetch_array($tampil_cu)) {
@@ -64,7 +64,7 @@ if (empty($puser)) {
         $kota=mysqli_real_escape_string($cnmy, $data1['kota']);
         
         mysqli_query($cnmy, "
-            insert into MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif,subdist) 
+            insert into sls.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif,subdist) 
             values('$distributor','$cabang','$ecust','$enama','$alamat','$kota','Y','Y','$subdist')
         ");
         
@@ -99,8 +99,8 @@ if (empty($puser)) {
         $tgljual=$data1['tgljual'];
         $harga0=mysqli_fetch_array(mysqli_query($cnmy, "
                 SELECT i.`hna` 
-                FROM MKT.eproduk e 
-                  INNER JOIN MKT.iproduk i ON e.`iProdId` = i.`iProdId` 
+                FROM sls.eproduk e 
+                  INNER JOIN sls.iproduk i ON e.`iProdId` = i.`iProdId` 
                 WHERE e.`eProdId` = '$brgid' and  e.distid='0000000006'
             "));
       
@@ -135,7 +135,7 @@ if (empty($puser)) {
 
         
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salescp1 s 
-        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

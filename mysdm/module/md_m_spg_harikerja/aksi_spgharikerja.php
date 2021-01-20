@@ -89,15 +89,15 @@ if ($module=='spgharikerja' AND $act=='input') {
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "Error Simpan"; exit; }
     
-    mysqli_close($cnmy);
     
-    include "../../config/koneksimysqli_it.php";
+    
+    //include "../../config/koneksimysqli_it.php";
     $query = "UPDATE MKT.spg SET penempatan='$ppenempatan' WHERE id_spg='$pidspg'";
-    mysqli_query($cnit, $query);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo "Error Simpan"; exit; }
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "Error Simpan"; exit; }
     
-    mysqli_close($cnit);
-    
+    //mysqli_close($cnit);
+    mysqli_close($cnmy);
     
 }elseif ($module=='spgharikerja' AND $act=='hapus') {
     mysqli_query($cnmy, "DELETE FROM $dbname.t_spg_gaji_br0 WHERE DATE_FORMAT(periode,'%Y-%m')='$ptglnya' AND id_spg='$pidspg' AND $fcabang");

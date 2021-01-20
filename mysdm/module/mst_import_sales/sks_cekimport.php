@@ -47,8 +47,8 @@ if (empty($puser)) {
     $inputFileName = $target_dir.$filename;
     
     //ubah juga yang di prosesdata_
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true

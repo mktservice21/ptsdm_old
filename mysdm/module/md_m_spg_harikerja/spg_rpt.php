@@ -83,13 +83,39 @@
         $nperiode_inc= date("F Y", strtotime($nperiodeinc));
     }
     
+    
+    //BPJS Ketenagakerjaan
+    $padabpjs=false;
+    $pnomorbpjs="";
+    $querybjps = "select nobpjs_kerja from dbmaster.t_spg_bpjs WHERE id_spg='$pidspg'";
+    $tampilbpjs = mysqli_query($cnmy, $querybjps);
+    $ketemubpjs = mysqli_num_rows($tampilbpjs);
+    if ((INT)$ketemubpjs>0) {
+        $brow= mysqli_fetch_array($tampilbpjs);
+        $pnomorbpjs=$brow['nobpjs_kerja'];
+        $padabpjs=true;
+    }
+    
+    
+    $jmlbpjskry=0;
+    $jmlbpjssdm=0;
+    if ($padabpjs==true) {
+        $querybjpsm = "select potongan_kry, potongan_sdm from dbmaster.t_spg_bpjs_master WHERE ifnull(aktif,'')<>'N'";
+        $tampilbpjsm = mysqli_query($cnmy, $querybjpsm);
+        $mrow= mysqli_fetch_array($tampilbpjsm);
+        $jmlbpjskry=$mrow['potongan_kry'];
+        $jmlbpjssdm=$mrow['potongan_sdm'];
+    }
+    
+    $pjumlahrpbpjskerjakry=0;
+    
     $nket_rinci="Estimasi Rincian Gaji SPG";
     if (!empty($p_apv1)) {
         $nket_rinci="Rincian Gaji SPG";
         
         $query = "SELECT DATE_FORMAT(periode,'%Y%m') periode, id_spg,
             icabangid, alokid, areaid, jabatid, id_zona,
-            kodeid, rp, sum(rptotal) as rptotal 
+            kodeid, rp, sum(rptotal) as rptotal, sum(rptotal2) as rptotal2  
             FROM dbmaster.t_spg_gaji_br1 WHERE id_spg='$pidspg' AND DATE_FORMAT(periode,'%Y%m')='$pbulan' 
             GROUP BY 1,2,3,4,5,6,7,8,9";
         $tampil = mysqli_query($cnmy, $query);
@@ -107,6 +133,8 @@
             if ($pkodeid=="06") $pjml_parkir=$sp['rptotal'];
             
             if ($pkodeid=="09") $pjml_lebihkurang=$sp['rptotal'];
+            
+            if ($pkodeid=="11") $pjumlahrpbpjskerjakry=$sp['rptotal2'];
         }
         
     }else{
@@ -120,7 +148,13 @@
 
         $pzonaid=$sp['id_zona'];
         $pjml_gaji=$sp['gaji'];
-
+        
+        //BPJS ketenagakerjaan
+        if ($padabpjs==true AND (DOUBLE)$pjml_gaji>0) {
+            $pjumlahrpbpjskerjakry=(DOUBLE)$pjml_gaji*(DOUBLE)$jmlbpjskry/100;
+        }
+        
+        
         //uang makan
         $query = "select a.* from dbmaster.t_spg_gaji_zona_jabatan a WHERE a.id_zona='$pzonaid' AND a.jabatid='$pjabatanid' AND "
                 . " DATE_FORMAT(a.bulan,'%Y-%m') = (select MAX(DATE_FORMAT(b.bulan,'%Y-%m')) FROM dbmaster.t_spg_gaji_zona_jabatan b WHERE 
@@ -144,6 +178,7 @@
     
     }
     
+    
     $query = "select nama_jabatan from dbmaster.t_spg_jabatan WHERE jabatid='$pjabatanid'";
     $sp= mysqli_fetch_array(mysqli_query($cnmy, $query));
     $pnmjabatan=$sp['nama_jabatan'];
@@ -161,7 +196,10 @@
     $pnmzona=$sp['nama_zona'];
     
     $tot_inc=(double)$pjml_inctambah+(double)$pjml_inc;
-    //echo "Jsistem : $pjharikerjasistem, Gaji : $pjml_gaji, Umakan : $pjml_um, TJ : $pjml_sewa, $pjml_pulsa, $pjml_bbm, $pjml_parkir";
+    
+    if ((DOUBLE)$pjumlahrpbpjskerjakry>0) $pjumlahrpbpjskerjakry=-1*(DOUBLE)$pjumlahrpbpjskerjakry;
+    
+    //echo "Jsistem : $pjharikerjasistem, Gaji : $pjml_gaji, Umakan : $pjml_um, TJ : $pjml_sewa, $pjml_pulsa, $pjml_bbm, $pjml_parkir, BPJS Kerja : $pjumlahrpbpjskerjakry";
 ?>
 
 <html>
@@ -260,6 +298,7 @@
                 <th align="center" nowrap>GP & Tunjangan</th>
                 <th align="center" nowrap>U. Makan</th>
                 <!--<th align="center" nowrap>T. Makan</th>-->
+                <th align="center" nowrap>BPJS Ketenagakerjaan</th>
                 <th align="center" nowrap>Total</th>
                 <th align="center" nowrap>Keterangan</th>
             </thead>
@@ -268,16 +307,20 @@
                 
                 $j_hari_gp=(double)$pjml_hk+(double)$pjml_sakit+(double)$pjml_uc;
                 
-                if ((double)$j_hari_gp<(double)$pjharikerjasistem) {
-                    $tot_gp=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_gaji;
-                    
-                    if ((double)$pjml_sewa >0) $pjml_sewa=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_sewa;
-                    if ((double)$pjml_pulsa >0) $pjml_pulsa=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_pulsa;
-                    if ((double)$pjml_bbm >0) $pjml_bbm=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_bbm;
-                    if ((double)$pjml_parkir >0) $pjml_parkir=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_parkir;
-                    
-                }else{
+                if (!empty($p_apv1)) {
                     $tot_gp=$pjml_gaji;
+                }else{
+                    if ((double)$j_hari_gp<(double)$pjharikerjasistem) {
+                        $tot_gp=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_gaji;
+
+                        if ((double)$pjml_sewa >0) $pjml_sewa=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_sewa;
+                        if ((double)$pjml_pulsa >0) $pjml_pulsa=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_pulsa;
+                        if ((double)$pjml_bbm >0) $pjml_bbm=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_bbm;
+                        if ((double)$pjml_parkir >0) $pjml_parkir=(double)$j_hari_gp/(double)$pjharikerjasistem*(double)$pjml_parkir;
+
+                    }else{
+                        $tot_gp=$pjml_gaji;
+                    }
                 }
                 
                 
@@ -285,7 +328,7 @@
                 
                 $totmakan=(double)$pjml_hk*(double)$pjml_um;
                 
-                $grand_tot=(double)$tot_gp_tj+(double)$totmakan+(double)$tot_inc+(double)$pjml_lebihkurang;
+                $grand_tot=(double)$tot_gp_tj+(double)$totmakan+(double)$tot_inc+(double)$pjml_lebihkurang+(double)$pjumlahrpbpjskerjakry;//
                 
                 
                 $pjml_um=number_format($pjml_um,0,",",",");
@@ -299,6 +342,8 @@
                 $tot_inc=number_format($tot_inc,0,",",",");
                 
                 $pjml_lebihkurang=number_format($pjml_lebihkurang,0,",",",");
+                
+                $pjumlahrpbpjskerjakry=number_format($pjumlahrpbpjskerjakry,0,",",",");
                 
                 $grand_tot=number_format($grand_tot,0,",",",");
                 
@@ -319,6 +364,7 @@
                 echo "<td nowrap><b>$tot_gp_tj</b></td>";
                 echo "<td nowrap>$pjml_um x $pjml_hk = $totmakan</td>";
                 //echo "<td nowrap>$totmakan</td>";
+                echo "<td nowrap align='right'>$pjumlahrpbpjskerjakry</td>";
                 echo "<td nowrap align='right'><b>$grand_tot</b></td>";
                 echo "<td nowrap>$pketerangan</td>";
                 echo "</tr>";

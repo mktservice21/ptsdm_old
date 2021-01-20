@@ -1,7 +1,7 @@
 <?PHP
     $hari_ini = date("Y-m-d");
     $tgl_pertama = date('F Y', strtotime($hari_ini));
-    include "config/koneksimysqli_it.php";
+    
     $icabang="";
     $pstatusspdpilih="";
     $ppilihproses="1";

@@ -56,7 +56,7 @@ if ($module=="importdataspg" AND $act=="hapus") {
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
         
-        include "../../config/koneksimysqli_it.php";
+        //include "../../config/koneksimysqli_it.php";
         foreach ($_POST['chkbox_br'] as $nobrinput) {
             if (!empty($nobrinput)) {
                 $ptgl=$_POST['dtp_keluaar'][$nobrinput];
@@ -69,13 +69,13 @@ if ($module=="importdataspg" AND $act=="hapus") {
                 }    
                     
                 $query = "UPDATE MKT.spg SET $filtglkeluar WHERE id_spg='$nobrinput'";
-                mysqli_query($cnit, $query);
-                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; exit; }
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
                 
                 
             }
         }
-        mysqli_close($cnit);
+        //mysqli_close($cnit);
     
     }
 }

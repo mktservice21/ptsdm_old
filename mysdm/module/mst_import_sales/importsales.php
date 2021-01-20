@@ -59,7 +59,7 @@
                                         $pinsel="('0000000002', '0000000003', '0000000005', '0000000010', '0000000011', "
                                                 . " '0000000021', '0000000031', '0000000006', '0000000016', '0000000030', "
                                                 . " '0000000028', '0000000015', '0000000018', '0000000025', '0000000033')";
-                                        cComboDistibutorHanya('', $pdistiidpil, $pinsel);
+                                        cComboDistibutorHanyaCnNew('', $pdistiidpil, $pinsel);
                                         ?>
                                     </select>
                                     <input type="hidden" id="txtpilfoder" name="txtpilfoder" value="<?PHP echo $pfilename; ?>">

@@ -38,8 +38,8 @@ if (empty($puser)) {
     
     
     //ubah juga di _uploaddata
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     
@@ -66,11 +66,11 @@ if (empty($puser)) {
         $namaproduk=mysqli_real_escape_string($cnmy, $data1['NAMA']);
         $satuan=mysqli_real_escape_string($cnmy, $data1['satuan']);
         $hna=$data1['hna'];
-        $cekproduk=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) FROM MKT.eproduk WHERE distid='0000000011' AND eprodid='$brgid'"));
+        $cekproduk=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) FROM sls.eproduk WHERE distid='0000000011' AND eprodid='$brgid'"));
         $cekproduk=$cekproduk[0];
         if ($cekproduk<1){
             mysqli_query($cnmy, "
-                INSERT INTO MKT.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag) 
+                INSERT INTO sls.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag) 
                 VALUES('$distributor','$brgid','$namaproduk','$satuan',$hna,'Y','Y')
             ");
 
@@ -80,7 +80,7 @@ if (empty($puser)) {
             //IT
             if ($plogit_akses==true) {
                 mysqli_query($cnit, "
-                    INSERT INTO MKT.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag) 
+                    INSERT INTO sls.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag) 
                     VALUES('$distributor','$brgid','$namaproduk','$satuan',$hna,'Y','Y')
                 ");
             }
@@ -104,12 +104,12 @@ if (empty($puser)) {
         $alamat=mysqli_real_escape_string($cnmy, $data1['ALAMAT']);
         $kota=mysqli_real_escape_string($cnmy, $data1['kota']);
         $cekcust=mysqli_fetch_array(mysqli_query($cnmy, "
-            SELECT COUNT(distid) FROM MKT.ecust WHERE distid='$distributor' AND cabangid='$cabang' AND ecustid='$ecust'
+            SELECT COUNT(distid) FROM sls.ecust WHERE distid='$distributor' AND cabangid='$cabang' AND ecustid='$ecust'
             "));
         $cekcust1=$cekcust[0];
         if ($cekcust1<1){
             mysqli_query($cnmy, "
-                INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif,subdist) 
+                INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif,subdist) 
                 VALUES('$distributor','$cabang','$ecust','$enama','$alamat','$kota','Y','Y','$subdist')");
             
             echo "berhasil input cust baru -> $cabang - $ecust - $enama - $alamat <br>";
@@ -118,7 +118,7 @@ if (empty($puser)) {
             //IT
             if ($plogit_akses==true) {
                 mysqli_query($cnit, "
-                    INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif,subdist) 
+                    INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif,subdist) 
                     VALUES('$distributor','$cabang','$ecust','$enama','$alamat','$kota','Y','Y','$subdist')");
             }
             //END IT
@@ -194,7 +194,7 @@ if (empty($puser)) {
         
         
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salescombibaru s 
-        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

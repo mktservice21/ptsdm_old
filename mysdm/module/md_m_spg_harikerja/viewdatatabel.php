@@ -14,7 +14,7 @@
     }
     
     
-    include "../../config/koneksimysqli_it.php";
+    //include "../../config/koneksimysqli_it.php";
     include "../../config/fungsi_sql.php";
     include "../../config/library.php";
     $date1=$_POST['utgl'];

@@ -39,8 +39,8 @@ if (empty($puser)) {
     echo "$distributor . $cabang . $bulan . $subdist<br/>";
     
     //ubah juga di _uploaddata
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     
@@ -55,7 +55,7 @@ if (empty($puser)) {
     mysqli_query($cnmy, "create table $dbname.tmp_importfilesdt_ipms (select *, CAST(NULL AS DECIMAL(20,2)) as hna from $dbname.mssales)");
     
     $query_up_prod = "UPDATE $dbname.tmp_importfilesdt_ipms a JOIN "
-            . " (SELECT DISTINCT e.distid, e.`iProdId`, e.`eProdId`, i.`hna` FROM MKT.eproduk e INNER JOIN MKT.iproduk i ON "
+            . " (SELECT DISTINCT e.distid, e.`iProdId`, e.`eProdId`, i.`hna` FROM sls.eproduk e INNER JOIN sls.iproduk i ON "
             . " e.`iProdId` = i.`iProdId` WHERE e.distid='0000000002') b ON a.BRGID=b.eProdId AND '0000000002'=b.distid SET "
             . " a.hna=b.hna";
     mysqli_query($cnmy, $query_up_prod);
@@ -124,7 +124,7 @@ if (empty($puser)) {
         
         /*
         $harga0=mysqli_fetch_array(mysqli_query($cnmy, "
-            SELECT i.`hna` FROM MKT.eproduk e INNER JOIN MKT.iproduk i ON e.`iProdId` = i.`iProdId` WHERE e.`eProdId` = '$brgid' AND  e.distid='0000000002'
+            SELECT i.`hna` FROM sls.eproduk e INNER JOIN sls.iproduk i ON e.`iProdId` = i.`iProdId` WHERE e.`eProdId` = '$brgid' AND  e.distid='0000000002'
         "));
         $harga=$harga0[0];
         
@@ -186,7 +186,7 @@ if (empty($puser)) {
 
 
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salesspp s 
-        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

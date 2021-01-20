@@ -42,8 +42,8 @@ if (empty($puser)) {
     
     
     //ubah juga di prosesdata_
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     

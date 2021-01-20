@@ -47,8 +47,8 @@ if (empty($puser)) {
     $inputFileName = $target_dir.$filename;
     
     //ubah juga diprosesdata_
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     

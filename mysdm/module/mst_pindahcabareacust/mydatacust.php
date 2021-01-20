@@ -1,8 +1,7 @@
 <?php
 session_start();
-include "../../config/koneksimysqli_ms.php";
+include "../../config/koneksimysqli_it.php";
 include "../../config/fungsi_sql.php";
-$cnit=$cnms;
 
 $fkaryawan=$_SESSION['IDCARD'];
 $fdivisi=$_SESSION['DIVISI'];
@@ -33,7 +32,7 @@ $columns = array(
 
 $sql = "select a.icabangid as icabangid, a.areaid as areaid, a.icustid as icustid, a.nama as nama, "
         . " a.alamat1 as alamat1, a.aktif as aktif, b.nama as nama_area  "
-        . " from sls.icust as a LEFT JOIN sls.iarea as b on a.iCabangId=b.iCabangId AND a.areaid=b.areaId ";
+        . " from MKT.icust as a LEFT JOIN MKT.iarea as b on a.iCabangId=b.iCabangId AND a.areaid=b.areaId ";
 $sql .=" where a.icabangid='$picabang' ";
 if (!empty($pidarea)) $sql .=" AND a.areaid='$pidarea' ";
 

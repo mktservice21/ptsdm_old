@@ -27,9 +27,8 @@
     }
         
         
-    include "../../config/koneksimysqli_ms.php";
+    include "../../config/koneksimysqli_it.php";
     include "../../config/fungsi_sql.php";
-    $cnit=$cnms;
     
     $pidcabang=$_POST['uicab'];
     $pidarea=$_POST['uiarea'];
@@ -37,11 +36,11 @@
     $piddaricabang=$_POST['uicabdari'];
     $piddariarea=$_POST['uiareadari'];
     
-    $pnmcabang=getfieldcnnew("select nama as lcfields from sls.icabang where icabangid='$pidcabang'");
-    $pnmarea=getfieldcnnew("select nama as lcfields from sls.iarea where icabangid='$pidcabang' AND areaid='$pidarea'");
+    $pnmcabang=getfieldcnit("select nama as lcfields from MKT.icabang where icabangid='$pidcabang'");
+    $pnmarea=getfieldcnit("select nama as lcfields from MKT.iarea where icabangid='$pidcabang' AND areaid='$pidarea'");
     
-    $pnmdaricabang=getfieldcnnew("select nama as lcfields from sls.icabang where icabangid='$piddaricabang'");
-    $pnmadarirea=getfieldcnnew("select nama as lcfields from sls.iarea where icabangid='$piddaricabang' AND areaid='$piddariarea'");
+    $pnmdaricabang=getfieldcnit("select nama as lcfields from MKT.icabang where icabangid='$piddaricabang'");
+    $pnmadarirea=getfieldcnit("select nama as lcfields from MKT.iarea where icabangid='$piddaricabang' AND areaid='$piddariarea'");
     
     $_SESSION['PNDCSTNWIDCAB']=$pidcabang;
     $_SESSION['PNDCSTNWIDARA']=$pidarea;
@@ -68,7 +67,7 @@
     $tmp02 =" dbtemp.tmppindahcustcabar02_".$puserid."_$now ";
     
     
-    $query = "select distinct icabangid from MKT.tmp_pindah_cust WHERE icabangid='$piddaricabang' AND areaid='$piddariarea' AND ifnull(selesai,'')='Y'";
+    $query = "select distinct icabangid from dbmaster.tmp_pindah_cust WHERE icabangid='$piddaricabang' AND areaid='$piddariarea' AND ifnull(selesai,'')='Y'";
     $tampil= mysqli_query($cnit, $query);
     $ketemu=mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {
@@ -85,7 +84,7 @@
     $query = "select icabangid, icustid, areaid, nama, alamat1, alamat2, kodepos, contact, "
             . " telp, fax, ikotaid, kota, isektorid, aktif, dispen, user1,oldflag, scode, grp, grp_spp, "
             . " o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid_hist, iareaid_hist, icustid_hist, "
-            . " istatus, idisc, sys_now from sls.icust where icabangid='$piddaricabang' and areaid='$piddariarea'";
+            . " istatus, idisc, sys_now from MKT.icust where icabangid='$piddaricabang' and areaid='$piddariarea'";
     //$query .= " AND icustid='0000006983'";
     $query = "create TEMPORARY table $tmp00 ($query)";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -107,7 +106,7 @@
     //e cabang e custid
     $query = "select a.distid as distid, a.cabangid as cabangid, a.ecustid as ecustid, a.icabangid as icabangid, "
             . " a.areaid as areaid, a.icustid as icustid, a.nama as nama "
-            . " from sls.ecust as a "
+            . " from MKT.ecust as a "
             . " JOIN $tmp00 as b on a.icabangid=b.icabangid AND a.areaid=b.areaid AND a.icustid=b.icustid "
             . " where a.icabangid='$piddaricabang' and a.areaid='$piddariarea'";
     $query = "create TEMPORARY table $tmp02 ($query)";
@@ -123,7 +122,7 @@
     
     //cari nourut terakhir dari icust sesuai cabang
     $pnourut=0;
-    $query = "select max(icustid) as icustid from sls.icust where icabangid='$pidcabang'";
+    $query = "select max(icustid) as icustid from MKT.icust where icabangid='$pidcabang'";
     $tampil= mysqli_query($cnit, $query);
     $ketemu=mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {
@@ -157,16 +156,16 @@
             . " SET a.icustid_new=LPAD(ifnull(b.icustid_new,0), 10, '0')";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "DELETE FROM MKT.tmp_pindah_cust WHERE tglinput<'$ptglini' AND IFNULL(selesai,'')<>'Y'";
+    $query = "DELETE FROM dbmaster.tmp_pindah_cust WHERE tglinput<'$ptglini' AND IFNULL(selesai,'')<>'Y'";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "DELETE FROM MKT.tmp_pindah_cust WHERE idsesi='$pidsesion' AND userid='$pidcard' AND IFNULL(selesai,'')<>'Y'";
+    $query = "DELETE FROM dbmaster.tmp_pindah_cust WHERE idsesi='$pidsesion' AND userid='$pidcard' AND IFNULL(selesai,'')<>'Y'";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "ALTER TABLE MKT.tmp_pindah_cust AUTO_INCREMENT = 1";
+    $query = "ALTER TABLE dbmaster.tmp_pindah_cust AUTO_INCREMENT = 1";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    //masuk mkt.temporary
-    $query = "INSERT INTO MKT.tmp_pindah_cust (icabangid, icustid, areaid, nama, alamat1, alamat2, kodepos, contact, "
+    //masuk dbmaster.temporary
+    $query = "INSERT INTO dbmaster.tmp_pindah_cust (icabangid, icustid, areaid, nama, alamat1, alamat2, kodepos, contact, "
             . " telp, fax, ikotaid, kota, isektorid, aktif, dispen, user1,oldflag, scode, grp, grp_spp, "
             . " o_icabangid, o_areaid, o_icustid, pertgl, batch_id, icabangid_hist, iareaid_hist, icustid_hist, "
             . " istatus, idisc, sys_now, icabangid_new, areaid_new, icustid_new, userid, idsesi)"
@@ -177,14 +176,14 @@
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "DELETE FROM MKT.tmp_pindah_ecust WHERE tglinput<'$ptglini' AND IFNULL(selesai,'')<>'Y'";
+    $query = "DELETE FROM dbmaster.tmp_pindah_ecust WHERE tglinput<'$ptglini' AND IFNULL(selesai,'')<>'Y'";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "DELETE FROM MKT.tmp_pindah_ecust WHERE idsesi='$pidsesion' AND userid='$pidcard' AND IFNULL(selesai,'')<>'Y'";
+    $query = "DELETE FROM dbmaster.tmp_pindah_ecust WHERE idsesi='$pidsesion' AND userid='$pidcard' AND IFNULL(selesai,'')<>'Y'";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "ALTER TABLE MKT.tmp_pindah_ecust AUTO_INCREMENT = 1";
+    $query = "ALTER TABLE dbmaster.tmp_pindah_ecust AUTO_INCREMENT = 1";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "INSERT INTO MKT.tmp_pindah_ecust (distid, cabangid, ecustid, icabangid, areaid, icustid, nama, "
+    $query = "INSERT INTO dbmaster.tmp_pindah_ecust (distid, cabangid, ecustid, icabangid, areaid, icustid, nama, "
             . " icabangid_new, areaid_new, icustid_new, userid, idsesi)"
             . " SELECT distid, cabangid, ecustid, icabangid, areaid, icustid, nama, "
             . " icabangid_new, areaid_new, icustid_new, '$pidcard' as userid, '$pidsesion' as idsessi FROM $tmp02";

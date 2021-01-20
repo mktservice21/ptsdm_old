@@ -1,6 +1,5 @@
 <?php
-include "config/koneksimysqli_ms.php";
-$cnit=$cnms;
+include "config/koneksimysqli_it.php";
 
 $pidmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];
@@ -54,7 +53,7 @@ $act="duplikaticust";
                                         <select class='form-control input-sm' id='cb_daricabang' name='cb_daricabang' onchange="showDataDariArea()" data-live-search="true">
                                             <?PHP 
                                             echo "<option value='' selected>--Pilih--</option>";
-                                            $query = "select icabangid as icabangid, nama as nama from sls.icabang WHERE ifnull(aktif,'')<>'N'";
+                                            $query = "select icabangid as icabangid, nama as nama from MKT.icabang WHERE ifnull(aktif,'')<>'N'";
                                             $query .= " AND left(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
                                             $query .= " Order by nama";
                                             $tampil =mysqli_query($cnit, $query);
@@ -79,12 +78,12 @@ $act="duplikaticust";
                                             <?PHP
                                             
                                             if (!empty($pidcab_ol)) {
-                                                $pnamacabang= getfieldnew("select nama as lcfields from sls.icabang WHERE icabangid='$pidcab_ol'");
+                                                $pnamacabang= getfieldit("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcab_ol'");
 
                                                 echo "<option value='' selected>-- Pilih Area dari : $pnamacabang --</option>";
                                                 $query = "select DISTINCT a.icabangid as icabangid, a.areaid as areaid, a.nama as nama "
-                                                        . " from sls.iarea as a JOIN sls.ecust as b on a.icabangid=b.icabangid AND a.areaid=b.areaid "
-                                                        . " JOIN sls.icust as c on b.icabangid=c.icabangid AND b.areaid=c.areaid AND b.icustid=c.icustid "
+                                                        . " from MKT.iarea as a JOIN MKT.ecust as b on a.icabangid=b.icabangid AND a.areaid=b.areaid "
+                                                        . " JOIN MKT.icust as c on b.icabangid=c.icabangid AND b.areaid=c.areaid AND b.icustid=c.icustid "
                                                         . " WHERE a.icabangid='$pidcab_ol' AND IFNULL(a.aktif,'')='Y' ";
                                                 $query .= " Order by nama";
                                                 $tampil =mysqli_query($cnit, $query);
@@ -112,7 +111,7 @@ $act="duplikaticust";
                                         <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="showDataArea()" data-live-search="true">
                                             <?PHP
                                             echo "<option value='' selected>--Pilih--</option>";
-                                            $query = "select icabangid as icabangid, nama as nama from sls.icabang WHERE ifnull(aktif,'')<>'N'";
+                                            $query = "select icabangid as icabangid, nama as nama from MKT.icabang WHERE ifnull(aktif,'')<>'N'";
                                             $query .= " AND left(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
                                             $query .= " Order by nama";
                                             $tampil =mysqli_query($cnit, $query);
@@ -136,10 +135,10 @@ $act="duplikaticust";
                                         <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="" data-live-search="true">
                                             <?PHP
                                             if (!empty($pidcab_nw)) {
-                                                $pnamacabang= getfieldnew("select nama as lcfields from sls.icabang WHERE icabangid='$pidcab_nw'");
+                                                $pnamacabang= getfieldit("select nama as lcfields from MKT.icabang WHERE icabangid='$pidcab_nw'");
 
                                                 echo "<option value='' selected>-- Pilih Area dari : $pnamacabang --</option>";
-                                                $query = "select icabangid as icabangid, areaid as areaid, nama as nama from sls.iarea WHERE icabangid='$pidcab_nw' AND IFNULL(aktif,'')='Y' ";
+                                                $query = "select icabangid as icabangid, areaid as areaid, nama as nama from MKT.iarea WHERE icabangid='$pidcab_nw' AND IFNULL(aktif,'')='Y' ";
                                                 $query .= " Order by nama";
                                                 $tampil =mysqli_query($cnit, $query);
                                                 while ($irow=mysqli_fetch_array($tampil)){

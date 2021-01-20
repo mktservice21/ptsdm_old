@@ -34,8 +34,8 @@ if (empty($puser)) {
     
     
     //ubah juga di _uploaddata
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
@@ -53,7 +53,7 @@ if (empty($puser)) {
         FROM $dbname.importsks
         WHERE LEFT(`tgl faktur faktur`,7) = '$bulan' 
             AND CONCAT('$distributor', `kode barang`) NOT IN "
-            . " (SELECT CONCAT('$distributor', eprodid) FROM MKT.eproduk WHERE distid='$distributor')
+            . " (SELECT CONCAT('$distributor', eprodid) FROM sls.eproduk WHERE distid='$distributor')
         ";
     mysqli_query($cnmy, "create table $dbname.tmp_importprodsks_ipms ($qryproduk)");
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSER tmp_importprodsks_ipms : $erropesan"; exit; }
@@ -86,7 +86,7 @@ if (empty($puser)) {
 	$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error ALTER tmp_importcustsks_ipms : $erropesan"; exit; }
 	
 	
-	$query_up = "UPDATE MKT.tmp_importcustsks_ipms_cusid00pil as a JOIN MKT.ecust as b on '$distributor'=b.distid AND 
+	$query_up = "UPDATE MKT.tmp_importcustsks_ipms_cusid00pil as a JOIN sls.ecust as b on '$distributor'=b.distid AND 
 		IFNULL(a.`no. pelanggan`,'')=IFNULL(b.ecustid,'') AND 
 		IFNULL(a.`noidcabid`,'')=IFNULL(b.cabangid,'') SET a.nama_2=b.nama_eth_sks, a.kodeid_2=b.ecustid";
 	mysqli_query($cnmy, $query_up);
@@ -102,14 +102,14 @@ if (empty($puser)) {
 	$jmlupdatebeda=0;
 	//update ecust nama_eth_sks yang nama nya beda
 	if ((DOUBLE)$nketemu>0) {
-		$query_ec = "UPDATE MKT.ecust as b JOIN MKT.tmp_importcustsks_ipms_cusid00pil as a on 
+		$query_ec = "UPDATE sls.ecust as b JOIN MKT.tmp_importcustsks_ipms_cusid00pil as a on 
 			'$distributor'=b.distid AND IFNULL(a.`no. pelanggan`,'')=IFNULL(b.ecustid,'') AND 
 			IFNULL(a.`noidcabid`,'')=IFNULL(b.cabangid,'') SET 
 			b.nama_eth_sks=a.`Nama Pelanggan`, 
 			b.alamat1_eth_sks=a.`Alamat 1 Pelanggan` WHERE 
 			b.distid='$distributor' AND IFNULL(a.HEADER,'')<>'OTC' AND IFNULL(a.`Nama Pelanggan`,'')<>IFNULL(a.nama_2,'') AND IFNULL(a.`Nama Pelanggan`,'')<>'' ";//LIMIT $nketemu
 		mysqli_query($cnmy, $query_ec);
-		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error UPDATE MKT.ecust NAMA SKS eth : $erropesan"; exit; }
+		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error UPDATE sls.ecust NAMA SKS eth : $erropesan"; exit; }
 		$jmlupdatebeda=mysqli_affected_rows($cnmy);
 		
 		$query="UPDATE MKT.tmp_importcustsks_ipms_cusid00pil as a SET a.nama_2=a.`Nama Pelanggan` WHERE IFNULL(a.`Nama Pelanggan`,'')<>IFNULL(a.nama_2,'') AND IFNULL(a.HEADER,'')<>'OTC' AND IFNULL(a.`Nama Pelanggan`,'')<>''";
@@ -128,7 +128,7 @@ if (empty($puser)) {
 				FROM $dbname.tmp_importcustsks_ipms_cusid00pil 
 				WHERE LEFT(`tgl faktur faktur`,7) = '$bulan' AND 
 					CONCAT('$distributor', IFNULL(`no. pelanggan`,''), IFNULL(`noidcabid`,'')) NOT IN 
-						(SELECT CONCAT(IFNULL(distid,''), IFNULL(ecustid,''), IFNULL(cabangid,'')) FROM MKT.ecust WHERE distid='$distributor')
+						(SELECT CONCAT(IFNULL(distid,''), IFNULL(ecustid,''), IFNULL(cabangid,'')) FROM sls.ecust WHERE distid='$distributor')
 			";// AND cabang = '$cabang' AND cabangid IN ('00', '01', '02', '03', '04', '05', '06', '07')
 			
 			
@@ -201,7 +201,7 @@ if (empty($puser)) {
     
     if ($pinsertsave==true) {
         
-        $query_prod_ins = "INSERT INTO MKT.eproduk(distid,eprodid,nama,hna,aktif,oldflag) VALUES "
+        $query_prod_ins = "INSERT INTO sls.eproduk(distid,eprodid,nama,hna,aktif,oldflag) VALUES "
                 . "".implode(', ', $pinst_prod_data);
 
         mysqli_query($cnmy, $query_prod_ins);
@@ -267,7 +267,7 @@ if (empty($puser)) {
             $pinst_cust_data[] = "('$distributor','$ncabang_id','$ecust','$enama','$alamat','$kota','Y','Y', '$enama_eth', '$alamat', '$kota')";
             
             /*
-            $query = "INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif) VALUES "
+            $query = "INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif) VALUES "
                     . " ('$distributor','$ncabang_id','$ecust','$enama','$alamat','$kota','Y','Y')";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSER ecust : $erropesan"; exit; }
@@ -286,7 +286,7 @@ if (empty($puser)) {
     
     if ($pinsertsave==true) {
         
-        $query_cust_ins = "INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif, nama_eth_sks, alamat1_eth_sks, kota_eth_sks) VALUES "
+        $query_cust_ins = "INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif, nama_eth_sks, alamat1_eth_sks, kota_eth_sks) VALUES "
                 . "".implode(', ', $pinst_cust_data);
 
         mysqli_query($cnmy, $query_cust_ins);
@@ -398,7 +398,7 @@ if (empty($puser)) {
     
     
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salessks s 
-        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

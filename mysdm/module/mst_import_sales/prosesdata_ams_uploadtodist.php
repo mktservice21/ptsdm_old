@@ -59,7 +59,7 @@ if (empty($puser)) {
         $satuan=mysqli_real_escape_string($cnmy, $data1['satuan']);
         $hna=$data1['hna'];
 
-        $cekproduk=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) FROM sls.eproduk WHERE distid='$distributor' AND eprodid='$brgid'"));
+        $cekproduk=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) FROM MKT.eproduk WHERE distid='$distributor' AND eprodid='$brgid'"));
         $cekproduk=$cekproduk[0];
         if ($cekproduk<1){
 
@@ -74,7 +74,7 @@ if (empty($puser)) {
 
     if ($isave==true) {
         
-        $query_inst_prod = "INSERT INTO sls.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag) VALUES "
+        $query_inst_prod = "INSERT INTO MKT.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag) VALUES "
                 . " ".implode(', ', $pinput_produk);
         
         mysqli_query($cnmy, $query_inst_prod);
@@ -110,7 +110,7 @@ if (empty($puser)) {
         $alamat=mysqli_real_escape_string($cnmy, $data1['alamat']);
         $kota=mysqli_real_escape_string($cnmy, $data1['kota']);
         
-        $cekcust=mysqli_fetch_array(mysqli_query($cnmy, "select count(distid) from sls.ecust where distid='$distributor' and cabangid='$cabang' and ecustid='$ecust'"));
+        $cekcust=mysqli_fetch_array(mysqli_query($cnmy, "select count(distid) from MKT.ecust where distid='$distributor' and cabangid='$cabang' and ecustid='$ecust'"));
         
         $cekcust1=$cekcust[0];
         if ($cekcust1<1){
@@ -127,7 +127,7 @@ if (empty($puser)) {
      
     if ($isave==true) {
         
-        $query_inst_cust = "insert into sls.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif)values "
+        $query_inst_cust = "insert into MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif)values "
                 . " ".implode(', ', $pinput_cust);
 
         mysqli_query($cnmy, $query_inst_cust);
@@ -269,7 +269,7 @@ if (empty($puser)) {
     
     
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salesams s 
-        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

@@ -64,7 +64,7 @@ if (empty($puser)) {
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error create tmp_importprodfile_ipms mscust $cabang : $erropesan"; exit; }
     
     $query_del = "DELETE FROM $dbname.tmp_importprodfile_ipms WHERE CONCAT('$distributor', '$cabang', IFNULL(CUSTID,'')) IN "
-            . " (SELECT CONCAT(IFNULL(distid,''), IFNULL(cabangid,''), IFNULL(ecustid,'')) FROM sls.ecust WHERE distid='$distributor' AND cabangid='$cabang')";
+            . " (SELECT CONCAT(IFNULL(distid,''), IFNULL(cabangid,''), IFNULL(ecustid,'')) FROM MKT.ecust WHERE distid='$distributor' AND cabangid='$cabang')";
     mysqli_query($cnmy, $query_del);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE tmp_importprodfile_ipms mscust $cabang : $erropesan"; exit; }
     
@@ -87,11 +87,11 @@ if (empty($puser)) {
         
         /*
         $cekcust=mysqli_fetch_array(mysqli_query($cnmy, "
-        select count(ecustid) from sls.ecust where distid='$distributor' and cabangid='$cabang' and ecustid='$ecust' and nama='$enama'"));
+        select count(ecustid) from MKT.ecust where distid='$distributor' and cabangid='$cabang' and ecustid='$ecust' and nama='$enama'"));
         $cekcust1=$cekcust[0];
         if ($cekcust1<1){
             mysqli_query($cnmy, "
-                insert into sls.ecust(distid,cabangid,ecustid,nama,oldflag,aktif,subdist) values 
+                insert into MKT.ecust(distid,cabangid,ecustid,nama,oldflag,aktif,subdist) values 
                 ('$distributor','$cabang','$ecust','$enama','Y','Y','$subdist')
             ");
 
@@ -102,7 +102,7 @@ if (empty($puser)) {
     }
     
     if ($pinsertsave==true) {
-        $query_pros_cust = "insert into sls.ecust(distid,cabangid,ecustid,nama,oldflag,aktif,subdist) values "
+        $query_pros_cust = "insert into MKT.ecust(distid,cabangid,ecustid,nama,oldflag,aktif,subdist) values "
                 . " ".implode(', ', $pinsert_cust_data);
         mysqli_query($cnmy, $query_pros_cust);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT ecust : $erropesan"; exit; }
@@ -125,7 +125,7 @@ if (empty($puser)) {
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error create tmp_importprodfile_ipms sales $cabang : $erropesan"; exit; }
     
     $query="update $dbname.tmp_importprodfile_ipms a JOIN "
-            . " (SELECT e.distid, e.`eProdId`, i.`hna` FROM sls.eproduk e INNER JOIN sls.iproduk i ON e.`iProdId` = i.`iProdId` "
+            . " (SELECT e.distid, e.`eProdId`, i.`hna` FROM MKT.eproduk e INNER JOIN MKT.iproduk i ON e.`iProdId` = i.`iProdId` "
             . " WHERE e.distid='$distributor') as b "
             . " on a.BRGID=b.eProdId AND '$distributor'=b.distid SET "
             . " a.hna_mkt=b.hna";
@@ -173,7 +173,7 @@ if (empty($puser)) {
             
         /*
         $harga0=mysqli_fetch_array(mysqli_query($cnmy, "
-            SELECT i.`hna` FROM sls.eproduk e INNER JOIN sls.iproduk i ON e.`iProdId` = i.`iProdId` WHERE e.`eProdId` = '$brgid'  and  e.distid='$distributor'
+            SELECT i.`hna` FROM MKT.eproduk e INNER JOIN MKT.iproduk i ON e.`iProdId` = i.`iProdId` WHERE e.`eProdId` = '$brgid'  and  e.distid='$distributor'
         "));
         
         $harga=$harga0[0];
@@ -217,7 +217,7 @@ if (empty($puser)) {
     
     
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salesmas s 
-        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

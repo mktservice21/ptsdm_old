@@ -85,7 +85,7 @@ if (empty($puser)) {
         $nojual=$data1['NOJUAL'];
         $brgid=$data1['BRGID'];
         $tgljual=$data1['TGLJUAL'];
-        $harga0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT i.`hna` FROM sls.eproduk e INNER JOIN sls.iproduk i ON e.`iProdId` = i.`iProdId` WHERE e.`eProdId` = '$brgid'  and  e.distid='0000000002'"));
+        $harga0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT i.`hna` FROM MKT.eproduk e INNER JOIN MKT.iproduk i ON e.`iProdId` = i.`iProdId` WHERE e.`eProdId` = '$brgid'  and  e.distid='0000000002'"));
         $harga=$harga0[0];
         $qbeli=$data1['QBELI'];
         $totale=$harga*$qbeli;
@@ -124,7 +124,7 @@ if (empty($puser)) {
     
     
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salesspp s 
-        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

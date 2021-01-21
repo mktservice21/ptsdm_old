@@ -97,20 +97,20 @@ if (empty($puser)) {
         }
     
         
-        $cekcust0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(ecustid) FROM sls.ecust WHERE distid = '$kodedist' AND cabangid = '$kodecabang' AND ecustid = '$kodepelanggan' AND subdist = 'BKS'"));
+        $cekcust0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(ecustid) FROM MKT.ecust WHERE distid = '$kodedist' AND cabangid = '$kodecabang' AND ecustid = '$kodepelanggan' AND subdist = 'BKS'"));
         
         $cekcust=$cekcust0[0];
         if ($cekcust==0){
 
             mysqli_query($cnmy, "
-                INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,subdist)
+                INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,subdist)
                 VALUES('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y','BKS')
             ");
             
             //IT
             if ($plogit_akses==true) {
                 mysqli_query($cnit, "
-                    INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,subdist)
+                    INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,subdist)
                     VALUES('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y','BKS')
                 ");
             }
@@ -121,11 +121,11 @@ if (empty($puser)) {
         }
     
     
-        $cekprod0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) AS total FROM sls.eproduk WHERE distid = '$kodedist' AND eprodid = '$kodeproduk'"));
+        $cekprod0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) AS total FROM MKT.eproduk WHERE distid = '$kodedist' AND eprodid = '$kodeproduk'"));
         $cekprod=$cekprod0[0];
         if ($cekprod==0){
             mysqli_query($cnmy, "
-                INSERT INTO sls.eproduk(distid,eprodid,nama,hna,oldflag,aktif)
+                INSERT INTO MKT.eproduk(distid,eprodid,nama,hna,oldflag,aktif)
                 VALUES('$kodedist','$kodeproduk','$namaproduk','$harga','Y','Y')
             ");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "Error insert eproduk"; exit; }
@@ -133,7 +133,7 @@ if (empty($puser)) {
             //IT
             if ($plogit_akses==true) {
                 mysqli_query($cnit, "
-                    INSERT INTO sls.eproduk(distid,eprodid,nama,hna,oldflag,aktif)
+                    INSERT INTO MKT.eproduk(distid,eprodid,nama,hna,oldflag,aktif)
                     VALUES('$kodedist','$kodeproduk','$namaproduk','$harga','Y','Y')
                 ");
                 $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo "IT... Error insert eproduk"; exit; }
@@ -166,7 +166,7 @@ if (empty($puser)) {
     
     
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salesspp s 
-        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

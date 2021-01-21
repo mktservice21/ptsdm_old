@@ -110,7 +110,7 @@ if (empty($puser)) {
     $query = "select DISTINCT idcab, `Kode Pelanggan` AS kodepelanggan, `Nama Pelanggan` AS namapelanggan, 
         `Alamat` AS alamat, `Cabang` AS cabang
          from $dbname.tmp_importsst_ipms WHERE CONCAT('0000000010', IFNULL(`idcab`,''), IFNULL(`Kode Pelanggan`,'')) NOT IN 
-        (SELECT CONCAT(IFNULL(distid,''), IFNULL(cabangid,''), IFNULL(ecustid,'')) FROM sls.ecust WHERE distid = '0000000010')";
+        (SELECT CONCAT(IFNULL(distid,''), IFNULL(cabangid,''), IFNULL(ecustid,'')) FROM MKT.ecust WHERE distid = '0000000010')";
     
     $tampil_cu= mysqli_query($cnmy, $query);
     while ($data1= mysqli_fetch_array($tampil_cu)) {
@@ -135,7 +135,7 @@ if (empty($puser)) {
     
     $query = "select DISTINCT `Kode Produk` AS kodeproduk, `Nama Produk` AS namaproduk, `Harga` AS harga 
          from $dbname.tmp_importsst_ipms WHERE CONCAT('0000000010', IFNULL(`Kode Produk`,'')) NOT IN 
-        (SELECT CONCAT(IFNULL(distid,''), IFNULL(eprodid,'')) FROM sls.eproduk WHERE distid = '0000000010')";
+        (SELECT CONCAT(IFNULL(distid,''), IFNULL(eprodid,'')) FROM MKT.eproduk WHERE distid = '0000000010')";
     $tampil_pr= mysqli_query($cnmy, $query);
     while ($data1= mysqli_fetch_array($tampil_pr)) {
         $kodedist="0000000010";
@@ -271,7 +271,7 @@ if (empty($puser)) {
         }
         
         /*
-        $cekcust0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(ecustid) FROM sls.ecust WHERE distid = '$kodedist' AND cabangid = '$kodecabang' AND ecustid = '$kodepelanggan'"));
+        $cekcust0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(ecustid) FROM MKT.ecust WHERE distid = '$kodedist' AND cabangid = '$kodecabang' AND ecustid = '$kodepelanggan'"));
         
         $cekcust=$cekcust0[0];
         
@@ -281,12 +281,12 @@ if (empty($puser)) {
             
             $pinsert_cust[] = "('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y')";
             
-            //mysqli_query($cnmy, "INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif) VALUES ('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y')");
+            //mysqli_query($cnmy, "INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif) VALUES ('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y')");
             
         }
         
     
-        $cekprod0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) AS total FROM sls.eproduk WHERE distid = '$kodedist' AND eprodid = '$kodeproduk'"));
+        $cekprod0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) AS total FROM MKT.eproduk WHERE distid = '$kodedist' AND eprodid = '$kodeproduk'"));
         $cekprod=$cekprod0[0];
         if ($cekprod==0){
             
@@ -294,7 +294,7 @@ if (empty($puser)) {
             
             $pinsert_prod[] = "('$kodedist','$kodeproduk','$namaproduk','$harga','Y','Y')";
             
-            //mysqli_query($cnmy, "INSERT INTO sls.eproduk(distid,eprodid,nama,hna,oldflag,aktif) VALUES ('$kodedist','$kodeproduk','$namaproduk','$harga','Y','Y')");
+            //mysqli_query($cnmy, "INSERT INTO MKT.eproduk(distid,eprodid,nama,hna,oldflag,aktif) VALUES ('$kodedist','$kodeproduk','$namaproduk','$harga','Y','Y')");
             
         }
         */
@@ -312,7 +312,7 @@ if (empty($puser)) {
     
     
     if ($isimpan_cus==true) {
-        $query_cust = "INSERT INTO sls.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif) VALUES "
+        $query_cust = "INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif) VALUES "
                 . " ".implode(', ', $pinsert_cust);
         mysqli_query($cnmy, $query_cust);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT CUST : $erropesan"; exit; }
@@ -328,7 +328,7 @@ if (empty($puser)) {
     
     
     if ($isimpan_prod==true) {
-        $query_prod = "INSERT INTO sls.eproduk(distid,eprodid,nama,hna,oldflag,aktif) VALUES "
+        $query_prod = "INSERT INTO MKT.eproduk(distid,eprodid,nama,hna,oldflag,aktif) VALUES "
                 . " ".implode(', ', $pinsert_prod);
         mysqli_query($cnmy, $query_prod);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT PROD : $erropesan"; exit; }
@@ -390,7 +390,7 @@ if (empty($puser)) {
     
     
     $query = "SELECT s.tgljual, s.fakturId, s.brgid, s.harga, s.qbeli FROM $dbname.salessaptabaru s 
-        JOIN (SELECT * FROM sls.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
+        JOIN (SELECT * FROM MKT.eproduk WHERE IFNULL(iprodid,'')='' AND distid='$distributor') ep
         ON s.brgid=ep.eprodid
         WHERE LEFT(tgljual,7)='$bulan'";
     $tampil= mysqli_query($cnmy, $query);

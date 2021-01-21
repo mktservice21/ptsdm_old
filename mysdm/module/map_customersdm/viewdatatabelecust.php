@@ -43,12 +43,12 @@
             "columnDefs": [
                 { "visible": false },
                 { "orderable": false, "targets": 0 },
-                { "orderable": false, "targets": 1 },
+                { "orderable": true, "targets": 1 },
                 { "orderable": true, "targets": 2 },
                 { "orderable": true, "targets": 3 },
                 { "orderable": true, "targets": 4 },
                 //{ className: "text-right", "targets": [6] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7,8,9] }//nowrap
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4,5,6,7] }//nowrap
 
             ],
             "language": {
@@ -82,16 +82,13 @@
             <thead>
                 <tr>
                     <th width='30px'></th>
-                    <th width='50px'>Status</th>
-                    <th width='50px'>Discount</th>
-                    <th width='80px'>Area</th>
-                    <th width='80px'>Nama Sektor</th>
-                    <th width='30px'>Id Cust</th>
                     <th width='100px'>Nama Customer</th>
                     <th width='100px'>Alamat 1</th>
                     <th width='100px'>Alamat 2</th>
-                    <th width='50px'>Kode Pos</th>
-                    <th width='80px'>Telp.</th>
+                    <th width='50px'>Kota</th>
+                    <th width='80px'>Nama Sektor</th>
+                    <th width='50px'>&nbsp;</th>
+                    <th width='50px'>Sudah di-map ke :</th>
                 </tr>
             </thead>
         </table>

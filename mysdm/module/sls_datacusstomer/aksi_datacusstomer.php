@@ -14,7 +14,7 @@ if (empty($puserid)) {
 }
 
 $pmodule=$_GET['module'];
-include "../../config/koneksimysqli_it.php";
+//include "../../config/koneksimysqli_it.php";
 include "../../config/koneksimysqli_ms.php";
 include "../../config/koneksimysqli.php";
 
@@ -33,7 +33,7 @@ if ($pmodule=="simpanperubahancust") {
     if (!empty($pnid) AND !empty($pnstatus)) {
         
         $sql_update = "UPDATE MKT.icust SET istatus='$pnstatus', idisc='$pdiscount' WHERE CONCAT(IFNULL(iCabangId,''),IFNULL(areaId,''),IFNULL(iCustid,''))='$pnid' LIMIT 1";
-        mysqli_query($cnit, $sql_update); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo "A DB ".$erropesan; exit; }
+        //mysqli_query($cnit, $sql_update); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo "A DB ".$erropesan; exit; }
         
         $sql_update_new = "UPDATE sls.icust SET istatus='$pnstatus', idisc='$pdiscount' WHERE CONCAT(IFNULL(iCabangId,''),IFNULL(areaId,''),IFNULL(iCustid,''))='$pnid' LIMIT 1";
         mysqli_query($cnms, $sql_update_new); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "B DB ".$erropesan; exit; }
@@ -46,7 +46,7 @@ if ($pmodule=="simpanperubahancust") {
 }
 
 
-mysqli_close($cnit);
+//mysqli_close($cnit);
 mysqli_close($cnms);
 mysqli_close($cnmy);
 echo $berhasil;

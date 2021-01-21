@@ -5,8 +5,8 @@
     ini_set('max_execution_time', 0);
     
 session_start();
-include "../../config/koneksimysqli_it.php";
-$cnmy=$cnit;
+include "../../config/koneksimysqli_ms.php";
+$cnmy=$cnms;
 /// storing  request (ie, get/post) global array to a variable  
 $requestData= $_REQUEST;
 

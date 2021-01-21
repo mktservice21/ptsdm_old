@@ -19,16 +19,14 @@ $pidarea=$_GET['uarea'];
 
 $columns = array( 
 // datatable column index  => database column name
-    0 =>'iCustId',
-    1 =>'iCustId',
-    2 => 'nama_area',
-    3=> 'nama_sektor',
-    4=> 'iCustId',
-    5=> 'nama',
-    6=> 'alamat1',
-    7=> 'alamat2',
-    8=> 'kodepos',
-    9=> 'telp'
+    0 =>'a.iCustId',
+    1 =>'a.iCustId',
+    2 => 'd.nama',
+    3=> 'b.nama',
+    4=> 'a.nama',
+    5=> 'a.alamat1',
+    6=> 'a.alamat2',
+    7=> 'a.kota'
 );
 
 $sql = "SELECT iCabangId, nama_cabang, areaId, nama_area, iCustId, nama, alamat1, alamat2, kodepos, telp, iSektorId, "
@@ -38,24 +36,33 @@ $sql.=" WHERE icabangid='$pidcabang' ";
 if (!empty($pidarea)) $sql.=" AND areaId='$pidarea' ";
 //$sql.=" AND iSektorId IN ('01', '30', '23', '29', '28') ";
 
+$sql = "select a.icabangid, a.icustid, a.areaid, a.nama, a.alamat1, a.alamat2, a.kota, a.isektorid, a.aktif, a.dispen, a.user1, a.grp,
+    b.nama as nama_sektor, c.nama as nama_cabang, d.nama as nama_area, e.nama as nama_ecust, e.ecustid, a.kodepos, a.telp 
+    from MKT.icust as a LEFT JOIN MKT.isektor as b on a.iSektorId=b.iSektorId
+    JOIN MKT.icabang as c on a.iCabangId=c.iCabangId
+    JOIN MKT.iarea as d on a.iCabangId=d.iCabangId and a.areaId=d.areaId
+    LEFT JOIN MKT.ecust as e on a.iCabangId=e.iCabangId and a.areaId=e.areaId and a.iCustId=e.iCustId ";
+$sql.=" WHERE a.icabangid='$pidcabang' ";
+if (!empty($pidarea)) $sql.=" AND a.areaId='$pidarea' ";
+
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
 $totalData = mysqli_num_rows($query);
 $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
 
 
 if( !empty($requestData['search']['value']) ) {   // if there is a search parameter, $requestData['search']['value'] contains search parameter
-    $sql.=" AND ( icabangid LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR nama_cabang LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR areaid LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR nama_area LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR icustid LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR nama LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR alamat1 LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR alamat2 LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR kodepos LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR kota LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR isektorid LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR nama_sektor LIKE '%".$requestData['search']['value']."%' )";
+    $sql.=" AND ( a.icabangid LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR c.nama LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.areaid LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR d.nama LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.icustid LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.nama LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.alamat1 LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.alamat2 LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.kodepos LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.kota LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.isektorid LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR b.nama LIKE '%".$requestData['search']['value']."%' )";
 }
 
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
@@ -68,47 +75,53 @@ $data = array();
 $no=1;
 $pudgroupuser=$_SESSION['GROUP'];
 $pidcard=$_SESSION['IDCARD'];
-
+$pidcabang="";
+$pidarea="";
+$pidcust="";
 while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData=array();
     
+    if ($pidcabang==$row['icabangid'] AND $pidarea==$row['areaid'] AND $pidcust==$row['icustid']) {
+    }else{
     
-    $pidcabang=$row['iCabangId'];
-    $pnmcabang=$row['nama_cabang'];
-    $pidarea=$row['areaId'];
-    $pnmarea=$row['nama_area'];
-    $pidcust=$row['iCustId'];
-    $pnmcust=$row['nama'];
-    $pisektorid=$row['iSektorId'];
-    $pnmsektor=$row['nama_sektor'];
-    $palamat1=$row['alamat1'];
-    $palamat2=$row['alamat2'];
-    $pkdpost=$row['kodepos'];
-    $ptelp=$row['telp'];
-    $pkota=$row['kota'];
+        $pidcabang=$row['icabangid'];
+        $pnmcabang=$row['nama_cabang'];
+        $pidarea=$row['areaid'];
+        $pnmarea=$row['nama_area'];
+        $pidcust=$row['icustid'];
+        $pnmcust=$row['nama'];
+        $pisektorid=$row['isektorid'];
+        $pnmsektor=$row['nama_sektor'];
+        $palamat1=$row['alamat1'];
+        $palamat2=$row['alamat2'];
+        $pkdpost=$row['kodepos'];
+        $ptelp=$row['telp'];
+        $pkota=$row['kota'];
+
+
+        //min='0' onblur=\"this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this.value)?'inherit':'red'\"
+
+        //$pfiltersave=$pidcabang."".$pidarea."".$pidcust;
+        //$ptombolsave = "<input type='button' value='Simpan' class='btn btn-dark btn-xs' onClick=\"ProsesDataSimpan('simpan', '$pfiltersave', 'cb_status[$no]', 'txt_disc[$no]')\">";
+
+        $pidcusttomer=(INT)$pidcust;
+
+        $nestedData[] = "";
+        $nestedData[] = "$pnmcust ($pidcusttomer)";
+
+        $nestedData[] = $palamat1;
+        $nestedData[] = $palamat2;
+        $nestedData[] = $pkota;
+        $nestedData[] = $pnmsektor;
+        $nestedData[] = "";
+        $nestedData[] = "";
+
+
+
+        $data[] = $nestedData;
+        $no=$no+1;
     
-    
-    //min='0' onblur=\"this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this.value)?'inherit':'red'\"
-    
-    //$pfiltersave=$pidcabang."".$pidarea."".$pidcust;
-    //$ptombolsave = "<input type='button' value='Simpan' class='btn btn-dark btn-xs' onClick=\"ProsesDataSimpan('simpan', '$pfiltersave', 'cb_status[$no]', 'txt_disc[$no]')\">";
-    
-    $pidcusttomer=(INT)$pidcust;
-    
-    $nestedData[] = "";
-    $nestedData[] = "$pnmcust ($pidcusttomer)";
-    
-    $nestedData[] = $palamat1;
-    $nestedData[] = $palamat2;
-    $nestedData[] = $pkota;
-    $nestedData[] = $pnmsektor;
-    $nestedData[] = "";
-    $nestedData[] = "";
-    
-    
-    
-    $data[] = $nestedData;
-    $no=$no+1;
+    }
 }
 
 

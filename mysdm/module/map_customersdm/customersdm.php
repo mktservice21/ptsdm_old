@@ -44,6 +44,12 @@
     $pmodule=$_GET['module'];
     $pidmenu=$_GET['idmenu'];
     if (isset($_GET['act'])) $pact=$_GET['act'];
+    
+    
+    $pidcabangpl=$_SESSION['MAPCUSTIDCAB'];
+    $pidareapl=$_SESSION['MAPCUSTIDARE'];
+    $pfilterpl=$_SESSION['MAPCUSTFILTE'];
+    
 ?>
 
 <div class="">
@@ -85,6 +91,7 @@
                     function KlikDataTabel() {
                         var ecabang=document.getElementById('cb_cabang').value;
                         var earea=document.getElementById('cb_area').value;
+                        var enamafilter=document.getElementById('e_namafilter').value;
                         
                         var myurl = window.location;
                         var urlku = new URL(myurl);
@@ -96,7 +103,7 @@
                         $.ajax({
                             type:"post",
                             url:"module/map_customersdm/viewdatatabelecust.php?module="+module+"&idmenu="+idmenu+"&act="+act,
-                            data:"ucabang="+ecabang+"&uarea="+earea,
+                            data:"ucabang="+ecabang+"&uarea="+earea+"&unamafilter="+enamafilter,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
@@ -153,7 +160,11 @@
                                             while ($row= mysqli_fetch_array($tampil)) {
                                                 $pidcab=$row['icabangid'];
                                                 $pnmcab=$row['nama'];
-                                                echo "<option value='$pidcab'>$pnmcab</option>";
+                                                if ($pidcabangpl==$pidcab)
+                                                    echo "<option value='$pidcab' selected>$pnmcab</option>";
+                                                else
+                                                    echo "<option value='$pidcab'>$pnmcab</option>";
+                                                
                                                 $pcabangidpl=$pidcab;
                                             }
                                             
@@ -166,7 +177,10 @@
                                                 while ($row= mysqli_fetch_array($tampil)) {
                                                     $pidcab=$row['icabangid'];
                                                     $pnmcab=$row['nama'];
-                                                    echo "<option value='$pidcab'>$pnmcab</option>";
+                                                    if ($pidcabangpl==$pidcab)
+                                                        echo "<option value='$pidcab' selected>$pnmcab</option>";
+                                                    else
+                                                        echo "<option value='$pidcab'>$pnmcab</option>";
                                                     $pcabangidpl=$pidcab;
                                                 }
                                             }
@@ -181,15 +195,18 @@
                                     <select class='form-control input-sm' id="cb_area" name="cb_area" onchange="">
                                         <?PHP
                                         echo "<option value=''>--All--</option>";
-                                        if (!empty($pcabangidpl)) {
-                                            $query_area="SELECT * from MKT.iarea where icabangid='$pcabangidpl' ";
+                                        if (!empty($pidcabangpl)) {
+                                            $query_area="SELECT * from MKT.iarea where icabangid='$pidcabangpl' ";
                                             $query_ak =$query_area." AND IFNULL(aktif,'')='Y' ";
                                             $query_ak .=" order by nama";
                                             $tampil= mysqli_query($cnmy, $query_ak);
                                             while ($row= mysqli_fetch_array($tampil)) {
                                                 $pidarea=$row['areaId'];
                                                 $pnmarea=$row['Nama'];
-                                                echo "<option value='$pidarea'>$pnmarea</option>";
+                                                if ($pidarea==$pidareapl)
+                                                    echo "<option value='$pidarea' selected>$pnmarea</option>";
+                                                else
+                                                    echo "<option value='$pidarea'>$pnmarea</option>";
                                             }
                                             
                                             
@@ -202,12 +219,22 @@
                                                 while ($row= mysqli_fetch_array($tampil)) {
                                                     $pidarea=$row['areaId'];
                                                     $pnmarea=$row['Nama'];
-                                                    echo "<option value='$pidarea'>$pnmarea</option>";
+                                                    if ($pidarea==$pidareapl)
+                                                        echo "<option value='$pidarea' selected>$pnmarea</option>";
+                                                    else
+                                                        echo "<option value='$pidarea'>$pnmarea</option>";
                                                 }
                                             }
                                         }
                                         ?>
                                     </select>
+                                </div>
+                            </div>
+                            
+                            <div class='col-sm-4'>
+                                Nama
+                                <div class="form-group">
+                                    <input type='text' id='e_namafilter' name='e_namafilter' class='form-control col-md-7 col-xs-12' value='<?PHP echo "$pfilterpl"; ?>'>
                                 </div>
                             </div>
                             

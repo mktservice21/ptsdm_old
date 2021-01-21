@@ -583,4 +583,9 @@
     $_SESSION['PNDCSTOLIDCAB']="";
     $_SESSION['PNDCSTOLIDARA']="";
     
+    
+    //CUSTOMER SDM
+    $_SESSION['MAPCUSTIDCAB']="";
+    $_SESSION['MAPCUSTIDARE']="";
+    $_SESSION['MAPCUSTFILTE']="";
 ?>

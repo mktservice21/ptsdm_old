@@ -1,5 +1,5 @@
 <?PHP
-include "config/koneksimysqli_it.php";
+include "config/koneksimysqli_ms.php";
 
 $hari_ini = date("Y-m-d");
 $tgl1 = date('d/m/Y', strtotime($hari_ini));
@@ -336,7 +336,7 @@ if ($pact=="editdata"){
                                                         . " icabangid='$pidcabang' AND areaid='$pidarea' ";
                                                 $query .=" AND IFNULL(aktif,'')<>'N' ";
                                                 $query .=" order by CASE WHEN IFNULL(nama,'')='' then 'zzzz' else LTRIM(nama) end";
-                                                $tampila= mysqli_query($cnit, $query);
+                                                $tampila= mysqli_query($cnms, $query);
                                                 $ketemua= mysqli_num_rows($tampila);
                                                 if ((INT)$ketemua==0) echo "<option value='' selected>--Pilih--</option>";
                                                 while ($arow= mysqli_fetch_array($tampila)) {
@@ -373,7 +373,7 @@ if ($pact=="editdata"){
                                                         . " icabangid='$pidcabang' ";//AND areaid='$pidarea'
                                                 $query .=" AND IFNULL(aktif,'')<>'N' ";
                                                 $query .=" order by CASE WHEN IFNULL(nama,'')='' then 'zzzz' else LTRIM(nama) end ";
-                                                $tampila= mysqli_query($cnit, $query);
+                                                $tampila= mysqli_query($cnms, $query);
                                                 $ketemua= mysqli_num_rows($tampila);
                                                 echo "<option value='' selected>--Pilih--</option>";
                                                 while ($arow= mysqli_fetch_array($tampila)) {

@@ -3,7 +3,7 @@
 session_start();
 include "../../config/koneksimysqli_ms.php";
 $cnmy=$cnms;
-$dbname="MKT";
+$dbname="sls";
 
 if (isset($_GET['act'])) {
     

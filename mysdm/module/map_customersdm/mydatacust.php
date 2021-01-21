@@ -32,11 +32,11 @@ $columns = array(
 );
 
 $sql = "SELECT iCabangId, nama_cabang, areaId, nama_area, iCustId, nama, alamat1, alamat2, kodepos, telp, iSektorId, "
-        . " nama_sektor, istatus, idisc ";
+        . " nama_sektor, kota ";
 $sql.=" FROM dbmaster.v_icust ";
 $sql.=" WHERE icabangid='$pidcabang' ";
 if (!empty($pidarea)) $sql.=" AND areaId='$pidarea' ";
-$sql.=" AND iSektorId IN ('01', '30', '23', '29', '28') ";
+//$sql.=" AND iSektorId IN ('01', '30', '23', '29', '28') ";
 
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
 $totalData = mysqli_num_rows($query);
@@ -53,6 +53,7 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
     $sql.=" OR alamat1 LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR alamat2 LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR kodepos LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR kota LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR isektorid LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR nama_sektor LIKE '%".$requestData['search']['value']."%' )";
 }
@@ -72,7 +73,6 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData=array();
     
     
-    $pstatus=$row['istatus'];
     $pidcabang=$row['iCabangId'];
     $pnmcabang=$row['nama_cabang'];
     $pidarea=$row['areaId'];
@@ -85,45 +85,25 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $palamat2=$row['alamat2'];
     $pkdpost=$row['kodepos'];
     $ptelp=$row['telp'];
-    $pdiscttl=$row['idisc'];
-    
-    if (!empty($pdiscttl)) {
-        //$pdiscttl=number_format($pdiscttl,2,".",",");
-		$pdiscttl=ROUND($pdiscttl,2);
-    }
-    
-    $ppilihan="<select class='form-control input-sm' id='cb_status[$no]' name='cb_status[$no]'>";
-    if ($pstatus=="P") {
-        $ppilihan .="<option value='P' selected>Pareto</option>";
-        $ppilihan .="<option value='N'>Non Pareto</option>";
-    }else{
-        $ppilihan .="<option value='P'>Pareto</option>";
-        $ppilihan .="<option value='N' selected>Non Pareto</option>";
-    }
-    $ppilihan .="</select>";
+    $pkota=$row['kota'];
     
     
-    $pdiscount="<input type='text' size='8px' id='txt_disc[$no]' name='txt_disc[$no]' class='input-sm inputmaskrp2' value='$pdiscttl'>";
-    $pdiscount="<input type='number' class='input-sm' placeholder='0.00' id='txt_disc[$no]' name='txt_disc[$no]'  
-           value='$pdiscttl' step='0.01' title='Currency' pattern=\"^\d+(?:\.\d{1,2})?$\" 
-           onblur=\"this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this.value)?\">";
     //min='0' onblur=\"this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this.value)?'inherit':'red'\"
     
-    $pfiltersave=$pidcabang."".$pidarea."".$pidcust;
-    $ptombolsave = "<input type='button' value='Simpan' class='btn btn-dark btn-xs' onClick=\"ProsesDataSimpan('simpan', '$pfiltersave', 'cb_status[$no]', 'txt_disc[$no]')\">";
+    //$pfiltersave=$pidcabang."".$pidarea."".$pidcust;
+    //$ptombolsave = "<input type='button' value='Simpan' class='btn btn-dark btn-xs' onClick=\"ProsesDataSimpan('simpan', '$pfiltersave', 'cb_status[$no]', 'txt_disc[$no]')\">";
     
-    $nestedData[] = $ptombolsave;
-    $nestedData[] = $ppilihan;
-    $nestedData[] = $pdiscount;
-    $nestedData[] = $pnmarea;
-    $nestedData[] = $pnmsektor;
-    $nestedData[] = $pidcust;
-    $nestedData[] = $pnmcust;
+    $pidcusttomer=(INT)$pidcust;
+    
+    $nestedData[] = "";
+    $nestedData[] = "$pnmcust ($pidcusttomer)";
     
     $nestedData[] = $palamat1;
     $nestedData[] = $palamat2;
-    $nestedData[] = $pkdpost;
-    $nestedData[] = $ptelp;
+    $nestedData[] = $pkota;
+    $nestedData[] = $pnmsektor;
+    $nestedData[] = "";
+    $nestedData[] = "";
     
     
     

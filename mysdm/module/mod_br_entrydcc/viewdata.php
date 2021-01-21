@@ -157,7 +157,7 @@ if ($pmodule=="viewdatacombocoa") {
         }else{
             
             if (($jabatanid=="18") or ($jabatanid=="10")) { //spv,am
-                $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where (b.atasanId='$karyawanId' or b.atasanId2='$karyawanId') ";
+                $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where (b.atasanId='$karyawanId' or b.atasanId2='$karyawanId') AND b.icabangid='$icabangid' ";
             }
             
             if ($jabatanid=="08") { //dm
@@ -264,7 +264,7 @@ if ($pmodule=="viewdatacombocoa") {
 	
     if (!empty($pfilerkry)) {
         //$filter_kry_dok = " AND karyawan.karyawanId IN $pfilerkry ";
-		$filter_kry_dok = " AND (karyawan.karyawanId IN $pfilerkry OR IFNULL(karyawan.karyawanId,'')='$mr_id2' OR dokter.dokterid IN ('0000029935') ) ";
+		//$filter_kry_dok = " AND (karyawan.karyawanId IN $pfilerkry OR IFNULL(karyawan.karyawanId,'')='$mr_id2' OR dokter.dokterid IN ('0000029935') ) ";
     }
 	
 	

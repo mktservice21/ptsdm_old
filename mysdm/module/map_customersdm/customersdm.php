@@ -95,7 +95,7 @@
                         $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                         $.ajax({
                             type:"post",
-                            url:"module/map_customersdm/viewdatatabel.php?module="+module+"&idmenu="+idmenu+"&act="+act,
+                            url:"module/map_customersdm/viewdatatabelecust.php?module="+module+"&idmenu="+idmenu+"&act="+act,
                             data:"ucabang="+ecabang+"&uarea="+earea,
                             success:function(data){
                                 $("#c-data").html(data);
@@ -235,10 +235,10 @@
             break;
 
             case "tambahbaru":
-                include "tambah_estki.php";
+                include "tambah_custsdm.php";
             break;
             case "editdata":
-                include "tambah_estki.php";
+                include "tambah_custsdm.php";
             break;
         
         }

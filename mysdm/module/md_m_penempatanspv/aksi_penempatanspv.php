@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-include "../../config/koneksimysqli.php";
-//$cnmy=$cnit;
+include "../../config/koneksimysqli_ms.php";
+$cnmy=$cnms;
 $dbname="MKT";
 
 if (isset($_GET['act'])) {
@@ -18,8 +18,8 @@ if (isset($_GET['act'])) {
         $ketemu=  mysqli_num_rows($query);
         if ($ketemu>0) {
             $r=  mysqli_fetch_array($query);
-            $sql= "insert into dbmaster.backup_ispv0(icabangid, areaid, divisiid, karyawanid, thnbln, tgl1, tgl2, aktif, user1, icabangid_2017, areaid_2017, srid, MODIFUN)"
-                    . " select icabangid, areaid, divisiid, karyawanid, thnbln, tgl1, tgl2, 'Y', user1, icabangid_2017, areaid_2017, srid, '$_SESSION[USERID]' from $dbname.ispv0 WHERE "
+            $sql= "insert into dbmaster.backup_ispv0(icabangid, areaid, divisiid, karyawanid, thnbln, tgl1, tgl2, aktif, user1, MODIFUN)"
+                    . " select icabangid, areaid, divisiid, karyawanid, thnbln, tgl1, tgl2, 'Y', user1, '$_SESSION[USERID]' from $dbname.ispv0 WHERE "
                     . " icabangid='$_GET[idcab]' and divisiid='$_GET[divisi]' and "
                     . " areaid='$_GET[idarea]' and karyawanid='$_GET[id]' and Date_format(tgl1,'%Y%m%d')='$_GET[tgl]'";
             mysqli_query($cnmy, $sql);
@@ -35,9 +35,6 @@ if (isset($_GET['act'])) {
         }else{
             exit;
         }
-        include "../../config/koneksimysqli_ms.php";
-        mysqli_query($cnms, "CALL sls.prosesisi_data_ispv0()");
-        mysqli_close($cnms);
         mysqli_close($cnmy);
         //$datasavems=SaveDataMS("MKT", "ispv0");
         header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
@@ -57,9 +54,6 @@ if (isset($_GET['act'])) {
             mysqli_query($cnmy, "update $dbname.ispv0 set aktif='Y' WHERE icabangid='$_GET[idcab]' and divisiid='$_GET[divisi]' and "
                     . " areaid='$_GET[idarea]' and karyawanid='$_GET[id]' and Date_format(tgl1,'%Y%m%d')='$_GET[tgl]'");
         }
-        include "../../config/koneksimysqli_ms.php";
-        mysqli_query($cnms, "CALL sls.prosesisi_data_ispv0()");
-        mysqli_close($cnms);
         mysqli_close($cnmy);
         //$datasavems=SaveDataMS("MKT", "ispv0");
         header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
@@ -83,9 +77,6 @@ if ($module=='penempatanspv' AND $act=='hapus')
         mysqli_query($cnmy, "update $dbname.ispv0 set aktif='Y' WHERE icabangid='$_GET[idcab]' and divisiid='$_GET[divisi]' and "
                 . " areaid='$_GET[idarea]' and karyawanid='$_GET[id]' and Date_format(tgl1,'%Y%m%d')='$_GET[tgl]'");
     }
-        include "../../config/koneksimysqli_ms.php";
-        mysqli_query($cnms, "CALL sls.prosesisi_data_ispv0()");
-        mysqli_close($cnms);
         mysqli_close($cnmy);
     //$datasavems=SaveDataMS("MKT", "ispv0");
     header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
@@ -102,9 +93,6 @@ elseif ($module=='penempatanspv'  AND $act=='input')
     if (!empty($erropesan))
         echo $erropesan;
     else{
-        include "../../config/koneksimysqli_ms.php";
-        mysqli_query($cnms, "CALL sls.prosesisi_data_ispv0()");
-        mysqli_close($cnms);
         mysqli_close($cnmy);
         //$datasavems=SaveDataMS("MKT", "ispv0");
         header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
@@ -120,8 +108,8 @@ elseif ($module=='penempatanspv'  AND $act=='update')
     
     
     
-        $sql= "insert into dbmaster.backup_ispv0(icabangid, areaid, divisiid, karyawanid, thnbln, tgl1, tgl2, aktif, user1, icabangid_2017, areaid_2017, srid, MODIFUN)"
-                . " select icabangid, areaid, divisiid, karyawanid, thnbln, tgl1, tgl2, 'Y', user1, icabangid_2017, areaid_2017, srid, '$_SESSION[USERID]' from $dbname.ispv0 WHERE "
+        $sql= "insert into dbmaster.backup_ispv0(icabangid, areaid, divisiid, karyawanid, thnbln, tgl1, tgl2, aktif, user1, MODIFUN)"
+                . " select icabangid, areaid, divisiid, karyawanid, thnbln, tgl1, tgl2, 'Y', user1, '$_SESSION[USERID]' from $dbname.ispv0 WHERE "
                 . " icabangid='$_POST[l_idcabang]' and areaid='$_POST[l_idarea]' and divisiid='$_POST[l_iddivisi]' and "
                 . " karyawanid='$_POST[l_idkaryawan]' and ifnull(tgl1,'0000-00-00')='$ltglinput' and aktif='$_POST[l_aktif]'";
         mysqli_query($cnmy, $sql);
@@ -138,9 +126,6 @@ elseif ($module=='penempatanspv'  AND $act=='update')
     if (!empty($erropesan))
         echo $erropesan;
     else{
-        include "../../config/koneksimysqli_ms.php";
-        mysqli_query($cnms, "CALL sls.prosesisi_data_ispv0()");
-        mysqli_close($cnms);
         mysqli_close($cnmy);
         //$datasavems=SaveDataMS("MKT", "ispv0");
         header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');

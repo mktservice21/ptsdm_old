@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-include "../../config/koneksimysqli.php";
-//$cnmy=$cnit;
+include "../../config/koneksimysqli_ms.php";
+$cnmy=$cnms;
 $dbname="MKT";
 
 if (isset($_GET['act'])) {
@@ -23,9 +23,6 @@ if (isset($_GET['act'])) {
             mysqli_query($cnmy, "update $dbname.ism0 set aktif='Y' WHERE icabangid='$_GET[idcab]' and "
                     . " karyawanid='$_GET[id]' and Date_format(awal,'%Y%m%d')='$_GET[tgl]'");
         }
-        include "../../config/koneksimysqli_ms.php";
-        mysqli_query($cnms, "CALL sls.prosesisi_data_ism0()");
-        mysqli_close($cnms);
         mysqli_close($cnmy);
         //$datasavems=SaveDataMS("MKT", "ism0");
         header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
@@ -49,9 +46,6 @@ if ($module=='penempatansm' AND $act=='hapus')
         mysqli_query($cnmy, "update $dbname.ism0 set aktif='Y' WHERE icabangid='$_GET[idcab]' and "
                 . " karyawanid='$_GET[id]' and Date_format(awal,'%Y%m%d')='$_GET[tgl]'");
     }
-        include "../../config/koneksimysqli_ms.php";
-        mysqli_query($cnms, "CALL sls.prosesisi_data_ism0()");
-        mysqli_close($cnms);
         mysqli_close($cnmy);
     //$datasavems=SaveDataMS("MKT", "ism0");
     header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
@@ -67,9 +61,6 @@ elseif ($module=='penempatansm'  AND $act=='input')
     if (!empty($erropesan))
         echo $erropesan;
     else{
-        include "../../config/koneksimysqli_ms.php";
-        mysqli_query($cnms, "CALL sls.prosesisi_data_ism0()");
-        mysqli_close($cnms);
         mysqli_close($cnmy);
         //$datasavems=SaveDataMS("MKT", "ism0");
         header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
@@ -91,9 +82,6 @@ elseif ($module=='penempatansm'  AND $act=='update')
     if (!empty($erropesan))
         echo $erropesan;
     else{
-        include "../../config/koneksimysqli_ms.php";
-        mysqli_query($cnms, "CALL sls.prosesisi_data_ism0()");
-        mysqli_close($cnms);
         mysqli_close($cnmy);
         //$datasavems=SaveDataMS("MKT", "ism0");
         header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');

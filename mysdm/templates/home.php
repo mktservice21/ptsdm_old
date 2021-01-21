@@ -823,6 +823,9 @@
     }elseif ($_GET['module']=='pindacabareacust'){
         include 'module/mst_pindahcabareacust/pindahcabareacust.php';
         
+    }elseif ($_GET['module']=='mapcustomersdm'){
+        include 'module/map_customersdm/customersdm.php';
+        
         
     }else{
         include 'del_session.php';

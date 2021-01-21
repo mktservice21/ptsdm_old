@@ -153,18 +153,18 @@ if ($pmodule=="viewdatacombocoa") {
         $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b WHERE b.aktif = 'Y' "; 
     }else{
         if (($icabangid=="0000000030") or ($icabangid=='0000000031') or ($icabangid=='0000000032')){ // irian, ambon, ntt
-            $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where b.icabangid='$icabangid' AND b.aktif = 'Y' ";
+            $querykry = "select distinctb.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where b.icabangid='$icabangid' AND b.aktif = 'Y' ";
         }else{
             
             if (($jabatanid=="18") or ($jabatanid=="10")) { //spv,am
-                $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where (b.atasanId='$karyawanId' or b.atasanId2='$karyawanId') ";
+                $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where (b.atasanId='$karyawanId' or b.atasanId2='$karyawanId') ";
             }
             
             if ($jabatanid=="08") { //dm
-                $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where b.iCabangId='$icabangid' "; 
+                $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where b.iCabangId='$icabangid' "; 
             }
             if ($jabatanid=="15") { // mr
-                $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where b.karyawanId='$karyawanId' "; 
+                $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtablekry b where b.karyawanId='$karyawanId' AND b.icabangid='$icabangid' "; 
             }
             
         }

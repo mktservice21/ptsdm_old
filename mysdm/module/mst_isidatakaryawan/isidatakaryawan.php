@@ -153,10 +153,9 @@
                                     <select class='form-control input-sm' id='e_jabatan' name='e_jabatan'>
                                       <option value='' selected>-- Pilihan --</option>
                                       <?PHP
-                                        include "config/koneksimysqli_it.php";
                                         $query="SELECT jabatanId, nama FROM hrd.jabatan ";
                                         $query .=" order by jabatanId";
-                                        $sql=mysqli_query($cnit, $query);
+                                        $sql=mysqli_query($cnmy, $query);
                                         while ($Xt=mysqli_fetch_array($sql)){
                                             if ($Xt['jabatanId']==$_SESSION['FMSTJBT'])
                                                 echo "<option value='$Xt[jabatanId]' selected>$Xt[jabatanId] - $Xt[nama]</option>";

@@ -45,17 +45,14 @@
         var eecab=document.getElementById('cb_ecabang').value;
         var enamafilter=document.getElementById('e_namafilter').value;
         
-        var idisply="10";
-        if (eecab!="") {
-            idisply="10";
-        }
+        
         var dataTable = $('#datatablecustd').DataTable( {
             "processing": true,
             "serverSide": true,
             //"stateSave": true,
             //"order": [[ 2, "asc" ], [ 3, "asc" ], [ 4, "asc" ]],
             "lengthMenu": [[10, 50, 100, 10000000], [10, 50, 100, "All"]],
-            "displayLength": idisply,
+            "displayLength": 10,
             "columnDefs": [
                 { "visible": false },
                 { "orderable": true, "targets": 0 },

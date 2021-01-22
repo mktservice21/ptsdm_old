@@ -70,7 +70,7 @@
             "language": {
                 "zeroRecords": "Lihat Page di bawah!!! Jika ada Page, Pilih Page 1...!!! Jika tidak ada Page, maka data KOSONG..."
             },
-            "scrollY": 490,
+            //"scrollY": 490,
             "scrollX": true,
 
             "ajax":{

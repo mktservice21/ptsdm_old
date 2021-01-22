@@ -30,8 +30,8 @@
     $pfilterkaryawan="";
     $pfilterkaryawan2="";
     $pfilterkry="";
-    //$fjbtid=="38" OR 
-    if ($fjbtid=="05" OR $fjbtid=="20" OR $fjbtid=="08" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="15") {
+    //$fjbtid=="38" OR $fjbtid=="33" OR 
+    if ($fjbtid=="38" OR $fjbtid=="33" OR $fjbtid=="05" OR $fjbtid=="20" OR $fjbtid=="08" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="15") {
         
         $pnregion="";
         if ($fkaryawan=="0000000159") $pnregion="T";
@@ -181,13 +181,16 @@
                                       <?PHP 
                                             //echo "<option value='' selected>-- Pilihan --</option>";
                                             if ($fjbtid=="38" OR $fjbtid=="33") {
-                                                
-                                                $query = "select DISTINCT a.karyawanid as karyawanid, a.nama as nama  
-                                                    from hrd.karyawan as a 
-                                                    left join MKT.iarea as b ON a.areaid=b.areaid and a.icabangid=b.icabangid 
-                                                    where (a.jabatanid='15') and (a.tglkeluar='0000-00-00' OR a.aktif='Y') 
-                                                    and (a.divisiid<>'OTC')
-                                                    and a.icabangid in (select IFNULL(icabangid,'') from hrd.rsm_auth where karyawanid='$fkaryawan') ";
+                                                if (!empty($pfilterkaryawan)) {
+                                                    $query = "select a.karyawanid as karyawanid, a.nama as nama FROM hrd.karyawan as a WHERE a.karyawanid IN $pfilterkaryawan ";
+                                                }else{
+                                                    $query = "select DISTINCT a.karyawanid as karyawanid, a.nama as nama  
+                                                        from hrd.karyawan as a 
+                                                        left join MKT.iarea as b ON a.areaid=b.areaid and a.icabangid=b.icabangid 
+                                                        where (a.jabatanid='15') and (a.tglkeluar='0000-00-00' OR a.aktif='Y') 
+                                                        and (a.divisiid<>'OTC')
+                                                        and a.icabangid in (select IFNULL(icabangid,'') from hrd.rsm_auth where karyawanid='$fkaryawan') ";
+                                                }
                                                 $query .= " ORDER BY a.nama";
                                             }else{
                                                 $query = "select distinct a.karyawanid as karyawanid, b.nama as nama "

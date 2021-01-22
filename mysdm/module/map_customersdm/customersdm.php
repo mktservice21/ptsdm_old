@@ -1,5 +1,5 @@
 <?php
-    include "config/cek_akses_modul.php";
+    //include "config/cek_akses_modul.php";
     $fkaryawan=$_SESSION['IDCARD'];
     $fjbtid=$_SESSION['JABATANID'];
     $fstsadmin=$_SESSION['STSADMIN'];

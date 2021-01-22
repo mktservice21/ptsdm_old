@@ -133,14 +133,16 @@ if ($pidact=="editdata"){
                                               <?PHP 
                                                     echo "<option value='' selected>--Pilihan--</option>";
                                                     if ($pidjbt=="38" OR $pidjbt=="33") {
-                                                        
-                                                        $query = "select DISTINCT a.karyawanid as karyawanid, a.nama as nama  
-                                                            from hrd.karyawan as a 
-                                                            left join MKT.iarea as b ON a.areaid=b.areaid and a.icabangid=b.icabangid 
-                                                            where (a.jabatanid='15') and (a.tglkeluar='0000-00-00' OR a.aktif='Y') 
-                                                            and (a.divisiid<>'OTC')
-                                                            and a.icabangid in (select IFNULL(icabangid,'') from hrd.rsm_auth where karyawanid='$pidcard') ";
-                                                        
+                                                        if (!empty($pfilterkaryawan)) {
+                                                            $query = "select a.karyawanid as karyawanid, a.nama as nama FROM hrd.karyawan as a WHERE a.karyawanid IN $pfilterkaryawan ";
+                                                        }else{
+                                                            $query = "select DISTINCT a.karyawanid as karyawanid, a.nama as nama  
+                                                                from hrd.karyawan as a 
+                                                                left join MKT.iarea as b ON a.areaid=b.areaid and a.icabangid=b.icabangid 
+                                                                where (a.jabatanid='15') and (a.tglkeluar='0000-00-00' OR a.aktif='Y') 
+                                                                and (a.divisiid<>'OTC')
+                                                                and a.icabangid in (select IFNULL(icabangid,'') from hrd.rsm_auth where karyawanid='$pidcard') ";
+                                                        }
                                                     }else{
                                                         
                                                         $query = "select karyawanId as karyawanid, nama as nama From hrd.karyawan as a

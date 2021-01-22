@@ -16,6 +16,26 @@ session_start();
 // Hapus / non aktifkan
 if ($module=='mapcustomersdm' AND $act=='hapus')
 {
+        $puserid="";
+        $pcardid="";
+        if (isset($_SESSION['USERID'])) $puserid=$_SESSION['USERID'];
+        if (isset($_SESSION['IDCARD'])) $pcardid=$_SESSION['IDCARD'];
+        
+        if (empty($pcardid)) {
+            echo "Harus Login Ulang";
+            mysqli_close($cnms);
+            exit;
+        }
+        $kodenya=$_GET['id'];
+        if (!empty($kodenya)) {
+            $query = "UPDATE MKT.icust SET aktif='N',
+                      user1='".$pcardid."' WHERE concat(icabangid, areaid, icustid)='".$kodenya."' LIMIT 1";
+            $result = mysqli_query($cnms, $query);
+            $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; exit; }
+        }
+        mysqli_close($cnms);
+        header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complete');
+        exit;
     
 }
 elseif ($module=='mapcustomersdm' AND ($act=='input' OR $act=='update'))
@@ -111,6 +131,7 @@ elseif ($module=='mapcustomersdm' AND ($act=='input' OR $act=='update'))
         
     }else{
         $query = "UPDATE MKT.icust SET nama='".$pnamaid."',
+                  isektorid='".$pisektorid."',
                   alamat1='".$palamatid1."',
                   alamat2='".$palamatid2."',
                   kota='".$pkota."',
@@ -125,7 +146,7 @@ elseif ($module=='mapcustomersdm' AND ($act=='input' OR $act=='update'))
     }
     
     mysqli_close($cnms);
-    //header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complete');
+    header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complete');
     exit;
             
             

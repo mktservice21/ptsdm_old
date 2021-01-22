@@ -20,8 +20,8 @@
     $pfilterkaryawan="";
     $pfilterkaryawan2="";
     $pfilterkry="";
-    //$fjbtid=="38" OR 
-    if ($fjbtid=="05" OR $fjbtid=="20" OR $fjbtid=="08" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="15") {
+    //$fjbtid=="38" OR $fjbtid=="33" OR 
+    if ($fjbtid=="38" OR $fjbtid=="33" OR $fjbtid=="05" OR $fjbtid=="20" OR $fjbtid=="08" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="15") {
         
         $pnregion="";
         if ($fkaryawan=="0000000159") $pnregion="T";
@@ -34,7 +34,7 @@
             if (isset($parry_kry[1])) $pfilterkaryawan2=TRIM($parry_kry[1]);
         }
         
-    }elseif ($fjbtid=="38" OR $fjbtid=="33") {
+    }elseif ($fjbtid=="38x" OR $fjbtid=="33x") {
         $pnregion="";
         $pfilterkry=CariDataKaryawanByRsmAuthCNIT($fkaryawan, $fjbtid, $pnregion);
         

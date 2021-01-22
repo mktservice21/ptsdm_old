@@ -825,6 +825,8 @@
         
     }elseif ($_GET['module']=='mapcustomersdm'){
         include 'module/map_customersdm/customersdm.php';
+    }elseif ($_GET['module']=='mapcustdist'){
+        include 'module/map_custdistrib/custdistrib.php';
         
         
     }else{

@@ -588,4 +588,13 @@
     $_SESSION['MAPCUSTIDCAB']="";
     $_SESSION['MAPCUSTIDARE']="";
     $_SESSION['MAPCUSTFILTE']="";
+    
+    
+    //CUSTOMER DISTRIBUTOR
+    $_SESSION['MAPCUSTDISIDCAB']="";
+    $_SESSION['MAPCUSTDISIDARE']="";
+    $_SESSION['MAPCUSTDISFILTE']="";
+    
+    
+    
 ?>

@@ -18,7 +18,8 @@
     $pfilterkaryawan2="";
     $pfilterkry="";
     
-    if ($fjbtid=="05" OR $fjbtid=="20" OR $fjbtid=="08" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="15") {
+    //$fjbtid=="38" OR $fjbtid=="33" OR 
+    if ($fjbtid=="38" OR $fjbtid=="33" OR $fjbtid=="05" OR $fjbtid=="20" OR $fjbtid=="08" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="15") {
         
         $pnregion="";
         if ($fkaryawan=="0000000159") $pnregion="T";
@@ -31,7 +32,7 @@
             if (isset($parry_kry[1])) $pfilterkaryawan2=TRIM($parry_kry[1]);
         }
         
-    }elseif ($fjbtid=="38" OR $fjbtid=="33") {
+    }elseif ($fjbtid=="38x" OR $fjbtid=="33x") {
         $pnregion="";
         $pfilterkry=CariDataKaryawanByRsmAuthCNIT($fkaryawan, $fjbtid, $pnregion);
         
@@ -87,9 +88,9 @@
                                                     $query = "select distinct b.karyawanid as karyawanid, b.nama as nama from hrd.karyawan as b WHERE 1=1  ";
                                                     $query .= " AND b.karyawanid IN $pfilterkaryawan ";
                                                 }else{
-													$query = "select distinct a.karyawanid as karyawanid, b.nama as nama "
-															. " from hrd.mr_dokt as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid ";
-												}
+                                                    $query = "select distinct a.karyawanid as karyawanid, b.nama as nama "
+                                                        . " from hrd.mr_dokt as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid ";
+                                                }
                                                 $query .= " ORDER BY b.nama";
                                                 $tampil = mysqli_query($cnmy, $query);
                                                 while ($z= mysqli_fetch_array($tampil)) {

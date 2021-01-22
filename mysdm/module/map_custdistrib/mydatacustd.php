@@ -22,7 +22,10 @@ $columns = array(
 // datatable column index  => database column name
     0 =>'eCustId',
     1 =>'eCustId',
-    2 => 'nama'
+    2 => 'nama',
+    3 => 'eCustId',
+    4 => 'alamat1',
+    5 => 'alamat2'
 );
 
 $sql = "select distid, cabangid, ecustid, icustid, nama, alamat1, alamat2, kota, "

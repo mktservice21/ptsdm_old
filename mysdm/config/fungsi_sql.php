@@ -365,6 +365,31 @@ function CariDataKaryawanByCabJbt($ikryid, $ijbt, $iregion) {
             }
 
         }
+        
+                    //khusus admin cabang
+                    if ($pidjabatan=="38") {
+                        $query = "select DISTINCT a.karyawanid as karyawanid, a.nama as nama  
+                            from hrd.karyawan as a 
+                            left join MKT.iarea as b ON a.areaid=b.areaid and a.icabangid=b.icabangid 
+                            where (a.jabatanid='15') and (a.tglkeluar='0000-00-00' OR a.aktif='Y') 
+                            and (a.divisiid<>'OTC')
+                            and a.icabangid in $pfiltercabpilih ";
+                        $tampil= mysqli_query($cnmy, $query);
+                        $ketemu= mysqli_num_rows($tampil);
+                        if ($ketemu>0) {
+                            while ($rs= mysqli_fetch_array($tampil)) {
+                                $vbkryid=$rs['karyawanid'];
+
+                                if (!empty($vbkryid)) {
+                                    if (strpos($pfilterkaryawan, $vbkryid)==false) {
+                                        $pfilterkaryawan .="'".$vbkryid."',";
+                                        $pfilterkaryawan2 .=$vbkryid.",";
+                                    }
+                                }
+
+                            }
+                        }
+                    }
 
 
     }

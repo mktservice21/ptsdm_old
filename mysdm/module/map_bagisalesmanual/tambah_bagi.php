@@ -128,6 +128,11 @@ $pidjbt=$_SESSION['JABATANID'];
                         
                         </div>
                         
+                        <div id='loading2'></div>
+                        <div id='c-databagi'>
+                        
+                        </div>
+                        
                     </div>
                     
                 </form>

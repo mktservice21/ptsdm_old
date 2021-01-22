@@ -827,6 +827,8 @@
         include 'module/map_customersdm/customersdm.php';
     }elseif ($_GET['module']=='mapcustdist'){
         include 'module/map_custdistrib/custdistrib.php';
+    }elseif ($_GET['module']=='mapbagislsmanual'){
+        include 'module/map_bagisalesmanual/bagisalesmanual.php';
         
         
     }else{

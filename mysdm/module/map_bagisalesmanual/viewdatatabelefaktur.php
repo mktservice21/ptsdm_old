@@ -73,7 +73,7 @@
                     $pidecust=$row['custid'];
                     $ptgljual=$row['tgljual'];
                     
-                    $pbtnfakturid="<input type='button' value='$pidfaktur' class='btn btn-warning btn-xs' onClick=\"disp_datamapingbyfaktur('$pidfaktur')\">";
+                    $pbtnfakturid="<input type='button' value='$pidfaktur' class='btn btn-warning btn-xs' onClick=\"disp_datamapingbyfaktur('1', '$pidfaktur')\">";
                     
                     echo "<tr>";
                     echo "<td nowrap>$pbtnfakturid</td>";
@@ -130,7 +130,7 @@
         $('div.dataTables_filter input', dataTable.table().container()).focus();
     } );
     
-    function disp_datamapingbyfaktur(enamafilter) {
+    function disp_datamapingbyfaktur(sKey, enamafilter) {
         var edistid=document.getElementById('cb_dist').value;
         var ecabid=document.getElementById('cb_ecabang').value;
         var ebln=document.getElementById('e_bulan').value;
@@ -148,9 +148,13 @@
             data:"udistid="+edistid+"&ucabid="+ecabid+"&unamafilter="+enamafilter+"&ubln="+ebln,
             success:function(data){
                 $("#c-datamaping").html(data);
-                $("#c-databagi").html("");
                 $("#loading").html("");
-                window.scrollTo(0,document.querySelector("#c-datamaping").scrollHeight);
+                //if (sKey=="2") {
+                //    window.scrollTo(0,document.querySelector("#c-databagi").scrollHeight);
+                //}else{
+                    $("#c-databagi").html("");
+                    window.scrollTo(0,document.querySelector("#c-datamaping").scrollHeight);
+                //}
             }
         });
     }

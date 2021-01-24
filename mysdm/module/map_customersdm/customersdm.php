@@ -45,13 +45,15 @@
     $pidmenu=$_GET['idmenu'];
     if (isset($_GET['act'])) $pact=$_GET['act'];
     
-    
-    $pidcabangpl=$_SESSION['MAPCUSTIDCAB'];
-    $pidareapl=$_SESSION['MAPCUSTIDARE'];
-    $pfilterpl=$_SESSION['MAPCUSTFILTE'];
+    $pidcabangpl="";
+    $pidareapl="";
+    $pfilterpl="";
+    if (isset($_SESSION['MAPCUSTIDCAB'])) $pidcabangpl=$_SESSION['MAPCUSTIDCAB'];
+    if (isset($_SESSION['MAPCUSTIDARE'])) $pidareapl=$_SESSION['MAPCUSTIDARE'];
+    if (isset($_SESSION['MAPCUSTFILTE'])) $pfilterpl=$_SESSION['MAPCUSTFILTE'];
     
 ?>
-
+<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
 <div class="">
 
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -149,7 +151,7 @@
                                             }else{
                                                 echo "<option value=''>--Piihan--</option>";
                                             }
-                                            $query_cb = "select icabangid, nama from mkt.icabang WHERE 1=1 ";
+                                            $query_cb = "select icabangid as icabangid, nama as nama from mkt.icabang WHERE 1=1 ";
                                             $query_cb .=" AND left(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
                                             if (!empty($pfiltercabpilih)) {
                                                 if ($pmyjabatanid=="15" OR $pmyjabatanid=="38" OR $pmyjabatanid=="39" OR $pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjabatanid=="08" OR $pmyjabatanid=="20") $query_cb .=" AND iCabangId IN $pfiltercabpilih ";
@@ -160,10 +162,12 @@
                                             while ($row= mysqli_fetch_array($tampil)) {
                                                 $pidcab=$row['icabangid'];
                                                 $pnmcab=$row['nama'];
+                                                
+                                                $pinidcab=(INT)$pidcab;
                                                 if ($pidcabangpl==$pidcab)
-                                                    echo "<option value='$pidcab' selected>$pnmcab</option>";
+                                                    echo "<option value='$pidcab' selected>$pnmcab ($pinidcab)</option>";
                                                 else
-                                                    echo "<option value='$pidcab'>$pnmcab</option>";
+                                                    echo "<option value='$pidcab'>$pnmcab ($pinidcab)</option>";
                                                 
                                                 $pcabangidpl=$pidcab;
                                             }
@@ -177,10 +181,12 @@
                                                 while ($row= mysqli_fetch_array($tampil)) {
                                                     $pidcab=$row['icabangid'];
                                                     $pnmcab=$row['nama'];
+                                                    
+                                                    $pinidcab=(INT)$pidcab;
                                                     if ($pidcabangpl==$pidcab)
-                                                        echo "<option value='$pidcab' selected>$pnmcab</option>";
+                                                        echo "<option value='$pidcab' selected>$pnmcab ($pinidcab)</option>";
                                                     else
-                                                        echo "<option value='$pidcab'>$pnmcab</option>";
+                                                        echo "<option value='$pidcab'>$pnmcab ($pinidcab)</option>";
                                                     $pcabangidpl=$pidcab;
                                                 }
                                             }
@@ -196,17 +202,19 @@
                                         <?PHP
                                         echo "<option value=''>--All--</option>";
                                         if (!empty($pidcabangpl)) {
-                                            $query_area="SELECT * from MKT.iarea where icabangid='$pidcabangpl' ";
+                                            $query_area="SELECT areaid as areaid, Nama as nama from MKT.iarea where icabangid='$pidcabangpl' ";
                                             $query_ak =$query_area." AND IFNULL(aktif,'')='Y' ";
                                             $query_ak .=" order by nama";
                                             $tampil= mysqli_query($cnmy, $query_ak);
                                             while ($row= mysqli_fetch_array($tampil)) {
-                                                $pidarea=$row['areaId'];
-                                                $pnmarea=$row['Nama'];
+                                                $pidarea=$row['areaid'];
+                                                $pnmarea=$row['nama'];
+                                                
+                                                $pintidarea=(INT)$pidarea;
                                                 if ($pidarea==$pidareapl)
-                                                    echo "<option value='$pidarea' selected>$pnmarea</option>";
+                                                    echo "<option value='$pidarea' selected>$pnmarea ($pintidarea)</option>";
                                                 else
-                                                    echo "<option value='$pidarea'>$pnmarea</option>";
+                                                    echo "<option value='$pidarea'>$pnmarea ($pintidarea)</option>";
                                             }
                                             
                                             
@@ -217,12 +225,14 @@
                                             if ($ketemunon>0) {
                                                 echo "<option value='NONAKTIF'>-- Non Aktif--</option>";
                                                 while ($row= mysqli_fetch_array($tampil)) {
-                                                    $pidarea=$row['areaId'];
-                                                    $pnmarea=$row['Nama'];
+                                                    $pidarea=$row['areaid'];
+                                                    $pnmarea=$row['nama'];
+                                                    
+                                                    $pintidarea=(INT)$pidarea;
                                                     if ($pidarea==$pidareapl)
-                                                        echo "<option value='$pidarea' selected>$pnmarea</option>";
+                                                        echo "<option value='$pidarea' selected>$pnmarea ($pintidarea)</option>";
                                                     else
-                                                        echo "<option value='$pidarea'>$pnmarea</option>";
+                                                        echo "<option value='$pidarea'>$pnmarea ($pintidarea)</option>";
                                                 }
                                             }
                                         }
@@ -277,3 +287,46 @@
     
 </div>
 
+<style>
+    #myBtn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        z-index: 99;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        background-color: red;
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 4px;
+        opacity: 0.5;
+    }
+
+    #myBtn:hover {
+        background-color: #555;
+    }
+</style>
+        
+<script>
+    // SCROLL
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("myBtn").style.display = "block";
+        } else {
+            document.getElementById("myBtn").style.display = "none";
+        }
+    }
+    
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    // END SCROLL
+
+</script>

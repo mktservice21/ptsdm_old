@@ -128,6 +128,7 @@
                     $pidprod=$row['iprodid'];
                     $pnamaprod=$row['nmprod'];
                     $pqty=$row['qbeli'];
+                    $ptgljual=$row['tgljual'];
                     
                     
                     $query = "select sum(qty) as qtysp from $tmp02 WHERE iprodid='$pidprod'";
@@ -142,7 +143,7 @@
                         
                     }
                     
-                    $pbtnmaping="<input type='button' value='Bagi Sales' class='btn btn-success btn-xs' onClick=\"TampilkanDataBagiSales('$piddist', '$pidecab', '$pbulan', '$pnmfilter', '$pidprod')\">";
+                    $pbtnmaping="<input type='button' value='Bagi Sales' class='btn btn-success btn-xs' onClick=\"TampilkanDataBagiSales('$piddist', '$pidecab', '$pbulan', '$pnmfilter', '$pidprod', '$ptgljual', '$pqty', '$pqtysplte', '$psisa')\">";
                     
                     $pqty=number_format($pqty,0,",",",");
                     $pqtysplte=number_format($pqtysplte,0,",",",");
@@ -174,7 +175,7 @@
 </style>
 
 <script>
-    function TampilkanDataBagiSales(idist, iecab, ibln, ifaktur, iprod) {
+    function TampilkanDataBagiSales(idist, iecab, ibln, ifaktur, iprod, itgljual, iqtyfaktur, iqtysplit, iqtysisa) {
         var myurl = window.location;
         var urlku = new URL(myurl);
         var module = urlku.searchParams.get("module");
@@ -185,7 +186,7 @@
         $.ajax({
             type:"post",
             url:"module/map_bagisalesmanual/viewdatatabeleformbagi.php?module="+module+"&idmenu="+idmenu+"&act="+act,
-            data:"udistid="+idist+"&ucabid="+iecab+"&ubln="+ibln+"&unamafilter="+ifaktur+"&uproduk="+iprod,
+            data:"udistid="+idist+"&ucabid="+iecab+"&ubln="+ibln+"&unamafilter="+ifaktur+"&uproduk="+iprod+"&utgljual="+itgljual+"&uqtyfaktur="+iqtyfaktur+"&uqtysplit="+iqtysplit+"&uqtysisa="+iqtysisa,
             success:function(data){
                 $("#c-databagi").html(data);
                 $("#loading2").html("");

@@ -25,10 +25,14 @@ $pidcabang="";
 $pidarea="";
 $psektorid="";
 
+$pnamareadonly="";
+
 $act="input";
 if ($pidact=="editdata"){
     $act="update";
     $pidinput=$_GET['id'];
+    
+    $pnamareadonly="Readonly";
     
     $sql = "select icabangid, areaid, icustid, isektorid, nama, "
             . " alamat1, alamat2, kota, telp, fax, contact, kodepos "
@@ -200,7 +204,7 @@ if ($pidact=="editdata"){
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama  <span class='required'></span></label>
                                     <div class='col-md-4'>
-                                        <input type='text' id='e_nama' name='e_nama' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnama; ?>' maxlength="40">
+                                        <input type='text' id='e_nama' name='e_nama' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnama; ?>' maxlength="40" <?PHP echo $pnamareadonly; ?>>
                                     </div>
                                 </div>
                                 

@@ -1,6 +1,6 @@
 <?php
-include "../../config/koneksimysqli.php";
-
+include "../../config/koneksimysqli_ms.php";
+$cnmy=$cnms;
 /// storing  request (ie, get/post) global array to a variable  
 $requestData= $_REQUEST;
 

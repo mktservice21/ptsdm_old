@@ -7,14 +7,15 @@ if ($_GET['module']=="caridataarea") {
     
     echo "<option value=''>--All--</option>";
     if (!empty($pcabangidpl)) {
-        $query_area="SELECT * from MKT.iarea where icabangid='$pcabangidpl' ";
+        $query_area="SELECT areaid as areaid, nama as nama from MKT.iarea where icabangid='$pcabangidpl' ";
         $query_ak =$query_area." AND IFNULL(aktif,'')='Y' ";
         $query_ak .=" order by nama";
         $tampil= mysqli_query($cnmy, $query_ak);
         while ($row= mysqli_fetch_array($tampil)) {
-            $pidarea=$row['areaId'];
-            $pnmarea=$row['Nama'];
-            echo "<option value='$pidarea'>$pnmarea</option>";
+            $pidarea=$row['areaid'];
+            $pnmarea=$row['nama'];
+            $pintidarea=(INT)$pidarea;
+            echo "<option value='$pidarea'>$pnmarea ($pintidarea)</option>";
         }
         
 
@@ -26,9 +27,10 @@ if ($_GET['module']=="caridataarea") {
         if ($ketemunon>0) {
             echo "<option value='NONAKTIF'>-- Non Aktif--</option>";
             while ($row= mysqli_fetch_array($tampil)) {
-                $pidarea=$row['areaId'];
-                $pnmarea=$row['Nama'];
-                echo "<option value='$pidarea'>$pnmarea</option>";
+                $pidarea=$row['areaid'];
+                $pnmarea=$row['nama'];
+                $pintidarea=(INT)$pidarea;
+                echo "<option value='$pidarea'>$pnmarea ($pintidarea)</option>";
             }
         }
     }

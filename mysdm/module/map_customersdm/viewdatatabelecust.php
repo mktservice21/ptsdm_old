@@ -54,66 +54,12 @@
 
 ?>
 
-<script>
-    $(document).ready(function() {
-        var aksi = "module/map_customersdm/aksi_datacusstomer.php";
-        var myurl = window.location;
-        var urlku = new URL(myurl);
-        var module = urlku.searchParams.get("module");
-        var idmenu = urlku.searchParams.get("idmenu");
-        var nmun = urlku.searchParams.get("nmun");
-        var ecabang=document.getElementById('cb_cabang').value;
-        var earea=document.getElementById('cb_area').value;
-        var idisply="10";
-        if (earea!="") {
-            idisply="10";
-        }
-        var dataTable = $('#datatablecust').DataTable( {
-            "processing": true,
-            //"serverSide": true,
-            //"stateSave": true,
-            //"order": [[ 2, "asc" ], [ 3, "asc" ], [ 4, "asc" ]],
-            "lengthMenu": [[10, 50, 100, 10000000], [10, 50, 100, "All"]],
-            "displayLength": idisply,
-            "columnDefs": [
-                { "visible": false },
-                { "orderable": true, "targets": 0 },
-                { "orderable": true, "targets": 1 },
-                { "orderable": true, "targets": 2 },
-                { "orderable": true, "targets": 3 },
-                { "orderable": true, "targets": 4 },
-                //{ className: "text-right", "targets": [6] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4,5,6,7,8,9] }//nowrap
-
-            ],
-            "language": {
-                "zeroRecords": "Lihat Page di bawah!!! Jika ada Page, Pilih Page 1...!!! Jika tidak ada Page, maka data KOSONG..."
-            },
-            "scrollY": 490,
-            "scrollX": true/*,
-
-            "ajax":{
-                url :"module/map_customersdm/mydatacust.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&ucabang="+ecabang+"&uarea="+earea, // json datasource
-                type: "post",  // method  , by default get
-                data:"ucabang="+ecabang+"&uarea="+earea,
-                error: function(){  // error handling
-                    $(".data-grid-error").html("");
-                    $("#datatable").append('<tbody class="data-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
-                    $("#data-grid_processing").css("display","none");
-
-                }
-            }*/
-        } );
-        $('div.dataTables_filter input', dataTable.table().container()).focus();
-    } );
-</script>
-
 
 
 <form method='POST' action='<?PHP echo "?module='$pmodule'&act=$pact&idmenu=$pidmenu"; ?>' id='d-form2' name='form2' data-parsley-validate class='form-horizontal form-label-left'>
     
     <div class='x_content'>
-        <table id='datatablecust' class='table table-striped table-bordered' width='100%'>
+        <table id='datatable' class='datatable table nowrap table-striped table-bordered' width="100%">
             <thead>
                 <tr>
                     <th width='50px'>No</th>
@@ -160,7 +106,7 @@
                     if ((int)$ketemu2>0) {
                         while ($row2=mysqli_fetch_array($tampil2)) {
                             if (!empty($row2['nama_ecust'])) {
-                                $pcustmaping .="".$row2['nama_ecust']." (".(INT)$row2['ecustid'].")<br/>";
+                                $pcustmaping .="".$row2['nama_ecust']." (".$row2['ecustid'].")<br/>";
 
                                 $pdistmaping .="".$row2['nama_dist']."<br/>";
                                 $pcabmaping .="".$row2['nama_ecabang']."<br/>";
@@ -171,7 +117,7 @@
                     $npidno=$pidcabang."".$pidarea."".$pidcust;
                     $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$npidno'>Edit</a>";
                     $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$npidno')\">";
-    
+                    $phapus="";
     
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
@@ -197,17 +143,84 @@
     
 </form>
 
-<style>
-    .divnone {
-        display: none;
-    }
-    #datatablecust th {
-        font-size: 13px;
-    }
-    #datatablecust td { 
-        font-size: 11px;
-    }
-</style>
+    <style>
+        .divnone {
+            display: none;
+        }
+        
+        .form-group, .input-group, .control-label {
+            margin-bottom:2px;
+        }
+        .control-label {
+            font-size:11px;
+        }
+        #datatable input[type=text], #tabelnobr input[type=text] {
+            box-sizing: border-box;
+            color:#000;
+            font-size:11px;
+            height: 25px;
+        }
+        select.soflow {
+            font-size:12px;
+            height: 30px;
+        }
+        .disabledDiv {
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        table.datatable, table.tabelnobr {
+            color: #000;
+            font-family: Helvetica, Arial, sans-serif;
+            width: 100%;
+            border-collapse:
+            collapse; border-spacing: 0;
+            font-size: 11px;
+            border: 0px solid #000;
+        }
+
+        table.datatable td, table.tabelnobr td {
+            border: 1px solid #000; /* No more visible border */
+            height: 10px;
+            transition: all 0.1s;  /* Simple transition for hover effect */
+        }
+
+        table.datatable th, table.tabelnobr th {
+            background: #DFDFDF;  /* Darken header a bit */
+            font-weight: bold;
+        }
+
+        table.datatable td, table.tabelnobr td {
+            background: #FAFAFA;
+        }
+
+        /* Cells in even rows (2,4,6...) are one color */
+        tr:nth-child(even) td { background: #F1F1F1; }
+
+        /* Cells in odd rows (1,3,5...) are another (excludes header cells)  */
+        tr:nth-child(odd) td { background: #FEFEFE; }
+
+        tr td:hover.biasa { background: #666; color: #FFF; }
+        tr td:hover.left { background: #ccccff; color: #000; }
+
+        tr td.center1, td.center2 { text-align: center; }
+
+        tr td:hover.center1 { background: #666; color: #FFF; text-align: center; }
+        tr td:hover.center2 { background: #ccccff; color: #000; text-align: center; }
+        /* Hover cell effect! */
+        tr td {
+            padding: -10px;
+        }
+
+        th {
+            background: white;
+            position: sticky;
+            top: 0;
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+            z-index:1;
+        }
+		
+    </style>
 
 <script>
     function ProsesData(ket, noid){

@@ -7,7 +7,7 @@ if ($_GET['module']=="caridataecust") {
     
     echo "<option value=''>--All--</option>";
     if (!empty($pdistidpl)) {
-        $query="SELECT distid, ecabangid, nama from MKT.ecabang where distid='$pdistidpl' ";
+        $query="SELECT distid, ecabangid, nama from dbtemp.ecabang where distid='$pdistidpl' ";
         $query .=" order by nama";
         $tampil= mysqli_query($cnms, $query);
         while ($row= mysqli_fetch_array($tampil)) {
@@ -30,8 +30,8 @@ if ($_GET['module']=="caridataecust") {
     if ($fjbtid=="10" OR $fjbtid=="18") {
         
         $query = "select DISTINCT a.icabangid as icabangid, a.areaid as areaid, a.nama as nama "
-                . " from MKT.iarea as a "
-                . " JOIN MKT.ispv0 as b on a.icabangid=b.icabangid AND a.areaid=b.areaid "
+                . " from dbtemp.iarea as a "
+                . " JOIN dbtemp.ispv0 as b on a.icabangid=b.icabangid AND a.areaid=b.areaid "
                 . " WHERE a.icabangid='$pidcabang' AND b.karyawanid='$fkaryawan'";
         
         $query .=" AND IFNULL(a.aktif,'')<>'N' ";
@@ -40,15 +40,15 @@ if ($_GET['module']=="caridataecust") {
     }elseif ($fjbtid=="15") {
         
         $query = "select DISTINCT a.icabangid as icabangid, a.areaid as areaid, a.nama as nama "
-                . " from MKT.iarea as a "
-                . " JOIN MKT.imr0 as b on a.icabangid=b.icabangid AND a.areaid=b.areaid "
+                . " from dbtemp.iarea as a "
+                . " JOIN dbtemp.imr0 as b on a.icabangid=b.icabangid AND a.areaid=b.areaid "
                 . " WHERE a.icabangid='$pidcabang' AND b.karyawanid='$fkaryawan'";
         
         $query .=" AND IFNULL(a.aktif,'')<>'N' ";
         $query .=" order by a.nama";
         
     }else{
-        $query = "select icabangid as icabangid, areaid as areaid, nama as nama from MKT.iarea WHERE icabangid='$pidcabang' ";
+        $query = "select icabangid as icabangid, areaid as areaid, nama as nama from dbtemp.iarea WHERE icabangid='$pidcabang' ";
         $query .=" AND IFNULL(aktif,'')<>'N' ";
         $query .=" order by nama";
     }
@@ -74,7 +74,7 @@ if ($_GET['module']=="caridataecust") {
     
     include "../../config/koneksimysqli_ms.php";
     echo "<option value='' selected>--Pilih--</option>";
-    $query = "select icustid, nama from MKT.icust WHERE IFNULL(aktif,'')<>'N' AND icabangid='$pidcabang' and areaid='$pidarea' AND IFNULL(nama,'')<>'' order by nama";
+    $query = "select icustid, nama from dbtemp.icust WHERE IFNULL(aktif,'')<>'N' AND icabangid='$pidcabang' and areaid='$pidarea' AND IFNULL(nama,'')<>'' order by nama";
     $tampila= mysqli_query($cnms, $query);
     $ketemua= mysqli_num_rows($tampila);
     if ((INT)$ketemua==0) echo "<option value='' selected>--Pilih--</option>";

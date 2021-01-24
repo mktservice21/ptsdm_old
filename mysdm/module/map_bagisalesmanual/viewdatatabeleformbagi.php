@@ -56,7 +56,7 @@
     
     $aksi="map_bagisalesmanual/aksi_bagisalesmanual.php";
     
-    $query = "select * from MKT.eproduk WHERE eprodid='$pidbrg' AND distid='$piddist'";
+    $query = "select * from dbtemp.eproduk WHERE eprodid='$pidbrg' AND distid='$piddist'";
     $tampil= mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnamaproduk=TRIM($row['nama']);
@@ -126,19 +126,19 @@
                             echo "<option value='' selected>--Pilih--</option>";
                             
                                 if ($fjbtid=="38") {
-                                    $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
+                                    $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from dbtemp.icabang as a "
                                             . " JOIN hrd.rsm_auth as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
                                     $query .=" order by a.nama";
                                 }elseif ($fjbtid=="10" OR $fjbtid=="18") {
-                                    $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
-                                            . " JOIN MKT.ispv0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
+                                    $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from dbtemp.icabang as a "
+                                            . " JOIN dbtemp.ispv0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
                                     $query .=" order by a.nama";
                                 }elseif ($fjbtid=="15") {
-                                    $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
-                                            . " JOIN MKT.imr0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
+                                    $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from dbtemp.icabang as a "
+                                            . " JOIN dbtemp.imr0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
                                     $query .=" order by a.nama";
                                 }else{
-                                    $query = "select icabangid as icabangid, nama as nama from MKT.icabang WHERE 1=1 ";
+                                    $query = "select icabangid as icabangid, nama as nama from dbtemp.icabang WHERE 1=1 ";
                                     $query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -') ";
                                     $query .=" AND IFNULL(aktif,'')<>'N' ";
                                     $query .=" order by nama";
@@ -167,7 +167,7 @@
                             <?php
                             echo "<option value='' selected>--Pilih--</option>";
                             
-                                $query = "select icabangid as icabangid, areaid as areaid, nama as nama from MKT.iarea WHERE icabangid='$pcabidmap' ";
+                                $query = "select icabangid as icabangid, areaid as areaid, nama as nama from dbtemp.iarea WHERE icabangid='$pcabidmap' ";
                                 $query .=" AND IFNULL(aktif,'')<>'N' ";
                                 $query .=" order by nama";
                             
@@ -196,7 +196,7 @@
                         <select class='soflow' name='cb_custid' id='cb_custid' onchange="">
                             <?php
                             echo "<option value='' selected>--Pilih--</option>";
-                            $query = "select icustid, nama from MKT.icust WHERE ( (IFNULL(aktif,'')<>'N' AND icabangid='$pcabidmap' and areaid='$pareaidmap' AND IFNULL(nama,'')<>'') OR icustid='$picustid' )order by nama";
+                            $query = "select icustid, nama from dbtemp.icust WHERE ( (IFNULL(aktif,'')<>'N' AND icabangid='$pcabidmap' and areaid='$pareaidmap' AND IFNULL(nama,'')<>'') OR icustid='$picustid' )order by nama";
                             $tampila= mysqli_query($cnms, $query);
                             $ketemua= mysqli_num_rows($tampila);
                             if ((INT)$ketemua==0) echo "<option value='' selected>--Pilih--</option>";
@@ -308,7 +308,10 @@
     }
     
     function disp_confirmsimpandata() {
-        var edistnmtblsales=document.getElementById('e_nmtblsls').value;//faktur id
+        var edistnmtblsales=document.getElementById('e_nmtblsls').value;
+        var eecustid=document.getElementById('e_ecustid').value;
+        var eecustnm=document.getElementById('e_nmecust').value;
+        
         var enamafilter=document.getElementById('e_fakturidpil').value;//faktur id
         var edistid=document.getElementById('e_distidpil').value;
         var eecab=document.getElementById('e_idecabpil').value;
@@ -415,7 +418,8 @@ Jika sudah klik OK');
             url:"module/map_bagisalesmanual/simpandatasplit.php?module="+module+"&act=datasimpansplit",
             data:"udistid="+edistid+"&uecab="+eecab+"&ufakturid="+enamafilter+"&ubrgid="+ebrgid+"&uidprod="+eidprod+
                     "&ubln="+ebln+"&utgljual="+etgljual+"&uqtysisa="+eqtysisa+"&uqtyfak="+eqtyfak+"&uqtysdhsplt="+eqtysdhsplt+
-                    "&uqtysplt="+eqtysplt+"&uidcabang="+eidcabang+"&uidarea="+eidarea+"&uidcust="+eidcust+"&udistnmtblsales="+edistnmtblsales,
+                    "&uqtysplt="+eqtysplt+"&uidcabang="+eidcabang+"&uidarea="+eidarea+"&uidcust="+eidcust+"&udistnmtblsales="+edistnmtblsales+
+                    "&aecustid="+eecustid+"&uecustnm="+eecustnm,
             success:function(data){
                 var istatus=data.trim();
                 if (istatus=="berhasil") {

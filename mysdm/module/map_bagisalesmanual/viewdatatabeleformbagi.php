@@ -203,7 +203,7 @@
                             while ($arow= mysqli_fetch_array($tampila)) {
                                 $nidcust=$arow['icustid'];
                                 $nnmcust=$arow['nama'];
-                                if ($nidcust==$nidcust)
+                                if ($nidcust==$picustid)
                                     echo "<option value='$nidcust' selected>$nnmcust ($nidcust)</option>";
                                 else
                                     echo "<option value='$nidcust'>$nnmcust ($nidcust)</option>";

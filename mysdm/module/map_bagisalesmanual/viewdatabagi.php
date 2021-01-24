@@ -73,8 +73,8 @@ if ($_GET['module']=="caridataecust") {
     $pidarea=$_POST['udarea'];
     
     include "../../config/koneksimysqli_ms.php";
-    
-    $query = "select icustid, nama from MKT.icust WHERE IFNULL(aktif,'')<>'N' AND icabangid='$pidcabang' and areaid='$pidarea' order by nama";
+    echo "<option value='' selected>--Pilih--</option>";
+    $query = "select icustid, nama from MKT.icust WHERE IFNULL(aktif,'')<>'N' AND icabangid='$pidcabang' and areaid='$pidarea' AND IFNULL(nama,'')<>'' order by nama";
     $tampila= mysqli_query($cnms, $query);
     $ketemua= mysqli_num_rows($tampila);
     if ((INT)$ketemua==0) echo "<option value='' selected>--Pilih--</option>";

@@ -108,7 +108,7 @@ $pidjbt=$_SESSION['JABATANID'];
                                         &nbsp; 
                                     </label>
                                     <div class='col-md-4'>
-                                        <button type='button' class='btn btn-dark' onclick='disp_datamaping()'>View Data</button>
+                                        <button type='button' class='btn btn-dark' onclick='disp_viewdata()'>View Data</button>
                                         
                                     </div>
                                 </div>
@@ -122,6 +122,11 @@ $pidjbt=$_SESSION['JABATANID'];
                     
                     
                     <div id="div_detail">
+                        
+                        <div id='loading3'></div>
+                        <div id='c-fakturdata'>
+                        
+                        </div>
                         
                         <div id='loading'></div>
                         <div id='c-datamaping'>
@@ -193,6 +198,36 @@ $pidjbt=$_SESSION['JABATANID'];
         });
     });
 
+    function disp_viewdata() {
+        distp_datafaktur();
+        disp_datamaping();
+        $("#c-databagi").html("");
+    }
+
+    function distp_datafaktur() {
+        var edistid=document.getElementById('cb_dist').value;
+        var ecabid=document.getElementById('cb_ecabang').value;
+        var enamafilter=document.getElementById('e_namafilter').value;
+        var ebln=document.getElementById('e_bulan').value;
+
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var act = urlku.searchParams.get("act");
+
+        $("#loading3").html("<center><img src='images/loading.gif' width='50px'/></center>");
+        $.ajax({
+            type:"post",
+            url:"module/map_bagisalesmanual/viewdatatabelefaktur.php?module="+module+"&idmenu="+idmenu+"&act="+act,
+            data:"udistid="+edistid+"&ucabid="+ecabid+"&unamafilter="+enamafilter+"&ubln="+ebln,
+            success:function(data){
+                $("#c-fakturdata").html(data);
+                $("#loading3").html("");
+            }
+        });
+    }
+    
     function disp_datamaping() {
         var edistid=document.getElementById('cb_dist').value;
         var ecabid=document.getElementById('cb_ecabang').value;

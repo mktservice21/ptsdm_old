@@ -21,6 +21,14 @@
     $pidmodule=$_GET['module'];
     $pidmenu=$_GET['idmenu'];
     
+    $pnmtabelsales=$_POST['unmsales'];
+    $pecustid=$_POST['uecustid'];
+    $pnmecust=$_POST['unmecust'];
+    $pcabidmap=$_POST['ucabmap'];
+    $pareaidmap=$_POST['uareamap'];
+    $picustid=$_POST['uicustmap'];
+    $picustnm=$_POST['uicustnmmap'];
+    
     $piddist=$_POST['udistid'];
     $pidecab=$_POST['ucabid'];
     $pnmfilter=$_POST['unamafilter'];
@@ -71,6 +79,14 @@
                 <div hidden class='form-group'>
                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                     <div class='col-md-4'>
+                        <input type='text' id='e_nmtblsls' name='e_nmtblsls' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmtabelsales; ?>' Readonly>
+                        
+                        <input type='text' id='e_ecustid' name='e_ecustid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pecustid; ?>' Readonly>
+                        <input type='text' id='e_cabmapid' name='e_cabmapid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pcabidmap; ?>' Readonly>
+                        <input type='text' id='e_areamapid' name='e_areamapid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pareaidmap; ?>' Readonly>
+                        <input type='text' id='e_icustidmap' name='e_icustidmap' class='form-control col-md-7 col-xs-12' value='<?PHP echo $picustid; ?>' Readonly>
+                        <input type='text' id='e_nmcustmap' name='e_nmcustmap' class='form-control col-md-7 col-xs-12' value='<?PHP echo $picustnm; ?>' Readonly>
+                        
                         <input type='text' id='e_distidpil' name='e_distidpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piddist; ?>' Readonly>
                         <input type='text' id='e_idecabpil' name='e_idecabpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidecab; ?>' Readonly>
                         <input type='text' id='e_idbrg' name='e_idbrg' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidbrg; ?>' Readonly>
@@ -89,6 +105,13 @@
                 </div>
                 
                 <div  class='form-group'>
+                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>E Customer <span class='required'></span></label>
+                    <div class='col-md-4'>
+                        <input type='text' id='e_nmecust' name='e_nmecust' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmecust; ?>' Readonly>
+                    </div>
+                </div>
+                
+                <div  class='form-group'>
                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Produk <span class='required'></span></label>
                     <div class='col-md-4'>
                         <input type='text' id='e_nmproduk' name='e_nmproduk' class='form-control col-md-7 col-xs-12' value='<?PHP echo "$pnamaproduk ($pidbrg)"; ?>' Readonly>
@@ -101,9 +124,7 @@
                         <select class='soflow' name='cb_cabangid' id='cb_cabangid' onchange="ShowDataCabangArea()">
                             <?php
                             echo "<option value='' selected>--Pilih--</option>";
-                            if ($pidact=="editdata"){
-                                $query = "select icabangid as icabangid, nama as nama from MKT.icabang WHERE icabangid='$pidcabang' ";
-                            }else{
+                            
                                 if ($fjbtid=="38") {
                                     $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
                                             . " JOIN hrd.rsm_auth as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
@@ -122,13 +143,13 @@
                                     $query .=" AND IFNULL(aktif,'')<>'N' ";
                                     $query .=" order by nama";
                                 }
-                            }
+                            
                             $tampiledu= mysqli_query($cnms, $query);
                             while ($du= mysqli_fetch_array($tampiledu)) {
                                 $nidcab=$du['icabangid'];
                                 $nnmcab=$du['nama'];
 
-                                if ($nidcab==$pidcabang) 
+                                if ($nidcab==$pcabidmap) 
                                     echo "<option value='$nidcab' selected>$nnmcab ($nidcab)</option>";
                                 else
                                     echo "<option value='$nidcab'>$nnmcab ($nidcab)</option>";
@@ -145,27 +166,25 @@
                         <select class='soflow' name='cb_areaid' id='cb_areaid' onchange="ShowDataCustomer()">
                             <?php
                             echo "<option value='' selected>--Pilih--</option>";
-                            if ($pidact=="editdata"){
-                                $query = "select icabangid as icabangid, areaid as areaid, nama as nama from MKT.iarea WHERE icabangid='$pidcabang' AND areaid='$pidarea' ";
-                            }else{
-                                $query = "select icabangid as icabangid, areaid as areaid, nama as nama from MKT.iarea WHERE icabangid='$pidcabang' ";
+                            
+                                $query = "select icabangid as icabangid, areaid as areaid, nama as nama from MKT.iarea WHERE icabangid='$pcabidmap' ";
                                 $query .=" AND IFNULL(aktif,'')<>'N' ";
                                 $query .=" order by nama";
-                            }
+                            
 
-                            if (!empty($pidcabang)) {
-                                $tampiledu= mysqli_query($cnmy, $query);
+                            //if (!empty($pcabidmap)) {
+                                $tampiledu= mysqli_query($cnms, $query);
                                 while ($du= mysqli_fetch_array($tampiledu)) {
                                     $nidarea=$du['areaid'];
                                     $nnmarea=$du['nama'];
 
-                                    if ($nidarea==$pidarea) 
+                                    if ($nidarea==$pareaidmap) 
                                         echo "<option value='$nidarea' selected>$nnmarea ($nidarea)</option>";
                                     else
                                         echo "<option value='$nidarea'>$nnmarea ($nidarea)</option>";
 
                                 }
-                            }
+                            //}
                             ?>
                         </select>
                     </div>
@@ -177,6 +196,19 @@
                         <select class='soflow' name='cb_custid' id='cb_custid' onchange="">
                             <?php
                             echo "<option value='' selected>--Pilih--</option>";
+                            $query = "select icustid, nama from MKT.icust WHERE ( (IFNULL(aktif,'')<>'N' AND icabangid='$pcabidmap' and areaid='$pareaidmap' AND IFNULL(nama,'')<>'') OR icustid='$picustid' )order by nama";
+                            $tampila= mysqli_query($cnms, $query);
+                            $ketemua= mysqli_num_rows($tampila);
+                            if ((INT)$ketemua==0) echo "<option value='' selected>--Pilih--</option>";
+                            while ($arow= mysqli_fetch_array($tampila)) {
+                                $nidcust=$arow['icustid'];
+                                $nnmcust=$arow['nama'];
+                                if ($nidcust==$nidcust)
+                                    echo "<option value='$nidcust' selected>$nnmcust ($nidcust)</option>";
+                                else
+                                    echo "<option value='$nidcust'>$nnmcust ($nidcust)</option>";
+
+                            }
                             ?>
                         </select>
                     </div>
@@ -276,6 +308,7 @@
     }
     
     function disp_confirmsimpandata() {
+        var edistnmtblsales=document.getElementById('e_nmtblsls').value;//faktur id
         var enamafilter=document.getElementById('e_fakturidpil').value;//faktur id
         var edistid=document.getElementById('e_distidpil').value;
         var eecab=document.getElementById('e_idecabpil').value;
@@ -290,6 +323,11 @@
         var eidcabang=document.getElementById('cb_cabangid').value;
         var eidarea=document.getElementById('cb_areaid').value;
         var eidcust=document.getElementById('cb_custid').value;
+        
+        if (edistnmtblsales=="") {
+            alert("Nama Tabel Sales Tidak ada...");
+            return false;
+        }
         
         if (edistid=="") {
             alert("distributor kosong...");
@@ -322,8 +360,8 @@
         }
         
         if (eidcust=="") {
-            alert("Customer SDM belum diisi...");
-            return false;
+            //alert("Customer SDM belum diisi...");
+            //return false;
         }
         
         if (eqtyfak=="" || eqtyfak=="0") {
@@ -377,11 +415,11 @@ Jika sudah klik OK');
             url:"module/map_bagisalesmanual/simpandatasplit.php?module="+module+"&act=datasimpansplit",
             data:"udistid="+edistid+"&uecab="+eecab+"&ufakturid="+enamafilter+"&ubrgid="+ebrgid+"&uidprod="+eidprod+
                     "&ubln="+ebln+"&utgljual="+etgljual+"&uqtysisa="+eqtysisa+"&uqtyfak="+eqtyfak+"&uqtysdhsplt="+eqtysdhsplt+
-                    "&uqtysplt="+eqtysplt+"&uidcabang="+eidcabang+"&uidarea="+eidarea+"&uidcust="+eidcust,
+                    "&uqtysplt="+eqtysplt+"&uidcabang="+eidcabang+"&uidarea="+eidarea+"&uidcust="+eidcust+"&udistnmtblsales="+edistnmtblsales,
             success:function(data){
-                if (data=="berhasil") {
-                    alert(data);
-                    //disp_datamapingbyfaktur("2", enamafilter);
+                var istatus=data.trim();
+                if (istatus=="berhasil") {
+                    disp_datamapingbyfaktur("2", enamafilter);
                 }else{
                     alert(data);
                 }

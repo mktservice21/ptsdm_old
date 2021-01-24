@@ -25,8 +25,10 @@
     $pidecab=$_POST['ucabid'];
     $pnmfilter=$_POST['unamafilter'];
     $pqtyfaktur=$_POST['uqtyfaktur'];
-    $pqtysplit=$_POST['uqtysplit'];
+    $psdhsplitqty=$_POST['uqtysplit'];
+    $pidproduk=$_POST['uproduk'];
     
+    if (empty($psdhsplitqty)) $psdhsplitqty=0;
     $pqtysplit="";
     
     $pqtysisa=$_POST['uqtysisa'];
@@ -44,6 +46,11 @@
     $pidarea="";
     
     $aksi="map_bagisalesmanual/aksi_bagisalesmanual.php";
+    
+    $query = "select * from MKT.eproduk WHERE eprodid='$pidproduk' AND distid='$piddist'";
+    $tampil= mysqli_query($cnms, $query);
+    $row=mysqli_fetch_array($tampil);
+    $pnamaproduk=TRIM($row['nama']);
 ?>
 
 
@@ -60,16 +67,29 @@
             
             <div class='col-md-12 col-sm-12 col-xs-12'>
                 
-                <div  class='form-group'>
+                <div hidden class='form-group'>
                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                     <div class='col-md-4'>
                         <input type='text' id='e_distidpil' name='e_distidpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piddist; ?>' Readonly>
                         <input type='text' id='e_idecabpil' name='e_idecabpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidecab; ?>' Readonly>
-                        <input type='text' id='e_fakturidpil' name='e_fakturidpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmfilter; ?>' Readonly>
+                        <input type='text' id='e_idproduk' name='e_idproduk' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidproduk; ?>' Readonly>
                         <input type='text' id='e_blnpil' name='e_blnpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pbln; ?>' Readonly>
                         <input type='text' id='e_tgljualpil' name='e_tgljualpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $ptgljual; ?>' Readonly>
-                        <input type='text' id='e_qtyfakturpil' name='e_qtyfakturpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtyfaktur; ?>' Readonly>
                         <input type='text' id='e_qtysisapil' name='e_qtysisapil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtysisa; ?>' Readonly>
+                    </div>
+                </div>
+                
+                <div class='form-group'>
+                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Faktur <span class='required'></span></label>
+                    <div class='col-md-4'>
+                        <input type='text' id='e_fakturidpil' name='e_fakturidpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmfilter; ?>' Readonly>
+                    </div>
+                </div>
+                
+                <div  class='form-group'>
+                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Produk <span class='required'></span></label>
+                    <div class='col-md-4'>
+                        <input type='text' id='e_nmproduk' name='e_nmproduk' class='form-control col-md-7 col-xs-12' value='<?PHP echo "$pnamaproduk ($pidproduk)"; ?>' Readonly>
                     </div>
                 </div>
                 
@@ -162,9 +182,23 @@
                 
                 
                 <div  class='form-group'>
-                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Qty Splitted <span class='required'></span></label>
+                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Qty Faktur <span class='required'></span></label>
                     <div class='col-md-4'>
-                        <input type='text' id='e_qtysplit' name='e_qtysplit' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtysplit; ?>' Readonly>
+                        <input type='text' id='e_qtyfakturpil' name='e_qtyfakturpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtyfaktur; ?>' Readonly>
+                    </div>
+                </div>
+                
+                <div  class='form-group'>
+                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Qty Sudah Splitted <span class='required'></span></label>
+                    <div class='col-md-4'>
+                        <input type='text' id='e_sdhsplitqty' name='e_sdhsplitqty' class='form-control col-md-7 col-xs-12' value='<?PHP echo $psdhsplitqty; ?>' Readonly>
+                    </div>
+                </div>
+                
+                <div  class='form-group'>
+                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>*) Qty Splitted <span class='required'></span></label>
+                    <div class='col-md-4'>
+                        <input type='text' id='e_qtysplit' name='e_qtysplit' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtysplit; ?>' >
                     </div>
                 </div>
                 

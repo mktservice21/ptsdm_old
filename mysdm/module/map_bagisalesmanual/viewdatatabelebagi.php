@@ -150,7 +150,7 @@
                     $pbtnmaping="";
                     if ((DOUBLE)$psisa==0) {
                     }else{
-                        $pbtnmaping="<input type='button' value='Bagi Sales' class='btn btn-success btn-xs' onClick=\"TampilkanDataBagiSales('$piddist', '$pidecab', '$pbulan', '$pnmfilter', '$pbrgid', '$pidprod', '$ptgljual', '$pqty', '$pqtysplte', '$psisa')\">";
+                        $pbtnmaping="<input type='button' value='Bagi Sales' class='btn btn-success btn-xs' onClick=\"TampilkanDataBagiSales('$piddist', '$pidecab', '$pbulan', '$pnmfilter', '$pbrgid', '$pidprod', '$ptgljual', '$pqty', '$pqtysplte', '$psisa', '$pnmtblsales', '$pecusid', '$pnmecust', '$icabangid_map', '$areaid_map', '$icustid_map', '$pnmicustsdm')\">";
                     }
                     
                     $pqty=number_format($pqty,0,",",",");
@@ -183,18 +183,26 @@
 </style>
 
 <script>
-    function TampilkanDataBagiSales(idist, iecab, ibln, ifaktur, ibrg, iprod, itgljual, iqtyfaktur, iqtysplit, iqtysisa) {
+    function TampilkanDataBagiSales(idist, iecab, ibln, ifaktur, ibrg, iprod, itgljual, iqtyfaktur, iqtysplit, iqtysisa, inmsales, iecustid, inmecust, icabmap, iareamap, iicustmap, iicustnmmap) {
         var myurl = window.location;
         var urlku = new URL(myurl);
         var module = urlku.searchParams.get("module");
         var idmenu = urlku.searchParams.get("idmenu");
         var act = urlku.searchParams.get("act");
         
+        if (inmsales=="") {
+            alert("Nama Tabel Sales Tidak ada...");
+            return false;
+        }
+        
         $("#loading2").html("<center><img src='images/loading.gif' width='50px'/></center>");
         $.ajax({
             type:"post",
             url:"module/map_bagisalesmanual/viewdatatabeleformbagi.php?module="+module+"&idmenu="+idmenu+"&act="+act,
-            data:"udistid="+idist+"&ucabid="+iecab+"&ubln="+ibln+"&unamafilter="+ifaktur+"&ubrg="+ibrg+"&uproduk="+iprod+"&utgljual="+itgljual+"&uqtyfaktur="+iqtyfaktur+"&uqtysplit="+iqtysplit+"&uqtysisa="+iqtysisa,
+            data:"udistid="+idist+"&ucabid="+iecab+"&ubln="+ibln+"&unamafilter="+ifaktur+"&ubrg="+ibrg+"&uproduk="+iprod+
+                    "&utgljual="+itgljual+"&uqtyfaktur="+iqtyfaktur+"&uqtysplit="+iqtysplit+"&uqtysisa="+iqtysisa+"&unmsales="+inmsales+
+                    "&uecustid="+iecustid+"&unmecust="+inmecust+
+                    "&ucabmap="+icabmap+"&uareamap="+iareamap+"&uicustmap="+iicustmap+"&uicustnmmap="+iicustnmmap,
             success:function(data){
                 $("#c-databagi").html(data);
                 $("#loading2").html("");

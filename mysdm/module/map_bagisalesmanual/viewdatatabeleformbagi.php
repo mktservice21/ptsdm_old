@@ -26,6 +26,7 @@
     $pnmfilter=$_POST['unamafilter'];
     $pqtyfaktur=$_POST['uqtyfaktur'];
     $psdhsplitqty=$_POST['uqtysplit'];
+    $pidbrg=$_POST['ubrg'];
     $pidproduk=$_POST['uproduk'];
     
     if (empty($psdhsplitqty)) $psdhsplitqty=0;
@@ -47,13 +48,13 @@
     
     $aksi="map_bagisalesmanual/aksi_bagisalesmanual.php";
     
-    $query = "select * from MKT.eproduk WHERE eprodid='$pidproduk' AND distid='$piddist'";
+    $query = "select * from MKT.eproduk WHERE eprodid='$pidbrg' AND distid='$piddist'";
     $tampil= mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnamaproduk=TRIM($row['nama']);
 ?>
 
-
+<script src="js/inputmask.js"></script>
 <form method='POST' action='<?PHP echo "$aksi?module=$pidmodule&act=input&idmenu=$pidmenu"; ?>' 
       id='form_data_ex' name='formex' data-parsley-validate class='form-horizontal form-label-left'  enctype='multipart/form-data'>
             
@@ -72,7 +73,8 @@
                     <div class='col-md-4'>
                         <input type='text' id='e_distidpil' name='e_distidpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piddist; ?>' Readonly>
                         <input type='text' id='e_idecabpil' name='e_idecabpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidecab; ?>' Readonly>
-                        <input type='text' id='e_idproduk' name='e_idproduk' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidproduk; ?>' Readonly>
+                        <input type='text' id='e_idbrg' name='e_idbrg' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidbrg; ?>' Readonly>
+                        <input type='text' id='e_idprod' name='e_idprod' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidproduk; ?>' Readonly>
                         <input type='text' id='e_blnpil' name='e_blnpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pbln; ?>' Readonly>
                         <input type='text' id='e_tgljualpil' name='e_tgljualpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $ptgljual; ?>' Readonly>
                         <input type='text' id='e_qtysisapil' name='e_qtysisapil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtysisa; ?>' Readonly>
@@ -89,7 +91,7 @@
                 <div  class='form-group'>
                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Produk <span class='required'></span></label>
                     <div class='col-md-4'>
-                        <input type='text' id='e_nmproduk' name='e_nmproduk' class='form-control col-md-7 col-xs-12' value='<?PHP echo "$pnamaproduk ($pidproduk)"; ?>' Readonly>
+                        <input type='text' id='e_nmproduk' name='e_nmproduk' class='form-control col-md-7 col-xs-12' value='<?PHP echo "$pnamaproduk ($pidbrg)"; ?>' Readonly>
                     </div>
                 </div>
                 
@@ -184,24 +186,30 @@
                 <div  class='form-group'>
                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Qty Faktur <span class='required'></span></label>
                     <div class='col-md-4'>
-                        <input type='text' id='e_qtyfakturpil' name='e_qtyfakturpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtyfaktur; ?>' Readonly>
+                        <input type='text' id='e_qtyfakturpil' name='e_qtyfakturpil' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pqtyfaktur; ?>' Readonly>
                     </div>
                 </div>
                 
                 <div  class='form-group'>
                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Qty Sudah Splitted <span class='required'></span></label>
                     <div class='col-md-4'>
-                        <input type='text' id='e_sdhsplitqty' name='e_sdhsplitqty' class='form-control col-md-7 col-xs-12' value='<?PHP echo $psdhsplitqty; ?>' Readonly>
+                        <input type='text' id='e_sdhsplitqty' name='e_sdhsplitqty' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $psdhsplitqty; ?>' Readonly>
                     </div>
                 </div>
                 
                 <div  class='form-group'>
                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>*) Qty Splitted <span class='required'></span></label>
                     <div class='col-md-4'>
-                        <input type='text' id='e_qtysplit' name='e_qtysplit' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtysplit; ?>' >
+                        <input type='text' onblur="SesuaikanQtySplit()" id='e_qtysplit' name='e_qtysplit' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pqtysplit; ?>' >
                     </div>
                 </div>
                 
+                <div class='form-group'>
+                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                    <div class='col-md-4'>
+                        <button type='button' class='btn btn-success' onclick='disp_confirmsimpandata()'>Save</button>
+                    </div>
+                </div>
                 
             </div>
             
@@ -236,6 +244,148 @@
             data:"udcab="+idcab+"&udarea="+idarea,
             success:function(data){
                 $("#cb_custid").html(data);
+            }
+        });
+    }
+    
+    function SesuaikanQtySplit() {
+        var eqtysisa=document.getElementById('e_qtysisapil').value;
+        var eqtyfak=document.getElementById('e_qtyfakturpil').value;
+        var eqtysdhsplt=document.getElementById('e_sdhsplitqty').value;
+        var eqtysplt=document.getElementById('e_qtysplit').value;
+        
+        var newchar = '';
+        
+        if (eqtyfak=="") eqtyfak="0";
+        eqtyfak = eqtyfak.split(',').join(newchar);
+        
+        if (eqtysisa=="") eqtysisa="0";
+        eqtysisa = eqtysisa.split(',').join(newchar);
+        
+        if (eqtysdhsplt=="") eqtysdhsplt="0";
+        eqtysdhsplt = eqtysdhsplt.split(',').join(newchar);
+        
+        if (eqtysplt=="") eqtysplt="0";
+        eqtysplt = eqtysplt.split(',').join(newchar);
+        
+        if (parseFloat(eqtysplt)>parseFloat(eqtysisa)) {
+            document.getElementById('e_qtysplit').value=eqtysisa;
+        }
+        
+        
+    }
+    
+    function disp_confirmsimpandata() {
+        var enamafilter=document.getElementById('e_fakturidpil').value;//faktur id
+        var edistid=document.getElementById('e_distidpil').value;
+        var eecab=document.getElementById('e_idecabpil').value;
+        var ebrgid=document.getElementById('e_idbrg').value;
+        var eidprod=document.getElementById('e_idprod').value;
+        var ebln=document.getElementById('e_blnpil').value;
+        var etgljual=document.getElementById('e_tgljualpil').value;
+        var eqtysisa=document.getElementById('e_qtysisapil').value;
+        var eqtyfak=document.getElementById('e_qtyfakturpil').value;
+        var eqtysdhsplt=document.getElementById('e_sdhsplitqty').value;
+        var eqtysplt=document.getElementById('e_qtysplit').value;
+        var eidcabang=document.getElementById('cb_cabangid').value;
+        var eidarea=document.getElementById('cb_areaid').value;
+        var eidcust=document.getElementById('cb_custid').value;
+        
+        if (edistid=="") {
+            alert("distributor kosong...");
+            return false;
+        }
+        
+        if (eecab=="") {
+            alert("ecabang kosong...");
+            return false;
+        }
+        
+        if (ebrgid=="" || eidprod=="") {
+            alert("produk kosong...");
+            return false;
+        }
+        
+        if (ebln=="" || etgljual=="") {
+            alert("tanggal kosong...");
+            return false;
+        }
+        
+        if (eidcabang=="") {
+            alert("Cabang SDM belum diisi...");
+            return false;
+        }
+        
+        if (eidarea=="") {
+            alert("Area SDM belum diisi...");
+            return false;
+        }
+        
+        if (eidcust=="") {
+            alert("Customer SDM belum diisi...");
+            return false;
+        }
+        
+        if (eqtyfak=="" || eqtyfak=="0") {
+            alert("QTY Faktur Kosong...");
+            return false;
+        }
+        
+        if (eqtysisa=="" || eqtysisa=="0") {
+            alert("QTY Sisa Kosong...");
+            return false;
+        }
+        
+        if (eqtysplt=="" || eqtysplt=="0") {
+            alert("QTY Splitted belum diisi...");
+            document.getElementById('e_qtysplit').focus();
+            return false;
+        }
+        
+        var newchar = '';
+        
+        if (eqtyfak=="") eqtyfak="0";
+        eqtyfak = eqtyfak.split(',').join(newchar);
+        
+        if (eqtysisa=="") eqtysisa="0";
+        eqtysisa = eqtysisa.split(',').join(newchar);
+        
+        if (eqtysdhsplt=="") eqtysdhsplt="0";
+        eqtysdhsplt = eqtysdhsplt.split(',').join(newchar);
+        
+        if (eqtysplt=="") eqtysplt="0";
+        eqtysplt = eqtysplt.split(',').join(newchar);
+        
+        if (parseFloat(eqtysplt)>parseFloat(eqtysisa)) {
+            eqtysplt=eqtysisa;
+        }
+        
+        var cmt = confirm('pastikan data yang terisi sudah sesuai....!!!\n\
+Jika sudah klik OK');
+        if (cmt == false) {
+            return false;
+        }
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var act = urlku.searchParams.get("act");
+        
+        $.ajax({
+            type:"post",
+            url:"module/map_bagisalesmanual/simpandatasplit.php?module="+module+"&act=datasimpansplit",
+            data:"udistid="+edistid+"&uecab="+eecab+"&ufakturid="+enamafilter+"&ubrgid="+ebrgid+"&uidprod="+eidprod+
+                    "&ubln="+ebln+"&utgljual="+etgljual+"&uqtysisa="+eqtysisa+"&uqtyfak="+eqtyfak+"&uqtysdhsplt="+eqtysdhsplt+
+                    "&uqtysplt="+eqtysplt+"&uidcabang="+eidcabang+"&uidarea="+eidarea+"&uidcust="+eidcust,
+            success:function(data){
+                if (data=="berhasil") {
+                    alert(data);
+                    //disp_datamapingbyfaktur("2", enamafilter);
+                }else{
+                    alert(data);
+                }
+                
             }
         });
     }

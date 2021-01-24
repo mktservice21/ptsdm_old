@@ -43,9 +43,9 @@ $pidjbt=$_SESSION['JABATANID'];
                                             <?PHP
                                                 echo "<option value=''>--Piihan--</option>";
 
-                                                $query_aktif ="select distid, nama from MKT.distrib0 ";
+                                                $query_aktif ="select distid, nama from dbtemp.distrib0 ";
                                                 $query_aktif .=" order by nama";
-                                                $tampil= mysqli_query($cnmy, $query_aktif);
+                                                $tampil= mysqli_query($cnms, $query_aktif);
                                                 while ($row= mysqli_fetch_array($tampil)) {
                                                     $piddis=$row['distid'];
                                                     $pnmdist=$row['nama'];
@@ -67,7 +67,7 @@ $pidjbt=$_SESSION['JABATANID'];
                                             <?PHP
                                             echo "<option value=''>--All--</option>";
                                             if (!empty($piddistpl)) {
-                                                $query="SELECT distid, ecabangid, nama from MKT.ecabang where distid='$piddistpl' ";
+                                                $query="SELECT distid, ecabangid, nama from dbtemp.ecabang where distid='$piddistpl' ";
                                                 $query .=" order by nama";
                                                 $tampil= mysqli_query($cnms, $query);
                                                 while ($row= mysqli_fetch_array($tampil)) {

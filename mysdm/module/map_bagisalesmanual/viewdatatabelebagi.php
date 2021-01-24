@@ -95,6 +95,13 @@
 
     <div class='x_content'>
         <table>
+            <?PHP
+            if ($pecusid<>'') {
+            ?>
+            <tr><td nowrap>Faktur</td><td> : </td><td nowrap><?PHP echo "$pnmfilter"; ?></td></tr>
+            <?PHP
+            }
+            ?>
             <tr><td nowrap>Nama Cust Distributor</td><td> : </td><td nowrap><?PHP echo "$pnamadist"; ?></td></tr>
             <tr><td nowrap>Kode Cust Distributor</td><td> : </td><td nowrap><?PHP echo "$pecusid"; ?></td></tr>
             <?PHP
@@ -109,6 +116,7 @@
             }
             ?>
         </table>
+        *) <span style="color:red;">Setelah di klik tombol <b><u>Bagi Sales</u></b> Silakan scroll kepaling bawah...!!!</span>
         <hr/>
         <table id='datatablecust' class='table table-striped table-bordered' width='100%'>
             <thead>
@@ -125,6 +133,7 @@
                 $query = "select * from $tmp01 order by nmprod";
                 $tampil= mysqli_query($cnms, $query);
                 while ($row=mysqli_fetch_array($tampil)) {
+                    $pbrgid=$row['brgid'];
                     $pidprod=$row['iprodid'];
                     $pnamaprod=$row['nmprod'];
                     $pqty=$row['qbeli'];
@@ -138,12 +147,11 @@
                     
                     $psisa=(DOUBLE)$pqty-(DOUBLE)$pqtysplte;
                     
+                    $pbtnmaping="";
                     if ((DOUBLE)$psisa==0) {
                     }else{
-                        
+                        $pbtnmaping="<input type='button' value='Bagi Sales' class='btn btn-success btn-xs' onClick=\"TampilkanDataBagiSales('$piddist', '$pidecab', '$pbulan', '$pnmfilter', '$pbrgid', '$ptgljual', '$pqty', '$pqtysplte', '$psisa')\">";
                     }
-                    
-                    $pbtnmaping="<input type='button' value='Bagi Sales' class='btn btn-success btn-xs' onClick=\"TampilkanDataBagiSales('$piddist', '$pidecab', '$pbulan', '$pnmfilter', '$pidprod', '$ptgljual', '$pqty', '$pqtysplte', '$psisa')\">";
                     
                     $pqty=number_format($pqty,0,",",",");
                     $pqtysplte=number_format($pqtysplte,0,",",",");
@@ -190,6 +198,8 @@
             success:function(data){
                 $("#c-databagi").html(data);
                 $("#loading2").html("");
+                //window.scrollTo(0,document.body.scrollHeight);
+                window.scrollTo(0,document.querySelector("#c-databagi").scrollHeight);
             }
         });
     }

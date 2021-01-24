@@ -2,14 +2,14 @@
     date_default_timezone_set('Asia/Jakarta');
     ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
-    session_status();
+    session_start();
 
     $puserid="";
     if (isset($_SESSION['USERID'])) $puserid=$_SESSION['USERID'];
 
     if (empty($puserid)) {
-        //echo "ANDA HARUS LOGIN ULANG...";
-        //exit;
+        echo "ANDA HARUS LOGIN ULANG...";
+        exit;
     }
     
     $pmodule=$_GET['module'];
@@ -21,6 +21,8 @@
             
             
             $pnmtblsales=$_POST['udistnmtblsales'];
+            $pecustid=$_POST['aecustid'];
+            $pecustnm=$_POST['uecustnm'];
             $piddist=$_POST['udistid'];
             $pidecab=$_POST['uecab'];
             $pfakturid=$_POST['ufakturid'];
@@ -68,21 +70,22 @@
             
             
             include "../../config/koneksimysqli_ms.php";
+            include "../../config/common.php";
             
             
-            //echo "($pnmtblsales) - $piddist, $pidecab, $pfakturid, $pidbrg, $pidproduk, $pbln, $ptgljual, $pqtyfaktur, $pqtyfaktur, $psdhsplitqty, $pqtysisa, ";
+            //echo "$pecustid, $pecustnm - ($pnmtblsales) - $piddist, $pidecab, $pfakturid, $pidbrg, $pidproduk, $pbln, $ptgljual, $pqtyfaktur, $pqtyfaktur, $psdhsplitqty, $pqtysisa, ";
             //echo "$pqtysplitinput, $pidcabang, $pidarea, $pidicust"; exit;
             
             $query = "SELECT SUM(a.qbeli) qbeli "
-                    . " FROM MKT.$pnmtblsales as a WHERE a.cabangid='$pidecab' AND "
+                    . " FROM dbtemp.$pnmtblsales as a WHERE a.cabangid='$pidecab' AND "
                     . " a.tgljual='$ptgljual' AND a.fakturid='$pfakturid' AND a.brgid='$pidbrg'";
             $tampil= mysqli_query($cnms, $query);
             $row=mysqli_fetch_array($tampil);
             $pqtyfaktur=$row['qbeli'];
             
             $query2 = "select sum(b.qty) as qtysudh "
-                    . " from MKT.msales0 as a LEFT "
-                    . " JOIN MKT.msales1 as b on a.nomsales=b.nomsales WHERE "
+                    . " from dbtemp.msales0 as a LEFT "
+                    . " JOIN dbtemp.msales1 as b on a.nomsales=b.nomsales WHERE "
                     . " a.distid='$piddist' and a.ecabangid='$pidecab' and a.fakturid='$pfakturid' AND left(a.tgl,7)='$pbulan' AND b.iprodid='$pidproduk'";
             $tampil2= mysqli_query($cnms, $query2);
             $row2=mysqli_fetch_array($tampil2);
@@ -104,8 +107,25 @@
             
             //echo "Qty Faktur : $pqtyfaktur, Qty Sudah Split : $pqtysdhsplit, QTY Input : $pqtysplitinput"; exit;
             
+            $query = "SELECT nomsales FROM dbtemp.setup0";
+            $result = mysqli_query($cnms, $query);
+            $num_results = mysqli_num_rows($result);
+            $row = mysqli_fetch_array($result);
+            $nomsales = plus1($row['nomsales'],10);
+            $query = "UPDATE dbtemp.setup0 SET nomsales='$nomsales'";//echo"$query";
+            $result = mysqli_query($cnms, $query);
             
-            
+            //echo "$nomsales"; mysqli_close($cnms); exit;
+            if ($result) {
+                $query = "INSERT INTO dbtemp.msales0 (nomsales,icabangid,tgl,distid,ecabangid,fakturid,icustid,ecustid,user1,src) 
+                        VALUES ('$nomsales','$pidcabang','$ptgljual','$piddist','$pidecab','$pfakturid','$pidicust','$pecustid','$puserid','U')";
+                $result2 = mysqli_query($cnms, $query);
+                if ($result2) {
+                    $query = "INSERT INTO dbtemp.msales1 (nomsales,iprodid,areaid,qty,src) 
+                            VALUES ('$nomsales','$pidproduk','$pidarea','$pqtysplitinput','U')";
+                    $result3 = mysqli_query($cnms, $query);
+                }
+            }
             
             mysqli_close($cnms);
             echo "berhasil";

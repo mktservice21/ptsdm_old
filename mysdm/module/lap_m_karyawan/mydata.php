@@ -3,10 +3,10 @@
     ini_set('max_execution_time', 0);
     
 session_start();
-include "../../config/koneksimysqli_it.php";
+//include "../../config/koneksimysqli_it.php";
 include "../../config/koneksimysqli.php";
 include "../../config/fungsi_sql.php";
-
+$cnit=$cnmy;
 $pidgroup=$_SESSION['GROUP'];
 /// storing  request (ie, get/post) global array to a variable  
 $requestData= $_REQUEST;
@@ -85,15 +85,15 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $ketemu = mysqli_num_rows($edita);
     if ($ketemu>0) {
         $ad = mysqli_fetch_array($edita);
-        //$jabatan = getfieldcnit("select nama as lcfields from hrd.jabatan where jabatanId='$ad[jabatanId]'");
+        //$jabatan = getfieldcnmy("select nama as lcfields from hrd.jabatan where jabatanId='$ad[jabatanId]'");
         //$divisi = $ad["divisiId"];
-        //$atasan = getfieldcnit("select nama as lcfields from hrd.karyawan where karyawanId='$ad[atasanId]'");
+        //$atasan = getfieldcnmy("select nama as lcfields from hrd.karyawan where karyawanId='$ad[atasanId]'");
         if ($divisi=="OTC") {
-            $tempat = getfieldcnit("select nama as lcfields from MKT.iarea_o where icabangid_o='$ad[iCabangId]' and areaid_o='$ad[areaId]'");
-            $cabang = getfieldcnit("select nama as lcfields from MKT.icabang_o where icabangid_o='$ad[iCabangId]'");
+            $tempat = getfieldcnmy("select nama as lcfields from MKT.iarea_o where icabangid_o='$ad[iCabangId]' and areaid_o='$ad[areaId]'");
+            $cabang = getfieldcnmy("select nama as lcfields from MKT.icabang_o where icabangid_o='$ad[iCabangId]'");
         }else{
-            $tempat = getfieldcnit("select Nama as lcfields from MKT.iarea where iCabangId='$ad[iCabangId]' and areaId='$ad[areaId]'");
-            $cabang = getfieldcnit("select nama as lcfields from MKT.icabang where iCabangId='$ad[iCabangId]'");
+            $tempat = getfieldcnmy("select Nama as lcfields from MKT.iarea where iCabangId='$ad[iCabangId]' and areaId='$ad[areaId]'");
+            $cabang = getfieldcnmy("select nama as lcfields from MKT.icabang where iCabangId='$ad[iCabangId]'");
         }
         if (!empty($cabang)) {
             $tempat = $cabang." - ".$tempat;

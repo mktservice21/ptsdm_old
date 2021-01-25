@@ -81,14 +81,23 @@
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "select a.distid, ecabangid, a.ecustid, a.icabangid, b.areaid, a.icustid, "
+    $query = "select a.nomsales, a.distid, ecabangid, a.ecustid, a.icabangid, b.areaid, a.icustid, c.nama as nmicust, "
             . " a.fakturid, a.tgl, b.iprodid, b.qty, b.src "
             . " from dbtemp.msales0 as a LEFT "
-            . " JOIN dbtemp.msales1 as b on a.nomsales=b.nomsales WHERE "
+            . " JOIN dbtemp.msales1 as b on a.nomsales=b.nomsales "
+            . " LEFT JOIN dbtemp.icust as c on a.icabangid=c.icabangid AND b.areaid=c.areaid AND a.icustid=c.icustid WHERE "
             . " a.distid='$piddist' and a.ecabangid='$pidecab' and a.fakturid='$pnmfilter' AND left(a.tgl,7)='$pbulan'";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "Alter table $tmp01 ADD COLUMN qtysdhsplt DECIMAL(20,2)"; 
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 as a JOIN (select fakturid, iprodid, sum(qty) as qtysp from $tmp02 GROUP BY 1,2) as b on a.iprodid=b.iprodid AND a.fakturid=b.fakturid SET a.qtysdhsplt=b.qtysp"; 
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
     
     //echo "$pnamadist, $pnmtblsales, $pnamaecabang, $pecusid - $pnmecust - $icabangid_map ($pnmcabang) - $areaid_map ($pnmarea), $icustid_map - $pnmicustsdm";
 ?>
@@ -126,6 +135,9 @@
                     <th width='50px'>Qty. Splitted</th>
                     <th width='50px'>Qty. Available</th>
                     <th width='50px'></th>
+                    <th width='50px'>Customer</th>
+                    <th width='50px'>Qty</th>
+                    <th width='50px'></th>
                 </tr>
             </thead>
             <tbody>
@@ -138,12 +150,14 @@
                     $pnamaprod=$row['nmprod'];
                     $pqty=$row['qbeli'];
                     $ptgljual=$row['tgljual'];
+                    $pqtysplte=$row['qtysdhsplt'];
                     
-                    
+                    /*
                     $query = "select sum(qty) as qtysp from $tmp02 WHERE iprodid='$pidprod'";
                     $tampil2= mysqli_query($cnms, $query);
                     $row2=mysqli_fetch_array($tampil2);
                     $pqtysplte=$row2['qtysp'];
+                    */
                     
                     $psisa=(DOUBLE)$pqty-(DOUBLE)$pqtysplte;
                     
@@ -163,7 +177,44 @@
                     echo "<td nowrap align='right'>$pqtysplte</td>";
                     echo "<td nowrap align='right'>$psisa</td>";
                     echo "<td nowrap >$pbtnmaping</td>";
-                    echo "</tr>";
+                    
+                    $ppilihdetail=false;
+                    $query = "select * from $tmp02 WHERE iprodid='$pidprod'";
+                    $tampil2= mysqli_query($cnms, $query);
+                    $ketemu2=mysqli_num_rows($tampil2);
+                    if ((INT)$ketemu2>0) {
+                        while ($row2=mysqli_fetch_array($tampil2)) {
+                            $pdkode=$row2['nomsales'];
+                            $pdicustid=$row2['icustid'];
+                            $pdicustnm=$row2['nmicust'];
+                            $pdqtysplte=$row2['qty'];
+                            
+                            $pdqtysplte=number_format($pdqtysplte,0,",",",");
+                            
+                            $pbtnhapussplt="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"HapusDataSudahSplt('$pdkode', '$pnmfilter', '$pidprod')\">";
+                            
+                            if ($ppilihdetail==true) {
+                                echo "<tr>";
+                                echo "<td nowrap></td>";
+                                echo "<td nowrap align='right'></td>";
+                                echo "<td nowrap align='right'></td>";
+                                echo "<td nowrap align='right'></td>";
+                                echo "<td nowrap ></td>";
+                            }
+                            
+                            echo "<td nowrap >$pdicustnm ($pdicustid)</td>";
+                            echo "<td nowrap align='right'>$pdqtysplte</td>";
+                            echo "<td nowrap >$pbtnhapussplt</td>";
+                            echo "</tr>";
+                            $ppilihdetail=true;
+                        }
+                    }else{
+                        echo "<td nowrap ></td>";
+                        echo "<td nowrap ></td>";
+                        echo "<td nowrap ></td>";
+                        echo "</tr>";
+                    }
+                    
                 }
                 ?>
             </tbody>
@@ -210,6 +261,40 @@
                 window.scrollTo(0,document.querySelector("#c-databagi").scrollHeight);
             }
         });
+    }
+    
+    function HapusDataSudahSplt(skode, ifaktur, iproduk) {
+        if (skode=="") {
+            alert("Tidak ada data yang akan dihapus...");
+            return false;
+        }
+        
+        var cmt = confirm('Apakah akan hapus data... ???');
+        if (cmt == false) {
+            return false;
+        }
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var act = urlku.searchParams.get("act");
+        
+        $.ajax({
+            type:"post",
+            url:"module/map_bagisalesmanual/simpandatasplit.php?module="+module+"&act=hapusdatasplit",
+            data:"ukode="+skode+"&uproduk="+iproduk+"&ufakturid="+ifaktur,
+            success:function(data){
+                var istatus=data.trim();
+                if (istatus=="berhasil") {
+                    disp_datamapingbyfaktur("2", ifaktur);
+                }else{
+                    alert(data);
+                }
+                
+            }
+        });
+        
     }
 </script>
 

@@ -29,23 +29,23 @@
     
     include "../../config/koneksimysqli_ms.php";
     
-    $query = "SELECT distid, nama, sls_data, initial FROM dbtemp.distrib0 WHERE distid='$piddist'";
+    $query = "SELECT distid, nama, sls_data, initial FROM MKT.distrib0 WHERE distid='$piddist'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnamadist=$row['nama'];
     $pnmtblsales=$row['sls_data'];
     
-    $query = "SELECT nama FROM dbtemp.ecabang WHERE distid='$piddist' AND ecabangid='$pidecab'";
+    $query = "SELECT nama FROM MKT.ecabang WHERE distid='$piddist' AND ecabangid='$pidecab'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnamaecabang=$row['nama'];
     
-    $query = "SELECT DISTINCT a.custid FROM dbtemp.$pnmtblsales as a WHERE a.cabangid='$pidecab' AND a.fakturid='$pnmfilter' AND LEFT(a.tgljual,7)='$pbulan'";
+    $query = "SELECT DISTINCT a.custid FROM MKT.$pnmtblsales as a WHERE a.cabangid='$pidecab' AND a.fakturid='$pnmfilter' AND LEFT(a.tgljual,7)='$pbulan'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pecusid=$row['custid'];
     
-    $query = "SELECT nama, icabangid, areaid, icustid FROM dbtemp.ecust WHERE distid='$piddist' AND cabangid='$pidecab' AND ecustid='$pecusid'";
+    $query = "SELECT nama, icabangid, areaid, icustid FROM MKT.ecust WHERE distid='$piddist' AND cabangid='$pidecab' AND ecustid='$pecusid'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnmecust=$row['nama'];
@@ -53,12 +53,12 @@
     $areaid_map=$row['areaid'];
     $icustid_map=$row['icustid'];
     
-    $query = "SELECT nama FROM dbtemp.icust WHERE icabangid='$icabangid_map' AND areaid='$areaid_map' AND icustid='$icustid_map'";
+    $query = "SELECT nama FROM MKT.icust WHERE icabangid='$icabangid_map' AND areaid='$areaid_map' AND icustid='$icustid_map'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnmicustsdm=$row['nama'];
     
-    $query = "SELECT icabang.nama as nmcab, iarea.nama as nmarea FROM dbtemp.icabang JOIN dbtemp.iarea ON icabang.icabangid=iarea.icabangid WHERE icabang.icabangid='$icabangid_map' AND iarea.areaid='$areaid_map'";
+    $query = "SELECT icabang.nama as nmcab, iarea.nama as nmarea FROM MKT.icabang JOIN MKT.iarea ON icabang.icabangid=iarea.icabangid WHERE icabang.icabangid='$icabangid_map' AND iarea.areaid='$areaid_map'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnmcabang=$row['nmcab'];
@@ -66,14 +66,14 @@
     
     
     $now=date("mdYhis");
-    $tmp01 =" dbtemp.tmpslsmapcust01_".$puserid."_$now ";
-    $tmp02 =" dbtemp.tmpslsmapcust02_".$puserid."_$now ";
+    $tmp01 =" MKT.tmpslsmapcust01_".$puserid."_$now ";
+    $tmp02 =" MKT.tmpslsmapcust02_".$puserid."_$now ";
     
     
     $query = "SELECT a.cabangid, a.brgid, a.custid, a.tgljual, a.harga, a.fakturid, "
             . " e.iprodid, e.nama as nmprod, SUM(a.qbeli) qbeli "
-            . " FROM dbtemp.$pnmtblsales as a "
-            . " JOIN dbtemp.eproduk as e ON a.brgid=e.eprodid  WHERE a.cabangid='$pidecab' "
+            . " FROM MKT.$pnmtblsales as a "
+            . " JOIN MKT.eproduk as e ON a.brgid=e.eprodid  WHERE a.cabangid='$pidecab' "
             . " AND LEFT(tgljual,7)='$pbulan' AND a.fakturid='$pnmfilter' AND e.distid='$piddist' "
             . " GROUP BY 1,2,3,4,5,6,7,8 ORDER BY nmprod";
     //echo "$query";
@@ -83,9 +83,9 @@
     
     $query = "select a.nomsales, a.distid, ecabangid, a.ecustid, a.icabangid, b.areaid, a.icustid, c.nama as nmicust, "
             . " a.fakturid, a.tgl, b.iprodid, b.qty, b.src "
-            . " from dbtemp.msales0 as a LEFT "
-            . " JOIN dbtemp.msales1 as b on a.nomsales=b.nomsales "
-            . " LEFT JOIN dbtemp.icust as c on a.icabangid=c.icabangid AND b.areaid=c.areaid AND a.icustid=c.icustid WHERE "
+            . " from MKT.msales0 as a LEFT "
+            . " JOIN MKT.msales1 as b on a.nomsales=b.nomsales "
+            . " LEFT JOIN MKT.icust as c on a.icabangid=c.icabangid AND b.areaid=c.areaid AND a.icustid=c.icustid WHERE "
             . " a.distid='$piddist' and a.ecabangid='$pidecab' and a.fakturid='$pnmfilter' AND left(a.tgl,7)='$pbulan'";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnms, $query);

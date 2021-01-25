@@ -120,6 +120,7 @@
                             type:"post",
                             url:"module/map_customersdm/viewdatacust.php?module=caridataarea",
                             data:"ucabang="+ecabang,
+                            async:false,
                             success:function(data){
                                 $("#cb_area").html(data);
                             }

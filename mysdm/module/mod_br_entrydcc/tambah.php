@@ -428,9 +428,10 @@ $pjabatanid = $row['jabatanId'];
                                                     $query .= " AND b.jabatanId not in ('19') ";
 
                                                     $querykry .= " AND b.karyawanid not in ('0000002083') ";
-                                                    $querykry .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ')  "
-                                                            . " and LEFT(b.nama,7) NOT IN ('NN DM - ')  "
-                                                            . " and LEFT(b.nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-') "
+                                                    //$querykry .= " AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ') ";
+                                                    //$querykry .= " and LEFT(b.nama,3) NOT IN ('DR ', 'DR-', 'JKT', 'NN-') ";
+                                                    $querykry .=" and LEFT(b.nama,7) NOT IN ('NN DM - ')  "
+                                                            . " and LEFT(b.nama,3) NOT IN ('TO.', 'TO-') "
                                                             . " AND LEFT(b.nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ') ";
                                                     $querykry .= " OR b.karyawanid='$pmrid' ";
                                                     $querykry .=" order by b.nama";

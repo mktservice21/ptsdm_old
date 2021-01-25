@@ -1,7 +1,7 @@
 <?PHP
     $hari_ini = date("Y-m-d");
     $tgl_pertama = date('F Y', strtotime($hari_ini));
-    include "config/koneksimysqli_it.php";
+    //include "config/koneksimysqli_it.php";
     $icabang="";
     if (!empty($_SESSION['SPGMSTPRSMCAB'])) $icabang=$_SESSION['SPGMSTPRSMCAB'];
     if (!empty($_SESSION['SPGMSTPRSMTGL'])) $tgl_pertama=$_SESSION['SPGMSTPRSMTGL'];

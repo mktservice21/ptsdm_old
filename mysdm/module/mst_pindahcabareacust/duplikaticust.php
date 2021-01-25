@@ -84,7 +84,7 @@ $act="duplikaticust";
                                                 $query = "select DISTINCT a.icabangid as icabangid, a.areaid as areaid, a.nama as nama "
                                                         . " from MKT.iarea as a JOIN MKT.ecust as b on a.icabangid=b.icabangid AND a.areaid=b.areaid "
                                                         . " JOIN MKT.icust as c on b.icabangid=c.icabangid AND b.areaid=c.areaid AND b.icustid=c.icustid "
-                                                        . " WHERE a.icabangid='$pidcab_ol' AND IFNULL(a.aktif,'')='Y' ";
+                                                        . " WHERE a.icabangid='$pidcab_ol'  ";//AND IFNULL(a.aktif,'')='Y'
                                                 $query .= " Order by nama";
                                                 $tampil =mysqli_query($cnit, $query);
                                                 while ($irow=mysqli_fetch_array($tampil)){

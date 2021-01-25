@@ -29,7 +29,7 @@
     
     include "../../config/koneksimysqli_ms.php";
     
-    $query = "SELECT distid, nama, sls_data, initial FROM dbtemp.distrib0 WHERE distid='$piddist'";
+    $query = "SELECT distid, nama, sls_data, initial FROM MKT.distrib0 WHERE distid='$piddist'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnamadist=$row['nama'];
@@ -37,11 +37,11 @@
     
     
     $now=date("mdYhis");
-    $tmp01 =" dbtemp.tmpslsmapcustf01_".$puserid."_$now ";
+    $tmp01 =" MKT.tmpslsmapcustf01_".$puserid."_$now ";
     
     $query = "select distinct a.fakturid, a.tgljual, a.cabangid, a.custid, b.nama "
-            . " from dbtemp.$pnmtblsales as a "
-            . " LEFT JOIN dbtemp.ecust as b on '$piddist'=b.distid "
+            . " from MKT.$pnmtblsales as a "
+            . " LEFT JOIN MKT.ecust as b on '$piddist'=b.distid "
             . " and a.custid=b.ecustid and a.cabangid=b.cabangid where "
             . " a.cabangid='$pidecab' and left(a.tgljual,7)='$pbulan'";
     if (!empty($pnmfilter)) {

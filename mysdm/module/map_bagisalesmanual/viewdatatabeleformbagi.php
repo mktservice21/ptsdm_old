@@ -363,8 +363,8 @@
         }
         
         if (eidcust=="") {
-            //alert("Customer SDM belum diisi...");
-            //return false;
+            alert("Customer SDM belum diisi...");
+            return false;
         }
         
         if (eqtyfak=="" || eqtyfak=="0") {

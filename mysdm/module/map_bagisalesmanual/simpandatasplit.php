@@ -59,7 +59,7 @@
             if ($pidcabang=="") { echo "Cabang SDM Kosong..."; exit; }
             if ($pidarea=="") { echo "Area SDM Kosong..."; exit; }
             
-            //if ($pidicust=="") { echo "Customer SDM Kosong..."; exit; }
+            if ($pidicust=="") { echo "Customer SDM Kosong..."; exit; }
             
             if ($pqtysplitinput=="0") { echo "QTY Splitted Input Kosong..."; exit; }
             
@@ -131,11 +131,28 @@
             echo "berhasil";
             exit;
             
+        }elseif ($pact=="hapusdatasplit") {
+            include "../../config/koneksimysqli_ms.php";
+            
+            $pkodeinput=$_POST['ukode'];
+            $pidprod=$_POST['uproduk'];
+            $pfakturid=$_POST['ufakturid'];
+            
+            $query = "DELETE FROM dbtemp.msales1 WHERE nomsales IN (select nomsales FROM dbtemp.msales0 WHERE "
+                    . "nomsales='$pkodeinput' AND fakturid='$pfakturid') AND nomsales='$pkodeinput' AND iprodid='$pidprod' LIMIT 1";
+            $result = mysqli_query($cnms, $query);
+            if ($result) {
+                $query2 = "DELETE FROM dbtemp.msales0 WHERE nomsales='$pkodeinput' AND fakturid='$pfakturid' LIMIT 1";
+                $result2 = mysqli_query($cnms, $query2);
+            }
+            mysqli_close($cnms);
+            echo "berhasil";
+            exit;
         }
         
     }
     
-    echo "tidak ada data yang disimpan...";
+    echo "tidak ada data yang diproses...";
     
 ?>
 

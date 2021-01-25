@@ -199,6 +199,18 @@ $pidjbt=$_SESSION['JABATANID'];
     });
 
     function disp_viewdata() {
+        var edistid=document.getElementById('cb_dist').value;
+        var ecabid=document.getElementById('cb_ecabang').value;
+        if (edistid=="") {
+            alert("Distirbutor Belum dipilih...");
+            return false;
+        }
+        
+        if (ecabid=="") {
+            alert("Cabang Belum dipilih...");
+            return false;
+        }
+        
         distp_datafaktur();
         disp_datamaping();
         $("#c-databagi").html("");

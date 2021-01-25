@@ -53,7 +53,7 @@ $act="duplikaticust";
                                         <select class='form-control input-sm' id='cb_daricabang' name='cb_daricabang' onchange="showDataDariArea()" data-live-search="true">
                                             <?PHP 
                                             echo "<option value='' selected>--Pilih--</option>";
-                                            $query = "select icabangid as icabangid, nama as nama from MKT.icabang WHERE ifnull(aktif,'')<>'N'";
+                                            $query = "select icabangid as icabangid, nama as nama from MKT.icabang WHERE 1=1";//ifnull(aktif,'')<>'N'
                                             $query .= " AND left(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
                                             $query .= " Order by nama";
                                             $tampil =mysqli_query($cnit, $query);

@@ -77,15 +77,15 @@
             //echo "$pqtysplitinput, $pidcabang, $pidarea, $pidicust"; exit;
             
             $query = "SELECT SUM(a.qbeli) qbeli "
-                    . " FROM dbtemp.$pnmtblsales as a WHERE a.cabangid='$pidecab' AND "
+                    . " FROM MKT.$pnmtblsales as a WHERE a.cabangid='$pidecab' AND "
                     . " a.tgljual='$ptgljual' AND a.fakturid='$pfakturid' AND a.brgid='$pidbrg'";
             $tampil= mysqli_query($cnms, $query);
             $row=mysqli_fetch_array($tampil);
             $pqtyfaktur=$row['qbeli'];
             
             $query2 = "select sum(b.qty) as qtysudh "
-                    . " from dbtemp.msales0 as a LEFT "
-                    . " JOIN dbtemp.msales1 as b on a.nomsales=b.nomsales WHERE "
+                    . " from MKT.msales0 as a LEFT "
+                    . " JOIN MKT.msales1 as b on a.nomsales=b.nomsales WHERE "
                     . " a.distid='$piddist' and a.ecabangid='$pidecab' and a.fakturid='$pfakturid' AND left(a.tgl,7)='$pbulan' AND b.iprodid='$pidproduk'";
             $tampil2= mysqli_query($cnms, $query2);
             $row2=mysqli_fetch_array($tampil2);
@@ -107,21 +107,21 @@
             
             //echo "Qty Faktur : $pqtyfaktur, Qty Sudah Split : $pqtysdhsplit, QTY Input : $pqtysplitinput"; exit;
             
-            $query = "SELECT nomsales FROM dbtemp.setup0";
+            $query = "SELECT nomsales FROM MKT.setup0";
             $result = mysqli_query($cnms, $query);
             $num_results = mysqli_num_rows($result);
             $row = mysqli_fetch_array($result);
             $nomsales = plus1($row['nomsales'],10);
-            $query = "UPDATE dbtemp.setup0 SET nomsales='$nomsales'";//echo"$query";
+            $query = "UPDATE MKT.setup0 SET nomsales='$nomsales'";//echo"$query";
             $result = mysqli_query($cnms, $query);
             
             //echo "$nomsales"; mysqli_close($cnms); exit;
             if ($result) {
-                $query = "INSERT INTO dbtemp.msales0 (nomsales,icabangid,tgl,distid,ecabangid,fakturid,icustid,ecustid,user1,src) 
+                $query = "INSERT INTO MKT.msales0 (nomsales,icabangid,tgl,distid,ecabangid,fakturid,icustid,ecustid,user1,src) 
                         VALUES ('$nomsales','$pidcabang','$ptgljual','$piddist','$pidecab','$pfakturid','$pidicust','$pecustid','$puserid','U')";
                 $result2 = mysqli_query($cnms, $query);
                 if ($result2) {
-                    $query = "INSERT INTO dbtemp.msales1 (nomsales,iprodid,areaid,qty,src) 
+                    $query = "INSERT INTO MKT.msales1 (nomsales,iprodid,areaid,qty,src) 
                             VALUES ('$nomsales','$pidproduk','$pidarea','$pqtysplitinput','U')";
                     $result3 = mysqli_query($cnms, $query);
                 }
@@ -138,11 +138,11 @@
             $pidprod=$_POST['uproduk'];
             $pfakturid=$_POST['ufakturid'];
             
-            $query = "DELETE FROM dbtemp.msales1 WHERE nomsales IN (select nomsales FROM dbtemp.msales0 WHERE "
+            $query = "DELETE FROM MKT.msales1 WHERE nomsales IN (select nomsales FROM MKT.msales0 WHERE "
                     . "nomsales='$pkodeinput' AND fakturid='$pfakturid') AND nomsales='$pkodeinput' AND iprodid='$pidprod' LIMIT 1";
             $result = mysqli_query($cnms, $query);
             if ($result) {
-                $query2 = "DELETE FROM dbtemp.msales0 WHERE nomsales='$pkodeinput' AND fakturid='$pfakturid' LIMIT 1";
+                $query2 = "DELETE FROM MKT.msales0 WHERE nomsales='$pkodeinput' AND fakturid='$pfakturid' LIMIT 1";
                 $result2 = mysqli_query($cnms, $query2);
             }
             mysqli_close($cnms);

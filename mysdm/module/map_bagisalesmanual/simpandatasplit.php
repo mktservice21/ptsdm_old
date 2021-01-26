@@ -97,7 +97,7 @@
             
             
             $qtysisa=(DOUBLE)$pqtyfaktur-(DOUBLE)$pqtysdhsplit;
-            if ((DOUBLE)$qtysisa<=0) {
+            if ((DOUBLE)$qtysisa==0) {
                 echo "Sisa 0..., tidak ada yang disimpan..."; mysqli_close($cnms); exit;
             }
             

@@ -2,7 +2,8 @@
 session_status();
 
 if ($_GET['module']=="caridataarea") {
-    include "../../config/koneksimysqli.php";
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $pcabangidpl=$_POST['ucabang'];
     
     echo "<option value=''>--All--</option>";

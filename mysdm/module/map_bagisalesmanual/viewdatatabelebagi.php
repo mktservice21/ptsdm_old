@@ -52,11 +52,13 @@
     $icabangid_map=$row['icabangid'];
     $areaid_map=$row['areaid'];
     $icustid_map=$row['icustid'];
+    if (!empty($pnmecust)) $pnmecust = str_replace('"', ' ', $pnmecust);
     
     $query = "SELECT nama FROM MKT.icust WHERE icabangid='$icabangid_map' AND areaid='$areaid_map' AND icustid='$icustid_map'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnmicustsdm=$row['nama'];
+    if (!empty($pnmicustsdm)) $pnmicustsdm = str_replace('"', ' ', $pnmicustsdm);
     
     $query = "SELECT icabang.nama as nmcab, iarea.nama as nmarea FROM MKT.icabang JOIN MKT.iarea ON icabang.icabangid=iarea.icabangid WHERE icabang.icabangid='$icabangid_map' AND iarea.areaid='$areaid_map'";
     $tampil=mysqli_query($cnms, $query);

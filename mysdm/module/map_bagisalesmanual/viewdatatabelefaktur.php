@@ -73,6 +73,8 @@
                     $pidecust=$row['custid'];
                     $ptgljual=$row['tgljual'];
                     
+                    //if (!empty($pnamaecust)) $pnamaecust = str_replace('"', ' ', $pnamaecust);
+                    
                     $pbtnfakturid="<input type='button' value='$pidfaktur' class='btn btn-warning btn-xs' onClick=\"disp_datamapingbyfaktur('1', '$pidfaktur')\">";
                     
                     echo "<tr>";

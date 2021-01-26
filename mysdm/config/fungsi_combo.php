@@ -317,7 +317,8 @@ function PilihKaryawanAktif($konek, $adapilihan, $ygdipilih, $hanyaygaktif, $sts
 }
 
 function PilihAreaCabangAll($konek, $adapilihan, $ygdipilih, $hanyaygaktif, $karyawan, $level, $divisi, $cabang, $area) {
-    include $konek."koneksimysqli_it.php";
+    include $konek."koneksimysqli.php";
+    $cnit=$cnmy;
     $karyawan = trim($karyawan);
     $pdivisi = trim($divisi);
     $pelevel = trim($level);

@@ -125,15 +125,15 @@
                             <?php
                             echo "<option value='' selected>--Pilih--</option>";
                             
-                                if ($fjbtid=="38") {
+                                if ($fjbtid=="38x") {
                                     $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
                                             . " JOIN hrd.rsm_auth as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
                                     $query .=" order by a.nama";
-                                }elseif ($fjbtid=="10" OR $fjbtid=="18") {
+                                }elseif ($fjbtid=="10x" OR $fjbtid=="18x") {
                                     $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
                                             . " JOIN MKT.ispv0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
                                     $query .=" order by a.nama";
-                                }elseif ($fjbtid=="15") {
+                                }elseif ($fjbtid=="15x") {
                                     $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
                                             . " JOIN MKT.imr0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
                                     $query .=" order by a.nama";

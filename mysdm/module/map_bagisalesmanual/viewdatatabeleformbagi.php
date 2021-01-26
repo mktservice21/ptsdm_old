@@ -232,7 +232,7 @@
                 <div  class='form-group'>
                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>*) Qty Splitted <span class='required'></span></label>
                     <div class='col-md-4'>
-                        <input type='text' onblur="SesuaikanQtySplit()" id='e_qtysplit' name='e_qtysplit' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pqtysplit; ?>' >
+                        <input type='text' onblur="SesuaikanQtySplit()" id='e_qtysplit' name='e_qtysplit' oninput="this.value= ['','-'].includes(this.value) ? this.value : this.value|0" class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtysplit; ?>' >
                     </div>
                 </div>
                 

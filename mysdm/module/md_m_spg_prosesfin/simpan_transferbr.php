@@ -24,7 +24,7 @@
     }
     
     include "../../config/koneksimysqli.php";
-    include "../../config/koneksimysqli_it.php";
+    //include "../../config/koneksimysqli_it.php";
     
     $module=$_GET['module'];
     $act=$_GET['act'];
@@ -224,7 +224,7 @@
         mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
 
         mysqli_close($cnmy);
-        mysqli_close($cnit);
+        //mysqli_close($cnit);
         
         
     header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');

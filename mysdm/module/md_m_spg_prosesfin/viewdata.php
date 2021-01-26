@@ -128,7 +128,7 @@ if ($_GET['module']=="gantitombol") {
     
 }elseif ($_GET['module']=="hapusdatabrtrans") {
     include "../../config/koneksimysqli.php";
-    include "../../config/koneksimysqli_it.php";
+    //include "../../config/koneksimysqli_it.php";
     $berhasil="tidak ada data yang dihapus...";
     
     $pbrid=$_POST['ubridotc'];
@@ -153,8 +153,8 @@ if ($_GET['module']=="gantitombol") {
     }
     
     $query = "DELETE FROM hrd.br_otc WHERE brOtcId='$pbrid'";
-    mysqli_query($cnit, $query);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; exit; }
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     $query = "DELETE FROM dbmaster.t_suratdana_br1 WHERE idinput='$pidinput' AND bridinput='$pbrid' AND kodeinput='D'";
     mysqli_query($cnmy, $query);
@@ -166,7 +166,7 @@ if ($_GET['module']=="gantitombol") {
     $berhasil="";
     
     mysqli_close($cnmy);
-    mysqli_close($cnit);
+    //mysqli_close($cnit);
     
     echo $berhasil;
     

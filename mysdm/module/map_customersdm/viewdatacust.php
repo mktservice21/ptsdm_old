@@ -43,7 +43,8 @@ if ($_GET['module']=="caridataarea") {
     $fjbtid=$_SESSION['JABATANID'];
     $fkaryawan=$_SESSION['IDCARD'];
     
-    include "../../config/koneksimysqli.php";
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     if ($fjbtid=="10" OR $fjbtid=="18") {
         
         $query = "select DISTINCT a.icabangid as icabangid, a.areaid as areaid, a.nama as nama "

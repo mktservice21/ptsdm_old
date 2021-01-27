@@ -93,7 +93,6 @@
                         <input type='text' id='e_idprod' name='e_idprod' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidproduk; ?>' Readonly>
                         <input type='text' id='e_blnpil' name='e_blnpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pbln; ?>' Readonly>
                         <input type='text' id='e_tgljualpil' name='e_tgljualpil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $ptgljual; ?>' Readonly>
-                        <input type='text' id='e_qtysisapil' name='e_qtysisapil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtysisa; ?>' Readonly>
                     </div>
                 </div>
                 
@@ -230,6 +229,13 @@
                 </div>
                 
                 <div  class='form-group'>
+                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>*) Qty Available <span class='required'></span></label>
+                    <div class='col-md-4'>
+                        <input type='text' id='e_qtysisapil' name='e_qtysisapil' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtysisa; ?>' Readonly>
+                    </div>
+                </div>
+                
+                <div  class='form-group'>
                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>*) Qty Splitted <span class='required'></span></label>
                     <div class='col-md-4'>
                         <input type='text' onblur="SesuaikanQtySplit()" id='e_qtysplit' name='e_qtysplit' oninput="this.value= ['','-'].includes(this.value) ? this.value : this.value|0" class='form-control col-md-7 col-xs-12' value='<?PHP echo $pqtysplit; ?>' >
@@ -300,8 +306,37 @@
         if (eqtysplt=="") eqtysplt="0";
         eqtysplt = eqtysplt.split(',').join(newchar);
         
-        if (parseFloat(eqtysplt)>parseFloat(eqtysisa)) {
-            document.getElementById('e_qtysplit').value=eqtysisa;
+        var iplus_qtyfak=eqtyfak;
+        var iplus_qtysisa=eqtysisa;
+        var iplus_qtysdh=eqtysdhsplt;
+        var iplus_qtysplt=eqtysplt;
+        
+        var inol="0";
+        var imin="-1";
+        if (parseFloat(iplus_qtyfak)<parseFloat(inol)) { iplus_qtyfak=parseFloat(imin)*parseFloat(iplus_qtyfak); }
+        if (parseFloat(iplus_qtysisa)<parseFloat(inol)) { iplus_qtysisa=parseFloat(imin)*parseFloat(iplus_qtysisa); }
+        if (parseFloat(iplus_qtysdh)<parseFloat(inol)) { iplus_qtysdh=parseFloat(imin)*parseFloat(iplus_qtysdh); }
+        if (parseFloat(iplus_qtysplt)<parseFloat(inol)) { iplus_qtysplt=parseFloat(imin)*parseFloat(iplus_qtysplt); }
+        
+        if (parseFloat(eqtysisa)<parseFloat(inol)) {
+            if (parseFloat(eqtysplt)<parseFloat(inol)) {
+                if (parseFloat(iplus_qtysplt)>parseFloat(iplus_qtysisa)) {
+                    document.getElementById('e_qtysplit').value=eqtysisa;
+                }
+            }else{
+                //alert(eqtysplt+" "+iplus_qtysisa);
+                if (parseFloat(eqtysplt)>parseFloat(eqtysisa)) {
+                    document.getElementById('e_qtysplit').value=eqtysisa;
+                }
+            }
+        }else{
+            if (parseFloat(eqtysplt)<parseFloat(inol) && parseFloat(eqtysisa)>parseFloat(inol)) {
+                document.getElementById('e_qtysplit').value=eqtysisa;
+            }else{
+                if (parseFloat(eqtysplt)>parseFloat(eqtysisa)) {
+                    document.getElementById('e_qtysplit').value=eqtysisa;
+                }
+            }
         }
         
         

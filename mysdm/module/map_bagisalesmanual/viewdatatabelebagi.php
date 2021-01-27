@@ -62,6 +62,11 @@
     if (!empty($pnmicustsdm)) $pnmicustsdm = str_replace('"', ' ', $pnmicustsdm);
     if (!empty($pnmicustsdm)) $pnmicustsdm = str_replace('*', ' ', $pnmicustsdm);
     
+    
+        if (!empty($pnmecust)) $pnmecust=strip_tags_content($pnmecust);
+        if (!empty($pnmicustsdm)) $pnmicustsdm = preg_replace("/[\\n\\r]+/", "", $pnmicustsdm);
+                            
+                            
     $query = "SELECT icabang.nama as nmcab, iarea.nama as nmarea FROM MKT.icabang JOIN MKT.iarea ON icabang.icabangid=iarea.icabangid WHERE icabang.icabangid='$icabangid_map' AND iarea.areaid='$areaid_map'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
@@ -303,6 +308,10 @@
 </script>
 
 <?PHP
+function strip_tags_content($text) {
+    return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text);
+}
+
 hapusdata:
     mysqli_query($cnms, "drop TEMPORARY table $tmp01");
     mysqli_query($cnms, "drop TEMPORARY table $tmp02");

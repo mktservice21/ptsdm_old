@@ -38,7 +38,7 @@
         switch($_GET['act']){
             default:
                 
-                //mysqli_query($cnmy, "CALL dbmaster.proses_data_karyawan_hrd()");
+                mysqli_query($cnmy, "CALL dbmaster.proses_data_karyawan_hrd()");
                 
                 ?>
         
@@ -101,10 +101,10 @@
                                     <select class='form-control input-sm' id='e_jabatan' name='e_jabatan'>
                                       <option value='' selected>-- Pilihan --</option>
                                       <?PHP
-                                        //include "config/koneksimysqli_it.php";
+                                        include "config/koneksimysqli_it.php";
                                         $query="SELECT jabatanId, nama FROM hrd.jabatan ";
                                         $query .=" order by jabatanId";
-                                        $sql=mysqli_query($cnmy, $query);
+                                        $sql=mysqli_query($cnit, $query);
                                         while ($Xt=mysqli_fetch_array($sql)){
                                             if ($Xt['jabatanId']==$_SESSION['FMSTJBT'])
                                                 echo "<option value='$Xt[jabatanId]' selected>$Xt[jabatanId] - $Xt[nama]</option>";

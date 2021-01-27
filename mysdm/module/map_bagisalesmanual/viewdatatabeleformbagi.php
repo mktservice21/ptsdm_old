@@ -432,8 +432,11 @@
         if (eqtysplt=="") eqtysplt="0";
         eqtysplt = eqtysplt.split(',').join(newchar);
         
+        
+        
+        
         if (parseFloat(eqtysplt)>parseFloat(eqtysisa)) {
-            eqtysplt=eqtysisa;
+            //eqtysplt=eqtysisa;
         }
         
         var cmt = confirm('pastikan data yang terisi sudah sesuai....!!!\n\

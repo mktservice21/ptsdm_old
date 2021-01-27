@@ -102,7 +102,7 @@
             }
             
             if ((DOUBLE)$pqtysplitinput > (DOUBLE)$qtysisa) {
-                $pqtysplitinput=$qtysisa;
+                //$pqtysplitinput=$qtysisa;
             }
             
             //echo "Qty Faktur : $pqtyfaktur, Qty Sudah Split : $pqtysdhsplit, QTY Input : $pqtysplitinput"; exit;

@@ -326,7 +326,7 @@ Status pada SPD akan berubah menjadi BATAL (merah)...');
                         
                         <?PHP
                         $pildivgrp="";
-                        if ($fidgrouppil!="1") $pildivgrp="hidden";
+                        if ($fidgrouppil!="1" AND $fidgrouppil!="24") $pildivgrp="hidden";
                         ?>
                         <div <?PHP echo $pildivgrp; ?> class='col-sm-1'>
                             Karyawan

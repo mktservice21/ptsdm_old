@@ -168,6 +168,8 @@
                     $pqtysplte=$row2['qtysp'];
                     */
                     
+                    //$pqtysplte=-2;
+                    
                     $psisa=(DOUBLE)$pqty-(DOUBLE)$pqtysplte;
                     
                     $pbtnmaping="";

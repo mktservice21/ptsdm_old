@@ -28,6 +28,7 @@ $ppilihdoktid=$_POST['e_iddokt'];
 $pkaryawanid=$_POST['cb_karyawan'];
 $ppilihbln=$_POST['e_bulan'];
 $pbulanpilih=$_POST['e_bulan'];
+$pthn = date('Y', strtotime($ppilihbln));
 
 $papotikid  = $_POST['cb_apotik'];
 $query = "select aptid as aptid, nama as nama, apttype as apttype from hrd.mr_apt WHERE idapotik='$papotikid'";
@@ -67,10 +68,14 @@ $ppilihdoktnm=getfield("select nama as lcfields from hrd.dokter where dokterid='
         if ((INT)$ketemub>0) {
         }else{
             
-            mysqli_close($cnit);
-            $bolehinput="KS samasekali belum ada, silakan info ke MS untuk input...";
-            echo $bolehinput;
-            exit;
+            if ($pthn=="2020") {
+                
+            }else{
+                mysqli_close($cnit);
+                $bolehinput="KS samasekali belum ada, silakan info ke MS untuk input...";
+                echo $bolehinput;
+                exit;
+            }
             
         }
     }

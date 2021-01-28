@@ -934,10 +934,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 font-family: "Arial";
             }
             #datatable2 th, #datatable3 th {
-                font-size: 12px;
+                font-size: 14px;
             }
             #datatable2 td, #datatable3 td { 
-                font-size: 11px;
+                font-size: 13px;
             }
         </style>
         

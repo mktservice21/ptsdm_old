@@ -518,6 +518,8 @@
         
     }elseif ($_GET['module']=='lapslscusteth'){
         include 'module/sls_lapbycusteth/aksi_lapbycusteth.php';
+    }elseif ($_GET['module']=='slspenjualandisteth'){
+        include 'module/sls_lappenjualandist/aksi_lappenjualandist.php';
         
     }elseif ($_GET['module']=='lapbudgetexpenseschc'){
         include 'module/laporan/lap_expensispmchk/aksi_lapexpensispmchk.php';
@@ -585,6 +587,9 @@
         
     }elseif ($_GET['module']=='lapbrbykaryawan'){
         include 'module/laporan/lap_br_bykaryawan/aksi_lapbrbykaryawan.php';
+        
+    }elseif ($_GET['module']=='eksekusifileelastik'){
+        //include 'module/mst_import_sales/aksi_importelastik.php';
         
     }elseif ($_GET['module']=='xxx'){
         

@@ -37,7 +37,7 @@
     
     
     $now=date("mdYhis");
-    $tmp01 =" MKT.tmpslsmapcustf01_".$puserid."_$now ";
+    $tmp01 =" dbtemp.tmpslsmapcustf01_".$puserid."_$now ";
     
     $query = "select distinct a.fakturid, a.tgljual, a.cabangid, a.custid, b.nama "
             . " from MKT.$pnmtblsales as a "

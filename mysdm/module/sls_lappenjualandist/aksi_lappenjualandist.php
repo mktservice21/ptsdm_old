@@ -934,10 +934,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 font-family: "Arial";
             }
             #datatable2 th, #datatable3 th {
-                font-size: 14px;
+                font-size: 16px;
             }
             #datatable2 td, #datatable3 td { 
-                font-size: 13px;
+                font-size: 15px;
             }
         </style>
         
@@ -962,10 +962,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             }
             #datatable2 thead, #datatable3 thead{
                 background-color:#cccccc; 
-                font-size: 12px;
+                font-size: 16px;
             }
             #datatable2 tbody, #datatable3 tbody{
-                font-size: 11px;
+                font-size: 15px;
             }
         </style>
     <?PHP } ?>
@@ -1002,8 +1002,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 "order": [[ 0, "asc" ]],
                 "columnDefs": [
                     { "visible": false },
-                    { className: "text-right", "targets": [12,13,14] },//right
-                    { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,8,9,10,11,12,13,14] }//nowrap
+                    { className: "text-right", "targets": [4,5,6,7,8] },//right
+                    { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,8,9] }//nowrap
 
                 ],
                 bFilter: true, bInfo: true, "bLengthChange": true, "bLengthChange": true,

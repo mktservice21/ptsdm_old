@@ -112,6 +112,7 @@ if ($pmodule=="viewdataaptdr") {
     $pidapt=$_POST['uaptid'];
     $pbulan=$_POST['ubln'];
     $pbulan = date('Y-m', strtotime($pbulan));
+    $pthn = date('Y', strtotime($pbulan));
     
     $pidgrpuser="";
     if (isset($_SESSION['GROUP'])) $pidgrpuser=$_SESSION['GROUP'];
@@ -137,7 +138,10 @@ if ($pmodule=="viewdataaptdr") {
         }else{
             
             mysqli_close($cnit);
-            $bolehinput="KS samasekali belum ada, silakan info ke MS untuk input...";
+            if ($pthn=="2020") $bolehinput="boleh";
+            else
+                $bolehinput="KS samasekali belum ada, silakan info ke MS untuk input...";
+            
             echo $bolehinput;
             exit;
             
@@ -170,8 +174,9 @@ if ($pmodule=="viewdataaptdr") {
     $pfeldbln="cbln01x";
     
     $hari_ini = date("Y-m-d");
-    $pbulanpilih = date('F Y', strtotime($hari_ini));
-
+    //$pbulanpilih = date('F Y', strtotime($hari_ini));
+    $pbulanpilih = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
+    
     $piltgl="";
     $query = "select * from hrd.ks1_buka where srid='$pidkar' AND dokterid='$piddokt' AND IFNULL(aktif,'')='Y'";
     $tampil = mysqli_query($cnit, $query);
@@ -184,7 +189,7 @@ if ($pmodule=="viewdataaptdr") {
     
     
     if (!empty($piltgl)) $ptgl_mulai_sl=$piltgl;
-    else $ptgl_mulai_sl  = '2020-10-01';
+    else $ptgl_mulai_sl  = '2020-01-01';
     $ptgl_selesai_sl=date("Y-m-01");
     
     $pblnselish=CariSelisihPeriodeDua($ptgl_mulai_sl, $ptgl_selesai_sl);
@@ -220,6 +225,7 @@ if ($pmodule=="viewdataaptdr") {
                 dateFormat: 'MM yy',
                 //minDate: '-3M',
                 minDate: '<?PHP echo $pblnselish; ?>',
+                maxDate: '-1M',
                 onSelect: function(dateStr) {
 
                 },

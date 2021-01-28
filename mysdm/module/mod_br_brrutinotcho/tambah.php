@@ -170,7 +170,7 @@ if ($pidact=="editdata") {
                                             $query = "select b.karyawanid, b.nama from hrd.karyawan b WHERE b.aktif='Y' and (IFNULL(b.tglkeluar,'')='' OR IFNULL(b.tglkeluar,'0000-00-00')='0000-00-00') ";
 											$query .= " AND IFNULL(b.jabatanid,'') NOT IN ('35') ";
                                             $query .= " AND b.divisiId='OTC' ";
-                                            $query .= " AND b.karyawanid NOT IN ('0000001272', '0000000432', '0000000992') ";
+                                            $query .= " AND b.karyawanid NOT IN ('0000001272', '0000000992') ";//, '0000000432'
                                             $query .=" AND b.karyawanId Not In (select distinct karyawanId from dbmaster.t_karyawanadmin) ";
                                             $query .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ')  "
                                                     . " and LEFT(b.nama,7) NOT IN ('NN DM - ')  "

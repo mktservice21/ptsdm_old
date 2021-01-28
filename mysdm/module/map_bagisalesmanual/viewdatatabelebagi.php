@@ -75,8 +75,8 @@
     
     
     $now=date("mdYhis");
-    $tmp01 =" MKT.tmpslsmapcust01_".$puserid."_$now ";
-    $tmp02 =" MKT.tmpslsmapcust02_".$puserid."_$now ";
+    $tmp01 =" dbtemp.tmpslsmapcust01_".$puserid."_$now ";
+    $tmp02 =" dbtemp.tmpslsmapcust02_".$puserid."_$now ";
     
     
     $query = "SELECT a.cabangid, a.brgid, a.custid, a.tgljual, a.harga, a.fakturid, "

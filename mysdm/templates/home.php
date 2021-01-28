@@ -727,6 +727,8 @@
         
     }elseif ($_GET['module']=='lapslscusteth'){
         include 'module/sls_lapbycusteth/lapbycusteth.php';
+    }elseif ($_GET['module']=='slspenjualandisteth'){
+        include 'module/sls_lappenjualandist/lappenjualandist.php';
     }elseif ($_GET['module']=='slsdatacustomer'){
         include 'module/sls_datacusstomer/datacusstomer.php';
         

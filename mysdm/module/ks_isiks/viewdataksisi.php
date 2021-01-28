@@ -192,6 +192,8 @@ if ($pmodule=="viewdataaptdr") {
     else $ptgl_mulai_sl  = '2020-01-01';
     $ptgl_selesai_sl=date("Y-m-01");
     
+            $ptgl_mulai_sl  = '2020-01-01';//dibuka
+    
     $pblnselish=CariSelisihPeriodeDua($ptgl_mulai_sl, $ptgl_selesai_sl);
     if (empty($pblnselish)) $pblnselish=0;
     $pblnselish="-".$pblnselish."M";

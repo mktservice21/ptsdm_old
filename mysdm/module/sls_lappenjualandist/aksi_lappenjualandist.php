@@ -18,7 +18,7 @@ if ($ppilihrpt=="excel") {
     // Fungsi header dengan mengirimkan raw data excel
     header("Content-type: application/vnd-ms-excel");
     // Mendefinisikan nama file ekspor "hasil-export.xls"
-    header("Content-Disposition: attachment; filename=Laporan Sales Per Customer Ethical.xls");
+    header("Content-Disposition: attachment; filename=Laporan Penjualan Distributor Ethical CHC.xls");
 }
     
 
@@ -414,7 +414,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
 <HTML>
 <HEAD>
-    <title>Laporan Penjualan Distributor Ethical</title>
+    <title>Laporan Penjualan Distributor Ethical & CHC</title>
     <?PHP if ($ppilihrpt!="excel") { ?>
         <meta http-equiv="Expires" content="Mon, 01 Mei 2050 1:00:00 GMT">
         <meta http-equiv="Pragma" content="no-cache">
@@ -465,10 +465,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
         <div id="isikiri">
             <table class='tjudul' width='100%'>
                 <?PHP if ($ppilihrpt=="excel") {
-                    echo "<tr><td colspan=5 width='150px'><b>Laporan Penjualan Distributor Ethical</b></td></tr>";
+                    echo "<tr><td colspan=5 width='150px'><b>Laporan Penjualan Distributor Ethical & CHC</b></td></tr>";
                     echo "<tr><td colspan=5 width='150px'>view date : $pviewdate</td></tr>";
                 }else{
-                    echo "<tr><td width='150px'><b><h3>Laporan Penjualan Distributor Ethical</h3></b></td></tr>";
+                    echo "<tr><td width='150px'><b><h3>Laporan Penjualan Distributor Ethical & CHC</h3></b></td></tr>";
                     echo "<tr><td width='150px'><i>view date : $pviewdate</i></td></tr>";
                 }
                 ?>

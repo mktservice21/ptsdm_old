@@ -1,6 +1,6 @@
 <?php
     //ini_set('memory_limit', '-1');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -47,8 +47,8 @@ if (empty($puser)) {
     $inputFileName = $target_dir.$filename;
     
     //ubah juga di prosesdata_
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     

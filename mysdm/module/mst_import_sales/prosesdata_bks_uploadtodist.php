@@ -109,7 +109,7 @@ if (empty($puser)) {
                 INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,subdist)
                 VALUES('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y','BKS')
             ");
-            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error insert ecust : $erropesan"; exit; }
+            //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error insert ecust : $erropesan"; exit; }
             
             //IT
             if ($plogit_akses==true) {
@@ -117,7 +117,7 @@ if (empty($puser)) {
                     INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,subdist)
                     VALUES('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y','BKS')
                 ");
-                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error insert ecust : $erropesan"; exit; }
+                //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error insert ecust : $erropesan"; exit; }
             }
             //END IT
             
@@ -133,7 +133,7 @@ if (empty($puser)) {
                 INSERT INTO MKT.eproduk(distid,eprodid,nama,hna,oldflag,aktif)
                 VALUES('$kodedist','$kodeproduk','$namaproduk','$harga','Y','Y')
             ");
-            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "Error insert eproduk"; exit; }
+            //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "Error insert eproduk"; exit; }
             
             //IT
             if ($plogit_akses==true) {
@@ -141,7 +141,7 @@ if (empty($puser)) {
                     INSERT INTO MKT.eproduk(distid,eprodid,nama,hna,oldflag,aktif)
                     VALUES('$kodedist','$kodeproduk','$namaproduk','$harga','Y','Y')
                 ");
-                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo "IT... Error insert eproduk"; exit; }
+                //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo "IT... Error insert eproduk"; exit; }
             }
             //END IT
           

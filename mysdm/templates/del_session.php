@@ -1,7 +1,7 @@
 <?php
 
     //dipakai di UPLOAD DATA SALES (IMPORT) untuk konek ke IT, jika koneksi ke IT error, statusnya diubah menjadi false;
-    $_SESSION['PROSESLOGKONEK_IT']=true;
+    //$_SESSION['PROSESLOGKONEK_IT']=true;
     
     
     //OTC

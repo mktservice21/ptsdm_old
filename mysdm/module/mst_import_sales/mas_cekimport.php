@@ -1,6 +1,6 @@
 <?php
     //ini_set('memory_limit', '-1');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -192,15 +192,19 @@ if (empty($puser)) {
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error CREATE tmp_importprodfile_ipms eproduk $cabang : $erropesan"; exit; }
     
     
-    $query ="UPDATE $dbname.import_mas a JOIN 
+    $query_impmas ="UPDATE $dbname.import_mas a JOIN 
             (select DISTINCT DistId, eProdId, nama from $dbname.tmp_importprodfile_ipms WHERE DistId='0000000016') as b on RTRIM(a.NAMA_BRG)=RTRIM(b.nama) SET 
             a.BRGID=b.eProdId";
-    mysqli_query($cnmy, $query);
+    mysqli_query($cnmy, $query_impmas);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error UPDATE BRGID : $erropesan"; exit; }
             
     //IT
     if ($plogit_akses==true) {
-        mysqli_query($cnit, $query);
+        mysqli_query($cnit, "DROP TABLE IF EXISTS $dbname.tmp_importprodfile_ipms");
+        mysqli_query($cnit, "create table $dbname.tmp_importprodfile_ipms (select DISTINCT DistId, eProdId, nama from $dbname.eproduk WHERE DistId='0000000016')");
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error CREATE tmp_importprodfile_ipms eproduk $cabang : $erropesan"; exit; }
+    
+        mysqli_query($cnit, $query_impmas);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error UPDATE BRGID : $erropesan"; exit; }
     }
     //END IT

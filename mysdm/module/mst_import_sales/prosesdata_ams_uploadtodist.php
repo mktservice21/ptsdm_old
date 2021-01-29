@@ -338,7 +338,8 @@ if (empty($puser)) {
 $data = [
     "api_key" => "kKCrFZZwwgQCiP4KeUis",
     "distid" => "$distributor",
-    "date" => "$pakhirbulan"
+    "date" => "$pakhirbulan",
+    "subdist" => ""
   ];
 
   $ch = curl_init();

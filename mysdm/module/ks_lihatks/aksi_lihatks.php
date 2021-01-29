@@ -134,11 +134,16 @@
 	$row = mysqli_fetch_array($result);
 	$tglawal_ = substr($row['tgl'],0,7);
         
+            $ptahuncnpilih=$row['tgl'];
+            if (empty($ptahuncnpilih)) $ptahuncnpilih="0000-00-00";
+            if ($ptahuncnpilih<>"0000-00" AND $ptahuncnpilih<>"0000-00-00") $ptahuncnpilih =  date("Y", strtotime($ptahuncnpilih));
+            if ($ptahuncnpilih=="2020") $tglawal_=$awal;
         
         //diubah jadi awal bulan ks
         if (empty($tglawal_)) $tglawal_="0000-00";
         if (empty($awal)) $awal="0000-00";
         if ($tglawal_=="0000-00") $tglawal_=$awal;
+        
         
         
 	if ($tglawal_=="0000-00") {

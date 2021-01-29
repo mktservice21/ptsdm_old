@@ -694,7 +694,7 @@
                     }elseif ($lvlpengajuan=="FF3") {
 						
                         //khusus
-                        if ($pkaryawan=="0000002297") {
+                        if ($pkaryawan=="0000002297x") {
                             
                             echo '
                             <tr>

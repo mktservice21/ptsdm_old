@@ -1,6 +1,6 @@
 <?php
 
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -28,6 +28,7 @@ if (empty($puser)) {
     
     $pbulan =  date("Ym", strtotime($ptgl));
     $bulan =  date("Y-m", strtotime($ptgl));
+    $pakhirbulan =  date("Y-m-t", strtotime($ptgl));
     
     
     if ($distributor!="0000000002") {
@@ -84,10 +85,13 @@ if (empty($puser)) {
     $totalsalesqty=0;
     $totalsalessum=0;
     mysqli_query($cnmy, "delete from $dbname.salesspp where left(tgljual,7)='$bulan' and cabangid='$cabang' and subdist='$subdist' ");
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnmy); echo "Error DELETE salesspp : $erropesan"; exit; }
     
     //IT
     if ($plogit_akses==true) {
         mysqli_query($cnit, "delete from $dbname.salesspp where left(tgljual,7)='$bulan' and cabangid='$cabang' and subdist='$subdist' ");
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnit); echo "IT... Error DELETE salesspp : $erropesan"; exit; }
+        
     }
     //END IT
     
@@ -251,4 +255,27 @@ if (empty($puser)) {
         mysqli_close($cnit);
     }
     
+?>
+
+
+<?php
+$data = [
+    "api_key" => "kKCrFZZwwgQCiP4KeUis",
+    "distid" => "$distributor",
+    "date" => "$pakhirbulan",
+    "subdist" => "$subdist"
+  ];
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, "http://ms2.marvis.id/api/sales");
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json'
+  ));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+  $response = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  echo $httpcode;
 ?>

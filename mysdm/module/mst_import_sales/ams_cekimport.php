@@ -220,7 +220,12 @@ if (empty($puser)) {
         mysqli_query($cnmy, $query_imp_item);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnmy); echo "Error INSERT ITEM : $erropesan"; exit; }
         
-        
+        //IT
+        if ($plogit_akses==true) {
+            mysqli_query($cnit, $query_imp_item);
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnit); echo "IT... Error INSERT ITEM IT : $erropesan"; exit; }
+        }
+        //END IT
         
         
         
@@ -292,7 +297,12 @@ if (empty($puser)) {
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnmy); echo "Error INSERT JUAL : $erropesan"; exit; }
         
         
-        
+        //IT
+        if ($plogit_akses==true) {
+            mysqli_query($cnit, $query_imp_jual);
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnit); echo "IT... Error INSERT JUAL IT : $erropesan"; exit; }
+        }
+        //END IT
         
         
     }
@@ -367,6 +377,12 @@ if (empty($puser)) {
         mysqli_query($cnmy, $query_imp_retur);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnmy); echo "Error INSERT RETUR : $erropesan"; exit; }
         
+        //IT
+        if ($plogit_akses==true) {
+            mysqli_query($cnit, $query_imp_retur);
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnit); echo "IT... Error INSERT RETUR IT : $erropesan"; exit; }
+        }
+        //END IT
         
         
     }
@@ -434,6 +450,12 @@ if (empty($puser)) {
         mysqli_query($cnmy, $query_imp_stock);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnmy); echo "Error INSERT STOCK : $erropesan"; exit; }
         
+        //IT
+        if ($plogit_akses==true) {
+            mysqli_query($cnit, $query_imp_stock);
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnit); echo "IT... Error INSERT STOCK IT : $erropesan"; exit; }
+        }
+        //END IT
         
     }
     dbase_close($pinsert);

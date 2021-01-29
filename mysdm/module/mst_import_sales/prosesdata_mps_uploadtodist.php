@@ -1,6 +1,6 @@
 <?php
 
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -27,6 +27,7 @@ if (empty($puser)) {
     
     $pbulan =  date("Ym", strtotime($ptgl));
     $bulan =  date("Y-m", strtotime($ptgl));
+    $pakhirbulan =  date("Y-m-t", strtotime($ptgl));
     
     
     if ($distributor!="0000000025") {
@@ -35,8 +36,8 @@ if (empty($puser)) {
     }
     
     //ubah juga di _uploaddata
-    include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnit;
+    include "../../config/koneksimysqli_ms.php";
+    $cnmy=$cnms;
     $dbname = "MKT";
     
     
@@ -137,10 +138,12 @@ if (empty($puser)) {
     $totalsalesqty=0;
     $totalsalessum=0;
     mysqli_query($cnmy, "DELETE FROM $dbname.salesmps WHERE left(tgljual,7)='$bulan' AND cabangid='$cabang'");
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error delete salesmps : $erropesan"; exit; }
     
     //IT
     if ($plogit_akses==true) {
         mysqli_query($cnit, "DELETE FROM $dbname.salesmps WHERE left(tgljual,7)='$bulan' AND cabangid='$cabang'");
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error delete salesmps : $erropesan"; exit; }
     }
     //END IT
     
@@ -170,6 +173,7 @@ if (empty($puser)) {
             insert into $tabel(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid) 
             values('$cabang',LEFT('$custid',4),'$tgljual','$brgid','$harga','$qbeli','$nojual')
         ");
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSER $tabel : $erropesan"; exit; }
 
         if ($insert){
             $totalsalesqty=$totalsalesqty+1;
@@ -182,6 +186,7 @@ if (empty($puser)) {
                 insert into $tabel(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid) 
                 values('$cabang',LEFT('$custid',4),'$tgljual','$brgid','$harga','$qbeli','$nojual')
             ");
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSER $tabel : $erropesan"; exit; }
         }
         //END IT
         
@@ -270,4 +275,30 @@ if (empty($puser)) {
 ?>
     
     
-    
+<?php
+$data = [
+    "api_key" => "kKCrFZZwwgQCiP4KeUis",
+    "distid" => "$distributor",
+    "date" => "$pakhirbulan",
+    "subdist" => "$subdist"
+  ];
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, "http://ms2.marvis.id/api/sales");
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json'
+  ));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+  $response = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  
+  if (empty($httpcode)) $httpcode=0;
+  if ((INT)$httpcode==201) {
+      echo "<br/>Berhasil insert elastic...";
+  }else{
+      echo "<br/>Gagal insert elastic...";
+  }
+?>

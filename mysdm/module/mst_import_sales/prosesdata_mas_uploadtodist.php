@@ -106,12 +106,12 @@ if (empty($puser)) {
         $query_pros_cust = "insert into MKT.ecust(distid,cabangid,ecustid,nama,oldflag,aktif,subdist) values "
                 . " ".implode(', ', $pinsert_cust_data);
         mysqli_query($cnmy, $query_pros_cust);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT ecust : $erropesan"; exit; }
+        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT ecust : $erropesan"; exit; }
         
         //IT
         if ($plogit_akses==true) {
             mysqli_query($cnit, $query_pros_cust);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT ecust : $erropesan"; exit; }
+            //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT ecust : $erropesan"; exit; }
         }
         //END IT
     }

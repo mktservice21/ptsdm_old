@@ -1,6 +1,6 @@
 <?php
 
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -28,6 +28,7 @@ if (empty($puser)) {
     
     $pbulan =  date("Ym", strtotime($ptgl));
     $bulan =  date("Y-m", strtotime($ptgl));
+    $pakhirbulan =  date("Y-m-t", strtotime($ptgl));
     
     
     if ($distributor!="0000000006") {
@@ -71,6 +72,16 @@ if (empty($puser)) {
         echo "berhasil input cust baru -> $cabang - $ecust - $enama - $alamat <br>";
         $totalcust=$totalcust+1;
         
+        //IT
+        if ($plogit_akses==true) {
+            mysqli_query($cnit, "
+                insert into MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif,subdist) 
+                values('$distributor','$cabang','$ecust','$enama','$alamat','$kota','Y','Y','$subdist')
+            ");
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error ecust : $erropesan"; exit; }
+        }
+        //END IT
+        
     }
     
     echo "Total Customer baru yg berhasil diinput: $totalcust<br><hr><br>";
@@ -82,6 +93,12 @@ if (empty($puser)) {
     
     mysqli_query($cnmy, "delete from $dbname.salescp1 where left(tgljual,7)='$bulan' and cabangid='01'");
     
+    //IT
+    if ($plogit_akses==true) {
+        mysqli_query($cnit, "delete from $dbname.salescp1 where left(tgljual,7)='$bulan' and cabangid='01'");
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error delete salescp1 : $erropesan"; exit; }
+    }
+    //END IT
     
     $qrysales="
         SELECT '01' cabangid,plgkode custid,STR_TO_DATE(tanggal,'%d-%b-%Y') tgljual,jlfkt2 fakturid,brkode brgid,jumlah qbeli,harsat harga
@@ -117,6 +134,16 @@ if (empty($puser)) {
             $totalsalesqty=$totalsalesqty+1;
             $totalsalessum=$totalsalessum+$totale;
         }
+        
+        //IT
+        if ($plogit_akses==true) {
+            $insert2=mysqli_query($cnit, "
+                insert into $dbname.salescp1(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid) 
+                values('$cabangid','$custid','$tgljual','$brgid','$harga','$qbeli','$nojual')
+            ");
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error insert salescp1 : $erropesan"; exit; }
+        }
+        //END IT
         
     }
     
@@ -194,4 +221,26 @@ if (empty($puser)) {
     if ($plogit_akses==true) {
         mysqli_close($cnit);
     }
+?>
+
+<?php
+$data = [
+    "api_key" => "kKCrFZZwwgQCiP4KeUis",
+    "distid" => "$distributor",
+    "date" => "$pakhirbulan",
+    "subdist" => ""
+  ];
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, "http://ms2.marvis.id/api/sales");
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json'
+  ));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+  $response = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  echo $httpcode;
 ?>

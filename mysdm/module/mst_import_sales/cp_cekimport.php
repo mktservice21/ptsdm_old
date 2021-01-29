@@ -1,6 +1,6 @@
 <?php
     //ini_set('memory_limit', '-1');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -51,11 +51,22 @@ if (empty($puser)) {
     $cnmy=$cnms;
     $dbname = "MKT";
     
+    $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
+    if ($plogit_akses==true) {
+        include "../../config/koneksimysqli_it.php";
+    }
+    
     
     
     mysqli_query($cnmy, "DELETE FROM $dbname.combieth");
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE combieth : $erropesan"; exit; }
     
+    //IT
+    if ($plogit_akses==true) {
+        mysqli_query($cnit, "DELETE FROM $dbname.combieth");
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE combieth : $erropesan"; exit; }
+    }
+    //END IT
     
     
     include("../../PHPExcel-1.8/Classes/PHPExcel/IOFactory.php");
@@ -123,15 +134,24 @@ if (empty($puser)) {
         
             //echo "$pfile6 <br/>";
 			
-            $query = "INSERT INTO $dbname.combieth (`kd barang`, `Nama Barang`, `Kd customer`, `Nama`, "
+            $query_jualcp = "INSERT INTO $dbname.combieth (`kd barang`, `Nama Barang`, `Kd customer`, `Nama`, "
                     . " `Alamat`, `Kota`, `Tanggal Faktur`, `Nomor Faktur`, `ID Cabang`, `Nama Cabang`, `Qty Sales`, `Satuan`, `Harga satuan`)values"
                     . " ('$pfile0', '$pfile1', '$pfile2', '$pfile3', "
                     . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12')";
 
-            //echo $query; mysqli_close($cnmy); exit;
-            mysqli_query($cnmy, $query);
+            //echo $query_jualcp; mysqli_close($cnmy); exit;
+            mysqli_query($cnmy, $query_jualcp);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT combieth : $erropesan"; exit; }
             
+            
+            //IT
+            if ($plogit_akses==true) {
+                mysqli_query($cnit, $query_jualcp);
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT combieth : $erropesan"; exit; }
+            }
+            //END IT
+    
+    
             //echo "$jmlrec. : $pfile0, $pfile1, $pfile2, $pfile3, $pfile4, $pfile5, $pfile6, $pfile7, $pfile8, $pfile9, $pfile10, $pfile11, $pfile12<br/>";
             
             

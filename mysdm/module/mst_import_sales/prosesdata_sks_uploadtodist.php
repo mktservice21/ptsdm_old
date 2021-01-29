@@ -1,6 +1,6 @@
 <?php
 
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -25,6 +25,7 @@ if (empty($puser)) {
     
     $pbulan =  date("Ym", strtotime($ptgl));
     $bulan =  date("Y-m", strtotime($ptgl));
+    $pakhirbulan =  date("Y-m-t", strtotime($ptgl));
     
     
     if ($distributor!="0000000031") {
@@ -79,21 +80,75 @@ if (empty($puser)) {
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error update TGL : $erropesan"; exit; }
         mysqli_query($cnmy, "UPDATE $dbname.tmp_importcustsks_ipms_cusid00pil SET noidcabid='' WHERE IFNULL(noidcabid,'')=''");
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error update SMG : $erropesan"; exit; }
-    
-	
-	
+        
 	mysqli_query($cnmy, "alter table MKT.tmp_importcustsks_ipms_cusid00pil add column nama_2 varchar(300), add column kodeid_2 varchar(300)");
 	$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error ALTER tmp_importcustsks_ipms : $erropesan"; exit; }
 	
 	
+        
+        //IT
+        if ($plogit_akses==true) {
+            
+                mysqli_query($cnit, "DROP TABLE IF EXISTS $dbname.tmp_importprodsks_ipms");
+
+                $qryproduk="
+                    SELECT DISTINCT `kode barang`,`keterangan barang`,hna 
+                    FROM $dbname.importsks
+                    WHERE LEFT(`tgl faktur faktur`,7) = '$bulan' 
+                        AND CONCAT('$distributor', `kode barang`) NOT IN "
+                        . " (SELECT CONCAT('$distributor', eprodid) FROM MKT.eproduk WHERE distid='$distributor')
+                    ";
+                mysqli_query($cnit, "create table $dbname.tmp_importprodsks_ipms ($qryproduk)");
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error INSER tmp_importprodsks_ipms : $erropesan"; exit; }
+
+
+                    mysqli_query($cnit, "DROP TABLE IF EXISTS $dbname.tmp_importcustsks_ipms_cusid00pil");
+                    mysqli_query($cnit, "create table $dbname.tmp_importcustsks_ipms_cusid00pil (select *, CAST('' as CHAR(5)) as noidcabid from $dbname.importsks)");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error create tmp_importcustsks_ipms_cusid00pil : $erropesan"; exit; }
+
+                    mysqli_query($cnit, "UPDATE $dbname.tmp_importcustsks_ipms_cusid00pil SET noidcabid='01' WHERE `cabang`='SMG'");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error update SMG : $erropesan"; exit; }
+                    mysqli_query($cnit, "UPDATE $dbname.tmp_importcustsks_ipms_cusid00pil SET noidcabid='02' WHERE `cabang`='PWK'");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error update PWK : $erropesan"; exit; }
+                    mysqli_query($cnit, "UPDATE $dbname.tmp_importcustsks_ipms_cusid00pil SET noidcabid='03' WHERE `cabang`='SBY'");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error update SBY : $erropesan"; exit; }
+                    mysqli_query($cnit, "UPDATE $dbname.tmp_importcustsks_ipms_cusid00pil SET noidcabid='04' WHERE `cabang`='MKS'");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error update MKS : $erropesan"; exit; }
+                    mysqli_query($cnit, "UPDATE $dbname.tmp_importcustsks_ipms_cusid00pil SET noidcabid='05' WHERE `cabang`='PLU'");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error update PLU : $erropesan"; exit; }
+                    mysqli_query($cnit, "UPDATE $dbname.tmp_importcustsks_ipms_cusid00pil SET noidcabid='06' WHERE `cabang`='DPS'");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error update DPS : $erropesan"; exit; }
+                    mysqli_query($cnit, "UPDATE $dbname.tmp_importcustsks_ipms_cusid00pil SET noidcabid='07' WHERE `cabang`='TGL'");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error update TGL : $erropesan"; exit; }
+                    mysqli_query($cnit, "UPDATE $dbname.tmp_importcustsks_ipms_cusid00pil SET noidcabid='' WHERE IFNULL(noidcabid,'')=''");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error update SMG : $erropesan"; exit; }
+
+                    mysqli_query($cnit, "alter table MKT.tmp_importcustsks_ipms_cusid00pil add column nama_2 varchar(300), add column kodeid_2 varchar(300)");
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT.. Error ALTER tmp_importcustsks_ipms : $erropesan"; exit; }
+                    
+        }
+        //END IT
+        
+        
+        
 	$query_up = "UPDATE MKT.tmp_importcustsks_ipms_cusid00pil as a JOIN MKT.ecust as b on '$distributor'=b.distid AND 
 		IFNULL(a.`no. pelanggan`,'')=IFNULL(b.ecustid,'') AND 
 		IFNULL(a.`noidcabid`,'')=IFNULL(b.cabangid,'') SET a.nama_2=b.nama_eth_sks, a.kodeid_2=b.ecustid";
 	mysqli_query($cnmy, $query_up);
 	$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error UPDATE tmp_importcustsks_ipms : $erropesan"; exit; }	
 
-	$query="UPDATE MKT.tmp_importcustsks_ipms_cusid00pil SET `Nama Pelanggan`=nama_2 WHERE TRIM(IFNULL(`Nama Pelanggan`,''))=''";
-	mysqli_query($cnmy, $query);
+	$query_up2="UPDATE MKT.tmp_importcustsks_ipms_cusid00pil SET `Nama Pelanggan`=nama_2 WHERE TRIM(IFNULL(`Nama Pelanggan`,''))=''";
+	mysqli_query($cnmy, $query_up2);
+        
+        //IT
+        if ($plogit_akses==true) {
+            mysqli_query($cnit, $query_up);
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error UPDATE tmp_importcustsks_ipms : $erropesan"; exit; }
+            
+            mysqli_query($cnit, $query_up2);
+        }
+        //END IT
+    
 	
 	$query = "SELECT * FROM MKT.tmp_importcustsks_ipms_cusid00pil WHERE HEADER<>'OTC' AND `Nama Pelanggan`<>nama_2";
 	$nketemu=mysqli_num_rows(mysqli_query($cnmy, $query));
@@ -112,8 +167,17 @@ if (empty($puser)) {
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error UPDATE MKT.ecust NAMA SKS eth : $erropesan"; exit; }
 		$jmlupdatebeda=mysqli_affected_rows($cnmy);
 		
-		$query="UPDATE MKT.tmp_importcustsks_ipms_cusid00pil as a SET a.nama_2=a.`Nama Pelanggan` WHERE IFNULL(a.`Nama Pelanggan`,'')<>IFNULL(a.nama_2,'') AND IFNULL(a.HEADER,'')<>'OTC' AND IFNULL(a.`Nama Pelanggan`,'')<>''";
-		mysqli_query($cnmy, $query);
+		$query_ec2="UPDATE MKT.tmp_importcustsks_ipms_cusid00pil as a SET a.nama_2=a.`Nama Pelanggan` WHERE IFNULL(a.`Nama Pelanggan`,'')<>IFNULL(a.nama_2,'') AND IFNULL(a.HEADER,'')<>'OTC' AND IFNULL(a.`Nama Pelanggan`,'')<>''";
+		mysqli_query($cnmy, $query_ec2);
+                
+            //IT
+            if ($plogit_akses==true) {
+                mysqli_query($cnit, $query_ec);
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error UPDATE MKT.ecust NAMA SKS eth : $erropesan"; exit; }
+
+                mysqli_query($cnit, $query_ec2);
+            }
+            //END IT
 	}
 	
 	
@@ -122,6 +186,11 @@ if (empty($puser)) {
 	
     mysqli_query($cnmy, "DROP TABLE IF EXISTS $dbname.tmp_importcustsks_ipms");
 	
+    //IT
+    if ($plogit_akses==true) {
+        mysqli_query($cnit, "DROP TABLE IF EXISTS $dbname.tmp_importcustsks_ipms");
+    }
+    //END IT
 			//lama
 			$qrycust="
 				SELECT DISTINCT `cabang`, `no. pelanggan`,`nama pelanggan`,`alamat 1 pelanggan`,`kota pelanggan`, HEADER  
@@ -514,4 +583,32 @@ if (empty($puser)) {
     if ($plogit_akses==true) {
         mysqli_close($cnit);
     }
+?>
+
+<?php
+$data = [
+    "api_key" => "kKCrFZZwwgQCiP4KeUis",
+    "distid" => "$distributor",
+    "date" => "$pakhirbulan",
+    "subdist" => ""
+  ];
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, "http://ms2.marvis.id/api/sales");
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json'
+  ));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+  $response = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  
+  if (empty($httpcode)) $httpcode=0;
+  if ((INT)$httpcode==201) {
+      echo "<br/>Berhasil insert elastic...";
+  }else{
+      echo "<br/>Gagal insert elastic...";
+  }
 ?>

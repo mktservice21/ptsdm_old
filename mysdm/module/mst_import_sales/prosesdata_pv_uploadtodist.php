@@ -1,6 +1,6 @@
 <?php
 
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -25,6 +25,7 @@ if (empty($puser)) {
     
     $pbulan =  date("Ym", strtotime($ptgl));
     $bulan =  date("Y-m", strtotime($ptgl));
+    $pakhirbulan =  date("Y-m-t", strtotime($ptgl));
     
     
     if ($distributor!="0000000005") {
@@ -47,108 +48,6 @@ if (empty($puser)) {
     
     
     $totalproduk=0;
-    // -----------------------------  insert produk
-    /*
-    $qryproduk="SELECT * FROM $dbname.pv_import_produk";
-    
-    $tampil_pr= mysqli_query($cnmy, $qryproduk);
-    while ($data1= mysqli_fetch_array($tampil_pr)) {
-        $brgid=$data1['PROD_ID'];
-        $namaproduk=mysqli_real_escape_string($cnmy, $data1['PROD_NAME']);
-        $satuan=mysqli_real_escape_string($cnmy, $data1['PROD_UOM_PRIN']);
-        $hna=$data1['PROD_HNA'];
-        
-        $cekproduk=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) FROM MKT.eproduk WHERE distid='$distributor' AND eprodid='$brgid'"));
-        $cekproduk=$cekproduk[0];
-        if ($cekproduk<1){
-            
-            mysqli_query($cnmy, "
-                INSERT INTO MKT.eproduk(distid,eprodid,nama,satuan,hna,aktif,oldflag) 
-                VALUES('$distributor','$brgid','$namaproduk','$satuan',$hna,'Y','Y')
-                ");
-            
-            echo "berhasil input produk baru -> $namaproduk ~ $brgid ~ $hna <br>";
-            $totalproduk=$totalproduk+1;
-            
-        }
-        
-    }
-    
-    echo "Total Produk baru yg berhasil diinput: $totalproduk<br><hr><br>";
-    
-      
-      
-     
-    $totalcust=0;
-    // -----------------------------  insert customer
-    $qrycust="SELECT * FROM $dbname.pv_import_cust";
-    $tampil_cu= mysqli_query($cnmy, $qrycust);
-    while ($data1= mysqli_fetch_array($tampil_cu)) {
-        
-        $cabang=$data1['BRANCH_ID'];
-        $ecust=$data1['CUST_SHIP_ID'];
-        $enama=mysqli_real_escape_string($cnmy, $data1['CUST_NAME']);
-        $alamat=mysqli_real_escape_string($cnmy, $data1['CUST_ADDR1']);
-        $kota=mysqli_real_escape_string($cnmy, $data1['CUST_CITY']);
-        
-        $cekcust=mysqli_fetch_array(mysqli_query($cnmy, "select count(distid) from MKT.ecust where distid='$distributor' and ecustid='$ecust'"));
-
-        $cekcust1=$cekcust[0];
-        if ($cekcust1<1){
-            mysqli_query($cnmy, "
-                INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif) 
-                VALUES('$distributor','$cabang','$ecust','$enama','$alamat','$kota','Y','Y')
-            ");
-
-            echo "berhasil input cust baru -> $cabang - $ecust - $enama - $alamat <br>";
-            $totalcust=$totalcust+1;
-        }
-        
-        
-    }
-    
-    echo "Total Customer baru yg berhasil diinput: $totalcust<br><hr><br>";
-    */
-    
-    
-    
-    
-        /*
-    $qrysales="
-        SELECT DISTINCT
-          BRANCH_ID,CUSTOMER_ID,INV_NO,PRODUCT_ID,STR_TO_DATE(INV_DATE,'%d-%b-%Y') INV_DATE,REPLACE(REPLACE(SELL_PRICE, ',', ''), '.00', '') SELL_PRICE,
-          REPLACE(REPLACE(NETT_QTY_SOLD, ',', ''), '.00', '') NETT_QTY_SOLD, REPLACE(REPLACE(TOT_QTY_BNS, ',', ''), '.00', '') TOT_QTY_BNS
-        FROM $dbname.pv_import_sales 
-        WHERE LEFT(STR_TO_DATE(INV_DATE,'%d-%b-%Y'),7) = '$bulan'
-      ";
-
-
-    $tampil_sl= mysqli_query($cnmy, $qrysales);
-    while ($data1= mysqli_fetch_array($tampil_sl)) {
-        
-        $cabangid=$data1['BRANCH_ID'];
-        $custid=$data1['CUSTOMER_ID'];
-        $nojual=$data1['INV_NO'];
-        $brgid=$data1['PRODUCT_ID'];
-        $tgljual=$data1['INV_DATE'];
-        $harga=$data1['SELL_PRICE'];
-        $qbeli=$data1['NETT_QTY_SOLD'];
-        $qbonus=$data1['TOT_QTY_BNS'];
-        $totale=$harga*$qbeli;
-        
-        
-        $insert=mysqli_query($cnmy, "
-            INSERT INTO $dbname.salespv(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid,qbonus)
-            VALUES('$cabangid','$custid','$tgljual','$brgid','$harga','$qbeli','$nojual','$qbonus')
-        ");
-
-        if ($insert){
-            $totalsalesqty=$totalsalesqty+1;
-            $totalsalessum=$totalsalessum+$totale;
-        }
-    
-    }
-    */
     
     
     $query1 = "DELETE FROM $dbname.pv_import_produk WHERE CONCAT(IFNULL(PROD_ID,''),'$distributor') in
@@ -224,32 +123,51 @@ if (empty($puser)) {
 		
 
 		
-		
-		
-	/*
-    $query4 = "DELETE FROM $dbname.pv_import_cust WHERE CONCAT(IFNULL(CUST_SHIP_ID,''),'$distributor') in 
-            (SELECT DISTINCT CONCAT(IFNULL(ecustid,''),'$distributor') FROM MKT.ecust WHERE distid='$distributor');";
-    mysqli_query($cnmy, $query4);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE CUST ADA : $erropesan"; exit; }
-    
-    $query5 = "INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif)"
-            . "SELECT DISTINCT '$distributor', BRANCH_ID, CUST_SHIP_ID, CUST_NAME, CUST_ADDR1, CUST_CITY, 'Y', 'Y' FROM $dbname.pv_import_cust";
-    mysqli_query($cnmy, $query5);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT CUST ADA : $erropesan"; exit; }
-    */
-	
-	
-    
-    //IT
-    if ($plogit_akses==true) {
-        mysqli_query($cnit, $query4);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE CUST ADA : $erropesan"; exit; }
-        
-        mysqli_query($cnit, $query5);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT CUST ADA : $erropesan"; exit; }
-    }
-    //END IT
-        
+                    //IT
+                    if ($plogit_akses==true) {
+                        
+                        $temp001="dbtemp.tmpisicustfrpv00231x_01";
+                        $temp002="dbtemp.tmpisicustfrpv00231x_02";
+                        $temp003="dbtemp.tmpisicustfrpv00231x_03";
+
+                        mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp001");
+                        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... DROP TEMPORARY tmp1 : $erropesan"; exit; }
+                        mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp002");
+                        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... DROP TEMPORARY tmp2 : $erropesan"; exit; }
+                        mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp003");
+                        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... DROP TEMPORARY tmp2 : $erropesan"; exit; }
+
+                        mysqli_query($cnit, "CREATE TEMPORARY TABLE $temp001 (select distinct distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif from MKT.ecust WHERE distid='$distributor')");
+                        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... INSERT TEMPORARY CUST ADA : $erropesan"; exit; }
+
+                        mysqli_query($cnit, "alter table $temp001 add COLUMN noidauto BIGINT(50) NOT NULL AUTO_INCREMENT PRIMARY KEY");
+                        mysqli_query($cnit, "CREATE INDEX `norm1` ON $temp001 (noidauto, distid, cabangid,ecustid)");
+
+                        mysqli_query($cnit, "CREATE TEMPORARY TABLE $temp002 (select DISTINCT '0000000005' distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, 'Y' oldflag, 'Y' aktif from $dbname.pv_import_cust a)");
+                        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... INSERT TEMPORARY TMP PV ADA : $erropesan"; exit; }
+
+                        mysqli_query($cnit, "alter table $temp002 add COLUMN noidauto BIGINT(50) NOT NULL AUTO_INCREMENT PRIMARY KEY");
+                        mysqli_query($cnit, "CREATE INDEX `norm1` ON $temp002 (noidauto, distid, BRANCH_ID,CUST_SHIP_ID)");
+
+
+                        $query_pp = "CREATE TEMPORARY TABLE $temp003 (select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
+                                from $temp002 as a LEFT JOIN 
+                                (select distinct cabangid, ecustid from $temp001) b on IFNULL(a.CUST_SHIP_ID,'')=IFNULL(b.ecustid,'')
+                                and IFNULL(a.BRANCH_ID,'')=IFNULL(b.cabangid,'') WHERE IFNULL(b.ecustid,'')='')";
+                        mysqli_query($cnit, $query_pp);
+                        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error CREATE TEMP 3 : $erropesan"; exit; }
+
+
+                        $queryMKT = "insert into MKT.ecust (distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif) 
+                                select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
+                                from $temp003 as a";
+                        mysqli_query($cnit, $queryMKT);
+                        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT MKT CUST ADA : $erropesan"; exit; }
+                        
+                        
+                    }
+                    //END IT
+                
     
     //$query6="SELECT DISTINCT '$distributor', BRANCH_ID, CUST_SHIP_ID, CUST_NAME, CUST_ADDR1, CUST_CITY, 'Y', 'Y' FROM $dbname.pv_import_cust";
 	$query6="SELECT * FROM $temp003";
@@ -263,6 +181,14 @@ if (empty($puser)) {
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp002");
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp003");
     
+                
+            //IT
+            if ($plogit_akses==true) {
+		mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp001");
+		mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp002");
+		mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp003");
+            }
+            //END IT
     
     // -----------------------------  insert sales
     $totalsalesqty=0;
@@ -384,4 +310,33 @@ if (empty($puser)) {
         mysqli_close($cnit);
     }
     
+?>
+
+
+<?php
+$data = [
+    "api_key" => "kKCrFZZwwgQCiP4KeUis",
+    "distid" => "$distributor",
+    "date" => "$pakhirbulan",
+    "subdist" => ""
+  ];
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, "http://ms2.marvis.id/api/sales");
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json'
+  ));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+  $response = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  
+  if (empty($httpcode)) $httpcode=0;
+  if ((INT)$httpcode==201) {
+      echo "<br/>Berhasil insert elastic...";
+  }else{
+      echo "<br/>Gagal insert elastic...";
+  }
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -26,6 +26,7 @@ if (empty($puser)) {
     
     $pbulan =  date("Ym", strtotime($ptgl));
     $bulan =  date("Y-m", strtotime($ptgl));
+    $pakhirbulan =  date("Y-m-t", strtotime($ptgl));
     
     
     //echo "$cabang - $bulan<br>";
@@ -56,10 +57,12 @@ if (empty($puser)) {
     
 
     mysqli_query($cnmy, "DELETE FROM $dbname.salesspp WHERE left(tgljual,7)='$bulan' AND subdist = 'BKS'");
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error delete salesspp : $erropesan"; exit; }
     
     //IT
     if ($plogit_akses==true) {
         mysqli_query($cnit, "DELETE FROM $dbname.salesspp WHERE left(tgljual,7)='$bulan' AND subdist = 'BKS'");
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error delete salesspp : $erropesan"; exit; }
     }
     //END IT
     
@@ -106,6 +109,7 @@ if (empty($puser)) {
                 INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,subdist)
                 VALUES('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y','BKS')
             ");
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error insert ecust : $erropesan"; exit; }
             
             //IT
             if ($plogit_akses==true) {
@@ -113,6 +117,7 @@ if (empty($puser)) {
                     INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif,subdist)
                     VALUES('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y','BKS')
                 ");
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error insert ecust : $erropesan"; exit; }
             }
             //END IT
             
@@ -226,4 +231,32 @@ if (empty($puser)) {
         mysqli_close($cnit);
     }
     
+?>
+
+<?php
+$data = [
+    "api_key" => "kKCrFZZwwgQCiP4KeUis",
+    "distid" => "$distributor",
+    "date" => "$pakhirbulan",
+    "subdist" => "BKS"
+  ];
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, "http://ms2.marvis.id/api/sales");
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json'
+  ));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+  $response = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  
+  if (empty($httpcode)) $httpcode=0;
+  if ((INT)$httpcode==201) {
+      echo "<br/>Berhasil insert elastic...";
+  }else{
+      echo "<br/>Gagal insert elastic...";
+  }
 ?>

@@ -1,6 +1,6 @@
 <?php
     //ini_set('memory_limit', '-1');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -61,6 +61,12 @@ if (empty($puser)) {
     mysqli_query($cnmy, "DELETE FROM $dbname.importsks");
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE importsks : $erropesan"; exit; }
     
+    //IT
+    if ($plogit_akses==true) {
+        mysqli_query($cnit, "DELETE FROM $dbname.importsks");
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE importsks : $erropesan"; exit; }
+    }
+    //END IT
     
     
     include("../../PHPExcel-1.8/Classes/PHPExcel/IOFactory.php");

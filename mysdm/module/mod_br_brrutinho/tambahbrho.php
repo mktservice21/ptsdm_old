@@ -230,13 +230,13 @@ if ($pidact=="editdata"){
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='mytgl01'>Periode <span class='required'></span></label>
                                     <div class='col-md-3'>
                                         <div class="form-group">
-                                            <div class='input-group date' id='mytgl01x'>
+                                            <div class='input-group date' id='mytgl01'>
                                                 <input type='text' id='e_periode01' name='e_periode01' autocomplete='off' required='required' class='form-control' placeholder='dd/MM/yyyy' value='<?PHP echo $ptgl1; ?>' data-inputmask="'mask': '99/99/9999'" Readonly>
                                                 <span class="input-group-addon">
                                                    <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
                                             </div>
-                                            <div class='input-group date' id='mytgl02x'>
+                                            <div class='input-group date' id='mytgl02'>
                                                 <input type='text' id='e_periode02' name='e_periode02' autocomplete='off' required='required' class='form-control' placeholder='dd/MM/yyyy' value='<?PHP echo $ptgl2; ?>' data-inputmask="'mask': '99/99/9999'" Readonly>
                                                 <span class="input-group-addon">
                                                    <span class="glyphicon glyphicon-calendar"></span>

@@ -177,7 +177,7 @@ if (empty($puser)) {
         //IT
         if ($plogit_akses==true) {
             mysqli_query($cnit, $query_sls_ins);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "Error INSER $tabel : $erropesan"; exit; }
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSER $tabel : $erropesan"; exit; }
         }
         //END IT
         

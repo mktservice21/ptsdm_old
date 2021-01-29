@@ -83,7 +83,7 @@ if (empty($puser)) {
         //IT
         if ($plogit_akses==true) {
             mysqli_query($cnit, $query_inst_prod);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT eproduk : $erropesan"; exit; }
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT eproduk IT : $erropesan"; exit; }
         }
         //END IT
     }
@@ -136,7 +136,7 @@ if (empty($puser)) {
         //IT
         if ($plogit_akses==true) {
             mysqli_query($cnit, $query_inst_cust);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT ecust : $erropesan"; exit; }
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT ecust IT : $erropesan"; exit; }
         }
         //END IT
         
@@ -186,7 +186,7 @@ if (empty($puser)) {
         $query = "INSERT INTO $dbname.salesams(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid,qbonus)"
                 . "select C_KDCAB, C_CUSNO, D_INVDATE, C_ITENO, N_SALPRI, N_QTYSAL, C_INVNO, N_QTYBON FROM $dbname.AMS_JUALSDM WHERE LEFT(D_INVDATE,7) = '$bulan'";
         mysqli_query($cnit, $query);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT salesams : $erropesan"; exit; }
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT salesams IT : $erropesan"; exit; }
         
         mysqli_query($cnit, "DELETE FROM $dbname.AMS_JUALSDM");
         
@@ -223,22 +223,22 @@ if (empty($puser)) {
         
         mysqli_query($cnit, "DROP TABLE IF EXISTS $dbname.tmp_importfilesdt_ipmsams");
         mysqli_query($cnit, "create table $dbname.tmp_importfilesdt_ipmsams (select *, CAST(NULL AS DECIMAL(20,2)) as nqty from $dbname.AMS_RETUR)");
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error CREATE salesams RETUR : $erropesan"; exit; }
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error CREATE salesams RETUR IT : $erropesan"; exit; }
 
         $query = "UPDATE $dbname.tmp_importfilesdt_ipmsams SET nqty=(IFNULL(N_QTYSALG,'') + IFNULL(N_QTYSALB,''))";
         mysqli_query($cnit, $query);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error UPDATE QTY salesams RETUR : $erropesan"; exit; }
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error UPDATE QTY salesams RETUR IT : $erropesan"; exit; }
 
         $query = "UPDATE $dbname.tmp_importfilesdt_ipmsams SET nqty=0-IFNULL(nqty,0) WHERE IFNULL(nqty,0)>0";
         mysqli_query($cnit, $query);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error UPDATE QTY MINUS salesams RETUR : $erropesan"; exit; }
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error UPDATE QTY MINUS salesams RETUR IT : $erropesan"; exit; }
     
         
     
         mysqli_query($cnit, "DELETE FROM $dbname.salesams where left(tgljual,7) = '$bulan' AND fakturid LIKE 'R%'");
         
         mysqli_query($cnit, $pinsert_retur);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT salesams Retur : $erropesan"; exit; }
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT salesams Retur IT : $erropesan"; exit; }
         
         mysqli_query($cnit, "DELETE FROM $dbname.AMS_RETUR");
         

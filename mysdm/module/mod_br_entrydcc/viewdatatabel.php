@@ -247,7 +247,7 @@
                 while ($row= mysqli_fetch_array($tampil)) {
                     
                     $pbrid=$row['brid'];
-					$pdividprod=$row['divprodid'];
+                    $pdividprod=$row['divprodid'];
                     $pcoaid=$row['coa4'];
                     $pcoanm=$row['NAMA4'];
                     $ptglbr = $row["tgl"];
@@ -256,7 +256,7 @@
                     $paktivitas1 = $row["aktivitas1"];
                     $pnama_kry = $row["nama_karyawan"];
                     $pnm_cab = $row["nama_cabang"];
-					$pnm_dokter = $row["nama_dokter"];
+                    $pnm_dokter = $row["nama_dokter"];
                     $pjumlah = $row["jumlah"];
                     $pjmlreal = $row["jumlah1"];
                     $pnmreal = $row["realisasi1"];
@@ -273,6 +273,8 @@
                     $ntglbrpilih=$ptglbr;
                     $ntgltrsfpilih=$ptgltrans;
                     
+                    $pthnbr =date("Y", strtotime($ptglbr));
+                    
                     if (!empty($ptglbr)) {
                         $ptglbr =date("d-M-Y", strtotime($ptglbr));
                         $ntglbrpilih= "<a href='#' data-toggle=\"tooltip\" data-placement=\"top\" title=".$pbrid.">".$ptglbr."</a>";
@@ -282,6 +284,8 @@
                         $ntgltrsfpilih = "<a href='#' title=".$pnm_kode.">".$ptgltrans."</a>";
                     }
                     if (!empty($ptgltrm)) $ptgltrm =date("d-M-Y", strtotime($ptgltrm));
+                    
+                    
                     
                     
                     $pjumlah=number_format($pjumlah,0,",",",");
@@ -307,6 +311,10 @@
                     }
                     
                     if ($ppilpajak!="Y") $ptpajak="";
+                    
+                    if ($pthnbr<2021) {
+                        $phapus="";
+                    }
                     
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";

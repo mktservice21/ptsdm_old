@@ -83,6 +83,7 @@ $pusernid=$_SESSION['USERID'];
 $hari_ini = date("Y-m-d");
 $tglinput = date('d F Y', strtotime($hari_ini));
 $tglinput = date('d/m/Y', strtotime($hari_ini));
+$ptahunbrinput = date('Y', strtotime($hari_ini));
 
 $pbulanmulai = date('F Y', strtotime($hari_ini));
                      
@@ -163,6 +164,8 @@ $pmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];
 $pact=$_GET['act'];
 
+$pjmlreadonly="";
+
 $act="input";                
 if ($pact=="editdata") {
     $act="update";
@@ -179,6 +182,8 @@ if ($pact=="editdata") {
     $rpcn=$r['cn'];
     $tglinput = date('d F Y', strtotime($r['tgl']));
     $tglinput = date('d/m/Y', strtotime($r['tgl']));
+    $ptahunbrinput = date('Y', strtotime($r['tgl']));
+    
     if (empty($r['tgltrans']) OR $r['tgltrans']=="0000-00-00"){
         $tgltrans = "";
     }else{
@@ -269,6 +274,10 @@ if ($pact=="editdata") {
     if ($pbulanmulai=="0000-00-00") $pbulanmulai="";
     if (!empty($pbulanmulai)) $pbulanmulai = date('F Y', strtotime($pbulanmulai));
     
+    if ($ptahunbrinput<=2020) {
+        $pjmlreadonly="Readonly";
+    }
+    
 }
 
 $query = "select jabatanId from hrd.karyawan where karyawanId='$pkaryawanid'"; 	
@@ -331,9 +340,15 @@ $pjabatanid = $row['jabatanId'];
                                       <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_idkaryawan'>Cabang <span class='required'></span></label>
                                       <div class='col-xs-9'>
                                           <select class='soflow' id='e_idcabang' name='e_idcabang' onchange="showYangMembuat()">
-                                              <option value='' selected>-- Pilihan --</option>
                                               <?PHP
-                                                $query = "select iCabangId, nama from MKT.icabang WHERE (aktif='Y' OR iCabangId='$pidcabang') order by nama";
+                                                //
+                                                if ($pact=="editdata" AND $ptahunbrinput<=2020) {
+                                                    if (empty($pidcabang)) echo "<option value='' selected>-- Pilihan --</option>";
+                                                    $query = "select iCabangId, nama from MKT.icabang WHERE iCabangId='$pidcabang' order by nama";
+                                                }else{
+                                                    echo "<option value='' selected>-- Pilihan --</option>";
+                                                    $query = "select iCabangId, nama from MKT.icabang WHERE (aktif='Y' OR iCabangId='$pidcabang') order by nama";
+                                                }
                                                 $tampil = mysqli_query($cnmy, $query);
                                                 while($a=mysqli_fetch_array($tampil)){
                                                     $nidcab=$a['iCabangId'];
@@ -354,15 +369,22 @@ $pjabatanid = $row['jabatanId'];
                                       <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_idkaryawan'>Yang Membuat <span class='required'></span></label>
                                       <div class='col-xs-9'>
                                           <select class='soflow' id='e_idkaryawan' name='e_idkaryawan' onchange="showMRKaryawan()">
-                                              <option value='' selected>-- Pilihan --</option>
+                                              
                                               <?PHP
                                                 if ($pact=="editdata") {
-                                                    if (($pidcabang=='0000000030') or ($pidcabang=='0000000031') or ($pidcabang=='0000000032')) {
-                                                        $query = "select b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.karyawan b where (b.karyawanId='0000000154' or b.karyawanId='0000000159') AND b.aktif = 'Y' "; 
+                                                    if (empty($pkaryawanid)) echo "<option value='' selected>-- Pilihan --</option>";
+                                                    if ($ptahunbrinput<=2020) {
+                                                        $query = "select b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.karyawan as b where b.karyawanid='$pkaryawanid' "; 
                                                     }else{
-                                                        $query = "select b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.$pnmtabelkry b where b.icabangid='$pidcabang' AND b.aktif = 'Y' "; 
+                                                        if (($pidcabang=='0000000030') or ($pidcabang=='0000000031') or ($pidcabang=='0000000032')) {
+                                                            $query = "select b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.karyawan b where (b.karyawanId='0000000154' or b.karyawanId='0000000159') AND b.aktif = 'Y' "; 
+                                                        }else{
+                                                            $query = "select b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.$pnmtabelkry b where b.icabangid='$pidcabang' AND b.aktif = 'Y' "; 
+                                                        }
                                                     }
                                                 }else{
+                                                    echo "<option value='' selected>-- Pilihan --</option>";
+                                                    
                                                     $query ="SELECT DISTINCT b.karyawanId, b.nama FROM hrd.$pnmtabelkry b WHERE 1=1 ";
                                                     $query .= " AND ( IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00' ) ";
                                                 }
@@ -395,8 +417,13 @@ $pjabatanid = $row['jabatanId'];
                                       <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>MR <span class='required'></span></label>
                                       <div class='col-xs-9'>
                                           <select class='soflow' id='cb_mr' name='cb_mr' onchange="showDokterMR('e_idcabang', 'cb_mr')">
-                                              <option value='' selected>-- Pilihan --</option>
+                                              
                                               <?PHP
+                                              if ($ptahunbrinput<=2020) {
+                                                  if (empty($pmrid)) echo "<option value='' selected>-- Pilihan --</option>";
+                                              }else{
+                                                  echo "<option value='' selected>-- Pilihan --</option>";
+                                              }
                                               if ($pact=="editdata") {
                                                   
                                                     if ($pidcabang=="0000000001") { //ho
@@ -436,6 +463,9 @@ $pjabatanid = $row['jabatanId'];
                                                     $querykry .= " OR b.karyawanid='$pmrid' ";
                                                     $querykry .=" order by b.nama";
                                                     
+                                                    if ($ptahunbrinput<=2020) {
+                                                        $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.karyawan as b WHERE b.karyawanid='$pmrid' ";
+                                                    }
                                                     
                                                     $tampil = mysqli_query($cnmy, $querykry);
                                                     while($a=mysqli_fetch_array($tampil)){
@@ -460,53 +490,59 @@ $pjabatanid = $row['jabatanId'];
                                       <div class='col-xs-9'>
                                           <input type='hidden' id='e_namadokter' name='e_namadokter' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pnamadokter; ?>" Readonly>
                                           <select class='soflow' id='e_iddokter' name='e_iddokter' onchange="CariNamaDokter()">
-                                                <option value='' selected>-- Pilihan --</option>
+                                                
                                                 <?PHP
                                                 if ($pact=="editdata") {
-                                                    
-													
-                                                    $pfilerkry="";
-                                                    if (empty($pmrid) OR $pmrid==$pkaryawanid) {
-                                                        if (!empty($mkrybuat)) $pfilerkry="'".$mkrybuat."',";
-                                                        $query = "select karyawanid from MKT.imr0 WHERE icabangid='$icabangid'";
-                                                        $tampila= mysqli_query($cnmy, $query);
-                                                        while ($nra= mysqli_fetch_array($tampila)) {
-                                                            $pikry=$nra['karyawanid'];
-                                                            $pfilerkry .="'".$pikry."',";
+                                                    if ($ptahunbrinput<=2020) {
+                                                        if (empty($pdokteridmr)) echo "<option value='' selected>-- Pilihan --</option>";
+                                                        $query="select dokterId, nama from hrd.dokter WHERE dokterid='$pdokteridmr' ";
+                                                    }else{
+                                                        
+                                                        echo "<option value='' selected>-- Pilihan --</option>";
+                                                        
+                                                        $pfilerkry="";
+                                                        if (empty($pmrid) OR $pmrid==$pkaryawanid) {
+                                                            if (!empty($mkrybuat)) $pfilerkry="'".$mkrybuat."',";
+                                                            $query = "select karyawanid from MKT.imr0 WHERE icabangid='$icabangid'";
+                                                            $tampila= mysqli_query($cnmy, $query);
+                                                            while ($nra= mysqli_fetch_array($tampila)) {
+                                                                $pikry=$nra['karyawanid'];
+                                                                $pfilerkry .="'".$pikry."',";
+                                                            }
+
+                                                            if (!empty($pfilerkry)) $pfilerkry="(".substr($pfilerkry, 0, -1).")";
                                                         }
 
-                                                        if (!empty($pfilerkry)) $pfilerkry="(".substr($pfilerkry, 0, -1).")";
-                                                    }
-													
-													
-													
-                                                    $filter_kry_dok=" and karyawan.karyawanId='$pmrid' ";
-                                                    if (!empty($pkaryawanid)) {
-                                                        $filter_kry_dok=" AND ( karyawan.karyawanId='$pmrid' OR karyawan.karyawanId='$pkaryawanid' ) ";
-                                                    }
-                                                    
-                                                    
-                                                    if (!empty($pfilerkry)) {
-                                                        $filter_kry_dok = " AND karyawan.karyawanId IN $pfilerkry ";
-                                                    }
+
+
+                                                        $filter_kry_dok=" and karyawan.karyawanId='$pmrid' ";
+                                                        if (!empty($pkaryawanid)) {
+                                                            $filter_kry_dok=" AND ( karyawan.karyawanId='$pmrid' OR karyawan.karyawanId='$pkaryawanid' ) ";
+                                                        }
+
+
+                                                        if (!empty($pfilerkry)) {
+                                                            $filter_kry_dok = " AND karyawan.karyawanId IN $pfilerkry ";
+                                                        }
 
 
 
-                                                    if ($pidcabang=="0000000001") {
-                                                        $query = "select distinct (mr_dokt.dokterId),CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
-                                                                          from hrd.mr_dokt as mr_dokt 
-                                                                          join hrd.dokter as dokter on mr_dokt.dokterId=dokter.dokterId
-                                                                          where mr_dokt.aktif <> 'N' and dokter.nama<>''
-                                                                          order by nama"; 
-                                                    } else {
-                                                        $query = "select dokter.dokterId, CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
-                                                                          FROM hrd.mr_dokt as mr_dokt 
-                                                                          join hrd.karyawan as karyawan on mr_dokt.karyawanId=karyawan.karyawanId
-                                                                          join hrd.dokter as dokter on mr_dokt.dokterId=dokter.dokterId
-                                                                          where (mr_dokt.aktif <> 'N' $filter_kry_dok and dokter.nama <> '') OR dokter.dokterId='$pdokteridmr' 
-                                                                          order by dokter.nama";
+                                                        if ($pidcabang=="0000000001") {
+                                                            $query = "select distinct (mr_dokt.dokterId),CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
+                                                                              from hrd.mr_dokt as mr_dokt 
+                                                                              join hrd.dokter as dokter on mr_dokt.dokterId=dokter.dokterId
+                                                                              where mr_dokt.aktif <> 'N' and dokter.nama<>''
+                                                                              order by nama"; 
+                                                        } else {
+                                                            $query = "select dokter.dokterId, CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
+                                                                              FROM hrd.mr_dokt as mr_dokt 
+                                                                              join hrd.karyawan as karyawan on mr_dokt.karyawanId=karyawan.karyawanId
+                                                                              join hrd.dokter as dokter on mr_dokt.dokterId=dokter.dokterId
+                                                                              where (mr_dokt.aktif <> 'N' $filter_kry_dok and dokter.nama <> '') OR dokter.dokterId='$pdokteridmr' 
+                                                                              order by dokter.nama";
+                                                        }
+                                                        
                                                     }
-
                                                     $tampil=mysqli_query($cnmy, $query);
                                                     while($a=mysqli_fetch_array($tampil)){
                                                         $ciddok=$a['dokterId'];
@@ -517,6 +553,8 @@ $pjabatanid = $row['jabatanId'];
                                                             echo "<option value='$ciddok'>$cnmdok</option>";
                                                     }
                                                     
+                                                }else{
+                                                    echo "<option value='' selected>-- Pilihan --</option>";
                                                 }
                                                 ?>
                                           </select>
@@ -530,9 +568,15 @@ $pjabatanid = $row['jabatanId'];
                                     <div class='col-xs-9'>
                                         <select class='soflow' id='cb_divisi' name='cb_divisi' onchange="showCOANya()"><!--showKodeNyaNon('cb_divisi', 'cb_kode')-->
                                             <?PHP
-                                            $query = "SELECT DivProdId, nama FROM MKT.divprod where br='Y' AND DivProdId NOT IN ('CAN', 'OTHER', 'OTC') OR DivProdId='$pdivisiid' order by nama";
+                                            if ($pact=="editdata" AND $ptahunbrinput<=2020) {
+                                                if (empty($pdivisiid)) echo "<option value='' selected>-- Pilihan --</option>";
+                                                $query = "SELECT DivProdId, nama FROM MKT.divprod where DivProdId='$pdivisiid'";
+                                            }else{
+                                                echo "<option value='' selected>-- Pilihan --</option>";
+                                                $query = "SELECT DivProdId, nama FROM MKT.divprod where br='Y' AND DivProdId NOT IN ('CAN', 'OTHER', 'OTC') OR DivProdId='$pdivisiid' order by nama";
+                                            }
                                             $tampil=mysqli_query($cnmy, $query);
-                                            echo "<option value='' selected>-- Pilihan --</option>";
+                                            
                                             while($a=mysqli_fetch_array($tampil)){ 
                                                 $ndivid=$a['DivProdId'];
                                                 $ndivnm=$a['nama'];
@@ -552,22 +596,26 @@ $pjabatanid = $row['jabatanId'];
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_coa'>Kode / COA <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                         <select class='soflow' id='cb_coa' name='cb_coa' onchange="showKodeNyaNon()">
-                                            <option value='' selected>-- Pilihan --</option>
+                                            
                                         <?PHP
                                         if ($pact=="editdata") {
                                         /*
                                                 $query = "SELECT COA4, NAMA4, kodeid FROM dbmaster.v_coa where DIVISI='$pdivisiid' AND "
                                                         . "(divprodid='$pdivisiid' and br <> '') and (divprodid='$pdivisiid' and br<>'N') order by COA4";
                                         */
-                                            
-                                            $filternondssdccCOA=" and (bk.br <> '' and bk.br<>'N') ";
-                                            
-                                            $query = "SELECT w.id, w.karyawanId, k.nama, w.COA4, c4.NAMA4,
-                                                bk.br, bk.divprodid FROM dbmaster.coa_wewenang AS w
-                                                LEFT JOIN hrd.karyawan AS k ON w.karyawanId = k.karyawanId
-                                                LEFT JOIN dbmaster.coa_level4 AS c4 ON w.COA4 = c4.COA4
-                                                LEFT JOIN dbmaster.br_kode AS bk ON c4.kodeid = bk.kodeid WHERE 
-                                                bk.divprodid='$pdivisiid' $filternondssdccCOA";
+                                            if (empty($pcoa4)) echo "<option value='' selected>-- Pilihan --</option>";
+                                            if ($ptahunbrinput<=2020) {
+                                                $query = "select COA4, NAMA4 from dbmaster.coa_level4 WHERE COA4='$pcoa4'";
+                                            }else{
+                                                $filternondssdccCOA=" and (bk.br <> '' and bk.br<>'N') ";
+
+                                                $query = "SELECT w.id, w.karyawanId, k.nama, w.COA4, c4.NAMA4,
+                                                    bk.br, bk.divprodid FROM dbmaster.coa_wewenang AS w
+                                                    LEFT JOIN hrd.karyawan AS k ON w.karyawanId = k.karyawanId
+                                                    LEFT JOIN dbmaster.coa_level4 AS c4 ON w.COA4 = c4.COA4
+                                                    LEFT JOIN dbmaster.br_kode AS bk ON c4.kodeid = bk.kodeid WHERE 
+                                                    bk.divprodid='$pdivisiid' $filternondssdccCOA";
+                                            }
                                             $tampil=mysqli_query($cnmy, $query);
                                             while($a=mysqli_fetch_array($tampil)){ 
                                                 $nidcoa4=$a['COA4'];
@@ -578,6 +626,8 @@ $pjabatanid = $row['jabatanId'];
                                                 else
                                                     echo "<option value='$nidcoa4'>$nidcoa4 - $nnmcoa4</option>";
                                             }
+                                        }else{
+                                            echo "<option value='' selected>-- Pilihan --</option>";
                                         }
                                         ?>
                                         </select>
@@ -588,11 +638,16 @@ $pjabatanid = $row['jabatanId'];
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_kode'>Kode <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                         <select class='soflow' id='cb_kode' name='cb_kode'>
-                                            <option value="">-- Pilih --</option>
+                                            
                                             <?PHP
                                             if ($pact=="editdata") {
-                                                $query = "select kodeid,nama,divprodid from dbmaster.br_kode where (divprodid='$pdivisiid' and br <> '')  "
-                                                    . " and (divprodid='$pdivisiid' and br<>'N') order by nama";
+                                                if ($ptahunbrinput<=2020) {
+                                                    if (empty($pkodeid)) echo "<option value='' selected>-- Pilihan --</option>";
+                                                    $query = "select kodeid,nama,divprodid from dbmaster.br_kode where kodeid='$pkodeid'";
+                                                }else{
+                                                    $query = "select kodeid,nama,divprodid from dbmaster.br_kode where (divprodid='$pdivisiid' and br <> '')  "
+                                                        . " and (divprodid='$pdivisiid' and br<>'N') order by nama";
+                                                }
                                                 $tampil = mysqli_query($cnmy, $query);
                                                 while($a=mysqli_fetch_array($tampil)){ 
                                                     $nidkode=$a['kodeid'];
@@ -604,6 +659,8 @@ $pjabatanid = $row['jabatanId'];
                                                     else
                                                         echo "<option value='$nidkode'>$nnmkode - $nidkode ($nnmdivid)</option>";
                                                 }
+                                            }else{
+                                                echo "<option value='' selected>-- Pilihan --</option>";
                                             }
                                             ?>
                                         </select>
@@ -886,7 +943,7 @@ $pjabatanid = $row['jabatanId'];
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <input type='text' id='e_jmlusulan' name='e_jmlusulan' class='form-control col-md-7 col-xs-12 inputmaskrp2' value="<?PHP echo $rpjumlah; ?>">
+                                        <input type='text' id='e_jmlusulan' name='e_jmlusulan' class='form-control col-md-7 col-xs-12 inputmaskrp2' value="<?PHP echo $rpjumlah; ?>" <?PHP echo $pjmlreadonly; ?> >
                                     </div><!--disabled='disabled'-->
                                 </div>
 

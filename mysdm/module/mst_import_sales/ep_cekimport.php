@@ -225,7 +225,7 @@ if (empty($puser)) {
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DROP TABLE SALES : $erropesan"; exit; }
 
 
-        mysqli_query($cnit, "CREATE TABLE $dbname.mssales (PURUTAN BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT, CUSTID VARCHAR(15), TGLJUAL date, NOJUAL VARCHAR(20), BRGID VARCHAR(5), HARGA DOUBLE, QBELI DOUBLE, QBONUS DOUBLE, DPL DOUBLE, _NullFlags longtext)");
+        mysqli_query($cnit, "CREATE TABLE $dbname.mssales (PURUTAN BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT, CUSTID VARCHAR(15), TGLJUAL date, NOJUAL VARCHAR(20), BRGID VARCHAR(5), HARGA DOUBLE, QBELI DOUBLE, QBONUS DOUBLE, DPL DOUBLE, _NullFlags longtext, NODPL VARCHAR(100))");
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error CREATE TABLE MSBAR : $erropesan"; exit; }
         
         mysqli_query($cnit, "CREATE INDEX inx on $dbname.mssales (PURUTAN)");

@@ -68,6 +68,7 @@ exit;
     
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
+    $plogit_akses=true;
     if ($plogit_akses==true) {
         include "../../config/koneksimysqli_it.php";
     }

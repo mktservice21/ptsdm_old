@@ -106,6 +106,7 @@
 		
         $pmyidcard=$_SESSION['IDCARD'];
         $pmyjabatanid=$_SESSION['JABATANID'];
+        $pmygroupid=$_SESSION['GROUP'];
         //$pmyidcard="0000000649";
         //$pmyjabatanid="08";
         
@@ -320,8 +321,11 @@
 														$query_cb = "select iCabangId, nama, aktif from sls.icabang where 1=1 ";
 														if(!empty($pfilterregionpilih)) $query_cb .=" AND region IN $pfilterregionpilih ";
 														
-														if (!empty($pfiltercabpilih)) {
-															if ($pmyjabatanid=="15" OR $pmyjabatanid=="38" OR $pmyjabatanid=="39") $query_cb .=" AND iCabangId IN $pfiltercabpilih ";
+                                                                                                                if ($pmygroupid=="24" or $pmygroupid=="1") {
+                                                                                                                }else{
+                                                                                                                    if (!empty($pfiltercabpilih)) {
+                                                                                                                            if ($pmyjabatanid=="15" OR $pmyjabatanid=="38" OR $pmyjabatanid=="39") $query_cb .=" AND iCabangId IN $pfiltercabpilih ";
+                                                                                                                    }
 														}
 														$query_aktif .=$query_cb." AND aktif='Y' ";
 														$query_aktif .=" order by aktif DESC, nama";

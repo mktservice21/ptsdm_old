@@ -14,7 +14,7 @@ session_start();
     include "../../config/common.php";
     
 // Hapus / non aktifkan
-if ($module=='mapcustomersdm' AND $act=='hapus')
+if ($module=='mapcustomersdm' AND $act=='hapusmaping')
 {
         $puserid="";
         $pcardid="";
@@ -28,12 +28,17 @@ if ($module=='mapcustomersdm' AND $act=='hapus')
         }
         $kodenya=$_GET['id'];
         if (!empty($kodenya)) {
-            $query = "UPDATE MKT.icust SET aktif='N',
-                      user1='".$pcardid."' WHERE concat(icabangid, areaid, icustid)='".$kodenya."' LIMIT 1";
+            $query = "select * from MKT.ecust WHERE concat(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(icustid,''))='".$kodenya."'";
+            $ketemu=mysqli_num_rows(mysqli_query($cnms, $query));
+            if (empty($ketemu)) $ketemu=0;
+            //echo $query; exit;
+            $query = "UPDATE MKT.ecust SET icabangid='', areaid='', icustid='',
+                      user1='".$pcardid."' WHERE concat(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(icustid,''))='".$kodenya."' LIMIT $ketemu";
             $result = mysqli_query($cnms, $query);
             $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; exit; }
         }
         mysqli_close($cnms);
+        
         header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complete');
         exit;
     

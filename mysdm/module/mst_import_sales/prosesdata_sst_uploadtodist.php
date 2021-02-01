@@ -44,6 +44,7 @@ if (empty($puser)) {
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
+    $plogit_akses==false;
     if ($plogit_akses==true) {
         include "../../config/koneksimysqli_it.php";
     }

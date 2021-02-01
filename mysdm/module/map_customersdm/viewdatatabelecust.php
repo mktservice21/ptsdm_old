@@ -97,6 +97,7 @@
                     
                     $pidcusttomer=(INT)$pidcust;
                     
+                    $padamaping=false;
                     $pcustmaping="";
                     $pdistmaping="";
                     $pcabmaping="";
@@ -110,14 +111,19 @@
 
                                 $pdistmaping .="".$row2['nama_dist']."<br/>";
                                 $pcabmaping .="".$row2['nama_ecabang']."<br/>";
+                                
+                                $padamaping=true;
                             }
                         }
                     }
                     
                     $npidno=$pidcabang."".$pidarea."".$pidcust;
                     $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$npidno'>Edit</a>";
-                    $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$npidno')\">";
-                    $phapus="";
+                    
+                    $phapus="<input type='button' value='Hapus Mapping' class='btn btn-danger btn-xs' onClick=\"ProsesDataMapping('hapus', '$npidno')\">";
+                    if ($padamaping==false) {
+                        $phapus="";
+                    }
     
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
@@ -237,6 +243,32 @@
 
                 //document.write("You pressed OK!")
                 document.getElementById("d-form2").action = "module/map_customersdm/aksi_customersdm.php?module="+module+"&idmenu="+idmenu+"&act=hapus&kethapus="+"&ket="+ket+"&id="+noid;
+                document.getElementById("d-form2").submit();
+                return 1;
+            }
+        } else {
+            //document.write("You pressed Cancel!")
+            return 0;
+        }
+
+
+
+    }
+    
+    function ProsesDataMapping(ket, noid){
+
+        ok_ = 1;
+        if (ok_) {
+            var r = confirm('Apakah akan melakukan proses hapus mapping customer ...?');
+            if (r==true) {
+
+                var myurl = window.location;
+                var urlku = new URL(myurl);
+                var module = urlku.searchParams.get("module");
+                var idmenu = urlku.searchParams.get("idmenu");
+
+                //document.write("You pressed OK!")
+                document.getElementById("d-form2").action = "module/map_customersdm/aksi_customersdm.php?module="+module+"&idmenu="+idmenu+"&act=hapusmaping&kethapus="+"&ket="+ket+"&id="+noid;
                 document.getElementById("d-form2").submit();
                 return 1;
             }

@@ -139,7 +139,7 @@
                 <th align="center">Bukti</th>
                 <th align="center">KODE</th>
                 <th align="center">PERKIRAAN</th>
-                <th align="center">DOKTER/SUPPLIER/CUSTOMER</th>
+                <th align="center">SUPPLIER/CUSTOMER</th>
                 <th align="center">NO. SLIP</th>
                 <th align="center">PENGAJUAN</th>
                 <th align="center">KETERANGAN</th>
@@ -148,7 +148,7 @@
             <?PHP }else{ ?>
                 <?PHP if ($padvance=="K") { ?>
                     <th align="center">Date</th>
-                    <th align="center">DOKTER/SUPPLIER/CUSTOMER</th>
+                    <th align="center">SUPPLIER/CUSTOMER</th>
                     <th align="center">NO. SLIP</th>
                     <th align="center">PENGAJUAN</th>
                     <th align="center">KETERANGAN</th>
@@ -159,7 +159,7 @@
                     <th align="center">No.</th>
                 <?PHP }elseif ($padvance=="B") { ?>
                     <th align="center">Date</th>
-                    <th align="center">DOKTER/SUPPLIER/CUSTOMER</th>
+                    <th align="center">SUPPLIER/CUSTOMER</th>
                     <th align="center">NO. SLIP</th>
                     <th align="center">PENGAJUAN</th>
                     <th align="center">DAERAH</th>

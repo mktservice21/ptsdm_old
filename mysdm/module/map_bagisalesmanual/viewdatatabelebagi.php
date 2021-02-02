@@ -136,6 +136,19 @@
         </table>
         *) <span style="color:red;">Setelah di klik tombol <b><u>Bagi Sales</u></b> Silakan scroll kepaling bawah...!!!</span>
         <hr/>
+        <?PHP
+        $queryf1 = "select * from $tmp02";
+        $tampilf1= mysqli_query($cnms, $queryf1);
+        $ketemuf1=mysqli_num_rows($tampilf1);
+        if ((INT)$ketemuf1>0) {   
+            $queryf = "select distinct tgljual from $tmp01";
+            $tampilf= mysqli_query($cnms, $queryf);
+            $rowf=mysqli_fetch_array($tampilf);
+            $itglf=$rowf['tgljual'];
+            $pbthapusbagi="<input type='button' value='Hapus Bagi Sesuai Faktur' class='btn btn-danger btn-xs' onClick=\"HapusDataSudahSpltFaktur('$piddist', '$pidecab', '$pbulan', '$pnmfilter', '$itglf', '$pecusid')\">";
+            echo $pbthapusbagi;
+        }
+        ?>
         <table id='datatablecust' class='table table-striped table-bordered' width='100%'>
             <thead>
                 <tr>
@@ -173,10 +186,15 @@
                     $psisa=(DOUBLE)$pqty-(DOUBLE)$pqtysplte;
                     
                     $pbtnmaping="";
+                    $pbthapusbagi="";
                     if ((DOUBLE)$psisa==0) {
                     }else{
                         $pbtnmaping="<input type='button' value='Bagi Sales' class='btn btn-success btn-xs' onClick=\"TampilkanDataBagiSales('$piddist', '$pidecab', '$pbulan', '$pnmfilter', '$pbrgid', '$pidprod', '$ptgljual', '$pqty', '$pqtysplte', '$psisa', '$pnmtblsales', '$pecusid', '$pnmecust', '$icabangid_map', '$areaid_map', '$icustid_map', '$pnmicustsdm')\">";
                     }
+                    if ((DOUBLE)$pqtysplte<>0) {
+                        $pbthapusbagi="<input type='button' value='Hapus Produk' class='btn btn-danger btn-xs' onClick=\"HapusDataSudahSpltProd('$piddist', '$pidecab', '$pbulan', '$pnmfilter', '$pbrgid', '$pidprod', '$ptgljual', '$pecusid')\">";
+                    }
+                    
                     
                     $pqty=number_format($pqty,0,",",",");
                     $pqtysplte=number_format($pqtysplte,0,",",",");
@@ -187,7 +205,7 @@
                     echo "<td nowrap align='right'>$pqty</td>";
                     echo "<td nowrap align='right'>$pqtysplte</td>";
                     echo "<td nowrap align='right'>$psisa</td>";
-                    echo "<td nowrap >$pbtnmaping</td>";
+                    echo "<td nowrap >$pbtnmaping &nbsp; $pbthapusbagi</td>";
                     
                     $ppilihdetail=false;
                     $query = "select * from $tmp02 WHERE iprodid='$pidprod'";
@@ -295,6 +313,84 @@
             type:"post",
             url:"module/map_bagisalesmanual/simpandatasplit.php?module="+module+"&act=hapusdatasplit",
             data:"ukode="+skode+"&uproduk="+iproduk+"&ufakturid="+ifaktur,
+            success:function(data){
+                var istatus=data.trim();
+                if (istatus=="berhasil") {
+                    disp_datamapingbyfaktur("2", ifaktur);
+                }else{
+                    alert(data);
+                }
+                
+            }
+        });
+        
+    }
+    
+    function HapusDataSudahSpltProd(idist, iecab, ibln, ifaktur, ibrg, iprod, itgljual, iecustid) {
+        if (idist=="") {
+            alert("Tidak ada data yang akan dihapus...");
+            return false;
+        }
+        if (ifaktur=="") {
+            alert("Tidak ada data faktur yang akan dihapus...");
+            return false;
+        }
+        
+        var cmt = confirm('Apakah akan hapus data... ???');
+        if (cmt == false) {
+            return false;
+        }
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var act = urlku.searchParams.get("act");
+        
+        $.ajax({
+            type:"post",
+            url:"module/map_bagisalesmanual/simpandatasplit.php?module="+module+"&act=hapusdatasplitprodfaktur",
+            data:"udistid="+idist+"&ucabid="+iecab+"&ubln="+ibln+"&ufakturid="+ifaktur+"&ubrg="+ibrg+"&uproduk="+iprod+
+                    "&utgljual="+itgljual+"&uecustid="+iecustid,
+            success:function(data){
+                var istatus=data.trim();
+                if (istatus=="berhasil") {
+                    disp_datamapingbyfaktur("2", ifaktur);
+                }else{
+                    alert(data);
+                }
+                
+            }
+        });
+        
+    }
+    
+    function HapusDataSudahSpltFaktur(idist, iecab, ibln, ifaktur, itgljual, iecustid) {
+        if (idist=="") {
+            alert("Tidak ada data yang akan dihapus...");
+            return false;
+        }
+        if (ifaktur=="") {
+            alert("Tidak ada data faktur yang akan dihapus...");
+            return false;
+        }
+        
+        var cmt = confirm('Apakah akan hapus data... ???');
+        if (cmt == false) {
+            return false;
+        }
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var act = urlku.searchParams.get("act");
+        
+        $.ajax({
+            type:"post",
+            url:"module/map_bagisalesmanual/simpandatasplit.php?module="+module+"&act=hapusdatasplitfaktur",
+            data:"udistid="+idist+"&ucabid="+iecab+"&ubln="+ibln+"&ufakturid="+ifaktur+
+                    "&utgljual="+itgljual+"&uecustid="+iecustid,
             success:function(data){
                 var istatus=data.trim();
                 if (istatus=="berhasil") {

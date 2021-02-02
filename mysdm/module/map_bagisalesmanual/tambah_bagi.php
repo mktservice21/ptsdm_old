@@ -123,7 +123,7 @@ $pidjbt=$_SESSION['JABATANID'];
                                     </label>
                                     <div class='col-md-6'>
                                         <button type='button' class='btn btn-dark' onclick='disp_viewdata()'>View Data</button>
-                                        <button type='button' class='btn btn-success' onclick="disp_confirmdata('')">Lihat Data Yang Sudah Dibagi</button>
+                                        
                                         
                                     </div>
                                 </div>

@@ -137,6 +137,7 @@ if ($pmodule=="viewdatacombocoa") {
 	
 	
 }elseif ($pmodule=="viewdatacombokodenon") {
+    $pidgrpsesi=$_SESSION['GROUP'];
     
     include "../../config/koneksimysqli.php";
     include "../../config/fungsi_sql.php";
@@ -149,6 +150,8 @@ if ($pmodule=="viewdatacombocoa") {
     if (!empty($pcoa4)) {
         $kodeidcoa= getfieldcnmy("select kodeid as lcfields from dbmaster.coa_level4 where COA4='$pcoa4'");
     }
+    
+    if (empty($kodeidcoa) AND ($pidgrpsesi=="1" OR $pidgrpsesi=="24" OR $pidgrpsesi=="25") ) $kodeidcoa="700-01-099";
     
     $query = "select kodeid,nama,divprodid from dbmaster.br_kode where (divprodid='$pdivprodid' and br = '')  "
             . " and (divprodid='$pdivprodid' and br<>'N') order by nama";

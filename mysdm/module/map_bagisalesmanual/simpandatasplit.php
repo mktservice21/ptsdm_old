@@ -148,6 +148,94 @@
             mysqli_close($cnms);
             echo "berhasil";
             exit;
+        }elseif ($pact=="hapusdatasplitprodfaktur") {
+            include "../../config/koneksimysqli_ms.php";
+            
+            $pdistid=$_POST['udistid'];
+            $pcabd=$_POST['ucabid'];
+            $pbln=$_POST['ubln'];
+            $ptgljual=$_POST['utgljual'];
+            $pecustid=$_POST['uecustid'];
+            $pbrgid=$_POST['ubrg'];
+            $pidprod=$_POST['uproduk'];
+            $pfakturid=$_POST['ufakturid'];
+            
+            $pnoidslsinput="";
+            $query = "select distinct noMsales FROM MKT.msales0 where distid='$pdistid' and fakturid='$pfakturid' and tgl='$ptgljual' and ecabangid='$pcabd' and ecustid='$pecustid'";
+            $tampil= mysqli_query($cnms, $query);
+            while ($row= mysqli_fetch_array($tampil)) {
+                if (!empty($row['noMsales'])) $pnoidslsinput .="'".$row['noMsales']."',";
+            }
+            if (!empty($pnoidslsinput)) $pnoidslsinput="(".substr($pnoidslsinput, 0, -1).")";
+            
+            
+            $pnoidslsinput2="";
+            $query2 = "select distinct noMsales as noMsales FROM MKT.msales1 where noMsales IN $pnoidslsinput AND iprodid='$pidprod' and nomsales IN 
+                (select distinct IFNULL(nomsales,'') FROM MKT.msales0 where distid='$pdistid' and fakturid='$pfakturid' and tgl='$ptgljual' and ecabangid='$pcabd' and ecustid='$pecustid')";
+            $tampil2= mysqli_query($cnms, $query2);
+            while ($row2= mysqli_fetch_array($tampil2)) {
+                if (!empty($row2['noMsales'])) $pnoidslsinput2 .="'".$row2['noMsales']."',";
+            }
+            
+            
+            if (!empty($pnoidslsinput2)) {
+                $pnoidslsinput2="(".substr($pnoidslsinput2, 0, -1).")";
+                
+                
+                //echo "$pnoidslsinput2"; 
+                //echo "$pdistid, $pcabd, $pbln, $ptgljual, brgid : $pbrgid - $pidprod, faktur : $pfakturid, ecustid : $pecustid"; 
+                
+                $query = "DELETE FROM MKT.msales1 WHERE nomsales IN $pnoidslsinput2 AND iprodid='$pidprod' AND nomsales IN "
+                        . "(select distinct IFNULL(nomsales,'') FROM MKT.msales0 where distid='$pdistid' and fakturid='$pfakturid' and tgl='$ptgljual' and ecabangid='$pcabd' and ecustid='$pecustid')";
+                //echo $query; exit;
+                $result = mysqli_query($cnms, $query);
+                if ($result) {
+                    $query2 = "DELETE FROM MKT.msales0 WHERE noMsales IN $pnoidslsinput2 AND distid='$pdistid' and fakturid='$pfakturid' and tgl='$ptgljual' and ecabangid='$pcabd' and ecustid='$pecustid'";
+                    $result2 = mysqli_query($cnms, $query2);
+                }
+                
+                
+                mysqli_close($cnms);
+                echo "berhasil"; exit;
+            }
+            
+            
+            mysqli_close($cnms);
+            echo "tidak ada data yang diproses....";
+            exit;
+        }elseif ($pact=="hapusdatasplitfaktur") {
+            
+            include "../../config/koneksimysqli_ms.php";
+            
+            
+            $pdistid=$_POST['udistid'];
+            $pcabd=$_POST['ucabid'];
+            $pbln=$_POST['ubln'];
+            $ptgljual=$_POST['utgljual'];
+            $pecustid=$_POST['uecustid'];
+            $pfakturid=$_POST['ufakturid'];
+            
+            //echo "$pdistid, $pcabd, $pbln, $ptgljual, faktur : $pfakturid, ecustid : $pecustid";  exit;
+            
+            if (!empty($pfakturid)) {
+                $query = "DELETE FROM MKT.msales1 WHERE nomsales IN "
+                        . " (select DISTINCT IFNULL(nomsales,'') from MKT.msales0 where distid='$pdistid' and "
+                        . " fakturid='$pfakturid' and tgl='$ptgljual' and ecabangid='$pcabd' and ecustid='$pecustid')";
+                $result = mysqli_query($cnms, $query);
+                if ($result) {
+                    $query2 = "DELETE FROM MKT.msales0 WHERE distid='$pdistid' and "
+                            . " fakturid='$pfakturid' and tgl='$ptgljual' and ecabangid='$pcabd' and ecustid='$pecustid'";
+                    $result2 = mysqli_query($cnms, $query2);
+                }
+                
+                mysqli_close($cnms);
+                echo "berhasil";
+                exit;
+            }
+            
+            mysqli_close($cnms);
+            echo "tidak ada data yang diproses....";
+            exit;
         }
         
     }

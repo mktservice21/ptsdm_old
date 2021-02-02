@@ -17,7 +17,7 @@
     <div class="row">
 
         <?php
-        include "config/koneksimysqli_it.php";
+        include "config/koneksimysqli_ms.php";
         $aksi="module/mod_br_entrydcc/aksi_entrybrdcc.php";
         switch($_GET['act']){
             default:
@@ -103,17 +103,17 @@
 										
                                     //cComboDistibutor('', '');
 									
-                                    $sql=mysqli_query($cnit, "SELECT distinct Distid, nama, alamat1 from dbmaster.distrib0 WHERE"
+                                    $sql=mysqli_query($cnms, "SELECT distinct Distid, nama, alamat1 from MKT.distrib0 WHERE"
                                             . " Distid IN $pinsel order by Distid, nama");
                                     echo "<option value=''>--Pilih--</option>";
                                     while ($Xt=mysqli_fetch_array($sql)){
                                         $pdisid=$Xt['Distid'];
                                         $pdisnm=$Xt['nama'];
-										$cidcek=(INT)$pdisid;
+                                        $cidcek=(INT)$pdisid;
                                         echo "<option value='$pdisid'>$cidcek - $pdisnm</option>";
                                     }
 
-                                    $sql=mysqli_query($cnit, "SELECT distinct Distid, nama, alamat1 from dbmaster.distrib0 WHERE"
+                                    $sql=mysqli_query($cnms, "SELECT distinct Distid, nama, alamat1 from MKT.distrib0 WHERE"
                                             . " Distid NOT IN $pinsel order by Distid, nama");
                                     echo "<option value=''></option>";
                                     while ($Xt=mysqli_fetch_array($sql)){

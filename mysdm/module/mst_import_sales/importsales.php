@@ -58,7 +58,7 @@
                                         
                                         $pinsel="('0000000002', '0000000003', '0000000005', '0000000010', '0000000011', "
                                                 . " '0000000021', '0000000031', '0000000006', '0000000016', '0000000030', "
-                                                . " '0000000028', '0000000015', '0000000018', '0000000025', '0000000033')";
+                                                . " '0000000028', '0000000015', '0000000018', '0000000025', '0000000033', '0000000023')";
                                         cComboDistibutorHanyaCnNew('', $pdistiidpil, $pinsel);
                                         ?>
                                     </select>
@@ -138,6 +138,8 @@
                                 CPMCekImportData();
                             } else if (eiddist=="0000000016" || eiddist=="16") {
                                 MASCekImportData();
+                            } else if (eiddist=="0000000023" || eiddist=="23") {
+                                DUMCekImportData();
                             }
                         }
                         
@@ -245,6 +247,7 @@
                         } else if (eiddist=="0000000025" || eiddist=="25" 
                                 || eiddist=="0000000011" || eiddist=="11" 
                                 || eiddist=="0000000031" || eiddist=="31" 
+                                || eiddist=="0000000023" || eiddist=="23" 
                                 ) {
                             CariDataDIV('MPS');
                         }
@@ -1050,6 +1053,47 @@
                             return 0;
                         }
                         
+                    }
+                    
+                    
+                    function DUMCekImportData() {
+                        var ebln = document.getElementById("tgl1").value;
+                        var eiddist = document.getElementById("cb_distid").value;
+                        var epilfolder = document.getElementById("txtpilfoder").value;
+
+                        var myurl = window.location;
+                        var urlku = new URL(myurl);
+                        var module = urlku.searchParams.get("module");
+                        var idmenu = urlku.searchParams.get("idmenu");
+                        
+                        var iactpil="mpscekimport";
+                        
+                        //alert(iactpil); return false
+                        
+                        pText_="Yakin akan melakukan import data, MPS...?";
+                        
+                        ok_ = 1;
+                        if (ok_) {
+                            var r=confirm(pText_)
+                            if (r==true) {
+                                
+                                $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+                                $.ajax({
+                                    type:"post",
+                                    url:"module/mst_import_sales/dum_cekimport.php?module="+module+"&idmenu="+idmenu+"&act="+iactpil,
+                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&upilfolder="+epilfolder,
+                                    success:function(data){
+                                        $("#c-data").html(data);
+                                        $("#loading").html("");
+                                    }
+                                });
+                            }
+                            
+                        } else {
+                            //document.write("You pressed Cancel!")
+                            return 0;
+                        }
+        
                     }
                 </script>
                 

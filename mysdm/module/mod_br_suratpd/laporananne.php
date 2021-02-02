@@ -394,7 +394,7 @@
         <thead>
             <tr style='background-color:#cccccc; font-size: 13px;'>
                 <th align="center">Date</th>
-                <th align="center">DOKTER/SUPPLIER/CUSTOMER</th>
+                <th align="center">SUPPLIER/CUSTOMER</th>
                 <th align="center">NO. SLIP</th>
                 <th align="center">PENGAJUAN</th>
                 <th align="center">DAERAH</th>

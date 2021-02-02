@@ -536,6 +536,8 @@
         include 'module/sls_lappabrikdanretur/aksi_lappabrikdanretur.php';
     }elseif ($_GET['module']=='salesinsentifdm'){
         include 'module/sls_lapsalesinsentifdm/aksi_lapsalesinsentifdm.php';
+    }elseif ($_GET['module']=='salesinsentifmr'){
+        include 'module/sls_lapsalesinsentifmr/aksi_lapsalesinsentifmr.php';
         
     }elseif ($_GET['module']=='slssalesdiscdist'){
         include 'module/sls_salesvsdisc/aksi_salesvsdisc.php';
@@ -587,6 +589,12 @@
         
     }elseif ($_GET['module']=='lapbrbykaryawan'){
         include 'module/laporan/lap_br_bykaryawan/aksi_lapbrbykaryawan.php';
+    }elseif ($_GET['module']=='mapbagislsmanual'){
+        include 'module/map_bagisalesmanual/rpt_salesbagi.php';
+        
+        
+        
+        
         
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';

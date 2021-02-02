@@ -251,6 +251,7 @@
                         echo "<td nowrap ></td>";
                         echo "<td nowrap ></td>";
                         echo "<td nowrap ></td>";
+                        echo "<td nowrap ></td>";
                         echo "</tr>";
                     }
                     

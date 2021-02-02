@@ -2,7 +2,7 @@
     session_start();
     ini_set("memory_limit","5000M");
     ini_set('max_execution_time', 0);
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli_ms.php";
     include "../../config/fungsi_sql.php";
     
 ?>
@@ -68,7 +68,7 @@ $(document).ready(function() {
     $fperiode="";
     $fdist="";
     $fselisih="";
-    $initial = getfieldcnit("select initial as lcfields from MKT.distrib0 where distid='$distibutor'");
+    $initial = getfieldcnnew("select initial as lcfields from MKT.distrib0 where distid='$distibutor'");
     
     
     if ((int)$selisih==1) $fselisih=" AND ifnull(selisih,0) <>0 ";
@@ -93,11 +93,11 @@ $(document).ready(function() {
 if ((int)$ketnya==0) {
 
     $query = "SELECT * FROM $nmtabel WHERE LEFT(tgljual,7) = '$bulan'";
-    mysqli_query($cnit, "create  table $tmp2($query)");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "create  table $tmp2($query)");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    mysqli_query($cnit, "ALTER TABLE $tmp2 ADD ikodeid BIGINT(30) NOT NULL AUTO_INCREMENT PRIMARY KEY;");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "ALTER TABLE $tmp2 ADD ikodeid BIGINT(30) NOT NULL AUTO_INCREMENT PRIMARY KEY;");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $query = "SELECT
@@ -141,17 +141,17 @@ if ((int)$ketnya==0) {
 	AND ip.DivProdId IN ( 'EAGLE', 'PIGEO', 'PEACO' )
 	GROUP BY 1,2,3,	4,5,6,7,8,9,10,11,12,13,14,15";
     //LEFT ( s.tgljual, 7 ) = '$bulan'
-    mysqli_query($cnit, "create  table $tmp0($query)");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "create  table $tmp0($query)");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    mysqli_query($cnit, "ALTER TABLE $tmp0 ADD ikodeid BIGINT(30) NOT NULL AUTO_INCREMENT  PRIMARY KEY;");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "ALTER TABLE $tmp0 ADD ikodeid BIGINT(30) NOT NULL AUTO_INCREMENT  PRIMARY KEY;");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    mysqli_query($cnit, "CREATE INDEX inx_s on $tmp0 (inkode_d)");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "CREATE INDEX inx_s on $tmp0 (inkode_d)");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    mysqli_query($cnit, "ALTER TABLE $tmp0 ADD INDEX a0 (ikodeid), ADD INDEX a1 (distid), ADD INDEX a2 (cabangid), ADD INDEX a3 (ecustid), ADD INDEX a4 (fakturid), ADD INDEX a5 (iprodid)");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "ALTER TABLE $tmp0 ADD INDEX a0 (ikodeid), ADD INDEX a1 (distid), ADD INDEX a2 (cabangid), ADD INDEX a3 (ecustid), ADD INDEX a4 (fakturid), ADD INDEX a5 (iprodid)");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "SELECT
 	CAST($fildist as char(10))  distid,
@@ -171,41 +171,42 @@ if ((int)$ketnya==0) {
 	 
         AND s.DivProdId IN ( 'EAGLE', 'PIGEO', 'PEACO' )
         GROUP BY 1, 2, 3, 4, 5, 6";
-    mysqli_query($cnit, "create  table $tmp3($query)");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    mysqli_query($cnms, "create  table $tmp3($query)");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     //AND CONCAT(s.initialecabang, s.ecustid, s.fakturid, s.iprodid) in  (select CONCAT(a.cabangid, a.ecustid, a.fakturid, a.iprodid) from $tmp0 a)
     
-    mysqli_query($cnit, "ALTER TABLE $tmp3 ADD ikodeid BIGINT(30) NOT NULL AUTO_INCREMENT  PRIMARY KEY;");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "ALTER TABLE $tmp3 ADD ikodeid BIGINT(30) NOT NULL AUTO_INCREMENT  PRIMARY KEY;");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    mysqli_query($cnit, "CREATE INDEX inx_s on $tmp3 (inkode_s)");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "CREATE INDEX inx_s on $tmp3 (inkode_s)");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    mysqli_query($cnit, "ALTER TABLE $tmp3 ADD INDEX a0 (inkode_s), ADD INDEX a1 (distid), ADD INDEX a2 (cabangid), ADD INDEX a3 (ecustid), ADD INDEX a4 (fakturid), ADD INDEX a5 (iprodid)");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "ALTER TABLE $tmp3 ADD INDEX a0 (inkode_s), ADD INDEX a1 (distid), ADD INDEX a2 (cabangid), ADD INDEX a3 (ecustid), ADD INDEX a4 (fakturid), ADD INDEX a5 (iprodid)");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "SELECT * FROM $tmp3 WHERE inkode_s IN (select inkode_d from $tmp0)";
-    mysqli_query($cnit, "create  table $tmp1($query)");
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    $query = "SELECT * FROM $tmp3 WHERE inkode_s IN (select IFNULL(inkode_d,'') from $tmp0)";
+    mysqli_query($cnms, "create  table $tmp1($query)");
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     //index
     
-    mysqli_query($cnit, "ALTER TABLE $tmp1 ADD ikodeid_inx BIGINT(30) NOT NULL AUTO_INCREMENT PRIMARY KEY");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "ALTER TABLE $tmp1 ADD ikodeid_inx BIGINT(30) NOT NULL AUTO_INCREMENT PRIMARY KEY");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    mysqli_query($cnit, "ALTER TABLE $tmp1 ADD UNIQUE INDEX a0 (ikodeid_inx), ADD INDEX a1 (distid), ADD INDEX a2 (cabangid), ADD INDEX a3 (ecustid), ADD INDEX a4 (fakturid), ADD INDEX a5 (iprodid)");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "ALTER TABLE $tmp1 ADD UNIQUE INDEX a0 (ikodeid_inx), ADD INDEX a1 (distid), ADD INDEX a2 (cabangid), ADD INDEX a3 (ecustid), ADD INDEX a4 (fakturid), ADD INDEX a5 (iprodid)");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     
-    mysqli_query($cnit, "OPTIMIZE TABLE $tmp0"); mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    mysqli_query($cnit, "REPAIR TABLE $tmp0"); mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "OPTIMIZE TABLE $tmp0"); mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "REPAIR TABLE $tmp0"); mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    mysqli_query($cnit, "OPTIMIZE TABLE $tmp1"); mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    mysqli_query($cnit, "REPAIR TABLE $tmp1"); mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "OPTIMIZE TABLE $tmp1"); mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "REPAIR TABLE $tmp1"); mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     
@@ -220,18 +221,18 @@ if ((int)$ketnya==0) {
         AND s.fakturid=s2.fakturid 
         AND s.iprodid=s2.iprodid 
         SET s.qtysdm=s2.qty WHERE s.distid=$distibutor AND s2.distid=$distibutor";
-    mysqli_query($cnit, $query);//AND s.qty=s2.qty
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, $query);//AND s.qty=s2.qty
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    mysqli_query($cnit, "update $tmp0 set selisih=abs(qty)-abs(qtysdm)");
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, "update $tmp0 set selisih=abs(qty)-abs(qtysdm)");
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     
     //delete temp dist
     $query = "delete from dbmaster.tmp_sales_dist where distid=$fildist";
-    mysqli_query($cnit, $query);
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, $query);
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     //insert temp dist
@@ -244,22 +245,22 @@ if ((int)$ketnya==0) {
             . " alamat1, alamat2, icabangid, nama_cabang, areaid, divprodid, "
             . " brgid, iprodid, nama_produk, harga, qty, qtysdm, selisih "
             . " from $tmp0";
-    mysqli_query($cnit, $query);
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, $query);
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
 
     
     //delete tempmr_sales2
     $query = "delete from dbmaster.tmp_sales_mr2 where distid=$fildist";
-    mysqli_query($cnit, $query);
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, $query);
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     //insert tempmr_sales2
     $query = "insert into dbmaster.tmp_sales_mr2 "
             . " (distid, tgljual, cabangid, fakturid, iprodid, ecustid, hna, qty) "
             . " select distid, tgljual, cabangid, fakturid, iprodid, ecustid, hna, qty from $tmp1";
-    mysqli_query($cnit, $query);
-    mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnms, $query);
+    mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
 } else {
     
@@ -294,7 +295,7 @@ $fdist = " AND distid=$fildist ";
     <?PHP
         $no=1;
         $query = "select * from dbmaster.tmp_sales_dist WHERE 1=1 $fselisih $fdist order by nama_cabang, nama_cust, fakturid, nama_produk";
-        $group1 = mysqli_query($cnit, $query);
+        $group1 = mysqli_query($cnms, $query);
         $ketemu=  mysqli_num_rows($group1);
         while ($g1=mysqli_fetch_array($group1)){
             echo "<tr scope='row'>";
@@ -403,10 +404,10 @@ $fdist = " AND distid=$fildist ";
 <?PHP
     
 hapusdata:
-    $results1 = mysqli_query($cnit, "drop  table $tmp0");
-    $results1 = mysqli_query($cnit, "drop  table $tmp1");
-    $results1 = mysqli_query($cnit, "drop  table $tmp2");
-    $results1 = mysqli_query($cnit, "drop  table $tmp3");
+    $results1 = mysqli_query($cnms, "drop  table $tmp0");
+    $results1 = mysqli_query($cnms, "drop  table $tmp1");
+    $results1 = mysqli_query($cnms, "drop  table $tmp2");
+    $results1 = mysqli_query($cnms, "drop  table $tmp3");
 ?>
 <script>
 function myCopyClip(text) {

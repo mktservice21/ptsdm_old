@@ -286,8 +286,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 $pvaltgt=$row['value_target'];
                 
                 $pach=0;
-                if ((DOUBLE)$pvaltgt<>0) {
-                    $pach=(DOUBLE)$pvalsls/(DOUBLE)$pvaltgt*100;
+                if ((DOUBLE)$pqtytgt<>0) {
+                    $pach=(DOUBLE)$pqtysls/(DOUBLE)$pqtytgt*100;
                 }
                 $pqtysls=number_format($pqtysls,0,",",",");
                 $pvalsls=number_format($pvalsls,0,",",",");

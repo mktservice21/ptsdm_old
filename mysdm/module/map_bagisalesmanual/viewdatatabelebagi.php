@@ -91,10 +91,12 @@
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "select a.nomsales, a.distid, ecabangid, a.ecustid, a.icabangid, b.areaid, a.icustid, c.nama as nmicust, "
-            . " a.fakturid, a.tgl, b.iprodid, b.qty, b.src "
+            . " a.fakturid, a.tgl, b.iprodid, b.qty, b.src, d.nama as nama_cabang, e.nama as nama_area "
             . " from MKT.msales0 as a LEFT "
             . " JOIN MKT.msales1 as b on a.nomsales=b.nomsales "
-            . " LEFT JOIN MKT.icust as c on a.icabangid=c.icabangid AND b.areaid=c.areaid AND a.icustid=c.icustid WHERE "
+            . " LEFT JOIN MKT.icust as c on a.icabangid=c.icabangid AND b.areaid=c.areaid AND a.icustid=c.icustid "
+            . " LEFT JOIN MKT.icabang as d on a.icabangid=d.icabangid "
+            . " LEFT JOIN MKT.iarea as e on a.icabangid=e.icabangid AND b.areaid=e.areaid WHERE "
             . " a.distid='$piddist' and a.ecabangid='$pidecab' and a.fakturid='$pnmfilter' AND left(a.tgl,7)='$pbulan'";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnms, $query);
@@ -158,6 +160,7 @@
                     <th width='50px'>Qty. Available</th>
                     <th width='50px'></th>
                     <th width='50px'>Customer</th>
+                    <th width='50px'>Cabang / Area</th>
                     <th width='50px'>Qty</th>
                     <th width='50px'></th>
                 </tr>
@@ -218,6 +221,11 @@
                             $pdicustnm=$row2['nmicust'];
                             $pdqtysplte=$row2['qty'];
                             
+                            $pidcab_d=(INT)$row2['icabangid'];
+                            $pnmcab_d=$row2['nama_cabang'];
+                            $pidarea_d=(INT)$row2['areaid'];
+                            $pnmarea_d=$row2['nama_area'];
+                            
                             $pdqtysplte=number_format($pdqtysplte,0,",",",");
                             
                             $pbtnhapussplt="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"HapusDataSudahSplt('$pdkode', '$pnmfilter', '$pidprod')\">";
@@ -232,12 +240,14 @@
                             }
                             
                             echo "<td nowrap >$pdicustnm ($pdicustid)</td>";
+                            echo "<td nowrap >$pnmcab_d ($pidcab_d) / $pnmarea_d ($pidarea_d)</td>";
                             echo "<td nowrap align='right'>$pdqtysplte</td>";
                             echo "<td nowrap >$pbtnhapussplt</td>";
                             echo "</tr>";
                             $ppilihdetail=true;
                         }
                     }else{
+                        
                         echo "<td nowrap ></td>";
                         echo "<td nowrap ></td>";
                         echo "<td nowrap ></td>";

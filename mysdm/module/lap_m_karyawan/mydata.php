@@ -66,8 +66,9 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $idkar = trim($row["karyawanId"]);
     $link = "<a href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$idkar'>".$row["karyawanId"]."</a>";
     $pin = "";
-    if ($_SESSION['LEVELUSER']=="admin")
+    if ($pidgroup=="1" OR $pidgroup=="24") {
         $pin = $row["pin"];
+    }
     
     $nama = $row["nama"];
     $tempat = $row["tempat"];

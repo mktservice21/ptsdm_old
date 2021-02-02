@@ -10,9 +10,23 @@ $pidjbt=$_SESSION['JABATANID'];
 
 ?>
 
-
+<script>
+    function disp_confirmdata(pText)  {
+        if (pText == "excel") {
+            document.getElementById("form_data1").action = "<?PHP echo "$aksi?module=$pidmodule&act=input&idmenu=$pidmenu&ket=excel"; ?>";
+            document.getElementById("form_data1").submit();
+            return 1;
+        }else{
+            document.getElementById("form_data1").action = "<?PHP echo "$aksi?module=$pidmodule&act=input&idmenu=$pidmenu&ket=bukan"; ?>";
+            document.getElementById("form_data1").submit();
+            return 1;
+        }
+    }
+</script>
+                
 
 <script> window.onload = function() { document.getElementById("e_id").focus(); } </script>
+
 
 <div class="">
     
@@ -25,7 +39,7 @@ $pidjbt=$_SESSION['JABATANID'];
             <div class='x_panel'>
                 
                 <form method='POST' action='<?PHP echo "$aksi?module=$pidmodule&act=input&idmenu=$pidmenu"; ?>' 
-                      id='form_data1' name='form1' data-parsley-validate class='form-horizontal form-label-left'  enctype='multipart/form-data'>
+                      id='form_data1' name='form1' data-parsley-validate class='form-horizontal form-label-left'  enctype='multipart/form-data' target="_blank">
                     
                     
                     
@@ -107,8 +121,9 @@ $pidjbt=$_SESSION['JABATANID'];
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
                                         &nbsp; 
                                     </label>
-                                    <div class='col-md-4'>
+                                    <div class='col-md-6'>
                                         <button type='button' class='btn btn-dark' onclick='disp_viewdata()'>View Data</button>
+                                        <button type='button' class='btn btn-success' onclick="disp_confirmdata('')">Lihat Data Yang Sudah Dibagi</button>
                                         
                                     </div>
                                 </div>

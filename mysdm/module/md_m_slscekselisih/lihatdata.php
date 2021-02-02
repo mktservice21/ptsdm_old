@@ -1,6 +1,6 @@
 <?PHP
     session_start();
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli_ms.php";
 ?>
 <!DOCTYPE html>
 <html>
@@ -70,7 +70,7 @@
             LEFT JOIN MKT.icust i on i.iCustId=s.icustid and s.icabangid=i.icabangid
             LEFT JOIN MKT.iproduk p on s.iprodid=p.iprodid
             WHERE s.fakturid='$faktur' AND s.iprodid='$idprod'";
-        $tampil = mysqli_query($cnit, $query);
+        $tampil = mysqli_query($cnms, $query);
         $r = mysqli_fetch_array($tampil);
         
         $dist = $r['distId'];
@@ -85,9 +85,9 @@
         $qty = $r['qty'];
         
         function ComboDistributor($sel) {
-            include "../../config/koneksimysqli_it.php";
+            include "../../config/koneksimysqli_ms.php";
             $cquery = "select Distid, nama from MKT.distrib0 order by nama";
-            $ctampil = mysqli_query($cnit, $cquery);
+            $ctampil = mysqli_query($cnms, $cquery);
             echo "<option value=''>--Pilih--</option>";
             while ($cr = mysqli_fetch_array($ctampil)) {
                 if ($cr['Distid']==$sel)
@@ -98,9 +98,9 @@
         }
         
         function ComboCabang($sel) {
-            include "../../config/koneksimysqli_it.php";
+            include "../../config/koneksimysqli_ms.php";
             $cquery = "select iCabangId, nama from MKT.icabang order by nama";
-            $ctampil = mysqli_query($cnit, $cquery);
+            $ctampil = mysqli_query($cnms, $cquery);
             echo "<option value=''>--Pilih--</option>";
             while ($cr = mysqli_fetch_array($ctampil)) {
                 if ($cr['iCabangId']==$sel)
@@ -114,7 +114,7 @@
             if (!empty($cabang)) $cabang = " Where iCabangId='$cabang'";
             include "../../config/koneksimysqli_it.php";
             $cquery = "select areaId, nama from MKT.iarea $cabang order by nama";
-            $ctampil = mysqli_query($cnit, $cquery);
+            $ctampil = mysqli_query($cnms, $cquery);
             echo "<option value=''>--Pilih--</option>";
             while ($cr = mysqli_fetch_array($ctampil)) {
                 if ($cr['areaId']==$sel)

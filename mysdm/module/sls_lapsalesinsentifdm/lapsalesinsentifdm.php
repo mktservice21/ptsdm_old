@@ -73,7 +73,7 @@
                                                 <select class='form-control' name='cb_karyawan' id='cb_karyawan' onchange="">
                                                     <?PHP
                                                     if ($pidjabatan=="08") {
-                                                        $query = "select b.karyawanid as karyawanid, b.nama as nama from ms.karyawan WHERE a.karyawanid='$pidkaryawan' ";
+                                                        $query = "select b.karyawanid as karyawanid, b.nama as nama from ms.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
                                                     }else{
                                                         echo "<option value='' selected>--Pilih--</option>";
                                                         $query = "select DISTINCT a.karyawanid as karyawanid, b.nama as nama "

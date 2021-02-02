@@ -16,6 +16,7 @@
     
     $fkaryawan=$_SESSION['IDCARD'];
     $fjbtid=$_SESSION['JABATANID'];
+    $fgrpid=$_SESSION['GROUP'];
     
     
     $pidmodule=$_GET['module'];
@@ -124,17 +125,22 @@
                             <?php
                             echo "<option value='' selected>--Pilih--</option>";
                             
-                                if ($fjbtid=="38x") {
+                                if ($fjbtid=="38" AND $fgrpid<>"24") {
                                     $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
-                                            . " JOIN hrd.rsm_auth as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
+                                            . " JOIN hrd.rsm_auth as b on a.icabangid=b.icabangid WHERE 1=1 ";
+                                    if ($fkaryawan=="0000001900" OR $fkaryawan=="0000002298") {
+                                        $query .= " AND ( b.karyawanid='$fkaryawan' OR a.icabangid IN ('0000000101', '0000000094', '0000000002', '0000000025', '0000000084', '0000000108') ) ";
+                                    }else{
+                                        $query .= " AND b.karyawanid='$fkaryawan' ";
+                                    }
                                     $query .=" order by a.nama";
-                                }elseif ($fjbtid=="10x" OR $fjbtid=="18x") {
+                                }elseif ($fjbtid=="10" OR $fjbtid=="18") {
                                     $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
-                                            . " JOIN MKT.ispv0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
+                                            . " JOIN MKT.ispv0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$fkaryawan' ";
                                     $query .=" order by a.nama";
-                                }elseif ($fjbtid=="15x") {
+                                }elseif ($fjbtid=="15") {
                                     $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
-                                            . " JOIN MKT.imr0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$pidcard' ";
+                                            . " JOIN MKT.imr0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$fkaryawan' ";
                                     $query .=" order by a.nama";
                                 }else{
                                     $query = "select icabangid as icabangid, nama as nama from MKT.icabang WHERE 1=1 ";

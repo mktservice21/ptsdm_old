@@ -767,6 +767,8 @@
         include 'module/sls_mapsalescust/mapsalescust.php';
     }elseif ($_GET['module']=='salesinsentifdm'){
         include 'module/sls_lapsalesinsentifdm/lapsalesinsentifdm.php';
+    }elseif ($_GET['module']=='salesinsentifmr'){
+        include 'module/sls_lapsalesinsentifmr/lapsalesinsentifmr.php';
         
     }elseif ($_GET['module']=='bgtmonitoringki'){
         include 'module/mod_br_monitoringki/brmonitoringki.php';

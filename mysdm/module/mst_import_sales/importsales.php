@@ -1022,6 +1022,9 @@
                         }else if (eiddist=="0000000016") {
                             nmfileprostotbl="prosesdata_mas_uploadtodist.php";
                             ket="MAS";
+                        }else if (eiddist=="0000000023") {
+                            nmfileprostotbl="prosesdata_dum_uploadtodist.php";
+                            ket="DUM";
                         }
                         
                         if (nmfileprostotbl=="") {
@@ -1066,11 +1069,11 @@
                         var module = urlku.searchParams.get("module");
                         var idmenu = urlku.searchParams.get("idmenu");
                         
-                        var iactpil="mpscekimport";
+                        var iactpil="dumcekimport";
                         
                         //alert(iactpil); return false
                         
-                        pText_="Yakin akan melakukan import data, MPS...?";
+                        pText_="Yakin akan melakukan import data, DUM...?";
                         
                         ok_ = 1;
                         if (ok_) {

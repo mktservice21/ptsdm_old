@@ -193,7 +193,7 @@ if ($pmodule=="sppviewdata" OR $pmodule=="sppcaridatafolder") {
     
     $ppildistnya=$_POST['upildistnya'];
     $prosesuploaddata_asli="";
-    if ($ppildistnya=="0000000006" OR $ppildistnya=="0000000010" OR $ppildistnya=="0000000028" OR $ppildistnya=="0000000016") {
+    if ($ppildistnya=="0000000006" OR $ppildistnya=="0000000010" OR $ppildistnya=="0000000028" OR $ppildistnya=="0000000016" OR $ppildistnya=="0000000023") {
         $prosesuploaddata_asli="ProsesDataUploadToTabelDist()";
     }
     
@@ -237,7 +237,7 @@ if ($pmodule=="sppviewdata" OR $pmodule=="sppcaridatafolder") {
     $ppildistnya=$_POST['upildistnya'];
     $prosesuploaddata_asli="";
     if ($ppildistnya=="0000000006" OR $ppildistnya=="0000000010" OR $ppildistnya=="0000000011" 
-            OR $ppildistnya=="0000000031" OR $ppildistnya=="0000000025") {
+            OR $ppildistnya=="0000000031" OR $ppildistnya=="0000000025" OR $ppildistnya=="0000000023") {
         $prosesuploaddata_asli="ProsesDataUploadToTabelDist()";
     }
     

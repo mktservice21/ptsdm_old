@@ -88,6 +88,7 @@ echo "Total Customer baru yg berhasil diinput: $totalcust<br><hr><br>";
 
     
 // sales
+$dpl="";
 $totalsalesqty=0;
 $totalsalessum=0;
 unset($pinsert_data_sls);//kosongkan array

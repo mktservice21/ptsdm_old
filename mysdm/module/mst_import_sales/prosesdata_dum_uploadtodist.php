@@ -87,7 +87,7 @@ echo "Total Customer baru yg berhasil diinput: $totalcust<br><hr><br>";
 
     
 // sales
-$dpl="";
+$dpl="0";
 $totalsalesqty=0;
 $totalsalessum=0;
 unset($pinsert_data_sls);//kosongkan array
@@ -122,6 +122,7 @@ if ((INT)$ketemusls>0){
         $qbeli=$data1['qbeli'];
         $totale=$harga*$qbeli;
         
+        if (empty($dpl)) $dpl=0;
         
         // echo $cabang.'~'.$custid.'~'.$nojual.'~'.$custid.'~'.$brgid.'~'.$tgljual.'~'.$harga.'~'.$qbeli.'<br>';
         /*

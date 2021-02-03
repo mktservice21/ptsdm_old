@@ -9,6 +9,7 @@ $pstsmobile=$_SESSION['MOBILE'];
 $piduser=$_SESSION['USERID']; 
 $pidcard=$_SESSION['IDCARD'];
 $pidjbt=$_SESSION['JABATANID']; 
+$pidgroup=$_SESSION['GROUP']; 
 
 
 $pidinput="";
@@ -55,7 +56,9 @@ if ($pidact=="editdata"){
     $pkodepos=$r['kodepos'];
     
 }
-
+if ($pidgroup=="1" OR $pidgroup=="24") {
+    $pnamareadonly="";
+}
 ?>
 
 

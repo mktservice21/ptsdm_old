@@ -46,6 +46,8 @@ if (empty($puser)) {
     
     $inputFileName = $target_dir.$filename;
     
+    //echo $inputFileName; exit;
+    
     //ubah juga di prosesdata_
     include "../../config/koneksimysqli_ms.php";
     $cnmy=$cnms;
@@ -53,10 +55,10 @@ if (empty($puser)) {
     
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
-    $plogit_akses=false;
     if ($plogit_akses==true) {
         include "../../config/koneksimysqli_it.php";
     }
+    
     
     
     
@@ -70,11 +72,18 @@ if (empty($puser)) {
     }
     //END IT
     
+
+    
+    unset($pinsert_data);//kosongkan array
+    $jmlrec=0;
+    $isimpan=false;
+    $pnosht=1;
+    
+    
     require('spreadsheet-reader-master/php-excel-reader/excel_reader2.php');
     require('spreadsheet-reader-master/SpreadsheetReader.php');
     
     $Reader = new SpreadsheetReader($target_dir.$pnmfolder);
-    
     
     $jmlrec=0;
     foreach ($Reader as $Key => $Row) {
@@ -84,12 +93,53 @@ if (empty($puser)) {
         $pfile0=trim($Row[0]);
         $pfile1=trim($Row[1]);
         $pfile2=trim($Row[2]);
+        $pfile3=trim($Row[3]);
+        $pfile4=trim($Row[4]);
+        $pfile5=trim($Row[5]);
+        $pfile6=trim($Row[6]);
+        $pfile7=trim($Row[7]);
+        $pfile8=trim($Row[8]);
         
-        echo "$pfile0<br/>";
+        if ( empty($pfile0) AND empty($pfile1) AND empty($pfile2) AND empty($pfile3) AND empty($pfile4) AND empty($pfile5)
+                 AND empty($pfile6) AND empty($pfile7) AND empty($pfile8) ) {
+            continue;
+        }
+
+
+        if (!empty($pfile5)) $pfile5 = str_replace("'", "", $pfile5);
+        if (!empty($pfile5)) $pfile5 = str_replace(" ", "", $pfile5);
+        if (!empty($pfile5)) $pfile5 = str_replace("*", "", $pfile5);
+        if (!empty($pfile5)) $pfile5=str_replace(",","", $pfile5);
         
+        if (!empty($pfile0)) $pfile0=date('Y-m-d', strtotime($pfile0));
+        else $pfile0 = "0000-00-00";
+                
+        //echo "$pfile0, $pfile1, $pfile2, $pfile3, $pfile4, $pfile5, $pfile6, $pfile7, $pfile8<br/>";
+        
+        $pinsert_data[] = "('$pfile0', '$pfile1', '$pfile2', '$pfile7', '$pfile6', "
+                . " '$pfile5', '$pfile8')";
+        $isimpan=true;
+
+        $jmlrec++;
+            
     }
     
-    exit;
+    if ($isimpan==true) {
+        $query_ins_pil = "INSERT INTO $dbname.import_dum (`Tanggal`, `No Faktur`, `Customer`, `Kode Barang`, `Nama Barang`, "
+                . " `QTY`, `Kd Cust`) values "
+                . " ".implode(', ', $pinsert_data);
+
+        mysqli_query($cnmy, $query_ins_pil);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT import_dum : $erropesan"; exit; }
+        
+        //IT
+        if ($plogit_akses==true) {
+            mysqli_query($cnit, $query_ins_pil);
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT import_dum : $erropesan"; exit; }
+        }
+        //END IT
+    }
+    
     
     $query = "SELECT * FROM $dbname.import_dum WHERE DATE_FORMAT(Tanggal,'%Y%m')<>'$pbulan'";
     $tampil= mysqli_query($cnmy, $query);
@@ -107,25 +157,21 @@ if (empty($puser)) {
         <thead>
             <tr>
                 <th width='10px'>No</th>
-                <th align="center" nowrap>Cust</th>
-                <th align="center" nowrap>Nama Customer</th>
                 <th align="center" nowrap>Tanggal</th>
                 <th align="center" nowrap>No Faktur</th>
+                <th align="center" nowrap>Cust</th>
+                <th align="center" nowrap>Nama Customer</th>
                 <th align="center" nowrap>Kode</th>
                 <th align="center" nowrap>Nama Barang</th>
-                <th align="center" nowrap>Satuan</th>
-                <th align="center" nowrap>Kwantum</th>
-                <th align="center" nowrap>Harga</th>
-                <th align="center" nowrap>Total</th>
-                <th align="center" nowrap>Type</th>
+                <th align="center" nowrap>Qty</th>
             </tr>
         </thead>
         <tbody>
             <?PHP
                 $pgrdtotal=0;
                 $no=1;
-                $query = "select cust, `nama customer` as nmcust, Tanggal, `No.Faktur` as nofaktur, Kode, "
-                        . " `nama barang` as nmbarang, satuan, kwantum, harga, total, type as ttype "
+                $query = "SELECT `Tanggal` as Tanggal, `No Faktur` as nofaktur, `Customer` as nmcust, `Kode Barang` as Kode, `Nama Barang` as nmbarang, "
+                        . " `QTY` as kwantum, `Kd Cust` as cust "
                         . " from $dbname.import_dum";
                 $tampil= mysqli_query($cnmy, $query);
                 $ketemu= mysqli_num_rows($tampil);
@@ -138,44 +184,26 @@ if (empty($puser)) {
                         $pnofaktur=$row['nofaktur'];
                         $pkode=$row['Kode'];
                         $pnmbrg=$row['nmbarang'];
-                        $psatuan=$row['satuan'];
                         $pkwantum=$row['kwantum'];
-                        $pharga=$row['harga'];
-                        $ptotal=$row['total'];
-                        $ptype=$row['ttype'];
-                        
-                        $pgrdtotal=(double)$pgrdtotal+(double)$ptotal;
                         
                         $ptanggal=date('d M Y', strtotime($ptanggal));
                         
-                        $pharga=number_format($pharga,0,",",",");
-                        $ptotal=number_format((double)$ptotal,0,",",",");
                         
                         
                         echo "<tr>";
                         echo "<td nowrap>$no</td>";
-                        echo "<td nowrap>$pkdcust</td>";
-                        echo "<td nowrap>$pnmcust</td>";
                         echo "<td nowrap>$ptanggal</td>";
                         echo "<td nowrap>$pnofaktur</td>";
+                        echo "<td nowrap>$pkdcust</td>";
+                        echo "<td nowrap>$pnmcust</td>";
                         echo "<td nowrap>$pkode</td>";
                         echo "<td nowrap>$pnmbrg</td>";
-                        echo "<td nowrap>$psatuan</td>";
                         echo "<td nowrap align='right'>$pkwantum</td>";
-                        echo "<td nowrap align='right'>$pharga</td>";
-                        echo "<td nowrap align='right'>$ptotal</td>";
-                        echo "<td nowrap>$ptype</td>";
                         echo "</tr>";
                         
                         $no++;
                     }
                     
-                    $pgrdtotal=number_format($pgrdtotal,0,",",",");
-                    echo "<tr>";
-                    echo "<td nowrap colspan='10' align='center'><b>Grand Total : </b></td>";
-                    echo "<td nowrap align='right'><b>$pgrdtotal</b></td>";
-                    echo "<td nowrap></td>";
-                    echo "</tr>";
                 }
             ?>
         </tbody>
@@ -216,7 +244,7 @@ if (empty($puser)) {
     echo "<br/>&nbsp;";
     
     echo "<b>Jumlah Proses Import : $jmlrec</b><br/>&nbsp;<br/>&nbsp;";
-    echo "<b>TOTAL SALES : $pgrdtotal</b><br/>&nbsp;<br/>&nbsp;";
+    //echo "<b>TOTAL SALES : $pgrdtotal</b><br/>&nbsp;<br/>&nbsp;";
     echo "Selesai dalam ".$total_time." detik";
     
     

@@ -493,6 +493,7 @@ $pjabatanid = $row['jabatanId'];
                                                 
                                                 <?PHP
                                                 if ($pact=="editdata") {
+                                                    $psudahpilih=false;
                                                     if ($ptahunbrinput<=2020) {
                                                         if (empty($pdokteridmr)) echo "<option value='' selected>-- Pilihan --</option>";
                                                         $query="select dokterId, nama from hrd.dokter WHERE dokterid='$pdokteridmr' ";
@@ -551,11 +552,14 @@ $pjabatanid = $row['jabatanId'];
                                                         $piddopl=$ciddok;
                                                         if(!empty($ciddok)) $piddopl=(INT)$ciddok;
                                                         
-                                                        if ($ciddok==$pdokteridmr)
+                                                        if ($ciddok==$pdokteridmr) {
                                                             echo "<option value='$ciddok' selected>$cnmdok ($piddopl)</option>";
-                                                        else
+                                                            $psudahpilih=true;
+                                                        }else
                                                             echo "<option value='$ciddok'>$cnmdok ($piddopl)</option>";
                                                     }
+                                                    
+                                                    if ($psudahpilih==false) echo "<option value='' selected>-- Pilihan --</option>";
                                                     
                                                 }else{
                                                     echo "<option value='' selected>-- Pilihan --</option>";

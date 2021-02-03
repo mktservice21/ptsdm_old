@@ -547,10 +547,14 @@ $pjabatanid = $row['jabatanId'];
                                                     while($a=mysqli_fetch_array($tampil)){
                                                         $ciddok=$a['dokterId'];
                                                         $cnmdok=$a['nama'];
+                                                        
+                                                        $piddopl=$ciddok;
+                                                        if(!empty($ciddok)) $piddopl=(INT)$ciddok;
+                                                        
                                                         if ($ciddok==$pdokteridmr)
-                                                            echo "<option value='$ciddok' selected>$cnmdok</option>";
+                                                            echo "<option value='$ciddok' selected>$cnmdok ($piddopl)</option>";
                                                         else
-                                                            echo "<option value='$ciddok'>$cnmdok</option>";
+                                                            echo "<option value='$ciddok'>$cnmdok ($piddopl)</option>";
                                                     }
                                                     
                                                 }else{

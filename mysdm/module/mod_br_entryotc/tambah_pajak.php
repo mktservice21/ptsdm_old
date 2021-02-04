@@ -219,14 +219,23 @@
                                                         echo "<option value=''></option>";
                                                         echo "<option value='pph21' selected>PPH21</option>";
                                                         echo "<option value='pph23'>PPH23</option>";
+                                                        echo "<option value='pph10'>PPH Pasal 4 ayat 2 (10%)</option>";
                                                     }elseif ($pjnspph=="pph23") {
                                                         echo "<option value=''></option>";
                                                         echo "<option value='pph21'>PPH21</option>";
                                                         echo "<option value='pph23' selected>PPH23</option>";
+                                                        echo "<option value='pph10'>PPH Pasal 4 ayat 2 (10%)</option>";
+                                                    }elseif ($pjnspph=="pph10") {
+                                                        echo "<option value=''></option>";
+                                                        echo "<option value='pph21'>PPH21</option>";
+                                                        echo "<option value='pph23'>PPH23</option>";
+                                                        echo "<option value='pph10' selected>PPH Pasal 4 ayat 2 (10%)</option>";
+                                                        
                                                     }else{
                                                         echo "<option value='' selected></option>";
                                                         echo "<option value='pph21'>PPH21</option>";
                                                         echo "<option value='pph23'>PPH23</option>";
+                                                        echo "<option value='pph10'>PPH Pasal 4 ayat 2 (10%)</option>";
                                                     }
                                                     ?>
                                                 </select>
@@ -708,6 +717,9 @@
         }else if (epph=="pph23") {
             document.getElementById("e_jmlpph").value = "2";
             HitungPPH();
+        }else if (epph=="pph10") {
+            document.getElementById("e_jmlpph").value = "10";
+            HitungPPH();
         }else{
             document.getElementById("e_jmlpph").value = "0";
             document.getElementById("e_jmlrppph").value = "0";
@@ -753,6 +765,9 @@
                     e_totrppph = (idpp_pilih * npph / 100)*50/100;   
                 }else if (epph=="pph23") {
                     npph = "2";
+                    e_totrppph = (idpp_pilih * npph / 100);
+                }else if (epph=="pph10") {
+                    npph = "10";
                     e_totrppph = (idpp_pilih * npph / 100);
                 }
             }
@@ -810,7 +825,7 @@
             idpp_pilih=erpjmljasa;
         }*/
         
-        if (epph=="pph21" || epph=="pph23") {
+        if (epph=="pph21" || epph=="pph23" || epph=="pph10") {
             e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(nrpppn) - parseFloat(nrppph) ) );
         }else{
             e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(nrpppn)));

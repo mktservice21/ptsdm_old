@@ -229,7 +229,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
     </div>
     <div class="clearfix"></div>
 
-    
+    <hr/>
     <div class="ijudul"><h2>Penempatan Marketing</h2></div>
     <table id='mydatatable1' class='table table-striped table-bordered' width="100%" border="1px solid black">
         <thead>

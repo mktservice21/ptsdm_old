@@ -9,7 +9,7 @@
     
 
     //$fkaryawan="0000000158"; $fjbtid="05";//hapussaja
-    
+    $pfiltercabpilih="";
     $pfilterkaryawan="";
     $pfilterkaryawan2="";
     $pfilterkry="";
@@ -36,6 +36,21 @@
             if (isset($parry_kry[0])) $pfilterkaryawan=TRIM($parry_kry[0]);
             if (isset($parry_kry[1])) $pfilterkaryawan2=TRIM($parry_kry[1]);
         }
+        
+            $query_cab = "select distinct icabangid from hrd.rsm_auth WHERE karyawanid='$fkaryawan'";
+            $tampil= mysqli_query($cnmy, $query_cab);
+            $ketemu= mysqli_num_rows($tampil);
+            if ($ketemu>0) {
+                while ($rs= mysqli_fetch_array($tampil)) {
+                    $vbicabangid=$rs['icabangid'];
+                    
+                    if (!empty($vbicabangid)) $pidcabangpil=$vbicabangid;
+                    if (strpos($pfiltercabpilih, $vbicabangid)==false) $pfiltercabpilih .="'".$vbicabangid."',";
+                    
+                }
+                if (!empty($pfiltercabpilih)) $pfiltercabpilih="(".substr($pfiltercabpilih, 0, -1).")";
+            }
+            
     }
     
     
@@ -148,14 +163,11 @@
                                 <div class="form-group">
                                     <select class='form-control input-sm' id="cb_cabang" name="cb_cabang" onchange="ShowDataArea()">
                                         <?PHP
-                                            if ($pmyjabatanid=="38"){
-                                            }else{
-                                                echo "<option value=''>--Piihan--</option>";
-                                            }
+                                            echo "<option value=''>--Piihan--</option>";
                                             $query_cb = "select icabangid as icabangid, nama as nama from mkt.icabang WHERE 1=1 ";
                                             $query_cb .=" AND left(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
                                             if (!empty($pfiltercabpilih)) {
-                                                if ($pmyjabatanid=="15" OR $pmyjabatanid=="38" OR $pmyjabatanid=="39" OR $pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjabatanid=="08" OR $pmyjabatanid=="20") $query_cb .=" AND iCabangId IN $pfiltercabpilih ";
+                                                if ($fjbtid=="15" OR $fjbtid=="38" OR $fjbtid=="39" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="08" OR $fjbtid=="20") $query_cb .=" AND iCabangId IN $pfiltercabpilih ";
                                             }
                                             $query_aktif =$query_cb." AND IFNULL(aktif,'')='Y' ";
                                             $query_aktif .=" order by nama";

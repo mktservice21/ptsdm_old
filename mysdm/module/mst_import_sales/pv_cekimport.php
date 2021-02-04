@@ -262,7 +262,7 @@ if (empty($puser)) {
 			if (empty($pfile1)) $pfile1=$pfile15;
 
     
-            echo "$pfile4, $pfile5, $pfile6, $pfile7, $pfile8, $pfile9, $pfile10, $pfile13<br/>";
+            //echo "$pfile4, $pfile5, $pfile6, $pfile7, $pfile8, $pfile9, $pfile10, $pfile13<br/>";
                         
             $query_parts_sls[] = "('$pfile0', '$pfile1', '$pfile2', '$pfile3', "
                     . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', "

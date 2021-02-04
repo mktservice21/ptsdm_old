@@ -128,10 +128,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 $query = "ALTER TABLE $tmp02 ADD COLUMN groupp VARCHAR(10), ADD COLUMN groupp2 VARCHAR(10)";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
-if ($pdivisiinc=="CAN+") {
-    $query = "UPDATE $tmp02 as a JOIN ms.gpeth_sales as b on a.iprodid=b.iprodid AND a.divprodid=b.divprodid SET a.groupp=b.groupp";
+if ($pdivisiinc=="CAN" OR $pdivisiinc=="CAN+") {
+    $query = "UPDATE $tmp02 as a JOIN ms.gpeth_sales as b on a.iprodid=b.iprodid SET a.groupp=b.groupp WHERE b.divprodid='CANARY'";
 }else{
-    $query = "UPDATE $tmp02 as a JOIN ms.gpeth_sales as b on a.iprodid=b.iprodid AND a.divprodid=b.divprodid SET a.groupp=b.groupp";
+    $query = "UPDATE $tmp02 as a JOIN ms.gpeth_sales as b on a.iprodid=b.iprodid SET a.groupp=b.groupp WHERE b.divprodid='$pdivisiinc'";
 }
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 

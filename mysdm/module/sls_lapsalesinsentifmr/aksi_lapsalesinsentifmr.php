@@ -129,7 +129,7 @@ $query = "ALTER TABLE $tmp02 ADD COLUMN groupp VARCHAR(10), ADD COLUMN groupp2 V
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 if ($pdivisiinc=="CAN+") {
-    $query = "UPDATE $tmp02 as a JOIN ms.gpeth_am_sales as b on a.iprodid=b.iprodid AND a.divprodid=b.divprodid SET a.groupp=b.groupp";
+    $query = "UPDATE $tmp02 as a JOIN ms.gpeth_sales as b on a.iprodid=b.iprodid AND a.divprodid=b.divprodid SET a.groupp=b.groupp";
 }else{
     $query = "UPDATE $tmp02 as a JOIN ms.gpeth_sales as b on a.iprodid=b.iprodid AND a.divprodid=b.divprodid SET a.groupp=b.groupp";
 }

@@ -71,7 +71,7 @@ $query = "select icabangid, divprodid, iprodid, SUM(qty_target) as qty_target, S
         . " SUM(qty_sales) as qty_sales, SUM(value_sales) as value_sales from sls.sales "
         . " WHERE bulan between '$pbln1' AND '$pbln2' AND icabangid IN $filtercab ";
 $query .= " AND iprodid NOT in (select distinct IFNULL(iprodid,'') FROM sls.othproduk)";
-$query .= " and iprodid not in (select iprodid from ms.gpeth WHERE groupp='NEW')";
+$query .= " and iprodid not in (select iprodid from ms.gpeth_sales WHERE groupp='NEW')";
 $query .= " GROUP BY 1,2,3";
 //echo $query;
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
@@ -86,8 +86,14 @@ $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
+$query = "ALTER TABLE $tmp02 ADD COLUMN groupp VARCHAR(10)";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
+$query = "UPDATE $tmp02 as a JOIN ms.gpeth_sales as b on a.iprodid=b.iprodid AND a.divprodid=b.divprodid SET a.groupp=b.groupp";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
+$query = "UPDATE $tmp02 SET groupp='GROUP2' WHERE IFNULL(groupp,'')=''";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 ?>
 
@@ -172,8 +178,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
     </div>
     <div class="clearfix"></div>
 
-    
-    
+    <hr/>
+    <div class="ijudul"><h2>Tanpa New dan Other Produk</h2></div>
     <table id='mydatatable1' class='table table-striped table-bordered' width="100%" border="1px solid black">
         <thead>
             <tr>
@@ -308,6 +314,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             ?>
         </tbody>
     </table>
+
     <br/><br/><br/><br/>
     
     
@@ -402,6 +409,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             .tjudul td {
                 padding: 4px;
             }
+            .ijudul h2 {
+                font-size: 16px;
+                font-weight:bold;
+            }
         </style>
     
         <style>
@@ -409,14 +420,14 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             .divnone {
                 display: none;
             }
-            #mydatatable1, #mydatatable2, #mydatatable3 {
+            #mydatatable1, #mydatatable2, #mydatatable3, #mydatatable4 {
                 color:#000;
                 font-family: "Arial";
             }
-            #mydatatable1 th, #mydatatable2 th, #mydatatable3 th {
+            #mydatatable1 th, #mydatatable2 th, #mydatatable3 th, #mydatatable4 th {
                 font-size: 12px;
             }
-            #mydatatable1 td, #mydatatable2 td, #mydatatable3 td { 
+            #mydatatable1 td, #mydatatable2 td, #mydatatable3 td, #mydatatable4 td { 
                 font-size: 11px;
             }
         </style>
@@ -497,6 +508,22 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     { "visible": false },
                     { className: "text-right", "targets": [2,3,4,5,6] },//right
                     { className: "text-nowrap", "targets": [0,1,2,3,4,5,6] }//nowrap
+
+                ],
+                bFilter: false, bInfo: true, "bLengthChange": false, "bLengthChange": true,
+                "bPaginate": false
+            } );
+            
+            var table14 = $('#mydatatable4').DataTable({
+                fixedHeader: true,
+                "ordering": false,
+                "lengthMenu": [[10, 50, 100, -1], [10, 50, 100, "All"]],
+                "displayLength": -1,
+                "order": [[ 0, "asc" ]],
+                "columnDefs": [
+                    { "visible": false },
+                    { className: "text-right", "targets": [1,2,3] },//right
+                    { className: "text-nowrap", "targets": [0,1,2,3] }//nowrap
 
                 ],
                 bFilter: false, bInfo: true, "bLengthChange": false, "bLengthChange": true,

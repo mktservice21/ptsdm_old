@@ -1,7 +1,7 @@
 <?php
     //ini_set('display_errors', '0');
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -44,8 +44,14 @@ $milliseconds = round(microtime(true) * 1000);
 $now=date("mdYhis");
 $tmp01 ="dbtemp.tmpdminstf01_".$puser."_$now$milliseconds";
 $tmp02 ="dbtemp.tmpdminstf02_".$puser."_$now$milliseconds";
+$tmp03 ="dbtemp.tmpdminstf03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
+
+$query = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a.icabangid, a.areaid, b.nama as nama_cabang, c.nama as nama_area from sls.imr0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
+        . " sls.iarea as c on a.icabangid=c.icabangid AND a.areaid=c.areaid WHERE a.karyawanid='$pkaryawanid'";
+$query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 $query = "select nama as nama from ms.karyawan WHERE karyawanid='$pkaryawanid'";
 $tampilk= mysqli_query($cnms, $query);
@@ -54,7 +60,7 @@ $pnamakaryawan=$rowk['nama'];
 
 $pbolehproses=true;
 
-$query = "select distinct icabangid from sls.imr0 WHERE karyawanid='$pkaryawanid'";
+$query = "select distinct icabangid from $tmp03 WHERE ifnull(aktif,'')<>'N'";
 $tampil= mysqli_query($cnms, $query);
 $ketemu= mysqli_num_rows($tampil);
 if ((INT)$ketemu>1) $pbolehproses=false;
@@ -64,15 +70,19 @@ $pketdivisi="";
 $filtercab="";
 
 if ($pbolehproses==true) {
-    $query = "select distinct icabangid as icabangid, areaid as areaid, divisiid as divisiid from sls.imr0 WHERE karyawanid='$pkaryawanid' ORDER BY divisiid";
+    $query = "select distinct icabangid as icabangid, areaid as areaid, divisiid as divisiid, aktif from $tmp03 WHERE 1=1 ORDER BY divisiid";
     $tampil= mysqli_query($cnms, $query);
     while ($row= mysqli_fetch_array($tampil)) {
         $pidivid=$row['divisiid'];
         $picabangid=$row['icabangid'];
         $pareaid=$row['areaid'];
+        $paktif=$row['aktif'];
     
         if (strpos($pketdivisi, $pidivid)==false) {
-            $pketdivisi .=$pidivid.",";
+            if ($paktif=="N") {   
+            }else{
+                $pketdivisi .=$pidivid.",";
+            }
         }
         $filtercab .="'".$picabangid."".$pareaid."".$pidivid."',";
         
@@ -89,7 +99,7 @@ if ($pbolehproses==true) {
     $filtercab="('')";
 }
 
-//$pketdivisi="EAGLE,PEACO,PIGEO";
+//$pketdivisi="EAGLE,PEACO,PIGEO"; //CAN+
 
 $query = "select distinct divisiid as divisiid from ms.ket_divisi WHERE ket_divisi='$pketdivisi' ";
 $tampil2= mysqli_query($cnms, $query);
@@ -242,7 +252,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
         <tbody>
             <?PHP
             $query = "select DISTINCT icabangid, nama_cabang, areaid, nama_area, divprodid FROM "
-                    . " $tmp02 ";
+                    . " $tmp03 ";
             $query .=" ORDER BY nama_cabang, nama_area, divprodid";
             $tampil= mysqli_query($cnms, $query);
             while ($row= mysqli_fetch_array($tampil)) {
@@ -755,5 +765,6 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 hapusdata:
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp01");
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp02");
+    mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp03");
     mysqli_close($cnms);
 ?>

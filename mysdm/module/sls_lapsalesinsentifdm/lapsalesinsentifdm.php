@@ -1,3 +1,5 @@
+<?PHP include "config/cek_akses_modul.php"; ?>
+
 <div class="">
 
     <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Sales Insentif DM</h3></div></div><div class="clearfix"></div>

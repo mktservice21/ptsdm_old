@@ -1,6 +1,6 @@
 <?php
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
     session_start();
@@ -30,6 +30,7 @@
     $pdivisipil = $_POST['cb_divisi'];
     $ptipepil = $_POST['e_pilihtipe'];
     $pcabidpil = $_POST['cb_cabangid'];
+    $piddokterpil = $_POST['e_iddokt'];
     
     $pviasby="";
     if (isset($_POST['chk_viasby'])) $pviasby = $_POST['chk_viasby'];
@@ -112,6 +113,7 @@
         $query .= " tgl BETWEEN '$pperiode1' AND '$pperiode2' ";
     }
     if (!empty($pdivisipil)) $query .=" AND divprodid='$pdivisipil' ";
+    if (!empty($piddokterpil)) $query .=" AND dokterid='$piddokterpil' ";
     
     if (!empty($pcabidpil)) $query .=" AND icabangid='$pcabidpil' ";
     else{

@@ -1,3 +1,5 @@
+<!-- Modal -->
+<div class='modal fade' id='myModal' role='dialog'></div>
 <div class="">
 
     <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Budget Request Ethical</h3></div></div><div class="clearfix"></div>
@@ -30,6 +32,29 @@
                             document.getElementById("form1").submit();
                             return 1;
                         }
+                    }
+                    
+                    function getDataDokter(data1, data2){
+                        $.ajax({
+                            type:"post",
+                            url:"module/laporan/lap_brethical/viewdata_drlap.php?module=viewdatadokter",
+                            data:"udata1="+data1+"&udata2="+data2+"&uidkry=",
+                            success:function(data){
+                                $("#myModal").html(data);
+                                document.getElementById(data1).value="";
+                                document.getElementById(data2).value="";
+                            }
+                        });
+                    }
+                    
+                    function getDataModalDokter(fildnya1, fildnya2, d1, d2){
+                        document.getElementById(fildnya1).value=d1;
+                        document.getElementById(fildnya2).value=d2;
+                    }
+
+                    function HapusDataDokter(){
+                        document.getElementById('e_iddokt').value="";
+                        document.getElementById('e_nmdokt').value="";
                     }
                 </script>
                 
@@ -90,7 +115,20 @@
                                         </div>
                                         
                                         
-                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                                                <button type='button' class='btn btn-info btn-xs' onclick='HapusDataDokter()'>Dokter</button> <span class='required'></span>
+                                                <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                <div class='input-group '>
+                                                    <span class='input-group-btn'>
+                                                        <button type='button' class='btn btn-primary' data-toggle='modal' data-target='#myModal' onClick="getDataDokter('e_iddokt', 'e_nmdokt')">Pilih!</button>
+                                                    </span>
+                                                    <input type='hidden' class='form-control' id='e_iddokt' name='e_iddokt' value='<?PHP echo ""; ?>' Readonly>
+                                                    <input type='text' class='form-control' id='e_nmdokt' name='e_nmdokt' value='<?PHP echo ""; ?>' Readonly>
+                                                </div>
+                                            </div>
+                                        </div>
                                         
                                     </div>
                                 </div>

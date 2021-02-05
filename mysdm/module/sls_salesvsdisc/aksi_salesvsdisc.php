@@ -72,8 +72,9 @@
     $tmp01 =" dbtemp.tmplapslsvsdisc01_".$puserid."_$now ";
     $tmp02 =" dbtemp.tmplapslsvsdisc02_".$puserid."_$now ";
     $tmp03 =" dbtemp.tmplapslsvsdisc03_".$puserid."_$now ";
+    $tmp04 =" dbtemp.tmplapslsvsdisc04_".$puserid."_$now ";
     
-    if ($piddivisi!="CHC" AND $piddivisi!="OTC") {
+    if ($piddivisi!="CHC" AND $piddivisi!="OTC" AND $piddivisi!="OTHER" AND $piddivisi!="OTHERS") {
         $query = "SELECT a.bulan, a.idcbg, c.nama as nama_cabdist, a.distid, b.nama as nama_dist, a.divprodid, "
                 . " a.iprodid, a.qty, a.hna, a.`value` as tvalue "
                 . " FROM sls.ytd_dist as a "
@@ -100,6 +101,15 @@
     }else{
         $query = "bulan DATE, idcbg varchar(3), nama_cabdist varchar(100), distid varchar(10), nama_dist varchar(100), divprodid varchar(5), "
                 . " iprodid varchar(10), qty DECIMAL(20,2), hna DECIMAL(20,2), tvalue DECIMAL(20,2)";
+        if ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") {
+            $query = "select CONCAT(LEFT(tgljual,8), '01') as bulan, distid, sum(`value`) as tvalue "
+                    . " from MKT.otc_etl where year(tgljual)='$pthn' AND divprodid ='OTHER' and icabangid <> 22 "
+                    . " GROUP BY 1,2";
+        }else{
+            $query = "select CONCAT(LEFT(tgljual,8), '01') as bulan, distid, sum(`value`) as tvalue "
+                    . " from MKT.otc_etl where year(tgljual)='$pthn' AND divprodid <>'OTHER' and icabangid <> 22 "
+                    . " GROUP BY 1,2";
+        }
     }
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -615,5 +625,6 @@ hapusdata:
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp01");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp02");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp03");
+    mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp04");
     mysqli_close($cnmy);
 ?>

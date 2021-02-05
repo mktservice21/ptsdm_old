@@ -9,6 +9,7 @@
         include "config/koneksimysqli_ms.php";
         $pidkaryawan=$_SESSION['IDCARD'];
         $pidjabatan=$_SESSION['JABATANID'];
+        $pidgroup=$_SESSION['GROUP'];
         
         $aksi="eksekusi3.php";
         switch($_GET['act']){
@@ -75,21 +76,49 @@
                                                 <select class='form-control' name='cb_karyawan' id='cb_karyawan' onchange="">
                                                     <?PHP
                                                     if ($pidjabatan=="08") {
-                                                        $query = "select b.karyawanid as karyawanid, b.nama as nama from ms.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
+                                                        $query_data = "select b.karyawanid as karyawanid, b.nama as nama from ms.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
+                                                    }elseif ($pidjabatan=="20") {
+                                                        $query_data = "select distinct a.karyawanid as karyawanid, b.nama as nama 
+                                                                from sls.idm0 as a 
+                                                                JOIN sls.ism0 as c on a.icabangid=c.icabangid join ms.karyawan as b 
+                                                                on a.karyawanid=b.karyawanId WHERE c.karyawanid='$pidkaryawan'";
                                                     }else{
-                                                        echo "<option value='' selected>--Pilih--</option>";
-                                                        $query = "select DISTINCT a.karyawanid as karyawanid, b.nama as nama "
-                                                                . " from sls.idm0 as a JOIN ms.karyawan as b on a.karyawanid=b.karyawanid";
+                                                        
+                                                        if ($pidkaryawan=="0000000158") {
+                                                            $query_data = "select distinct a.karyawanid as karyawanid, b.nama as nama 
+                                                                from sls.idm0 as a join ms.karyawan as b on a.karyawanid=b.karyawanid 
+                                                                JOIN sls.icabang as c on a.icabangid=c.icabangid WHERE c.region='B'";
+                                                        }elseif ($pidkaryawan=="0000000159") {
+                                                            $query_data = "select distinct a.karyawanid as karyawanid, b.nama as nama 
+                                                                from sls.idm0 as a join ms.karyawan as b on a.karyawanid=b.karyawanid 
+                                                                JOIN sls.icabang as c on a.icabangid=c.icabangid WHERE c.region='T'";
+                                                        }else{
+                                                            echo "<option value='' selected>--Pilih--</option>";
+                                                            if ($pidgroup=="1" OR $pidgroup=="24") {
+                                                                $query_data = "select DISTINCT a.karyawanid as karyawanid, b.nama as nama "
+                                                                        . " from sls.idm0 as a JOIN ms.karyawan as b on a.karyawanid=b.karyawanid";
+                                                            }
+                                                        }
+                                                        
                                                     }
-                                                    $query .=" ORDER BY b.nama";
-                                                    $tampil = mysqli_query($cnms, $query);
-                                                    while ($rx= mysqli_fetch_array($tampil)) {
-                                                        $nidkry=$rx['karyawanid'];
-                                                        $nnmkry=$rx['nama'];
-                                                        if ($nidkry==$pidkaryawan)
-                                                            echo "<option value='$nidkry' selected>$nnmkry</option>";
-                                                        else
-                                                            echo "<option value='$nidkry'>$nnmkry</option>";
+                                                    
+                                                    if (!empty($query_data)) {
+                                                        
+                                                        $query =$query_data." ORDER BY b.nama";
+                                                        $tampil = mysqli_query($cnms, $query);
+                                                        $ketemu=mysqli_num_rows($tampil);
+                                                        
+                                                        if ((INT)$ketemu<=0) echo "<option value=''>_blank</option>";
+                                                        
+                                                        while ($rx= mysqli_fetch_array($tampil)) {
+                                                            $nidkry=$rx['karyawanid'];
+                                                            $nnmkry=$rx['nama'];
+                                                            if ($nidkry==$pidkaryawan)
+                                                                echo "<option value='$nidkry' selected>$nnmkry</option>";
+                                                            else
+                                                                echo "<option value='$nidkry'>$nnmkry</option>";
+                                                        }
+                                                        
                                                     }
                                                     ?>
                                                 </select>

@@ -409,6 +409,187 @@ function CariDataKaryawanByCabJbt($ikryid, $ijbt, $iregion) {
 
 }
 
+function CariDataKaryawanByCabJbt2($ikryid, $ijbt, $iregion) {
+    include("../../config/koneksimysqli.php");
+
+    $pidkaryawan=$ikryid;
+    $pidjabatan=$ijbt;
+    $pidregion=$iregion;
+
+    $filedgabungankry="";
+    $pfilterkaryawan="'".$ikryid."',";
+    $pfilterkaryawan2=$ikryid.",";
+    $pfiltercabpilih="";
+
+    $query_cab="";
+    if ($pidjabatan=="38") {
+        $query_cab ="SELECT icabangid as icabangid FROM hrd.rsm_auth WHERE karyawanid='$pidkaryawan'";
+    }elseif ($pidjabatan=="20") {
+        $query_cab ="SELECT distinct icabangid as icabangid FROM MKT.ism0 WHERE karyawanid = '$pidkaryawan'";
+    }elseif ($pidjabatan=="08") {
+        $query_cab ="SELECT distinct icabangid as icabangid FROM MKT.idm0 WHERE karyawanid = '$pidkaryawan'";
+    }elseif ($pidjabatan=="10" OR $pidjabatan=="18") {
+        $query_cab ="SELECT distinct CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) as icabangid FROM MKT.ispv0 WHERE karyawanid = '$pidkaryawan'";
+    }elseif ($pidjabatan=="05") {
+        $query_cab ="SELECT distinct icabangid as icabangid FROM MKT.icabang WHERE region = '$pidregion'";
+    }
+
+    if (!empty($query_cab)) {
+        $tampil= mysqli_query($cnmy, $query_cab);
+        $ketemu= mysqli_num_rows($tampil);
+        if ($ketemu>0) {
+            while ($rs= mysqli_fetch_array($tampil)) {
+                $vbicabangid=$rs['icabangid'];
+
+                if (strpos($pfiltercabpilih, $vbicabangid)==false) {
+                    $pfiltercabpilih .="'".$vbicabangid."',";
+                }
+
+            }
+        }
+    }
+
+
+
+    if (!empty($pfiltercabpilih)) {
+        $pfiltercabpilih="(".substr($pfiltercabpilih, 0, -1).")";
+
+
+        //SM
+        if ($pidjabatan<>"20" AND $pidjabatan<>"08" AND $pidjabatan<>"10" AND $pidjabatan<>"18" AND $pidjabatan<>"15") {
+
+            $query ="SELECT distinct karyawanid as karyawanid FROM MKT.ism0 WHERE icabangid IN $pfiltercabpilih";
+            $tampil= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($tampil);
+            if ($ketemu>0) {
+                while ($rs= mysqli_fetch_array($tampil)) {
+                    $vbkryid=$rs['karyawanid'];
+
+                    if (!empty($vbkryid)) {
+                        if (strpos($pfilterkaryawan, $vbkryid)==false) {
+                            $pfilterkaryawan .="'".$vbkryid."',";
+                            $pfilterkaryawan2 .=$vbkryid.",";
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+
+        //DM
+        if ($pidjabatan<>"08" AND $pidjabatan<>"10" AND $pidjabatan<>"18" AND $pidjabatan<>"15") {
+
+            $query ="SELECT distinct karyawanid as karyawanid FROM MKT.idm0 WHERE icabangid IN $pfiltercabpilih";
+            $tampil= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($tampil);
+            if ($ketemu>0) {
+                while ($rs= mysqli_fetch_array($tampil)) {
+                    $vbkryid=$rs['karyawanid'];
+
+                    if (strpos($pfilterkaryawan, $vbkryid)==false) {
+                        $pfilterkaryawan .="'".$vbkryid."',";
+                        $pfilterkaryawan2 .=$vbkryid.",";
+                    }
+
+                }
+            }
+
+        }
+
+        //SPV
+        if ($pidjabatan<>"10" AND $pidjabatan<>"18" AND $pidjabatan<>"15") {
+
+            $query ="SELECT distinct karyawanid as karyawanid FROM MKT.ispv0 WHERE icabangid IN $pfiltercabpilih";
+            $tampil= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($tampil);
+            if ($ketemu>0) {
+                while ($rs= mysqli_fetch_array($tampil)) {
+                    $vbkryid=$rs['karyawanid'];
+
+                    if (!empty($vbkryid)) {
+                        if (strpos($pfilterkaryawan, $vbkryid)==false) {
+                            $pfilterkaryawan .="'".$vbkryid."',";
+                            $pfilterkaryawan2 .=$vbkryid.",";
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        //MR
+        if ($pidjabatan<>"15") {
+            if ($pidjabatan=="10" OR $pidjabatan=="18") {
+                $query ="SELECT distinct karyawanid as karyawanid FROM MKT.imr0 WHERE CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) IN $pfiltercabpilih";
+            }else{
+                $query ="SELECT distinct karyawanid as karyawanid FROM MKT.imr0 WHERE icabangid IN $pfiltercabpilih";
+            }
+            $tampil= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($tampil);
+            if ($ketemu>0) {
+                while ($rs= mysqli_fetch_array($tampil)) {
+                    $vbkryid=$rs['karyawanid'];
+
+                    if (!empty($vbkryid)) {
+                        if (!empty($vbkryid)) {
+                            if (strpos($pfilterkaryawan, $vbkryid)==false) {
+                                $pfilterkaryawan .="'".$vbkryid."',";
+                                $pfilterkaryawan2 .=$vbkryid.",";
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        }
+        
+                    //khusus admin cabang
+                    if ($pidjabatan=="38") {
+                        $query = "select DISTINCT a.karyawanid as karyawanid, a.nama as nama  
+                            from hrd.karyawan as a 
+                            left join MKT.iarea as b ON a.areaid=b.areaid and a.icabangid=b.icabangid 
+                            where (a.jabatanid='15') and (a.tglkeluar='0000-00-00' OR a.aktif='Y') 
+                            and (a.divisiid<>'OTC')
+                            and a.icabangid in $pfiltercabpilih ";
+                        $tampil= mysqli_query($cnmy, $query);
+                        $ketemu= mysqli_num_rows($tampil);
+                        if ($ketemu>0) {
+                            while ($rs= mysqli_fetch_array($tampil)) {
+                                $vbkryid=$rs['karyawanid'];
+
+                                if (!empty($vbkryid)) {
+                                    if (strpos($pfilterkaryawan, $vbkryid)==false) {
+                                        $pfilterkaryawan .="'".$vbkryid."',";
+                                        $pfilterkaryawan2 .=$vbkryid.",";
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
+
+    }
+
+	
+    if (!empty($pfilterkaryawan)) {
+        $pfilterkaryawan="(".substr($pfilterkaryawan, 0, -1).")";
+        $pfilterkaryawan2=substr($pfilterkaryawan2, 0, -1);
+
+        $filedgabungankry=$pfilterkaryawan." | ".$pfilterkaryawan2;
+
+    }
+	
+	
+    mysqli_close($cnmy);
+    return $filedgabungankry;
+
+}
+
 
 function CariSelisihPeriodeDua($pperiode1, $pperiode2){
     $pselisihnya=1;

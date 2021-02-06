@@ -227,7 +227,7 @@
 	
 	$now=date("mdYhis");
 	$puserid="A";//$_SESSION['USERID'];
-	$tmp00 =" hrd.tmp00BR_".$puserid."_$now ";
+	$tmp00 =" dbtemp.tmp00BR_".$puserid."_$now ";
 	
 	$query = "SELECT * FROM hrd.br0 WHERE dokterid='$dokterid' AND IFNULL(mrid,'')='$srid'";
 	$query = "create table $tmp00 ($query)"; 

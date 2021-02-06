@@ -263,6 +263,22 @@
                                     </div>
                                 </div>
                                 
+                                
+                                <div class='form-group'>
+                                    <div class='col-sm-12'>
+                                        <b>Pilih Dokter</b>
+                                        <div class="form-group">
+                                            <select class='form-control' id="cb_drks" name="cb_drks">
+                                                <?PHP
+                                                    echo "<option value='' selected>-- All --</option>";
+                                                    echo "<option value='HKS'>Hanya Dokter KS</option>";
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
                                 <div class='col-sm-2'>
                                     <small>&nbsp;</small>
                                    <div class="form-group">
@@ -312,7 +328,8 @@
     function ListDataDokter() {
         var eidcab=document.getElementById('cb_cabang').value;
         var eidkry=document.getElementById('cb_karyawan').value;
-
+        var estsdr =document.getElementById('cb_drks').value;
+        
         if (eidkry=="") {
             alert("Karyawan harus diisi...");
             return false;
@@ -328,7 +345,7 @@
         $.ajax({
             type:"post",
             url:"module/ks_lihatks/viewdatatabel_lihatdrmr.php?module="+module+"&idmenu="+idmenu+"&act="+act+"&uidkry="+eidkry+"&uidcab="+eidcab,
-            data:"module="+module+"&uidkry="+eidkry+"&uidcab="+eidcab,
+            data:"module="+module+"&uidkry="+eidkry+"&uidcab="+eidcab+"&ustsdr="+estsdr,
             success:function(data){
                 $("#c-data").html(data);
                 $("#loading").html("");

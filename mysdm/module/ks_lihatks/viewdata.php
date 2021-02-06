@@ -32,7 +32,7 @@ if ($pmodule=="viewdatakaryawan") {
         //echo $pfilterkaryawan; exit;
         $query = "select karyawanId, nama From hrd.karyawan
             WHERE 1=1 ";
-        if (!empty($pfilterkaryawan)) {
+        if (!empty($pfilterkaryawan) AND $fgroupid<>"24") {
             $query .= " AND karyawanid IN $pfilterkaryawan ";
         }else{
             $query .= " AND nama NOT IN ('ACCOUNTING')";

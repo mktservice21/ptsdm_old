@@ -39,7 +39,7 @@
     $pnamakarywanpl=$rowk['nama'];
     
     if (!empty($pstsdr)) {
-        $query = "select distinct dokterid from hrd.ks1";
+        $query = "select distinct a.dokterid from hrd.ks1 as a WHERE a.srid='$pidkaryawan'";
         $query = "create TEMPORARY table $tmp02 ($query)"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

@@ -17,10 +17,12 @@
     $now=date("mdYhis");
     $tmp01 =" dbtemp.tmpkslstdoktmr01_".$puserid."_$now ";
     $tmp02 =" dbtemp.tmpkslstdoktmr02_".$puserid."_$now ";
+    $tmp03 =" dbtemp.tmpkslstdoktmr03_".$puserid."_$now ";
     
     
     $pidkaryawan=$_POST['uidkry'];
     $pidcab=$_POST['uidcab'];
+    $pstsdr=$_POST['ustsdr'];
     
     $pmodule=$_GET['module'];
     $pact=$_GET['act'];
@@ -36,6 +38,13 @@
     $rowk=mysqli_fetch_array($tampilk);
     $pnamakarywanpl=$rowk['nama'];
     
+    if (!empty($pstsdr)) {
+        $query = "select distinct dokterid from hrd.ks1";
+        $query = "create TEMPORARY table $tmp02 ($query)"; 
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    }
+    
     $query = "select DISTINCT a.dokterid as dokterid, a.nama as nama_dokter, 
         a.alamat1, a.alamat2, 
         b.karyawanid as karyawanid, c.nama as nama_karyawan, 
@@ -43,8 +52,11 @@
         from hrd.dokter as a LEFT JOIN hrd.mr_dokt as b on a.dokterid=b.dokterid 
         left join hrd.karyawan as c on b.karyawanId=c.karyawanId 
         left join MKT.icabang as d on b.iCabangId=d.iCabangId 
-        LEFT JOIN MKT.iarea as e on b.iCabangId=e.iCabangId and b.areaId=e.areaId 
-        WHERE 1=1 ";
+        LEFT JOIN MKT.iarea as e on b.iCabangId=e.iCabangId and b.areaId=e.areaId ";
+    if (!empty($pstsdr)) {
+        $query .=" JOIN $tmp02 as f on a.dokterid=f.dokterid";
+    }
+    $query .=" WHERE 1=1 ";
     $query .=" AND b.karyawanid='$pidkaryawan' ";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -188,7 +200,7 @@
 <?PHP
 hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
-    mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
+    mysqli_query($cnmy, "drop TEMPORARY table $tmp03");
     
     mysqli_close($cnmy);
 ?>

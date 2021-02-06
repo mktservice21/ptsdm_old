@@ -31,6 +31,11 @@
     $fgroupidcard=$_SESSION['GROUP'];
     $fjbtid=$_SESSION['JABATANID'];
     
+    $query = "select nama from hrd.karyawan where karyawanid='$pidkaryawan'";
+    $tampilk=mysqli_query($cnmy, $query);
+    $rowk=mysqli_fetch_array($tampilk);
+    $pnamakarywanpl=$rowk['nama'];
+    
     $query = "select DISTINCT a.dokterid as dokterid, a.nama as nama_dokter, 
         a.alamat1, a.alamat2, 
         b.karyawanid as karyawanid, c.nama as nama_karyawan, 
@@ -51,6 +56,8 @@
 
 
     <div class='x_content'>
+        <b>List Data Dokter MR : <?PHP echo "$pnamakarywanpl"; ?></b>
+        <hr/>
         <table id='datatabledrlstmr' class='table table-striped table-bordered' width='100%'>
             <thead>
                 <tr>

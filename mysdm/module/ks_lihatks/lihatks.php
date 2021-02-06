@@ -14,7 +14,6 @@
     $fstsadmin=$_SESSION['STSADMIN'];
     $flvlposisi=$_SESSION['LVLPOSISI'];
     $fdivisi=$_SESSION['DIVISI'];
-    
     //$fkaryawan="0000000158"; $fjbtid="05";//hapussaja
     
     $pfilterkaryawan="";
@@ -46,7 +45,50 @@
     }
     
     
-    //echo "karyawan : $pfilterkaryawan<br/>karyawan2 : $pfilterkaryawan2<br/>";exit;
+    
+    $pfiltercabpilih="";
+        
+    if ($fjbtid=="15" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="08" OR $fjbtid=="38" OR $fkaryawan=="0000000158" OR $fkaryawan=="0000000159") {
+        if ($fkaryawan=="0000000158") {
+            $query_cab = "select distinct icabangid, '' as areaid, '' as divisiid FROM MKT.icabang WHERE region='B'";
+        }elseif ($fkaryawan=="0000000159") {
+            $query_cab = "select distinct icabangid, '' as areaid, '' as divisiid FROM MKT.icabang WHERE region='T'";
+        }else{
+            if ($fjbtid=="15") {
+                $query_cab = "select distinct icabangid, areaid, divisiid FROM MKT.imr0 WHERE karyawanid='$fkaryawan'";
+            }elseif ($fjbtid=="10" OR $fjbtid=="18") {
+                $query_cab = "select distinct icabangid, areaid, divisiid FROM MKT.ispv0 WHERE karyawanid='$fkaryawan'";
+            }elseif ($fjbtid=="08") {
+                $query_cab = "select distinct icabangid, '' as areaid, '' as divisiid FROM MKT.idm0 WHERE karyawanid='$fkaryawan'";
+            }elseif ($fjbtid=="38") {
+                $query_cab = "select distinct icabangid, '' as areaid, '' as divisiid FROM hrd.rsm_auth WHERE karyawanid='$fkaryawan'";
+            }
+        }
+        if (!empty($query_cab)) {
+            $tampil= mysqli_query($cnmy, $query_cab);
+            while ($rs= mysqli_fetch_array($tampil)) {
+                $vbicabangid=$rs['icabangid'];
+                $vbareaid=$rs['areaid'];
+                $vbdivisi=$rs['divisiid'];
+
+                if (!empty($vbicabangid)) $pidcabangpil=$vbicabangid;
+
+                if (strpos($pfiltercabpilih, $vbicabangid)==false) $pfiltercabpilih .="'".$vbicabangid."',";
+
+            }
+        }
+
+    }elseif ($fjbtid=="38") {
+        
+    }
+    
+    
+    if (!empty($pfiltercabpilih)) {
+        $pfiltercabpilih="(".substr($pfiltercabpilih, 0, -1).")";
+    }
+    $pcabangselected="";
+    
+    //echo "karyawan : $pfilterkaryawan<br/>karyawan2 : $pfilterkaryawan2, cab : $pfiltercabpilih<br/>";exit;
     
     
 ?>
@@ -63,13 +105,13 @@
         <?php
 
         ?>
-        <form method='POST' action='<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]"; ?>' id='demo-form2' name='form1' data-parsley-validate class='form-horizontal form-label-left' target="_blank">
+        <form method='POST' action='<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]"; ?>' id='data_form01' name='form1' data-parsley-validate class='form-horizontal form-label-left' target="_blank">
             <div class='col-md-12 col-sm-12 col-xs-12'>
                 <div class='x_panel'>
 
                     <div class='col-md-12 col-sm-12 col-xs-12'>
                         <h2>
-                            <button type='button' class='btn btn-success' onclick="disp_confirm('')">Preview</button>
+                            <span hidden><button type='button' class='btn btn-success' onclick="disp_confirm('')">Preview</button></span>
                             <?PHP
                             if ($_SESSION['MOBILE']!="Y") {
                                 echo "<span hidden><button type='button' class='btn btn-danger' onclick=\"disp_confirm('excel')\">Excel</button></span>";
@@ -87,13 +129,62 @@
                                 
                                 <div class='form-group'>
                                     <div class='col-sm-12'>
+                                        <b>Cabang</b>
+                                        <div class="form-group">
+                                            <select class='form-control' id="cb_cabang" name="cb_cabang" onchange="ShowDataKaryawan()">
+                                                <?PHP                                                  
+                                                
+                                                    $nojm=1;
+                                                    $query_cb = "select icabangid as icabangid, nama as nama, "
+                                                            . " CASE WHEN IFNULL(aktif,'')='' then 'Y' else aktif end as aktif "
+                                                            . " from MKT.icabang WHERE 1=1 ";
+                                                    if ($pmygroupid=="24" or $pmygroupid=="1") {
+                                                    }else{
+                                                        if (!empty($pfiltercabpilih)) {
+                                                            $query_cb .=" AND iCabangId IN $pfiltercabpilih ";
+                                                        }
+                                                    }
+                                                    $query_cb .=" AND LEFT(nama,5) NOT IN ('OTC -', 'ETH -', 'PEA -')";
+                                                    $query_cb .=" order by CASE WHEN IFNULL(aktif,'')='' then 'Y' else aktif end desc, nama";
+                                                    $tampil = mysqli_query($cnmy, $query_cb);
+                                                    
+                                                    $ketemu= mysqli_num_rows($tampil);
+                                                    echo "<option value='' selected>-- Pilih --</option>";
+                                                    $pketaktif=false;
+                                                    while ($z= mysqli_fetch_array($tampil)) {
+                                                        $pcabid=$z['icabangid'];
+                                                        $pcabnm=$z['nama'];
+                                                        $pstsaktif=$z['aktif'];
+                                                        $pcbid=(INT)$pcabid;
+                                                        
+                                                        if ($pstsaktif=="N" AND $nojm<=1) { $pketaktif=true; $nojm++; }
+                                                        
+                                                        if ($pketaktif==true) {
+                                                            echo "<option value=''>&nbsp;</option>";
+                                                            echo "<option value=''>-- non aktif --</option>";
+                                                            $pketaktif=false;
+                                                        }
+                                                        if ($fjbtid=="15" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="08") {
+                                                            echo "<option value='$pcabid' selected>$pcabnm ($pcbid)</option>";
+                                                            $pcabangselected=$pcabid;
+                                                        }else
+                                                            echo "<option value='$pcabid'>$pcabnm ($pcbid)</option>";
+                                                    }
+                                                 
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <div class='col-sm-12'>
                                         <b>Karyawan</b>
                                         <div class="form-group">
                                             <select class='form-control' id="cb_karyawan" name="cb_karyawan">
                                                 <?PHP
                                                     $query = "select karyawanId, nama From hrd.karyawan
                                                         WHERE 1=1 ";
-
                                                     if (!empty($pfilterkaryawan)) {
                                                         $query .= " AND karyawanid IN $pfilterkaryawan ";
                                                     }else{
@@ -146,7 +237,7 @@
                                 </div>
                                 
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <div class='col-sm-12'>
                                         <b>Dokter</b><br/>
                                         <div class="form-group">
@@ -172,7 +263,12 @@
                                     </div>
                                 </div>
                                 
-                                
+                                <div class='col-sm-2'>
+                                    <small>&nbsp;</small>
+                                   <div class="form-group">
+                                       <button type='button' class='btn btn-dark btn-xs' onclick='ListDataDokter()'>List Data Dokter</button>
+                                   </div>
+                               </div>
 
                             </div>
                         </div>           
@@ -182,11 +278,64 @@
             </div>
         </form>
 
+        <div class='col-md-12 col-sm-12 col-xs-12'>
+            <div class='x_panel'>
+                <div id='loading'></div>
+                <div id='c-data'>
+
+                </div>
+            </div>
+        </div>
+                        
     </div>
     <!--end row-->
 </div>
 
+<link href="css/inputselectbox.css" rel="stylesheet" type="text/css" />
+<link href="css/stylenew.css" rel="stylesheet" type="text/css" />
+
 <script>
+    
+    function ShowDataKaryawan(){
+        var eidcan =document.getElementById('cb_cabang').value;
+
+        $.ajax({
+            type:"post",
+            url:"module/ks_lihatks/viewdata.php?module=viewdatakaryawan",
+            data:"uidcab="+eidcan,
+            success:function(data){
+                $("#cb_karyawan").html(data);
+            }
+        });
+    }
+    
+    function ListDataDokter() {
+        var eidcab=document.getElementById('cb_cabang').value;
+        var eidkry=document.getElementById('cb_karyawan').value;
+
+        if (eidkry=="") {
+            alert("Karyawan harus diisi...");
+            return false;
+        }
+
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var act = urlku.searchParams.get("act");
+
+        $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+        $.ajax({
+            type:"post",
+            url:"module/ks_lihatks/viewdatatabel_lihatdrmr.php?module="+module+"&idmenu="+idmenu+"&act="+act+"&uidkry="+eidkry+"&uidcab="+eidcab,
+            data:"module="+module+"&uidkry="+eidkry+"&uidcab="+eidcab,
+            success:function(data){
+                $("#c-data").html(data);
+                $("#loading").html("");
+            }
+        });
+    }
+                    
     function disp_confirm(pText)  {
         var eidkry =document.getElementById('cb_karyawan').value;
         var eiddok =document.getElementById('e_iddokt').value;
@@ -202,12 +351,12 @@
         }
         
         if (pText == "excel") {
-            document.getElementById("demo-form2").action = "<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]&ket=excel"; ?>";
-            document.getElementById("demo-form2").submit();
+            document.getElementById("data_form01").action = "<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]&ket=excel"; ?>";
+            document.getElementById("data_form01").submit();
             return 1;
         }else{
-            document.getElementById("demo-form2").action = "<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]&ket=bukan"; ?>";
-            document.getElementById("demo-form2").submit();
+            document.getElementById("data_form01").action = "<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]&ket=bukan"; ?>";
+            document.getElementById("data_form01").submit();
             return 1;
         }
     }

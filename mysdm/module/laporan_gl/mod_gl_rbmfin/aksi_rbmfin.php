@@ -283,9 +283,9 @@
     
     $addcolumn="";
     for ($x=1;$x<=12;$x++) {
-        $addcolumn .= " ADD B$x DECIMAL(20,2),ADD S$x DECIMAL(20,2),";
+        $addcolumn .= " ADD B$x DECIMAL(20,2),ADD S$x DECIMAL(20,2),ADD R$x DECIMAL(20,2),";
     }
-    $addcolumn .= " ADD TOTAL DECIMAL(20,2), ADD STOTAL DECIMAL(20,2)";
+    $addcolumn .= " ADD TOTAL DECIMAL(20,2), ADD STOTAL DECIMAL(20,2), ADD RTOTAL DECIMAL(20,2)";
     
     $query = "ALTER TABLE $tmp03 $addcolumn";
     mysqli_query($cnmy, $query);
@@ -298,10 +298,14 @@
         $awal=$urut-$jml;
         $nbulan=$periode."-".str_repeat("0", $awal).$x;
         $nfield="B".$x;
+        $nfieldR="R".$x;
         
         $query = "UPDATE $tmp03 a SET a.$nfield=(SELECT SUM(b.kredit) FROM $tmp02 b WHERE a.DIVISI=b.divisi AND a.COA4=b.coa AND DATE_FORMAT(b.tgltarikan, '%Y-%m')='$nbulan')";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp03 a SET a.$nfieldR=ROUND(IFNULL($nfield,0)/IFNULL((SELECT SUM(b.kredit) FROM $tmp02 b WHERE a.DIVISI=b.divisi AND a.COA4=b.coa),0),2)";
+        mysqli_query($cnmy, $query); //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
     }
@@ -489,6 +493,10 @@
                                 $pjml=$row2[$nmcol];
                                 if (empty($pjml)) $pjml=0;
                                 
+                                $nmcolR="R".$x;
+                                $pjmlR=$row2[$nmcolR];
+                                if (empty($pjmlR)) $pjmlR=0;
+                                
                                 $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                                 $psubtot[$x]=(double)$psubtot[$x]+(double)$pjml;
                                 $ptotdivisi[$x]=(double)$ptotdivisi[$x]+(double)$pjml;
@@ -497,7 +505,7 @@
                                 
                                 $pjml=BuatFormatNum($pjml, $ppilformat);
                                 
-                                echo "<td nowrap align='right'></td>";
+                                echo "<td nowrap align='right'>$pjmlR</td>";
                                 echo "<td nowrap align='right'>$pjml</td>";
                             }
                             
@@ -516,15 +524,27 @@
                         echo "<td nowrap><b>$pcoa2</b></td>";
                         echo "<td nowrap><b>$pnmcoa2</b></td>";
                         
+                        $ptotpersubcoa=0;
+                        for ($sx=1;$sx<=12;$sx++) {
+                            $pjmlsb=$psubtot[$sx];
+                            if (empty($pjmlsb)) $pjmlsb=0;
+                            $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                        }
+                        
                         $ptotaltahund=0;
                         for ($x=1;$x<=12;$x++) {
                             $pjml=$psubtot[$x];
                             if (empty($pjml)) $pjml=0;
                             
+                            $prjumlah=0;
+                            if ((DOUBLE)$ptotpersubcoa>0) {
+                                $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                            }
+                            
                             $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                             $pjml=BuatFormatNum($pjml, $ppilformat);
                             
-                            echo "<td nowrap align='right'><b></b></td>";
+                            echo "<td nowrap align='right'><b>$prjumlah</b></td>";
                             echo "<td nowrap align='right'><b>$pjml</b></td>";
                         }
                         
@@ -550,15 +570,28 @@
                     echo "<td nowrap><b></b></td>";
                     echo "<td nowrap><b>BIAYA $nmdivisi</b></td>";
 
+                    
+                    $ptotpersubcoa=0;
+                    for ($sx=1;$sx<=12;$sx++) {
+                        $pjmlsb=$ptotdivisi[$sx];
+                        if (empty($pjmlsb)) $pjmlsb=0;
+                        $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                    }
+                        
                     $ptotaltahund=0;
                     for ($x=1;$x<=12;$x++) {
                         $pjml=$ptotdivisi[$x];
                         if (empty($pjml)) $pjml=0;
 
+                        $prjumlah=0;
+                        if ((DOUBLE)$ptotpersubcoa>0) {
+                            $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                        }
+                            
                         $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                         $pjml=BuatFormatNum($pjml, $ppilformat);
 
-                        echo "<td nowrap align='right'><b></b></td>";
+                        echo "<td nowrap align='right'><b>$prjumlah</b></td>";
                         echo "<td nowrap align='right'><b>$pjml</b></td>";
                     }
 
@@ -583,15 +616,27 @@
                 echo "<td nowrap><b></b></td>";
                 echo "<td nowrap><b>TOTAL BIAYA MARKETING</b></td>";
 
+                $ptotpersubcoa=0;
+                for ($sx=1;$sx<=12;$sx++) {
+                    $pjmlsb=$pgrandtotal[$sx];
+                    if (empty($pjmlsb)) $pjmlsb=0;
+                    $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                }
+                    
                 $ptotaltahund=0;
                 for ($x=1;$x<=12;$x++) {
                     $pjml=$pgrandtotal[$x];
                     if (empty($pjml)) $pjml=0;
 
+                    $prjumlah=0;
+                    if ((DOUBLE)$ptotpersubcoa>0) {
+                        $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                    }
+                        
                     $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                     $pjml=BuatFormatNum($pjml, $ppilformat);
 
-                    echo "<td nowrap align='right'><b></b></td>";
+                    echo "<td nowrap align='right'><b>$prjumlah</b></td>";
                     echo "<td nowrap align='right'><b>$pjml<b></td>";
                 }
 
@@ -715,6 +760,10 @@
                                     $pjml=$row2[$nmcol];
                                     if (empty($pjml)) $pjml=0;
 
+                                    $nmcolR="R".$x;
+                                    $pjmlR=$row2[$nmcolR];
+                                    if (empty($pjmlR)) $pjmlR=0;
+                                
                                     $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                                     $psubtot[$x]=(double)$psubtot[$x]+(double)$pjml;
                                     $ptotdivisi[$x]=(double)$ptotdivisi[$x]+(double)$pjml;
@@ -723,7 +772,7 @@
 
                                     $pjml=BuatFormatNum($pjml, $ppilformat);
 
-                                    echo "<td nowrap align='right'></td>";
+                                    echo "<td nowrap align='right'>$pjmlR</td>";
                                     echo "<td nowrap align='right'>$pjml</td>";
                                 }
 
@@ -742,15 +791,27 @@
                             echo "<td nowrap><b>$pcoa2</b></td>";
                             echo "<td nowrap><b>$pnmcoa2</b></td>";
 
+                            $ptotpersubcoa=0;
+                            for ($sx=1;$sx<=12;$sx++) {
+                                $pjmlsb=$psubtot[$sx];
+                                if (empty($pjmlsb)) $pjmlsb=0;
+                                $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                            }
+                        
                             $ptotaltahund=0;
                             for ($x=1;$x<=12;$x++) {
                                 $pjml=$psubtot[$x];
                                 if (empty($pjml)) $pjml=0;
 
+                                $prjumlah=0;
+                                if ((DOUBLE)$ptotpersubcoa>0) {
+                                    $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                                }
+                    
                                 $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                                 $pjml=BuatFormatNum($pjml, $ppilformat);
 
-                                echo "<td nowrap align='right'><b></b></td>";
+                                echo "<td nowrap align='right'><b>$prjumlah</b></td>";
                                 echo "<td nowrap align='right'><b>$pjml</b></td>";
                             }
 
@@ -776,15 +837,27 @@
                         echo "<td nowrap><b></b></td>";
                         echo "<td nowrap><b>BIAYA $nmdivisi</b></td>";
 
+                        $ptotpersubcoa=0;
+                        for ($sx=1;$sx<=12;$sx++) {
+                            $pjmlsb=$ptotdivisi[$sx];
+                            if (empty($pjmlsb)) $pjmlsb=0;
+                            $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                        }
+                            
                         $ptotaltahund=0;
                         for ($x=1;$x<=12;$x++) {
                             $pjml=$ptotdivisi[$x];
                             if (empty($pjml)) $pjml=0;
 
+                            $prjumlah=0;
+                            if ((DOUBLE)$ptotpersubcoa>0) {
+                                $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                            }
+                                
                             $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                             $pjml=BuatFormatNum($pjml, $ppilformat);
 
-                            echo "<td nowrap align='right'><b></b></td>";
+                            echo "<td nowrap align='right'><b>$prjumlah</b></td>";
                             echo "<td nowrap align='right'><b>$pjml</b></td>";
                         }
 
@@ -809,15 +882,27 @@
                     echo "<td nowrap><b></b></td>";
                     echo "<td nowrap><b>TOTAL BIAYA MARKETING</b></td>";
 
+                    $ptotpersubcoa=0;
+                    for ($sx=1;$sx<=12;$sx++) {
+                        $pjmlsb=$pgrandtotal[$sx];
+                        if (empty($pjmlsb)) $pjmlsb=0;
+                        $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                    }
+                        
                     $ptotaltahund=0;
                     for ($x=1;$x<=12;$x++) {
                         $pjml=$pgrandtotal[$x];
                         if (empty($pjml)) $pjml=0;
 
+                        $prjumlah=0;
+                        if ((DOUBLE)$ptotpersubcoa>0) {
+                            $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                        }
+                            
                         $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                         $pjml=BuatFormatNum($pjml, $ppilformat);
 
-                        echo "<td nowrap align='right'><b></b></td>";
+                        echo "<td nowrap align='right'><b>$prjumlah</b></td>";
                         echo "<td nowrap align='right'><b>$pjml<b></td>";
                     }
 

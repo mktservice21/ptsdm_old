@@ -112,7 +112,7 @@
         
         function ComboArea($sel, $cabang) {
             if (!empty($cabang)) $cabang = " Where iCabangId='$cabang'";
-            include "../../config/koneksimysqli_it.php";
+            include "../../config/koneksimysqli_ms.php";
             $cquery = "select areaId, nama from MKT.iarea $cabang order by nama";
             $ctampil = mysqli_query($cnms, $cquery);
             echo "<option value=''>--Pilih--</option>";

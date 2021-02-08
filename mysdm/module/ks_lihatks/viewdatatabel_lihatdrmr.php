@@ -100,7 +100,7 @@
                             . " id='form_data$no' name='form$no' data-parsley-validate "
                             . " target='_blank'>";
                     
-                    $plihatks="<button type='button' class='btn btn-info btn-xs' onclick=\"disp_confirm_ks('', 'form_data$no', '$piddokt', '$pnmdokt')\">Preview KS</button>";
+                    $plihatks="<button type='button' class='btn btn-info btn-xs' onclick=\"disp_confirm_ks('', 'form_data$no', '$piddokt', '')\">Preview KS</button>";
                     
                     
                     echo "<tr>";

@@ -224,7 +224,7 @@ $pidcard=$_SESSION['IDCARD'];
                                                 <select class='form-control' name='cb_sektor' id='cb_sektor' onchange="">
                                                     <option value='' selected>~ All ~</option>
                                                     <?PHP
-                                                    $query="select isektorid, nama from ms.isektor ";
+                                                    $query="select isektorid, nama from MKT.isektor ";
                                                     $query .=" order by nama";
                                                     $tampil = mysqli_query($cnms, $query);
                                                     while ($rx= mysqli_fetch_array($tampil)) {

@@ -19,6 +19,7 @@ $pbln1=$_GET['ubln1'];
 $pbln2=$_GET['ubln2'];
 $pidregion=$_GET['uidregi'];
 $pcab=$_GET['uidcab'];
+$piddist=$_GET['uiddist'];
 $puser=$_GET['uuserid'];
 $pidsession=$_GET['uidsesi'];
 
@@ -31,16 +32,17 @@ $columns = array(
     1 =>'namacabang',
     2 => 'namaarea',
     3=> 'namacust',
-    4=> 'divprodid',
-    5=> 'namaproduk',
-    6=> 'qty',
-    7=> 'total'
+    4=> 'nama_pvt',
+    5=> 'divprodid',
+    6=> 'namaproduk',
+    7=> 'qty',
+    8=> 'total'
 );
 
-$sql = "SELECT bulan, namacabang, namaarea, namacust, divprodid, namaproduk, qty, total ";
+$sql = "SELECT bulan, namacabang, namaarea, namacust, nama_pvt, divprodid, namaproduk, qty, total ";
 $sql.=" FROM dbmaster.tmp_tarikan_rawdata ";
 $sql.=" WHERE 1=1 ";
-$sql.=" AND DATE_FORMAT(tanggaltarikan,'%Y%m%d')='$ptgltarikan' AND icabangid='$pcab' AND region='$pidregion' ";
+$sql.=" AND DATE_FORMAT(tanggaltarikan,'%Y%m%d')='$ptgltarikan' AND IFNULL(icabangid,'')='$pcab' AND IFNULL(region,'')='$pidregion' AND IFNULL(distid,'')='$piddist' ";
 $sql.=" AND periode1='$pbln1' AND periode2='$pbln2' ";
 $sql.=" AND idsesi='$pidsession' AND userid='$puser' ";
 
@@ -54,6 +56,7 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
     $sql.=" OR namacabang LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR namaarea LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR namacust LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR nama_pvt LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR divprodid LIKE '%".$requestData['search']['value']."%' ";
     //$sql.=" OR DATE_FORMAT(tanggal,'%d %M %Y') LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR namaproduk LIKE '%".$requestData['search']['value']."%' )";
@@ -74,6 +77,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pnmcabang=$row['namacabang'];
     $pnmarea=$row['namaarea'];
     $pnmcust=$row['namacust'];
+    $pnmgrppvt=$row['nama_pvt'];
     $pdivprodid=$row['divprodid'];
     $pnmproduk=$row['namaproduk'];
     $pqty=$row['qty'];
@@ -86,6 +90,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $pnmcabang;
     $nestedData[] = $pnmarea;
     $nestedData[] = $pnmcust;
+    $nestedData[] = $pnmgrppvt;
     $nestedData[] = $pdivprodid;
     $nestedData[] = $pnmproduk;
     $nestedData[] = $pqty;

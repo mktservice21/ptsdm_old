@@ -9,6 +9,7 @@
     $pbln2=$_POST['ubln2'];
     $pidregion=$_POST['uidregi'];
     $pcab=$_POST['uidcab'];
+    $pdistid=$_POST['uiddist'];
     $puser=$_POST['uuserid'];
     $pidsession=$_POST['uidsesi'];
     
@@ -30,6 +31,7 @@
             <input type='text' id='bulan2' name='bulan2' required='required' class='form-control' value='<?PHP echo $pbln2; ?>' Readonly>
             <input type='text' id='cbregion' name='cbregion' required='required' class='form-control' value='<?PHP echo $pidregion; ?>' Readonly>
             <input type='text' id='cbcabang' name='cbcabang' required='required' class='form-control' value='<?PHP echo $pcab; ?>' Readonly>
+            <input type='text' id='cbdistributor' name='cbdistributor' required='required' class='form-control' value='<?PHP echo $pdistid; ?>' Readonly>
             <input type='text' id='txtuserid' name='txtuserid' required='required' class='form-control' value='<?PHP echo $puser; ?>' Readonly>
             <textarea id="txtidsesi" name="txtidsesi" ><?PHP echo $pidsession; ?></textarea>
         </div>
@@ -52,6 +54,7 @@
         var ebln2=document.getElementById('bulan2').value;
         var eidregi=document.getElementById('cbregion').value;
         var eidcab=document.getElementById('cbcabang').value;
+        var eiddist=document.getElementById('cbdistributor').value;
         var euserid=document.getElementById('txtuserid').value;
         var eidsesi=document.getElementById('txtidsesi').value;
         
@@ -66,8 +69,8 @@
             "displayLength": 10,
             "columnDefs": [
                 { "visible": false },
-                { className: "text-right", "targets": [6,7] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6,7] }//nowrap
+                { className: "text-right", "targets": [7,8] },//right
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6,7,8] }//nowrap
 
             ],
             "language": {
@@ -77,10 +80,10 @@
             "scrollX": true,*/
 
             "ajax":{
-                url :"module/sls_rptrawdata/mydatarpt.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&utgltarik="+etgltarik+"&ubln1="+ebln1+"&ubln2="+ebln2+"&uidregi="+eidregi+"&uidcab="+eidcab+"&uuserid="+euserid+"&uidsesi="+eidsesi, // json datasource
+                url :"module/sls_rptrawdata/mydatarpt.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&utgltarik="+etgltarik+"&ubln1="+ebln1+"&ubln2="+ebln2+"&uidregi="+eidregi+"&uidcab="+eidcab+"&uiddist="+eiddist+"&uuserid="+euserid+"&uidsesi="+eidsesi, // json datasource
                 type: "post",  // method  , by default get
                 data:"utgltarik="+etgltarik+"&ubln1="+ebln1+"&ubln2="+ebln2+
-                        "&uidregi="+eidregi+"&uidcab="+eidcab+"&uuserid="+euserid+"&uidsesi="+eidsesi,
+                        "&uidregi="+eidregi+"&uidcab="+eidcab+"&uiddist="+eiddist+"&uuserid="+euserid+"&uidsesi="+eidsesi,
                 error: function(){  // error handling
                     $(".data-grid-error").html("");
                     $("#datatable").append('<tbody class="data-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
@@ -104,6 +107,7 @@
                     <th width='100px'>Nama Cabang</th>
                     <th width='10px'>Nama Area</th>
                     <th width='100px'>Nama Cust</th>
+                    <th width='100px'>Grp. Sektor</th>
                     <th width='30px'>Divisi</th>
                     <th width='100px'>Nama Produk</th>
                     <th width='50px'>Qty</th>

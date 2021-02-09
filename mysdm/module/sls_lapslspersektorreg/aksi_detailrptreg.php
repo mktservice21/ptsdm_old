@@ -172,9 +172,9 @@
         $filsektor2="";
         if ($pjenissektor=="G") {
             if ($ppilihsektor==="02,06") {
-                $query = "select distinct isektorid, nama as nama_sektor from sls.isektor WHERE nama_pvt IN ('LAIN - LAIN')";
+                $query = "select distinct isektorid, nama as nama_sektor from MKT.isektor WHERE nama_pvt IN ('LAIN - LAIN')";
             }else{
-                $query = "select distinct isektorid, nama as nama_sektor from sls.isektor WHERE nama_pvt IN $filidsektor";
+                $query = "select distinct isektorid, nama as nama_sektor from MKT.isektor WHERE nama_pvt IN $filidsektor";
             }
             $tampil= mysqli_query($cnmy, $query);
             while ($row= mysqli_fetch_array($tampil)) {
@@ -191,10 +191,10 @@
 
         $pnamasektorpilih= "";
         if ($pjenissektor=="G") {
-            $query = "select distinct '' as isektorid, nama_pvt as nama_sektor from sls.isektor WHERE nama_pvt IN $filidsektor";
+            $query = "select distinct '' as isektorid, nama_pvt as nama_sektor from MKT.isektor WHERE nama_pvt IN $filidsektor";
 
         }else{
-            $query = "select distinct isektorid, nama as nama_sektor from sls.isektor WHERE isektorid IN $filidsektor";
+            $query = "select distinct isektorid, nama as nama_sektor from MKT.isektor WHERE isektorid IN $filidsektor";
         }
         $tampil= mysqli_query($cnmy, $query);
         while ($row= mysqli_fetch_array($tampil)) {
@@ -247,7 +247,7 @@
             . " LEFT JOIN sls.icabang c on b.icabangid=c.icabangid "
             . " LEFT JOIN sls.iarea d on b.icabangid=d.icabangid AND b.areaid=d.areaid "
             . " LEFT JOIN sls.iproduk e on a.iprodid=e.iprodid "
-            . " LEFT JOIN sls.isektor ise on b.iSektorId = ise.iSektorId ";
+            . " LEFT JOIN MKT.isektor ise on b.iSektorId = ise.iSektorId ";
     $query .= " GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18";
     $query = "create TEMPORARY table $tmp04 ($query)"; 
     mysqli_query($cnmy, $query);

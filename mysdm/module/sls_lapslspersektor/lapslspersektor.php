@@ -390,7 +390,7 @@
                                                         <tbody>
                                                             <?PHP
                                                             $no_m=1;
-                                                            $query = "select nama as jenisektor, nama_pvt as groupsektor from ms.isektor where aktif = 'Y' ";
+                                                            $query = "select nama as jenisektor, nama_pvt as groupsektor from MKT.isektor where aktif = 'Y' ";
                                                             $query .=" order by 2, 1 asc";
                                                             $tampil = mysqli_query($cnms, $query);
                                                             while ($rx= mysqli_fetch_array($tampil)) {

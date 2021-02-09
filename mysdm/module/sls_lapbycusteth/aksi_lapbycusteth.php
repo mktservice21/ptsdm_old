@@ -100,7 +100,7 @@ $query = "SELECT a.fakturid, b.region, a.icabangid, b.nama nama_cabang, a.areaid
         . " LEFT JOIN sls.icabang b on a.icabangid=b.icabangid "
         . " LEFT JOIN sls.iarea c on a.icabangid=c.icabangid and b.icabangid=c.icabangid and a.areaid=c.areaid "
         . " LEFT JOIN sls.icust d on a.icabangid=d.iCabangId and a.icustid=d.iCustId "
-        . " LEFT JOIN sls.isektor e on d.iSektorId=e.iSektorId "
+        . " LEFT JOIN MKT.isektor e on d.iSektorId=e.iSektorId "
         . " LEFT JOIN sls.iproduk f on a.iprodid=f.iprodid "
         . " LEFT JOIN sls.distrib0 g on a.distid=g.Distid "
         . " LEFT JOIN sls.eproduk i on f.iprodid=i.iprodid AND a.distid=i.DistId WHERE 1=1";

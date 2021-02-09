@@ -171,8 +171,8 @@
     else $filtersektorid="('')";
     
     
-    //$query = "select * from sls.isektor WHERE iSektorId IN (select distinct IFNULL(iSektorId,'') FROM $tmp03)";
-    $query = "select * from sls.isektor WHERE iSektorId IN $filtersektorid";
+    //$query = "select * from MKT.isektor WHERE iSektorId IN (select distinct IFNULL(iSektorId,'') FROM $tmp03)";
+    $query = "select * from MKT.isektor WHERE iSektorId IN $filtersektorid";
     $query = "create TEMPORARY table $tmp04 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -222,7 +222,7 @@
             $tampils= mysqli_query($cnmy, $query);
             $ketemus= mysqli_num_rows($tampils);
             if ($ketemus==0) {
-                $query ="insert into $tmp04 select * from sls.isektor WHERE IFNULL(iSektorId,'')='99'";
+                $query ="insert into $tmp04 select * from MKT.isektor WHERE IFNULL(iSektorId,'')='99'";
                 mysqli_query($cnmy, $query);
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             }

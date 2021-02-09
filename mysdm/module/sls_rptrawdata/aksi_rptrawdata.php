@@ -39,6 +39,7 @@
     $tgl02=$_POST['bulan2'];
     $pcab=$_POST['cbcabang'];
     $pidregion=$_POST['cbregion'];
+    $piddist=$_POST['cbdistributor'];
 
     
     $pbln1 = date("Y-m-01", strtotime($tgl01));
@@ -55,6 +56,13 @@
     $tampil= mysqli_query($cnms, $query);
     $rs= mysqli_fetch_array($tampil);
     $pnamacabang=$rs['nama'];
+
+    $pnmdistirbutor="";
+    $query = "select nama from MKT.distrib0 where distid='$piddist'";
+    $tampil= mysqli_query($cnms, $query);
+    $rd= mysqli_fetch_array($tampil);
+    $pnmdistirbutor=$rd['nama'];
+    if (empty($piddist)) $pnmdistirbutor="All";
 
 
     $milliseconds = round(microtime(true) * 1000);
@@ -110,20 +118,22 @@
 	}else{
 		$query .= " AND iprodid NOT IN (select IFNULL(iprodid,'') iprodid from sls.othproduk WHERE divprodid='PEACO')";
 	}
+        if (!empty($piddist)) $query .= " AND distid='$piddist' ";
     $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     
     $query = "SELECT 
-        CONCAT('BULAN ',MONTH(s.`tgljual`),' ',YEAR(s.`tgljual`)) bulan, 
-        c.`nama` namacabang, 
-        ar.`nama` namaarea, 
-        icu.`nama` namacust, 
+        s.`tgljual`, 
+        c.`nama` as namacabang, 
+        ar.`nama` as namaarea, 
+        icu.`nama` as namacust, 
         s.`divprodid`, 
-        ip.`nama` namaproduk, 
-        ROUND(SUM(s.`qty`),0) qty, 
-        ROUND(SUM(s.`qty`*s.`hna`),0) total 
+        ip.`nama` as namaproduk, 
+        icu.iSektorId as isektorid, 
+        s.`qty`, 
+        s.`hna` 
         FROM 
         $tmp01 s 
         LEFT JOIN sls.`icabang` c 
@@ -136,28 +146,55 @@
         AND s.`areaid` = icu.`areaId` 
         AND s.`icustid` = icu.`iCustId` 
         LEFT JOIN sls.`iproduk` ip 
-        ON s.`iprodid` = ip.`iprodid` 
-        GROUP BY 1,2,3,4,5,6";//ORDER BY 1,2,3,4,5,6
-    $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
+        ON s.`iprodid` = ip.`iprodid`";
+    $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
+    $query = "ALTER TABLE $tmp03 ADD COLUMN nama_pvt VARCHAR(100)";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    $query = "UPDATE $tmp03 as a JOIN MKT.isektor as b on a.isektorid=b.isektorid SET a.nama_pvt=b.nama_pvt";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    
+    $query = "SELECT 
+        CONCAT('BULAN ',MONTH(`tgljual`),' ',YEAR(`tgljual`)) bulan, 
+        namacabang, 
+        namaarea, 
+        namacust, 
+        `divprodid`, 
+        namaproduk, 
+        nama_pvt, 
+        ROUND(SUM(`qty`),0) qty, 
+        ROUND(SUM(`qty`*`hna`),0) total 
+        FROM 
+        $tmp03 
+        GROUP BY 1,2,3,4,5,6,7";//ORDER BY 1,2,3,4,5,6
+    $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+     
     $query = "DELETE FROM dbmaster.tmp_tarikan_rawdata WHERE DATE_FORMAT(tanggaltarikan,'%Y%m%d')<'$ptgltarikan'";
     mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     
     $query = "DELETE FROM dbmaster.tmp_tarikan_rawdata WHERE userid='$puser' AND idsesi='$pidsession' AND "
-            . " DATE_FORMAT(tanggaltarikan,'%Y%m%d')='$ptgltarikan' AND icabangid='$pcab' AND region='$pidregion' AND "
+            . " DATE_FORMAT(tanggaltarikan,'%Y%m%d')='$ptgltarikan' AND icabangid='$pcab' AND distid='$piddist' AND region='$pidregion' AND "
             . " periode1='$pbln1' AND periode2='$pbln2'";
     mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     $query = "ALTER TABLE dbmaster.tmp_tarikan_rawdata AUTO_INCREMENT = 1";
     mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
-    $query = "INSERT INTO dbmaster.tmp_tarikan_rawdata (bulan, namacabang, namaarea, namacust, divprodid, namaproduk, qty, total, "
-            . " userid, idsesi, periode1, periode2, region, icabangid) "
-            . " SELECT bulan, namacabang, namaarea, namacust, divprodid, namaproduk, qty, total, "
-            . " '$puser' userid, '$pidsession' idsesi, '$pbln1' periode1, '$pbln2' periode2, '$pidregion' region, '$pcab' icabangid FROM $tmp02 ORDER BY 1,2,3,4,5,6";
+    $query = "INSERT INTO dbmaster.tmp_tarikan_rawdata (bulan, namacabang, namaarea, namacust, divprodid, namaproduk, "
+            . " userid, idsesi, periode1, periode2, region, icabangid, "
+            . " distid, nama_pvt, "
+            . " qty, total) "
+            . " SELECT bulan, namacabang, namaarea, namacust, divprodid, namaproduk, "
+            . " '$puser' userid, '$pidsession' idsesi, '$pbln1' periode1, '$pbln2' periode2, '$pidregion' region, '$pcab' icabangid, "
+            . " '$piddist' as distid, nama_pvt, "
+            . " qty, total FROM $tmp02 ORDER BY 1,2,3,4,5,6";
     mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     
@@ -215,6 +252,7 @@
             var ebln2=document.getElementById('bulan2').value;
             var eidregi=document.getElementById('cbregion').value;
             var eidcab=document.getElementById('cbcabang').value;
+            var eiddist=document.getElementById('cbdistributor').value;
             var euserid=document.getElementById('txtuserid').value;
             var eidsesi=document.getElementById('txtidsesi').value;
             
@@ -234,7 +272,7 @@
                     type:"post",
                     url:"module/sls_rptrawdata/viewdatatable.php?module="+module+"&idmenu="+idmenu+"&act="+act,
                     data:"utgltarik="+etgltarik+"&ubln1="+ebln1+"&ubln2="+ebln2+
-                            "&uidregi="+eidregi+"&uidcab="+eidcab+"&uuserid="+euserid+"&uidsesi="+eidsesi,
+                            "&uidregi="+eidregi+"&uidcab="+eidcab+"&uiddist="+eiddist+"&uuserid="+euserid+"&uidsesi="+eidsesi,
                     success:function(data){
                         $("#c-data").html(data);
                         $("#loading").html("");
@@ -279,6 +317,7 @@
         <div id="divjudul">
             <table class="tbljudul">
                 <tr><td>Cabang</td><td>:</td><td><?PHP echo "$pnamacabang"; ?></td></tr>
+                <tr><td>Distributor</td><td>:</td><td><?PHP echo "$pnmdistirbutor"; ?></td></tr>
                 <tr><td>Periode</td><td>:</td><td><?PHP echo "$pperiode1 s/d. $pperiode2"; ?></td></tr>
 				<?PHP
                     if ($pprodoth=="Y") {
@@ -316,6 +355,7 @@
                             <input type='text' id='bulan2' name='bulan2' required='required' class='form-control' value='<?PHP echo $pbln2; ?>' Readonly>
                             <input type='text' id='cbregion' name='cbregion' required='required' class='form-control' value='<?PHP echo $pidregion; ?>' Readonly>
                             <input type='text' id='cbcabang' name='cbcabang' required='required' class='form-control' value='<?PHP echo $pcab; ?>' Readonly>
+                            <input type='text' id='cbdistributor' name='cbdistributor' required='required' class='form-control' value='<?PHP echo $piddist; ?>' Readonly>
                             <input type='text' id='txtuserid' name='txtuserid' required='required' class='form-control' value='<?PHP echo $puser; ?>' Readonly>
                             <textarea id="txtidsesi" name="txtidsesi" ><?PHP echo $pidsession; ?></textarea>
                         </div>
@@ -334,6 +374,7 @@
                             <th width='100px'>Nama Cabang</th>
                             <th width='10px'>Nama Area</th>
                             <th width='100px'>Nama Cust</th>
+                            <th width='100px'>Grp. Sektor</th>
                             <th width='30px'>Divisi</th>
                             <th width='100px'>Nama Produk</th>
                             <th width='50px'>Qty</th>
@@ -344,7 +385,7 @@
                     if ($ppilihrpt=="excel") {
                         echo "<tbody>";
                         
-                        $sql = "SELECT bulan, namacabang, namaarea, namacust, divprodid, namaproduk, qty, total ";
+                        $sql = "SELECT bulan, namacabang, namaarea, namacust, nama_pvt, divprodid, namaproduk, qty, total ";
                         $sql.=" FROM $tmp02 ORDER BY 1,2,3,4,5,6";
                         $tampil= mysqli_query($cnms, $sql);
                         while ($row= mysqli_fetch_array($tampil)) {
@@ -353,6 +394,7 @@
                             $pnmcabang=$row['namacabang'];
                             $pnmarea=$row['namaarea'];
                             $pnmcust=$row['namacust'];
+                            $pnmgrppvt=$row['nama_pvt'];
                             $pdivprodid=$row['divprodid'];
                             $pnmproduk=$row['namaproduk'];
                             $pqty=$row['qty'];
@@ -366,6 +408,7 @@
                             echo "<td nowrap>$pnmcabang</td>";
                             echo "<td nowrap>$pnmarea</td>";
                             echo "<td nowrap>$pnmcust</td>";
+                            echo "<td nowrap>$pnmgrppvt</td>";
                             echo "<td nowrap>$pdivprodid</td>";
                             echo "<td nowrap>$pnmproduk</td>";
                             echo "<td nowrap align='right'>$pqty</td>";

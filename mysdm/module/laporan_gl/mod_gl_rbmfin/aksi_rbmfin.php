@@ -223,6 +223,7 @@
 
         $query .=" AND IFNULL(ishare,'')<>'Y' "; //pilih salah satu divisi <> 'HO' atau IFNULL(ishare,'')<>'Y'
         //$query .=" AND IFNULL(divisi,'')<>'HO' ";  //pilih salah satu divisi <> 'HO' atau IFNULL(ishare,'')<>'Y'
+        //echo $query;
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
@@ -310,6 +311,14 @@
         
     }
     
+
+    $query = "ALTER table $tmp03 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    $query = "UPDATE $tmp03 set DIVISI_IN_COA=DIVISI";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    $query = "UPDATE $tmp03 as aa JOIN (select DISTINCT c.DIVISI2, a.COA4 from dbmaster.coa_level4 as a join dbmaster.coa_level3 as b on a.coa3=b.COA3 join dbmaster.coa_level2 as c on b.COA2=c.COA2) as bb on aa.COA4=bb.COA4 "
+            . " SET aa.DIVISI_IN_COA='ZZZ' WHERE IFNULL(bb.DIVISI2,'') IN ('', 'OTHER', 'OTHERS')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $query = "select * from $tmp02 WHERE COA2='105'";
@@ -438,7 +447,7 @@
                     $pgrandtotal[$x]=0;
                     $pgrandtotalsls[$x]=0;
                 }
-                $query = "select distinct DIVISI from $tmp03 ORDER BY DIVISI";
+                $query = "select distinct DIVISI_IN_COA as DIVISI from $tmp03 ORDER BY DIVISI_IN_COA";
                 $tampil0=mysqli_query($cnmy, $query);
                 while ($row0= mysqli_fetch_array($tampil0)) {
                     
@@ -449,6 +458,7 @@
                     if ($pdivisi=="PIGEO") $nmdivisi="PIGEON";
                     if ($pdivisi=="PEACO") $nmdivisi="PEACOCK";
                     if ($pdivisi=="AA") $nmdivisi="OTHER";
+                    if ($pdivisi=="ZZZ") $nmdivisi="OTHER";
                     
                     
                     for ($x=1;$x<=12;$x++) {
@@ -456,8 +466,8 @@
                         $ptotdivisisls[$x]=0;
                     }
                     
-                    $query = "select distinct IFNULL(DIVISI,'') DIVISI, IFNULL(COA2,'') COA2, IFNULL(NAMA2,'') NAMA2 from $tmp03 "
-                            . " WHERE DIVISI='$pdivisi' ORDER BY IFNULL(DIVISI,''), IFNULL(COA2,''), IFNULL(NAMA2,'')";
+                    $query = "select distinct IFNULL(DIVISI_IN_COA,'') as DIVISI, IFNULL(COA2,'') COA2, IFNULL(NAMA2,'') NAMA2 from $tmp03 "
+                            . " WHERE DIVISI_IN_COA='$pdivisi' ORDER BY IFNULL(DIVISI_IN_COA,''), IFNULL(COA2,''), IFNULL(NAMA2,'')";
                     $tampil=mysqli_query($cnmy, $query);
                     while ($row= mysqli_fetch_array($tampil)) {
                         
@@ -476,7 +486,7 @@
                             $psubtotsales[$x]=0;
                         }
                         
-                        $query = "select * from $tmp03 WHERE IFNULL(DIVISI,'')='$pdivisi' AND IFNULL(COA2,'')='$pcoa2' "
+                        $query = "select * from $tmp03 WHERE IFNULL(DIVISI_IN_COA,'')='$pdivisi' AND IFNULL(COA2,'')='$pcoa2' "
                                 . " ORDER BY IFNULL(COA4,''), IFNULL(NAMA4,'')";
                         $tampil2=mysqli_query($cnmy, $query);
                         while ($row2= mysqli_fetch_array($tampil2)) {

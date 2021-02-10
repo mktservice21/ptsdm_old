@@ -12,7 +12,7 @@ $pidgrpuser=$_SESSION['GROUP'];
 
 $hari_ini = date("Y-m-d");
 //$pbulanpilih = date('F Y', strtotime($hari_ini));
-$pbulanpilih = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
+$pbulanpilih = date('F Y', strtotime('-2 month', strtotime($hari_ini)));
 
 $ptgl_mulai_sl  = '2020-01-01';
 $ptgl_selesai_sl=date("Y-m-01");
@@ -577,7 +577,7 @@ if ($pidact=="editdata"){
             dateFormat: 'MM yy',
             //minDate: '-3M',
             minDate: '<?PHP echo $pblnselish; ?>',
-            maxDate: '-1M',
+            maxDate: '-2M',
             onSelect: function(dateStr) {
                 
             },

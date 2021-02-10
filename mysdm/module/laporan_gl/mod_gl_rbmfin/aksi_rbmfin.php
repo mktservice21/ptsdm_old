@@ -262,6 +262,20 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
+        $query = "ALTER table $tmp02 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        $query = "UPDATE $tmp02 set DIVISI_IN_COA=DIVISI";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        $query = "UPDATE $tmp02 as aa JOIN (select DISTINCT c.DIVISI2, a.COA4 from dbmaster.coa_level4 as a join dbmaster.coa_level3 as b on a.coa3=b.COA3 join dbmaster.coa_level2 as c on b.COA2=c.COA2) as bb on aa.coa=bb.COA4 "
+                . " SET aa.DIVISI_IN_COA='ZZZ' WHERE IFNULL(bb.DIVISI2,'') IN ('', 'OTHER', 'OTHERS')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+        $query = "UPDATE $tmp02 SET DIVISI='ZZZ' WHERE DIVISI_IN_COA='ZZZ' AND coa<>'105-02'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    
+    
     $query = "select DISTINCT a.divisi DIVISI, b.COA1, c.NAMA1, a.coa2 COA2, a.nama_coa2 NAMA2, "
             . " a.coa3 COA3, a.nama_coa3 NAMA3, coa COA4, nama_coa NAMA4 "
             . " from $tmp02 a LEFT JOIN dbmaster.coa_level2 b on "
@@ -271,16 +285,6 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    /*
-    $query = "UPDATE $tmp03 SET DIVISI='CANARY' WHERE IFNULL(DIVISI,'')='CAN'";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "UPDATE $tmp03 SET DIVISI='PEACOCK' WHERE IFNULL(DIVISI,'')='PEACO'";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "UPDATE $tmp03 SET DIVISI='PIGEON' WHERE IFNULL(DIVISI,'')='PIGEO'";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "UPDATE $tmp03 SET DIVISI='OTHER' WHERE IFNULL(DIVISI,'') IN ('', 'AA', 'OTHERS')";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    */
     
     $addcolumn="";
     for ($x=1;$x<=12;$x++) {
@@ -311,14 +315,17 @@
         
     }
     
+    
+        $query = "ALTER table $tmp03 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        $query = "UPDATE $tmp03 set DIVISI_IN_COA=DIVISI";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        $query = "UPDATE $tmp03 as aa JOIN (select DISTINCT c.DIVISI2, a.COA4 from dbmaster.coa_level4 as a join dbmaster.coa_level3 as b on a.coa3=b.COA3 join dbmaster.coa_level2 as c on b.COA2=c.COA2) as bb on aa.COA4=bb.COA4 "
+                . " SET aa.DIVISI_IN_COA='ZZZ' WHERE IFNULL(bb.DIVISI2,'') IN ('', 'OTHER', 'OTHERS')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "ALTER table $tmp03 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "UPDATE $tmp03 set DIVISI_IN_COA=DIVISI";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "UPDATE $tmp03 as aa JOIN (select DISTINCT c.DIVISI2, a.COA4 from dbmaster.coa_level4 as a join dbmaster.coa_level3 as b on a.coa3=b.COA3 join dbmaster.coa_level2 as c on b.COA2=c.COA2) as bb on aa.COA4=bb.COA4 "
-            . " SET aa.DIVISI_IN_COA='ZZZ' WHERE IFNULL(bb.DIVISI2,'') IN ('', 'OTHER', 'OTHERS')";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        $query = "UPDATE $tmp03 SET DIVISI='ZZZ' WHERE DIVISI_IN_COA='ZZZ' AND COA4<>'105-02'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $query = "select * from $tmp02 WHERE COA2='105'";

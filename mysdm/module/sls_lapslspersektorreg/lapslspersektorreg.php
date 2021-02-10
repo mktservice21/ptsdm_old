@@ -313,6 +313,27 @@
                                             </div>
                                         </div>
                                         
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for='distibutor'>Distributor <span class='required'></span></label>
+                                            <div class='col-md-9 col-sm-9 col-xs-12'>
+                                                <select class='form-control' name='cbdistributor' id='cbdistributor' onchange="">
+                                                    <?PHP
+                                                        echo "<option value=''>--Piihan--</option>";
+
+                                                        $query_aktif ="select distid, nama from MKT.distrib0 ";
+                                                        $query_aktif .=" order by nama";
+                                                        $tampil= mysqli_query($cnms, $query_aktif);
+                                                        while ($row= mysqli_fetch_array($tampil)) {
+                                                            $piddis=$row['distid'];
+                                                            $pnmdist=$row['nama'];
+                                                            $pditint=(INT)$piddis;
+                                                            echo "<option value='$piddis'>$pnmdist ($pditint)</option>";
+                                                        }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
                                         <div class='form-group grp-periode'>
                                             <label class='control-label control-periode col-md-3 col-sm-3 col-xs-12' for='cbln02'>s/d. <span class='required'></span></label>
                                             <div class='col-md-6'>

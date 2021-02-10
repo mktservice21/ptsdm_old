@@ -18,6 +18,7 @@
     $pval=$_GET['qval'];
     $pjns=$_GET['jns'];
     $pncpoth=$_GET['incpoth'];
+    $piddist=$_GET['niddist'];
     
     
     $ppilihrpt="";
@@ -85,6 +86,15 @@
     $nr= mysqli_fetch_array($tampil);
     $pnamaam_p=$nr['nama'];
     
+    
+    $pnmdistirbutor="";
+    $query = "select nama from MKT.distrib0 where distid='$piddist'";
+    $tampil= mysqli_query($cnms, $query);
+    $rd= mysqli_fetch_array($tampil);
+    $pnmdistirbutor=$rd['nama'];
+    if (empty($piddist)) $pnmdistirbutor="All";
+    
+    
     $now=date("mdYhis");
     $puserid=$_SESSION['USERID'];
     $tmp01 =" dbtemp.tmplapslssektor01_".$puserid."_$now ";
@@ -139,6 +149,7 @@
         $query .= " AND iprodid NOT IN (select IFNULL(iprodid,'') iprodid from sls.othproduk WHERE divprodid='PEACO')";
     }
     if (!empty($pidprod)) $query .= " AND iprodid='$pidprod'";
+    if (!empty($piddist)) $query .= " AND distid='$piddist' ";
     $query .=" GROUP BY icabangid, areaid, icustid, iprodid ";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -333,6 +344,7 @@
     <div id="divjudul">
         <table class="tbljudul">
             <tr><td>Cabang</td><td>:</td><td><?PHP echo "$pnamacabang_p"; ?></td></tr>
+            <tr><td>Distributor</td><td>:</td><td><?PHP echo "$pnmdistirbutor"; ?></td></tr>
             <tr><td>AM</td><td>:</td><td><?PHP echo "$pnamaam_p"; ?></td></tr>
             <tr><td>Periode</td><td>:</td><td><?PHP echo "$ptgl1 s/d. $ptgl2"; ?></td></tr>
             <?PHP
@@ -359,7 +371,7 @@
         echo "<table>";
         echo "<tr>";
             echo "<td>";
-                echo "<a class='btn button1' href='eksekusi3.php?module=$pmodule&act=input&idmenu=$pidmenu&ket=excel&ipilih=$ppilih&iprd=$pprod&pper1=$iper1&iprd=$pprod&pper2=$iper2&pper2=$iper2&pcb=$icab&pkry=$ikry&idiv=$pdiv&qval=$pval&jns=$pjns&incpoth=$pncpoth' target='_blank'>EXCEL</a>";
+                echo "<a class='btn button1' href='eksekusi3.php?module=$pmodule&act=input&idmenu=$pidmenu&ket=excel&ipilih=$ppilih&iprd=$pprod&pper1=$iper1&iprd=$pprod&pper2=$iper2&pper2=$iper2&pcb=$icab&pkry=$ikry&idiv=$pdiv&qval=$pval&jns=$pjns&incpoth=$pncpoth&niddist=$piddist' target='_blank'>EXCEL</a>";
             echo "</td>";
             echo "<td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</td>";
             echo "<td>";

@@ -37,6 +37,7 @@
     $pdivisiid=$_POST["cb_divisi"];
     $pjenissektor=$_POST["rd_rptny"];
     $ppilhqtyval=$_POST["rd_rptjns"];
+    $piddist=$_POST['cbdistributor'];
     
     
     $pprodoth = "";
@@ -78,6 +79,13 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
+    $pnmdistirbutor="";
+    $query = "select nama from MKT.distrib0 where distid='$piddist'";
+    $tampil= mysqli_query($cnms, $query);
+    $rd= mysqli_fetch_array($tampil);
+    $pnmdistirbutor=$rd['nama'];
+    if (empty($piddist)) $pnmdistirbutor="All";
+    
     
     $filtercabangarea="";
     $filterdivisicabarea="";
@@ -109,6 +117,7 @@
     }else{
         $query .= " AND iprodid NOT IN (select IFNULL(iprodid,'') iprodid from sls.othproduk WHERE divprodid='PEACO')";
     }
+    if (!empty($piddist)) $query .= " AND distid='$piddist' ";
     
     /*
     if (!empty($pdivisiid)) {
@@ -416,6 +425,7 @@
     <div id="divjudul">
         <table class="tbljudul">
             <tr><td>Cabang</td><td>:</td><td><?PHP echo "$pnamacabang_p"; ?></td></tr>
+            <tr><td>Distributor</td><td>:</td><td><?PHP echo "$pnmdistirbutor"; ?></td></tr>
             <tr><td>AM</td><td>:</td><td><?PHP echo "$pnamaam_p"; ?></td></tr>
             <tr><td>Periode</td><td>:</td><td><?PHP echo "$ptgl1 s/d. $ptgl2"; ?></td></tr>
             <?PHP
@@ -623,7 +633,7 @@
                         $prtjumlah=number_format($prtjumlah,0,",",",");
                         $plinkrpttot_valunit="<a href='eksekusi3.php?module=detailsaleslappersektor&act=input&idmenu=$pidmenu&ket=bukan"
                                 . "&ipilih=$pkosong&iprd=$pidprod&pper1=$pbulan1&pper2=$pbulan2"
-                                . "&pcb=$pidcabang&pkry=$pidamkry&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea' "
+                                . "&pcb=$pidcabang&pkry=$pidamkry&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
                                 . " target='_blank'>$prtjumlah</a>";
                     }else{
                         $plinkrpttot_valunit=number_format($prtjumlah,0,",",",");
@@ -668,7 +678,7 @@
                             $prjumlah=number_format($prjumlah,0,",",",");
                             $plinkrpt_valunit="<a href='eksekusi3.php?module=detailsaleslappersektor&act=input&idmenu=$pidmenu&ket=bukan"
                                     . "&ipilih=$pidsektor&iprd=$pidprod&pper1=$pbulan1&pper2=$pbulan2"
-                                    . "&pcb=$pidcabang&pkry=$pidamkry&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea' "
+                                    . "&pcb=$pidcabang&pkry=$pidamkry&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
                                     . " target='_blank'>$prjumlah</a>";
                         }else{
                             $plinkrpt_valunit=number_format($prjumlah,0,",",",");
@@ -725,7 +735,7 @@
                         $nvalue=number_format($nvalue,0,",",",");
                         $plinkrptgrp_valunit="<a href='eksekusi3.php?module=detailsaleslappersektor&act=input&idmenu=$pidmenu&ket=bukan"
                                 . "&ipilih=$pidsektor&iprd=$pkosong&pper1=$pbulan1&pper2=$pbulan2"
-                                . "&pcb=$pidcabang&pkry=$pidamkry&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea' "
+                                . "&pcb=$pidcabang&pkry=$pidamkry&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
                                 . " target='_blank'>$nvalue</a>";
                     }else{
                         $plinkrptgrp_valunit=number_format($nvalue,0,",",",");
@@ -740,7 +750,7 @@
                 $pkosong="";
                 $plinkrptgrp_valunit="<a href='eksekusi3.php?module=detailsaleslappersektor&act=input&idmenu=$pidmenu&ket=bukan"
                         . "&ipilih=$pkosong&iprd=$pkosong&pper1=$pbulan1&pper2=$pbulan2"
-                        . "&pcb=$pidcabang&pkry=$pidamkry&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea' "
+                        . "&pcb=$pidcabang&pkry=$pidamkry&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
                         . " target='_blank'>$pgtotalval</a>";
                     
                     

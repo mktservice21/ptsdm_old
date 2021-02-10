@@ -261,7 +261,7 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    
+    /*
         $query = "ALTER table $tmp02 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         $query = "UPDATE $tmp02 set DIVISI_IN_COA=DIVISI";
@@ -272,7 +272,7 @@
 
         $query = "UPDATE $tmp02 SET DIVISI='ZZZ' WHERE DIVISI_IN_COA='ZZZ' AND coa<>'105-02'";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+    */
     
     
     
@@ -315,18 +315,23 @@
         
     }
     
-    
+
+        $query = "UPDATE $tmp03 set DIVISI='ZZZ' WHERE IFNULL(DIVISI,'') IN ('', 'OTHER', 'OTHERS')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
         $query = "ALTER table $tmp03 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         $query = "UPDATE $tmp03 set DIVISI_IN_COA=DIVISI";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+    /*
         $query = "UPDATE $tmp03 as aa JOIN (select DISTINCT c.DIVISI2, a.COA4 from dbmaster.coa_level4 as a join dbmaster.coa_level3 as b on a.coa3=b.COA3 join dbmaster.coa_level2 as c on b.COA2=c.COA2) as bb on aa.COA4=bb.COA4 "
                 . " SET aa.DIVISI_IN_COA='ZZZ' WHERE IFNULL(bb.DIVISI2,'') IN ('', 'OTHER', 'OTHERS')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
         $query = "UPDATE $tmp03 SET DIVISI='ZZZ' WHERE DIVISI_IN_COA='ZZZ' AND COA4<>'105-02'";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+    */
     
     $query = "select * from $tmp02 WHERE COA2='105'";
     $query = "create TEMPORARY table $tmp04 ($query)";
@@ -733,6 +738,7 @@
                         if ($pdivisi=="PIGEO") $nmdivisi="PIGEON";
                         if ($pdivisi=="PEACO") $nmdivisi="PEACOCK";
                         if ($pdivisi=="AA") $nmdivisi="OTHER";
+                        if ($pdivisi=="ZZZ") $nmdivisi="OTHER";
 
 
                         for ($x=1;$x<=12;$x++) {

@@ -768,6 +768,33 @@
     }
     ?>
     
+    
+    <br/>
+        <table id='mydatatable12' class='table table-striped table-bordered' border="1px solid black">
+        <thead>
+        <tr>
+            <th align='center'>Sektor</th>
+            <th align='center'>Jumlah</th>
+        </tr>
+        </thead>
+        <tbody>
+            <?PHP
+            $query = "select nama_sektor, count(distinct icustid) as jml from $tmp06 GROUP BY 1;";
+            $tampil= mysqli_query($cnmy, $query);
+            while ($row= mysqli_fetch_array($tampil)) {
+                $pnama_s=$row['nama_sektor'];
+                $pjml_s=$row['jml'];
+                
+                echo "<tr>";
+                echo "<td nowrap>$pnama_s</td>";
+                echo "<td nowrap align='right'>$pjml_s</td>";
+                echo "</tr>";
+            }
+            ?>
+        </tbody>
+        </table>
+
+    
     <p/>&nbsp;<p/>&nbsp;<p/>&nbsp;
 </div>
    
@@ -861,14 +888,14 @@
             .divnone {
                 display: none;
             }
-            #mydatatable1, #mydatatable2 {
+            #mydatatable1, #mydatatable2, mydatatable12 {
                 color:#000;
                 font-family: "Arial";
             }
-            #mydatatable1 th, #mydatatable2 th {
+            #mydatatable1 th, #mydatatable2 th, #mydatatable12 th {
                 font-size: 12px;
             }
-            #mydatatable1 td, #mydatatable2 td { 
+            #mydatatable1 td, #mydatatable2 td, #mydatatable12 td { 
                 font-size: 11px;
             }
         </style>

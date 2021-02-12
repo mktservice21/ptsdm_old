@@ -593,6 +593,12 @@
         include 'module/map_bagisalesmanual/rpt_salesbagi.php';
         
         
+    }elseif ($_GET['module']=='lihatkseditapt'){
+        include 'module/ks_lihatks/editapt.php';
+    }elseif ($_GET['module']=='simpaneditapotikks'){
+        include 'module/ks_lihatks/berhasilsimapnaptedt.php';
+        
+        
         
         
         

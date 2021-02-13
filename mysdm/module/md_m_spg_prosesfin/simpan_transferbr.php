@@ -43,12 +43,12 @@
     
     $fcabang="";
     if (!empty($pcabidpilih)) {
-        if ($ecabang=="JKT_MT") {
-            $fcabang = " AND icabangid='0000000007' AND alokid='001' ";
-        }elseif ($ecabang=="JKT_RETAIL") {
-            $fcabang = " AND icabangid='0000000007' AND alokid='002' ";
+        if ($pcabidpilih=="JKT_MT") {
+            $fcabang = " AND a.icabangid='0000000007' AND a.alokid='001' ";
+        }elseif ($pcabidpilih=="JKT_RETAIL") {
+            $fcabang = " AND a.icabangid='0000000007' AND a.alokid='002' ";
         }else{
-            $fcabang = " AND icabangid='$ecabang' ";
+            $fcabang = " AND a.icabangid='$pcabidpilih' ";
         }
         
     }
@@ -205,6 +205,24 @@
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             //end insentif
+        
+        
+        
+                //non jakarta
+        $query = "UPDATE dbmaster.t_spg_gaji_br0 a JOIN (select * from $tmp01 WHERE CONCAT(subpost,kodeid)='1093') b on a.icabangid=b.icabangid AND "
+                . " a.nodivisi=b.nodivisi AND a.idinput=b.idinput SET "
+                . " a.brotcid3=b.brOtcId WHERE DATE_FORMAT(a.periode,'%Y%m')='$pblnpilih' $fcabang AND a.icabangid NOT IN ('0000000007')";
+        echo $query;
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+                //khusus jakarta
+        $query = "UPDATE dbmaster.t_spg_gaji_br0 a JOIN (select * from $tmp01 WHERE CONCAT(subpost,kodeid)='1093') b on a.icabangid=b.icabangid AND "
+                . " a.alokid=b.alokid AND a.nodivisi=b.nodivisi AND a.idinput=b.idinput SET "
+                . " a.brotcid3=b.brOtcId WHERE DATE_FORMAT(a.periode,'%Y%m')='$pblnpilih' $fcabang AND a.icabangid IN ('0000000007')";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
         
         $query = "DELETE FROM dbmaster.t_suratdana_br1 WHERE kodeinput='D' AND nourut > 32417 AND CONCAT(idinput,bridinput) IN "
                 . " (SELECT DISTINCT IFNULL(CONCAT(IFNULL(idinput,''),IFNULL(brOtcId,'')),'') FROM $tmp01)";

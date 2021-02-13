@@ -2,7 +2,7 @@
     $hari_ini = date("Y-m-d");
     $tgl_pertama = date('F Y', strtotime($hari_ini));
     $tgl_insentif = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
-    include "config/koneksimysqli_it.php";
+    
     $icabang="";
     if (!empty($_SESSION['SPGMSTPRSCAB'])) $icabang=$_SESSION['SPGMSTPRSCAB'];
     if (!empty($_SESSION['SPGMSTPRSTGL'])) $tgl_pertama=$_SESSION['SPGMSTPRSTGL'];

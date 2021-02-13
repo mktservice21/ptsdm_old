@@ -43,6 +43,19 @@ if ($_GET['module']=="gantitombol") {
         $tr= mysqli_fetch_array($tampil);
         if (!empty($tr['jumlah'])) $totalinput=$tr['jumlah'];
     }
+    
+    $pbpjssdmtot=0;
+    
+    $query="SELECT SUM(rptotal2) as rptotal2 from dbmaster.t_spg_gaji_br0 as a "
+            . " join dbmaster.t_spg_gaji_br1 as b on a.idbrspg=b.idbrspg WHERE a.idbrspg IN $pnoid AND b.kodeid ='10'";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ($ketemu>0) {
+        $tr= mysqli_fetch_array($tampil);
+        if (!empty($tr['rptotal2'])) $pbpjssdmtot=$tr['rptotal2'];
+    }
+    $totalinput=(DOUBLE)$totalinput+(DOUBLE)$pbpjssdmtot;
+    
     echo $totalinput;
     
 }elseif ($_GET['module']=="simpan") {
@@ -146,10 +159,13 @@ if ($_GET['module']=="gantitombol") {
     }
     
     $f_brhapus = " AND subkode='05' AND kodeid='12' ";
-    $f_updatenulspg=" brotcid='$pbrid' AND IFNULL(brotcid2,'')='' ";
+    $f_updatenulspg=" brotcid='$pbrid' AND IFNULL(brotcid2,'')='' AND IFNULL(brotcid3,'')='' ";
     if ($pikete=="2") {
         $f_brhapus = " AND subkode='03' AND kodeid='08' ";
         $f_updatenulspg=" brotcid2='$pbrid' ";
+    }elseif ($pikete=="3") {
+        $f_brhapus = " AND subkode='10' AND kodeid='93' ";
+        $f_updatenulspg=" brotcid3='$pbrid' ";
     }
     
     $query = "DELETE FROM hrd.br_otc WHERE brOtcId='$pbrid'";
@@ -160,7 +176,14 @@ if ($_GET['module']=="gantitombol") {
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
-    $query = "UPDATE dbmaster.t_spg_gaji_br0 SET brotcid='', brotcid2='' WHERE idinput='$pidinput' AND $f_updatenulspg";
+    if ($pikete=="2") {
+        $query = "UPDATE dbmaster.t_spg_gaji_br0 SET brotcid2='' WHERE idinput='$pidinput' AND $f_updatenulspg";
+    }elseif ($pikete=="3") {
+        $query = "UPDATE dbmaster.t_spg_gaji_br0 SET brotcid3='' WHERE idinput='$pidinput' AND $f_updatenulspg";
+    }else{
+        $query = "UPDATE dbmaster.t_spg_gaji_br0 SET brotcid='' WHERE idinput='$pidinput' AND $f_updatenulspg";
+    }
+    $query = "UPDATE dbmaster.t_spg_gaji_br0 SET brotcid='', brotcid2='', brotcid3='' WHERE idinput='$pidinput' AND $f_updatenulspg";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     $berhasil="";

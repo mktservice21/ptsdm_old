@@ -189,7 +189,7 @@
     //$query .=" AND IFNULL(divisi,'')<>'HO' ";  //pilih salah satu divisi <> 'HO' atau IFNULL(ishare,'')<>'Y'
     if (!empty($ppildivisiid)) $query .=" AND divisi='$ppildivisiid' ";
     if (!empty($filtercoa)) $query .=" AND IFNULL(coa_edit,'') IN $filtercoa ";
-
+    //echo $query; goto hapusdata;
     $query = "create TEMPORARY table $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -309,12 +309,12 @@
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-        $query = "UPDATE $tmp03 a SET a.$nfieldR=ROUND(IFNULL($nfield,0)/IFNULL((SELECT SUM(b.kredit) FROM $tmp02 b WHERE a.DIVISI=b.divisi AND a.COA4=b.coa),0),2)";
+        $query = "UPDATE $tmp03 a SET a.$nfieldR=ROUND(IFNULL($nfield,0)/IFNULL((SELECT SUM(b.kredit) FROM $tmp02 b WHERE a.DIVISI=b.divisi AND a.COA4=b.coa),0)*100,2)";
         mysqli_query($cnmy, $query); //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
     }
-    
+    //goto hapusdata;
 
         $query = "UPDATE $tmp03 set DIVISI='ZZZ' WHERE IFNULL(DIVISI,'') IN ('', 'OTHER', 'OTHERS')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -560,7 +560,7 @@
                             
                             $prjumlah=0;
                             if ((DOUBLE)$ptotpersubcoa>0) {
-                                $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                                $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                             }
                             
                             $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
@@ -607,7 +607,7 @@
 
                         $prjumlah=0;
                         if ((DOUBLE)$ptotpersubcoa>0) {
-                            $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                            $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                         }
                             
                         $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
@@ -652,7 +652,7 @@
 
                     $prjumlah=0;
                     if ((DOUBLE)$ptotpersubcoa>0) {
-                        $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                        $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                     }
                         
                     $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
@@ -828,7 +828,7 @@
 
                                 $prjumlah=0;
                                 if ((DOUBLE)$ptotpersubcoa>0) {
-                                    $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                                    $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                                 }
                     
                                 $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
@@ -874,7 +874,7 @@
 
                             $prjumlah=0;
                             if ((DOUBLE)$ptotpersubcoa>0) {
-                                $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                                $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                             }
                                 
                             $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
@@ -919,7 +919,7 @@
 
                         $prjumlah=0;
                         if ((DOUBLE)$ptotpersubcoa>0) {
-                            $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa,2);
+                            $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                         }
                             
                         $ptotaltahund=(double)$ptotaltahund+(double)$pjml;

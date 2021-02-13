@@ -61,6 +61,7 @@
             a.brotcid,
             a.periode_insentif, 
             IFNULL(a.brotcid2,'') as brotcid2,
+            IFNULL(a.brotcid3,'') as brotcid3,
             a.total lebihkurang, a.total insentif, a.total gaji, a.keterangan hk, a.total rpmakan, a.total makan, a.total sewa, a.total pulsa, a.total parkir, a.total bbm,
             a.total rlebihkurang, a.total rinsentif, a.total rgaji, a.total rmakan, a.total rsewa, a.total rpulsa, a.total rparkir, a.total rbbm,
             a.total slebihkurang, a.total sinsentif, a.total sgaji, a.total smakan, a.total ssewa, a.total spulsa, a.total sparkir, a.total sbbm
@@ -74,6 +75,9 @@
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+        $query ="Alter table $tmp01 ADD COLUMN jmlbpjs_kry DECIMAL(20,2), ADD COLUMN jmlbpjs_sdm DECIMAL(20,2), ADD COLUMN gaji_asli DECIMAL(20,2)";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
         mysqli_query($cnmy, "UPDATE $tmp01 SET lebihkurang=0, insentif=0, gaji=0, hk='', rpmakan=0, makan=0, sewa=0, pulsa=0, parkir=0, bbm=0");
         mysqli_query($cnmy, "UPDATE $tmp01 SET rlebihkurang=0, rinsentif=0, rgaji=0, rmakan=0, rsewa=0, rpulsa=0, rparkir=0, rbbm=0");//ralisasi
         mysqli_query($cnmy, "UPDATE $tmp01 SET slebihkurang=0, sinsentif=0, sgaji=0, smakan=0, ssewa=0, spulsa=0, sparkir=0, sbbm=0");//selisih
@@ -99,6 +103,12 @@
         
         mysqli_query($cnmy, "UPDATE $tmp01 a SET a.lebihkurang=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='09'),0)");
 
+        $query ="UPDATE $tmp01 as a JOIN (select idbrspg, rptotal2 FROM $tmp02 WHERE kodeid='10') as b on a.idbrspg=b.idbrspg SET a.jmlbpjs_sdm=b.rptotal2";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
+        $query ="UPDATE $tmp01 as a JOIN (select idbrspg, rptotal2 FROM $tmp02 WHERE kodeid='11') as b on a.idbrspg=b.idbrspg SET a.jmlbpjs_kry=b.rptotal2";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
         //realisasi
         mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rinsentif=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='01'),0)");
         mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rgaji=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='02'),0)");
@@ -135,11 +145,12 @@
         
         mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
         
-        $query = "select CAST('' as CHAR(50)) as periode_inc, icabangid, nama_cabang, nodivisi, idinput, brotcid, CAST('' as CHAR(10)) as brotcid2, sum(insentif) insentif, sum(gaji) gaji, sum(makan) makan, 
+        $query = "select CAST('' as CHAR(50)) as periode_inc, icabangid, nama_cabang, nodivisi, idinput, brotcid, CAST('' as CHAR(10)) as brotcid2, CAST('' as CHAR(10)) as brotcid3, sum(insentif) insentif, sum(gaji) gaji, sum(makan) makan, 
                 sum(sewa) sewa, sum(pulsa) pulsa, sum(bbm) bbm, sum(parkir) parkir, 
                 sum(rinsentif) rinsentif, sum(rgaji) rgaji, sum(rmakan) rmakan, sum(rsewa) rsewa, sum(rpulsa) rpulsa, sum(rbbm) rbbm, sum(rparkir) rparkir,
                 sum(sinsentif) sinsentif, sum(sgaji) sgaji, sum(smakan) smakan, sum(ssewa) ssewa, sum(spulsa) spulsa, sum(sbbm) sbbm, sum(sparkir) sparkir, 
-                sum(lebihkurang) lebihkurang, sum(rlebihkurang) rlebihkurang, sum(slebihkurang) slebihkurang 
+                sum(lebihkurang) lebihkurang, sum(rlebihkurang) rlebihkurang, sum(slebihkurang) slebihkurang, 
+                sum(jmlbpjs_kry) as jmlbpjs_kry, sum(jmlbpjs_sdm) as jmlbpjs_sdm
                 from $tmp01 GROUP BY 1,2,3,4,5";
                 
         $query ="CREATE TEMPORARY TABLE $tmp02 ($query)";
@@ -153,7 +164,7 @@
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-        $query ="UPDATE $tmp02 SET ttotal =IFNULL(gaji,0)+IFNULL(makan,0)+IFNULL(sewa,0)+IFNULL(pulsa,0)+IFNULL(bbm,0)+IFNULL(parkir,0)+IFNULL(lebihkurang,0)";
+        $query ="UPDATE $tmp02 SET ttotal =IFNULL(gaji,0)+IFNULL(makan,0)+IFNULL(sewa,0)+IFNULL(pulsa,0)+IFNULL(bbm,0)+IFNULL(parkir,0)+IFNULL(lebihkurang,0)-IFNULL(jmlbpjs_kry,0)";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
@@ -193,8 +204,43 @@
         
         //END insentif
         
+        
+        //BPJS
+        mysqli_query($cnmy, "drop TEMPORARY table $tmp03");
+        
+        $query = "select icabangid, nama_cabang, nodivisi, idinput, sum(IFNULL(jmlbpjs_kry,0)+IFNULL(jmlbpjs_sdm,0)) as ttotal from $tmp01 WHERE IFNULL(jmlbpjs_sdm,0)<>0";
+        $query ="CREATE TEMPORARY TABLE $tmp03 ($query)";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query ="alter table $tmp03 add subpost CHAR(2), ADD kodeid CHAR(2),
+            ADD tglbr date, ADD user1 INTEGER(4), ADD lampiran char(1), ADD ca char(1), add via CHAR(1), add bralid char(2),
+            add ccyid char(5), add coa4 CHAR(20), ADD kodewilayah char(10), add modifdate timestamp, add lampiran2 char(1), add keterangan char(255), ADD noidinput INTEGER(11)";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+        $query ="UPDATE $tmp03 SET subpost='10', kodeid='93', coa4='', keterangan=CONCAT('BPJS KETENAGAKERJAAN ',nama_cabang, ', PERIODE $periode_pil_ket') ";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        mysqli_query($cnmy, "UPDATE $tmp02 SET brotcid3=''");
+        
+        $query ="INSERT INTO $tmp02 (icabangid, nama_cabang, nodivisi, idinput, keterangan, subpost, kodeid, coa4, ttotal)"
+                . " SELECT icabangid, nama_cabang, nodivisi, idinput, keterangan, subpost, kodeid, coa4, ttotal "
+                . "FROM $tmp03";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        //END BPJS
+        
+        
         $query ="UPDATE $tmp02 a JOIN (select icabangid, brotcid, brotcid2, insentif from $tmp01 WHERE IFNULL(insentif,0)<>0 AND IFNULL(brotcid2,'') <>'') b on a.brotcid=b.brotcid and a.icabangid=b.icabangid SET "
                 . " a.brotcid2=b.brotcid2 WHERE IFNULL(a.insentif,0)<>0 AND a.subpost='03' AND a.kodeid='08'";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query ="UPDATE $tmp02 a JOIN (select icabangid, brotcid3 from $tmp01 WHERE IFNULL(insentif,0)<>0 AND IFNULL(brotcid3,'') <>'') b on a.icabangid=b.icabangid SET "
+                . " a.brotcid3=b.brotcid3 WHERE a.subpost='10' AND a.kodeid='93'";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
@@ -301,6 +347,7 @@
                     $idno=$row['noidinput'];
                     $pbrotcid=$row['brotcid'];
                     $pbrotcid2=$row['brotcid2'];
+                    $pbrotcid3=$row['brotcid3'];
                     $ptgl=$row['tglbr'];
                     $pidcabang=$row['icabangid'];
                     $pnmcabang=$row['nama_cabang'];
@@ -331,6 +378,10 @@
                         $pbrotcid=$pbrotcid2;
                         $iket="2";
                     }
+                    if ($psubkodeid=="10" AND $pkodeid="93" AND !empty($pbrotcid3)) {
+                        $pbrotcid=$pbrotcid3;
+                        $iket="3";
+                    }
                     
                     $txt_brotcid="<input type='text' value='$pbrotcid' id='txtbrotcid[$idno]' name='txtbrotcid[$idno]' size='8px' Readonly>";
                     $txt_idinputspd="<input type='text' value='$pidinput' id='txtidinputspd[$idno]' name='txtidinputspd[$idno]' size='8px' Readonly>";
@@ -348,6 +399,8 @@
                     $f_text="<div hidden>$txt_brotcid $txt_idinputspd $txt_nodivisi $txt_cabangid $txt_alokid $txt_subkode $txt_kodeid $txt_tglbr $txt_ket $txt_jml $txt_coa</div>";
                     
                     $hapusdata= "<input type='button' class='btn btn-danger btn-xs' id='s-hapus' value='Hapus' onclick=\"HapusDataTransBR('hapus', '$pbrotcid', '$pidinput', '$iket')\">";
+                    $hapusdata="";
+                    
                     if (!empty($pbrotcid)) {
                         $cekbox=$hapusdata;
                     }

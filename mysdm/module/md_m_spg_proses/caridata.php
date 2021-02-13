@@ -90,7 +90,7 @@ function CariDataSPGGajiTJ($bulan, $pidcabang, $pnoid, $status, $periodeins) {
         CAST(0 AS DECIMAL(20,2)) umakan, CAST(0 AS DECIMAL(20,2)) sewakendaraan, CAST(0 AS DECIMAL(20,2)) pulsa, CAST(0 AS DECIMAL(20,2)) bbm, 
         CAST(0 AS DECIMAL(20,2)) parkir, CAST(0 AS DECIMAL(20,2)) lain, 
         insentif, insentif_tambahan, lebihkurang, CAST(0 AS DECIMAL(20,2)) tmakan, CAST(0 AS DECIMAL(20,2)) total,
-        a.keterangan, a.sts, a.apvtgl1, a.apvtgl2, a.apvtgl3, CAST(0 AS DECIMAL(20,2)) ngaji, CAST(0 AS DECIMAL(20,2)) ntunjangan,
+        a.keterangan, a.sts, a.apvtgl1, a.apvtgl2, a.apvtgl3, CAST(0 AS DECIMAL(20,2)) ngaji, CAST(0 AS DECIMAL(20,2)) gaji_asli, CAST(0 AS DECIMAL(20,2)) ntunjangan,
         CAST(0 AS DECIMAL(20,2)) tot_tujangan, 
         CAST(0 AS DECIMAL(20,2)) nhk, CAST(0 AS DECIMAL(20,2)) njmlharisistem
         FROM dbmaster.t_spg_gaji_br0 a 
@@ -147,6 +147,11 @@ function CariDataSPGGajiTJ($bulan, $pidcabang, $pnoid, $status, $periodeins) {
     $query = "UPDATE $tmp01 a SET a.gaji=IFNULL((SELECT b.gaji FROM $tmp02 b WHERE a.icabangid=b.icabangid AND a.areaid=b.areaid),0)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
+    $query = "UPDATE $tmp01 a SET a.gaji_asli=a.gaji";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
+    
     
     mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
     
@@ -261,7 +266,40 @@ function CariDataSPGGajiTJ($bulan, $pidcabang, $pnoid, $status, $periodeins) {
         mysqli_query($cnmy, "UPDATE $tmp01 SET gaji=IFNULL(ngaji,0)");
         
     //}
+            
+        
     
+    
+    //CARI BPJS Ketenagakerjaan
+    $query = "ALTER TABLE $tmp01 ADD COLUMN bulan_bpjs DATE,  ADD COLUMN nobpjs_kerja VARCHAR(150), "
+            . " ADD COLUMN potongan_kry DECIMAL(20,2), ADD COLUMN potongan_sdm DECIMAL(20,2), "
+            . " ADD COLUMN jmlbpjs_kry DECIMAL(20,2), ADD COLUMN jmlbpjs_sdm DECIMAL(20,2)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
+    $query = "UPDATE $tmp01 as a JOIN dbmaster.t_spg_bpjs as b on a.id_spg=b.id_spg SET a.bulan_bpjs=b.bulan, a.nobpjs_kerja=b.nobpjs_kerja";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
+    $query = "UPDATE $tmp01 SET potongan_kry=(select potongan_kry from dbmaster.t_spg_bpjs_master WHERE IFNULL(aktif,'')<>'N' ORDER BY bulan desc) WHERE IFNULL(nobpjs_kerja,'')<>''";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
+    $query = "UPDATE $tmp01 SET potongan_sdm=(select potongan_sdm from dbmaster.t_spg_bpjs_master WHERE IFNULL(aktif,'')<>'N' ORDER BY bulan desc) WHERE IFNULL(nobpjs_kerja,'')<>''";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
+    $query = "UPDATE $tmp01 SET jmlbpjs_kry=IFNULL(gaji_asli,0)*IFNULL(potongan_kry,0)/100 WHERE IFNULL(nobpjs_kerja,'')<>'' AND IFNULL(potongan_kry,0)<>0";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
+    $query = "UPDATE $tmp01 SET jmlbpjs_sdm=IFNULL(gaji_asli,0)*IFNULL(potongan_sdm,0)/100 WHERE IFNULL(nobpjs_kerja,'')<>'' AND IFNULL(potongan_sdm,0)<>0";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
+    
+    //$query = "UPDATE $tmp01 SET gaji=IFNULL(gaji,0)-IFNULL(jmlbpjs_kry,0) WHERE IFNULL(nobpjs_kerja,'')<>'' AND IFNULL(potongan_kry,0)<>0";
+    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
+    
+    //END CARI BPJS Ketenagakerjaan
+    
+    
+    //TOTAL
     
     //$query = "UPDATE $tmp01 SET total=IFNULL(insentif_tambahan,0)+IFNULL(insentif,0)+IFNULL(tmakan,0)+IFNULL(gaji,0)+IFNULL(sewakendaraan,0)+IFNULL(pulsa,0)+IFNULL(bbm,0)+IFNULL(parkir,0)+IFNULL(lain,0)";
     $query = "UPDATE $tmp01 SET total=IFNULL(insentif,0)+IFNULL(insentif_tambahan,0)+IFNULL(insentif,0)+IFNULL(gaji,0)+IFNULL(ntunjangan,0)+IFNULL(lain,0)+IFNULL(tmakan,0)+IFNULL(lebihkurang,0)"; 
@@ -270,6 +308,10 @@ function CariDataSPGGajiTJ($bulan, $pidcabang, $pnoid, $status, $periodeins) {
     
     
     mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
+    
+    
+    
+    
     
     //$tmp10 =" dbtemp.DSPGCR10_".$userid."_$now ";
     //mysqli_query($cnmy, "Create table $tmp10 select * from $tmp01");
@@ -676,6 +718,9 @@ function CariDataSPGBR($dari, $bulan, $pidcabang, $pnoid, $status) {
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
 
+    $query ="Alter table $tmp01 ADD COLUMN jmlbpjs_kry DECIMAL(20,2), ADD COLUMN jmlbpjs_sdm DECIMAL(20,2), ADD COLUMN gaji_asli DECIMAL(20,2)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
     
     $query = "ALTER TABLE $tmp01 ADD COLUMN nama_jabatan char(150), ADD COLUMN nama_area CHAR(200), ADD COLUMN nama_zona CHAR(100)";
     mysqli_query($cnmy, $query);
@@ -712,6 +757,7 @@ function CariDataSPGBR($dari, $bulan, $pidcabang, $pnoid, $status) {
     
     
     mysqli_query($cnmy, "UPDATE $tmp01 a SET a.gaji=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='02'),0)");
+    mysqli_query($cnmy, "UPDATE $tmp01 a SET a.gaji_asli=IFNULL((SELECT gaji_asli FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='02'),0)");
 
     mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rpmakan=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='03'),0)");
     mysqli_query($cnmy, "UPDATE $tmp01 a SET a.makan=IFNULL((SELECT sum(rptotal) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='03'),0)");
@@ -722,6 +768,13 @@ function CariDataSPGBR($dari, $bulan, $pidcabang, $pnoid, $status) {
     mysqli_query($cnmy, "UPDATE $tmp01 a SET a.bbm=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='08'),0)");
     mysqli_query($cnmy, "UPDATE $tmp01 a SET a.parkir=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='06'),0)");
 
+    $query ="UPDATE $tmp01 as a JOIN (select idbrspg, rptotal2 FROM $tmp02 WHERE kodeid='10') as b on a.idbrspg=b.idbrspg SET a.jmlbpjs_sdm=b.rptotal2";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
+    $query ="UPDATE $tmp01 as a JOIN (select idbrspg, rptotal2 FROM $tmp02 WHERE kodeid='11') as b on a.idbrspg=b.idbrspg SET a.jmlbpjs_kry=b.rptotal2";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
+    
     //realisasi
     mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rinsentif=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='01'),0)");
     mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rinsentif_tambahan=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='07'),0)");

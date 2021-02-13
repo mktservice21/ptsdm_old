@@ -256,6 +256,10 @@
                 <th align="center">Jumlah</th>
                 <th align="center">Total</th>
                 
+                <th align="center">BPJS KRY</th>
+                <th align="center">BPJS SDM</th>
+                <th align="center">Gaji Asli</th>
+                
                     <th width='150px' align="center">Jabatan</th>
                     <th width='150px' align="center">Area</th>
                     <th width='150px' align="center">Zona</th>
@@ -336,6 +340,10 @@
                         $pparkir=number_format($row2['parkir'],0,",",",");
                         $pjumlah=number_format($row2['total'],0,",",",");
 
+                        $pjmlbpjskry=number_format($row2['jmlbpjs_kry'],0,",",",");
+                        $pjmlbpjssdm=number_format($row2['jmlbpjs_sdm'],0,",",",");
+                        $pjmlgajiasli=number_format($row2['gaji_asli'],0,",",",");
+
                         $ptotal=$ptotal+$row2['total'];
 
                         $gtotaljml=$gtotaljml+$row2['total'];
@@ -390,6 +398,10 @@
 
                         echo "<td nowrap align='right'><b>$jmltotal</b></td>";
                         
+                        echo "<td nowrap align='right'><b>$pjmlbpjskry</b></td>";
+                        echo "<td nowrap align='right'><b>$pjmlbpjssdm</b></td>";
+                        echo "<td nowrap align='right'><b>$pjmlgajiasli</b></td>";
+                        
                         
                     echo "<td nowrap>$pnmjabatan</td>";
                     echo "<td nowrap>$pnmarea</td>";
@@ -408,7 +420,7 @@
                 }
 
                 echo "<tr>";
-                echo "<td colspan='27'></td>";
+                echo "<td colspan='30'></td>";
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
@@ -426,6 +438,10 @@
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
+                echo "<td class='divnone'></td>";
+                echo "<td class='divnone'></td>";
+                echo "<td class='divnone'></td>";
+                
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
@@ -469,6 +485,10 @@
                 
                 echo "<td align='right'><b>$gtotaljml</b></td>";
                 echo "<td align='right'><b>$gtotaltot</b></td>";
+                
+                echo "<td align='right'><b></b></td>";
+                echo "<td align='right'><b></b></td>";
+                echo "<td align='right'><b></b></td>";
                 
                 echo "<td align='right'><b></b></td>";
                 echo "<td align='right'><b></b></td>";

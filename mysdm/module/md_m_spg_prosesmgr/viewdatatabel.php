@@ -107,6 +107,10 @@
                 <th align="center">Jumlah</th>
                 <th align="center">Total</th>
                 
+                <th align="center">BPJS KRY</th>
+                <th align="center">BPJS SDM</th>
+                <th align="center">Gaji Asli</th>
+                
                 <th align="center">Jabatan</th>
                 <th align="center">Area</th>
                 <th align="center">Zona</th>
@@ -188,6 +192,11 @@
                         $pparkir=number_format($row2['parkir'],0,",",",");
                         $pjumlah=number_format($row2['total'],0,",",",");
 
+                        $pjmlbpjskry=number_format($row2['jmlbpjs_kry'],0,",",",");
+                        $pjmlbpjssdm=number_format($row2['jmlbpjs_sdm'],0,",",",");
+                        $pjmlgajiasli=number_format($row2['gaji_asli'],0,",",",");
+                        
+                        
                         $ptotal=$ptotal+$row2['total'];
 
                         $gtotaljml=$gtotaljml+$row2['total'];
@@ -249,6 +258,10 @@
                         }
 
                         echo "<td nowrap align='right'><b>$jmltotal</b></td>";
+                        
+                        echo "<td nowrap align='right'><b>$pjmlbpjskry</b></td>";
+                        echo "<td nowrap align='right'><b>$pjmlbpjssdm</b></td>";
+                        echo "<td nowrap align='right'><b>$pjmlgajiasli</b></td>";
 
                         
                     
@@ -265,7 +278,7 @@
                 }
 
                 echo "<tr>";
-                echo "<td colspan='25'></td>";
+                echo "<td colspan='28'></td>";
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
@@ -292,6 +305,11 @@
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
                 echo "<td class='divnone'></td>";
+                
+                echo "<td class='divnone'></td>";
+                echo "<td class='divnone'></td>";
+                echo "<td class='divnone'></td>";
+                
                 echo "</tr>";
 
                 
@@ -328,6 +346,13 @@
                 echo "<td></td>";
                 echo "<td></td>";
                 echo "<td></td>";
+                
+                
+                echo "<td></td>";
+                echo "<td></td>";
+                echo "<td></td>";
+                
+                
                 echo "</tr>";
                 ?>
             </tbody>

@@ -168,7 +168,7 @@
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-        $query ="UPDATE $tmp02 SET keterangan=CONCAT('KLIAM BIAYA GAJI SPG ',nama_cabang, ', PERIODE $periode_pil_ket')";
+        $query ="UPDATE $tmp02 SET keterangan=CONCAT('KLAIM BIAYA GAJI SPG ',nama_cabang, ', PERIODE $periode_pil_ket')";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
@@ -192,7 +192,7 @@
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
-        $query ="UPDATE $tmp03 SET ttotal=insentif, subpost='03', kodeid='08', coa4='704-05', keterangan=CONCAT('KLIAM INSENTIF SPG ',nama_cabang, ', PERIODE ', periode_inc) ";
+        $query ="UPDATE $tmp03 SET ttotal=insentif, subpost='03', kodeid='08', coa4='704-05', keterangan=CONCAT('KLAIM INSENTIF SPG ',nama_cabang, ', PERIODE ', periode_inc) ";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
@@ -220,7 +220,7 @@
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
-        $query ="UPDATE $tmp03 SET subpost='10', kodeid='93', coa4='', keterangan=CONCAT('BPJS KETENAGAKERJAAN ',nama_cabang, ', PERIODE $periode_pil_ket') ";
+        $query ="UPDATE $tmp03 SET subpost='10', kodeid='93', coa4='', keterangan=CONCAT('KLAIM BPJS KETENAGAKERJAAN ',nama_cabang, ', PERIODE $periode_pil_ket') ";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         mysqli_query($cnmy, "UPDATE $tmp02 SET brotcid3=''");

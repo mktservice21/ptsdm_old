@@ -227,7 +227,7 @@
         
         $query ="INSERT INTO $tmp02 (icabangid, nama_cabang, nodivisi, idinput, keterangan, subpost, kodeid, coa4, ttotal)"
                 . " SELECT icabangid, nama_cabang, nodivisi, idinput, keterangan, subpost, kodeid, coa4, ttotal "
-                . "FROM $tmp03";
+                . "FROM $tmp03 WHERE IFNULL(ttotal,'0')<>0";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         

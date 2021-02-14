@@ -4,6 +4,10 @@
     
     session_start();
     
+    if (!isset($_POST['chkid'])) {
+        echo "Belum ada periode yang dipilih...";
+        exit;
+    }
 
     $pidmodule=$_GET['module'];
     $pidmenu=$_GET['idmenu'];

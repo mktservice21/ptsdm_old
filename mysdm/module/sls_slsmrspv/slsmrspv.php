@@ -117,11 +117,14 @@
                                                     }elseif ($pmyjabatanid=="20") {
                                                         $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
                                                                 . " JOIN sls.ism0 c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
+                                                        /*
                                                         $query .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
                                                                 . " and LEFT(b.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
                                                                 . " and LEFT(b.nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
                                                                 . " AND LEFT(b.nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                                                                 . " AND LEFT(b.nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                                         * 
+                                                         */
                                                         $query .= " AND b.nama NOT IN ('ACCOUNTING')";
                                                     }else{
                                                         if ($pmyidcard=="0000000158" OR $pmyidcard=="0000000159") {
@@ -154,7 +157,7 @@
                                                     }
                                                     ?>
                                                 </select>
-												<?PHP //echo $query; ?>
+                                                <?PHP echo $query; ?>
                                             </div>
                                         </div>
                                         

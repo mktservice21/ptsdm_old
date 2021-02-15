@@ -18,10 +18,10 @@
     $act=$_GET['act'];
     $idmenu=$_GET['idmenu'];
     
+    $_SESSION['LHTKSDAPT']="Y";
     
     
-    
-if ($module=='lihatkseditapt' AND $act=='simpanapt')
+if ($module=='kslihatks' AND $act=='simpanapt')
 {
     include "../../config/koneksimysqli.php";
     
@@ -43,12 +43,13 @@ if ($module=='lihatkseditapt' AND $act=='simpanapt')
         $query = "UPDATE hrd.ks1 as a SET a.idapotik='$pidapotik', a.userid='$pidcard' WHERE a.srid='$pidsr' AND a.dokterid='$piddokter' AND "
                 . " IFNULL(a.idapotik,'') IN ('', '0', '0000000000') AND "
                 . " bulan = '$pbln' AND aptid ='$pidapt' AND IFNULL(apttype,'') IN $pidtype";
-        echo $query;
-        //mysqli_query($cnmy, $query);
-        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        //echo $query;
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
         mysqli_close($cnmy);
         //header('location:../../eksekusi3.php?module=simpaneditapotikks&idmenu='.$idmenu.'&act=complete');
+        header('location:../../media.php?module=kslihatks&idmenu=395&act=complete');
         
     }elseif ($pkodeid=="1") {
         $myArray = explode(',', $pidtype);
@@ -84,11 +85,12 @@ if ($module=='lihatkseditapt' AND $act=='simpanapt')
                 . " IFNULL(a.idapotik,'') IN ('', '0', '0000000000') AND "
                 . " bulan IN $pbln AND aptid IN $pidapt AND IFNULL(apttype,'') IN $pidtype";
         //echo $query;
-        mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        //mysqli_query($cnmy, $query);
+        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
     
         mysqli_close($cnmy);
-        header('location:../../eksekusi3.php?module=simpaneditapotikks&idmenu='.$idmenu.'&act=complete');
+        ////header('location:../../eksekusi3.php?module=simpaneditapotikks&idmenu='.$idmenu.'&act=complete');
+        //header('location:../../media.php?module=kslihatks&idmenu=395&act=complete');
     }else{
         mysqli_close($cnmy);
         echo "GAGAL...";

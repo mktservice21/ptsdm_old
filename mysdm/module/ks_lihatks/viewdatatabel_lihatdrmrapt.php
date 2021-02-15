@@ -99,18 +99,22 @@
                         echo "<form method='POST' action='$aksi?module=$pmodule&act=input&idmenu=$pidmenu' "
                                 . " id='form_data$no' name='form$no' data-parsley-validate "
                                 . " target='_blank'>";
-                            echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata('form_data$no')\">Edit</button>";
-                            echo "<input type=checkbox value='$no' name=tag_km[] class='checkall$no' onClick='toggleCexBox(this)' >";
+                            echo "<span hidden>";
+                                echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata('form_data$no')\">Edit</button>";
+                                echo "<input type=checkbox value='$no' name=tag_km[] class='checkall$no' onClick='toggleCexBox(this)' >";
+                            echo "</span>";
                         echo "</form>";
+                        
                     echo "</td>";
                     
                     
                     $ilewat=true;
-                    $query = "select distinct srid, dokterid, nama_dokter, apttype, bulan from $tmp02 WHERE srid='$pidsr' AND dokterid='$piddokt' order by nama_dokter, apttype, bulan";
+                    $query = "select distinct srid, dokterid, nama_dokter, apttype, bulan, aptid from $tmp02 WHERE srid='$pidsr' AND dokterid='$piddokt' order by nama_dokter, apttype, bulan";
                     $tampil2= mysqli_query($cnmy, $query);
                     while ($row2= mysqli_fetch_array($tampil2)) {
                         $pbulan = $row2["bulan"];
                         $papttype = $row2["apttype"];
+                        $paptidpl = $row2["aptid"];
                         $pnmtype="R";
                         if ($papttype=="1") $pnmtype="D";
                         
@@ -126,18 +130,36 @@
                         if ($ilewat==true) {
                             
                             echo "<td nowrap>";
-                            echo "<span hidden>";
-                            echo "<input type='text' value='$piddokt' id='txtiddokt[$prec]' name='txtiddokt[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pidsr' id='txtidsr[$prec]' name='txtidsr[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pbulan' id='txtidbln[$prec]' name='txtidbln[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pnmdokt' id='txtnmdokt[$prec]' name='txtnmdokt[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pnmsr' id='txtnmsr[$prec]' name='txtnmsr[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$papttype' id='txtapttyp[$prec]' name='txtapttyp[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pplidapt' id='txtaptid[$prec]' name='txtaptid[$prec]' Readonly form='form_data$no'>";
-                            echo "</span>";
-                            echo "<input type='checkbox' id='chkid[$no]' name='chkid[]' form='form_data$no' class='checkall$no' value='$prec'>";
                             
-                            echo "<td >$pnmtype</td>";
+                                echo "<form method='POST' action='$aksi?module=$pmodule&act=input&idmenu=$pidmenu' "
+                                        . " id='form_sdata$prec' name='sform$prec' data-parsley-validate "
+                                        . " target='_blank'>";
+                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata('form_sdata$prec')\">Edit Data</button>";
+                                echo "</form>";
+                    
+                            
+                            echo "<span hidden>";
+                            
+                                echo "<input type='text' value='$piddokt' id='txtiddokt[$prec]' name='txtiddokt[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pidsr' id='txtidsr[$prec]' name='txtidsr[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pbulan' id='txtidbln[$prec]' name='txtidbln[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pnmdokt' id='txtnmdokt[$prec]' name='txtnmdokt[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pnmsr' id='txtnmsr[$prec]' name='txtnmsr[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$papttype' id='txtapttyp[$prec]' name='txtapttyp[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pplidapt' id='txtaptid[$prec]' name='txtaptid[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='checkbox' id='chkid[$no]' name='chkid[]' form='form_data$no' class='checkall$no' value='$prec'>";
+                                
+                                echo "<input type='text' value='$piddokt' id='txtiddokts' name='txtiddokts' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$pidsr' id='txtidsrs' name='txtidsrs' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$pbulan' id='txtidblns' name='txtidblns' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$pnmdokt' id='txtnmdokts' name='txtnmdokts' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$pnmsr' id='txtnmsrs' name='txtnmsrs' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$papttype' id='txtapttyps' name='txtapttyps' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$paptidpl' id='txtaptids' name='txtaptids' Readonly form='form_sdata$prec'>";
+                            
+                            echo "</span>";
+                            
+                            echo "<td >$paptidpl ($pnmtype)</td>";
                             echo "<td nowrap>$pbulan</td>";
                             echo "<td class='divnone'>$pnmdokt ($piddokt)</td>";
                             echo "</tr>";
@@ -150,18 +172,37 @@
                             echo "<td nowrap>&nbsp;</td>";
                             echo "<td nowrap>&nbsp;</td>";
                             echo "<td nowrap>";
+                            
+                                echo "<form method='POST' action='$aksi?module=$pmodule&act=input&idmenu=$pidmenu' "
+                                        . " id='form_sdata$prec' name='sform$prec' data-parsley-validate "
+                                        . " target='_blank'>";
+                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata('form_sdata$prec')\">Edit Data</button>";
+                                echo "</form>";
+                                
                             echo "<span hidden>";
-                            echo "<input type='text' value='$piddokt' id='txtiddokt[$prec]' name='txtiddokt[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pidsr' id='txtidsr[$prec]' name='txtidsr[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pbulan' id='txtidbln[$prec]' name='txtidbln[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pnmdokt' id='txtnmdokt[$prec]' name='txtnmdokt[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pnmsr' id='txtnmsr[$prec]' name='txtnmsr[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$papttype' id='txtapttyp[$prec]' name='txtapttyp[$prec]' Readonly form='form_data$no'>";
-                            echo "<input type='text' value='$pplidapt' id='txtaptid[$prec]' name='txtaptid[$prec]' Readonly form='form_data$no'>";
+                            
+                                echo "<input type='text' value='$piddokt' id='txtiddokt[$prec]' name='txtiddokt[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pidsr' id='txtidsr[$prec]' name='txtidsr[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pbulan' id='txtidbln[$prec]' name='txtidbln[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pnmdokt' id='txtnmdokt[$prec]' name='txtnmdokt[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pnmsr' id='txtnmsr[$prec]' name='txtnmsr[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$papttype' id='txtapttyp[$prec]' name='txtapttyp[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='text' value='$pplidapt' id='txtaptid[$prec]' name='txtaptid[$prec]' Readonly form='form_data$no'>";
+                                echo "<input type='checkbox' id='chkid[]' name='chkid[]' form='form_data$no' class='checkall$no' value='$prec'>";
+                                
+                                echo "<input type='text' value='$piddokt' id='txtiddokts' name='txtiddokts' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$pidsr' id='txtidsrs' name='txtidsrs' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$pbulan' id='txtidblns' name='txtidblns' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$pnmdokt' id='txtnmdokts' name='txtnmdokts' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$pnmsr' id='txtnmsrs' name='txtnmsrs' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$papttype' id='txtapttyps' name='txtapttyps' Readonly form='form_sdata$prec'>";
+                                echo "<input type='text' value='$paptidpl' id='txtaptids' name='txtaptids' Readonly form='form_sdata$prec'>";
+                                
                             echo "</span>";
-                            echo "<input type='checkbox' id='chkid[]' name='chkid[]' form='form_data$no' class='checkall$no' value='$prec'>";
+                            
                             echo "</td>";
-                            echo "<td >$pnmtype</td>";
+                            
+                            echo "<td >$paptidpl ($pnmtype)</td>";
                             echo "<td nowrap>$pbulan</td>";
                             echo "<td class='divnone'>$pnmdokt ($piddokt)</td>";
                             echo "</tr>";

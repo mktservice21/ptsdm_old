@@ -284,7 +284,7 @@
                                    <div class="form-group">
                                        <button type='button' class='btn btn-dark btn-xs' onclick='ListDataDokter()'>List Data Dokter</button>
                                        <?PHP
-                                       if ($fjbtid=="38X" OR ($fgroupid=="1" OR $fgroupid=="24") ) {
+                                       if ($fjbtid=="38" OR ($fgroupid=="1" OR $fgroupid=="24") ) {
                                        ?>
                                             <button type='button' class='btn btn-warning btn-xs' onclick='ListDataAptKosong()'>List Data Dokter Apotik Kosong</button>
                                        <?PHP

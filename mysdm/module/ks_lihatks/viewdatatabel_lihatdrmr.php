@@ -24,6 +24,8 @@
     $pidcab=$_POST['uidcab'];
     $pstsdr=$_POST['ustsdr'];
     
+    $_SESSION['LHTKSDAPT']="";
+
     $pmodule=$_GET['module'];
     $pact=$_GET['act'];
     $pidmenu=$_GET['idmenu'];

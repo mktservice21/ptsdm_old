@@ -49,6 +49,7 @@
     
     $ppildivisiid = $_POST['cb_divisip'];
     $periode = $_POST['bulan1'];
+    $prptpilihtype = $_POST['cb_rpttype'];
     
     $ptanggalprosesnya="";
     $query = "select tanggal_proses from dbmaster.t_proses_data_bm_date WHERE tahun='$periode'";
@@ -182,7 +183,7 @@
         . " coa_nama_edit2 as nama_coa2, coa_edit3 as coa3, coa_nama_edit3 as nama_coa3, "
         . " tgl_trans_bank, nobukti, idinput_pd1, idinput_pd2, nodivisi1, nodivisi2, pengajuan, "
         . " divisi2, icabangid, nama_cabang, areaid, nama_area, kodeid_pd, subkode_pd, pcm, kasbonsby, coa_pcm, nama_coa_pcm, "
-        . " tgltarikan, nkodeid, nkodeid_nama "
+        . " tgltarikan, nkodeid, nkodeid_nama, nsubkode, nsubkode_nama "
         . " FROM dbmaster.t_proses_data_bm WHERE IFNULL(hapus_nodiv_kosong,'') <>'Y' AND DATE_FORMAT(tgltarikan,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' AND "
         . " kodeinput IN $pfilterselpil ";
     $query .=" AND IFNULL(ishare,'')<>'Y' "; //pilih salah satu divisi <> 'HO' atau IFNULL(ishare,'')<>'Y'
@@ -205,7 +206,7 @@
             . " nama_coa2, coa3, nama_coa3, "
             . " tgl_trans_bank, nobukti, idinput_pd1, idinput_pd2, nodivisi1, nodivisi2, pengajuan, "
             . " divisi2, icabangid, nama_cabang, areaid, nama_area, kodeid_pd, subkode_pd, pcm, kasbonsby, coa_pcm, nama_coa_pcm, "
-            . " tgltarikan, nkodeid, nkodeid_nama)"
+            . " tgltarikan, nkodeid, nkodeid_nama, nsubkode, nsubkode_nama)"
             . "SELECT noidauto, tahun, periode, hapus_nodiv_kosong, kodeinput, idkodeinput as idinput, nobrid_r, nobrid_n, idkodeinput, divisi, tglinput, tgltrans, "
             . " karyawanid, nama_karyawan, dokterid, dokter_nama, noslip, nmrealisasi, keterangan, dpp, ppn, pph, tglfp, "
             . " idinput_pd, nodivisi, debit, kredit, saldo, jumlah1, jumlah2, "
@@ -213,7 +214,7 @@
             . " coa_nama_edit2 as nama_coa2, coa_edit3 as coa3, coa_nama_edit3 as nama_coa3, "
             . " tgl_trans_bank, nobukti, idinput_pd1, idinput_pd2, nodivisi1, nodivisi2, pengajuan, "
             . " divisi2, icabangid, nama_cabang, areaid, nama_area, kodeid_pd, subkode_pd, pcm, kasbonsby, coa_pcm, nama_coa_pcm, "
-            . " tgltarikan, nkodeid, nkodeid_nama "
+            . " tgltarikan, nkodeid, nkodeid_nama, nsubkode, nsubkode_nama "
             . " FROM dbmaster.t_proses_data_bm WHERE IFNULL(hapus_nodiv_kosong,'') <>'Y' AND DATE_FORMAT(tgltarikan,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' AND "
             . " kodeinput IN ('M') "
             . " AND CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN (select CONCAT(IFNULL(kodeid,''),IFNULL(subkode,'')) from dbmaster.t_kode_spd where IFNULL(igroup,'')='3' AND IFNULL(ibank,'')<>'N') "
@@ -256,101 +257,242 @@
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "select *, kredit as jumlah from $tmp01";
-    $query = "create TEMPORARY table $tmp02 ($query)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    /*
-        $query = "ALTER table $tmp02 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        $query = "UPDATE $tmp02 set DIVISI_IN_COA=DIVISI";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        $query = "UPDATE $tmp02 as aa JOIN (select DISTINCT c.DIVISI2, a.COA4 from dbmaster.coa_level4 as a join dbmaster.coa_level3 as b on a.coa3=b.COA3 join dbmaster.coa_level2 as c on b.COA2=c.COA2) as bb on aa.coa=bb.COA4 "
-                . " SET aa.DIVISI_IN_COA='ZZZ' WHERE IFNULL(bb.DIVISI2,'') IN ('', 'OTHER', 'OTHERS')";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        if ($prptpilihtype=="DIV") {
+            
+            $query = "select * from $tmp01 WHERE IFNULL(COA2,'')='105'";
+            $query = "create TEMPORARY table $tmp02 ($query)";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "DELETE from $tmp01 WHERE COA2='105'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "select kodeinput, divisi, nkodeid, nkodeid_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='A' GROUP BY 1,2,3,4,5";
+            $query = "create TEMPORARY table $tmp04 ($query)";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "UPDATE $tmp04 as a JOIN hrd.br_kode as b on a.nkodeid=b.kodeid SET a.nkodeid_nama=b.nama WHERE a.kodeinput='A'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, nsubkode, nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='E' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "UPDATE $tmp04 as a JOIN hrd.brkd_otc as b on a.nkodeid=b.kodeid SET a.nkodeid_nama=b.nama WHERE a.kodeinput='E'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "UPDATE $tmp04 SET nkodeid_nama='BIAYA LAIN2' WHERE kodeinput='E' AND IFNULL(nkodeid,'')=''";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "DELETE from $tmp01 WHERE kodeinput IN ('A', 'E')";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Klaim Discount' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='B' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Kas Kecil' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='C' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Kas Bon' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='D' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Biaya Rutin' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='F' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Luar Kota' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='G' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Biaya Marketing Surabaya' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput IN ('I', 'J') AND IFNULL(kredit,0)<>0 GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Insentif' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='K' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Sewa Kontrakan Rumah' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='U' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Service Kendaraan' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='V' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Kas Kecil Cabang' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='X' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            
+            //BANK
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, kodeinput as nsubkode, 'Bank' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp01 WHERE kodeinput='M' GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            //UANG MUKA UMB
+            $query = "INSERT INTO $tmp04 (kodeinput, divisi, nkodeid, nkodeid_nama, bulan, jumlah)"
+                    . "select kodeinput, divisi, 'UMB' as nsubkode, 'UANG MUKA' as nsubkode_nama, CONCAT(DATE_FORMAT(tgltarikan,'%Y-%m'),'-01') as bulan, sum(kredit) as jumlah from $tmp02 GROUP BY 1,2,3,4,5";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            
+            $query = "UPDATE $tmp04 SET divisi='ZZZ' WHERE IFNULL(divisi,'') IN ('', 'OTHER', 'OTHERS')";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "select DISTINCT divisi, nkodeid, nkodeid_nama from $tmp04";
+            $query = "create TEMPORARY table $tmp03 ($query)";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            
+            $addcolumn="";
+            for ($x=1;$x<=12;$x++) {
+                $addcolumn .= " ADD B$x DECIMAL(20,2),ADD S$x DECIMAL(20,2),ADD R$x DECIMAL(20,2),";
+            }
+            $addcolumn .= " ADD TOTAL DECIMAL(20,2), ADD STOTAL DECIMAL(20,2), ADD RTOTAL DECIMAL(20,2)";
 
-        $query = "UPDATE $tmp02 SET DIVISI='ZZZ' WHERE DIVISI_IN_COA='ZZZ' AND coa<>'105-02'";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    */
-    
-    
-    
-    $query = "select DISTINCT a.divisi DIVISI, b.COA1, c.NAMA1, a.coa2 COA2, a.nama_coa2 NAMA2, "
-            . " a.coa3 COA3, a.nama_coa3 NAMA3, coa COA4, nama_coa NAMA4 "
-            . " from $tmp02 a LEFT JOIN dbmaster.coa_level2 b on "
-            . " a.coa2=b.COA2 LEFT JOIN dbmaster.coa_level1 c on "
-            . " b.COA1=c.COA1";
-    $query = "create TEMPORARY table $tmp03 ($query)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    
-    $addcolumn="";
-    for ($x=1;$x<=12;$x++) {
-        $addcolumn .= " ADD B$x DECIMAL(20,2),ADD S$x DECIMAL(20,2),ADD R$x DECIMAL(20,2),";
-    }
-    $addcolumn .= " ADD TOTAL DECIMAL(20,2), ADD STOTAL DECIMAL(20,2), ADD RTOTAL DECIMAL(20,2)";
-    
-    $query = "ALTER TABLE $tmp03 $addcolumn";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    
-    $urut=2;
-    for ($x=1;$x<=12;$x++) {
-        $jml=  strlen($x);
-        $awal=$urut-$jml;
-        $nbulan=$periode."-".str_repeat("0", $awal).$x;
-        $nfield="B".$x;
-        $nfieldR="R".$x;
-        
-        $query = "UPDATE $tmp03 a SET a.$nfield=(SELECT SUM(b.kredit) FROM $tmp02 b WHERE a.DIVISI=b.divisi AND a.COA4=b.coa AND DATE_FORMAT(b.tgltarikan, '%Y-%m')='$nbulan')";
-        mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        
-        $query = "UPDATE $tmp03 a SET a.$nfieldR=ROUND(IFNULL($nfield,0)/IFNULL((SELECT SUM(b.kredit) FROM $tmp02 b WHERE a.DIVISI=b.divisi AND a.COA4=b.coa),0)*100,2)";
-        mysqli_query($cnmy, $query); //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        
-        
-    }
-    //goto hapusdata;
+            $query = "ALTER TABLE $tmp03 $addcolumn";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $urut=2;
+            for ($x=1;$x<=12;$x++) {
+                $jml=  strlen($x);
+                $awal=$urut-$jml;
+                $nbulan=$periode."-".str_repeat("0", $awal).$x;
+                $nfield="B".$x;
+                $nfieldR="R".$x;
 
-        $query = "UPDATE $tmp03 set DIVISI='ZZZ' WHERE IFNULL(DIVISI,'') IN ('', 'OTHER', 'OTHERS')";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        
-        $query = "ALTER table $tmp03 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        $query = "UPDATE $tmp03 set DIVISI_IN_COA=DIVISI";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        
-    /*
-        $query = "UPDATE $tmp03 as aa JOIN (select DISTINCT c.DIVISI2, a.COA4 from dbmaster.coa_level4 as a join dbmaster.coa_level3 as b on a.coa3=b.COA3 join dbmaster.coa_level2 as c on b.COA2=c.COA2) as bb on aa.COA4=bb.COA4 "
-                . " SET aa.DIVISI_IN_COA='ZZZ' WHERE IFNULL(bb.DIVISI2,'') IN ('', 'OTHER', 'OTHERS')";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+                //$query = "UPDATE $tmp03 a SET a.$nfield=(SELECT SUM(b.jumlah) FROM $tmp04 b WHERE a.divisi=b.divisi AND a.nkodeid=b.nkodeid AND DATE_FORMAT(b.bulan, '%Y-%m')='$nbulan')";
+                //$query = "UPDATE $tmp03 a SET a.$nfieldR=ROUND(IFNULL($nfield,0)/IFNULL((SELECT SUM(b.jumlah) FROM $tmp04 b WHERE a.divisi=b.divisi AND a.nkodeid=b.nkodeid),0)*100,2)";
+                
+                $query = "UPDATE $tmp03 a JOIN (SELECT divisi, nkodeid, SUM(jumlah) as jumlah FROM $tmp04 WHERE DATE_FORMAT(bulan, '%Y-%m')='$nbulan' GROUP BY 1,2) as b "
+                        . " on a.divisi=b.divisi AND a.nkodeid=b.nkodeid SET a.$nfield=b.jumlah";
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+                
+                $query = "UPDATE $tmp03 a JOIN (SELECT divisi, nkodeid, SUM(jumlah) as jumlah FROM $tmp04 GROUP BY 1,2) as b "
+                        . " on a.divisi=b.divisi AND a.nkodeid=b.nkodeid SET a.$nfieldR=ROUND(IFNULL($nfield,0)/IFNULL(b.jumlah,0)*100,2)";
+                mysqli_query($cnmy, $query); //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-        $query = "UPDATE $tmp03 SET DIVISI='ZZZ' WHERE DIVISI_IN_COA='ZZZ' AND COA4<>'105-02'";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    */
-    
-    $query = "select * from $tmp02 WHERE COA2='105'";
-    $query = "create TEMPORARY table $tmp04 ($query)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    
-    $query = "select * from $tmp03 WHERE COA2='105'";
-    $query = "create TEMPORARY table $tmp05 ($query)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    
-    $query = "DELETE from $tmp02 WHERE COA2='105'";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    $query = "DELETE from $tmp03 WHERE COA2='105'";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+
+            }
+            
+            $query = "UPDATE $tmp03 a JOIN (SELECT divisi, nkodeid, SUM(jumlah) as jumlah FROM $tmp04 GROUP BY 1,2) as b "
+                    . " on a.divisi=b.divisi AND a.nkodeid=b.nkodeid SET a.TOTAL=b.jumlah";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "ALTER TABLE $tmp03 ADD COLUMN ikode VARCHAR(1)";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "UPDATE $tmp03 SET ikode='A' WHERE IFNULL(nkodeid,'') <>'UMB'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            $query = "UPDATE $tmp03 SET ikode='Z' WHERE IFNULL(nkodeid,'') ='UMB'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+                
+            
+        }else{
+        
+            $query = "select *, kredit as jumlah from $tmp01";
+            $query = "create TEMPORARY table $tmp02 ($query)";
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+            /*
+                $query = "ALTER table $tmp02 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+                $query = "UPDATE $tmp02 set DIVISI_IN_COA=DIVISI";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+                $query = "UPDATE $tmp02 as aa JOIN (select DISTINCT c.DIVISI2, a.COA4 from dbmaster.coa_level4 as a join dbmaster.coa_level3 as b on a.coa3=b.COA3 join dbmaster.coa_level2 as c on b.COA2=c.COA2) as bb on aa.coa=bb.COA4 "
+                        . " SET aa.DIVISI_IN_COA='ZZZ' WHERE IFNULL(bb.DIVISI2,'') IN ('', 'OTHER', 'OTHERS')";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+                $query = "UPDATE $tmp02 SET DIVISI='ZZZ' WHERE DIVISI_IN_COA='ZZZ' AND coa<>'105-02'";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            */
+
+
+
+            $query = "select DISTINCT a.divisi DIVISI, b.COA1, c.NAMA1, a.coa2 COA2, a.nama_coa2 NAMA2, "
+                    . " a.coa3 COA3, a.nama_coa3 NAMA3, coa COA4, nama_coa NAMA4 "
+                    . " from $tmp02 a LEFT JOIN dbmaster.coa_level2 b on "
+                    . " a.coa2=b.COA2 LEFT JOIN dbmaster.coa_level1 c on "
+                    . " b.COA1=c.COA1";
+            $query = "create TEMPORARY table $tmp03 ($query)";
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+            $addcolumn="";
+            for ($x=1;$x<=12;$x++) {
+                $addcolumn .= " ADD B$x DECIMAL(20,2),ADD S$x DECIMAL(20,2),ADD R$x DECIMAL(20,2),";
+            }
+            $addcolumn .= " ADD TOTAL DECIMAL(20,2), ADD STOTAL DECIMAL(20,2), ADD RTOTAL DECIMAL(20,2)";
+
+            $query = "ALTER TABLE $tmp03 $addcolumn";
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+            $urut=2;
+            for ($x=1;$x<=12;$x++) {
+                $jml=  strlen($x);
+                $awal=$urut-$jml;
+                $nbulan=$periode."-".str_repeat("0", $awal).$x;
+                $nfield="B".$x;
+                $nfieldR="R".$x;
+
+                $query = "UPDATE $tmp03 a SET a.$nfield=(SELECT SUM(b.kredit) FROM $tmp02 b WHERE a.DIVISI=b.divisi AND a.COA4=b.coa AND DATE_FORMAT(b.tgltarikan, '%Y-%m')='$nbulan')";
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+                $query = "UPDATE $tmp03 a SET a.$nfieldR=ROUND(IFNULL($nfield,0)/IFNULL((SELECT SUM(b.kredit) FROM $tmp02 b WHERE a.DIVISI=b.divisi AND a.COA4=b.coa),0)*100,2)";
+                mysqli_query($cnmy, $query); //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+            }
+            //goto hapusdata;
+
+                $query = "UPDATE $tmp03 set DIVISI='ZZZ' WHERE IFNULL(DIVISI,'') IN ('', 'OTHER', 'OTHERS')";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+                $query = "ALTER table $tmp03 ADD COLUMN DIVISI_IN_COA VARCHAR(50)";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+                $query = "UPDATE $tmp03 set DIVISI_IN_COA=DIVISI";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+            /*
+                $query = "UPDATE $tmp03 as aa JOIN (select DISTINCT c.DIVISI2, a.COA4 from dbmaster.coa_level4 as a join dbmaster.coa_level3 as b on a.coa3=b.COA3 join dbmaster.coa_level2 as c on b.COA2=c.COA2) as bb on aa.COA4=bb.COA4 "
+                        . " SET aa.DIVISI_IN_COA='ZZZ' WHERE IFNULL(bb.DIVISI2,'') IN ('', 'OTHER', 'OTHERS')";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+                $query = "UPDATE $tmp03 SET DIVISI='ZZZ' WHERE DIVISI_IN_COA='ZZZ' AND COA4<>'105-02'";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            */
+
+            $query = "select * from $tmp02 WHERE COA2='105'";
+            $query = "create TEMPORARY table $tmp04 ($query)";
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+            $query = "select * from $tmp03 WHERE COA2='105'";
+            $query = "create TEMPORARY table $tmp05 ($query)";
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+            $query = "DELETE from $tmp02 WHERE COA2='105'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+            $query = "DELETE from $tmp03 WHERE COA2='105'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+        }
     
 ?>
 
@@ -417,276 +559,254 @@
     <div class="clearfix"></div>
     <hr/>
     
-    
-    
-    <table id='mydatatable1' class='table table-striped table-bordered' width="100%" border="1px solid black">
-        <thead>
-            <tr style='background-color:#cccccc; font-size: 13px;'>
-                <th align="center" nowrap>Kode</th>
-                <th align="center" nowrap>Nama Perkiraan</th>
+    <?PHP
+    if ($prptpilihtype=="DIV") {
+    ?>
+        <table id='mydatatable1' class='table table-striped table-bordered' width="100%" border="1px solid black">
+            <thead>
+                <tr style='background-color:#cccccc; font-size: 13px;'>
+                    <th align="center" nowrap>Divisi</th>
+                    <th align="center" nowrap>Akun</th>
 
-                <th align="center" nowrap>1</th>
-                <th align="center" nowrap>JANUARI</th>
-                <th align="center" nowrap>2</th>
-                <th align="center" nowrap>FEBRUARI</th>
-                <th align="center" nowrap>3</th>
-                <th align="center" nowrap>MARET</th>
-                <th align="center" nowrap>4</th>
-                <th align="center" nowrap>APRIL</th>
-                <th align="center" nowrap>5</th>
-                <th align="center" nowrap>MEI</th>
-                <th align="center" nowrap>6</th>
-                <th align="center" nowrap>JUNI</th>
-                <th align="center" nowrap>7</th>
-                <th align="center" nowrap>JULI</th>
-                <th align="center" nowrap>8</th>
-                <th align="center" nowrap>AGUSTUS</th>
-                <th align="center" nowrap>9</th>
-                <th align="center" nowrap>SEPTEMBER</th>
-                <th align="center" nowrap>10</th>
-                <th align="center" nowrap>OKTOBER</th>
-                <th align="center" nowrap>11</th>
-                <th align="center" nowrap>NOVEMBER</th>
-                <th align="center" nowrap>12</th>
-                <th align="center" nowrap>DESEMBER</th>
-                <th align="center" nowrap>%</th>
-                <th align="center" nowrap>TOTAL</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?PHP
-                for ($x=1;$x<=12;$x++) {
-                    $pgrandtotal[$x]=0;
-                    $pgrandtotalsls[$x]=0;
-                }
-                $query = "select distinct DIVISI_IN_COA as DIVISI from $tmp03 ORDER BY DIVISI_IN_COA";
-                $tampil0=mysqli_query($cnmy, $query);
-                while ($row0= mysqli_fetch_array($tampil0)) {
-                    
-                    $pdivisi=$row0['DIVISI'];
-                    
-                    $nmdivisi=$pdivisi;
-                    if ($pdivisi=="CAN") $nmdivisi="CANARY";
-                    if ($pdivisi=="PIGEO") $nmdivisi="PIGEON";
-                    if ($pdivisi=="PEACO") $nmdivisi="PEACOCK";
-                    if ($pdivisi=="AA") $nmdivisi="OTHER";
-                    if ($pdivisi=="ZZZ") $nmdivisi="OTHER";
-                    
-                    
+                    <th align="center" nowrap>1</th>
+                    <th align="center" nowrap>JANUARI</th>
+                    <th align="center" nowrap>2</th>
+                    <th align="center" nowrap>FEBRUARI</th>
+                    <th align="center" nowrap>3</th>
+                    <th align="center" nowrap>MARET</th>
+                    <th align="center" nowrap>4</th>
+                    <th align="center" nowrap>APRIL</th>
+                    <th align="center" nowrap>5</th>
+                    <th align="center" nowrap>MEI</th>
+                    <th align="center" nowrap>6</th>
+                    <th align="center" nowrap>JUNI</th>
+                    <th align="center" nowrap>7</th>
+                    <th align="center" nowrap>JULI</th>
+                    <th align="center" nowrap>8</th>
+                    <th align="center" nowrap>AGUSTUS</th>
+                    <th align="center" nowrap>9</th>
+                    <th align="center" nowrap>SEPTEMBER</th>
+                    <th align="center" nowrap>10</th>
+                    <th align="center" nowrap>OKTOBER</th>
+                    <th align="center" nowrap>11</th>
+                    <th align="center" nowrap>NOVEMBER</th>
+                    <th align="center" nowrap>12</th>
+                    <th align="center" nowrap>DESEMBER</th>
+                    <th align="center" nowrap>%</th>
+                    <th align="center" nowrap>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?PHP
+                    for ($x=1;$x<=12;$x++) {
+                        $pgrandtotal[$x]=0;
+                        $pgrandtotalsls[$x]=0;
+                    }
+
                     for ($x=1;$x<=12;$x++) {
                         $ptotdivisi[$x]=0;
                         $ptotdivisisls[$x]=0;
                     }
-                    
-                    $query = "select distinct IFNULL(DIVISI_IN_COA,'') as DIVISI, IFNULL(COA2,'') COA2, IFNULL(NAMA2,'') NAMA2 from $tmp03 "
-                            . " WHERE DIVISI_IN_COA='$pdivisi' ORDER BY IFNULL(DIVISI_IN_COA,''), IFNULL(COA2,''), IFNULL(NAMA2,'')";
-                    $tampil=mysqli_query($cnmy, $query);
-                    while ($row= mysqli_fetch_array($tampil)) {
+
+                    for ($x=1;$x<=12;$x++) {
+                        $psubtot[$x]=0;
+                        $psubtotsales[$x]=0;
+                    }
                         
-                        $pcoa2=$row['COA2'];
-                        $pnmcoa2=$row['NAMA2'];
-                        
-                        
+                    $query = "select distinct ikode from $tmp03 ORDER BY ikode";
+                    $tampil1=mysqli_query($cnmy, $query);
+                    while ($row1= mysqli_fetch_array($tampil1)) {
+                        $pikode=$row1['ikode'];
+                        $pnamabiaya ="BIAYA MARKETING";
+                        if ($pikode=="Z") $pnamabiaya ="UANG MUKA";
                         echo "<tr>";
-                        echo "<td nowrap><b>$pcoa2</b></td>";
-                        echo "<td nowrap colspan=27><b>$pnmcoa2</b></td>";
+                        echo "<td nowrap></td>";
+                        echo "<td nowrap><b>$pnamabiaya</b></td>";
+
+                        for ($x=1;$x<=12;$x++) {
+                            echo "<td nowrap align='right'></td>";
+                            echo "<td nowrap align='right'></td>";
+                        }
+
+
+                        echo "<td align='right' nowrap><b></b></td>";
+                        echo "<td align='right' nowrap><b></b></td>";
+
                         echo "</tr>";
                         
                         
+                        for ($x=1;$x<=12;$x++) {
+                            $pgrandtotal[$x]=0;
+                            $pgrandtotalsls[$x]=0;
+                        }
+
+                        for ($x=1;$x<=12;$x++) {
+                            $ptotdivisi[$x]=0;
+                            $ptotdivisisls[$x]=0;
+                        }
+
                         for ($x=1;$x<=12;$x++) {
                             $psubtot[$x]=0;
                             $psubtotsales[$x]=0;
                         }
                         
-                        $query = "select * from $tmp03 WHERE IFNULL(DIVISI_IN_COA,'')='$pdivisi' AND IFNULL(COA2,'')='$pcoa2' "
-                                . " ORDER BY IFNULL(COA4,''), IFNULL(NAMA4,'')";
-                        $tampil2=mysqli_query($cnmy, $query);
-                        while ($row2= mysqli_fetch_array($tampil2)) {
-                            $pcoa4=$row2['COA4'];
-                            $pnmcoa4=$row2['NAMA4'];
-                            
+                        $query = "select distinct divisi as DIVISI from $tmp03 WHERE ikode='$pikode' ORDER BY divisi";
+                        $tampil0=mysqli_query($cnmy, $query);
+                        while ($row0= mysqli_fetch_array($tampil0)) {
+
+                            $pdivisi=$row0['DIVISI'];
+
+                            $nmdivisi=$pdivisi;
+                            if ($pdivisi=="CAN") $nmdivisi="CANARY";
+                            if ($pdivisi=="PIGEO") $nmdivisi="PIGEON";
+                            if ($pdivisi=="PEACO") $nmdivisi="PEACOCK";
+                            if ($pdivisi=="AA") $nmdivisi="OTHER";
+                            if ($pdivisi=="ZZZ") $nmdivisi="OTHER";
+
+                            for ($x=1;$x<=12;$x++) {
+                                $psubtot[$x]=0;
+                                $psubtotsales[$x]=0;
+                            }
+
+
+                            $query = "select * from $tmp03 WHERE ikode='$pikode' AND divisi='$pdivisi' order by nkodeid_nama, nkodeid";
+                            $tampil2=mysqli_query($cnmy, $query);
+                            while ($row2= mysqli_fetch_array($tampil2)) {
+                                $pnkodeid=$row2['nkodeid'];
+                                $pnkodenm=$row2['nkodeid_nama'];
+
+                                echo "<tr>";
+                                echo "<td nowrap>$nmdivisi</td>";
+                                echo "<td nowrap>$pnkodenm</td>";
+
+                                $ptotaltahund=0;
+                                for ($x=1;$x<=12;$x++) {
+                                    $nmcol="B".$x;
+                                    $pjml=$row2[$nmcol];
+                                    if (empty($pjml)) $pjml=0;
+
+                                    $nmcolR="R".$x;
+                                    $pjmlR=$row2[$nmcolR];
+                                    if (empty($pjmlR)) $pjmlR=0;
+
+                                    $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
+                                    $psubtot[$x]=(double)$psubtot[$x]+(double)$pjml;
+                                    $ptotdivisi[$x]=(double)$ptotdivisi[$x]+(double)$pjml;
+                                    $pgrandtotal[$x]=(double)$pgrandtotal[$x]+(double)$pjml;
+
+
+                                    $pjml=BuatFormatNum($pjml, $ppilformat);
+
+                                    echo "<td nowrap align='right'>$pjmlR</td>";
+                                    echo "<td nowrap align='right'>$pjml</td>";
+                                }
+
+                                $ptotaltahund=BuatFormatNum($ptotaltahund, $ppilformat);
+
+                                echo "<td align='right' nowrap align='right'><b></b></td>";
+                                echo "<td align='right' nowrap align='right'><b>$ptotaltahund</b></td>";
+
+                                echo "</tr>";
+
+                            }
+
+
+                            //sub total
                             echo "<tr>";
-                            echo "<td nowrap>$pcoa4</td>";
-                            echo "<td nowrap>$pnmcoa4</td>";
-                            
+                            echo "<td nowrap><b>Total </b></td>";
+                            echo "<td nowrap><b>$nmdivisi</b></td>";
+
+                            $ptotpersubcoa=0;
+                            for ($sx=1;$sx<=12;$sx++) {
+                                $pjmlsb=$psubtot[$sx];
+                                if (empty($pjmlsb)) $pjmlsb=0;
+                                $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                            }
+
                             $ptotaltahund=0;
                             for ($x=1;$x<=12;$x++) {
-                                $nmcol="B".$x;
-                                $pjml=$row2[$nmcol];
+                                $pjml=$psubtot[$x];
                                 if (empty($pjml)) $pjml=0;
-                                
-                                $nmcolR="R".$x;
-                                $pjmlR=$row2[$nmcolR];
-                                if (empty($pjmlR)) $pjmlR=0;
-                                
+
+                                $prjumlah=0;
+                                if ((DOUBLE)$ptotpersubcoa>0) {
+                                    $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
+                                }
+
                                 $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
-                                $psubtot[$x]=(double)$psubtot[$x]+(double)$pjml;
-                                $ptotdivisi[$x]=(double)$ptotdivisi[$x]+(double)$pjml;
-                                $pgrandtotal[$x]=(double)$pgrandtotal[$x]+(double)$pjml;
-                                
-                                
                                 $pjml=BuatFormatNum($pjml, $ppilformat);
-                                
-                                echo "<td nowrap align='right'>$pjmlR</td>";
-                                echo "<td nowrap align='right'>$pjml</td>";
+
+                                echo "<td nowrap align='right'><b>$prjumlah</b></td>";
+                                echo "<td nowrap align='right'><b>$pjml</b></td>";
                             }
-                            
+
                             $ptotaltahund=BuatFormatNum($ptotaltahund, $ppilformat);
-                            
-                            echo "<td align='right' nowrap align='right'><b></b></td>";
-                            echo "<td align='right' nowrap align='right'><b>$ptotaltahund</b></td>";
+
+                            echo "<td align='right' nowrap><b></b></td>";
+                            echo "<td align='right' nowrap><b>$ptotaltahund</b></td>";
 
                             echo "</tr>";
-                            
-                            
+
+                            if ($ppilihrpt!="excel") {
+                                echo "<tr>";
+                                echo "<td nowrap colspan=28><b></b></td>";
+                                echo "</tr>";
+                            }
+
+
                         }
-                        
-                        //sub total
+
+                        //total 
                         echo "<tr>";
-                        echo "<td nowrap><b>$pcoa2</b></td>";
-                        echo "<td nowrap><b>$pnmcoa2</b></td>";
-                        
+                        echo "<td nowrap><b></b></td>";
+                        echo "<td nowrap><b>TOTAL $pnamabiaya</b></td>";
+
+
                         $ptotpersubcoa=0;
                         for ($sx=1;$sx<=12;$sx++) {
-                            $pjmlsb=$psubtot[$sx];
+                            $pjmlsb=$ptotdivisi[$sx];
                             if (empty($pjmlsb)) $pjmlsb=0;
                             $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
                         }
-                        
+
                         $ptotaltahund=0;
                         for ($x=1;$x<=12;$x++) {
-                            $pjml=$psubtot[$x];
+                            $pjml=$ptotdivisi[$x];
                             if (empty($pjml)) $pjml=0;
-                            
+
                             $prjumlah=0;
                             if ((DOUBLE)$ptotpersubcoa>0) {
                                 $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                             }
-                            
+
                             $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                             $pjml=BuatFormatNum($pjml, $ppilformat);
-                            
+
                             echo "<td nowrap align='right'><b>$prjumlah</b></td>";
                             echo "<td nowrap align='right'><b>$pjml</b></td>";
                         }
-                        
+
                         $ptotaltahund=BuatFormatNum($ptotaltahund, $ppilformat);
-                        
+
                         echo "<td align='right' nowrap><b></b></td>";
                         echo "<td align='right' nowrap><b>$ptotaltahund</b></td>";
 
                         echo "</tr>";
-                        
+
                         if ($ppilihrpt!="excel") {
                             echo "<tr>";
                             echo "<td nowrap colspan=28><b></b></td>";
                             echo "</tr>";
                         }
                         
-                        
                     }
-                    
-                    
-                    //total per divisi
-                    echo "<tr>";
-                    echo "<td nowrap><b></b></td>";
-                    echo "<td nowrap><b>BIAYA $nmdivisi</b></td>";
-
-                    
-                    $ptotpersubcoa=0;
-                    for ($sx=1;$sx<=12;$sx++) {
-                        $pjmlsb=$ptotdivisi[$sx];
-                        if (empty($pjmlsb)) $pjmlsb=0;
-                        $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
-                    }
-                        
-                    $ptotaltahund=0;
-                    for ($x=1;$x<=12;$x++) {
-                        $pjml=$ptotdivisi[$x];
-                        if (empty($pjml)) $pjml=0;
-
-                        $prjumlah=0;
-                        if ((DOUBLE)$ptotpersubcoa>0) {
-                            $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
-                        }
-                            
-                        $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
-                        $pjml=BuatFormatNum($pjml, $ppilformat);
-
-                        echo "<td nowrap align='right'><b>$prjumlah</b></td>";
-                        echo "<td nowrap align='right'><b>$pjml</b></td>";
-                    }
-
-                    $ptotaltahund=BuatFormatNum($ptotaltahund, $ppilformat);
-
-                    echo "<td align='right' nowrap><b></b></td>";
-                    echo "<td align='right' nowrap><b>$ptotaltahund</b></td>";
-
-                    echo "</tr>";
-
-                    if ($ppilihrpt!="excel") {
-                        echo "<tr>";
-                        echo "<td nowrap colspan=28><b></b></td>";
-                        echo "</tr>";
-                    }
-                    
-                    
-                }
-                
-                //total biaya marketing
-                echo "<tr>";
-                echo "<td nowrap><b></b></td>";
-                echo "<td nowrap><b>TOTAL BIAYA MARKETING</b></td>";
-
-                $ptotpersubcoa=0;
-                for ($sx=1;$sx<=12;$sx++) {
-                    $pjmlsb=$pgrandtotal[$sx];
-                    if (empty($pjmlsb)) $pjmlsb=0;
-                    $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
-                }
-                    
-                $ptotaltahund=0;
-                for ($x=1;$x<=12;$x++) {
-                    $pjml=$pgrandtotal[$x];
-                    if (empty($pjml)) $pjml=0;
-
-                    $prjumlah=0;
-                    if ((DOUBLE)$ptotpersubcoa>0) {
-                        $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
-                    }
-                        
-                    $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
-                    $pjml=BuatFormatNum($pjml, $ppilformat);
-
-                    echo "<td nowrap align='right'><b>$prjumlah</b></td>";
-                    echo "<td nowrap align='right'><b>$pjml<b></td>";
-                }
-
-                $ptotaltahund=BuatFormatNum($ptotaltahund, $ppilformat);
-
-                echo "<td align='right' nowrap><b></b></td>";
-                echo "<td align='right' nowrap><b>$ptotaltahund</b></td>";
-
-                echo "</tr>";
-
-                if ($ppilihrpt!="excel") {
-                    echo "<tr>";
-                    echo "<td nowrap colspan=28><b></b></td>";
-                    echo "</tr>";
-                }
-            ?>
-        </tbody>
-    </table>
-    
-        
+                ?>
+            </tbody>
+        </table>
     <?PHP
-    $query = "select * from $tmp05";
-    $tampiln=mysqli_query($cnmy, $query);
-    $ketemuan= mysqli_fetch_array($tampiln);
-    if ($ketemuan>0) {
+    }else{
     ?>
-        <br/><hr/> <div class="clearfix"></div>
-
+    
         <table id='mydatatable1' class='table table-striped table-bordered' width="100%" border="1px solid black">
             <thead>
                 <tr style='background-color:#cccccc; font-size: 13px;'>
@@ -727,7 +847,7 @@
                         $pgrandtotal[$x]=0;
                         $pgrandtotalsls[$x]=0;
                     }
-                    $query = "select distinct DIVISI from $tmp05 ORDER BY DIVISI";
+                    $query = "select distinct DIVISI_IN_COA as DIVISI from $tmp03 ORDER BY DIVISI_IN_COA";
                     $tampil0=mysqli_query($cnmy, $query);
                     while ($row0= mysqli_fetch_array($tampil0)) {
 
@@ -746,8 +866,8 @@
                             $ptotdivisisls[$x]=0;
                         }
 
-                        $query = "select distinct IFNULL(DIVISI,'') DIVISI, IFNULL(COA2,'') COA2, IFNULL(NAMA2,'') NAMA2 from $tmp05 "
-                                . " WHERE DIVISI='$pdivisi' ORDER BY IFNULL(DIVISI,''), IFNULL(COA2,''), IFNULL(NAMA2,'')";
+                        $query = "select distinct IFNULL(DIVISI_IN_COA,'') as DIVISI, IFNULL(COA2,'') COA2, IFNULL(NAMA2,'') NAMA2 from $tmp03 "
+                                . " WHERE DIVISI_IN_COA='$pdivisi' ORDER BY IFNULL(DIVISI_IN_COA,''), IFNULL(COA2,''), IFNULL(NAMA2,'')";
                         $tampil=mysqli_query($cnmy, $query);
                         while ($row= mysqli_fetch_array($tampil)) {
 
@@ -766,7 +886,7 @@
                                 $psubtotsales[$x]=0;
                             }
 
-                            $query = "select * from $tmp05 WHERE IFNULL(DIVISI,'')='$pdivisi' AND IFNULL(COA2,'')='$pcoa2' "
+                            $query = "select * from $tmp03 WHERE IFNULL(DIVISI_IN_COA,'')='$pdivisi' AND IFNULL(COA2,'')='$pcoa2' "
                                     . " ORDER BY IFNULL(COA4,''), IFNULL(NAMA4,'')";
                             $tampil2=mysqli_query($cnmy, $query);
                             while ($row2= mysqli_fetch_array($tampil2)) {
@@ -786,7 +906,7 @@
                                     $nmcolR="R".$x;
                                     $pjmlR=$row2[$nmcolR];
                                     if (empty($pjmlR)) $pjmlR=0;
-                                
+
                                     $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                                     $psubtot[$x]=(double)$psubtot[$x]+(double)$pjml;
                                     $ptotdivisi[$x]=(double)$ptotdivisi[$x]+(double)$pjml;
@@ -820,7 +940,7 @@
                                 if (empty($pjmlsb)) $pjmlsb=0;
                                 $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
                             }
-                        
+
                             $ptotaltahund=0;
                             for ($x=1;$x<=12;$x++) {
                                 $pjml=$psubtot[$x];
@@ -830,7 +950,7 @@
                                 if ((DOUBLE)$ptotpersubcoa>0) {
                                     $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                                 }
-                    
+
                                 $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                                 $pjml=BuatFormatNum($pjml, $ppilformat);
 
@@ -860,13 +980,14 @@
                         echo "<td nowrap><b></b></td>";
                         echo "<td nowrap><b>BIAYA $nmdivisi</b></td>";
 
+
                         $ptotpersubcoa=0;
                         for ($sx=1;$sx<=12;$sx++) {
                             $pjmlsb=$ptotdivisi[$sx];
                             if (empty($pjmlsb)) $pjmlsb=0;
                             $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
                         }
-                            
+
                         $ptotaltahund=0;
                         for ($x=1;$x<=12;$x++) {
                             $pjml=$ptotdivisi[$x];
@@ -876,7 +997,7 @@
                             if ((DOUBLE)$ptotpersubcoa>0) {
                                 $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                             }
-                                
+
                             $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                             $pjml=BuatFormatNum($pjml, $ppilformat);
 
@@ -911,7 +1032,7 @@
                         if (empty($pjmlsb)) $pjmlsb=0;
                         $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
                     }
-                        
+
                     $ptotaltahund=0;
                     for ($x=1;$x<=12;$x++) {
                         $pjml=$pgrandtotal[$x];
@@ -921,7 +1042,7 @@
                         if ((DOUBLE)$ptotpersubcoa>0) {
                             $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
                         }
-                            
+
                         $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
                         $pjml=BuatFormatNum($pjml, $ppilformat);
 
@@ -945,7 +1066,278 @@
             </tbody>
         </table>
 
-        
+
+        <?PHP
+        $query = "select * from $tmp05";
+        $tampiln=mysqli_query($cnmy, $query);
+        $ketemuan= mysqli_fetch_array($tampiln);
+        if ($ketemuan>0) {
+        ?>
+            <br/><hr/> <div class="clearfix"></div>
+
+            <table id='mydatatable1' class='table table-striped table-bordered' width="100%" border="1px solid black">
+                <thead>
+                    <tr style='background-color:#cccccc; font-size: 13px;'>
+                        <th align="center" nowrap>Kode</th>
+                        <th align="center" nowrap>Nama Perkiraan</th>
+
+                        <th align="center" nowrap>1</th>
+                        <th align="center" nowrap>JANUARI</th>
+                        <th align="center" nowrap>2</th>
+                        <th align="center" nowrap>FEBRUARI</th>
+                        <th align="center" nowrap>3</th>
+                        <th align="center" nowrap>MARET</th>
+                        <th align="center" nowrap>4</th>
+                        <th align="center" nowrap>APRIL</th>
+                        <th align="center" nowrap>5</th>
+                        <th align="center" nowrap>MEI</th>
+                        <th align="center" nowrap>6</th>
+                        <th align="center" nowrap>JUNI</th>
+                        <th align="center" nowrap>7</th>
+                        <th align="center" nowrap>JULI</th>
+                        <th align="center" nowrap>8</th>
+                        <th align="center" nowrap>AGUSTUS</th>
+                        <th align="center" nowrap>9</th>
+                        <th align="center" nowrap>SEPTEMBER</th>
+                        <th align="center" nowrap>10</th>
+                        <th align="center" nowrap>OKTOBER</th>
+                        <th align="center" nowrap>11</th>
+                        <th align="center" nowrap>NOVEMBER</th>
+                        <th align="center" nowrap>12</th>
+                        <th align="center" nowrap>DESEMBER</th>
+                        <th align="center" nowrap>%</th>
+                        <th align="center" nowrap>TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?PHP
+                        for ($x=1;$x<=12;$x++) {
+                            $pgrandtotal[$x]=0;
+                            $pgrandtotalsls[$x]=0;
+                        }
+                        $query = "select distinct DIVISI from $tmp05 ORDER BY DIVISI";
+                        $tampil0=mysqli_query($cnmy, $query);
+                        while ($row0= mysqli_fetch_array($tampil0)) {
+
+                            $pdivisi=$row0['DIVISI'];
+
+                            $nmdivisi=$pdivisi;
+                            if ($pdivisi=="CAN") $nmdivisi="CANARY";
+                            if ($pdivisi=="PIGEO") $nmdivisi="PIGEON";
+                            if ($pdivisi=="PEACO") $nmdivisi="PEACOCK";
+                            if ($pdivisi=="AA") $nmdivisi="OTHER";
+                            if ($pdivisi=="ZZZ") $nmdivisi="OTHER";
+
+
+                            for ($x=1;$x<=12;$x++) {
+                                $ptotdivisi[$x]=0;
+                                $ptotdivisisls[$x]=0;
+                            }
+
+                            $query = "select distinct IFNULL(DIVISI,'') DIVISI, IFNULL(COA2,'') COA2, IFNULL(NAMA2,'') NAMA2 from $tmp05 "
+                                    . " WHERE DIVISI='$pdivisi' ORDER BY IFNULL(DIVISI,''), IFNULL(COA2,''), IFNULL(NAMA2,'')";
+                            $tampil=mysqli_query($cnmy, $query);
+                            while ($row= mysqli_fetch_array($tampil)) {
+
+                                $pcoa2=$row['COA2'];
+                                $pnmcoa2=$row['NAMA2'];
+
+
+                                echo "<tr>";
+                                echo "<td nowrap><b>$pcoa2</b></td>";
+                                echo "<td nowrap colspan=27><b>$pnmcoa2</b></td>";
+                                echo "</tr>";
+
+
+                                for ($x=1;$x<=12;$x++) {
+                                    $psubtot[$x]=0;
+                                    $psubtotsales[$x]=0;
+                                }
+
+                                $query = "select * from $tmp05 WHERE IFNULL(DIVISI,'')='$pdivisi' AND IFNULL(COA2,'')='$pcoa2' "
+                                        . " ORDER BY IFNULL(COA4,''), IFNULL(NAMA4,'')";
+                                $tampil2=mysqli_query($cnmy, $query);
+                                while ($row2= mysqli_fetch_array($tampil2)) {
+                                    $pcoa4=$row2['COA4'];
+                                    $pnmcoa4=$row2['NAMA4'];
+
+                                    echo "<tr>";
+                                    echo "<td nowrap>$pcoa4</td>";
+                                    echo "<td nowrap>$pnmcoa4</td>";
+
+                                    $ptotaltahund=0;
+                                    for ($x=1;$x<=12;$x++) {
+                                        $nmcol="B".$x;
+                                        $pjml=$row2[$nmcol];
+                                        if (empty($pjml)) $pjml=0;
+
+                                        $nmcolR="R".$x;
+                                        $pjmlR=$row2[$nmcolR];
+                                        if (empty($pjmlR)) $pjmlR=0;
+
+                                        $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
+                                        $psubtot[$x]=(double)$psubtot[$x]+(double)$pjml;
+                                        $ptotdivisi[$x]=(double)$ptotdivisi[$x]+(double)$pjml;
+                                        $pgrandtotal[$x]=(double)$pgrandtotal[$x]+(double)$pjml;
+
+
+                                        $pjml=BuatFormatNum($pjml, $ppilformat);
+
+                                        echo "<td nowrap align='right'>$pjmlR</td>";
+                                        echo "<td nowrap align='right'>$pjml</td>";
+                                    }
+
+                                    $ptotaltahund=BuatFormatNum($ptotaltahund, $ppilformat);
+
+                                    echo "<td align='right' nowrap align='right'><b></b></td>";
+                                    echo "<td align='right' nowrap align='right'><b>$ptotaltahund</b></td>";
+
+                                    echo "</tr>";
+
+
+                                }
+
+                                //sub total
+                                echo "<tr>";
+                                echo "<td nowrap><b>$pcoa2</b></td>";
+                                echo "<td nowrap><b>$pnmcoa2</b></td>";
+
+                                $ptotpersubcoa=0;
+                                for ($sx=1;$sx<=12;$sx++) {
+                                    $pjmlsb=$psubtot[$sx];
+                                    if (empty($pjmlsb)) $pjmlsb=0;
+                                    $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                                }
+
+                                $ptotaltahund=0;
+                                for ($x=1;$x<=12;$x++) {
+                                    $pjml=$psubtot[$x];
+                                    if (empty($pjml)) $pjml=0;
+
+                                    $prjumlah=0;
+                                    if ((DOUBLE)$ptotpersubcoa>0) {
+                                        $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
+                                    }
+
+                                    $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
+                                    $pjml=BuatFormatNum($pjml, $ppilformat);
+
+                                    echo "<td nowrap align='right'><b>$prjumlah</b></td>";
+                                    echo "<td nowrap align='right'><b>$pjml</b></td>";
+                                }
+
+                                $ptotaltahund=BuatFormatNum($ptotaltahund, $ppilformat);
+
+                                echo "<td align='right' nowrap><b></b></td>";
+                                echo "<td align='right' nowrap><b>$ptotaltahund</b></td>";
+
+                                echo "</tr>";
+
+                                if ($ppilihrpt!="excel") {
+                                    echo "<tr>";
+                                    echo "<td nowrap colspan=28><b></b></td>";
+                                    echo "</tr>";
+                                }
+
+
+                            }
+
+
+                            //total per divisi
+                            echo "<tr>";
+                            echo "<td nowrap><b></b></td>";
+                            echo "<td nowrap><b>BIAYA $nmdivisi</b></td>";
+
+                            $ptotpersubcoa=0;
+                            for ($sx=1;$sx<=12;$sx++) {
+                                $pjmlsb=$ptotdivisi[$sx];
+                                if (empty($pjmlsb)) $pjmlsb=0;
+                                $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                            }
+
+                            $ptotaltahund=0;
+                            for ($x=1;$x<=12;$x++) {
+                                $pjml=$ptotdivisi[$x];
+                                if (empty($pjml)) $pjml=0;
+
+                                $prjumlah=0;
+                                if ((DOUBLE)$ptotpersubcoa>0) {
+                                    $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
+                                }
+
+                                $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
+                                $pjml=BuatFormatNum($pjml, $ppilformat);
+
+                                echo "<td nowrap align='right'><b>$prjumlah</b></td>";
+                                echo "<td nowrap align='right'><b>$pjml</b></td>";
+                            }
+
+                            $ptotaltahund=BuatFormatNum($ptotaltahund, $ppilformat);
+
+                            echo "<td align='right' nowrap><b></b></td>";
+                            echo "<td align='right' nowrap><b>$ptotaltahund</b></td>";
+
+                            echo "</tr>";
+
+                            if ($ppilihrpt!="excel") {
+                                echo "<tr>";
+                                echo "<td nowrap colspan=28><b></b></td>";
+                                echo "</tr>";
+                            }
+
+
+                        }
+
+                        //total biaya marketing
+                        echo "<tr>";
+                        echo "<td nowrap><b></b></td>";
+                        echo "<td nowrap><b>TOTAL BIAYA MARKETING</b></td>";
+
+                        $ptotpersubcoa=0;
+                        for ($sx=1;$sx<=12;$sx++) {
+                            $pjmlsb=$pgrandtotal[$sx];
+                            if (empty($pjmlsb)) $pjmlsb=0;
+                            $ptotpersubcoa=(DOUBLE)$ptotpersubcoa+(DOUBLE)$pjmlsb;
+                        }
+
+                        $ptotaltahund=0;
+                        for ($x=1;$x<=12;$x++) {
+                            $pjml=$pgrandtotal[$x];
+                            if (empty($pjml)) $pjml=0;
+
+                            $prjumlah=0;
+                            if ((DOUBLE)$ptotpersubcoa>0) {
+                                $prjumlah=ROUND((DOUBLE)$pjml/(DOUBLE)$ptotpersubcoa*100,2);
+                            }
+
+                            $ptotaltahund=(double)$ptotaltahund+(double)$pjml;
+                            $pjml=BuatFormatNum($pjml, $ppilformat);
+
+                            echo "<td nowrap align='right'><b>$prjumlah</b></td>";
+                            echo "<td nowrap align='right'><b>$pjml<b></td>";
+                        }
+
+                        $ptotaltahund=BuatFormatNum($ptotaltahund, $ppilformat);
+
+                        echo "<td align='right' nowrap><b></b></td>";
+                        echo "<td align='right' nowrap><b>$ptotaltahund</b></td>";
+
+                        echo "</tr>";
+
+                        if ($ppilihrpt!="excel") {
+                            echo "<tr>";
+                            echo "<td nowrap colspan=28><b></b></td>";
+                            echo "</tr>";
+                        }
+                    ?>
+                </tbody>
+            </table>
+
+
+        <?PHP
+        }
+        ?>
+
     <?PHP
     }
     ?>

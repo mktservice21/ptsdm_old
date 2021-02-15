@@ -4,10 +4,19 @@
     
     session_start();
     
-    if (!isset($_POST['chkid'])) {
-        echo "Belum ada periode yang dipilih...";
-        exit;
+    
+    
+    if (isset($_POST['txtiddokts'])) {
+        $ppilihanall=false;
+    }else{
+        if (!isset($_POST['chkid'])) {
+            echo "Belum ada periode yang dipilih...";
+            exit;
+        }
+        $ppilihanall=true;
     }
+    
+    
 
     $pidmodule=$_GET['module'];
     $pidmenu=$_GET['idmenu'];
@@ -19,35 +28,51 @@
     $ptypeapt=""; $ptypeapt2=""; $pnmtypeapt="";
     $paptidinp="";
     $pbulaninp="";
-    foreach ($_POST['chkid'] as $noid) {
-        $piddokt=$_POST['txtiddokt'][$noid];
-        $pnmdokt=$_POST['txtnmdokt'][$noid];
-        $pidsr=$_POST['txtidsr'][$noid];
-        $pnmsr=$_POST['txtnmsr'][$noid];
-        $pidbln=$_POST['txtidbln'][$noid];
-        $papttype=$_POST['txtapttyp'][$noid];
-        $pidapt=$_POST['txtaptid'][$noid];
+    $pinputanupdate="1";
+    if ($ppilihanall==false) {
+        $pinputanupdate="2";
         
-        $pbulaninp .=$pidbln.",";
-        $paptidinp .=$pidapt.",";
-        
-        if (strpos($ptypeapt2, $papttype)==false) {
-            $ptypeapt2 .="'".$papttype."',";
-            $ptypeapt .=$papttype.",";
+        $piddokt=$_POST['txtiddokts'];
+        $pnmdokt=$_POST['txtnmdokts'];
+        $pidsr=$_POST['txtidsrs'];
+        $pnmsr=$_POST['txtnmsrs'];
+        $pbulaninp=$_POST['txtidblns'];
+        $ptypeapt=$_POST['txtapttyps'];
+        $paptidinp=$_POST['txtaptids'];
             
-            $pnmty="Reguler";
-            if ((INT)$papttype==1) $pnmty="Dispensing";
-            $pnmtypeapt .=$pnmty.",";
-        }
-        
-        //echo "$pidsr - $piddokt - $pidapt ($papttype) - $pidbln<br/>";
-    }
-    
-    if (!empty($pbulaninp)) $pbulaninp=substr($pbulaninp, 0, -1);
-    if (!empty($paptidinp)) $paptidinp=substr($paptidinp, 0, -1);
-    if (!empty($ptypeapt)) $ptypeapt=substr($ptypeapt, 0, -1);
-    if (!empty($pnmtypeapt)) $pnmtypeapt=substr($pnmtypeapt, 0, -1);
+        $pnmtypeapt="Reguler";
+        if ((INT)$ptypeapt==1) $pnmtypeapt="Dispensing";
+    }else{
+        foreach ($_POST['chkid'] as $noid) {
+            $piddokt=$_POST['txtiddokt'][$noid];
+            $pnmdokt=$_POST['txtnmdokt'][$noid];
+            $pidsr=$_POST['txtidsr'][$noid];
+            $pnmsr=$_POST['txtnmsr'][$noid];
+            $pidbln=$_POST['txtidbln'][$noid];
+            $papttype=$_POST['txtapttyp'][$noid];
+            $pidapt=$_POST['txtaptid'][$noid];
 
+            $pbulaninp .=$pidbln.",";
+            $paptidinp .=$pidapt.",";
+
+            if (strpos($ptypeapt2, $papttype)==false) {
+                $ptypeapt2 .="'".$papttype."',";
+                $ptypeapt .=$papttype.",";
+
+                $pnmty="Reguler";
+                if ((INT)$papttype==1) $pnmty="Dispensing";
+                $pnmtypeapt .=$pnmty.",";
+            }
+
+            //echo "$pidsr - $piddokt - $pidapt ($papttype) - $pidbln<br/>";
+        }
+
+        if (!empty($pbulaninp)) $pbulaninp=substr($pbulaninp, 0, -1);
+        if (!empty($paptidinp)) $paptidinp=substr($paptidinp, 0, -1);
+        if (!empty($ptypeapt)) $ptypeapt=substr($ptypeapt, 0, -1);
+        if (!empty($pnmtypeapt)) $pnmtypeapt=substr($pnmtypeapt, 0, -1);
+    
+    }
     
 ?>
 <HTML>
@@ -146,6 +171,7 @@
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Karyawan <span class='required'></span></label>
                                     <div class='col-xs-4'>
+                                        <input type='hidden' class='form-control' id='e_id' name='e_id' value='<?PHP echo $pinputanupdate; ?>' Readonly>
                                         <input type='hidden' class='form-control' id='cb_karyawan' name='cb_karyawan' value='<?PHP echo $pidsr; ?>' Readonly>
                                         <input type='text' class='form-control' id='nm_karyawan' name='nm_karyawan' value='<?PHP echo "$pnmsr ($pidsr)"; ?>' Readonly>
                                     </div>

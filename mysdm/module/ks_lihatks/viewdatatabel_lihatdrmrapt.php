@@ -25,6 +25,10 @@
     $pidcab=$_POST['uidcab'];
     $pstsdr=$_POST['ustsdr'];
     
+    $_SESSION['LHTKSMRID']=$pidkaryawan;
+    $_SESSION['LHTKSCBID']=$pidcab;
+    $_SESSION['LHTKSDAPT']="Y";
+    
     $pmodule=$_GET['module'];
     $pact=$_GET['act'];
     $pidmenu=$_GET['idmenu'];
@@ -133,8 +137,8 @@
                             
                                 echo "<form method='POST' action='$aksi?module=$pmodule&act=input&idmenu=$pidmenu' "
                                         . " id='form_sdata$prec' name='sform$prec' data-parsley-validate "
-                                        . " target='_blank'>";
-                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata('form_sdata$prec')\">Edit Data</button>";
+                                        . " >";
+                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata2('form_sdata$prec')\">Edit Data</button>";
                                 echo "</form>";
                     
                             
@@ -175,8 +179,8 @@
                             
                                 echo "<form method='POST' action='$aksi?module=$pmodule&act=input&idmenu=$pidmenu' "
                                         . " id='form_sdata$prec' name='sform$prec' data-parsley-validate "
-                                        . " target='_blank'>";
-                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata('form_sdata$prec')\">Edit Data</button>";
+                                        . " >";
+                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata2('form_sdata$prec')\">Edit Data</button>";
                                 echo "</form>";
                                 
                             echo "<span hidden>";
@@ -297,6 +301,14 @@
     function disp_editdata(inform) {
     
         document.getElementById(inform).action = "<?PHP echo "eksekusi3.php?module=lihatkseditapt&act=input&idmenu=$_GET[idmenu]&ket=bukan"; ?>";
+        document.getElementById(inform).submit();
+        return 1;
+                        
+    }
+    
+    function disp_editdata2(inform) {
+    
+        document.getElementById(inform).action = "<?PHP echo "?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]&kriteria=Y&ket=bukan"; ?>";
         document.getElementById(inform).submit();
         return 1;
                         

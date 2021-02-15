@@ -193,8 +193,8 @@
                                     </div>
                                 </div>
                                 
-                                <div hidden class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Id Apotik <span class='required'></span></label>
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Id Apotik (Lama) <span class='required'></span></label>
                                     <div class='col-xs-4'>
                                         <input type='text' class='form-control' id='txt_aptid' name='txt_aptid' value='<?PHP echo "$paptidinp"; ?>' Readonly>
                                     </div>

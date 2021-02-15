@@ -279,10 +279,17 @@
                                 </div>
                                 
                                 
-                                <div class='col-sm-2'>
+                                <div class='col-sm-10'>
                                     <small>&nbsp;</small>
                                    <div class="form-group">
                                        <button type='button' class='btn btn-dark btn-xs' onclick='ListDataDokter()'>List Data Dokter</button>
+                                       <?PHP
+                                       if ($fjbtid=="38" OR ($fgroupid=="1" OR $fgroupid=="24") ) {
+                                       ?>
+                                            <button type='button' class='btn btn-warning btn-xs' onclick='ListDataAptKosong()'>List Data Dokter Apotik Kosong</button>
+                                       <?PHP
+                                       }
+                                       ?>
                                    </div>
                                </div>
 
@@ -345,6 +352,34 @@
         $.ajax({
             type:"post",
             url:"module/ks_lihatks/viewdatatabel_lihatdrmr.php?module="+module+"&idmenu="+idmenu+"&act="+act+"&uidkry="+eidkry+"&uidcab="+eidcab,
+            data:"module="+module+"&uidkry="+eidkry+"&uidcab="+eidcab+"&ustsdr="+estsdr,
+            success:function(data){
+                $("#c-data").html(data);
+                $("#loading").html("");
+            }
+        });
+    }
+    
+    function ListDataAptKosong() {
+        var eidcab=document.getElementById('cb_cabang').value;
+        var eidkry=document.getElementById('cb_karyawan').value;
+        var estsdr =document.getElementById('cb_drks').value;
+        
+        if (eidkry=="") {
+            alert("Karyawan harus diisi...");
+            return false;
+        }
+
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var act = urlku.searchParams.get("act");
+
+        $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+        $.ajax({
+            type:"post",
+            url:"module/ks_lihatks/viewdatatabel_lihatdrmrapt.php?module="+module+"&idmenu="+idmenu+"&act="+act+"&uidkry="+eidkry+"&uidcab="+eidcab,
             data:"module="+module+"&uidkry="+eidkry+"&uidcab="+eidcab+"&ustsdr="+estsdr,
             success:function(data){
                 $("#c-data").html(data);

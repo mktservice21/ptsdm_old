@@ -606,4 +606,13 @@
     $_SESSION['MAPCUSTBAGIIDARE']="";
     $_SESSION['MAPCUSTBAGIFILTE']="";
     $_SESSION['MAPCUSTBAGIBULAN']="";
+    
+    
+    //LIHAT KS
+    $_SESSION['LHTKSMRID']="";
+    $_SESSION['LHTKSCBID']="";
+    $_SESSION['LHTKSDAPT']="";
+    
+    
+    
 ?>

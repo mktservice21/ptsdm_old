@@ -36,7 +36,7 @@
             $pchk1="checked"; $pchk2="checked"; $pchk3="checked"; $pchk4="checked"; $pchk5="checked";
             $pchk6="checked"; $pchk7="checked"; $pchk8="checked"; $pchk9="checked"; $pchk10="checked";
             $pchk11="checked"; $pchk12="checked"; $pchk13="checked"; $pchk14="checked"; $pchk15="checked";  
-            $pchk16="checked";
+            $pchk16="";//checked
         }
         
     }
@@ -222,7 +222,7 @@
                                                         if ($fgroupid=="28") {//marsis dan ria
                                                             if ($fkaryawan=="0000000329") {//marsis
                                                                 echo "&nbsp; <input type=checkbox value='kaskecil' id='chkbox_rpt3' name='chkbox_rpt3' checked> Kas Kecil<br/>";
-                                                                echo "&nbsp; <input type=checkbox value='kaskecil' id='chkbox_rpt16' name='chkbox_rpt16' checked> Kasbon<br/>";
+                                                                echo "&nbsp; <input type=checkbox value='kaskecil' id='chkbox_rpt16' name='chkbox_rpt16' > Kasbon<br/>";
                                                                 echo "&nbsp; <input type=checkbox value='blk' id='chkbox_rpt6' name='chkbox_rpt6' checked> Biaya Luar Kota<br/>";
                                                             }elseif ($fkaryawan=="0000000143") {//ria
                                                                 echo "&nbsp; <input type=checkbox value='rutin' id='chkbox_rpt5' name='chkbox_rpt5' checked> Biaya Rutin<br/>";
@@ -269,6 +269,19 @@
                                 </div>
                                 
 
+                                <div class='form-group'>
+                                    <div class='col-sm-12'>
+                                        <b>Report Type</b>
+                                        <div class="form-group">
+                                            <select class='form-control' id="cb_rpttype" name="cb_rpttype" onchange="">
+                                                <?PHP
+                                                echo "<option value='COA' selected>COA</option>";
+                                                echo "<option value='DIV'>Divisi Akun</option>";
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 
 
 
@@ -424,7 +437,7 @@
             document.getElementById('chkbox_rpt11').checked = 'FALSE';
             document.getElementById('chkbox_rpt12').checked = 'FALSE';
             document.getElementById('chkbox_rpt15').checked = 'FALSE';
-            document.getElementById('chkbox_rpt16').checked = 'FALSE';
+            //document.getElementById('chkbox_rpt16').checked = 'FALSE';
             button.value = 'deselect'
         }else{
             document.getElementById('chkbox_rpt1').checked = '';

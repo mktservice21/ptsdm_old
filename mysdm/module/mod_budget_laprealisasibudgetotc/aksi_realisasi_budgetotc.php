@@ -56,7 +56,7 @@
     //BR chc A //klaimdiscount B //KAS KASBON C & D //BROTC E //RUTIN LUAR KOTA F rutin G lk //insentif incentive K
     //X Kas Kecil Cabang
     
-    $pfilterselpil = "('A','B','C','D','E','F','G','K','X','U','V','I','J')";
+    $pfilterselpil = "('A','B','C','E','F','G','K','X','U','V','I','J')";//,'D'
     
     //echo "$tgl01 - $tgl02";
     

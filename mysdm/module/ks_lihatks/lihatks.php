@@ -138,7 +138,7 @@
                                                     $query_cb = "select icabangid as icabangid, nama as nama, "
                                                             . " CASE WHEN IFNULL(aktif,'')='' then 'Y' else aktif end as aktif "
                                                             . " from MKT.icabang WHERE 1=1 ";
-                                                    if ($pmygroupid=="24" or $pmygroupid=="1") {
+                                                    if ($fgroupid=="24" or $fgroupid=="1") {
                                                     }else{
                                                         if (!empty($pfiltercabpilih)) {
                                                             $query_cb .=" AND iCabangId IN $pfiltercabpilih ";

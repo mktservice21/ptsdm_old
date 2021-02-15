@@ -138,7 +138,7 @@
                                 echo "<form method='POST' action='$aksi?module=$pmodule&act=input&idmenu=$pidmenu' "
                                         . " id='form_sdata$prec' name='sform$prec' data-parsley-validate "
                                         . " >";
-                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata2('form_sdata$prec')\">Edit Data</button>";
+                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata2('form_sdata$prec')\">Edit Nama Apotik</button>";
                                 echo "</form>";
                     
                             
@@ -180,7 +180,7 @@
                                 echo "<form method='POST' action='$aksi?module=$pmodule&act=input&idmenu=$pidmenu' "
                                         . " id='form_sdata$prec' name='sform$prec' data-parsley-validate "
                                         . " >";
-                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata2('form_sdata$prec')\">Edit Data</button>";
+                                    echo "<button type='button' class='btn btn-dark btn-xs' onclick=\"disp_editdata2('form_sdata$prec')\">Edit Nama Apotik</button>";
                                 echo "</form>";
                                 
                             echo "<span hidden>";

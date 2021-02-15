@@ -157,7 +157,7 @@
                                                     }
                                                     ?>
                                                 </select>
-                                                <?PHP echo $query; ?>
+                                                <?PHP //echo $query; ?>
                                             </div>
                                         </div>
                                         

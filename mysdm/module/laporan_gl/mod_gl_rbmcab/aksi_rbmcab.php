@@ -126,7 +126,7 @@
         //klaimdiscount B
         if (!empty($pklaim)) $pfilterselpil .= "'B',";
         //KAS KASBON C & D
-        if (!empty($pkas)) $pfilterselpil .= "'C','D',";
+        if (!empty($pkas)) $pfilterselpil .= "'C',";//'D',
         //BROTC E
         if (!empty($pbrotc)) $pfilterselpil .= "'E',";
         //RUTIN LUAR KOTA F rutin G lk

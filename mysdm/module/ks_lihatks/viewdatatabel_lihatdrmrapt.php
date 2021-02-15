@@ -238,7 +238,7 @@
 <script>
     $(document).ready(function() {
         var dataTable = $('#datatabledrlstmr').DataTable( {
-            //"stateSave": true,
+            "stateSave": true,
             fixedHeader: true,
             "ordering": false,
             "processing": true,

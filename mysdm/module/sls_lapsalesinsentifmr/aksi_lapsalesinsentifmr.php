@@ -66,6 +66,7 @@ $ketemu= mysqli_num_rows($tampil);
 if ((INT)$ketemu>1) $pbolehproses=false;
 
 
+$pincketdivisi="";
 $pketdivisi="";
 $filtercab="";
 
@@ -78,9 +79,10 @@ if ($pbolehproses==true) {
         $pareaid=$row['areaid'];
         $paktif=$row['aktif'];
     
-        if (strpos($pketdivisi, $pidivid)==false) {
+        if (strpos($pincketdivisi, $pidivid)==false) {
             if ($paktif=="N") {   
             }else{
+                $pincketdivisi .="'".$pidivid."',";
                 $pketdivisi .=$pidivid.",";
             }
         }

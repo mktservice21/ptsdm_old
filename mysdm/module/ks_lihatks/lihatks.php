@@ -10,10 +10,13 @@ switch($pactpilih){
         $aksi="eksekusi3.php";
         $hari_ini = date("Y-m-d");
         $pbulanpilih = date('F Y', strtotime($hari_ini));
-
-        $ppilihansrid=$_SESSION['LHTKSMRID'];
-        $ppilihancabang=$_SESSION['LHTKSCBID'];
-        $ppilihdriapt=$_SESSION['LHTKSDAPT'];
+        
+        $ppilihansrid="";
+        $ppilihancabang="";
+        $ppilihdriapt="";
+        if (isset($_SESSION['LHTKSMRID'])) $ppilihansrid=$_SESSION['LHTKSMRID'];
+        if (isset($_SESSION['LHTKSCBID'])) $ppilihancabang=$_SESSION['LHTKSCBID'];
+        if (isset($_SESSION['LHTKSDAPT'])) $ppilihdriapt=$_SESSION['LHTKSDAPT'];
 
         $fkaryawan=$_SESSION['IDCARD'];
         $fjbtid=$_SESSION['JABATANID'];

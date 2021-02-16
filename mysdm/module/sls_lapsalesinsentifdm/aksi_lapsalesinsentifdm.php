@@ -510,7 +510,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     { className: "text-nowrap", "targets": [0,1,2,3,4,5,6] }//nowrap
 
                 ],
-                bFilter: false, bInfo: true, "bLengthChange": false, "bLengthChange": true,
+                bFilter: true, bInfo: true, "bLengthChange": false, "bLengthChange": true,
                 "bPaginate": false
             } );
             

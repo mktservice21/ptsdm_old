@@ -425,7 +425,7 @@ if ($pilogin==true) {
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
                                     <div class='col-xs-5'>
                                         <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
-                                        <input type='button' value='Back' onclick='self.history.back()' class='btn btn-default'>
+                                        <a class='btn btn-default' href="<?PHP echo "?module=home"; ?>">Back</a>
                                     </div>
                                 </div>
                                 

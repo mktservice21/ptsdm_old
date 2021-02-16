@@ -1,7 +1,7 @@
 <?PHP
     session_start();
     
-    
+    $fgroupid=$_SESSION['GROUP'];
     $_SESSION['KSDTAPTKRY']=$_POST['ukryid'];
     
     
@@ -25,7 +25,7 @@
         var eidkry=document.getElementById('cb_kryid').value;
         var eidpilihkry=document.getElementById('e_idkaryawanpilih').value;
         
-        //alert(eidpilihkry);
+        //alert(eidkry); return false;
         var dataTable = $('#datatablekasbon').DataTable( {
             "processing": true,
             "serverSide": true,

@@ -23,9 +23,9 @@ if ($pidact=="editdata"){
     $act="update";
     $pidinput=$_GET['id'];
     
-    $sql = "select srid as srid, aptId as aptid, apt_id as apt_id, aptType as apttype, nama as nama, "
+    $sql = "select idapotik as idapotik, srid as srid, aptId as aptid, apt_id as apt_id, aptType as apttype, nama as nama, "
             . " alamat1 as alamat1, alamat2 as alamat2, kota as kota, aktif as aktif, "
-            . " user1 as user1, icabangid as icabangid, areaid as areaid FROM hrd.mr_apt WHERE aptId='$pidinput'";
+            . " user1 as user1, icabangid as icabangid, areaid as areaid FROM hrd.mr_apt WHERE idapotik='$pidinput'";
     $edit = mysqli_query($cnit, $sql);
     $r    = mysqli_fetch_array($edit);
     

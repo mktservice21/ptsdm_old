@@ -15,9 +15,9 @@ $requestData= $_REQUEST;
 
 $columns = array( 
 // datatable column index  => database column name
-    0 =>'a.aptId',
-    1 =>'a.aptId',
-    2 => 'a.aptId',
+    0 =>'a.idapotik',
+    1 =>'a.idapotik',
+    2 => 'a.idapotik',
     3=> 'a.nama',
     4=> 'a.alamat1',
     5=> 'a.alamat2',
@@ -50,7 +50,7 @@ if (!empty($ppilihkryid)) {
 
 //FORMAT(realisasi1,2,'de_DE') as 
 // getting total number records without any search
-$sql = "select a.srid as srid, b.nama as nama_karyawan, a.aptId as aptid, a.apt_id as apt_id, a.aptType as apttype, a.nama as nama, "
+$sql = "select a.idapotik as idapotik, a.srid as srid, b.nama as nama_karyawan, a.aptId as aptid, a.apt_id as apt_id, a.aptType as apttype, a.nama as nama, "
         . " a.alamat1 as alamat1, a.alamat2 as alamat2, a.kota as kota, a.aktif as aktif, "
         . " a.user1 as user1, a.icabangid as icabangid, a.areaid as areaid ";
 $sql.=" FROM hrd.mr_apt as a JOIN hrd.karyawan as b on a.srid=b.karyawanid ";
@@ -71,6 +71,7 @@ $totalFiltered = $totalData;  // when there is no search parameter then total nu
 if( !empty($requestData['search']['value']) ) {   // if there is a search parameter, $requestData['search']['value'] contains search parameter
     $sql.=" AND ( a.srid LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.aptId LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.idapotik LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.apt_id LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.aptType LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.nama LIKE '%".$requestData['search']['value']."%' ";
@@ -89,7 +90,7 @@ $data = array();
 $no=1;
 while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData=array();
-    $idno=$row['aptid'];
+    $idno=$row['idapotik'];
     
     $psrid=$row['srid'];
     $pid_apt=$row['apt_id'];

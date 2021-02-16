@@ -46,6 +46,10 @@
         }
     }
     
+    if ($fgroupid=="24") {
+        $pfilterkaryawan="";
+        $pfilterkaryawan2="";
+    }
     
     //echo "karyawan : $pfilterkaryawan<br/>karyawan2 : $pfilterkaryawan2<br/>";exit;
 

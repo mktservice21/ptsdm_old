@@ -1,4 +1,6 @@
 <?PHP
+    include 'templates/del_session.php';
+    
     $hari_ini = date("Y-m-d");
     
     $fkaryawan=$_SESSION['IDCARD'];

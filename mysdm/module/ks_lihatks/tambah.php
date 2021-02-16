@@ -134,11 +134,12 @@
                                     </div>
                                 </div>
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Apotik <span class='required'></span></label>
                                     <div class='col-xs-4'>
-                                        <select class='form-control input-sm' id='e_apotikid' name='e_apotikid' onchange="">
+                                        <select class='form-control input-sm' id='e_apotikidx' name='e_apotikidx' onchange="">
                                         <?PHP
+                                        /*
                                             echo "<option value=''>--Pilihan--</option>";
                                             $query = "select idapotik as idapotik, nama from hrd.mr_apt WHERE srid='$pidsr' order by nama";
                                             $tampil= mysqli_query($cnmy, $query);
@@ -147,10 +148,36 @@
                                                 $pnmapotik=$s['nama'];
                                                 echo "<option value='$papotikid'>$pnmapotik ($papotikid)</option>";
                                             }
+                                         * 
+                                         */
                                         ?>
                                         </select>
                                     </div>
                                 </div>
+                                
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                                        Apotik 
+                                        <span class='required'></span></label>
+                                    <div class='col-xs-4'>
+                                        
+                                        <input list="lstapotik" id="e_apotikid" name="e_apotikid" autocomplete='off' class='form-control col-md-7 col-xs-12' value="<?PHP echo ""; ?>">
+                                            <datalist id="lstapotik">
+                                                <?PHP
+                                                $query = "select idapotik as idapotik, nama from hrd.mr_apt WHERE srid='$pidsr' order by nama";
+                                                $tampil= mysqli_query($cnmy, $query);
+                                                while($s= mysqli_fetch_array($tampil)) {
+                                                    $papotikid=$s['idapotik'];
+                                                    $pnmapotik=$s['nama'];
+                                                    echo "<option value='$papotikid'>$pnmapotik</option>";
+                                                }
+                                                ?>
+                                        </datalist>
+                                    </div>
+                                </div>
+                                
+                                
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>

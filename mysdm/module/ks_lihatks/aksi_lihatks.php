@@ -480,6 +480,9 @@ function show_kartu($psrid,$ptglawal_,$pbulan,$pdokterid,$pcn,$br,$tmp00,$tmp04)
 			$kodeapt = $row['aptid'];
 			$pidapotik = $row['idapotik'];
 			
+                        $piapotikid="";
+                        if (!empty($pidapotik)) $piapotikid="($pidapotik)";
+                        
 			if ($cn == '') {
 				$query_sa = " select cn from hrd.cn where karyawanid='$psrid' and dokterid='$pdokterid' and tgl<='$pbulan' order by tgl desc"; 
 				//echo"$query_sa<br>";
@@ -553,7 +556,7 @@ function show_kartu($psrid,$ptglawal_,$pbulan,$pdokterid,$pcn,$br,$tmp00,$tmp04)
 				echo "<td><small>&nbsp;</small></td>";
 			}
 		//	echo "<td><small>".$row['aptnm']."</small></td>";
-			echo "<td><small>$namaapt ($pidapotik)</small></td>";
+			echo "<td><small>$namaapt $piapotikid</small></td>";
 			$jumlah_ = 0;
 			if ($row['apttype']=="1") {
 				echo '<td align="center"><small>D</small></td>';

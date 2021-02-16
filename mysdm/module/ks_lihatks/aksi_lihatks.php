@@ -553,7 +553,7 @@ function show_kartu($psrid,$ptglawal_,$pbulan,$pdokterid,$pcn,$br,$tmp00,$tmp04)
 				echo "<td><small>&nbsp;</small></td>";
 			}
 		//	echo "<td><small>".$row['aptnm']."</small></td>";
-			echo "<td><small>$namaapt</small></td>";
+			echo "<td><small>$namaapt ($pidapotik)</small></td>";
 			$jumlah_ = 0;
 			if ($row['apttype']=="1") {
 				echo '<td align="center"><small>D</small></td>';

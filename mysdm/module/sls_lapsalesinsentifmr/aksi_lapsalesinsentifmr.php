@@ -683,7 +683,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                 "columnDefs": [
                     { "visible": false },
                     //{ className: "text-right", "targets": [2,3,4] },//right
-                    { className: "text-nowrap", "targets": [0,1,2,3] }//nowrap
+                    { className: "text-nowrap", "targets": [0,1,2] }//nowrap
 
                 ],
                 bFilter: false, bInfo: true, "bLengthChange": false, "bLengthChange": true,
@@ -718,7 +718,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     { className: "text-nowrap", "targets": [0,1,2,3,4,5] }//nowrap
 
                 ],
-                bFilter: false, bInfo: true, "bLengthChange": false, "bLengthChange": true,
+                bFilter: true, bInfo: true, "bLengthChange": false, "bLengthChange": true,
                 "bPaginate": false
             } );
             
@@ -750,7 +750,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     { className: "text-nowrap", "targets": [0,1,2,3,4] }//nowrap
 
                 ],
-                bFilter: false, bInfo: true, "bLengthChange": false, "bLengthChange": true,
+                bFilter: true, bInfo: true, "bLengthChange": false, "bLengthChange": true,
                 "bPaginate": false
             } );
             

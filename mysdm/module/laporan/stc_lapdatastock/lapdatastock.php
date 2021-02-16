@@ -1,3 +1,5 @@
+<?PHP include "config/cek_akses_modul.php"; ?>
+
 <div class="">
 
     <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Data Stock</h3></div></div><div class="clearfix"></div>
@@ -17,7 +19,7 @@
         $nrow= mysqli_fetch_array($tampil);
         $pdivisipm=$nrow['divprodid'];
         
-        if ($pmygroupid=="48" OR $pmygroupid=="51") $pdivisipm= "OTC";
+        if ($pmygroupid=="48" OR $pmygroupid=="51" OR $pmygroupid=="38") $pdivisipm= "OTC";
         
         $pmobilepilih=$_SESSION['MOBILE'];
                 

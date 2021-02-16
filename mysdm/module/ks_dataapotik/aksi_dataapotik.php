@@ -93,7 +93,7 @@ elseif ($module=='ksdataapotik' AND ($act=='input' OR $act=='update'))
                   alamat1='".$palamatid1."',
                   alamat2='".$palamatid2."',
                   kota='".$pkota."',
-                  user1='".$puserid."' WHERE aptid='".$kodenya."' LIMIT 1";
+                  user1='".$puserid."' WHERE idapotik='".$kodenya."' LIMIT 1";
         $result = mysqli_query($cnit, $query);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; exit; }
     }

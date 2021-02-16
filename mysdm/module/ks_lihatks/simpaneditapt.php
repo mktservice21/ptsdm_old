@@ -29,6 +29,7 @@ if ($module=='kslihatks' AND $act=='simpanapt')
     $pidsr=$_POST['cb_karyawan'];
     $piddokter=$_POST['cb_dokter'];
     $pidtype=$_POST['txt_apttype'];
+    $ptypeidapt=$_POST['txt_apttype'];
     $pidapt=$_POST['txt_aptid'];
     $pbln=$_POST['txt_bulan'];
     $pidapotik=$_POST['e_apotikid'];
@@ -36,9 +37,22 @@ if ($module=='kslihatks' AND $act=='simpanapt')
     if ($pidtype=="1") $pidtype="('1')";
     else $pidtype="('0', '')";
     
-    //echo "$pkodeid : sr : $pidsr, dokt : $piddokter, tp : $pidtype, idapt : $pidapt, bln : $pbln, $pidapotik"; exit;
+    //echo "$pkodeid : sr : $pidsr, dokt : $piddokter, tp : $pidtype, idapt : $pidapt, bln : $pbln, Apotik baru : $pidapotik"; exit;
     
     if ($pkodeid=="2") {
+        if (!empty($pidapotik)) $pidapotik = str_replace("'", " ", $pidapotik);
+        $query = "select * from hrd.mr_apt WHERE idapotik='$pidapotik' AND srid='$pidsr'";
+        $tampil=mysqli_query($cnmy, $query);
+        $ketemu=mysqli_num_rows($tampil);
+        if ((INT)$ketemu<=0) {
+            $query = "INSERT INTO hrd.mr_apt (srid, aptid, apt_id, apttype, nama, alamat1, user1)"
+                    . " VALUES ('$pidsr', '$pidapt', '$pidapt', '$ptypeidapt', '$pidapotik', '', '$pidcard')";
+            //echo $query;
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            $pidapotik = mysqli_insert_id($cnmy);
+        }
+        //echo $pidapotik; exit;
         
         $query = "UPDATE hrd.ks1 as a SET a.idapotik='$pidapotik', a.userid='$pidcard' WHERE a.srid='$pidsr' AND a.dokterid='$piddokter' AND "
                 . " IFNULL(a.idapotik,'') IN ('', '0', '0000000000') AND "
@@ -48,7 +62,7 @@ if ($module=='kslihatks' AND $act=='simpanapt')
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
         mysqli_close($cnmy);
-        //header('location:../../eksekusi3.php?module=simpaneditapotikks&idmenu='.$idmenu.'&act=complete');
+        ////header('location:../../eksekusi3.php?module=simpaneditapotikks&idmenu='.$idmenu.'&act=complete');
         header('location:../../media.php?module=kslihatks&idmenu=395&act=complete');
         
     }elseif ($pkodeid=="1") {

@@ -4,7 +4,7 @@
 
 <div class="">
 
-    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Report Sales Per MR</h3></div></div><div class="clearfix"></div>
+    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Report Sales Per SPV AM</h3></div></div><div class="clearfix"></div>
     <!--row-->
     <div class="row">
         <?php

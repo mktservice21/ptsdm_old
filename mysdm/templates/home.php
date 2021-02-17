@@ -834,6 +834,11 @@
     }elseif ($_GET['module']=='mapbagislsmanual'){
         include 'module/map_bagisalesmanual/bagisalesmanual.php';
         
+    }elseif ($_GET['module']=='incentivemr'){
+        include 'module/incentive/inc_incentivemr/incentivemr.php';
+    }elseif ($_GET['module']=='incentiveam'){
+        include 'module/incentive/inc_incentiveam/incentiveam.php';
+        
         
     }else{
         include 'del_session.php';

@@ -1,3 +1,7 @@
+<?php
+    include "config/cek_akses_modul.php";
+?>
+
 <div class="">
 
     <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Report Sales Per MR</h3></div></div><div class="clearfix"></div>
@@ -127,22 +131,27 @@
                                                          */
                                                         $query .= " AND b.nama NOT IN ('ACCOUNTING')";
                                                     }else{
-                                                        if ($pmyidcard=="0000000158" OR $pmyidcard=="0000000159") {
+                                                        if ($pmygroupid<>"24" AND $pmyjabatanid=="38") {
                                                             $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
-                                                                    . " JOIN sls.icabang c on a.icabangid=c.icabangid where 1=1 ";
-                                                            $query .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
-                                                                    . " and LEFT(b.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
-                                                                    . " and LEFT(b.nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
-                                                                    . " AND LEFT(b.nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
-                                                                    . " AND LEFT(b.nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
-                                                            $query .= " AND b.nama NOT IN ('ACCOUNTING')";
-                                                            if ($pmyidcard=="0000000158") {
-                                                                $query .= " AND c.region='B' ";
-                                                            }elseif ($pmyidcard=="0000000159") {
-                                                                $query .= " AND c.region='T' ";
-                                                            }
+                                                                    . " JOIN ms.rsm_auth c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
                                                         }else{
-                                                            $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid ";
+                                                            if ($pmyidcard=="0000000158" OR $pmyidcard=="0000000159") {
+                                                                $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
+                                                                        . " JOIN sls.icabang c on a.icabangid=c.icabangid where 1=1 ";
+                                                                $query .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                                        . " and LEFT(b.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                                        . " and LEFT(b.nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                                        . " AND LEFT(b.nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                                        . " AND LEFT(b.nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                                                $query .= " AND b.nama NOT IN ('ACCOUNTING')";
+                                                                if ($pmyidcard=="0000000158") {
+                                                                    $query .= " AND c.region='B' ";
+                                                                }elseif ($pmyidcard=="0000000159") {
+                                                                    $query .= " AND c.region='T' ";
+                                                                }
+                                                            }else{
+                                                                $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid ";
+                                                            }
                                                         }
                                                     }
                                                     $query .=" order by b.nama";

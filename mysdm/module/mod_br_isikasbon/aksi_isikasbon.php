@@ -16,6 +16,11 @@ if ($module=='entrybrkasbon' AND $act=='hapus')
     mysqli_query($cnmy, "update $dbname.t_kasbon set stsnonaktif='Y', userid='$_SESSION[IDCARD]' WHERE idkasbon='$_GET[id]'");
     header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
 }
+elseif ($module=='entrybrkasbon' AND $act=='statusselesai')
+{
+    mysqli_query($cnmy, "update $dbname.t_kasbon set iselesai='Y', userid='$_SESSION[IDCARD]' WHERE idkasbon='$_GET[id]'");
+    header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
+}
 elseif ($module=='entrybrkasbon')
 {
     $kodenya=$_POST['e_id'];

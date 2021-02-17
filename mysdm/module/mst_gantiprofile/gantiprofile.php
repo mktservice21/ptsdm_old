@@ -11,7 +11,7 @@ switch($pactpilih){
 
         <div class="">
 
-            <div class="page-title"><div class="title_left"><h3>Profile</h3></div></div><div class="clearfix"></div>
+            <div class="page-title"><div class="title_left"><h3>Foto Profile</h3></div></div><div class="clearfix"></div>
             <!--row-->
             <div class="row">
                 <form method='POST' action='<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]"; ?>' 

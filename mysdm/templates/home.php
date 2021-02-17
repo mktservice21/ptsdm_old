@@ -2,8 +2,8 @@
     <?PHP
     if ($_GET['module']=="user"){
         include 'module/mod_tools_users/users.php';
-    }elseif ($_GET['module']=='employee'){
-        //include 'module/mod_employee/employee.php';
+    }elseif ($_GET['module']=='gantiprofile'){
+        include 'module/mst_gantiprofile/gantiprofile.php';
     }elseif ($_GET['module']=='groupuser'){
         include 'module/mod_tools_groupuser/groupuser.php';
     }elseif ($_GET['module']=='menuutama'){

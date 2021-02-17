@@ -598,7 +598,8 @@
     }elseif ($_GET['module']=='simpaneditapotikks'){
         include 'module/ks_lihatks/berhasilsimapnaptedt.php';
         
-        
+    }elseif ($_GET['module']=='incentivemr'){
+        include 'module/incentive/inc_incentivemr/aksi_incentivemr.php';
         
         
         

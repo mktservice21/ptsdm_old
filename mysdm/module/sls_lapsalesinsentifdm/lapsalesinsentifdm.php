@@ -37,6 +37,19 @@
                         }
                     }
                 </script>
+                
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        $('#cblnn01').datetimepicker({
+                            ignoreReadonly: true,
+                            allowInputToggle: true,
+                            format: 'MMMM YYYY',
+                            minDate: new Date(2021, 0 , 01),
+                        });
+                    });
+                    
+                </script>
+                
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                     <div class='x_panel'>
                         <form name='form1' id='form1' method='POST' action="<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]"; ?>" enctype='multipart/form-data' target="_blank">
@@ -59,8 +72,8 @@
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cbln01'>Bulan <span class='required'></span></label>
                                             <div class='col-md-8'>
                                                 <div class="form-group">
-                                                    <div class='input-group date' id='cbln01'>
-                                                        <input type='text' id='cbln01' name='bulan' required='required' class='form-control' placeholder='tgl awal' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
+                                                    <div class='input-group date' id='cblnn01'>
+                                                        <input type='text' id='cblnn01' name='bulan' required='required' class='form-control' placeholder='tgl awal' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
                                                         <span class="input-group-addon">
                                                            <span class="glyphicon glyphicon-calendar"></span>
                                                         </span>

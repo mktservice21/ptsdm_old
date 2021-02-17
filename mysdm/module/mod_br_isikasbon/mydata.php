@@ -13,7 +13,8 @@ $columns = array(
     3=> 'nama',
     4=> 'tgl',
     5=> 'jumlah',
-    6=> 'keterangan'
+    6=> 'keterangan',
+    7=> 'iselesai'//status
 );
 
 $tgl1="";
@@ -31,7 +32,7 @@ $tgl2= date("Y-m-d", strtotime($tgl2));
 // getting total number records without any search
 $sql = "SELECT idkasbon, DATE_FORMAT(tgl,'%d %M %Y') as tgl, "
         . " divisi, FORMAT(jumlah,0,'de_DE') as jumlah, "
-        . " nama, keterangan ";
+        . " nama, keterangan, iselesai ";
 $sql.=" FROM dbmaster.t_kasbon ";
 $sql.=" WHERE IFNULL(stsnonaktif,'') <> 'Y' ";
 //$sql.=" AND Date_format(tgl, '%Y-%m') between '$tgl1' and '$tgl2' ";
@@ -48,6 +49,7 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
     $sql.=" OR nama LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR karyawanid LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR keterangan LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR iselesai LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR DATE_FORMAT(tgl,'%d %M %Y') LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR divisi LIKE '%".$requestData['search']['value']."%' )";
 }
@@ -62,16 +64,24 @@ $no=1;
 while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData=array();
     $idno=$row['idkasbon'];
+    $selesaiid=$row['iselesai'];
+    
+    $pedit = "<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$idno'>Edit</a>";
+    $phapus = "<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$idno')\">";
+    $pstatus = "<input type='button' value='Selesai' class='btn btn-dark btn-xs' onClick=\"ProsesDataStatus('status', '$idno')\">";
+    
+    if ($selesaiid=="Y") $pstatus="";
+    
     $nestedData[] = $no;
-    $nestedData[] = ""
-            . "<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$idno'>Edit</a> "
-            . "<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$idno')\">
-    ";
+    $nestedData[] = "$pedit $phapus $pstatus";
+    
+    
     $nestedData[] = $idno;
     $nestedData[] = $row["tgl"];
     $nestedData[] = $row["nama"];
     $nestedData[] = $row["jumlah"];
     $nestedData[] = $row["keterangan"];
+    $nestedData[] = "$selesaiid";
 
     $data[] = $nestedData;
     $no=$no+1;

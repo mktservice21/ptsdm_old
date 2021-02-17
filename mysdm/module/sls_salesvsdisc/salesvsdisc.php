@@ -14,7 +14,7 @@
         $puserid=$_SESSION['USERID'];
         
         $phiddenreg="";
-        if ($pgroupid=="43" OR $pgroupid=="40") $phiddenreg="hidden";
+        if ($pgroupid=="43" OR $pgroupid=="40" OR $pgroupid=="48" OR $pgroupid=="51" OR $pgroupid=="38") $phiddenreg="hidden";
                 
         $aksi="eksekusi3.php";
         switch($_GET['act']){
@@ -151,20 +151,25 @@
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <select class='form-control input-sm' id='e_iddivisi' name='e_iddivisi' onchange="ShowRegion()">
                                                     <?PHP
-                                                    echo "<option value='EO' selected>All (Tanpa CHC & OTHERS)</option>";
-                                                    //echo "<option value='OTC'>CHC</option>";
-                                                    $query = "SELECT DivProdId as divprodid, nama as nama "
-                                                            . " FROM dbmaster.divprod where br='Y' AND DivProdId NOT IN ('HO', 'EAGLE', 'PIGEO') ";//AND DivProdId NOT IN ('OTHER', 'OTHERS')
-                                                    $query .=" order by nama";
-                                                    $tampil=mysqli_query($cnmy, $query);
-                                                    while($et=mysqli_fetch_array($tampil)){
-                                                        $netdivprod=$et['divprodid'];
-                                                        $netdivnm=$et['nama'];
-                                                        if ($netdivprod=="CAN") $netdivnm="CANARY / ETHICAL";
-                                                        if ($netdivprod=="OTC") $netdivnm="CHC";
-                                                        
-                                                        echo "<option value='$netdivprod'>$netdivnm</option>";
+                                                    if ($pgroupid=="48" OR $pgroupid=="51" OR $pgroupid=="38") {
+                                                        echo "<option value='OTC'>CHC</option>";
+                                                    }else{
+                                                    
+                                                        echo "<option value='EO' selected>All (Tanpa CHC & OTHERS)</option>";
+                                                        //echo "<option value='OTC'>CHC</option>";
+                                                        $query = "SELECT DivProdId as divprodid, nama as nama "
+                                                                . " FROM dbmaster.divprod where br='Y' AND DivProdId NOT IN ('HO', 'EAGLE', 'PIGEO') ";//AND DivProdId NOT IN ('OTHER', 'OTHERS')
+                                                        $query .=" order by nama";
+                                                        $tampil=mysqli_query($cnmy, $query);
+                                                        while($et=mysqli_fetch_array($tampil)){
+                                                            $netdivprod=$et['divprodid'];
+                                                            $netdivnm=$et['nama'];
+                                                            if ($netdivprod=="CAN") $netdivnm="CANARY / ETHICAL";
+                                                            if ($netdivprod=="OTC") $netdivnm="CHC";
 
+                                                            echo "<option value='$netdivprod'>$netdivnm</option>";
+
+                                                        }
                                                     }
                                                     ?>
                                                 </select>

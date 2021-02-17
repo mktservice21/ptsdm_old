@@ -98,6 +98,7 @@
                                                     if ($pmygroupid=="1" OR $pmygroupid=="24") {
                                                     }else{
                                                         if ($pmyjabatanid=="20") $query .=" AND id_sm='$pmyidcard' ";
+                                                        if ($pmyjabatanid=="38") $query .=" AND id_admin='$pmyidcard' ";
                                                         
                                                         if ($pmyidcard=="0000000158") $query .=" AND region='B' ";
                                                         if ($pmyidcard=="0000000159") $query .=" AND region='T' ";

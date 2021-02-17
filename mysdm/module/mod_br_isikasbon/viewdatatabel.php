@@ -45,7 +45,7 @@
                 { "orderable": false, "targets": 0 },
                 { "orderable": false, "targets": 1 },
                 { className: "text-right", "targets": [5] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6] }//nowrap
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7] }//nowrap
 
             ],
             "language": {
@@ -92,10 +92,31 @@
             //document.write("You pressed Cancel!")
             return 0;
         }
-
-
-
     }
+    
+    function ProsesDataStatus(ket, noid){
+
+        ok_ = 1;
+        if (ok_) {
+            var r = confirm('Apakah akan melakukan proses ...?');
+            if (r==true) {
+
+                var myurl = window.location;
+                var urlku = new URL(myurl);
+                var module = urlku.searchParams.get("module");
+                var idmenu = urlku.searchParams.get("idmenu");
+
+                //document.write("You pressed OK!")
+                document.getElementById("d-form2").action = "module/mod_br_isikasbon/aksi_isikasbon.php?module="+module+"&idmenu="+idmenu+"&act=statusselesai&kethapus="+"&ket="+ket+"&id="+noid;
+                document.getElementById("d-form2").submit();
+                return 1;
+            }
+        } else {
+            //document.write("You pressed Cancel!")
+            return 0;
+        }
+    }
+    
 </script>
 
 <style>
@@ -120,12 +141,13 @@
             <thead>
                 <tr>
                     <th width='5px'>NO</th>
-                    <th width='50px'>AKSI</th>
+                    <th width='50px'></th>
                     <th width='20px'>ID</th>
                     <th width='30px'>TANGGAL</th>
                     <th width='50px'>NAMA</th>
                     <th width='20px'>JUMLAH</th>
                     <th width='200px'>KETERANGAN</th>
+                    <th width='20px'>STATUS</th>
                 </tr>
             </thead>
         </table>

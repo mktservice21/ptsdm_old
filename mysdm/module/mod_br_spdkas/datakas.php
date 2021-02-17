@@ -189,7 +189,7 @@ if ($_GET['module']=="viewdatakas"){
 
 
         $query = "select a.idkasbon, a.nama, a.keterangan, a.jumlah, a.tgl
-            from dbmaster.t_kasbon a WHERE IFNULL(stsnonaktif,'')<>'Y' AND 
+            from dbmaster.t_kasbon a WHERE IFNULL(stsnonaktif,'')<>'Y' AND IFNULL(iselesai,'')<>'Y' AND 
             YEAR(a.tgl) >= '$mytahun' $nfilter_sudahada"; 
 
         $query = "create TEMPORARY table $tmp01 ($query)"; 

@@ -600,6 +600,8 @@
         
     }elseif ($_GET['module']=='incentivemr'){
         include 'module/incentive/inc_incentivemr/aksi_incentivemr.php';
+    }elseif ($_GET['module']=='incentiveam'){
+        include 'module/incentive/inc_incentiveam/aksi_incentiveam.php';
         
         
         

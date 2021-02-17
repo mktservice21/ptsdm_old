@@ -95,7 +95,8 @@ mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 $query = "select a.groupp, a.divprodid, a.iprodid, b.nama as nama_produk, 
-        sum(a.qty_sales) as qty_sales, sum(a.value_sales) as value_sales, sum(a.qty_target) as qty_target, sum(a.value_target) as value_target from ms.sales_mr as a JOIN sls.iproduk as b on a.iprodid=b.iprodid
+        sum(a.qty_sales) as qty_sales, sum(a.value_sales) as value_sales, sum(a.qty_target) as qty_target, sum(a.value_target) as value_target 
+        from ms.sales_mr as a JOIN sls.iproduk as b on a.iprodid=b.iprodid 
         WHERE a.bulan between '$pbln1' AND '$pbln2' ";
 $query .= " AND a.karyawanid='$pkaryawanid'";
 $query .= " GROUP BY 1,2,3,4";

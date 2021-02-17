@@ -42,9 +42,9 @@ $pbulan = date("F Y", strtotime($tgl01));
 
 $milliseconds = round(microtime(true) * 1000);
 $now=date("mdYhis");
-$tmp01 ="dbtemp.tmpdminstf01_".$puser."_$now$milliseconds";
-$tmp02 ="dbtemp.tmpdminstf02_".$puser."_$now$milliseconds";
-$tmp03 ="dbtemp.tmpdminstf03_".$puser."_$now$milliseconds";
+$tmp01 ="dbtemp.tmpmrinstf01_".$puser."_$now$milliseconds";
+$tmp02 ="dbtemp.tmpmrinstf02_".$puser."_$now$milliseconds";
+$tmp03 ="dbtemp.tmpmrinstf03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 

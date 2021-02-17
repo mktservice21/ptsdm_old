@@ -229,3 +229,32 @@ if ($plogit_akses==true) {
     }
     
 ?>
+
+
+<?php
+$data = [
+    "api_key" => "kKCrFZZwwgQCiP4KeUis",
+    "distid" => "$distributor",
+    "date" => "$pakhirbulan",
+    "subdist" => "$subdist"
+  ];
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, "http://ms2.marvis.id/api/sales");
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json'
+  ));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+  $response = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  
+  if (empty($httpcode)) $httpcode=0;
+  if ((INT)$httpcode==201) {
+      echo "<br/>Berhasil insert elastic...";
+  }else{
+      echo "<br/>Gagal insert elastic...";
+  }
+?>

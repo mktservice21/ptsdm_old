@@ -78,7 +78,7 @@
 			
 			//$query .=" AND a.stsinput NOT IN ('N', 'D') ";
         //bunga dan listrik (Debit) latai 2
-			$query .=" AND ( a.stsinput NOT IN ('N', 'D') OR (a.stsinput='D' AND a.subkode IN ('31', '27') AND a.userid='0000000148') )";
+			$query .=" AND ( a.stsinput NOT IN ('N', 'D') OR (a.stsinput='D' AND a.subkode IN ('31', '40') AND a.userid='0000000148') )";
 			$query .=" AND IFNULL(a.sudahklaim,'') <>'Y' ";
 			$query .=" AND a.idinputbank NOT IN (select distinct IFNULL(idinputbank,'') from dbmaster.t_suratdana_br WHERE IFNULL(idinputbank,'')<>'') ";
 			
@@ -96,7 +96,7 @@
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 		
         //setoran listrik latai 2 (Debit) diganti jadi munus
-        $query = "UPDATE $tmp02 SET jumlah=FORMAT(0-IFNULL(jmlrp,0),0,'de_DE') WHERE CONCAT(kodeid, subkode) IN ('227') AND IFNULL(jumlah,0)>0 AND IFNULL(stsinput,'')='D'"; 
+        $query = "UPDATE $tmp02 SET jumlah=FORMAT(0-IFNULL(jmlrp,0),0,'de_DE') WHERE CONCAT(kodeid, subkode) IN ('240') AND IFNULL(jumlah,0)>0 AND IFNULL(stsinput,'')='D'"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 	

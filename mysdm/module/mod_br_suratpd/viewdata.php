@@ -168,7 +168,7 @@ if ($_GET['module']=="gantitombol") {
         }
         
         
-        $query="SELECT SUM(jumlah) as jumlah from dbmaster.t_suratdana_bank WHERE idinputbank IN $pnoid AND CONCAT(kodeid, subkode) NOT IN ('231')";
+        $query="SELECT SUM(jumlah) as jumlah from dbmaster.t_suratdana_bank WHERE idinputbank IN $pnoid AND CONCAT(kodeid, subkode) NOT IN ('231', '240')";
         $tampil_b= mysqli_query($cnmy, $query);
         $ketemu_b= mysqli_num_rows($tampil_b);
         if ($ketemu_b>0) {
@@ -177,8 +177,8 @@ if ($_GET['module']=="gantitombol") {
         }
 		
 		
-        //BUNGA YANG PLUS dijadikan MINUS
-        $query="SELECT SUM(0-IFNULL(jumlah,0)) as jumlah from dbmaster.t_suratdana_bank WHERE idinputbank IN $pnoid AND CONCAT(kodeid, subkode) IN ('231') AND IFNULL(jumlah,0)>0";
+        //BUNGA YANG PLUS dijadikan MINUS dan TAGIHAN LISTRIK (PLN) PT. PRIMA SENTRA MEDIKA
+        $query="SELECT SUM(0-IFNULL(jumlah,0)) as jumlah from dbmaster.t_suratdana_bank WHERE idinputbank IN $pnoid AND CONCAT(kodeid, subkode) IN ('231', '240') AND IFNULL(jumlah,0)>0";
         $tampil_p= mysqli_query($cnmy, $query);
         $ketemu_p= mysqli_num_rows($tampil_p);
         if ($ketemu_p>0) {

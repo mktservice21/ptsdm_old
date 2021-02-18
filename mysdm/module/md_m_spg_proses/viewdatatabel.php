@@ -273,7 +273,7 @@
                     
                 <th width='200px' align="center">Total</th>
                 <th width='200px' align="center">Total dan BPJS</th>
-                <th width='200px' align="center">Gaji Asli</th>
+                <th width='200px' align="center">Gaji System</th>
                     
             </thead>
             <tbody>

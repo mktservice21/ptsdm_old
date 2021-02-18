@@ -838,6 +838,8 @@
         include 'module/incentive/inc_incentivemr/incentivemr.php';
     }elseif ($_GET['module']=='incentiveam'){
         include 'module/incentive/inc_incentiveam/incentiveam.php';
+    }elseif ($_GET['module']=='incentivedm'){
+        include 'module/incentive/inc_incentivedm/incentivedm.php';
         
         
     }else{

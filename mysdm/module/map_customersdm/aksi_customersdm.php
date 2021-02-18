@@ -98,7 +98,7 @@ elseif ($module=='mapcustomersdm' AND ($act=='input' OR $act=='update'))
     
     
     if ($act=="input") {
-        $query = "select max(icustid) as icustid
+        $query = "select max(icustid_old) as icustid
                   from MKT.icust
                   where icabangid='".$pidcab."' AND areaid='".$pidarea."'";
         $result = mysqli_query($cnms, $query);
@@ -120,7 +120,7 @@ elseif ($module=='mapcustomersdm' AND ($act=='input' OR $act=='update'))
         $query = "insert into MKT.icust SET icabangid='".$pidcab."',
                   areaid='".$pidarea."',
                   isektorid='".$pisektorid."',
-                  icustid='".$kodenya."',
+                  icustid_old='".$kodenya."',
                   nama='".$pnamaid."',
                   alamat1='".$palamatid1."',
                   alamat2='".$palamatid2."',

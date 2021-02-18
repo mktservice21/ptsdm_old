@@ -602,6 +602,8 @@
         include 'module/incentive/inc_incentivemr/aksi_incentivemr.php';
     }elseif ($_GET['module']=='incentiveam'){
         include 'module/incentive/inc_incentiveam/aksi_incentiveam.php';
+    }elseif ($_GET['module']=='incentivedm'){
+        include 'module/incentive/inc_incentivedm/aksi_incentivedm.php';
         
         
         

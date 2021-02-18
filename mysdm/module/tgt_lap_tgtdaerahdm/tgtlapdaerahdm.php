@@ -12,6 +12,22 @@
         $pmygroupid=$_SESSION['GROUP'];
         $pidcabangpil="";
         
+		$pmxtahun=0;
+		$pmxbln=0;
+        $query = "select bulan from ms.tpd_bulan order by bulan desc LIMIT 1";
+        $tampil=mysqli_query($cnms, $query);
+		$ketemu=mysqli_num_rows($tampil);
+		if ((INT)$ketemu>0) {
+			$nrow=mysqli_fetch_array($tampil);
+			$itgl=$nrow['bulan'];
+			if (!empty($itgl)) {
+				$pmxtahun = date("Y", strtotime($itgl));
+				$pmxbln = date("m", strtotime($itgl));
+				$pmxbln=(INT)$pmxbln-1;
+			}
+		}
+		
+        
         $aksi="eksekusi3.php";
         switch($_GET['act']){
             default:
@@ -45,7 +61,7 @@
                             ignoreReadonly: true,
                             allowInputToggle: true,
                             format: 'MMMM YYYY',
-                            maxDate: new Date(2021, 2 , 01),
+                            maxDate: new Date(<?PHP echo $pmxtahun; ?>, <?PHP echo $pmxbln; ?> , 01),
                         });
                     });
                     

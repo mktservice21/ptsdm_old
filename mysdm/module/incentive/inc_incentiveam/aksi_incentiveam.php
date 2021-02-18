@@ -350,8 +350,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             <tr>
                 <th>Group</th>
                 <th>Produk</th>
-                <th>Sales</th>
-                <th>Target</th>
+                <th>Qty Sales</th>
+                <th>Value Sales</th>
+                <th>Qty Target</th>
+                <th>Value Target</th>
                 <th>Ach</th>
             </tr>
         </thead>
@@ -393,7 +395,9 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 echo "<tr>";
                 echo "<td nowrap>$ngroup</td>";
                 echo "<td nowrap>$nnmproduk</td>";
+                echo "<td nowrap align='right'>$pqtysls</td>";
                 echo "<td nowrap align='right'>$pvalsls</td>";
+                echo "<td nowrap align='right'>$pqtytgt</td>";
                 echo "<td nowrap align='right'>$pvaltgt</td>";
                 echo "<td nowrap align='right'>$pach</td>";
                 echo "</tr>";
@@ -613,8 +617,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 "order": [[ 0, "asc" ]],
                 "columnDefs": [
                     { "visible": false },
-                    { className: "text-right", "targets": [2,3,4] },//right
-                    { className: "text-nowrap", "targets": [0,1,2,3,4] }//nowrap
+                    { className: "text-right", "targets": [2,3,4,5,6] },//right
+                    { className: "text-nowrap", "targets": [0,1,2,3,4,5,6] }//nowrap
 
                 ],
                 bFilter: true, bInfo: true, "bLengthChange": false, "bLengthChange": true,

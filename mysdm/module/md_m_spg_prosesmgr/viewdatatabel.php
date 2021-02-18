@@ -109,7 +109,7 @@
                 
                 <th align="center">BPJS KRY</th>
                 <th align="center">BPJS SDM</th>
-                <th align="center">Gaji Asli</th>
+                <th align="center">Gaji System</th>
                 
                 <th align="center">Jabatan</th>
                 <th align="center">Area</th>

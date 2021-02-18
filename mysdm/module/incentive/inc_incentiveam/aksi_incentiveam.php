@@ -42,9 +42,9 @@ $pbulan = date("F Y", strtotime($tgl01));
 
 $milliseconds = round(microtime(true) * 1000);
 $now=date("mdYhis");
-$tmp01 ="dbtemp.tmprptincmr01_".$puser."_$now$milliseconds";
-$tmp02 ="dbtemp.tmprptincmr02_".$puser."_$now$milliseconds";
-$tmp03 ="dbtemp.tmprptincmr03_".$puser."_$now$milliseconds";
+$tmp01 ="dbtemp.tmprptincam01_".$puser."_$now$milliseconds";
+$tmp02 ="dbtemp.tmprptincam02_".$puser."_$now$milliseconds";
+$tmp03 ="dbtemp.tmprptincam03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 
@@ -164,15 +164,15 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 <?PHP
                 
                 if ($ppilihrpt=="excel") {
-                    echo "<tr><td colspan=5 width='150px'><b>Incentive AM</b></td></tr>";
+                    echo "<tr><td colspan=5 width='150px'><b>Incentive AM/SPV</b></td></tr>";
                     echo "<tr><td colspan=5 width='150px'><b>Bulan : $pbulan</b></td></tr>";
-                    echo "<tr><td colspan=5 width='150px'><b>MR : $pnamakaryawan</b></td></tr>";
+                    echo "<tr><td colspan=5 width='150px'><b>AM/SPV : $pnamakaryawan</b></td></tr>";
                     
                     echo "<tr><td colspan=5 width='150px'>view date : $pviewdate</td></tr>";
                 }else{
-                    echo "<tr><td width='150px'><b><h3>Incentive AM</h3></b></td></tr>";
+                    echo "<tr><td width='150px'><b><h3>Incentive AM/SPV</h3></b></td></tr>";
                     echo "<tr><td width='150px'><b>Bulan : $pbulan</b></td></tr>";
-                    echo "<tr><td width='150px'><b>MR : $pnamakaryawan</b></td></tr>";
+                    echo "<tr><td width='150px'><b>AM/SPV : $pnamakaryawan</b></td></tr>";
                     
                     echo "<tr><td width='150px'><i>view date : $pviewdate</i></td></tr>";
                 }

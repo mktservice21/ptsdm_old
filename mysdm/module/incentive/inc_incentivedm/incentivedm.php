@@ -71,7 +71,7 @@
                                         
                                         
                                         <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>MR <span class='required'></span></label>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DM <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <select class='form-control' name='cb_karyawan' id='cb_karyawan' onchange="">
                                                     <?PHP

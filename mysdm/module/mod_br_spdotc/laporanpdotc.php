@@ -102,11 +102,11 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "ALTER TABLE $tmp02 ADD COLUMN urutan INT(4), ADD COLUMN grp1 VARCHAR(10)";
+    $query = "ALTER TABLE $tmp02 ADD COLUMN urutan INT(4), ADD COLUMN grp1 VARCHAR(10), ADD jml_adj DECIMAL(20,2), ADD ketadj1 VARCHAR(100), ADD ketadj2 VARCHAR(100)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "UPDATE $tmp02 a JOIN $tmp01 b on a.brotcid=b.bridinput SET a.urutan=b.urutan, a.jumlah=b.amount";
+    $query = "UPDATE $tmp02 a JOIN $tmp01 b on a.brotcid=b.bridinput SET a.urutan=b.urutan, a.jumlah=b.amount, a.jml_adj=b.jml_adj, a.ketadj1=b.ketadj1, a.ketadj2=b.ketadj2";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -129,7 +129,14 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    
+    $query = "insert into $tmp03 (brotcid, icabangid_o, nama_cabang, real1, bankreal1, norekreal1, 
+        jumlah, realisasi, keterangan1, keterangan2, 
+        batal, urutan, grp1)
+        select brotcid, icabangid_o, nama_cabang, real1, bankreal1, norekreal1, 
+        jml_adj as jumlah, jml_adj as realisasi, ketadj1 as keterangan1, ketadj2 as keterangan2, 
+        batal, urutan, grp1 from $tmp02 where ifnull(jml_adj,0)<>0";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $gmrheight = "100px";

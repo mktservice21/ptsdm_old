@@ -17,7 +17,9 @@
         5=> 'nomor',
         6=> 'tgl',
         7=> 'nodivisi',
-        8=> 'jumlah'
+        8=> 'jumlah',
+        9=> 'jumlah2',
+        10=> 'jumlah'
     );
     
     $tgl1=$_GET['uperiode1'];
@@ -30,7 +32,8 @@
     //FORMAT(realisasi1,2,'de_DE') as 
     // getting total number records without any search
     $sql = "SELECT idinput, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, DATE_FORMAT(tglinput,'%Y%m') tglinput, "
-            . "divisi, kodeid, nama, subkode, subnama, FORMAT(jumlah,0,'de_DE') as jumlah, "
+            . "divisi, kodeid, nama, subkode, subnama, FORMAT(jumlah,0,'de_DE') as jumlah, FORMAT(jumlah2,0,'de_DE') as jumlah2, "
+            . " FORMAT(IFNULL(jumlah,0)+IFNULL(jumlah2,0),'de_DE') as jmltrans, "
             . " nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, DATE_FORMAT(tgl_proses,'%d/%m/%Y') tgl_proses, jenis_rpt, periodeby, "
             . " tgl_apv1, tgl_apv2, tgl_dir, tgl_dir2 ";
     $sql.=" FROM dbmaster.v_suratdana_br ";
@@ -74,6 +77,8 @@
         $pnomor=$row['nomor'];
         $ptgl=$row['tgl'];
         $pjumlah=$row['jumlah'];
+        $pjumlah2=$row['jumlah2'];
+        $pjtrans=$row['jmltrans'];
         $ndiviotc=$row["nodivisi"];
         $pkode=$row["kodeid"];
         $psubkode=$row["subkode"];
@@ -163,6 +168,8 @@
         $nestedData[] = $ptgl;
         $nestedData[] = $ndiviotc;
         $nestedData[] = $pjumlah;
+        $nestedData[] = $pjumlah2;
+        $nestedData[] = $pjtrans;
         //$nestedData[] = $nourut;
 
         $data[] = $nestedData;

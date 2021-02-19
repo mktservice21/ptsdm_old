@@ -6,7 +6,7 @@
     ini_set('max_execution_time', 0);
     
     session_start();
-    include "../../config/koneksimysqli_it.php";
+    //include "../../config/koneksimysqli_it.php";
     include "../../config/fungsi_sql.php";
     include "../../config/library.php";
     

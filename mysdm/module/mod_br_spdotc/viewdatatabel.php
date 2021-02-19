@@ -44,8 +44,8 @@
                 { "visible": false },
                 { "orderable": false, "targets": 0 },
                 { "orderable": false, "targets": 1 },
-                { className: "text-right", "targets": [8] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8] }//nowrap
+                { className: "text-right", "targets": [8,9,10] },//right
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8,9,10] }//nowrap
 
             ],
             "language": {
@@ -122,6 +122,8 @@
                     <th width='40px'>Tanggal</th>
                     <th width='50px'>No. BR</th>
                     <th width='50px'>Jumlah</th>
+                    <th width='50px'>Jml Adjustment</th>
+                    <th width='50px'>Jml Transfer</th>
                     <!--<th width='50px' nowrap>No. Urut</th>-->
                 </tr>
             </thead>

@@ -20,10 +20,9 @@ $columns = array(
     1 => 'NAMA_KATEGORI',
     2=> 'IDBARANG',
     3=> 'NAMABARANG',
-    4=> 'NAMA_SUP',
-    5=> 'HARGA',
-    6=> 'STSNONAKTIF',
-    7=> 'NAMA_TIPE'
+    4=> 'HARGA',
+    5=> 'STSNONAKTIF',
+    6=> 'NAMA_TIPE'
     
 );
 
@@ -123,7 +122,6 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $pnmkategori;
     $nestedData[] = $pidbrg;
     $nestedData[] = $pnmbrg;
-    $nestedData[] = $pnmsupplier;
     $nestedData[] = $phargarp;
     $nestedData[] = $paktifbrg;
     $nestedData[] = $pnmtipe;

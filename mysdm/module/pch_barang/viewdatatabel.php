@@ -39,8 +39,8 @@
                 { "orderable": true, "targets": 1 },
                 { "orderable": true, "targets": 2 },
                 { "orderable": true, "targets": 4 },
-                { className: "text-right", "targets": [5] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4,5,6,7] }//nowrap
+                { className: "text-right", "targets": [4] },//right
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4,5,6] }//nowrap
 
             ],
             "language": {
@@ -75,7 +75,6 @@
                     <th width='10px'>Kategori</th>
                     <th width='10px'>ID BRG.</th>
                     <th width='200px'>Nama</th>
-                    <th width='100px'>Vendor</th>
                     <th width='40px'>Harga</th>
                     <th width='40px'>Status</th>
                     <th width='40px'>Tipe</th>

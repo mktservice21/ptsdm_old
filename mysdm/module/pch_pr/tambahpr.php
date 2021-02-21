@@ -353,7 +353,7 @@ if ($pact=="editdata"){
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tipe <span class='required'></span></label>
                                     <div class='col-xs-5'>
-                                        <select class='form-control input-sm' id='cb_tipeaju' name='cb_tipeaju' onchange="" data-live-search="true">
+                                        <select class='form-control input-sm' id='cb_tipeaju' name='cb_tipeaju' onchange="ShowDataTipe()" data-live-search="true">
                                             <?PHP
                                                 $query = "select idtipe as idtipe, nama_tipe as nama_tipe from dbpurchasing.t_pr_tipe WHERE IFNULL(aktif,'')<>'N'";
                                                 $tampil=mysqli_query($cnmy, $query);
@@ -595,7 +595,7 @@ if ($pact=="editdata"){
                                     </div>
                                 </div>
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID Barang <span class='required'></span></label>
                                     <div class='col-xs-3'>
                                         <div class='input-group '>
@@ -639,10 +639,11 @@ if ($pact=="editdata"){
                                     </div>
                                 </div>
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Harga <span class='required'></span></label>
                                     <div class='col-xs-3'>
                                         <input type='text' id='e_hrgbrg' name='e_hrgbrg' class='form-control col-md-7 col-xs-12 inputmaskrp2'  >
+                                        *) harga estimasi, bisa dikosongkan...
                                     </div>
                                 </div>
                                 
@@ -904,6 +905,9 @@ th {
         });
     }    
     
+    function ShowDataTipe() {
+        $(".inputdata").html("");
+    }
     
     
     function getDataBarang(data1, data2, data3, data4){

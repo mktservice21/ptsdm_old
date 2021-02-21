@@ -578,6 +578,8 @@
         include 'module/pch_pr/iviewdatapr.php';
     }elseif ($_GET['module']=='pchpotransaksi'){
         include 'module/pch_purchaseorder/iviewdatapo.php';
+    }elseif ($_GET['module']=='pchdatabarang'){
+        include 'module/pch_barang/lihatgambar.php';
         
         
     }elseif ($_GET['module']=='isikartustatus'){

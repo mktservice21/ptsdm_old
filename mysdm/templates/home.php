@@ -762,6 +762,8 @@
         include 'module/pch_vendorpr/vendorpr.php';
     }elseif ($_GET['module']=='pchpotransaksi'){
         include 'module/pch_purchaseorder/purchaseorder.php';
+    }elseif ($_GET['module']=='pchdatabarang'){
+        include 'module/pch_barang/pchbarang.php';
         
     }elseif ($_GET['module']=='mapsalescust'){
         include 'module/sls_mapsalescust/mapsalescust.php';

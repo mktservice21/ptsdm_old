@@ -18,12 +18,13 @@ $query = "select a.idpr, a.idpr_d,
     a.idbarang, a.namabarang, 
     a.idbarang_d, a.spesifikasi1, a.spesifikasi2, 
     a.uraian, a.keterangan, 
-    a.jumlah as jml, a.harga as rp_pr, a.satuan 
-    from dbpurchasing.t_pr_transaksi_d as a WHERE 
+    a.jumlah as jml, a.harga as rp_pr, a.satuan, b.idtipe 
+    from dbpurchasing.t_pr_transaksi_d as a JOIN dbpurchasing.t_pr_transaksi as b on a.idpr=b.idpr WHERE 
     a.idpr_d='$pidbr_d' ";
 $tampil= mysqli_query($cnmy, $query);
 $nrw= mysqli_fetch_array($tampil);
 
+$ptipepengajuan=$nrw['idtipe'];
 $pidbrg=$nrw['idbarang'];
 $pnmbrg=$nrw['namabarang'];
 $pidbrg2=$nrw['idbarang_d'];
@@ -167,6 +168,7 @@ if ($pact=="editisivendor") {
                                     <div class='col-md-4'>
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput; ?>' Readonly>
                                         <input type='hidden' id='e_idcardlogin' name='e_idcardlogin' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcardpl; ?>' Readonly>
+                                        <input type='hidden' id='e_idtipepengajuan' name='e_idtipepengajuan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $ptipepengajuan; ?>' Readonly>
                                     </div>
                                 </div>
                                 
@@ -532,11 +534,12 @@ th {
     
     function getDataBarang(data1, data2){
         var eidinput =document.getElementById('e_id').value;
+        var eidtp =document.getElementById('e_idtipepengajuan').value;
         
         $.ajax({
             type:"post",
             url:"module/pch_vendorpr/viewdata_barangprvr.php?module=viewdatabarang",
-            data:"udata1="+data1+"&udata2="+data2+"&uidinput="+eidinput,
+            data:"udata1="+data1+"&udata2="+data2+"&uidinput="+eidinput+"&uidtp="+eidtp,
             success:function(data){
                 $("#myModal").html(data);
             }

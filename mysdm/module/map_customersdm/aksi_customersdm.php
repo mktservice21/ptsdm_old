@@ -26,14 +26,21 @@ if ($module=='mapcustomersdm' AND $act=='hapusmaping')
             mysqli_close($cnms);
             exit;
         }
-        $kodenya=$_GET['id'];
+        $pidcust=$_GET['idcust'];
+        $pidcab=$_GET['idcb'];
+        $pidarea=$_GET['idar'];
+        
+        $kodenya=$pidcab."".$pidarea."".$pidcust;
+        
+        
         if (!empty($kodenya)) {
-            $query = "select * from MKT.ecust WHERE concat(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(icustid,''))='".$kodenya."'";
+            $query = "select * from MKT.ecust WHERE icabangid='$pidcab' AND areaid='$pidarea' and icustid='$pidcust'";
             $ketemu=mysqli_num_rows(mysqli_query($cnms, $query));
             if (empty($ketemu)) $ketemu=0;
-            //echo $query; exit;
+            
+            //echo "$ketemu"; exit;
             $query = "UPDATE MKT.ecust SET icabangid='', areaid='', icustid='',
-                      user1='".$pcardid."' WHERE concat(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(icustid,''))='".$kodenya."' LIMIT $ketemu";
+                      user1='".$pcardid."' WHERE icabangid='$pidcab' AND areaid='$pidarea' and icustid='$pidcust' LIMIT $ketemu";
             $result = mysqli_query($cnms, $query);
             $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; exit; }
         }

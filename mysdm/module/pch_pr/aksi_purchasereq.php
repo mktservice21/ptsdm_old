@@ -154,15 +154,16 @@ if ($module=='pchpurchasereq')
             mysqli_query($cnmy, $query_detail);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
-            $query = "UPDATE $tmp01 as a JOIN dbmaster.t_barang as b on a.namabarang=b.NAMABARANG SET a.idbarang=b.idbarang WHERE IFNULL(a.idbarang,'')=''";
-            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                $query = "UPDATE $tmp01 as a JOIN dbmaster.t_barang as b on a.namabarang=b.NAMABARANG SET a.idbarang=b.idbarang WHERE IFNULL(a.idbarang,'')=''";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+
+                $query = "UPDATE $tmp01 as a JOIN dbpurchasing.t_pr_barang_d as b on "
+                        . " TRIM(REPLACE(REPLACE(REPLACE(a.spesifikasi, '\n', ''), '\r', ''), '\t', ''))=TRIM(REPLACE(REPLACE(REPLACE(b.spesifikasi1, '\n', ''), '\r', ''), '\t', '')) AND "
+                        . " IFNULL(a.idbarang,'')=IFNULL(b.idbarang,'') "
+                        . " SET a.idbarang_d=b.idbarang_d WHERE IFNULL(a.idbarang,'')<>''";
+                mysqli_query($cnmy, $query); 
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
-            $query = "UPDATE $tmp01 as a JOIN dbpurchasing.t_pr_barang_d as b on "
-                    . " TRIM(REPLACE(REPLACE(REPLACE(a.spesifikasi, '\n', ''), '\r', ''), '\t', ''))=TRIM(REPLACE(REPLACE(REPLACE(b.spesifikasi1, '\n', ''), '\r', ''), '\t', '')) AND "
-                    . " IFNULL(a.idbarang,'')=IFNULL(b.idbarang,'') "
-                    . " SET a.idbarang_d=b.idbarang_d WHERE IFNULL(a.idbarang,'')<>''";
-            mysqli_query($cnmy, $query); 
-            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
             //idkategori other=1, idsatuan=0, kdsupp=00001, idtipe=30010(other) atau 30002(IT)
             $query = "UPDATE $tmp01 SET idkategori='1',  idsatuan='0', kdsupp='00001', idtipe='30010' WHERE IFNULL(idbarang,'')=''";

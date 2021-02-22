@@ -92,12 +92,52 @@ if ($module=='pchisivendorpr')
         if (TRIM($pspesbrg_asli_bd)==TRIM($pspesbrg_bd)){
         }else{
             $pidbrg2="";
+            
+            $query = "select idbarang_d from dbpurchasing.t_pr_barang_d WHERE IFNULL(idbarang,'')='' AND "
+                    . " TRIM(REPLACE(REPLACE(REPLACE(spesifikasi1, '\n', ''), '\r', ''), '\t', ''))='$pspesbrg_bd'";
+            $tampil= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($tampil);
+            if ((DOUBLE)$ketemu>0) {
+                $pidbrg_d="";
+            }else{
+            
+                $query = "INSERT into dbpurchasing.t_pr_barang_d (idbarang, spesifikasi1, harga) VALUES"
+                        . " ('$pidbrg_d', '$pspesbrg', '$pharga')";
+                mysqli_query($cnmy, $query); 
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+
+                $pidbrg2 = mysqli_insert_id($cnmy);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                
+            }
+            
         }
         
         
-        if (empty($pidbrg_d)) $pidbrg_d=$pidbrg;
+        if (empty($pidbrg_d)) {
+            //echo "kesini"; exit;
+            $pidbrg_d=$pidbrg;
+            
+            $query = "UPDATE dbpurchasing.t_pr_barang_d SET idbarang='$pidbrg_d', harga='$pharga' WHERE IFNULL(idbarang,'')='' AND "
+                    . " TRIM(REPLACE(REPLACE(REPLACE(spesifikasi1, '\n', ''), '\r', ''), '\t', ''))='$pspesbrg_bd'";
+            mysqli_query($cnmy, $query); 
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            
+            $query = "select idbarang_d from dbpurchasing.t_pr_barang_d WHERE IFNULL(idbarang,'')='$pidbrg_d' AND "
+                    . " TRIM(REPLACE(REPLACE(REPLACE(spesifikasi1, '\n', ''), '\r', ''), '\t', ''))='$pspesbrg_bd'";
+            $tampil= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($tampil);
+            if ((DOUBLE)$ketemu>0) {
+                $nrow= mysqli_fetch_array($tampil);
+                $pidbrg2=$nrow['idbarang_d'];
+            }
+        }
+        
+        //echo "$pidbrg<br/>"; exit;
+        
         
         if ($pidbrg_d!=$pidbrg) {
+            echo "ada"; exit;
             $query = "UPDATE dbpurchasing.t_pr_transaksi_d SET idbarang='$pidbrg', namabarang='$pnmbrg' WHERE idbarang='$pidbrg_d' AND idpr='$pdidpr' AND idpr_d='$pdidpr_d' LIMIT 1";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
@@ -105,7 +145,7 @@ if ($module=='pchisivendorpr')
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         }
         
-        //echo "$pidbrg2<br/>";
+        //echo "$pidbrg2<br/>"; exit;
         
         if ($act=="inputvendor") {
             

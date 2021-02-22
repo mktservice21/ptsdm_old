@@ -174,15 +174,15 @@ if ($module=='pchpurchasereq')
             $ketemu= mysqli_num_rows($tampil);
             if ((DOUBLE)$ketemu>0) {
                 $awal_o=9;
-                $sql_n=  mysqli_query($cnmy, "select MAX(RIGHT(IDBARANG,9)) as NOURUT_O from dbmaster.t_barang");
-                $oo=  mysqli_fetch_array($sql_n);
-                $purut_=$oo['NOURUT_O']+1;
+                //$sql_n=  mysqli_query($cnmy, "select MAX(RIGHT(IDBARANG,9)) as NOURUT_O from dbmaster.t_barang");
+                //$oo=  mysqli_fetch_array($sql_n);
+                //$purut_=$oo['NOURUT_O']+1;
                 
                 while ($nrow= mysqli_fetch_array($tampil)) {
                     $jml=  strlen($purut_);
                     $nawal=$awal_o-$jml;
-                    $pkdbrgpl="I".str_repeat("0", $nawal).$purut_;
-                    
+                    //$pkdbrgpl="I".str_repeat("0", $nawal).$purut_;
+                    $pkdbrgpl="";
                     $puntuknmbrg=$nrow['namabarang'];
                     $query = "UPDATE $tmp01 SET idbarang='$pkdbrgpl', ibaru='Y' WHERE IFNULL(idbarang,'')='' AND IFNULL(namabarang,'')='$puntuknmbrg'";
                     mysqli_query($cnmy, $query); 
@@ -195,8 +195,8 @@ if ($module=='pchpurchasereq')
                 $query= "INSERT INTO dbmaster.t_barang(IDBARANG, NAMABARANG, IDKATEGORI, IDSATUAN, KDSUPP, IDTIPE, HARGA)"
                         . "SELECT DISTINCT idbarang, namabarang, idkategori, idsatuan, kdsupp, idtipe, harga FROM $tmp01 WHERE IFNULL(ibaru,'')='Y' AND "
                         . " IFNULL(idbarang,'')<>''";
-                mysqli_query($cnmy, $query); 
-                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                //mysqli_query($cnmy, $query); 
+                //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
                 
                 
             }

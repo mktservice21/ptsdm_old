@@ -120,7 +120,7 @@
                     $npidno=$pidcabang."".$pidarea."".$pidcust;
                     $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$npidno'>Edit</a>";
                     
-                    $phapus="<input type='button' value='Hapus Mapping' class='btn btn-danger btn-xs' onClick=\"ProsesDataMapping('hapus', '$npidno')\">";
+                    $phapus="<input type='button' value='Hapus Mapping' class='btn btn-danger btn-xs' onClick=\"ProsesDataMapping('hapus', '$pidcabang', '$pidarea', '$pidcust')\">";
                     if ($padamaping==false) {
                         $phapus="";
                     }
@@ -255,8 +255,7 @@
 
     }
     
-    function ProsesDataMapping(ket, noid){
-
+    function ProsesDataMapping(ket, idcab, idarea, noidcust){
         ok_ = 1;
         if (ok_) {
             var r = confirm('Apakah akan melakukan proses hapus mapping customer ...?');
@@ -268,7 +267,7 @@
                 var idmenu = urlku.searchParams.get("idmenu");
 
                 //document.write("You pressed OK!")
-                document.getElementById("d-form2").action = "module/map_customersdm/aksi_customersdm.php?module="+module+"&idmenu="+idmenu+"&act=hapusmaping&kethapus="+"&ket="+ket+"&id="+noid;
+                document.getElementById("d-form2").action = "module/map_customersdm/aksi_customersdm.php?module="+module+"&idmenu="+idmenu+"&act=hapusmaping&kethapus="+"&ket="+ket+"&idcb="+idcab+"&idar="+idarea+"&idcust="+noidcust;
                 document.getElementById("d-form2").submit();
                 return 1;
             }

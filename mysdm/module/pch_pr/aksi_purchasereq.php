@@ -154,7 +154,10 @@ if ($module=='pchpurchasereq')
             mysqli_query($cnmy, $query_detail);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
-                $query = "UPDATE $tmp01 as a JOIN dbmaster.t_barang as b on a.namabarang=b.NAMABARANG SET a.idbarang=b.idbarang WHERE IFNULL(a.idbarang,'')=''";
+                $query = "UPDATE $tmp01 as a JOIN dbmaster.t_barang as b on a.namabarang=b.NAMABARANG SET a.idbarang=b.idbarang WHERE IFNULL(a.idbarang,'')='' ";
+                if ($ptipeaju=="102") $query .=" AND b.IDTIPE='30002' ";
+                else $query .=" AND b.IDTIPE<>'30002' ";
+                
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
                 $query = "UPDATE $tmp01 as a JOIN dbpurchasing.t_pr_barang_d as b on "

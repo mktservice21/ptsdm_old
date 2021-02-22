@@ -11,6 +11,7 @@
     $pdatainp1=$_POST['udata1'];
     $pdatainp2=$_POST['udata2'];
     
+    $pidtipe=$_POST['uidtp'];
     $pidinput=$_POST['uidinput'];
     
     $userid=$_SESSION['USERID'];
@@ -48,6 +49,9 @@
         LEFT JOIN dbmaster.t_supplier e on b.KDSUPP=e.KDSUPP 
         LEFT JOIN dbmaster.t_barang_tipe AS l ON b.IDTIPE = l.IDTIPE 
         WHERE IFNULL(b.STSNONAKTIF,'')<>'Y' AND IFNULL(k.STSAKTIF,'')='Y' ";//AND IFNULL(l.STS,'') IN ('G')
+    if ($pidtipe=="102") $query .=" AND b.IDTIPE='30002' ";
+    else $query .=" AND b.IDTIPE<>'30002' ";
+    
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

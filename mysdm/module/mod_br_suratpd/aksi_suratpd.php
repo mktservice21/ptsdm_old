@@ -36,8 +36,8 @@
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
             
-            //bunga diganti jadi minus
-            $query = "UPDATE $tmp01 SET jumlah=0-IFNULL(jumlah,0) WHERE CONCAT(kodeid, subkode) IN ('231') AND IFNULL(jumlah,0)>0"; 
+            //bunga diganti jadi minus dan listrik pt prima
+            $query = "UPDATE $tmp01 SET jumlah=0-IFNULL(jumlah,0) WHERE CONCAT(kodeid, subkode) IN ('231', '240') AND IFNULL(jumlah,0)>0"; 
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
 			

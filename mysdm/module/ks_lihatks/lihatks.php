@@ -282,7 +282,7 @@ switch($pactpilih){
                                         </div>
 
 
-                                        <div class='form-group'>
+                                        <div hidden class='form-group'>
                                             <div class='col-sm-12'>
                                                 <b>Pilih Dokter</b>
                                                 <div class="form-group">

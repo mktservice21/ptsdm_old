@@ -124,15 +124,16 @@ elseif ($module=='ksdatauser' AND ($act=='input' OR $act=='update' OR $act=='upd
     
     if ($act=="input" OR $act=="updatecn") {
 
-        $query = "DELETE FROM hrd.mr_dokt WHERE karyawanid='$pkryid' AND dokterid='$kodenya' LIMIT 1";
+        $query = "DELETE FROM hrd.mrdoktbaru WHERE karyawanid='$pkryid' AND dokterid='$kodenya' and tgl='$ptglcn' LIMIT 1";
         $result = mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; exit; }
 
 
-        $query1 = "INSERT INTO hrd.mr_dokt (karyawanid,dokterid,cn,aktif,tgl,awal)
-            VALUES ('".$pkryid."','".$kodenya."','".$pcn."','Y','".$ptglcn."','".$psaldorp."')";
+        $query1 = "INSERT INTO hrd.mrdoktbaru (karyawanid,dokterid,cn,tgl,awal)
+            VALUES ('".$pkryid."','".$kodenya."','".$pcn."','".$ptglcn."','".$psaldorp."')";
         $result = mysqli_query($cnit, $query1);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; exit; }
-        
+
+        /*
         $query = "DELETE FROM hrd.mr_dokt_a WHERE karyawanid='$pkryid' AND dokterid='$kodenya' LIMIT 1";
         $result = mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; exit; }
 
@@ -140,7 +141,7 @@ elseif ($module=='ksdatauser' AND ($act=='input' OR $act=='update' OR $act=='upd
             VALUES ('".$pkryid."','".$kodenya."','".$pcn."','Y','".$ptglcn."','".$psaldorp."')";
         $result = mysqli_query($cnit, $query2);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; exit; }
-
+        */
 
     }
 

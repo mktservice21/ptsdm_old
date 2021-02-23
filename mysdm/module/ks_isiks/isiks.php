@@ -1,4 +1,12 @@
 <?PHP
+$ptest="";
+switch($ptest){
+    default:
+
+    break;
+?>
+
+<?PHP
     include "config/cek_akses_modul.php";
     //include "config/koneksimysqli_it.php";
     $cnit=$cnmy;
@@ -361,3 +369,8 @@
     }
     // END SCROLL
 </script>
+
+
+<?PHP
+}
+?>

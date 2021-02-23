@@ -139,7 +139,7 @@ elseif ($module=='isikartustatus' AND ($act=='input' OR $act=='update') )
         mysqli_query($cnit, $query_detail); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan." INSERT "; mysqli_close($cnit); exit; }
     }
 
-/*
+
     $query =  "DELETE from hrd.ks1_diskonbaru WHERE srid='$pidkry' and bulan='$pbln' and dokterid='$piddokt' LIMIT 1";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
@@ -150,7 +150,7 @@ elseif ($module=='isikartustatus' AND ($act=='input' OR $act=='update') )
     }
     
     
-  */  
+  
     mysqli_close($cnit);
 
     header('location:../../eksekusi3.php?module=isikartustatusberhasil&idmenu='.$idmenu.'&act=complete');

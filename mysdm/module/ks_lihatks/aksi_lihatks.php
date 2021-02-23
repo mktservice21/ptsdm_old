@@ -127,7 +127,7 @@
 	}
 	
 	//ambil saldo awal
-	$query = "select tgl_trans,tgl,awal,cn from hrd.mr_dokt where karyawanid='$srid' and dokterid='$dokterid' order by tgl";
+	$query = "select tgl,awal,cn from hrd.mrdoktbaru where karyawanid='$srid' and dokterid='$dokterid' order by tgl";
 	// echo $query.'<br>';
 	$result = mysqli_query($cnit, $query);
 	$num_results = mysqli_num_rows($result);
@@ -160,7 +160,7 @@
 	$cn = $row['cn'];
 
 	if (($saldoawal_=="") or ($cn=="")) {
-		$query = "select tgl,awal,cn from hrd.mr_dokt where dokterid='$dokterid'"; 
+		$query = "select tgl,awal,cn from hrd.mrdoktbaru where dokterid='$dokterid'"; 
 		// echo $query.'<br>';
 		$result = mysqli_query($cnit, $query);
 		$num_results = mysqli_num_rows($result);
@@ -397,7 +397,7 @@ function show_kartu($psrid,$ptglawal_,$pbulan,$pdokterid,$pcn,$br,$tmp00,$tmp04)
 				  from $tmp04 as ks1
 				  left join MKT.iproduk as iproduk on ks1.iprodid = MKT.iproduk.iProdId
 				  left join hrd.mr_apt as mr_apt on ks1.idapotik=mr_apt.idapotik 
-				  left join hrd.mr_dokt as mr_dokt on (ks1.srid=mr_dokt.karyawanid and ks1.dokterid=mr_dokt.dokterid)
+				  left join hrd.mrdoktbaru as mr_dokt on (ks1.srid=mr_dokt.karyawanid and ks1.dokterid=mr_dokt.dokterid)
 				  where (bulan='$pbulan') and ks1.dokterid='$pdokterid'
 				  order by bulan,aptnm,prodnm "; //(ks1.srid=mr_apt.srid and ks1.aptid=mr_apt.aptid)
 	} else {  
@@ -405,7 +405,7 @@ function show_kartu($psrid,$ptglawal_,$pbulan,$pdokterid,$pcn,$br,$tmp00,$tmp04)
 				  from $tmp04 as ks1  
 				  left join MKT.iproduk as iproduk on ks1.iprodid = MKT.iproduk.iProdId
 				  left join hrd.mr_apt as mr_apt on ks1.idapotik=mr_apt.idapotik 
-				  left join hrd.mr_dokt as mr_dokt on (ks1.srid=mr_dokt.karyawanid and ks1.dokterid=mr_dokt.dokterid)
+				  left join hrd.mrdoktbaru as mr_dokt on (ks1.srid=mr_dokt.karyawanid and ks1.dokterid=mr_dokt.dokterid)
 				  left join hrd.cn as cn on ks1.srid=cn.karyawanid and ks1.dokterid=cn.dokterid
 				  where ks1.srid='$psrid' and (bulan='$pbulan') and ks1.dokterid='$pdokterid' and left(cn.tgl,7)='$pbulan'
 				  order by bulan,aptnm,prodnm";//(ks1.srid=mr_apt.srid and ks1.aptid=mr_apt.aptid) //echo"$query";
@@ -430,7 +430,7 @@ function show_kartu($psrid,$ptglawal_,$pbulan,$pdokterid,$pcn,$br,$tmp00,$tmp04)
 		// 		  from $tmp04 as ks1 
 		// 		  left join MKT.iproduk as iproduk on ks1.iprodid = MKT.iproduk.iProdId
 		// 		  left join hrd.mr_apt as mr_apt on (ks1.srid=mr_apt.srid and ks1.aptid=mr_apt.aptid)
-		// 		  left join hrd.mr_dokt as mr_dokt on (ks1.srid=mr_dokt.karyawanid and ks1.dokterid=mr_dokt.dokterid)
+		// 		  left join hrd.mrdoktbaru as mr_dokt on (ks1.srid=mr_dokt.karyawanid and ks1.dokterid=mr_dokt.dokterid)
 		// 		  left join hrd.karyawan as karyawan on ks1.srid=karyawan.karyawanid 
 		// 		  where karyawan.areaid='$areaid' and karyawan.icabangid='$icabangid' and karyawan.divisiid='$divisiid' and karyawan.divisiid2='$divisiid2' and (bulan='$pbulan') and ks1.dokterid='$pdokterid'
 		// 		  order by bulan,aptnm,prodnm "; //echo"$query";
@@ -499,7 +499,7 @@ function show_kartu($psrid,$ptglawal_,$pbulan,$pdokterid,$pcn,$br,$tmp00,$tmp04)
 				$cn = $pcn;
 			}
 			//ambil cn
-			$str_ = "select * from hrd.mr_dokt_a where karyawanid='$psrid' and dokterid='$pdokterid' and left(tgl,7)<='$pbulan' order by tgl desc"; 
+			$str_ = "select * from hrd.mrdoktbaru where karyawanid='$psrid' and dokterid='$pdokterid' and left(tgl,7)<='$pbulan' order by tgl desc"; 
 			// echo "$str_<br>";
 
 			$res2_ = mysqli_query($cnit, $str_); 
@@ -781,7 +781,7 @@ function show_kartu($psrid,$ptglawal_,$pbulan,$pdokterid,$pcn,$br,$tmp00,$tmp04)
 	if ($num_results_ck2<>'0') {
 		
 	} else {
-		$query_ck = "select karyawanid from hrd.mr_dokt where dokterid='$pdokterid'"; 
+		$query_ck = "select karyawanid from hrd.mrdoktbaru where dokterid='$pdokterid'"; 
 		// echo"$query_ck";
 		$result_ck = mysqli_query($cnit, $query_ck);
 		$num_results_ck = mysqli_num_rows($result_ck);

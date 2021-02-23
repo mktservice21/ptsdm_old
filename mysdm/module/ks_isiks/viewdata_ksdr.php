@@ -43,7 +43,7 @@
     
     
     $query ="select distinct a.dokterid as dokterid, a.nama as nama, a.alamat1 as alamat1, a.alamat2 as alamat2 "
-            . " from hrd.dokter as a JOIN hrd.mr_dokt as b on a.dokterid=b.dokterid WHERE b.karyawanid IN $filterkaryawan";
+            . " from hrd.dokter as a JOIN hrd.mrdoktbaru as b on a.dokterid=b.dokterid WHERE b.karyawanid IN $filterkaryawan";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnit, $query);
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

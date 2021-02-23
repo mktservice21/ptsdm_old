@@ -1,10 +1,3 @@
-<?PHP
-$ptest="";
-switch($ptest){
-    default:
-
-    break;
-?>
 
 <?PHP
     include "config/cek_akses_modul.php";
@@ -202,7 +195,7 @@ switch($ptest){
                                                 $query .= " ORDER BY a.nama";
                                             }else{
                                                 $query = "select distinct a.karyawanid as karyawanid, b.nama as nama "
-                                                        . " from hrd.mr_dokt as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid ";
+                                                        . " from hrd.mrdoktbaru as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid ";
                                                 if (!empty($pfilterkaryawan)) {
                                                     $query .= " AND (a.karyawanid IN $pfilterkaryawan OR a.karyawanid='$pidkaryawan') ";
                                                 }
@@ -237,7 +230,7 @@ switch($ptest){
                                             echo "<option value='' selected>-- Pilihan --</option>";
                                         }else{
                                             $query ="select distinct a.dokterid as dokterid, a.nama as nama, a.alamat1 as alamat1, a.alamat2 as alamat2 "
-                                                    . " from hrd.dokter as a JOIN hrd.mr_dokt as b on a.dokterid=b.dokterid WHERE b.karyawanid='$pidkaryawan' ORDER BY a.nama";
+                                                    . " from hrd.dokter as a JOIN hrd.mrdoktbaru as b on a.dokterid=b.dokterid WHERE b.karyawanid='$pidkaryawan' ORDER BY a.nama";
 
                                             $result = mysqli_query($cnit, $query);
                                             $record = mysqli_num_rows($result);
@@ -370,7 +363,3 @@ switch($ptest){
     // END SCROLL
 </script>
 
-
-<?PHP
-}
-?>

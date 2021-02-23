@@ -121,7 +121,7 @@ elseif ($module=='isikartustatus' AND ($act=='input' OR $act=='update') )
             
             $pinsert_data_detail_pl = "('$pidkry', '$pbln', '$piddokt', '$pidapt', '$pidapttipe', '$no_brid', '$pdet_qty', '$pdet_hna', '', '$pcn', '$papotikid', '$pcardid')";
             
-            //$query_detail="INSERT INTO hrd.ks1 (srid,bulan,dokterid,aptid,apttype,iprodid,qty,hna,approved,cn_ks1,idapotik, userid) VALUES ".$pinsert_data_detail_pl;
+            //$query_detail="INSERT INTO hrd.ks1 (srid,bulan,dokterid,aptid,apttype,iprodid,qty,hna,approved,cn_ks,idapotik, userid) VALUES ".$pinsert_data_detail_pl;
             //mysqli_query($cnit, $query_detail); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan." INSERT "; mysqli_close($cnit); exit; }
             
         
@@ -135,7 +135,7 @@ elseif ($module=='isikartustatus' AND ($act=='input' OR $act=='update') )
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
     if ($pbolehsimpan == true) {
-        $query_detail="INSERT INTO hrd.ks1 (srid,bulan,dokterid,aptid,apttype,iprodid,qty,hna,approved,cn_ks1,idapotik, userid) VALUES ".implode(', ', $pinsert_data_detail);
+        $query_detail="INSERT INTO hrd.ks1 (srid,bulan,dokterid,aptid,apttype,iprodid,qty,hna,approved,cn_ks,idapotik, userid) VALUES ".implode(', ', $pinsert_data_detail);
         mysqli_query($cnit, $query_detail); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan." INSERT "; mysqli_close($cnit); exit; }
     }
 

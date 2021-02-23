@@ -53,7 +53,7 @@ if ($pmodule=="viewdataaptdr") {
         
     
     $cn_dk="";
-    $query_dk = "select cn as cn from hrd.mr_dokt where karyawanid='$pidkar' and dokterid='$piddokt'"; 
+    $query_dk = "select cn as cn from hrd.mrdoktbaru where karyawanid='$pidkar' and dokterid='$piddokt'"; 
     $result_dk = mysqli_query($cnit, $query_dk);
     $num_results_dk = mysqli_num_rows($result_dk);
     if ($num_results_dk) {
@@ -83,7 +83,7 @@ if ($pmodule=="viewdataaptdr") {
     if (!empty($_SESSION['KSDTKSDOK'])) $piddoktpilih = $_SESSION['KSDTKSDOK'];
     
     $query ="select distinct a.dokterid as dokterid, a.nama as nama, a.alamat1 as alamat1, a.alamat2 as alamat2 "
-            . " from hrd.dokter as a JOIN hrd.mr_dokt as b on a.dokterid=b.dokterid WHERE b.karyawanid='$pidkar' ORDER BY a.nama";
+            . " from hrd.dokter as a JOIN hrd.mrdoktbaru as b on a.dokterid=b.dokterid WHERE b.karyawanid='$pidkar' ORDER BY a.nama";
     
     $result = mysqli_query($cnit, $query);
     $record = mysqli_num_rows($result);

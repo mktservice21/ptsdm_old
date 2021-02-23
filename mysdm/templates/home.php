@@ -843,6 +843,9 @@
     }elseif ($_GET['module']=='incentivedm'){
         include 'module/incentive/inc_incentivedm/incentivedm.php';
         
+    }elseif ($_GET['module']=='ksprosesdatakscab'){
+        include 'module/ks_proseskscab/proseskscab.php';
+        
         
     }else{
         include 'del_session.php';

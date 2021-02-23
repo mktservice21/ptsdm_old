@@ -621,6 +621,7 @@ $ppilihdoktnm=getfield("select nama as lcfields from hrd.dokter where dokterid='
         var ettl = document.getElementById('e_total').value;
         var etotalinput = document.getElementById('e_total').value;
         var ebln =document.getElementById('e_bulan').value;
+        var ipl_cn = document.getElementById('e_cn').value;
         
         var newchar = '';
         if (ettl=="") ettl="0";
@@ -641,6 +642,11 @@ $ppilihdoktnm=getfield("select nama as lcfields from hrd.dokter where dokterid='
             return false;
         }
 
+        if (ipl_cn=="" || ipl_cn=="0") {
+            alert("cn kosong...");
+            return false;
+        }
+        
         if (ettl=="0") {
             alert("total masih kosong...");
             return false;

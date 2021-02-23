@@ -517,6 +517,7 @@ if ($pidact=="editdata"){
         var ettl = document.getElementById('e_total').value;
         var ebln =document.getElementById('e_bulan').value;
         var iapotikid = document.getElementById('cb_apotik').value;
+        var ipl_cn = document.getElementById('e_cn').value;
                                 
         if (ikry=="") {
             alert("karyawan masih kosong...");
@@ -530,6 +531,11 @@ if ($pidact=="editdata"){
         
         if (iapotikid=="") {
             alert("apotik masih kosong...");
+            return false;
+        }
+
+        if (ipl_cn=="" || ipl_cn=="0") {
+            alert("cn kosong...");
             return false;
         }
         

@@ -138,7 +138,16 @@ elseif ($module=='isikartustatus' AND ($act=='input' OR $act=='update') )
         $query_detail="INSERT INTO hrd.ks1 (srid,bulan,dokterid,aptid,apttype,iprodid,qty,hna,approved,cn_ks1,idapotik, userid) VALUES ".implode(', ', $pinsert_data_detail);
         mysqli_query($cnit, $query_detail); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan." INSERT "; mysqli_close($cnit); exit; }
     }
+
+
+    $query =  "DELETE from hrd.ks1_diskonbaru WHERE srid='$pidkry' and bulan='$pbln' and dokterid='$piddokt' LIMIT 1";
+    mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
+    if ($pbolehsimpan == true) {
+        $query =  "INSERT INTO hrd.ks1_diskonbaru (karyawanid, dokterid, bulan, cn, aktif)VALUES
+            ('$pidkry', '$piddokt', '$pbln', '0', 'N')";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
+    }
     
     
     

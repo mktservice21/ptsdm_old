@@ -607,7 +607,8 @@
     }elseif ($_GET['module']=='incentivedm'){
         include 'module/incentive/inc_incentivedm/aksi_incentivedm.php';
         
-        
+    }elseif ($_GET['module']=='ksprosesdatakscab'){
+        include 'module/ks_proseskscab/aksi_proseskscab.php';
         
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';

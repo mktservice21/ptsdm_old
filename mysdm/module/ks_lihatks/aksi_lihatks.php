@@ -229,7 +229,8 @@
 	$puserid="A";//$_SESSION['USERID'];
 	$tmp00 =" dbtemp.tmp00BR_".$puserid."_$now ";
 	
-	$query = "SELECT * FROM hrd.br0 WHERE dokterid='$dokterid' AND IFNULL(mrid,'')='$srid'";
+	$query = "SELECT * FROM hrd.br0 WHERE dokterid='$dokterid' AND IFNULL(mrid,'')='$srid' AND IFNULL(batal,'')<>'Y' AND IFNULL(retur,'')<>'Y' and "
+                . " brid not in (select distinct IFNULL(brid,'') from hrd.br0_reject)";
 	$query = "create table $tmp00 ($query)"; 
 	mysqli_query($cnit, $query);
 	// echo "$query<br>";

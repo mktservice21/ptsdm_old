@@ -115,7 +115,7 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-    $query = "update $tmp06 as a JOIN (select karyawanid, dokterid, awal from $tmp03) as b 
+    $query = "update $tmp06 as a JOIN (select karyawanid, dokterid, awal from $tmp03 WHERE IFNULL(awal,0)<>0) as b 
         on a.srid=b.karyawanid and a.dokterid=b.dokterid SET a.saldoawal=b.awal";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 

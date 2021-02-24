@@ -643,8 +643,8 @@ $ppilihdoktnm=getfield("select nama as lcfields from hrd.dokter where dokterid='
         }
 
         if (ipl_cn=="" || ipl_cn=="0") {
-            alert("cn kosong...");
-            return false;
+            //alert("cn kosong...");
+            //return false;
         }
         
         if (ettl=="0") {

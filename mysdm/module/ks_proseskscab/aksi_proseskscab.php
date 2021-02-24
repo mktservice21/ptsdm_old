@@ -39,25 +39,44 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
     $tmp04 =" dbtemp.tmpprosks1pcab04_".$puserid."_".$now;
     $tmp05 =" dbtemp.tmpprosks1pcab05_".$puserid."_".$now;
     $tmp06 =" dbtemp.tmpprosks1pcab06_".$puserid."_".$now;
+    $tmp07 =" dbtemp.tmpprosks1pcab07_".$puserid."_".$now;
 
     $query = "create TEMPORARY table $tmp01 (icabangid varchar(10), karyawanid varchar(10))";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "insert into $tmp01 (icabangid, karyawanid) select distinct icabangid, karyawanid from mkt.imr0 where 
-        icabangid='$pidcabang' AND IFNULL(karyawanid,'')<>''"; //AND karyawanid='0000000896'
+    $query = "insert into $tmp01 (icabangid, karyawanid) select distinct a.icabangid, a.karyawanid from mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid where 
+    a.icabangid='$pidcabang' AND IFNULL(a.karyawanid,'')<>'' AND b.aktif<>'N'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "insert into $tmp01 (icabangid, karyawanid) select distinct icabangid, karyawanid from mkt.ispv0 where 
-        icabangid='$pidcabang' AND IFNULL(karyawanid,'')<>''";
+    $query = "insert into $tmp01 (icabangid, karyawanid) select distinct a.icabangid, a.karyawanid from mkt.ispv0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid where 
+    a.icabangid='$pidcabang' AND IFNULL(a.karyawanid,'')<>'' AND b.aktif<>'N'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "insert into $tmp01 (icabangid, karyawanid) select distinct icabangid, karyawanid from mkt.idm0 where 
-        icabangid='$pidcabang' AND IFNULL(karyawanid,'')<>''";
+    $query = "insert into $tmp01 (icabangid, karyawanid) select distinct a.icabangid, a.karyawanid from mkt.idm0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid where 
+    a.icabangid='$pidcabang' AND IFNULL(a.karyawanid,'')<>'' AND b.aktif<>'N'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query  = "CREATE INDEX nnn ON $tmp01 (karyawanid, icabangid)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
     $query = "select b.icabangid, a.srid, a.dokterid, a.apttype, a.bulan, a.iprodid, a.cn_ks as cn, sum(a.qty) as qty, sum(a.qty*a.hna) as tvalue 
         from hrd.ks1 as a JOIN (select distinct karyawanid, icabangid from $tmp01) as b on a.srid=b.karyawanid
         GROUP BY 1,2,3,4,5,6,7";
     $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query  = "CREATE INDEX nnn ON $tmp02 (srid, dokterid, icabangid, bulan)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+            $query = "select a.* from hrd.ks1_diskonbaru as a JOIN (select distinct srid, dokterid FROM $tmp02) as b
+                on a.karyawanid=b.srid and a.dokterid=b.dokterid";
+            $query = "CREATE TEMPORARY TABLE $tmp07 ($query)";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+            $query  = "CREATE INDEX nnn ON $tmp07 (karyawanid, dokterid, bulan)";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+            $query = "UPDATE $tmp02 as a JOIN $tmp07 as b on a.srid=b.karyawanid AND a.dokterid=b.dokterid AND a.bulan=b.bulan SET a.cn=b.cn";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 
     $query = "ALTER TABLE $tmp02 ADD awal DECIMAL(20,2), ADD ki DECIMAL(20,2), ADD saldocn DECIMAL(20,2), ADD saldoakhir DECIMAL(20,2)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -176,6 +195,7 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
         mysqli_query($cnmy, "drop TEMPORARY table $tmp04");
         mysqli_query($cnmy, "drop TEMPORARY table $tmp05");
         mysqli_query($cnmy, "drop TEMPORARY table $tmp06");
+        mysqli_query($cnmy, "drop TEMPORARY table $tmp07");
         mysqli_close($cnmy);
 }
 ?>

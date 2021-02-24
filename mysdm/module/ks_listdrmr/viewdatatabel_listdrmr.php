@@ -34,11 +34,11 @@
     
     $query = "select DISTINCT a.dokterid as dokterid, a.nama as nama_dokter, 
         b.karyawanid as karyawanid, c.nama as nama_karyawan, 
-        b.iCabangId as icabangid, d.nama as nama_cabang, b.areaId as areaid, e.nama as nama_area 
-        from hrd.dokter as a LEFT JOIN hrd.mr_dokt as b on a.dokterid=b.dokterid 
+        c.iCabangId as icabangid, d.nama as nama_cabang, c.areaId as areaid, e.nama as nama_area 
+        from hrd.dokter as a LEFT JOIN hrd.mrdoktbaru as b on a.dokterid=b.dokterid 
         left join hrd.karyawan as c on b.karyawanId=c.karyawanId 
-        left join MKT.icabang as d on b.iCabangId=d.iCabangId 
-        LEFT JOIN MKT.iarea as e on b.iCabangId=e.iCabangId and b.areaId=e.areaId
+        left join MKT.icabang as d on c.iCabangId=d.iCabangId 
+        LEFT JOIN MKT.iarea as e on c.iCabangId=e.iCabangId and c.areaId=e.areaId
         WHERE ( a.nama like '%$pnmdoktercari%' OR a.dokterid='$pnmdoktercari')";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);

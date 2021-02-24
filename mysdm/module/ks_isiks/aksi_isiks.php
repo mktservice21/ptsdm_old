@@ -66,7 +66,7 @@ elseif ($module=='isikartustatus' AND ($act=='input' OR $act=='update') )
     if (empty($pcn)) $pcn=0;
     if (empty($ptotal)) $ptotal=0;
     
-    $pcn=str_replace(",","", $pcn);
+    $pcn=0;//str_replace(",","", $pcn);
     $ptotal=str_replace(",","", $ptotal);
     
     

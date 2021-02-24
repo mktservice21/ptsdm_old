@@ -26,6 +26,12 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
     
     $pidcabang=$_POST['cb_cabang'];
 
+    $query = "select nama from mkt.icabang where icabangid='$pidcabang'";
+    $tampilk=mysqli_query($cnmy, $query);
+    $rowk=mysqli_fetch_array($tampilk);
+    $pnamacabpl=$rowk['nama'];
+
+
     $now=date("mdYhis");
     $tmp01 =" dbtemp.tmpprosks1pcab01_".$puserid."_".$now;
     $tmp02 =" dbtemp.tmpprosks1pcab02_".$puserid."_".$now;
@@ -158,7 +164,7 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
 
 
 <BODY class="nav-md">
-    data berhasil diproses, silakan tutup halaman ini...!!!
+    Cabang : <?PHP echo "$pnamacabpl &nbsp; ..."; ?> <br/>data berhasil diproses, silakan tutup halaman ini...!!!
 </BODY>
 </HTML>
 

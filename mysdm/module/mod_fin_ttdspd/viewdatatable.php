@@ -12,7 +12,7 @@
         if ($pses_grpuser=="25") {
             //$n_filterkaryawan=" AND divisi<>'OTC' AND CONCAT(kodeid,subkode) NOT IN ('225', '226', '227', '228', '229', '230', '231', '232', '233', '234', '235', '350') ";
             //AND jenis_rpt<>'B'
-            $n_filterkaryawan="  AND CONCAT(kodeid,subkode) NOT IN ('236', '237', '238', '225', '226', '227', '228', '229', '230', '231', '232', '233', '234', '235', '350') "
+            $n_filterkaryawan="  AND CONCAT(kodeid,subkode) NOT IN ('236', '237', '238', '225', '226', '227', '228', '229', '230', '231', '232', '233', '234', '235', '350', '240') "
                     . " AND (divisi<>'OTC' OR (divisi='OTC' AND CONCAT(kodeid, subkode) IN ('103', '221', '236')) ) ";
             
         }

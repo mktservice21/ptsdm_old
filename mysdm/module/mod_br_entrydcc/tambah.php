@@ -1239,25 +1239,54 @@ $pjabatanid = $row['jabatanId'];
             type:"post",
             url:"module/mod_br_entrydcc/viewdata.php?module=viewdatakrybuat",
             data:"ucab="+icab,
+            beforeSend: function () {
+                //$('select[name=e_idkaryawan]').attr('disabled',true)
+                $('select[name=e_idkaryawan]').empty();
+                $('select[name=e_idkaryawan]').append('<option value="loading" disabled selected>Loading...</option>');
+            },
             success:function(data){
                 $("#e_idkaryawan").html(data);
                 showMRKaryawan();
                 //showDataDaerah();
                 //showDokterMR('e_idcabang', 'e_idkaryawan');
+            },
+            complete: function () {
+                //$('select[name=e_idkaryawan]').attr('disabled',false)
+                $('select[name=e_idkaryawan] option[value="loading"]').text('');
+            },
+            error: function () {
+                //$('select[name=e_idkaryawan]').attr('disabled',false)
+                $('select[name=e_idkaryawan] option[value="loading"]').text('');
+                alert('Something wrong. Try Again!')                
             }
         });
     }
     
     function showMRKaryawan() {
+        
         var ikryid = document.getElementById('e_idkaryawan').value;
         var icab = document.getElementById('e_idcabang').value;
         $.ajax({
             type:"post",
             url:"module/mod_br_entrydcc/viewdata.php?module=viewdatamridkary",
             data:"ukryid="+ikryid+"&ucab="+icab,
+            beforeSend: function () {
+                //$('select[name=cb_mr]').attr('disabled',true)
+                $('select[name=cb_mr]').empty();
+                $('select[name=cb_mr]').append('<option value="loading" disabled selected>Loading...</option>');
+            },
             success:function(data){
                 $("#cb_mr").html(data);
-                showDokterMR('e_idcabang', 'e_idkaryawan');
+                //showDokterMR('e_idcabang', 'e_idkaryawan');
+            },
+            complete: function () {
+                //$('select[name=cb_mr]').attr('disabled',false)
+                $('select[name=cb_mr] option[value="loading"]').text('');
+            },
+            error: function () {
+                //$('select[name=cb_mr]').attr('disabled',false)
+                $('select[name=cb_mr] option[value="loading"]').text('');
+                alert('Something wrong. Try Again!')                
             }
         });
     }
@@ -1278,9 +1307,23 @@ $pjabatanid = $row['jabatanId'];
             type:"post",
             url:"module/mod_br_entrydcc/viewdata.php?module=viewdoktermr&data1="+icar,
             data:"umr="+icar+"&ucab="+icabang+"&ukrybuat="+ekrybuat+"&ucar2="+icar2,
+            beforeSend: function () {
+                //$('select[name=e_iddokter]').attr('disabled',true)
+                $('select[name=e_iddokter]').empty();
+                $('select[name=e_iddokter]').append('<option value="loading" disabled selected>Loading...</option>');
+            },
             success:function(data){
                 $("#e_iddokter").html(data);
                 showDataDaerah();
+            },
+            complete: function () {
+                //$('select[name=e_iddokter]').attr('disabled',false)
+                $('select[name=e_iddokter] option[value="loading"]').text('');
+            },
+            error: function () {
+                //$('select[name=e_iddokter]').attr('disabled',false)
+                $('select[name=e_iddokter] option[value="loading"]').text('');
+                alert('Something wrong. Try Again!')                
             }
         });
     }

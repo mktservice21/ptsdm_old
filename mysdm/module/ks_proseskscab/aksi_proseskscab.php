@@ -168,6 +168,8 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
         select icabangid, srid, dokterid, saldoawal, saldocn, ki, saldoakhir from $tmp06";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+    $query ="UPDATE hrd.ks1_proses3 SET pilih='N' WHERE IFNULL(saldocn,0)=0 AND IFNULL(ki,0)<>0";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
 ?>

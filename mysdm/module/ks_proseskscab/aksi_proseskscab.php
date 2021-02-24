@@ -47,16 +47,16 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
         icabangid='$pidcabang' AND IFNULL(karyawanid,'')<>''";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "select b.icabangid, a.srid, a.dokterid, a.apttype, a.bulan, a.iprodid, a.cn_ks1, sum(a.qty) as qty, sum(a.qty*a.hna) as tvalue 
+    $query = "select b.icabangid, a.srid, a.dokterid, a.apttype, a.bulan, a.iprodid, a.cn_ks as cn, sum(a.qty) as qty, sum(a.qty*a.hna) as tvalue 
         from hrd.ks1 as a JOIN (select distinct karyawanid, icabangid from $tmp01) as b on a.srid=b.karyawanid
         GROUP BY 1,2,3,4,5,6,7";
     $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "ALTER TABLE $tmp02 ADD awal DECIMAL(20,2), ADD cn DECIMAL(20,2), ADD ki DECIMAL(20,2), ADD saldocn DECIMAL(20,2), ADD saldoakhir DECIMAL(20,2)";
+    $query = "ALTER TABLE $tmp02 ADD awal DECIMAL(20,2), ADD ki DECIMAL(20,2), ADD saldocn DECIMAL(20,2), ADD saldoakhir DECIMAL(20,2)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "select b.icabangid, a.tgl, DATE_FORMAT(a.tgl, '%Y-%m-01') as bulan, a.karyawanid, a.dokterid, a.awal, a.cn from hrd.mr_dokt_a as a 
+    $query = "select b.icabangid, a.tgl, DATE_FORMAT(a.tgl, '%Y-%m-01') as bulan, a.karyawanid, a.dokterid, a.awal, a.cn from hrd.mrdoktbaru as a 
         JOIN (select distinct srid, icabangid from $tmp02) as b on 
         a.karyawanid=b.srid";
     $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
@@ -69,31 +69,13 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-    
-    $query  ="select * from $tmp03 order by karyawanid, dokterid, tgl";
-    $tampil=mysqli_query($cnmy, $query);
-    while ($nrow=mysqli_fetch_array($tampil)) {
-        $pkryid=$nrow['karyawanid'];
-        $pdoktid=$nrow['dokterid'];
-        $ptgl=$nrow['tgl'];
-        $pbulan=$nrow['bulan'];
-        $pcn=$nrow['cn'];
-        $psldawal=$nrow['awal'];
-
-        if (empty($ptgl)) $ptgl="0000-00-00";
-        if (empty($pbulan)) $pbulan="0000-00";
-
-        $query = "UPDATE $tmp02 SET cn='$pcn' WHERE srid='$pkryid' AND dokterid='$pdoktid' AND bulan>='$pbulan'";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-    }
-
     $query = "UPDATE $tmp02 SET saldocn=case when IFNULL(cn,0)=0 then 0 else IFNULL(tvalue,0)*(IFNULL(cn,0)/100) end";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "UPDATE $tmp02 SET saldocn=case when IFNULL(cn,0)=0 then 0 else (IFNULL(tvalue,0)*0.8) * (IFNULL(cn,0)/100) end WHERE apttype<>'1'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+    
 
     $query = "select a.brid, a.tgl, DATE_FORMAT(tgl,'%Y-%m') as bulan, a.mrid, a.dokterid, a.jumlah, a.jumlah1 
         from hrd.br0 as a JOIN hrd.br_kode as b on a.kode=b.kodeid join 
@@ -148,12 +130,12 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
     $query = "delete from hrd.ks1_proses3 WHERE icabangid='$pidcabang'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "insert into hrd.ks1_proses (icabangid, srid, dokterid, iprodid, qty, tvalue, saldocn)
-        select icabangid, srid, dokterid, iprodid, sum(qty) as qty, sum(tvalue) as tvalue, sum(saldocn) as saldocn 
-        from $tmp02 WHERE IFNULL(iprodid,'')<>'' GROUP BY 1,2,3,4";
+    $query = "insert into hrd.ks1_proses (icabangid, srid, dokterid, iprodid, cn, qty, tvalue, saldocn)
+        select icabangid, srid, dokterid, iprodid, cn, sum(qty) as qty, sum(tvalue) as tvalue, sum(saldocn) as saldocn 
+        from $tmp02 WHERE IFNULL(iprodid,'')<>'' GROUP BY 1,2,3,4,5";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "insert into hrd.ks1_proses2 (icabangid, srid, dokterid, diskoncn) 
+    $query = "insert into hrd.ks1_proses2 (icabangid, srid, dokterid, cn) 
         select distinct icabangid, srid, dokterid, cn from $tmp02 WHERE IFNULL(iprodid,'')<>''";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 

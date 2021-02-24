@@ -535,8 +535,8 @@ if ($pidact=="editdata"){
         }
 
         if (ipl_cn=="" || ipl_cn=="0") {
-            alert("cn kosong...");
-            return false;
+            //alert("cn kosong...");
+            //return false;
         }
         
         

@@ -83,7 +83,7 @@ if ($_GET['module']=="viewdataanne"){
     }
     
     $filter_kwitasnsi=" AND IFNULL(jenis_rpt,'')<>'B' ";
-    if ($padvance=="B") $filter_kwitasnsi="";
+    if ($padvance=="B" OR $padvance=="A" OR $padvance=="V") $filter_kwitasnsi="";
     
     if ($pkodeid=="7") {
         

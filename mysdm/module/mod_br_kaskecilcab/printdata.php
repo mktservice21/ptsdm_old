@@ -240,6 +240,8 @@
     $prpblnlalu=$pr['pc_bln_lalu'];
     if (empty($prpblnlalu)) $prpblnlalu=0;
     
+    $pketerangandetail=$pr['iket'];
+    
     
 ?>
 
@@ -540,11 +542,21 @@
                     echo "<td nowrap><b>Limit Bulan Berjalan</b></td>";
                     echo "<td nowrap align='right'><b>$prplbb</b></td>";
                     echo "<td ></td>";
+                    
                     echo "</tr>";
                     
                 //}
             }
             
+            if (!empty($pketerangandetail)) {
+                echo "<tr>";
+                echo "<td nowrap></td>";
+                echo "<td nowrap><b>Remarks</b></td>";
+                echo "<td nowrap><b></b></td>";
+                echo "<td >$pketerangandetail</td>";
+                echo "</tr>";
+            }
+                    
             ?>
         </tbody>
     </table>

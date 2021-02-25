@@ -42,70 +42,51 @@
     $pnamakarywanpl=$rowk['nama'];
     
     $pfilterkry="";
-    if (!empty($pidkaryawan)) $pfilterkry=" AND karyawanid='$pidkaryawan' ";
-
-    $query = "create TEMPORARY table $tmp04 (icabangid varchar(10), karyawanid varchar(10))";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    if (!empty($pidcab)) {
-        $query = "insert into $tmp04 (icabangid, karyawanid) select distinct icabangid, karyawanid from mkt.imr0 where 
-            icabangid='$pidcab' AND IFNULL(karyawanid,'')<>'' $pfilterkry"; //AND karyawanid='0000000896'
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        $query = "insert into $tmp04 (icabangid, karyawanid) select distinct icabangid, karyawanid from mkt.ispv0 where 
-            icabangid='$pidcab' AND IFNULL(karyawanid,'')<>'' $pfilterkry";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        $query = "insert into $tmp04 (icabangid, karyawanid) select distinct icabangid, karyawanid from mkt.idm0 where 
-            icabangid='$pidcab' AND IFNULL(karyawanid,'')<>'' $pfilterkry";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    }else{
-        $query = "insert into $tmp04 (karyawanid) values ('$pidkaryawan')";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    }
-    $query = "select distinct b.icabangid, a.srid as karyawanid, a.dokterid from hrd.ks1 as a JOIN
-        (select distinct karyawanid, icabangid from $tmp04) as b on a.srid=b.karyawanid";
-    $query = "create TEMPORARY table $tmp02 ($query)"; 
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-    $query = "select DISTINCT a.dokterid as dokterid, a.nama as nama_dokter, 
-        a.alamat1, a.alamat2, 
-        b.karyawanid, c.nama as nama_karyawan, 
-        b.icabangid, d.nama as nama_cabang 
-        FROM hrd.dokter as a JOIN $tmp02 as b on a.dokterid=b.dokterid 
-        LEFT JOIN hrd.karyawan as c on b.karyawanid=c.karyawanid 
-        LEFT JOIN MKT.icabang as d on b.icabangid=d.icabangid";
-    $query = "create TEMPORARY table $tmp01 ($query)"; 
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-/*
-    goto hapusdata;
-
-
-    if (!empty($pstsdr)) {
-        $query = "select distinct a.dokterid from hrd.ks1 as a WHERE a.srid='$pidkaryawan'";
+    if (!empty($pidkaryawan)) {
+        $query = "select distinct dokterid from hrd.ks1_diskonbaru where karyawanid='$pidkaryawan'";
         $query = "create TEMPORARY table $tmp02 ($query)"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    }
-    
-    $query = "select DISTINCT a.dokterid as dokterid, a.nama as nama_dokter, 
-        a.alamat1, a.alamat2, 
-        b.karyawanid as karyawanid, c.nama as nama_karyawan, 
-        b.iCabangId as icabangid, d.nama as nama_cabang, b.areaId as areaid, e.nama as nama_area 
-        from hrd.dokter as a LEFT JOIN hrd.mr_dokt as b on a.dokterid=b.dokterid 
-        left join hrd.karyawan as c on b.karyawanId=c.karyawanId 
-        left join MKT.icabang as d on b.iCabangId=d.iCabangId 
-        LEFT JOIN MKT.iarea as e on b.iCabangId=e.iCabangId and b.areaId=e.areaId ";
-    if (!empty($pstsdr)) {
-        $query .=" JOIN $tmp02 as f on a.dokterid=f.dokterid";
-    }
-    $query .=" WHERE 1=1 ";
-    $query .=" AND b.karyawanid='$pidkaryawan' ";
-    $query = "create TEMPORARY table $tmp01 ($query)"; 
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "select DISTINCT a.dokterid as dokterid, a.nama as nama_dokter, 
+            a.alamat1, a.alamat2
+            FROM hrd.dokter as a JOIN $tmp02 as b on a.dokterid=b.dokterid";
+        $query = "create TEMPORARY table $tmp01 ($query)"; 
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-*/
+    }else{
+
+        $query = "create TEMPORARY table $tmp04 (icabangid varchar(10), karyawanid varchar(10))";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        if (!empty($pidcab)) {
+            $query = "insert into $tmp04 (icabangid, karyawanid) select distinct icabangid, karyawanid from mkt.imr0 where 
+                icabangid='$pidcab' AND IFNULL(karyawanid,'')<>'' "; //AND karyawanid='0000000896'
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            $query = "insert into $tmp04 (icabangid, karyawanid) select distinct icabangid, karyawanid from mkt.ispv0 where 
+                icabangid='$pidcab' AND IFNULL(karyawanid,'')<>'' ";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            $query = "insert into $tmp04 (icabangid, karyawanid) select distinct icabangid, karyawanid from mkt.idm0 where 
+                icabangid='$pidcab' AND IFNULL(karyawanid,'')<>'' ";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }
+
+        $query = "select distinct b.icabangid, a.srid as karyawanid, a.dokterid from hrd.ks1 as a JOIN
+            (select distinct karyawanid, icabangid from $tmp04) as b on a.srid=b.karyawanid";
+        $query = "create TEMPORARY table $tmp02 ($query)"; 
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+        $query = "select DISTINCT a.dokterid as dokterid, a.nama as nama_dokter, 
+            a.alamat1, a.alamat2
+            FROM hrd.dokter as a JOIN $tmp02 as b on a.dokterid=b.dokterid";
+        $query = "create TEMPORARY table $tmp01 ($query)"; 
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+    }
+
     
     $aksi="eksekusi3.php";
 ?>
@@ -132,10 +113,6 @@
                 while ($row= mysqli_fetch_array($tampil)) {
                     $piddokt = $row["dokterid"];
                     $pnmdokt = $row["nama_dokter"];
-                    $pidkry = $row["karyawanid"];
-                    $pnmkry = $row["nama_karyawan"];
-                    $pnmcab = $row["nama_cabang"];
-                    //$pnmarea = $row["nama_area"];
                     $paalamat = $row["alamat1"];
                     
                     //$plihatks="<a class='btn btn-info btn-xs' href='eksekusi3.php?module=lihatdataksusr&ket=bukan&iid=$pidkry&ind=$piddokt' target='_blank'>Preview KS</a>";

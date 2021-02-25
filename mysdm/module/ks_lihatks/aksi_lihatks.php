@@ -1,934 +1,550 @@
 <?PHP
-    date_default_timezone_set('Asia/Jakarta');
-        ini_set("memory_limit","1G");
-    ini_set('max_execution_time', 0);
-    
-    
-    session_start();
-    if (!isset($_SESSION['USERID'])) {
-        echo "ANDA HARUS LOGIN ULANG....";
-        exit;
-    }
+
+date_default_timezone_set('Asia/Jakarta');
+ini_set("memory_limit","512M");
+ini_set('max_execution_time', 0);
+
+
+session_start();
+if (!isset($_SESSION['USERID'])) {
+    echo "ANDA HARUS LOGIN ULANG....";
+    exit;
+}
+
+include("config/koneksimysqli.php");
+include "config/fungsi_combo.php";
+include "config/fungsi_sql.php";
+include("config/common.php");
+
+$puserid=$_SESSION['USERID'];
+$now=date("mdYhis");
+$tmp01 =" dbtemp.tmptariklhtks01_".$puserid."_$now ";
+$tmp02 =" dbtemp.tmptariklhtks02_".$puserid."_$now ";
+$tmp03 =" dbtemp.tmptariklhtks03_".$puserid."_$now ";
+$tmp04 =" dbtemp.tmptariklhtks04_".$puserid."_$now ";
+
+$pkaryawanid = $_POST['cb_karyawan']; 
+$pdokterid = $_POST['e_iddokt'];
+$pbln = $_POST['e_bulan']; 
+
+$pbulan = date('Y-m', strtotime($pbln));
+
+$query = "select nama from hrd.karyawan where karyawanid='$pkaryawanid'";
+$tampilk=mysqli_query($cnmy, $query);
+$rowk=mysqli_fetch_array($tampilk);
+$pnamakarywanpl=$rowk['nama'];
+
+$query = "select nama as nama_dokter from hrd.dokter where dokterid='$pdokterid'";
+$tampilk=mysqli_query($cnmy, $query);
+$rowk=mysqli_fetch_array($tampilk);
+$pnamadokter=$rowk['nama_dokter'];
+
+$query = "select srid, dokterid, bulan, iprodid, apttype, idapotik, cn_ks as cn, qty, hna, (qty*hna) as tvalue 
+    from hrd.ks1 where srid='$pkaryawanid' AND dokterid='$pdokterid' AND bulan<='$pbulan '";
+$query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+$query = "ALTER TABLE $tmp01 ADD saldocn DECIMAL(20,2)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 SET saldocn=case when IFNULL(cn,0)=0 then 0 else IFNULL(tvalue,0)*(IFNULL(cn,0)/100) end";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 SET saldocn=case when IFNULL(cn,0)=0 then 0 else (IFNULL(tvalue,0)*0.8) * (IFNULL(cn,0)/100) end WHERE apttype<>'1'";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+$query = "select a.brid, a.tgl, DATE_FORMAT(tgl,'%Y-%m') as bulan, a.mrid, a.dokterid, a.jumlah, a.jumlah1 
+    from hrd.br0 as a JOIN hrd.br_kode as b on a.kode=b.kodeid 
+    where a.mrid='$pkaryawanid' AND a.dokterid='$pdokterid' AND b.ks='Y' and IFNULL(a.batal,'')<>'Y' AND 
+    IFNULL(a.retur,'')<>'Y' and a.brid not in (select distinct IFNULL(brid,'') from hrd.br0_reject)";
+$query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp02 set jumlah=jumlah1 WHERE IFNULL(jumlah1,0)<>0";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "select a.*, b.nama as nama_produk, c.nama as nama_apotik 
+    from $tmp01 as a 
+    left join MKT.iproduk as b on a.iprodid = b.iProdId
+    left join hrd.mr_apt as c on a.idapotik=c.idapotik";
+$query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "select karyawanid, dokterid, tgl, awal, cn FROM hrd.mrdoktbaru WHERE karyawanid='$pkaryawanid' AND dokterid='$pdokterid'";
+$query = "CREATE TEMPORARY TABLE $tmp04 ($query)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "UPDATE $tmp04 as a JOIN (select srid, dokterid, bulan FROM $tmp01 order by srid, dokterid, bulan LIMIT 1) as b on a.karyawanid=b.srid AND a.dokterid=b.dokterid SET a.tgl=CONCAT(b.bulan, '-01') WHERE 
+    IFNULL(a.tgl,'')='' OR a.tgl='0000-00-00'";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+$query = "select bulan from $tmp03 order by bulan LIMIT 1";
+$tampilk=mysqli_query($cnmy, $query);
+$rowk=mysqli_fetch_array($tampilk);
+$pmin_bulan=$rowk['bulan'];
+if ($pmin_bulan=="0000-00") $pmin_bulan="";
+
+
+$query = "INSERT INTO $tmp03 (bulan, nama_produk)
+    select DISTINCT bulan, 'ZZINPUTKI' as nama_produk FROM $tmp02 WHERE bulan>='$pmin_bulan' AND bulan NOT IN 
+    (select distinct IFNULL(bulan,'') FROM $tmp01)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 ?>
 
-<html>
-<head>
-  <title>Lihat Kartu Status</title>
+
+<HTML>
+<HEAD>
+  <TITLE>Lihat Kartu Status</TITLE>
     <meta http-equiv="Expires" content="Mon, 01 Jan 2030 1:00:00 GMT">
     <meta http-equiv="Pragma" content="no-cache">
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>
     <link rel="shortcut icon" href="images/icon.ico" />
     <style> .str{ mso-number-format:\@; } </style>
-</head>
+</HEAD>
 <script src="ks.js">
 </script>
 
-<body onload="initVar()">
+<BODY onload="initVar()">
 
-<form id="frmKsView2">
-<?php
-        include("config/koneksimysqli.php");
-        $cnit=$cnmy;
-        include "config/fungsi_combo.php";
-        include "config/fungsi_sql.php";
-        include("config/common.php");
+    <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
 
-	
-        
-            $puserid=$_SESSION['USERID'];
-            $now=date("mdYhis");
-            $tmp04 =" dbtemp.tmplhtks1tbl04_".$puserid."_$now ";
+    <?PHP
+
+        echo "<b>Kartu Status : $pnamakarywanpl - $pkaryawanid</b><br>";
+        echo "<br>Customer : $pnamadokter - $pdokterid<br>";
+
+        echo "<table border='1' cellspacing='0' cellpadding='1'>";
+            echo "<tr>";
+                echo "<th align='left'><small>Bulan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</small></th>";
+                $header_ = add_space('Apotik',40);
+                echo "<th align='left'><small>$header_</small></th>";
+                echo "<th><small>Jenis</small></th>";
+                $header_ = add_space('Produk',40);
+                echo "<th align='left'><small>$header_</small></th>";
+                echo "<th align='center'><small>Qty</small></th>";
+                echo "<th><small>HNA</small></th>";
+                echo "<th><small>Value</small></th>";
+                echo "<th align='center'><small>Jumlah</small></th>";
+                echo "<th align='center'><small>Total</small></th>";
+                echo "<th align='center'><small>Approved</small></th>";
+                echo "<th align='center'><small>Average Value</small></th>";
+            echo "</tr>";
+
+            $p_isaldo=0;
+
+            $query = "select awal from hrd.`ks1_saldoawal` WHERE karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND IFNULL(awal,0)<>0";
+            $tampil=mysqli_query($cnmy, $query);
+            $ketemu=mysqli_num_rows($tampil);
+            if ((INT)$ketemu>0) {
+                while ($row=mysqli_fetch_array($tampil)) {
+                    //$ptglsldawal=$row['tgl'];
+                    $psldawal=$row['awal'];
+
+                    //if ($ptglsldawal=="0000-00" OR $ptglsldawal=="0000-00-00") {
+                    //    $ptglsldawal="";
+                    //}
+                    if (empty($psldawal)) $psldawal=0;
+
+                    $p_isaldo=(DOUBLE)$p_isaldo+(DOUBLE)$psldawal;
+
+                    $psldawal = number_format($psldawal,0);
+
+                    echo "<tr>";
+                    echo "<td><small>$pmin_bulan</small></td>";  
+                    echo "<td>&nbsp;</td>";
+                    echo "<td>&nbsp;</td>";
+                    echo "<td><small><b>SA</b></small></td>";
+                    echo "<td>&nbsp;</td>";
+                    echo "<td>&nbsp;</td>";
+                    echo "<td>&nbsp;</td>";
+                    echo "<td>&nbsp;</td>";
+                    echo "<td align='right'><small><b>$psldawal</b></small></td>";
+                    echo "<td>&nbsp;</td>";
+                    echo "<td>&nbsp;</td>";
+                    echo "</tr>";
+
+                }
+            }else{
+                echo "<tr>";
+                echo "<td><small>$pmin_bulan</small></td>";  
+                echo "<td>&nbsp;</td>";
+                echo "<td>&nbsp;</td>";
+                echo "<td><small><b>SA</b></small></td>";
+                echo "<td>&nbsp;</td>";
+                echo "<td>&nbsp;</td>";
+                echo "<td>&nbsp;</td>";
+                echo "<td>&nbsp;</td>";
+                echo "<td align='right'><small><b>0</b></small></td>";
+                echo "<td>&nbsp;</td>";
+                echo "<td>&nbsp;</td>";
+                echo "</tr>";
+            }
 
 
-            
-	$dokterid = $_POST['e_iddokt'];//echo"$dokterid<br>";
-	$bulan = $_POST['e_bulan']; 
-	$bulan__ = $_POST['e_bulan']; 
-        $bulan = date('Y-m', strtotime($bulan));
-        $bulan__ = date('Y-m', strtotime($bulan__));
-        
-	$srid = $_POST['cb_karyawan']; //echo"$srid";
-	$karyawanid = $_POST['cb_karyawan']; 	//echo"$karyawanid";
-	$mr_id = $_POST['cb_karyawan']; 
-        
-        $br="0";
-	if (isset($_POST['chk_hki'])) $br = $_POST['chk_hki'];
-	if($br=='HKI'){
-		$br = 1;
-	}
-	// echo $br;
-	
-	if ($srid=="") {
-	  $srid = $mr_id;
-	}
-	$JABATANID = $_SESSION['JABATANID'];
 
-	if ($JABATANID=='04') {
-		 echo "Error connection to database";
-		exit;
-	}
+            //out of range KI
+            if (!empty($pmin_bulan)) {
+                $query = "select tgl, sum(jumlah) as jumlahki from $tmp02 WHERE bulan<'$pmin_bulan' GROUP BY 1 order by 1";
+                $tampil0=mysqli_query($cnmy, $query);
+                $ketemu0=mysqli_num_rows($tampil0);
+                if ((INT)$ketemu0>0) {
+                    while ($row0=mysqli_fetch_array($tampil0)) {
+                        $ptglki=$row0['tgl'];
+                        $pjumlahki=$row0['jumlahki'];
 
-	// echo"$srid";
-	// nama mr?
-	$query = "select nama from hrd.karyawan where karyawanid='$srid'"; 
-	// echo $query.'<br>';
-	$result = mysqli_query($cnit, $query);
-	$num_results = mysqli_num_rows($result);
-	$row = mysqli_fetch_array($result);
-	$srnm_ = $row['nama'];
+                        $ptglki = date('Y-m', strtotime($ptglki));
 
-	echo "<b>Kartu Status : $srnm_ - $srid</b><br>";
-	
-	//areaid
-	$query = "select icabangid,areaid from hrd.karyawan where karyawanid='$srid'";
-	// echo $query.'<br>';
-	$result = mysqli_query($cnit, $query);
-	$num_results = mysqli_num_rows($result);
-	$row = mysqli_fetch_array($result);
-	$icabangid = $row['icabangid']; //echo"$icabangid";
-	$areaid = $row['areaid']; //echo"$areaid";
+                        if (empty($pjumlahki)) $pjumlahki=0;
 
-        
-        
-            $query = "select * from hrd.ks1 where srid='$srid' and dokterid='$dokterid'"; 
-            $query = "create table $tmp04 ($query)";
-            mysqli_query($cnit, $query);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-            
-            
-        
-        
-	$query = "
-		select min(bulan) as awal 
-		from $tmp04
-	  	where srid='$srid' and dokterid='$dokterid'
-	"; 
-	// echo $query.'<br>';
-	$result = mysqli_query($cnit, $query);
-	$num_results = mysqli_num_rows($result);
-	$row = mysqli_fetch_array($result);
-	$awal = $row['awal'];
-	$akhir = $_POST['e_bulan']; 
-        $akhir = date('Y-m', strtotime($akhir));
-	if ($awal=="") {
-		$query = "
-			select min(bulan) as awal 
-			from $tmp04
-			where dokterid='$dokterid'
-		"; 
-		// echo $query.'<br>';
-		$result = mysqli_query($cnit, $query);
-		$num_results = mysqli_num_rows($result);
-		$row = mysqli_fetch_array($result);
-		$awal = $row['awal'];
-	}
-	if ($awal=="") {
-		$awal = $akhir;
-	}
-	
-	//ambil saldo awal
-	$query = "select tgl,awal,cn from hrd.mrdoktbaru where karyawanid='$srid' and dokterid='$dokterid' order by tgl";
-	// echo $query.'<br>';
-	$result = mysqli_query($cnit, $query);
-	$num_results = mysqli_num_rows($result);
-	$row = mysqli_fetch_array($result);
-	$tglawal_ = substr($row['tgl'],0,7);
-        
-            $ptahuncnpilih=$row['tgl'];
-            if (empty($ptahuncnpilih)) $ptahuncnpilih="0000-00-00";
-            if ($ptahuncnpilih<>"0000-00" AND $ptahuncnpilih<>"0000-00-00") $ptahuncnpilih =  date("Y", strtotime($ptahuncnpilih));
-            if ($ptahuncnpilih=="2020") $tglawal_=$awal;
-        
-        //diubah jadi awal bulan ks
-        if (empty($tglawal_)) $tglawal_="0000-00";
-        if (empty($awal)) $awal="0000-00";
-        if ($tglawal_=="0000-00") $tglawal_=$awal;
-        
-        
-        
-	if ($tglawal_=="0000-00") {
-		$tglawal_ = date('Y-').'01';
-		$tahun = date('Y'); 
-		$tahun1 = $tahun - 01;
-		$tglawal1 = $tahun1.'-01'; 
-                
-                
-	} else {
-		$tglawal1 = $tglawal_;
-	}
-	$saldoawal_ = $row['awal']; 
-	$cn = $row['cn'];
+                        $p_isaldo=(DOUBLE)$p_isaldo+(DOUBLE)$pjumlahki;
 
-	if (($saldoawal_=="") or ($cn=="")) {
-		$query = "select tgl,awal,cn from hrd.mrdoktbaru where dokterid='$dokterid'"; 
-		// echo $query.'<br>';
-		$result = mysqli_query($cnit, $query);
-		$num_results = mysqli_num_rows($result);
-		$row = mysqli_fetch_array($result);
-		$tglawal_ = substr($row['tgl'],0,7); 
-		if ($tglawal_=="0000-00") {
-			$tglawal_ = date('Y-').'01'; 
-			
-		} 
-		$saldoawal_ = $row['awal']; 
-		$cn = $row['cn'];
-	}
+                        $pjumlahki = number_format($pjumlahki,0);
 
-	// isi apt dispensing utk setiap mr
-	$query = "select srid,aptid from hrd.mr_apt where srid=$srid and aptid=0000000000";
-	// echo $query.'<br>';
-	$result = mysqli_query($cnit, $query);
-	$num_results = mysqli_num_rows($result);
-	if ($num_results) {
-	} else {
-		$query = "insert into hrd.mr_apt (srid,aptid,apttype,nama,user1) values
-				 ('$srid','0000000000','1','(dispensing)',$srid)"; 
-		$result = mysqli_query($cnit, $query);
-	}
-        
-        //tidak dipakai
-	if ($dokterid == "*") {
-		$query = "select DISTINCT ks1.*,dokter.nama as dokternm,dokter.cn,
-				  MKT.iproduk.nama as prodnm,mr_apt.nama as aptnm
-				  from $tmp04 as ks1 
-				  left join hrd.dokter as dokter on ks1.dokterid=dokter.dokterid
-				  left join MKT.iproduk as iproduk on ks1.iprodid = MKT.iproduk.iProdId
-				  left join hrd.mr_apt as mr_apt on ks1.idapotik=mr_apt.idapotik
-				  where ks1.srid='$srid' and bulan<='$bulan'
-				  order by dokternm,dokterid,bulan,aptnm,prodnm
-		"; //(ks1.srid=mr_apt.srid and ks1.aptid=mr_apt.aptid)
-		//echo"$query";
-	} else {
-	
-		$query = "select DISTINCT ks1.*,dokter.nama as dokternm,dokter.cn,
-				  MKT.iproduk.nama as prodnm,mr_apt.nama as aptnm
-				  from $tmp04 as ks1 
-				  left join hrd.dokter as dokter on ks1.dokterid=dokter.dokterid
-				  left join MKT.iproduk as iproduk on ks1.iprodid = MKT.iproduk.iProdId
-				  left join hrd.mr_apt as mr_apt on ks1.idapotik=mr_apt.idapotik 
-				  where ks1.srid='$srid' and ('$tglawal1' <= bulan and bulan<='$bulan') and ks1.dokterid='$dokterid'
-				  order by dokternm,dokterid,bulan,aptnm,prodnm
-		";//(ks1.srid=mr_apt.srid and ks1.aptid=mr_apt.aptid)
-		//echo"$query";
-    }
-    //end tidak dipakai
-    
-    
-	// echo"<br>$query<br>";
-	$query = "select nama as dokternm,dokterid from hrd.dokter where dokterid='$dokterid'";
-	$result = mysqli_query($cnit, $query); //echo"$result";
-	$row = mysqli_fetch_array($result);
-	$dokternm_ = $row['dokternm'];
-	$dokterid_ = $row['dokterid'];
-	
-/*
-	$namadokter = substr($dokternm_,0,-4); 
-	*/
-	
-	$now=date("mdYhis");
-	$puserid="A";//$_SESSION['USERID'];
-	$tmp00 =" dbtemp.tmp00BR_".$puserid."_$now ";
-	
-	$query = "SELECT * FROM hrd.br0 WHERE dokterid='$dokterid' AND IFNULL(mrid,'')='$srid' AND IFNULL(batal,'')<>'Y' AND IFNULL(retur,'')<>'Y' and "
-                . " brid not in (select distinct IFNULL(brid,'') from hrd.br0_reject)";
-	$query = "create table $tmp00 ($query)"; 
-	mysqli_query($cnit, $query);
-	// echo "$query<br>";
+                        echo "<tr>";
+                        echo "<td><small>$ptglki</small></td>";  
+                        echo "<td><small><b>KI</b></small></td>";
+                        echo "<td><small>&nbsp;</small></td>";
+                        echo "<td><small>&nbsp;</small></td>";
+                        echo "<td align='right'><small>&nbsp;</small></td>";
+                        echo "<td align='right'><small>&nbsp;</small></td>";
+                        echo "<td align='right'><small><b>&nbsp;</b></small></td>";
+                        echo "<td align='right'><small><b>$pjumlahki</b></small></td>";
+                        echo "<td align='right'><small><b>&nbsp;</b></small></td>";
+                        echo "<td>&nbsp;</td>";
+                        echo "<td>&nbsp;</td>";
+                        echo "</tr>";
 
-	
-	echo '
-	<br>Customer : '.$dokternm_.' - '.$dokterid_.'<br>
-	<table border="1" cellspacing="0" cellpadding="1">
-		<tr>
-			<th align="left"><small>Bulan&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</small></th>
-	';
-
-	$header_ = add_space('Apotik',40);
-	echo '
-		<th align="left"><small>'.$header_.'</small></th>
-		<th><small>Jenis</small></th>
-	';
-
-	$header_ = add_space('Produk',40);
-	echo '
-			<th align="left"><small>'.$header_.'</small></th>
-			<th align="center"><small>Qty</small></th>
-			<th><small>HNA</small></th>
-			<th><small>Value</small></th>
-			<th align="center"><small>Jumlah</small></th>
-			<th align="center"><small>Total</small></th>
-			<th align="center"><small>Approved</small></th>
-			<th align="center"><small>Average Value</small></th>
-		</tr>
-	';
-
-	if ($tglawal_=="0000-00") {
-		echo "<tr><td><small>&nbsp;</small></td>";  
-	} else {
-		echo "<tr><td><small>$tglawal1</small></td>"; 
-	}
-
-	echo '
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td><small><b>SA</b></small></td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td align="right"><small><b>'.number_format($saldoawal_,0).'</b></small></td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-	';
-
-	$total_ = $saldoawal_;
-	$total_val = '';
-	$mulai = $tglawal1;
-	$jml_ttl = 0;
-	while ($mulai <= $akhir) {
-		$tot = $total_;  
-
-		// echo "$srid/$tglawal1/$mulai/$dokterid/$cn<br>"; 
-		$total__ = show_kartu($srid,$tglawal1,$mulai,$dokterid,$cn,$br,$tmp00,$tmp04); 
-
-		$total_ = (DOUBLE)$total_ + (DOUBLE)$total__;
-		$total_val = (DOUBLE)$total_val+(DOUBLE)$total__;
-		// echo $total_.'<br>';
-		// echo $total_val.'<br>';
-
-		if($total_val != '' || (DOUBLE)$total_val > 0){
-			$jml_ttl = (DOUBLE)$jml_ttl + 1;
-		}
-		// echo $jml_ttl.'<br>';
-
-		$dummy1 = substr($mulai,0,4); 
-		$dummy2 = substr($mulai,5,2) + 1; 
-		if ($dummy2 > 12) {
-			$dummy1 = (DOUBLE)$dummy1 + 1;
-			$dummy2 = "01";
-		} else {
-		}  // end if
-		$dummy2 = "0".$dummy2;
-		$dummy2 = substr($dummy2,-2);
-		$mulai = $dummy1.'-'.$dummy2;
-		//echo"$mulai<br>";
-
-		if ($tot == $total_) {
-			echo '
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-			';
-
-		} else {
-			// echo $total_.'~'.$total_val.'~'.$jml_ttl.'<br>';
-
-			// untuk hitung cari nilai rata2 nya
-			if($jml_ttl == 1){
-				$total_val = $total_;
-			}else{
-				$total_val = (DOUBLE)$total_val/2;
-			}
-			// echo $total_val.'<br>';
-
-			echo '
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td align="right"><small><b>'.number_format($total_,0).'</b></small></td>
-					<td>&nbsp</td>
-					<td align="right"><small><b>'.number_format($total_val,0).'</b></small></td>
-			';
-
-			// agar nilainya kembali normal sebelum di jumlahkan dngn total berikutnya
-			// $total_val = $total_val*$jml_ttl;
-		}
-
-		echo '
-			</tr>
-		';
-    } // end while 
-
-	mysqli_query($cnit, "DROP TABLE $tmp00");
-
-	echo '
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td align="right"><small><b>Total :</b></small></td>
-				<td align="right"><small><b>'.number_format($total_,0).'</b></small></td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-			</tr>
-		</table>
-	';
-	
-	//do_show_menu($_SESSION['JABATANID'],'N');
-
-function show_kartu($psrid,$ptglawal_,$pbulan,$pdokterid,$pcn,$br,$tmp00,$tmp04) {
-  //kartu status	
-  include("config/koneksimysqli.php");
-  $cnit=$cnmy;
-  $mvalue_=0;
- // echo "pbulan==$pbulan";
-	if ($psrid=="") {
-		$query = "select DISTINCT ks1.*,MKT.iproduk.nama as prodnm,mr_apt.nama as aptnm, mr_dokt.awal, '' as cn 
-				  from $tmp04 as ks1
-				  left join MKT.iproduk as iproduk on ks1.iprodid = MKT.iproduk.iProdId
-				  left join hrd.mr_apt as mr_apt on ks1.idapotik=mr_apt.idapotik 
-				  left join hrd.mrdoktbaru as mr_dokt on (ks1.srid=mr_dokt.karyawanid and ks1.dokterid=mr_dokt.dokterid)
-				  where (bulan='$pbulan') and ks1.dokterid='$pdokterid'
-				  order by bulan,aptnm,prodnm "; //(ks1.srid=mr_apt.srid and ks1.aptid=mr_apt.aptid)
-	} else {  
-		$query = "select DISTINCT ks1.*,MKT.iproduk.nama as prodnm,mr_apt.nama as aptnm, mr_dokt.awal, cn.cn
-				  from $tmp04 as ks1  
-				  left join MKT.iproduk as iproduk on ks1.iprodid = MKT.iproduk.iProdId
-				  left join hrd.mr_apt as mr_apt on ks1.idapotik=mr_apt.idapotik 
-				  left join hrd.mrdoktbaru as mr_dokt on (ks1.srid=mr_dokt.karyawanid and ks1.dokterid=mr_dokt.dokterid)
-				  left join hrd.cn as cn on ks1.srid=cn.karyawanid and ks1.dokterid=cn.dokterid
-				  where ks1.srid='$psrid' and (bulan='$pbulan') and ks1.dokterid='$pdokterid' and left(cn.tgl,7)='$pbulan'
-				  order by bulan,aptnm,prodnm";//(ks1.srid=mr_apt.srid and ks1.aptid=mr_apt.aptid) //echo"$query";
-    } 
-	
-	//echo"$query<br><br>";
-	$result = mysqli_query($cnit, $query); 
-	$num_results = mysqli_num_rows($result); //echo"num==$num_results<br>";
-	
-	if ($num_results==0) {
-		$query = "select icabangid,areaid,divisiid,divisiid2 from hrd.karyawan where karyawanid='$psrid'";
-		// echo "$query<br>";
-		$result = mysqli_query($cnit, $query);
-		$num_results = mysqli_num_rows($result);
-		$row = mysqli_fetch_array($result);
-		$icabangid = $row['icabangid']; 
-		$areaid = $row['areaid']; 
-		$divisiid = $row['divisiid']; 
-		$divisiid2 = $row['divisiid2']; 
-		
-		// $query = "select ks1.*,MKT.iproduk.nama as prodnm,mr_apt.nama as aptnm, mr_dokt.awal,karyawan.icabangid,karyawan.areaid,karyawan.divisiid,karyawan.divisiid2
-		// 		  from $tmp04 as ks1 
-		// 		  left join MKT.iproduk as iproduk on ks1.iprodid = MKT.iproduk.iProdId
-		// 		  left join hrd.mr_apt as mr_apt on (ks1.srid=mr_apt.srid and ks1.aptid=mr_apt.aptid)
-		// 		  left join hrd.mrdoktbaru as mr_dokt on (ks1.srid=mr_dokt.karyawanid and ks1.dokterid=mr_dokt.dokterid)
-		// 		  left join hrd.karyawan as karyawan on ks1.srid=karyawan.karyawanid 
-		// 		  where karyawan.areaid='$areaid' and karyawan.icabangid='$icabangid' and karyawan.divisiid='$divisiid' and karyawan.divisiid2='$divisiid2' and (bulan='$pbulan') and ks1.dokterid='$pdokterid'
-		// 		  order by bulan,aptnm,prodnm "; //echo"$query";
-
-		$query = "select DISTINCT ks1.*,MKT.iproduk.nama as prodnm,mr_apt.nama as aptnm, karyawan.icabangid,karyawan.areaid,karyawan.divisiid,karyawan.divisiid2, '' as cn 
-				  from $tmp04 as ks1 
-				  left join MKT.iproduk as iproduk on ks1.iprodid = MKT.iproduk.iProdId
-				  left join hrd.mr_apt as mr_apt on ks1.idapotik=mr_apt.idapotik 
-				  left join hrd.karyawan as karyawan on ks1.srid=karyawan.karyawanid 
-				  where karyawan.areaid='$areaid' and karyawan.icabangid='$icabangid' and karyawan.divisiid='$divisiid' and karyawan.divisiid2='$divisiid2' and (bulan='$pbulan') and ks1.dokterid='$pdokterid' and ks1.srid='$psrid'
-				  order by bulan,aptnm,prodnm 
-		"; //(ks1.srid=mr_apt.srid and ks1.aptid=mr_apt.aptid)
-		//echo"$query";
-		$result = mysqli_query($cnit, $query); 
-		$num_results = mysqli_num_rows($result); 
-	}
-	//echo"$query<br><br>";
-
-	$row = mysqli_fetch_array($result);
-	$i = 1;
-	$mtotal_ = 0;
-	// print_r($row);
-	while ($i <= $num_results) {
-		$bulan_ = $row['bulan']; 
-		$first_ = 1;
-	
-		echo "
-			<tr>
-				<td><small>$bulan_</small></td>
-				<td>&nbsp;</td>
-				<td>&nbsp</td>
-				<td>&nbsp</td>
-				<td>&nbsp</td>
-				<td>&nbsp;</td>
-				<td>&nbsp</td>
-				<td>&nbsp</td>
-				<td>&nbsp</td>
-				<td>&nbsp</td>
-				<td>&nbsp</td>
-			</tr>
-		";
-		
-		while ( ($bulan_==$row['bulan']) ) {
-			$cn = $row['cn']; //echo"$bulan_////$cn<br>";
-			$qty = $row['qty'];
-			$iprodid = $row['iprodid'];
-			$namaapt = $row['aptnm'];
-			$kodeapt = $row['aptid'];
-			$pidapotik = $row['idapotik'];
-			
-                        $piapotikid="";
-                        if (!empty($pidapotik)) $piapotikid="($pidapotik)";
                         
-			if ($cn == '') {
-				$query_sa = " select cn from hrd.cn where karyawanid='$psrid' and dokterid='$pdokterid' and tgl<='$pbulan' order by tgl desc"; 
-				//echo"$query_sa<br>";
-
-				$result_sa = mysqli_query($cnit, $query_sa);
-				$num_results_sa = mysqli_num_rows($result_sa);
-				if ($num_results_sa) {
-					$row_sa = mysqli_fetch_array($result_sa);
-					$cn = $row_sa['cn']; 
-				}	
-			}
-			if ($cn == '') {
-				$cn = $pcn;
-			}
-			//ambil cn
-			$str_ = "select * from hrd.mrdoktbaru where karyawanid='$psrid' and dokterid='$pdokterid' and left(tgl,7)<='$pbulan' order by tgl desc"; 
-			// echo "$str_<br>";
-
-			$res2_ = mysqli_query($cnit, $str_); 
-			$records_ = mysqli_num_rows($res2_);
-			$row2_ = mysqli_fetch_array($res2_);
-			$cn = $row2_['cn'];			
-			// echo "cn=$cn ~~ bulan = $pbulan";		
-			
-			if ($cn > '20') {
-				$sim = 'A+';
-			} else {
-				if ($cn == '20') {
-					$sim = 'A';
-				} else {
-					if ($cn > '15' and $cn < '20') {
-						$sim = 'B+';
-					} else {
-						if ($cn == '15') {
-							$sim = 'B';
-						} else {
-							if ($cn > '10' and $cn < '15') {
-								$sim = 'C+';
-							} else {
-								if ($cn == '10') {
-									$sim = 'C';
-								} else {
-									if ($cn > '5' and $cn < '10') {
-										$sim = 'D+';
-									} else {
-										if ($cn == '5') {
-											$sim = 'D';
-										} else {
-											if ($cn < '5') {
-												$sim = 'E';
-											} else {
-											}												
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			//echo "cn =$bulan_ //$cn<br>";
-			
-			
-			echo "<tr>";
-		
-			if ($first_) {
-				echo "<td><small>SIM = $sim</small></td>";
-				$first_ = 0;
-			} else {
-				echo "<td><small>&nbsp;</small></td>";
-			}
-		//	echo "<td><small>".$row['aptnm']."</small></td>";
-			echo "<td><small>$namaapt $piapotikid</small></td>";
-			$jumlah_ = 0;
-			if ($row['apttype']=="1") {
-				echo '<td align="center"><small>D</small></td>';
-			} else {
-				echo '<td align="center"><small>R</small></td>';
-			}
-			echo '
-				<td><small>'.$row['prodnm'].'</small></td>
-				<td align="center"><small>'.number_format($row['qty'],0).'</small></td>
-				<td align="right"><small>'.number_format($row['hna'],0).'</small></td>
-			';
-			$value = 0;
-			$value =(DOUBLE)$row['qty'] * (DOUBLE)$row['hna'];
-			
-			echo '<td align="right"><small>'.number_format($value,0)."</small></td>";
-			if ($row['apttype']=="1") {
-				$jumlah_ = 0 - ((DOUBLE)$value * ((DOUBLE)$cn/100)); 
-			} else {
-				$jumlah_ = 0 - ((DOUBLE)$value * 0.8 * ((DOUBLE)$cn/100));
-			}
-			echo '
-				<td align="right"><small>'.number_format($jumlah_,0).'</small></td>
-				<td align="center"><small>&nbsp;</small></td>
-			';	
-			if ($row['approved']=="Y") {
-				echo '
-					<td align="center"><small>Ya</small></td>
-				';
-			} else {
-				echo '
-					<td align="center"><small>&nbsp;</small></td>
-					<td align="center"><small>&nbsp;</small></td>
-				';
-			}	 
-			$mtotal_ = (DOUBLE)$mtotal_ + (DOUBLE)$jumlah_;
-			$mvalue_ = (DOUBLE)$mvalue_ + (DOUBLE)$value;
-		
-			//echo "$pbulan///$psrid///$pdokterid///$cn///$iprodid///$qty///$jumlah_<br>";
-			
-			echo "</tr>";
-			$row = mysqli_fetch_array($result);
-			$i++;			  
-		} 		
-		echo '
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td align="right"><small><b>'.number_format($mvalue_,0).'</b></small></td>
-				<td align="right"><small><b>'.number_format($mtotal_,0).'</b></small></td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-			</tr>
-		';	
-    } // eof  i<= num_results
-	
-	// ambil br per bulan
-	
-	//cek ks2 rep2
-	$query_ck1 = "select rep1 from hrd.ks2 where rep2='$psrid' and dokterid='$pdokterid'";  
-	// echo "$query_ck1<br>";
-	// echo"cek ks2 = $query_ck1 <br>";
-	
-	$result_ck1 = mysqli_query($cnit, $query_ck1);
-	$num_results_ck1 = mysqli_num_rows($result_ck1);
-	$row_ck1 = mysqli_fetch_array($result_ck1);
-	$rep1_ = $row_ck1['rep1'];
-	//mrid='$psrid' and
-	//wh20130516, koreksi br tidak muncul di ks
-	// echo $rep1_;
-	$queryBr1 = "
-		SELECT br0.*, br_kode.ks
-	    FROM $tmp00 as br0 
-	    JOIN hrd.br_kode on br0.kode=br_kode.kodeid 
-		WHERE mrid='$psrid' and dokterid='$pdokterid' and left(tgl,7)='$pbulan' and br_kode.ks='Y'
-		ORDER BY tgl
-	"; 
+                    }
+                }
+            }
 
 
-	
-	$queryBr1 = "
-		SELECT br0.*, br_kode.ks
-	    FROM $tmp00 as br0 
-	    JOIN hrd.br_kode on br0.kode=br_kode.kodeid 
-		WHERE mrid='$rep1_' AND dokterid='$pdokterid' AND left(tgl,7)='$pbulan' AND br_kode.ks='Y'
-		ORDER BY tgl
-	";
-	// 	$queryBr1 = "
-	// 	SELECT br0.*, br_kode.ks
-	//     FROM hrd.br0 as br0  
-	//     JOIN hrd.br_kode on br0.kode=br_kode.kodeid 
-	// 	WHERE dokterid='$pdokterid' AND left(tgl,7)='$pbulan' AND br_kode.ks='Y'
-	// 	ORDER BY tgl
-	// "; 
-	
-	// echo"$queryBr1 <br>";
-	$resultBr1 = mysqli_query($cnit, $queryBr1);
-	$num_resultsBr1 = mysqli_num_rows($resultBr1); 
-	$rowBr1 = mysqli_fetch_array($resultBr1);
-	$j = 1;
-	// print_r($num_resultsBr1);
-	
-	if($br == 0){
-		while ($j <= $num_resultsBr1) {
-			$tglBr = substr($rowBr1['tgl'],0,7);
-			$ccyId = $rowBr1['ccyId'];
-			$jumlah = $rowBr1['jumlah']; 
-			$jumlah1 = $rowBr1['jumlah1']; 
-			$batal = $rowBr1['batal'];
-			$thnccy = substr($rowBr1['tgl'],0,4);
-			// echo $br.'-'.$jumlah;
-			echo "
-				<tr>
-					<td><small>$tglBr</small></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td><b>KI</b></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-			";
-			
-			if ($jumlah1==0) {
-				if ($ccyId<>'IDR') {
-					$query_cc = "select nilai from hrd.ccy where ccyId='$ccyId' and tahun='$thnccy'";
-					$result_cc = mysqli_query($cnit, $query_cc);
-					$num_results_cc = mysqli_num_rows($result_cc);
-					if ($num_results_cc) {
-						 $row_cc = mysqli_fetch_array($result_cc);
-						 $nilai_cc = $row_cc['nilai'];
-					}
-					if ($batal == 'Y') {
-						$jumlah = 0;
-						echo "
-							<td align=right><b><small>$ccyId ".number_format($jumlah,0)."</small></td>
-							<td>&nbsp;</td>
-						";
-					} else {
-						echo "
-							<td align=right><b><small>$ccyId ".number_format($jumlah,0)."</small></td>
-							<td>&nbsp;</td>
-						";
-					}
-					$jumlah2 = (DOUBLE)$jumlah * (DOUBLE)$nilai_cc;
-				} else {
-					if ($batal == 'Y' ) {
-						$jumlah = 0;
-						echo "
-							<td align=right><b><small>".number_format($jumlah,0)."</small></td>
-							<td>&nbsp;</td>
-						";
-					} else {
-						echo "
-							<td align=right><b><small>".number_format($jumlah,0)."</small></td>
-							<td>&nbsp;</td>
-						";
-					}
-					$jumlah2 = $jumlah;
-				}
+            $ptotalval=0;
+            $ptotalsldcn=0;
 
-			} else {
+            $query = "select distinct bulan from $tmp03 order by bulan";
+            $tampil2=mysqli_query($cnmy, $query);
+            $ketemu2=mysqli_num_rows($tampil2);
+            if ((INT)$ketemu2>0) {
+                while ($row2=mysqli_fetch_array($tampil2)) {
+                    $nbulan=$row2['bulan'];
 
-				if ($ccyId<>'IDR') {
-					$query_cc = "select nilai from hrd.ccy where ccyId='$ccyId'";
-					$result_cc = mysqli_query($cnit, $query_cc);
-					$num_results_cc = mysqli_num_rows($result_cc);
-					if ($num_results_cc) {
-						 $row_cc = mysqli_fetch_array($result_cc);
-						 $nilai_cc = $row_cc['nilai'];
-					}
-					if ($batal=='Y') {
-						$jumlah1 = 0;
-						echo "
-							<td align=right><b><small>$ccyId ".number_format($jumlah1,0)."</small></td>
-							<td>&nbsp;</td>
-						";
-					} else {
-						echo "
-							<td align=right><b><small>$ccyId ".number_format($jumlah1,0)."</small></td>
-							<td>&nbsp;</td>
-						";
-					}
-					$jumlah2 = (DOUBLE)$jumlah1 * (DOUBLE)$nilai_cc;
-				} else {
-					if ($batal=='Y') {
-						$jumlah1 = 0;
-						echo "
-							<td align=right><b><small>".number_format($jumlah1,0)."</small></td>
-							<td>&nbsp;</td>
-						";
-					} else {
-						echo "
-							<td align=right><b><small>".number_format($jumlah1,0)."</small></td>
-							<td>&nbsp;</td>
-						";
-					}
-					$jumlah2 = $jumlah1;
-				}
-			}
-			echo "
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-			";
-			$mtotal_ = (DOUBLE)$mtotal_ + (DOUBLE)$jumlah2; 
-			$rowBr1 = mysqli_fetch_array($resultBr1);
-			$j++;
-	    }
-	}
-	
-	//cek ks2 rep1
-	$query_ck2 = "select * from hrd.ks2 where rep1='$psrid' and dokterid='$pdokterid'"; // echo"$query_ck";
-	$result_ck2 = mysqli_query($cnit, $query_ck2);
-	$num_results_ck2 = mysqli_num_rows($result_ck2); 
-	// echo"$query_ck2";
+                    $precawal=1;
+                    $plewatks=false;
+                    $ptotalval=0;
+                    $ptotalsldcn=0;
+                    $prec=1;
+                    $query = "select * from $tmp03 WHERE bulan='$nbulan' order by bulan, nama_apotik, idapotik, nama_produk, iprodid";
+                    $tampil3=mysqli_query($cnmy, $query);
+                    $ketemu3=mysqli_num_rows($tampil3);
+                    if ((INT)$ketemu3>0) {
+                        while ($row3=mysqli_fetch_array($tampil3)) {
+                            $pidapotik=$row3['idapotik'];
+                            $pnmapotik=$row3['nama_apotik'];
+                            $ptypeapotik=$row3['apttype'];
 
-	if ($num_results_ck2<>'0') {
-		
-	} else {
-		$query_ck = "select karyawanid from hrd.mrdoktbaru where dokterid='$pdokterid'"; 
-		// echo"$query_ck";
-		$result_ck = mysqli_query($cnit, $query_ck);
-		$num_results_ck = mysqli_num_rows($result_ck);
-		$row_ck = mysqli_fetch_array($result_ck);
-		$karyawanid_ = $row_ck['karyawanid'];
-		//mrid='$psrid' and
-		$queryBr = "
-			select br0.*, br_kode.ks
-			from $tmp00 as br0 
-			join hrd.br_kode on br0.kode=br_kode.kodeid 
-			where mrid='$psrid' and dokterid='$pdokterid' and left(tgl,7)='$pbulan' and br_kode.ks='Y'
-			order by tgl;
-		"; 
-		// echo"$queryBr<br>";
+                            $pidprod=$row3['iprodid'];
+                            $pnmprod=$row3['nama_produk'];
 
-		$resultBr = mysqli_query($cnit, $queryBr); 
-		$num_resultsBr = mysqli_num_rows($resultBr); 
-		$rowBr = mysqli_fetch_array($resultBr);
-                
-		$j = 1;
-		// print_r($rowBr);
+                            $pqty=$row3['qty'];
+                            $phna=$row3['hna'];
+                            $pvalue=$row3['tvalue'];
+                            $cn=$row3['cn'];
+                            $psaldocn=$row3['saldocn'];
+                            
 
-		if($br == 0){
-			while ($j <= $num_resultsBr) { 
-				$tglBr = substr($rowBr['tgl'],0,7);
-				$ccyId = $rowBr['ccyId'];
-				$jumlah = $rowBr['jumlah']; 
-				$jumlah1 = $rowBr['jumlah1']; 
-				$batal = $rowBr['batal']; 
-				$aktivitas1 = $rowBr['aktivitas1']; 
-				
-				echo "
-					<tr>
-						<td><small>$tglBr</small></td>
-						<td><b>KI</b></td>
-						<td>&nbsp;</td>
-						<td><b><small>&nbsp;</small></b></td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-				";
-				
-				if ($jumlah1==0) {
-					if ($ccyId<>'IDR') {
-						$query_cc = "select nilai from hrd.ccy where ccyId='$ccyId'";
-						$result_cc = mysqli_query($cnit, $query_cc);
-						$num_results_cc = mysqli_num_rows($result_cc);
-						if ($num_results_cc) {
-							 $row_cc = mysqli_fetch_array($result_cc);
-							 $nilai_cc = $row_cc['nilai'];
-						}
-						if ($batal == 'Y') {
-							$jumlah = 0;
-							echo "
-								<td align=right><b><small>$ccyId ".number_format($jumlah,0)."</small></td>
-								<td>&nbsp;</td>
-							";
-						} else {
-							echo "
-								<td align=right><b><small>$ccyId ".number_format($jumlah,0)."</small></td>
-								<td>&nbsp;</td>
-							";
-						}
-						$jumlah2 = (DOUBLE)$jumlah * (DOUBLE)$nilai_cc;
-					} else {
-						if ($batal == 'Y' ) {
-							$jumlah = 0;
-							echo "
-								<td align=right><b><small>".number_format($jumlah,0)."</small></td>
-								<td>&nbsp;</td>
-							";
-						} else {
-							echo "
-								<td align=right><b><small>".number_format($jumlah,0)."</small></td>
-								<td>&nbsp;</td>
-							";
-						}
-						$jumlah2 = $jumlah;
-					}
+                            if (empty($pqty)) $pqty=0;
+                            if (empty($phna)) $phna=0;
+                            if (empty($pvalue)) $pvalue=0;
+                            if (empty($psaldocn)) $psaldocn=0;
 
-				} else {
-					
-					if ($ccyId<>'IDR') {
-						$query_cc = "select nilai from hrd.ccy where ccyId='$ccyId'";
-						$result_cc = mysqli_query($cnit, $query_cc);
-						$num_results_cc = mysqli_num_rows($result_cc);
-						if ($num_results_cc) {
-							 $row_cc = mysqli_fetch_array($result_cc);
-							 $nilai_cc = $row_cc['nilai'];
-						}
-						if ($batal=='Y') {
-							$jumlah1 = 0;
-							echo "
-								<td align=right><b><small>$ccyId ".number_format($jumlah1,0)."</small></td>
-								<td>&nbsp;</td>
-							";
-						} else {
-							echo "
-								<td align=right><b><small>$ccyId ".number_format($jumlah1,0)."</small></td>
-								<td>&nbsp;</td>
-							";
-						}
-						$jumlah2 = (DOUBLE)$jumlah1 * (DOUBLE)$nilai_cc;
-					} else {
-						if ($batal=='Y') {
-							$jumlah1 = 0;
-							echo "
-								<td align=right><b><small>".number_format($jumlah1,0)."</small></td>
-								<td>&nbsp;</td>
-							";
-						} else {
-							echo "
-								<td align=right><b><small>".number_format($jumlah1,0)."</small></td>
-								<td>&nbsp;</td>
-							";
-						}
-						$jumlah2 = $jumlah1;
-					}
-				}
+                            $p_isaldo=(DOUBLE)$p_isaldo-(DOUBLE)$psaldocn;
+                            $psldcnminus=-1*(DOUBLE)$psaldocn;
 
-				echo "
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					</tr>
-				";
-				$mtotal_ = (DOUBLE)$mtotal_ + (DOUBLE)$jumlah2; 
-				$rowBr = mysqli_fetch_array($resultBr);
-				$j++;
-		    }
-		}
-	}
+                            $ptotalval=(DOUBLE)$ptotalval+(DOUBLE)$pvalue;
+                            $ptotalsldcn=(DOUBLE)$ptotalsldcn+(DOUBLE)$psldcnminus;
+                            
 
-	
-    //cetak subtotal
-	mysqli_free_result($resultBr);
-	return $mtotal_;
+                            $pqty = number_format($pqty,0);
+                            $phna = number_format($phna,0);
+                            $pvalue = number_format($pvalue,0);
+                            $psaldocn = number_format($psaldocn,0);
 
-} // end function 
 
-?>
+                            if ($ptypeapotik=="1") {
+                                $pnmtypeapt="D";
+                            } else {
+                                $pnmtypeapt="R";
+                            }
 
-</form>
-</body>
-</html>
+                            $nidapt=(INT)$pidapotik;
+                            $pnama_dan_idapt="$pnmapotik ($nidapt)";
+                            if (empty($pnmapotik)) $pnama_dan_idapt="";
+
+
+                            $sim="";
+                            if ($cn > '20') {
+                                $sim = 'A+';
+                            } else {
+                                if ($cn == '20') {
+                                    $sim = 'A';
+                                } else {
+                                    if ($cn > '15' and $cn < '20') {
+                                        $sim = 'B+';
+                                    } else {
+                                        if ($cn == '15') {
+                                            $sim = 'B';
+                                        } else {
+                                            if ($cn > '10' and $cn < '15') {
+                                                $sim = 'C+';
+                                            } else {
+                                                if ($cn == '10') {
+                                                    $sim = 'C';
+                                                } else {
+                                                    if ($cn > '5' and $cn < '10') {
+                                                        $sim = 'D+';
+                                                    } else {
+                                                        if ($cn == '5') {
+                                                            $sim = 'D';
+                                                        } else {
+                                                            if ($cn < '5') {
+                                                                $sim = 'E';
+                                                            } else {
+                                                            }												
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            if ($pnmprod=="ZZINPUTKI") {
+
+                            }else{
+                                $plewatks=true;
+                                if ($precawal==1) {
+                                    echo "<tr>";
+                                    echo "<td><small>$nbulan</small></td>";  
+                                    echo "<td>&nbsp;</td>";
+                                    echo "<td>&nbsp;</td>";
+                                    echo "<td><small><b>&nbsp;</b></small></td>";
+                                    echo "<td>&nbsp;</td>";
+                                    echo "<td>&nbsp;</td>";
+                                    echo "<td>&nbsp;</td>";
+                                    echo "<td>&nbsp;</td>";
+                                    echo "<td align='right'><b>&nbsp;</b></td>";
+                                    echo "<td>&nbsp;</td>";
+                                    echo "<td>&nbsp;</td>";
+                                    echo "</tr>";
+                                }
+                                $precawal++;
+
+                                echo "<tr>";
+                                if ((INT)$prec==1) {
+                                    echo "<td><small>SIM = $sim</small></td>";
+                                }else{
+                                    echo "<td><small>&nbsp;</small></td>";  
+                                }
+                                echo "<td><small>$pnama_dan_idapt</small></td>";
+                                echo "<td><small>$pnmtypeapt</small></td>";
+                                echo "<td><small>$pnmprod</small></td>";
+                                echo "<td align='right'><small>$pqty</small></td>";
+                                echo "<td align='right'><small>$phna</small></td>";
+                                echo "<td align='right'><small>$pvalue</small></td>";
+                                echo "<td align='right'><small>$psldcnminus</small></td>";
+                                echo "<td align='right'>&nbsp;</td>";
+                                echo "<td>&nbsp;</td>";
+                                echo "<td>&nbsp;</td>";
+                                echo "</tr>";
+
+                                $prec++;
+                            }
+                        }
+
+
+                        if ($plewatks==true) {
+                            $ptotalval = number_format($ptotalval,0);
+                            $ptotalsldcn = number_format($ptotalsldcn,0);
+
+                            echo "<tr>";
+                            echo "<td><small>&nbsp;</small></td>";  
+                            echo "<td><small>&nbsp;</small></td>";
+                            echo "<td><small>&nbsp;</small></td>";
+                            echo "<td><small>&nbsp;</small></td>";
+                            echo "<td align='right'><small>&nbsp;</small></td>";
+                            echo "<td align='right'><small>&nbsp;</small></td>";
+                            echo "<td align='right'><small><b>$ptotalval</b></small></td>";
+                            echo "<td align='right'><small><b>$ptotalsldcn</b></small></td>";
+                            echo "<td align='right'>&nbsp;</td>";
+                            echo "<td>&nbsp;</td>";
+                            echo "<td>&nbsp;</td>";
+                            echo "</tr>";
+                        }
+
+
+                        //KI
+                        $query = "select tgl, sum(jumlah) as jumlahki from $tmp02 WHERE bulan='$nbulan' GROUP BY 1 order by 1";
+                        $tampil4=mysqli_query($cnmy, $query);
+                        $ketemu4=mysqli_num_rows($tampil4);
+                        if ((INT)$ketemu4>0) {
+                            while ($row4=mysqli_fetch_array($tampil4)) {
+                                $ptglki=$row4['tgl'];
+                                $pjumlahki=$row4['jumlahki'];
+
+                                $ptglki = date('Y-m', strtotime($ptglki));
+
+                                if (empty($pjumlahki)) $pjumlahki=0;
+
+                                $p_isaldo=(DOUBLE)$p_isaldo+(DOUBLE)$pjumlahki;
+
+                                $pjumlahki = number_format($pjumlahki,0);
+
+                                echo "<tr>";
+                                echo "<td><small>$ptglki</small></td>";  
+                                echo "<td><small><b>KI</b></small></td>";
+                                echo "<td><small>&nbsp;</small></td>";
+                                echo "<td><small>&nbsp;</small></td>";
+                                echo "<td align='right'><small>&nbsp;</small></td>";
+                                echo "<td align='right'><small>&nbsp;</small></td>";
+                                echo "<td align='right'><small><b>&nbsp;</b></small></td>";
+                                echo "<td align='right'><small><b>$pjumlahki</b></small></td>";
+                                echo "<td align='right'><small><b>&nbsp;</b></small></td>";
+                                echo "<td>&nbsp;</td>";
+                                echo "<td>&nbsp;</td>";
+                                echo "</tr>";
+
+                                
+                            }
+                        }
+
+
+                        $psaldoakhir=$p_isaldo;
+
+                        $psaldoakhir = number_format($psaldoakhir,0);
+
+                        echo "<tr>";
+                        echo "<td><small>&nbsp;</small></td>";  
+                        echo "<td><small>&nbsp;</small></td>";
+                        echo "<td><small>&nbsp;</small></td>";
+                        echo "<td><small>&nbsp;</small></td>";
+                        echo "<td align='right'><small>&nbsp;</small></td>";
+                        echo "<td align='right'><small>&nbsp;</small></td>";
+                        echo "<td align='right'><small><b>&nbsp;</b></small></td>";
+                        echo "<td align='right'><small><b>&nbsp;</b></small></td>";
+                        echo "<td align='right'><small><b>$psaldoakhir</b></small></td>";
+                        echo "<td>&nbsp;</td>";
+                        echo "<td>&nbsp;</td>";
+                        echo "</tr>";
+
+
+
+                        //jarak
+
+                        echo "<tr>";
+                        echo "<td><small>&nbsp;</small></td>";  
+                        echo "<td>&nbsp;</td>"; echo "<td>&nbsp;</td>";
+                        echo "<td><small><b>&nbsp;</b></small></td>";
+                        echo "<td>&nbsp;</td>";echo "<td>&nbsp;</td>";echo "<td>&nbsp;</td>";echo "<td>&nbsp;</td>";
+                        echo "<td align='right'><b>&nbsp;</b></td>";
+                        echo "<td>&nbsp;</td>";echo "<td>&nbsp;</td>";
+                        echo "</tr>";
+                    }
+
+                }
+
+                if (empty($p_isaldo)) $p_isaldo=0;
+
+                $p_isaldo = number_format($p_isaldo,0);
+
+                echo "<tr>";
+                echo "<td><small>&nbsp;</small></td>";  
+                echo "<td><small>&nbsp;</small></td>";
+                echo "<td><small>&nbsp;</small></td>";
+                echo "<td><small>&nbsp;</small></td>";
+                echo "<td align='right'><small>&nbsp;</small></td>";
+                echo "<td align='right'><small>&nbsp;</small></td>";
+                echo "<td align='right'><small><b>&nbsp;</b></small></td>";
+                echo "<td align='right'><small><b>Total :</b></small></td>";
+                echo "<td align='right'><small><b>$p_isaldo</b></small></td>";
+                echo "<td>&nbsp;</td>";
+                echo "<td>&nbsp;</td>";
+                echo "</tr>";
+
+            }
+
+
+        echo "</table>";
+
+        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+
+    ?>
+
+</BODY>
+
+    <style>
+        #myBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background-color: red;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 4px;
+            opacity: 0.5;
+        }
+
+        #myBtn:hover {
+            background-color: #555;
+        }
+
+    </style>
+
+    <script>
+        // SCROLL
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("myBtn").style.display = "block";
+            } else {
+                document.getElementById("myBtn").style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+        // END SCROLL
+    </script>
+
+</HTML>
+
 <?PHP
 hapusdata:
-    mysqli_query($cnit, "DROP TABLE $tmp04");
-    
-    mysqli_close($cnit);
+    mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
+    mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
+    mysqli_query($cnmy, "drop TEMPORARY table $tmp03");
+    mysqli_query($cnmy, "drop TEMPORARY table $tmp04");
+    mysqli_close($cnmy);
 ?>

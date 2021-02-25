@@ -529,17 +529,17 @@ $pjabatanid = $row['jabatanId'];
 
 
                                                         if ($pidcabang=="0000000001") {
-                                                            $query = "select distinct (mr_dokt.dokterId),CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
-                                                                              from hrd.mr_dokt as mr_dokt 
-                                                                              join hrd.dokter as dokter on mr_dokt.dokterId=dokter.dokterId
-                                                                              where mr_dokt.aktif <> 'N' and dokter.nama<>''
+                                                            $query = "select distinct (mrdoktbaru.dokterId),CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
+                                                                              from hrd.mrdoktbaru as mrdoktbaru 
+                                                                              join hrd.dokter as dokter on mrdoktbaru.dokterId=dokter.dokterId
+                                                                              where mrdoktbaru.aktif <> 'N' and dokter.nama<>''
                                                                               order by nama"; 
                                                         } else {
                                                             $query = "select dokter.dokterId, CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
-                                                                              FROM hrd.mr_dokt as mr_dokt 
-                                                                              join hrd.karyawan as karyawan on mr_dokt.karyawanId=karyawan.karyawanId
-                                                                              join hrd.dokter as dokter on mr_dokt.dokterId=dokter.dokterId
-                                                                              where (mr_dokt.aktif <> 'N' $filter_kry_dok and dokter.nama <> '') OR dokter.dokterId='$pdokteridmr' 
+                                                                              FROM hrd.mrdoktbaru as mrdoktbaru 
+                                                                              join hrd.karyawan as karyawan on mrdoktbaru.karyawanId=karyawan.karyawanId
+                                                                              join hrd.dokter as dokter on mrdoktbaru.dokterId=dokter.dokterId
+                                                                              where (mrdoktbaru.aktif <> 'N' $filter_kry_dok and dokter.nama <> '') OR dokter.dokterId='$pdokteridmr' 
                                                                               order by dokter.nama";
                                                         }
                                                         

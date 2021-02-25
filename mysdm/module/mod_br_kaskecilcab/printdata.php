@@ -549,12 +549,12 @@
             }
             
             if (!empty($pketerangandetail)) {
-                echo "<tr>";
-                echo "<td nowrap></td>";
-                echo "<td nowrap><b>Remarks</b></td>";
-                echo "<td nowrap><b></b></td>";
-                echo "<td >$pketerangandetail</td>";
-                echo "</tr>";
+                //echo "<tr>";
+                //echo "<td nowrap></td>";
+                //echo "<td nowrap><b>Remarks</b></td>";
+                //echo "<td nowrap><b></b></td>";
+                //echo "<td >$pketerangandetail</td>";
+                //echo "</tr>";
             }
                     
             ?>

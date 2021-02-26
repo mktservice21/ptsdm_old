@@ -566,7 +566,7 @@
     }elseif ($_GET['module']=='ksinfouserpilih'){
         include 'module/ks_infouserdr/iuserpilih.php';
     }elseif ($_GET['module']=='lihatdataksusr'){
-        include 'module/ks_infouserdr/ilihatdataks.php';
+        include 'module/ks_lihatks/aksi_lihatks.php';
     }elseif ($_GET['module']=='kslihatks'){
         include 'module/ks_lihatks/aksi_lihatks.php';
     }elseif ($_GET['module']=='ksmonitoringkiks'){

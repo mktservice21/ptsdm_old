@@ -22,10 +22,23 @@ $tmp01 =" dbtemp.tmptariklhtks01_".$puserid."_$now ";
 $tmp02 =" dbtemp.tmptariklhtks02_".$puserid."_$now ";
 $tmp03 =" dbtemp.tmptariklhtks03_".$puserid."_$now ";
 $tmp04 =" dbtemp.tmptariklhtks04_".$puserid."_$now ";
+$pmodule=$_GET['module'];
 
-$pkaryawanid = $_POST['cb_karyawan']; 
-$pdokterid = $_POST['e_iddokt'];
-$pbln = $_POST['e_bulan']; 
+$pkaryawanid="";
+$pdokterid="";
+$pbln="";
+
+
+if ($pmodule=="lihatdataksusr") {
+    $pkaryawanid = $_GET['iid']; 
+    $pdokterid = $_GET['ind'];
+    $pbln = date("Y-m-d");
+}else{
+    $pkaryawanid = $_POST['cb_karyawan']; 
+    $pdokterid = $_POST['e_iddokt'];
+    $pbln = $_POST['e_bulan']; 
+}
+
 
 $pbulan = date('Y-m', strtotime($pbln));
 

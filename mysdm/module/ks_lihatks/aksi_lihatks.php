@@ -283,6 +283,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
                             $p_isaldo=(DOUBLE)$p_isaldo-(DOUBLE)$psaldocn;
                             $psldcnminus=-1*(DOUBLE)$psaldocn;
+                            if ((DOUBLE)$psldcnminus==-0) $psldcnminus=0;
 
                             $ptotalval=(DOUBLE)$ptotalval+(DOUBLE)$pvalue;
                             $ptotalsldcn=(DOUBLE)$ptotalsldcn+(DOUBLE)$psldcnminus;

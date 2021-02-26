@@ -66,6 +66,7 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
     $query  = "CREATE INDEX nnn ON $tmp02 (srid, dokterid, icabangid, bulan)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+    /*
             $query = "select a.* from hrd.ks1_diskonbaru as a JOIN (select distinct srid, dokterid FROM $tmp02) as b
                 on a.karyawanid=b.srid and a.dokterid=b.dokterid";
             $query = "CREATE TEMPORARY TABLE $tmp07 ($query)";
@@ -76,7 +77,7 @@ if ($module=="ksprosesdatakscab" AND $module="prosesdatakscab") {
 
             $query = "UPDATE $tmp02 as a JOIN $tmp07 as b on a.srid=b.karyawanid AND a.dokterid=b.dokterid AND a.bulan=b.bulan SET a.cn=b.cn";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
+    */
 
     $query = "ALTER TABLE $tmp02 ADD awal DECIMAL(20,2), ADD ki DECIMAL(20,2), ADD saldocn DECIMAL(20,2), ADD saldoakhir DECIMAL(20,2)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

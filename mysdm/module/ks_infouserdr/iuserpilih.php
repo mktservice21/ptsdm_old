@@ -93,16 +93,16 @@
      //spv, koordinator
      $show_dkd = 5;
   }
-  $query = "select mr_dokt.dokterid,mr_dokt.karyawanId as bawahanid,
+  $query = "select mrdoktbaru.dokterid,mrdoktbaru.karyawanId as bawahanid,
             karyawan.nama,karyawan.jabatanid,
 			karyawan.icabangid,karyawan.areaid,
 			jabatan.nama as nmjabat,
 			MKT.iarea.nama as nmarea
-            from hrd.mr_dokt as mr_dokt  
-            join hrd.karyawan as karyawan on mr_dokt.karyawanid=karyawan.karyawanid
+            from hrd.mrdoktbaru as mrdoktbaru  
+            join hrd.karyawan as karyawan on mrdoktbaru.karyawanid=karyawan.karyawanid
 			join MKT.iarea on karyawan.icabangid=MKT.iarea.icabangid and karyawan.areaid=MKT.iarea.areaid
 			join hrd.jabatan as jabatan on karyawan.jabatanid=jabatan.jabatanid
-            where mr_dokt.dokterid='$dokterid' order by karyawan.jabatanid";
+            where mrdoktbaru.dokterid='$dokterid' order by karyawan.jabatanid";
   $result = mysqli_query($cnit, $query);
   $num_results = mysqli_num_rows($result);
   

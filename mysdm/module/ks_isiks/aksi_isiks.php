@@ -140,7 +140,7 @@ elseif ($module=='isikartustatus' AND ($act=='input' OR $act=='update') )
     }
 
 
-    $query =  "DELETE from hrd.ks1_diskonbaru WHERE srid='$pidkry' and bulan='$pbln' and dokterid='$piddokt' LIMIT 1";
+    $query =  "DELETE from hrd.ks1_diskonbaru WHERE karyawanid='$pidkry' and bulan='$pbln' and dokterid='$piddokt' LIMIT 1";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
     
     //if ($pbolehsimpan == true) {

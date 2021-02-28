@@ -335,7 +335,7 @@ if ($pmodule=="viewdatacombocoa") {
                           where dokter.nama<>''
                           order by nama"; 
     } else {
-        $query = "select dokter.dokterId, CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
+        $query = "select distinct dokter.dokterId, CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
                           FROM hrd.mrdoktbaru as mrdoktbaru 
                           join hrd.karyawan as karyawan on mrdoktbaru.karyawanId=karyawan.karyawanId
                           join hrd.dokter as dokter on mrdoktbaru.dokterId=dokter.dokterId

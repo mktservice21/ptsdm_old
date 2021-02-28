@@ -448,7 +448,7 @@ $pjabatanid = $row['jabatanId'];
                                                     }
 
                                                     if (empty($querykry)) {
-                                                        $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b WHERE b.icabangid='$pidcabang' AND b.aktif = 'Y' AND b.jabatanid IN ('15') "
+                                                        $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b WHERE b.icabangid='$pidcabang' AND b.aktif = 'Y' AND b.jabatanid IN ('15') "
                                                                 . " AND ( IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00' )"; 
                                                         $querykry .= " AND b.karyawanid not in (select distinct IFNULL(karyawanid,'') FROM dbmaster.t_karyawanadmin) ";
                                                     }
@@ -464,7 +464,7 @@ $pjabatanid = $row['jabatanId'];
                                                     $querykry .=" order by b.nama";
                                                     
                                                     if ($ptahunbrinput<=2020) {
-                                                        $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.karyawan as b WHERE b.karyawanid='$pmrid' ";
+                                                        $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.karyawan as b WHERE b.karyawanid='$pmrid' ";
                                                     }
                                                     
                                                     $tampil = mysqli_query($cnmy, $querykry);
@@ -496,7 +496,7 @@ $pjabatanid = $row['jabatanId'];
                                                     $psudahpilih=false;
                                                     if ($ptahunbrinput<=2020) {
                                                         if (empty($pdokteridmr)) echo "<option value='' selected>-- Pilihan --</option>";
-                                                        $query="select dokterId, nama from hrd.dokter WHERE dokterid='$pdokteridmr' ";
+                                                        $query="select distinct dokterId, nama from hrd.dokter WHERE dokterid='$pdokteridmr' ";
                                                     }else{
                                                         
                                                         echo "<option value='' selected>-- Pilihan --</option>";
@@ -535,7 +535,7 @@ $pjabatanid = $row['jabatanId'];
                                                                               where dokter.nama<>''
                                                                               order by nama"; 
                                                         } else {
-                                                            $query = "select dokter.dokterId, CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
+                                                            $query = "select distinct dokter.dokterId, CONCAT(dokter.nama,' - ',dokter.dokterId) AS nama 
                                                                               FROM hrd.mrdoktbaru as mrdoktbaru 
                                                                               join hrd.karyawan as karyawan on mrdoktbaru.karyawanId=karyawan.karyawanId
                                                                               join hrd.dokter as dokter on mrdoktbaru.dokterId=dokter.dokterId

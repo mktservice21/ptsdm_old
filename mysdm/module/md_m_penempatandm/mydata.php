@@ -41,6 +41,8 @@ $no=1;
 while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData=array();
     $sts="Aktif";
+    $idcab=(INT)$row['icabangid'];
+
     if ($row["aktif"]=="Y") $sts="Aktif";
     $nestedData[] = $no;
     $nestedData[] = ""
@@ -52,7 +54,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
             . "href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$row[karyawanid]&idcab=$row[icabangid]&tgl=$row[tgl]'
                 >Edit</a>
     ";
-    $nestedData[] = $row["nama_cabang"];
+    $nestedData[] = $row["nama_cabang"]." ($idcab)";
     $nestedData[] = $row["nama"]." <small>(".$row["karyawanid"].")<small>";
     $nestedData[] = $row["tgl1"];
     $nestedData[] = $row["aktif"];

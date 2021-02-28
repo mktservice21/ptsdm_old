@@ -374,12 +374,12 @@ $pjabatanid = $row['jabatanId'];
                                                 if ($pact=="editdata") {
                                                     if (empty($pkaryawanid)) echo "<option value='' selected>-- Pilihan --</option>";
                                                     if ($ptahunbrinput<=2020) {
-                                                        $query = "select b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.karyawan as b where b.karyawanid='$pkaryawanid' "; 
+                                                        $query = "select distinct b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.karyawan as b where b.karyawanid='$pkaryawanid' "; 
                                                     }else{
                                                         if (($pidcabang=='0000000030') or ($pidcabang=='0000000031') or ($pidcabang=='0000000032')) {
-                                                            $query = "select b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.karyawan b where (b.karyawanId='0000000154' or b.karyawanId='0000000159') AND b.aktif = 'Y' "; 
+                                                            $query = "select distinct b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.karyawan b where (b.karyawanId='0000000154' or b.karyawanId='0000000159') AND b.aktif = 'Y' "; 
                                                         }else{
-                                                            $query = "select b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.$pnmtabelkry b where b.icabangid='$pidcabang' AND b.aktif = 'Y' "; 
+                                                            $query = "select distinct b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.$pnmtabelkry b where b.icabangid='$pidcabang' AND b.aktif = 'Y' "; 
                                                         }
                                                     }
                                                 }else{
@@ -427,21 +427,21 @@ $pjabatanid = $row['jabatanId'];
                                               if ($pact=="editdata") {
                                                   
                                                     if ($pidcabang=="0000000001") { //ho
-                                                        $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b WHERE b.aktif = 'Y' "; 
+                                                        $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b WHERE b.aktif = 'Y' "; 
                                                     }else{
                                                         if (($pidcabang=="0000000030") or ($pidcabang=='0000000031') or ($pidcabang=='0000000032')){ // irian, ambon, ntt
-                                                            $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b where b.icabangid='$pidcabang' AND b.aktif = 'Y' ";
+                                                            $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b where b.icabangid='$pidcabang' AND b.aktif = 'Y' ";
                                                         }else{
 
                                                             if (($pjabatanid=="18") or ($pjabatanid=="10")) { //spv,am
-                                                                $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b where (b.atasanId='$pkaryawanid' or b.atasanId2='$pkaryawanid') ";
+                                                                $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b where (b.atasanId='$pkaryawanid' or b.atasanId2='$pkaryawanid') ";
                                                             }
 
                                                             if ($pjabatanid=="08") { //dm
-                                                                $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b where b.iCabangId='$pidcabang' "; 
+                                                                $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b where b.iCabangId='$pidcabang' "; 
                                                             }
                                                             if ($pjabatanid=="15") { // mr
-                                                                $querykry = "select b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b where b.karyawanId='$pkaryawanid' "; 
+                                                                $querykry = "select distinct b.karyawanId, b.nama, b.areaId from hrd.$pnmtabelkry b where b.karyawanId='$pkaryawanid' "; 
                                                             }
 
                                                         }

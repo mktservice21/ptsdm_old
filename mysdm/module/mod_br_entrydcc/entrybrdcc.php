@@ -30,8 +30,8 @@
         
         //$query = "CALL hrd.proses_isi_temp_karyawancab()";
         
-        //mysqli_query($cnmy, $query);
-        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }    
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }    
 
         $query = "select * from hrd.tempkaryawandccdss_inp";
         $tampilkry= mysqli_query($cnmy, $query);

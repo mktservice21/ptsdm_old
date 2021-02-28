@@ -100,8 +100,39 @@ if ($pmodule=="viewdatacombocoa") {
     
     mysqli_close($cnmy);
 }elseif ($pmodule=="viewdatakrybuat") {
-    include "../../config/koneksimysqli.php";
+
+
+
+            include "../../config/koneksimysqli.php";
     
+            $icabangid = $_POST['ucab'];
+            
+            $query = "select DISTINCT karyawanid as karyawanid, nama as nama from hrd.tempkaryawandccdss_inp WHERE 
+                icabangid='$icabangid' ";
+
+            $query .=" AND jabatanid NOT IN ('15') ";
+
+            $query .=" and LEFT(nama,7) NOT IN ('NN DM - ')  "
+                    . " and LEFT(nama,3) NOT IN ('TO.', 'TO-') "
+                    . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ') ";
+
+            $query .=" order by nama";
+
+            $tampil=mysqli_query($cnmy, $query);
+            echo "<option value='' selected>-- Pilihan --</option>";
+            while($row=mysqli_fetch_array($tampil)){
+                $cdkryid  = $row['karyawanid'];
+                $cdnama = $row['nama'];
+                
+                echo "<option value='$cdkryid'>$cdnama</option>";
+            }
+
+            mysqli_close($cnmy);
+            exit;
+
+
+    include "../../config/koneksimysqli.php";
+
     //$pnmtablekry = "karyawan";
     $pnmtablekry = "tempkaryawandccdss_inp";
     
@@ -135,13 +166,40 @@ if ($pmodule=="viewdatacombocoa") {
     
     mysqli_close($cnmy);
 }elseif ($pmodule=="viewdatamridkary") {
+
+            include "../../config/koneksimysqli.php";
+
+            $karyawanId = $_POST['ukryid'];
+            $icabangid = $_POST['ucab'];
+            
+            $query = "select DISTINCT karyawanid as karyawanid, nama as nama from hrd.tempkaryawandccdss_inp WHERE 
+                icabangid='$icabangid' AND (karyawanid='$karyawanId' OR atasanid='$karyawanId' OR
+                atasanid2='$karyawanId' OR atasanid3='$karyawanId') ";
+
+            $query .=" AND (jabatanid = ('15') OR karyawanid='$karyawanId') ";
+
+            $query .=" order by nama";
+
+            $tampil=mysqli_query($cnmy, $query);
+            echo "<option value='' selected>-- Pilihan --</option>";
+            while($row=mysqli_fetch_array($tampil)){
+                $cdkryid  = $row['karyawanid'];
+                $cdnama = $row['nama'];
+                
+                echo "<option value='$cdkryid'>$cdnama</option>";
+            }
+
+            mysqli_close($cnmy);
+            exit;
+
+
     include "../../config/koneksimysqli.php";
     
     //$pnmtablekry = "karyawan";
     $pnmtablekry = "tempkaryawandccdss_inp";
     
     
-    $karyawanId = $_POST['ukryid']; 
+    $karyawanId = $_POST['ukryid'];
     $icabangid = $_POST['ucab']; 
     $query = "select jabatanId from hrd.karyawan where karyawanId='$karyawanId'"; 	
     $result = mysqli_query($cnmy, $query);

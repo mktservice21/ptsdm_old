@@ -379,7 +379,7 @@ $pjabatanid = $row['jabatanId'];
                                                         if (($pidcabang=='0000000030') or ($pidcabang=='0000000031') or ($pidcabang=='0000000032')) {
                                                             $query = "select distinct b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.karyawan b where (b.karyawanId='0000000154' or b.karyawanId='0000000159') AND b.aktif = 'Y' "; 
                                                         }else{
-                                                            $query = "select distinct b.karyawanId, b.nama, b.jabatanid, b.icabangid from hrd.$pnmtabelkry b where b.icabangid='$pidcabang' AND b.aktif = 'Y' "; 
+                                                            $query = "select distinct b.karyawanId, b.nama, b.jabatanid from hrd.$pnmtabelkry b where b.icabangid='$pidcabang' AND b.aktif = 'Y' "; 
                                                         }
                                                     }
                                                 }else{

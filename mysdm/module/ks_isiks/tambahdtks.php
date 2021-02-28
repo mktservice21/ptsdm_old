@@ -1,4 +1,8 @@
 <?php
+if ($fgroupid=="1" OR $fgroupid=="24") {
+}else{
+    exit;
+}
 //include "config/koneksimysqli_it.php";
 $cnit=$cnmy;
 $pidmodule=$_GET['module'];

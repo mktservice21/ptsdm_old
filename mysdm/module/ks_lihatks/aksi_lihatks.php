@@ -148,8 +148,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<th><small>Value</small></th>";
                 echo "<th align='center'><small>Jumlah</small></th>";
                 echo "<th align='center'><small>Total</small></th>";
-                echo "<th align='center'><small>Approved</small></th>";
-                echo "<th align='center'><small>Average Value</small></th>";
             echo "</tr>";
 
             $p_isaldo=0;
@@ -181,8 +179,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     echo "<td>&nbsp;</td>";
                     echo "<td>&nbsp;</td>";
                     echo "<td align='right'><small><b>$psldawal</b></small></td>";
-                    echo "<td>&nbsp;</td>";
-                    echo "<td>&nbsp;</td>";
                     echo "</tr>";
 
                 }
@@ -197,8 +193,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<td>&nbsp;</td>";
                 echo "<td>&nbsp;</td>";
                 echo "<td align='right'><small><b>0</b></small></td>";
-                echo "<td>&nbsp;</td>";
-                echo "<td>&nbsp;</td>";
                 echo "</tr>";
             }
 
@@ -232,8 +226,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         echo "<td align='right'><small><b>&nbsp;</b></small></td>";
                         echo "<td align='right'><small><b>$pjumlahki</b></small></td>";
                         echo "<td align='right'><small><b>&nbsp;</b></small></td>";
-                        echo "<td>&nbsp;</td>";
-                        echo "<td>&nbsp;</td>";
                         echo "</tr>";
 
                         
@@ -360,8 +352,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                     echo "<td>&nbsp;</td>";
                                     echo "<td>&nbsp;</td>";
                                     echo "<td align='right'><b>&nbsp;</b></td>";
-                                    echo "<td>&nbsp;</td>";
-                                    echo "<td>&nbsp;</td>";
                                     echo "</tr>";
                                 }
                                 $precawal++;
@@ -380,8 +370,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 echo "<td align='right'><small>$pvalue</small></td>";
                                 echo "<td align='right'><small>$psldcnminus</small></td>";
                                 echo "<td align='right'>&nbsp;</td>";
-                                echo "<td>&nbsp;</td>";
-                                echo "<td>&nbsp;</td>";
                                 echo "</tr>";
 
                                 $prec++;
@@ -403,8 +391,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                             echo "<td align='right'><small><b>$ptotalval</b></small></td>";
                             echo "<td align='right'><small><b>$ptotalsldcn</b></small></td>";
                             echo "<td align='right'>&nbsp;</td>";
-                            echo "<td>&nbsp;</td>";
-                            echo "<td>&nbsp;</td>";
                             echo "</tr>";
                         }
 
@@ -436,8 +422,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 echo "<td align='right'><small><b>&nbsp;</b></small></td>";
                                 echo "<td align='right'><small><b>$pjumlahki</b></small></td>";
                                 echo "<td align='right'><small><b>&nbsp;</b></small></td>";
-                                echo "<td>&nbsp;</td>";
-                                echo "<td>&nbsp;</td>";
                                 echo "</tr>";
 
                                 
@@ -459,8 +443,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         echo "<td align='right'><small><b>&nbsp;</b></small></td>";
                         echo "<td align='right'><small><b>&nbsp;</b></small></td>";
                         echo "<td align='right'><small><b>$psaldoakhir</b></small></td>";
-                        echo "<td>&nbsp;</td>";
-                        echo "<td>&nbsp;</td>";
                         echo "</tr>";
 
 
@@ -473,7 +455,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         echo "<td><small><b>&nbsp;</b></small></td>";
                         echo "<td>&nbsp;</td>";echo "<td>&nbsp;</td>";echo "<td>&nbsp;</td>";echo "<td>&nbsp;</td>";
                         echo "<td align='right'><b>&nbsp;</b></td>";
-                        echo "<td>&nbsp;</td>";echo "<td>&nbsp;</td>";
                         echo "</tr>";
                     }
 
@@ -493,8 +474,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<td align='right'><small><b>&nbsp;</b></small></td>";
                 echo "<td align='right'><small><b>Total :</b></small></td>";
                 echo "<td align='right'><small><b>$p_isaldo</b></small></td>";
-                echo "<td>&nbsp;</td>";
-                echo "<td>&nbsp;</td>";
                 echo "</tr>";
 
             }

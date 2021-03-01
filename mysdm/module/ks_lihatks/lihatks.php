@@ -272,7 +272,7 @@ switch($pactpilih){
                                             </div>
                                         </div>
 
-                                        <div class='form-group'>
+                                        <div hidden class='form-group'>
                                             <div class='col-sm-6'>
                                                 <b>Hilangkan KI</b>
                                                 <div class="form-group">

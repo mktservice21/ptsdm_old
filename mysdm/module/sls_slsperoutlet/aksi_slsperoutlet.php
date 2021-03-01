@@ -360,8 +360,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                         $ptotqty=(double)$ptotqty+(double)$npqty;
                         $ptotvalue=(double)$ptotvalue+(double)$ntvalue;
 
-                        $npqty=number_format($npqty,0,",",",");
-                        $ntvalue=number_format($ntvalue,0,",",",");
+                        $npqty=number_format($npqty,0,"","");
+                        $ntvalue=number_format($ntvalue,0,"","");
 
 
                         echo "<tr>";
@@ -377,8 +377,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
                     }
                     
-                    $pnsubtotqty=number_format($pnsubtotqty,0,",",",");
-                    $pnsubtotval=number_format($pnsubtotval,0,",",",");
+                    $pnsubtotqty=number_format($pnsubtotqty,0,"","");
+                    $pnsubtotval=number_format($pnsubtotval,0,"","");
                     
                     echo "<tr>";
                     echo "<td nowrap></td>";
@@ -393,8 +393,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
                 }
 
-                $ptotqty=number_format($ptotqty,0,",",",");
-                $ptotvalue=number_format($ptotvalue,0,",",",");
+                $ptotqty=number_format($ptotqty,0,"","");
+                $ptotvalue=number_format($ptotvalue,0,"","");
 
                 echo "<tr>";
                 echo "<td nowrap></td>";
@@ -485,8 +485,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                         $ptotvalue=(double)$ptotvalue+(double)$npvalue;
 
                         
-                        $npqty=number_format($npqty,0,",",",");
-                        $npvalue=number_format($npvalue,0,",",",");
+                        $npqty=number_format($npqty,0,"","");
+                        $npvalue=number_format($npvalue,0,"","");
 
 
                         echo "<tr>";
@@ -498,8 +498,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
                     }
                     
-                    $pnsubtotval=number_format($pnsubtotval,0,",",",");
-                    $pnsubtotqty=number_format($pnsubtotqty,0,",",",");
+                    $pnsubtotval=number_format($pnsubtotval,0,"","");
+                    $pnsubtotqty=number_format($pnsubtotqty,0,"","");
                     echo "<tr>";
                     echo "<td nowrap></td>";
                     echo "<td nowrap><b>Total $npnmcust : </b></td>";
@@ -509,8 +509,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
                 }
 
-                $ptotqty=number_format($ptotqty,0,",",",");
-                $ptotvalue=number_format($ptotvalue,0,",",",");
+                $ptotqty=number_format($ptotqty,0,"","");
+                $ptotvalue=number_format($ptotvalue,0,"","");
 
                 echo "<tr>";
                 echo "<td nowrap></td>";

@@ -428,22 +428,22 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     $gptotjml12=(DOUBLE)$gptotjml12+(DOUBLE)$pjml12A;
                     
                     $pjml1value=(double)$pjml1value/1000;
-                    $pjml1qty=number_format($pjml1qty,0,",",",");
-                    $pjml1value=number_format($pjml1value,0,",",",");
+                    $pjml1qty=number_format($pjml1qty,0,"","");
+                    $pjml1value=number_format($pjml1value,0,"","");
                     
                     
-                    $pjml1=number_format($pjml1,0,",",",");
-                    $pjml2=number_format($pjml2,0,",",",");
-                    $pjml3=number_format($pjml3,0,",",",");
-                    $pjml4=number_format($pjml4,0,",",",");
-                    $pjml5=number_format($pjml5,0,",",",");
-                    $pjml6=number_format($pjml6,0,",",",");
-                    $pjml7=number_format($pjml7,0,",",",");
-                    $pjml8=number_format($pjml8,0,",",",");
-                    $pjml9=number_format($pjml9,0,",",",");
-                    $pjml10=number_format($pjml10,0,",",",");
-                    $pjml11=number_format($pjml11,0,",",",");
-                    $pjml12=number_format($pjml12,0,",",",");
+                    $pjml1=number_format($pjml1,0,"","");
+                    $pjml2=number_format($pjml2,0,"","");
+                    $pjml3=number_format($pjml3,0,"","");
+                    $pjml4=number_format($pjml4,0,"","");
+                    $pjml5=number_format($pjml5,0,"","");
+                    $pjml6=number_format($pjml6,0,"","");
+                    $pjml7=number_format($pjml7,0,"","");
+                    $pjml8=number_format($pjml8,0,"","");
+                    $pjml9=number_format($pjml9,0,"","");
+                    $pjml10=number_format($pjml10,0,"","");
+                    $pjml11=number_format($pjml11,0,"","");
+                    $pjml12=number_format($pjml12,0,"","");
 
                     
                     if ($pjml1==0) $pjml1="";
@@ -491,10 +491,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 
                 
                 
-                $pntotqty=number_format($pntotqty,0,",",",");
-                $gpntotqty=number_format($gpntotqty,0,",",",");
+                $pntotqty=number_format($pntotqty,0,"","");
+                $gpntotqty=number_format($gpntotqty,0,"","");
                 
-                $gpavgqty=number_format($gpavgqty,0,",",",");
+                $gpavgqty=number_format($gpavgqty,0,"","");
                 
                 
                 //average
@@ -527,31 +527,31 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 //end average
                 
                 
-                $ptotjml1=number_format($ptotjml1,0,",",",");
-                $ptotjml2=number_format($ptotjml2,0,",",",");
-                $ptotjml3=number_format($ptotjml3,0,",",",");
-                $ptotjml4=number_format($ptotjml4,0,",",",");
-                $ptotjml5=number_format($ptotjml5,0,",",",");
-                $ptotjml6=number_format($ptotjml6,0,",",",");
-                $ptotjml7=number_format($ptotjml7,0,",",",");
-                $ptotjml8=number_format($ptotjml8,0,",",",");
-                $ptotjml9=number_format($ptotjml9,0,",",",");
-                $ptotjml10=number_format($ptotjml10,0,",",",");
-                $ptotjml11=number_format($ptotjml11,0,",",",");
-                $ptotjml12=number_format($ptotjml12,0,",",",");
+                $ptotjml1=number_format($ptotjml1,0,"","");
+                $ptotjml2=number_format($ptotjml2,0,"","");
+                $ptotjml3=number_format($ptotjml3,0,"","");
+                $ptotjml4=number_format($ptotjml4,0,"","");
+                $ptotjml5=number_format($ptotjml5,0,"","");
+                $ptotjml6=number_format($ptotjml6,0,"","");
+                $ptotjml7=number_format($ptotjml7,0,"","");
+                $ptotjml8=number_format($ptotjml8,0,"","");
+                $ptotjml9=number_format($ptotjml9,0,"","");
+                $ptotjml10=number_format($ptotjml10,0,"","");
+                $ptotjml11=number_format($ptotjml11,0,"","");
+                $ptotjml12=number_format($ptotjml12,0,"","");
                 
-                $gptotjml1=number_format($gptotjml1,0,",",",");
-                $gptotjml2=number_format($gptotjml2,0,",",",");
-                $gptotjml3=number_format($gptotjml3,0,",",",");
-                $gptotjml4=number_format($gptotjml4,0,",",",");
-                $gptotjml5=number_format($gptotjml5,0,",",",");
-                $gptotjml6=number_format($gptotjml6,0,",",",");
-                $gptotjml7=number_format($gptotjml7,0,",",",");
-                $gptotjml8=number_format($gptotjml8,0,",",",");
-                $gptotjml9=number_format($gptotjml9,0,",",",");
-                $gptotjml10=number_format($gptotjml10,0,",",",");
-                $gptotjml11=number_format($gptotjml11,0,",",",");
-                $gptotjml12=number_format($gptotjml12,0,",",",");
+                $gptotjml1=number_format($gptotjml1,0,"","");
+                $gptotjml2=number_format($gptotjml2,0,"","");
+                $gptotjml3=number_format($gptotjml3,0,"","");
+                $gptotjml4=number_format($gptotjml4,0,"","");
+                $gptotjml5=number_format($gptotjml5,0,"","");
+                $gptotjml6=number_format($gptotjml6,0,"","");
+                $gptotjml7=number_format($gptotjml7,0,"","");
+                $gptotjml8=number_format($gptotjml8,0,"","");
+                $gptotjml9=number_format($gptotjml9,0,"","");
+                $gptotjml10=number_format($gptotjml10,0,"","");
+                $gptotjml11=number_format($gptotjml11,0,"","");
+                $gptotjml12=number_format($gptotjml12,0,"","");
                 
                 if ($ptotjml1==0) $ptotjml1="";
                 if ($ptotjml2==0) $ptotjml2="";
@@ -695,10 +695,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 
                 
                 
-                $itot_pntotqty=number_format($itot_pntotqty,0,",",",");
-                $itot_gpntotqty=number_format($itot_gpntotqty,0,",",",");
+                $itot_pntotqty=number_format($itot_pntotqty,0,"","");
+                $itot_gpntotqty=number_format($itot_gpntotqty,0,"","");
                 
-                $itot_gpavgqty=number_format($itot_gpavgqty,0,",",",");
+                $itot_gpavgqty=number_format($itot_gpavgqty,0,"","");
                 
                 
                 //average
@@ -731,31 +731,31 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 //end average
                 
                 
-                $itot_ptotjml1=number_format($itot_ptotjml1,0,",",",");
-                $itot_ptotjml2=number_format($itot_ptotjml2,0,",",",");
-                $itot_ptotjml3=number_format($itot_ptotjml3,0,",",",");
-                $itot_ptotjml4=number_format($itot_ptotjml4,0,",",",");
-                $itot_ptotjml5=number_format($itot_ptotjml5,0,",",",");
-                $itot_ptotjml6=number_format($itot_ptotjml6,0,",",",");
-                $itot_ptotjml7=number_format($itot_ptotjml7,0,",",",");
-                $itot_ptotjml8=number_format($itot_ptotjml8,0,",",",");
-                $itot_ptotjml9=number_format($itot_ptotjml9,0,",",",");
-                $itot_ptotjml10=number_format($itot_ptotjml10,0,",",",");
-                $itot_ptotjml11=number_format($itot_ptotjml11,0,",",",");
-                $itot_ptotjml12=number_format($itot_ptotjml12,0,",",",");
+                $itot_ptotjml1=number_format($itot_ptotjml1,0,"","");
+                $itot_ptotjml2=number_format($itot_ptotjml2,0,"","");
+                $itot_ptotjml3=number_format($itot_ptotjml3,0,"","");
+                $itot_ptotjml4=number_format($itot_ptotjml4,0,"","");
+                $itot_ptotjml5=number_format($itot_ptotjml5,0,"","");
+                $itot_ptotjml6=number_format($itot_ptotjml6,0,"","");
+                $itot_ptotjml7=number_format($itot_ptotjml7,0,"","");
+                $itot_ptotjml8=number_format($itot_ptotjml8,0,"","");
+                $itot_ptotjml9=number_format($itot_ptotjml9,0,"","");
+                $itot_ptotjml10=number_format($itot_ptotjml10,0,"","");
+                $itot_ptotjml11=number_format($itot_ptotjml11,0,"","");
+                $itot_ptotjml12=number_format($itot_ptotjml12,0,"","");
                 
-                $itot_gptotjml1=number_format($itot_gptotjml1,0,",",",");
-                $itot_gptotjml2=number_format($itot_gptotjml2,0,",",",");
-                $itot_gptotjml3=number_format($itot_gptotjml3,0,",",",");
-                $itot_gptotjml4=number_format($itot_gptotjml4,0,",",",");
-                $itot_gptotjml5=number_format($itot_gptotjml5,0,",",",");
-                $itot_gptotjml6=number_format($itot_gptotjml6,0,",",",");
-                $itot_gptotjml7=number_format($itot_gptotjml7,0,",",",");
-                $itot_gptotjml8=number_format($itot_gptotjml8,0,",",",");
-                $itot_gptotjml9=number_format($itot_gptotjml9,0,",",",");
-                $itot_gptotjml10=number_format($itot_gptotjml10,0,",",",");
-                $itot_gptotjml11=number_format($itot_gptotjml11,0,",",",");
-                $itot_gptotjml12=number_format($itot_gptotjml12,0,",",",");
+                $itot_gptotjml1=number_format($itot_gptotjml1,0,"","");
+                $itot_gptotjml2=number_format($itot_gptotjml2,0,"","");
+                $itot_gptotjml3=number_format($itot_gptotjml3,0,"","");
+                $itot_gptotjml4=number_format($itot_gptotjml4,0,"","");
+                $itot_gptotjml5=number_format($itot_gptotjml5,0,"","");
+                $itot_gptotjml6=number_format($itot_gptotjml6,0,"","");
+                $itot_gptotjml7=number_format($itot_gptotjml7,0,"","");
+                $itot_gptotjml8=number_format($itot_gptotjml8,0,"","");
+                $itot_gptotjml9=number_format($itot_gptotjml9,0,"","");
+                $itot_gptotjml10=number_format($itot_gptotjml10,0,"","");
+                $itot_gptotjml11=number_format($itot_gptotjml11,0,"","");
+                $itot_gptotjml12=number_format($itot_gptotjml12,0,"","");
                 
                 if ($itot_ptotjml1==0) $itot_ptotjml1="";
                 if ($itot_ptotjml2==0) $itot_ptotjml2="";

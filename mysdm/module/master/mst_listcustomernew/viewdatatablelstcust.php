@@ -165,7 +165,6 @@
     
                     if ($psudah=="Y") {
                         $cekbox="";
-                        $cekbox=$phapus;
                     }
 
                     echo "<tr>";

@@ -9,6 +9,7 @@ session_start();
 $puserid="";
 if (isset($_SESSION['USERID'])) $puserid=$_SESSION['USERID'];
 
+
 $module=$_GET['module'];
 $act=$_GET['act'];
 $idmenu=$_GET['idmenu'];
@@ -17,6 +18,11 @@ include "../../../config/koneksimysqli_ms.php";
 
 if ($module=='mstlistcustbaru' AND $act=='simpandatalitcust')
 {
+
+    if (!isset($_POST['chkbox_br'])) {
+        echo "tidak ada data yang diproses...";
+        exit;
+    }
 
     $puserapv=$_POST['e_idcard'];
 
@@ -54,6 +60,21 @@ if ($module=='mstlistcustbaru' AND $act=='simpandatalitcust')
         header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
     }
 
+}elseif ($module=='mstlistcustbaru' AND $act=='hapuslistcust')
+{
+    $pidno=$_GET['uid'];
+    if (!empty($pidno)) {
+        $query = "DELETE FROM mkt.new_icust WHERE CONCAT(icabangid, areaid, icustid)='$pidno' LIMIT 1";
+        mysqli_query($cnms, $query);
+        $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { 
+            echo "ERROR.... $erropesan";
+            mysqli_close($cnms);
+            exit;
+        }
+
+        mysqli_close($cnms);
+        header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
+    }
 }
 
 

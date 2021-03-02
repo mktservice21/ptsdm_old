@@ -25,6 +25,9 @@ if ($module=='mstlistcustbaru' AND $act=='simpandatalitcust')
     }
 
     $puserapv=$_POST['e_idcard'];
+    
+    $bulaninput="2021-02-01";
+
 
     unset($pinsert_data);//kosongkan array
     $jmlrec=0;
@@ -40,14 +43,14 @@ if ($module=='mstlistcustbaru' AND $act=='simpandatalitcust')
 
         //echo "$pidcabang, $pidarea, $pidcust, $pvalue<br/>";
 
-        $pinsert_data[] = "('$pidcabang', '$pidarea', '$pidcust', '$pvalue', '$puserapv', NOW())";
+        $pinsert_data[] = "('$pidcabang', '$pidarea', '$pidcust', '$pvalue', '$puserapv', NOW(), '$bulaninput')";
         $isimpan=true;
 
         $jmlrec++;
     }
 
     if ($isimpan==true) {
-        $query = "INSERT INTO mkt.new_icust (icabangid, areaid, icustid, `value`, approve_dm, tgl_apv_dm) "
+        $query = "INSERT INTO mkt.new_icust (icabangid, areaid, icustid, `value`, approve_dm, tgl_apv_dm, bulan) "
                 . " VALUES ".implode(', ', $pinsert_data);
         mysqli_query($cnms, $query);
         $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { 

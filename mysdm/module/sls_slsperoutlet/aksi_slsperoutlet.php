@@ -155,7 +155,7 @@ mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 $query = "select a.*, IFNULL(b.nama,'') as custnm, b.isektorid, c.nama as prodnm from $tmp01 a "
-        . " LEFT JOIN sls.icust b on a.icabangid=b.icabangid AND a.icustid=b.icustid and a.areaid=b.areaid "
+        . " LEFT JOIN sls.icust b on a.icustid=b.icustid "
         . " LEFT JOIN sls.iproduk c on a.iprodid=c.iprodid";
 $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);

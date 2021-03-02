@@ -47,7 +47,7 @@ $tmp03 ="dbtemp.TEMPSLSMRD03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 
-$query = "select icabangid, areaid, icustid, nama from sls.icust where CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(icustid,''))='$pcboutlet'";
+$query = "select icabangid, areaid, icustid, nama from sls.icust where icustid='$pcboutlet'";
 $tampil1= mysqli_query($cnms, $query);
 $rs1= mysqli_fetch_array($tampil1);
 $pnamaoutlet=$rs1['nama'];
@@ -80,7 +80,7 @@ if (!empty($pnmareapilih)) {
 
 $query = "select divprodid, iprodid, DATE_FORMAT(tgljual,'%m') bulan, sum(qty) as qty, sum(hna*qty) as tvalue 
     from sls.mr_sales2 WHERE year(tgljual)='$pperiode1' 
-    and CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(icustid,''))='$pcboutlet' ";
+    and icustid='$pcboutlet' ";
 if ($pmyjabatanid=="15") {
     $query .=" AND CONCAT(IFNULL(icabangid,''),IFNULL(areaid,'')) IN 
       (SELECT DISTINCT CONCAT(IFNULL(icabangid,''),IFNULL(areaid,'')) FROM sls.imr0 WHERE karyawanid='$pmrpilih') ";

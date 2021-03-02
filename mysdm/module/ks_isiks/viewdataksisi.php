@@ -175,7 +175,7 @@ if ($pmodule=="viewdataaptdr") {
     
     $hari_ini = date("Y-m-d");
     //$pbulanpilih = date('F Y', strtotime($hari_ini));
-    $pbulanpilih = date('F Y', strtotime('-2 month', strtotime($hari_ini)));
+    $pbulanpilih = date('F Y', strtotime('-3 month', strtotime($hari_ini)));
     
     $piltgl="";
     $query = "select * from hrd.ks1_buka where srid='$pidkar' AND dokterid='$piddokt' AND IFNULL(aktif,'')='Y'";
@@ -227,7 +227,7 @@ if ($pmodule=="viewdataaptdr") {
                 dateFormat: 'MM yy',
                 //minDate: '-3M',
                 minDate: '<?PHP echo $pblnselish; ?>',
-                maxDate: '-2M',
+                maxDate: '-3M',
                 onSelect: function(dateStr) {
 
                 },

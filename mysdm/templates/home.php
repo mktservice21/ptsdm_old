@@ -846,6 +846,8 @@
     }elseif ($_GET['module']=='ksprosesdatakscab'){
         include 'module/ks_proseskscab/proseskscab.php';
         
+    }elseif ($_GET['module']=='mstlistcustbaru'){
+        include 'module/master/mst_listcustomernew/listcustomernew.php';
         
     }else{
         include 'del_session.php';

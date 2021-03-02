@@ -13,6 +13,7 @@
         exit;
     }
 
+    $pidcardapv=$_SESSION['IDCARD'];
     $pidcabang=$_POST['ucabang'];
     $pidarea=$_POST['uarea'];
     $pbulanawal="202102";
@@ -101,12 +102,19 @@
 
     <div class='x_content'>
 
-
+        <?PHP
+        echo "<input type='hidden' value='$pidcardapv' id='e_idcard' name='e_idcard' readonly>";
+        ?>
         <table id='datatable' class='datatable table nowrap table-striped table-bordered' width="100%">
             <thead>
                 <tr>
                     <th width='50px'>No</th>
-                    <th width='50px'>&nbsp;</th>
+                    <th width='50px'>
+                    <?PHP
+                    $chkall = "<input type='checkbox' id='chkbtnbr' value='select' onClick=\"SelAllCheckBox('chkbtnbr', 'chkbox_br[]')\" />";
+                    echo "$chkall";
+                    ?>
+                    </th>
                     <th width='100px'>Nama Customer</th>
                     <th width='100px'>Alamat 1</th>
                     <th width='100px'>Alamat 2</th>
@@ -114,6 +122,7 @@
                     <th width='100px'>Cabang</th>
                     <th width='100px'>Area</th>
                     <th width='100px'>Value</th>
+                    <th width='100px'>Tgl. Input</th>
                 </tr>
             </thead>
             <tbody>
@@ -131,6 +140,7 @@
                     $palamat1=$row['alamat1'];
                     $palamat2=$row['alamat2'];
                     $pkota=$row['kota'];
+                    $ptglinput=$row['tglinput'];
                     
                     $pidcusttomer=(INT)$pidcust;
                     $pidcab=(INT)$pidcabang;
@@ -142,13 +152,16 @@
 
                     $pidno=$pidcabang."".$pidarea."".$pidcust;
 
+                    $txt_idcab="<input type='hidden' value='$pidcabang' id='txtidcab[$pidno]' name='txtidcab[$pidno]' class='' autocomplete='off' size='8px' Readonly>";
+                    $txt_idarea="<input type='hidden' value='$pidarea' id='txtidarea[$pidno]' name='txtidarea[$pidno]' class='' autocomplete='off' size='8px' Readonly>";
+                    $txt_idcust="<input type='hidden' value='$pidcust' id='txtidcust[$pidno]' name='txtidcust[$pidno]' class='' autocomplete='off' size='8px' Readonly>";
                     $txt_value="<input type='hidden' value='$pvalue' id='txtvalue[$pidno]' name='txtvalue[$pidno]' class='inputmaskrp2' autocomplete='off' size='8px' Readonly>";
 
                     $cekbox = "<input type=checkbox value='$pidno' id='chkbox_br[$pidno]' name='chkbox_br[]' onclick=\"\">";
     
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
-                    echo "<td nowrap>$cekbox $txt_value</td>";
+                    echo "<td nowrap>$cekbox $txt_idcab $txt_idarea $txt_idcust $txt_value</td>";
                     echo "<td nowrap>$pnmcust ($pidcusttomer)</td>";
                     echo "<td nowrap>$palamat1</td>";
                     echo "<td nowrap>$palamat2</td>";
@@ -156,6 +169,7 @@
                     echo "<td nowrap>$pnmcabang ($pidcab)</td>";
                     echo "<td nowrap>$pnmarea ($pidar)</td>";
                     echo "<td nowrap align='right'>$pvalue</td>";
+                    echo "<td nowrap>$ptglinput</td>";
                     echo "</tr>";
                     
                     $no++;
@@ -164,6 +178,13 @@
                 ?>
             </tbody>
         </table>
+
+        <div class='form-group'>
+            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+            <div class='col-md-4'>
+                <button type='button' class='btn btn-dark' onclick='disp_confirm("Simpan ?", "simpandatalitcust")'>Simpan</button>
+            </div>
+        </div>
 
     </div>
 
@@ -248,6 +269,55 @@
 		
     </style>
 
+    <script>
+        function SelAllCheckBox(nmbuton, data){
+            var checkboxes = document.getElementsByName(data);
+            var button = document.getElementById(nmbuton);
+
+            if(button.value == 'select'){
+                for (var i in checkboxes){
+                    checkboxes[i].checked = 'FALSE';
+                }
+                button.value = 'deselect'
+            }else{
+                for (var i in checkboxes){
+                    checkboxes[i].checked = '';
+                }
+                button.value = 'select';
+            }
+        }
+
+        function disp_confirm(pText_, ket)  {
+            
+            var eidcard=document.getElementById('e_idcard').value;
+            if (eidcard=="") {
+                alert("ID Approve Kosong...!!!"); return false;
+            }
+
+            pText_ = "Apakah akan melakukan proses...???";
+
+            ok_ = 1;
+            if (ok_) {
+                var r=confirm(pText_)
+                if (r==true) {
+                    
+                    var myurl = window.location;
+                    var urlku = new URL(myurl);
+                    var module = urlku.searchParams.get("module");
+                    var idmenu = urlku.searchParams.get("idmenu");
+                                
+                    //document.write("You pressed OK!")
+                    document.getElementById("d-form2").action = "module/master/mst_listcustomernew/aksi_listcustomernew.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
+                    document.getElementById("d-form2").submit();
+                    return 1;
+                }
+            } else {
+                //document.write("You pressed Cancel!")
+                return 0;
+            }
+        }
+
+    </script>
 
 <?PHP
 hapusdata:

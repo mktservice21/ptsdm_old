@@ -43,7 +43,7 @@ if ($pmodule=="caridatacustid") {
 
         $pigrpkode=$nidcab.$nidarea.$nidcustid;
 
-        echo "<option value='$pigrpkode'>$nidcustnm ($pidncustpl)</option>";
+        echo "<option value='$nidcustid'>$nidcustnm ($pidncustpl)</option>";
 
     }
     

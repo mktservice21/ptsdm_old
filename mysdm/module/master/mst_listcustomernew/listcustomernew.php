@@ -1,5 +1,5 @@
 <?php
-    //include "config/cek_akses_modul.php";
+    include "config/cek_akses_modul.php";
     $fkaryawan=$_SESSION['IDCARD'];
     $fjbtid=$_SESSION['JABATANID'];
     $fgroupidcard=$_SESSION['GROUP'];
@@ -53,7 +53,10 @@
                     }
 
                     $(document).ready(function() {
-                        //KlikDataTabel();
+                        var ecabang=document.getElementById('cb_cabang').value;
+                        if (ecabang!="") {
+                            KlikDataTabel();
+                        }
                     } );
 
                     function KlikDataTabel() {
@@ -107,6 +110,10 @@
                                         <?PHP
                                             echo "<option value=''>--Piihan--</option>";
                                             $query_cb = "select icabangid as icabangid, nama as nama from mkt.icabang WHERE 1=1 ";
+                                            if ($fgroupidcard=="1" OR $fgroupidcard=="24") {
+                                            }else{
+                                                $query_cb .=" AND icabangid IN (select distinct IFNULL(icabangid,'') FROM mkt.idm0 WHERE karyawanid='$fkaryawan') ";
+                                            }
                                             $query_aktif =$query_cb." AND IFNULL(aktif,'')='Y' ";
                                             $query_aktif .=" order by nama";
                                             $tampil= mysqli_query($cnmy, $query_aktif);
@@ -115,10 +122,15 @@
                                                 $pnmcab=$row['nama'];
                                                 
                                                 $pinidcab=(INT)$pidcab;
-                                                if ($pidcabangpl==$pidcab)
+
+                                                if ($fgroupidcard=="1" OR $fgroupidcard=="24") {
+                                                    if ($pidcabangpl==$pidcab)
+                                                        echo "<option value='$pidcab' selected>$pnmcab ($pinidcab)</option>";
+                                                    else
+                                                        echo "<option value='$pidcab'>$pnmcab ($pinidcab)</option>";
+                                                }else{
                                                     echo "<option value='$pidcab' selected>$pnmcab ($pinidcab)</option>";
-                                                else
-                                                    echo "<option value='$pidcab'>$pnmcab ($pinidcab)</option>";
+                                                }
                                                 
                                                 $pcabangidpl=$pidcab;
                                             }
@@ -143,6 +155,7 @@
                                             }
                                         ?>
                                     </select>
+                                    
                                 </div>
                             </div>
                             

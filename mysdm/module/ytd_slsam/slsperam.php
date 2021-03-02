@@ -79,10 +79,10 @@
                                                         $query= "select b.karyawanid, b.nama from hrd.karyawan b where karyawanid='$pmyidcard' ";
                                                     }elseif ($pmyjabatanid=="08") {
                                                         $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
-                                                                . " JOIN ms.idm0 c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
+                                                                . " JOIN sls.idm0 c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
                                                     }elseif ($pmyjabatanid=="20") {
                                                         $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
-                                                                . " JOIN ms.ism0 c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
+                                                                . " JOIN sls.ism0 c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
                                                     }else{
                                                         if ($pmyidcard=="0000000158" OR $pmyidcard=="0000000159") {
                                                             $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "

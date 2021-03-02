@@ -50,15 +50,17 @@
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-    mysqli_query($cnms, "DELETE FROM $tmp01 WHERE IFNULL(isudah,'')='Y'");
-    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
 
     $query = "UPDATE $tmp01 as a JOIN $tmp02 as b 
         on a.icabangid=b.icabangid and a.areaid=b.areaid and a.icustid=b.icustid SET 
         isudah='Y'";
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+    //mysqli_query($cnms, "DELETE FROM $tmp01 WHERE IFNULL(isudah,'')='Y'");
+    //$erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
     $query = "select a.icabangid, a.areaid, a.icustid, DATE_FORMAT(tgljual,'%Y%m') as bulan, 
@@ -141,6 +143,7 @@
                     $palamat2=$row['alamat2'];
                     $pkota=$row['kota'];
                     $ptglinput=$row['tglinput'];
+                    $psudah=$row['isudah'];
                     
                     $pidcusttomer=(INT)$pidcust;
                     $pidcab=(INT)$pidcabang;
@@ -158,7 +161,13 @@
                     $txt_value="<input type='hidden' value='$pvalue' id='txtvalue[$pidno]' name='txtvalue[$pidno]' class='inputmaskrp2' autocomplete='off' size='8px' Readonly>";
 
                     $cekbox = "<input type=checkbox value='$pidno' id='chkbox_br[$pidno]' name='chkbox_br[]' onclick=\"\">";
+                    $phapus = "<input type='button' class='btn btn-danger btn-xs' value='Hapus' onClick=\"disp_confirm('hapus', 'hapuslistcust', '$pidno')\">";
     
+                    if ($psudah=="Y") {
+                        $cekbox="";
+                        $cekbox=$phapus;
+                    }
+
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$cekbox $txt_idcab $txt_idarea $txt_idcust $txt_value</td>";
@@ -182,7 +191,7 @@
         <div class='form-group'>
             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
             <div class='col-md-4'>
-                <button type='button' class='btn btn-dark' onclick='disp_confirm("Simpan ?", "simpandatalitcust")'>Simpan</button>
+                <button type='button' class='btn btn-dark' onclick='disp_confirm("simpan", "simpandatalitcust", "")'>Simpan</button>
             </div>
         </div>
 
@@ -287,33 +296,45 @@
             }
         }
 
-        function disp_confirm(pText_, ket)  {
+        function disp_confirm(pText, ket, iid)  {
             
             var eidcard=document.getElementById('e_idcard').value;
             if (eidcard=="") {
                 alert("ID Approve Kosong...!!!"); return false;
             }
 
-            pText_ = "Apakah akan melakukan proses...???";
-
-            ok_ = 1;
-            if (ok_) {
-                var r=confirm(pText_)
-                if (r==true) {
-                    
-                    var myurl = window.location;
-                    var urlku = new URL(myurl);
-                    var module = urlku.searchParams.get("module");
-                    var idmenu = urlku.searchParams.get("idmenu");
-                                
-                    //document.write("You pressed OK!")
-                    document.getElementById("d-form2").action = "module/master/mst_listcustomernew/aksi_listcustomernew.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
-                    document.getElementById("d-form2").submit();
-                    return 1;
+            var pText_="";
+            if (pText=="hapus") {
+                if (iid=="") {
+                    alert("Tidak ada data yang akan diproses...!!!"); return false;
                 }
-            } else {
-                //document.write("You pressed Cancel!")
+                pText_ = "Apakah akan melakukan proses hapus...???";
+            }else if (pText=="simpan") {
+                pText_ = "Apakah akan melakukan proses simpan...???";
+            }
+
+            if (pText_=="") {
                 return 0;
+            }else{
+                ok_ = 1;
+                if (ok_) {
+                    var r=confirm(pText_)
+                    if (r==true) {
+                        
+                        var myurl = window.location;
+                        var urlku = new URL(myurl);
+                        var module = urlku.searchParams.get("module");
+                        var idmenu = urlku.searchParams.get("idmenu");
+                                    
+                        //document.write("You pressed OK!")
+                        document.getElementById("d-form2").action = "module/master/mst_listcustomernew/aksi_listcustomernew.php?module="+module+"&act="+ket+"&idmenu="+idmenu+"&uid="+iid;
+                        document.getElementById("d-form2").submit();
+                        return 1;
+                    }
+                } else {
+                    //document.write("You pressed Cancel!")
+                    return 0;
+                }
             }
         }
 

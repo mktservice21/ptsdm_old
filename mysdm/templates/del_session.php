@@ -613,6 +613,10 @@
     $_SESSION['LHTKSCBID']="";
     $_SESSION['LHTKSDAPT']="";
     
+
+    //LIST CUSTOMET OUTLET BARU
+    $_SESSION['LSTCUSTNEWICAB']="";
+    $_SESSION['LSTCUSTNEWIARE']="";
     
     
 ?>

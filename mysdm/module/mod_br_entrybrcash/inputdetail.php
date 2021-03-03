@@ -6,7 +6,7 @@
                     <thead>
                         <tr><th width='5%px'>No</th>
                         <th width='30%' >Akun</th>
-                        <th width='4%' align="right">Tanggal</th>
+                        <th width='20%' align="right">Tanggal</th>
                         <th width='10%' align="right">s.d</th>
                         <th width='15%' align="right">Total (Rp.)</th>
                         <th width='40%' align="right">Kota / Note</th>
@@ -50,11 +50,11 @@
                                 
                                 echo "<div hidden><input type='text' name='$nmidbl' id='$nmidbl' value='$uc[nobrid]'></div>";
                                 echo "<tr scope='row'><td>$no</td>";
-                                echo "<td>$uc[nama]<input type='hidden' id='$nmnama' name='$nmnama' class='input-sm' autocomplete='off' value='$uc[nama]'></td>";
-                                echo "<td><input type='$qtyhide' size='15px' id='$nmqty' name='$nmqty' class='input-sm' autocomplete='off'  value='$uqyu'></td>";
-                                echo "<td><input type='$qtyhide' size='15px' id='$nmnilai' name='$nmnilai' class='input-sm' autocomplete='off'  value='$unilai'></td>";
-                                echo "<td><input type='text' size='10px' id='$nmtotal' name='$nmtotal' onblur='findTotal()' class='input-sm inputmaskrp2' autocomplete='off' value='$total' $qtyreadony></td>";
-                                echo "<td><input type='text' size='35px' id='$nmnote' name='$nmnote' class='input-sm' autocomplete='off' value='$unote'></td>";
+                                echo "<td nowrap>$uc[nama]<input type='hidden' id='$nmnama' name='$nmnama' class='input-sm' autocomplete='off' value='$uc[nama]'></td>";
+                                echo "<td nowrap><input type='$qtyhide' size='15px' id='$nmqty' name='$nmqty' class='input-sm' autocomplete='off'  value='$uqyu'></td>";
+                                echo "<td nowrap><input type='$qtyhide' size='15px' id='$nmnilai' name='$nmnilai' class='input-sm' autocomplete='off'  value='$unilai'></td>";
+                                echo "<td nowrap><input type='text' size='10px' id='$nmtotal' name='$nmtotal' onblur='findTotal()' class='input-sm inputmaskrp2' autocomplete='off' value='$total' $qtyreadony></td>";
+                                echo "<td nowrap><input type='text' size='35px' id='$nmnote' name='$nmnote' class='input-sm' autocomplete='off' value='$unote'></td>";
                                 $no++;
                                 $xx++;
                             }
@@ -76,11 +76,11 @@
                             
                             echo "<div hidden><input type='text' name='$nmidbl' id='$nmidbl' value='$uc[nobrid]'></div>";
                             echo "<tr scope='row'><td>$no</td>";
-                            echo "<td>$uc[nama] <input type='hidden' id='$nmnama' name='$nmnama' class='input-sm' autocomplete='off' value='$uc[nama]'></td>";
-                            echo "<td><input type='$qtyhide' size='15px' id='$nmqty' name='$nmqty' class='input-sm' autocomplete='off' value='$uqyu'></td>";
-                            echo "<td><input type='$qtyhide' size='15px' id='$nmnilai' name='$nmnilai' class='input-sm' autocomplete='off' value='$unilai'></td>";
-                            echo "<td><input type='text' size='10px' id='$nmtotal' name='$nmtotal' onblur='findTotal()' class='input-sm inputmaskrp2' autocomplete='off' value='$total' $qtyreadony></td>";
-                            echo "<td><input type='text' size='35px' id='$nmnote' name='$nmnote' class='input-sm' autocomplete='off' value='$unote'></td>";
+                            echo "<td nowrap>$uc[nama] <input type='hidden' id='$nmnama' name='$nmnama' class='input-sm' autocomplete='off' value='$uc[nama]'></td>";
+                            echo "<td nowrap><input type='$qtyhide' size='15px' id='$nmqty' name='$nmqty' class='input-sm' autocomplete='off' value='$uqyu'></td>";
+                            echo "<td nowrap><input type='$qtyhide' size='15px' id='$nmnilai' name='$nmnilai' class='input-sm' autocomplete='off' value='$unilai'></td>";
+                            echo "<td nowrap><input type='text' size='10px' id='$nmtotal' name='$nmtotal' onblur='findTotal()' class='input-sm inputmaskrp2' autocomplete='off' value='$total' $qtyreadony></td>";
+                            echo "<td nowrap><input type='text' size='35px' id='$nmnote' name='$nmnote' class='input-sm' autocomplete='off' value='$unote'></td>";
                             $no++;
 
                         }

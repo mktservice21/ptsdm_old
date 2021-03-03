@@ -757,13 +757,13 @@
         //include 'module/dpl_dataoutlet/dataoutlet.php';
         
     }elseif ($_GET['module']=='pchpurchasereq'){
-        include 'module/pch_pr/purchasereq.php';
+        include 'module/purchasing/pch_pr/purchasereq.php';
     }elseif ($_GET['module']=='pchisivendorpr'){
-        include 'module/pch_vendorpr/vendorpr.php';
+        include 'module/purchasing/pch_vendorpr/vendorpr.php';
     }elseif ($_GET['module']=='pchpotransaksi'){
-        include 'module/pch_purchaseorder/purchaseorder.php';
+        include 'module/purchasing/pch_purchaseorder/purchaseorder.php';
     }elseif ($_GET['module']=='pchdatabarang'){
-        include 'module/pch_barang/pchbarang.php';
+        include 'module/purchasing/pch_barang/pchbarang.php';
         
     }elseif ($_GET['module']=='mapsalescust'){
         include 'module/sls_mapsalescust/mapsalescust.php';

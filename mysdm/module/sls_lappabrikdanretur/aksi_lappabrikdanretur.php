@@ -119,6 +119,9 @@
                     <th align="center" nowrap>No. Batch</th>
                     <th align="center" nowrap>Kuantitas</th>
                     <th align="center" nowrap>Keterangan</th>
+                    <th align="center" nowrap>Status</th>
+                    <th align="center" nowrap>Catatan</th>
+                    <th align="center" nowrap>Kirim</th>
                 </tr>
             </thead>
             <tbody>
@@ -139,6 +142,9 @@
                     $pnobatch=$row['nobatch'];
                     $pkuantitas=$row['kuantitas_r'];
                     $pket=$row['keterangan'];
+                    $psts=$row['sts'];
+                    $pcatatan=$row['catatan'];
+                    $pkirim=$row['kirim'];
 
 
 
@@ -160,6 +166,9 @@
 
                     echo "<td nowrap align='right'>$pkuantitas</td>";
                     echo "<td nowrap>$pket</td>";
+                    echo "<td nowrap>$psts</td>";
+                    echo "<td nowrap>$pcatatan</td>";
+                    echo "<td nowrap>$pkirim</td>";
                     echo "</tr>";
 
 

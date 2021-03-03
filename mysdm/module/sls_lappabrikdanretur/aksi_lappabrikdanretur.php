@@ -16,6 +16,8 @@
         $ppilihreport="Data Pabrik Sales";
     }
     
+    $ptahun=$_POST['cb_tahun'];
+
     $ppilihrpt=$_GET['ket'];
     if ($ppilihrpt=="excel") {
         // Fungsi header dengan mengirimkan raw data excel
@@ -34,9 +36,17 @@
     $tmp01 =" dbtemp.tmplapslsrtrpbk01_".$puserid."_$now ";
     
     if ($prptpilih=="R") {
-        $query = "select * from sls.pabrik_retur ";
+        $query = "select * from sls.pabrik_retur WHERE 1=1 ";
+        if (empty($ptahun)) {
+        }else{
+            $query .=" AND YEAR(tgl_retur)='$ptahun'";
+        }
     }else{
-        $query = "select * from sls.pabrik_sales ";
+        $query = "select * from sls.pabrik_sales WHERE 1=1 ";
+        if (empty($ptahun)) {
+        }else{
+            $query .=" AND YEAR(tglfaktur)='$ptahun'";
+        }
     }
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnms, $query);
@@ -96,7 +106,18 @@
 
 <div id='n_content'>
     
-    <center><div class='h1judul'><?PHP echo $ppilihreport; ?></div></center>
+    <center>
+        <div class='h1judul'><?PHP echo $ppilihreport; ?></div>
+        <div>
+            <?PHP
+            if (empty($ptahun)) {
+                echo "All Periode";
+            }else{
+                echo "Periode : $ptahun";
+            }
+            ?>
+        </div>
+    </center>
     
     
     <div class="clearfix"></div>

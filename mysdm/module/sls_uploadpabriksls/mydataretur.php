@@ -21,7 +21,9 @@ $columns = array(
     8=> 'nama_barang',
     9=> 'nobatch',
     10=> 'kuantitas_r',
-    11=> 'keterangan'
+    12=> 'sts',
+    13=> 'catatan',
+    14=> 'kirim',
 );
 
 
@@ -42,6 +44,9 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
     $sql.=" OR kota LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR kdbarang LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR nama_barang LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR sts LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR catatan LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR kirim LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR DATE_FORMAT(tgl_retur,'%d %M %Y') LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR keterangan LIKE '%".$requestData['search']['value']."%' )";
 }
@@ -68,6 +73,10 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pnobatch=$row['nobatch'];
     $pkuantitas=$row['kuantitas_r'];
     $pket=$row['keterangan'];
+
+    $psts=$row['sts'];
+    $pcatatan=$row['catatan'];
+    $pkirim=$row['kirim'];
     
                                 
                   
@@ -89,6 +98,9 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $nestedData[] = $pkuantitas;
     $nestedData[] = $pket;
+    $nestedData[] = $psts;
+    $nestedData[] = $pcatatan;
+    $nestedData[] = $pkirim;
 
     $data[] = $nestedData;
     $no=$no+1;

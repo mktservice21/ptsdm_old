@@ -575,11 +575,11 @@
         include 'module/ks_monitorkikscb/aksi_monitorkikscb.php';
         
     }elseif ($_GET['module']=='pchpurchasereq'){
-        include 'module/pch_pr/iviewdatapr.php';
+        include 'module/purchasing/pch_pr/iviewdatapr.php';
     }elseif ($_GET['module']=='pchpotransaksi'){
-        include 'module/pch_purchaseorder/iviewdatapo.php';
+        include 'module/purchasing/pch_purchaseorder/iviewdatapo.php';
     }elseif ($_GET['module']=='pchdatabarang'){
-        include 'module/pch_barang/lihatgambar.php';
+        include 'module/purchasing/pch_barang/lihatgambar.php';
         
         
     }elseif ($_GET['module']=='isikartustatus'){

@@ -112,12 +112,15 @@
             $pfile8=trim($Row[8]);
             $pfile9=trim($Row[9]);
             $pfile10=trim($Row[10]);
+            $pfile11=trim($Row[11]);
+            $pfile12=trim($Row[12]);
+            $pfile13=trim($Row[13]);
             
             if (!empty($pfile10)) $pfile10 = str_replace("'", " ", $pfile10);
             
             $pinsert_data[] = "('$pfile0', '$pfile1', '$pfile2', '$pfile3', "
                     . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', '$pfile8', "
-                    . " '$pfile9', '$pfile10')";
+                    . " '$pfile9', '$pfile10', '$pfile11', '$pfile12', '$pfile13')";
             
             
             $pbolehsave=true;
@@ -195,7 +198,7 @@
             
             $query_ins_pil = "INSERT INTO sls.pabrik_retur (bukti_retur, tgl_retur, kdcustomer, nama_customer, "
                     . " alamat_customer, kota, kdbarang, nama_barang, nobatch, "
-                    . " kuantitas_r, keterangan) values "
+                    . " kuantitas_r, keterangan, sts, catatan, kirim) values "
                     . " ".implode(', ', $pinsert_data);
             mysqli_query($cnms, $query_ins_pil);
             $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { mysqli_close($cnms); echo "Error INSERT DATA RETUR : $erropesan"; exit; }

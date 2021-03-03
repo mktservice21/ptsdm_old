@@ -28,7 +28,7 @@
                 { "orderable": false, "targets": 0 },
                 //{ "orderable": false, "targets": 1 },
                 { className: "text-right", "targets": [10] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7,8,9,10,11] }//nowrap
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14] }//nowrap
 
             ],
             "language": {
@@ -107,6 +107,9 @@
                     <th align="center" nowrap>No. Batch</th>
                     <th align="center" nowrap>Kuantitas</th>
                     <th align="center" nowrap>Keterangan</th>
+                    <th align="center" nowrap>Status</th>
+                    <th align="center" nowrap>Catatan</th>
+                    <th align="center" nowrap>Kirim</th>
                 </tr>
             </thead>
             <tbody>

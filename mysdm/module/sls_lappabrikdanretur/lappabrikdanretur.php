@@ -14,6 +14,8 @@ include "config/cek_akses_modul.php";
                 $hari_ini = date("Y-m-d");
                 $tgl_pertama = date('01 F Y', strtotime($hari_ini));
                 $tgl_akhir = date('t F Y', strtotime($hari_ini));
+                $ptahunini = date('Y', strtotime($hari_ini));
+                $pawalthn="2020";
                 ?>
                 <script>
                     function disp_confirm(pText)  {
@@ -58,6 +60,26 @@ include "config/cek_akses_modul.php";
                                                     <option value='S' selected>Sales</option>
                                                     <option value='R'>Retur</option>
                                                 </select>
+
+                                            </div>
+                                        </div>
+
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12'>Periode <span class='required'></span></label>
+                                            <div class='col-md-9 col-sm-9 col-xs-12'>
+
+                                            <select class='form-control input-sm' id="cb_tahun" name="cb_tahun" onchange="">
+                                                <option value="">All</option>
+
+                                                <?PHP
+                                                for($nthn=$pawalthn;$nthn<=$ptahunini;$nthn++) {
+                                                    if ($nthn==$ptahunini)
+                                                        echo "<option value='$nthn' selected>$nthn</option>";
+                                                    else
+                                                        echo "<option value='$nthn'>$nthn</option>";
+                                                }
+                                                ?>
+                                            </select>
 
                                             </div>
                                         </div>

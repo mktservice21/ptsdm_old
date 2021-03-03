@@ -4,6 +4,8 @@
     $pidgroup=$_SESSION['GROUP'];
     $hari_ini = date("Y-m-d");
     $tgl_pertama = date('F Y', strtotime($hari_ini));
+    $ptahunini = date('Y', strtotime($hari_ini));
+    $pawalthn="2020";
     
     $pfilename="";
     
@@ -49,9 +51,16 @@
                                 Tahun
                                 <div class="form-group">
                                     <select class='form-control input-sm' id="cb_tahun" name="cb_tahun" onchange="">
-                                        <option value="" selected>All</option>
-                                        <option value="2020">2020</option>
-                                        <option value="2021">2021</option>
+                                        <option value="">All</option>
+
+                                        <?PHP
+                                        for($nthn=$pawalthn;$nthn<=$ptahunini;$nthn++) {
+                                            if ($nthn==$ptahunini)
+                                                echo "<option value='$nthn' selected>$nthn</option>";
+                                            else
+                                                echo "<option value='$nthn'>$nthn</option>";
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                             </div>

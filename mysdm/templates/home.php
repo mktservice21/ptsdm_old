@@ -852,6 +852,8 @@
     }else{
         include 'del_session.php';
         include 'ahome.php';
+        include 'deletefileimage_tmp.php';
+        include 'deletefiles_tmp.php';
     }
     ?>
 </div>

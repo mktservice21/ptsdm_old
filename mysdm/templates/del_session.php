@@ -618,5 +618,10 @@
     $_SESSION['LSTCUSTNEWICAB']="";
     $_SESSION['LSTCUSTNEWIARE']="";
     
+
+    //PROSES PR BY IT
+    $_SESSION['PCHPRITSTS']="";
+    $_SESSION['PCHPRITTGL1']="";
+    $_SESSION['PCHPRITTGL2']="";
     
 ?>

@@ -10,7 +10,7 @@ if ($pmodule=="viewdatabrand") {
     $ppilihanwewenang=$_POST['uwewenang'];
     $pnpilihdiv=$_POST['ucbgrp'];
     
-    include "../../config/koneksimysqli.php";
+    include "../../../config/koneksimysqli.php";
     
     echo "<option value='' selected>--Pilihan--</option>";
     $query = "select distinct IDBRAND, NAMA_BRAND from dbmaster.t_barang_brand WHERE IFNULL(AKTIF,'')<>'N' ";

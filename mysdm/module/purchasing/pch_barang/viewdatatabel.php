@@ -17,7 +17,7 @@
 
 <script>
     $(document).ready(function() {
-        var aksi = "module/pch_barang/aksi_pchbarang.php";
+        var aksi = "module/purchasing/pch_barang/aksi_pchbarang.php";
         var myurl = window.location;
         var urlku = new URL(myurl);
         var module = urlku.searchParams.get("module");
@@ -50,7 +50,7 @@
             "scrollX": true,
 
             "ajax":{
-                url :"module/pch_barang/mydata.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&udivprod="+edivprod+"&uwwnpilihan="+ewwnpilihan, // json datasource
+                url :"module/purchasing/pch_barang/mydata.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&udivprod="+edivprod+"&uwwnpilihan="+ewwnpilihan, // json datasource
                 type: "post",  // method  , by default get
                 data:"udivprod="+edivprod+"&uwwnpilihan="+ewwnpilihan,
                 error: function(){  // error handling

@@ -21,7 +21,7 @@ asort( $nindex_tmpfl );
 	
 foreach($nindex_tmpfl as $iv => $tx) {
 	//echo "$nfiles_tmpfl[$iv]<br/>";
-    if($tx <= $pflyesterday) {
+    if($tx < $pflyesterday) {
         if ($nfiles_tmpfl[$iv]=="index.php" OR $nfiles_tmpfl[$iv]=="index") {
             continue;
         }else{

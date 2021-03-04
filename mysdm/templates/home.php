@@ -764,6 +764,8 @@
         include 'module/purchasing/pch_purchaseorder/purchaseorder.php';
     }elseif ($_GET['module']=='pchdatabarang'){
         include 'module/purchasing/pch_barang/pchbarang.php';
+    }elseif ($_GET['module']=='pchprosesprit'){
+        include 'module/purchasing/pch_prosesprit/prosesprit.php';
         
     }elseif ($_GET['module']=='mapsalescust'){
         include 'module/sls_mapsalescust/mapsalescust.php';
@@ -852,13 +854,14 @@
     }else{
         include 'del_session.php';
         include 'ahome.php';
-        include 'deletefileimage_tmp.php';
-        include 'deletefiles_tmp.php';
+        //include 'deletefileimage_tmp.php';
+        //include 'deletefiles_tmp.php';
     }
     ?>
 </div>
 
 <?PHP
+/*
 error_reporting(0);
 $pidpilihcarduser=$_SESSION['IDCARD'];
 $ptglpilihskr= date("Y-m-d");
@@ -869,4 +872,5 @@ $pketemulog= mysqli_num_rows(mysqli_query($cnmy, $querylog));
 if ($pketemulog==0) { mysqli_query($cnmy, "INSERT INTO dbmaster.sdm_akseslogin(tanggal, karyawanid, idmenu, jumlah, jml_aksesrpt)VALUES(CURRENT_DATE(), '$pidpilihcarduser', '$pidmenupihskr', '0', '0')"); }
 mysqli_query($cnmy, "UPDATE dbmaster.sdm_akseslogin SET jumlah=IFNULL(jumlah,0)+1 WHERE tanggal='$ptglpilihskr' AND karyawanid='$pidpilihcarduser' AND idmenu='$pidmenupihskr'");
 error_reporting(-1);
+*/
 ?>

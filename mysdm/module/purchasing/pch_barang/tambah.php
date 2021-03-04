@@ -52,7 +52,7 @@
                 var module = urlku.searchParams.get("module");
                 var idmenu = urlku.searchParams.get("idmenu");
                 //document.write("You pressed OK!")
-                document.getElementById("demo-form2").action = "module/pch_barang/aksi_pchbarang.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
+                document.getElementById("demo-form2").action = "module/purchasing/pch_barang/aksi_pchbarang.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
                 document.getElementById("demo-form2").submit();
                 return 1;
             }

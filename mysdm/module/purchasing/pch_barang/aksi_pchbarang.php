@@ -13,7 +13,7 @@ $idmenu=$_GET['idmenu'];
 
 if ($module=='pchdatabarang' AND ($act=="hapus" OR $act=="aktifkan") )
 {
-    include "../../config/koneksimysqli.php";
+    include "../../../config/koneksimysqli.php";
     $pidinput=$_GET['id'];
     $puserinput=$_SESSION['IDCARD'];
     
@@ -28,27 +28,27 @@ if ($module=='pchdatabarang' AND ($act=="hapus" OR $act=="aktifkan") )
     }
     
     mysqli_close($cnmy);
-    header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
+    header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
 }
 elseif ($module=='pchdatabarang' AND $act=="hapusgambar")
 {
     $pidinput=$_GET['id'];
     $pidgambar=$_GET['idgam'];
     if (!empty($pidinput) AND !empty($pidgambar)) {
-        include "../../config/koneksimysqli.php";
+        include "../../../config/koneksimysqli.php";
         
         $query = "DELETE FROM dbimages.img_barang_gimic WHERE IDBARANG='$pidinput' AND NOURUT='$pidgambar'";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
         mysqli_close($cnmy);
-        header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=editdata'.'&num=$idmenu'.'&id='.$pidinput);
+        header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=editdata'.'&num=$idmenu'.'&id='.$pidinput);
     }
 }
 elseif ($module=='pchdatabarang')
 {
     
-    include "../../config/koneksimysqli.php";
+    include "../../../config/koneksimysqli.php";
     
     
     $pidinput=$_POST['e_id'];
@@ -118,7 +118,7 @@ elseif ($module=='pchdatabarang')
     }
     
     
-    include "../../config/fungsi_image.php";
+    include "../../../config/fungsi_image.php";
     $gambarnya=$_POST['e_imgconv'];
     if (!empty($gambarnya)) {
         mysqli_query($cnmy, "insert into dbimages.img_barang_gimic (IDBARANG, GAMBAR) values ('$pidinput', '$gambarnya')");
@@ -128,7 +128,7 @@ elseif ($module=='pchdatabarang')
     
     
     mysqli_close($cnmy);
-    header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
+    header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
 }
 
 ?>

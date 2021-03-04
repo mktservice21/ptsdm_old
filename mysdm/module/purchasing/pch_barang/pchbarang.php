@@ -40,7 +40,7 @@
     <div class="row">
 
         <?php
-        //$aksi="module/pch_barang/laporan.php";
+        //$aksi="module/purchasing/pch_barang/laporan.php";
         $aksi="eksekusi3.php";
         switch($_GET['act']){
             default:
@@ -69,7 +69,7 @@
                         $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                         $.ajax({
                             type:"post",
-                            url:"module/pch_barang/viewdatatabel.php?module="+module+"&idmenu="+idmenu+"&act="+act,
+                            url:"module/purchasing/pch_barang/viewdatatabel.php?module="+module+"&idmenu="+idmenu+"&act="+act,
                             data:"udivprod="+edivprod+"&uwwnpilihan="+ewwnpilihan,
                             success:function(data){
                                 $("#c-data").html(data);
@@ -94,7 +94,7 @@
                                 var idmenu = urlku.searchParams.get("idmenu");
 
                                 //document.write("You pressed OK!")
-                                document.getElementById("d-form2").action = "module/pch_barang/aksi_barang.php?module="+module+"&idmenu="+idmenu+"&act="+ket+"&kethapus="+"&ket="+ket+"&id="+noid;
+                                document.getElementById("d-form2").action = "module/purchasing/pch_barang/aksi_barang.php?module="+module+"&idmenu="+idmenu+"&act="+ket+"&kethapus="+"&ket="+ket+"&id="+noid;
                                 document.getElementById("d-form2").submit();
                                 return 1;
                             }
@@ -122,12 +122,13 @@
                         
                         <form method='POST' action='<?PHP echo "$aksi?module=$_GET[module]&act=import&idmenu=$_GET[idmenu]"; ?>' id='demo-form2' name='form1' data-parsley-validate class='form-horizontal form-label-left'  enctype='multipart/form-data'>
                         
-                            <div class='col-sm-2'>
+                            <div hidden class='col-sm-2'>
                                 Group Produk
                                 <div class="form-group">
                                     <select class='form-control input-sm' id="cb_divprod" name="cb_divprod" onchange="">
                                         <option value="">--All--</option>
                                         <?PHP
+                                        /*
                                             $query = "select DIVISIID, DIVISINM from dbmaster.t_divisi_gimick WHERE 1=1 ";
                                             if ($ppilihanwewenang=="AL") {
                                             }else{
@@ -140,6 +141,7 @@
                                                 $pdivnm=$row['DIVISINM'];
                                                 echo "<option value='$pdivid'>$pdivnm</option>";
                                             }
+                                        */
                                         ?>
                                     </select>
                                 </div>
@@ -147,7 +149,7 @@
                             
 
 
-                            <div class='col-sm-2'>
+                            <div hidden class='col-sm-2'>
                                 <small>&nbsp;</small>
                                <div class="form-group">
                                    <button type='button' class='btn btn-success btn-xs' onclick='KlikDataTabel()'>View Data</button>

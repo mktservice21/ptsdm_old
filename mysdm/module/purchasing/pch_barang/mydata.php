@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../../config/koneksimysqli.php";
+include "../../../config/koneksimysqli.php";
 
 /// storing  request (ie, get/post) global array to a variable  
 $requestData= $_REQUEST;

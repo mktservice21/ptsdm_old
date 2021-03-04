@@ -9,7 +9,7 @@ session_start();
     
     //ini_set('display_errors', '0');
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
     

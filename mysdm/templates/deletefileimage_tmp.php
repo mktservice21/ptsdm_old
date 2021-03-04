@@ -21,7 +21,7 @@ asort( $nindex_tmpimg );
 	
 foreach($nindex_tmpimg as $iv => $tx) {
 	//echo "$nfiles_tmpimg[$iv]<br/>";
-    if($tx < $pimyesterday) {
+    if($tx <= $pimyesterday) {
         if ($nfiles_tmpimg[$iv]=="index.php" OR $nfiles_tmpimg[$iv]=="index") {
             continue;
         }else{

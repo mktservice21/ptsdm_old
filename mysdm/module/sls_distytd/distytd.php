@@ -1,9 +1,13 @@
+<?PHP
+include "config/cek_akses_modul.php";
+?>
 <div class="">
 
     <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Report Sales Distributor YTD</h3></div></div><div class="clearfix"></div>
     <!--row-->
     <div class="row">
         <?php
+        include "config/koneksimysqli_ms.php";
         $aksi="eksekusi3.php";
         switch($_GET['act']){
             default:
@@ -65,7 +69,16 @@
                                                     $pinsel="('0000000002', '0000000003', '0000000005', '0000000006', '0000000010', "
                                                             . " '0000000011', '0000000016', '0000000023', '0000000024', '0000000030', "
                                                             . " '0000000031')";
-                                                    cComboDistibutorHanya('', '', $pinsel);
+                                                    //cComboDistibutorHanya('', '', $pinsel);
+                                                    $sql=mysqli_query($cnmy, "SELECT distinct Distid, nama, alamat1 from dbmaster.distrib0 WHERE "
+                                                        . " IFNULL(aktif,'') <> 'N' order by nama");
+                                                    echo "<option value=''>~ All ~</option>";
+                                                    while ($Xt=mysqli_fetch_array($sql)){
+                                                        $pdisid=$Xt['Distid'];
+                                                        $pdisnm=$Xt['nama'];
+                                                        $cidcek=(INT)$pdisid;
+                                                        echo "<option value='$pdisid'>$pdisnm ($cidcek)</option>";
+                                                    }
                                                     ?>
                                                 </select>
                                             </div>

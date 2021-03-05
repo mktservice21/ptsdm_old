@@ -20,6 +20,8 @@
     $pnmfilter=$_POST['unamafilter'];
     $pbln=$_POST['ubln'];
     $pbulan = date('Y-m', strtotime($pbln));
+
+    $pidesct=$_POST['ucstid'];
     
     
     $_SESSION['MAPCUSTBAGIDCAB']=$piddist;
@@ -40,21 +42,35 @@
     $row=mysqli_fetch_array($tampil);
     $pnamaecabang=$row['nama'];
     
-    $query = "SELECT DISTINCT a.custid FROM MKT.$pnmtblsales as a WHERE a.cabangid='$pidecab' AND a.fakturid='$pnmfilter' AND LEFT(a.tgljual,7)='$pbulan'";
-    $tampil=mysqli_query($cnms, $query);
-    $row=mysqli_fetch_array($tampil);
-    $pecusid=$row['custid'];
+    if (!empty($pidesct)) {
+        $pecusid=$pidesct;
+    }else{
+        $query = "SELECT DISTINCT a.custid FROM MKT.$pnmtblsales as a WHERE a.cabangid='$pidecab' AND a.fakturid='$pnmfilter' AND LEFT(a.tgljual,7)='$pbulan' ";
     
-    $query = "SELECT nama, icabangid, areaid, icustid FROM MKT.ecust WHERE distid='$piddist' AND cabangid='$pidecab' AND ecustid='$pecusid'";
+        $tampil=mysqli_query($cnms, $query);
+        $row=mysqli_fetch_array($tampil);
+        $pecusid=$row['custid'];
+    }
+
+    $query = "SELECT nama, icabangid, areaid, icustid, nama_eth_sks FROM MKT.ecust WHERE distid='$piddist' AND cabangid='$pidecab' AND ecustid='$pecusid'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnmecust=$row['nama'];
+    $pnmethsks=$row['nama_eth_sks'];
     $icabangid_map=$row['icabangid'];
     $areaid_map=$row['areaid'];
     $icustid_map=$row['icustid'];
+
+    if ( ($piddist=="0000000031" OR $piddist=="31") AND !empty($pnmethsks) ) {
+        $pnmecust=$pnmethsks;
+    }
+    
     if (!empty($pnmecust)) $pnmecust = str_replace('"', ' ', $pnmecust);
     if (!empty($pnmecust)) $pnmecust = str_replace('*', ' ', $pnmecust);
     
+
+
+
     $query = "SELECT nama FROM MKT.icust WHERE icabangid='$icabangid_map' AND areaid='$areaid_map' AND icustid='$icustid_map'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
@@ -84,7 +100,11 @@
             . " FROM MKT.$pnmtblsales as a "
             . " JOIN MKT.eproduk as e ON a.brgid=e.eprodid  WHERE a.cabangid='$pidecab' "
             . " AND LEFT(tgljual,7)='$pbulan' AND a.fakturid='$pnmfilter' AND e.distid='$piddist' "
-            . " GROUP BY 1,2,3,4,5,6,7,8 ORDER BY nmprod";
+            . " ";
+    if (!empty($pidesct)) {
+        $query .= " AND a.custid='$pidesct' ";
+    }
+    $query .= " GROUP BY 1,2,3,4,5,6,7,8 ORDER BY nmprod";
     //echo "$query";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnms, $query);

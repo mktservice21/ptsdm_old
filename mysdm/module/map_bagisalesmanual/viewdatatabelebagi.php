@@ -21,7 +21,8 @@
     $pbln=$_POST['ubln'];
     $pbulan = date('Y-m', strtotime($pbln));
 
-    $pidesct=$_POST['ucstid'];
+    $pidesct="";
+    if (isset($_POST['ucstid'])) $pidesct=$_POST['ucstid'];
     
     
     $_SESSION['MAPCUSTBAGIDCAB']=$piddist;

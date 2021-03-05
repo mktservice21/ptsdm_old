@@ -1,3 +1,6 @@
+<?PHP
+include "config/cek_akses_modul.php";
+?>
 <div class="">
 
     <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Report LPB Per Daerah</h3></div></div><div class="clearfix"></div>
@@ -97,6 +100,7 @@
                                                             . " aktif='Y' ";
                                                     if ($pmygroupid=="1" OR $pmygroupid=="24") {
                                                     }else{
+                                                        if ($pmyjabatanid=="08") $query .=" AND id_dm='$pmyidcard' ";
                                                         if ($pmyjabatanid=="20") $query .=" AND id_sm='$pmyidcard' ";
                                                         if ($pmyjabatanid=="38") $query .=" AND id_admin='$pmyidcard' ";
                                                         

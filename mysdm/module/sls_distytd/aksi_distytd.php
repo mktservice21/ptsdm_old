@@ -1,6 +1,6 @@
 <?php
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -97,10 +97,11 @@ $query = "SELECT DISTINCT a.region, a.distid, c.nama nmdist, "
         . " CAST(0 as DECIMAL(20,2)) as pigeo1, CAST(0 as DECIMAL(20,2)) as pigeo2, "
         . " CAST(0 as DECIMAL(20,2)) as total1, CAST(0 as DECIMAL(20,2)) as total2, "
         . " CAST(0 as DECIMAL(20,2)) as ntotal"
-        . " FROM $tmp01 a LEFT JOIN ms.distrib0 c on a.distid=c.Distid";
+        . " FROM $tmp01 a LEFT JOIN sls.distrib0 c on a.distid=c.Distid";
 $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
 
 
 //EAGLE

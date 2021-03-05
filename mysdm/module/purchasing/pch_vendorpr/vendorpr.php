@@ -94,8 +94,8 @@
                         <div class='x_panel'>
 
                             <div class="well" style="overflow: auto; margin-top: -5px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 6px;">
-                                <input onclick="pilihData('approve')" class='btn btn-warning btn-sm' type='button' name='buttonview1' value='Tampilkan Data'>
-                                <input onclick="pilihData('unapprove')" class='btn btn-success btn-sm' type='button' name='buttonview2' value='Hanya Yang Sudah Isi Vendor'>
+                                <input onclick="pilihData('approve')" class='btn btn-success btn-sm' type='button' name='buttonview1' value='Tampilkan Data'>
+                                <input onclick="pilihData('unapprove')" class='btn btn-warning btn-sm' type='button' name='buttonview2' value='Hanya Yang Sudah Isi Vendor'>
                                 <!--<input onclick="pilihData('reject')" class='btn btn-danger btn-sm' type='button' name='buttonview2' value='Lihat Data Reject'>-->
                             </div>
 

@@ -1,5 +1,5 @@
 <?PHP
-include "config/cek_akses_modul.php";
+//include "config/cek_akses_modul.php";
 ?>
 <div class="">
 

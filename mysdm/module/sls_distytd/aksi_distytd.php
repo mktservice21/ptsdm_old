@@ -19,6 +19,8 @@ if ($ppilihrpt=="excel") {
     header("Content-Disposition: attachment; filename=REPORT SALES DISTRIBUTOR YTD.xls");
 }
     
+$pjabatanid=$_SESSION['JABATANID'];
+$pidkaryawan=$_SESSION['IDCARD'];
 
 $module=$_GET['module'];
 $act=$_GET['act'];
@@ -77,6 +79,11 @@ if ($prpttipe=="N") {
 $query = "select *, CAST('' as CHAR(1)) as region from sls.ytd_dist WHERE ( (DATE_FORMAT(bulan,'%Y%m') BETWEEN '$p01bln1' AND '$p01bln2') OR "
         . " (DATE_FORMAT(bulan,'%Y%m') BETWEEN '$p02bln1' AND '$p02bln2') ) "
         . " $filter_prod $filter_region $filter_dist ";
+if ($pjabatanid=="08") {
+    $query .=" AND idcbg IN (select distinct ifnull(idcabang,'') from ms.cbgytd WHERE id_dm='$pidkaryawan')";
+}elseif ($pjabatanid=="20") {
+    $query .=" AND idcbg IN (select distinct ifnull(idcabang,'') from ms.cbgytd WHERE id_sm='$pidkaryawan')";
+}
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }

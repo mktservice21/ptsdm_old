@@ -81,7 +81,7 @@
                     //if (!empty($pnamaecust)) $pnamaecust = str_replace('"', ' ', $pnamaecust);
                     //if (!empty($pnamaecust)) $pnamaecust = str_replace('*', ' ', $pnamaecust);
                     
-                    $pbtnfakturid="<input type='button' value='$pidfaktur' class='btn btn-warning btn-xs' onClick=\"disp_datamapingbyfaktur('1', '$pidfaktur')\">";
+                    $pbtnfakturid="<input type='button' value='$pidfaktur' class='btn btn-warning btn-xs' onClick=\"disp_datamapingbyfaktur('1', '$pidfaktur', '$pidecust')\">";
                     
                     echo "<tr>";
                     echo "<td nowrap>$pbtnfakturid</td>";
@@ -138,7 +138,7 @@
         $('div.dataTables_filter input', dataTable.table().container()).focus();
     } );
     
-    function disp_datamapingbyfaktur(sKey, enamafilter) {
+    function disp_datamapingbyfaktur(sKey, enamafilter, ecstid) {
         var edistid=document.getElementById('cb_dist').value;
         var ecabid=document.getElementById('cb_ecabang').value;
         var ebln=document.getElementById('e_bulan').value;
@@ -153,7 +153,7 @@
         $.ajax({
             type:"post",
             url:"module/map_bagisalesmanual/viewdatatabelebagi.php?module="+module+"&idmenu="+idmenu+"&act="+act,
-            data:"udistid="+edistid+"&ucabid="+ecabid+"&unamafilter="+enamafilter+"&ubln="+ebln,
+            data:"udistid="+edistid+"&ucabid="+ecabid+"&unamafilter="+enamafilter+"&ubln="+ebln+"&ucstid="+ecstid,
             success:function(data){
                 $("#c-datamaping").html(data);
                 $("#loading").html("");

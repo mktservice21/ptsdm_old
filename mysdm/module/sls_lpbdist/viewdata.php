@@ -22,6 +22,7 @@ if ($pmodule=="caricabangregion") {
             . " aktif='Y' $filregion ";
     if ($pmygroupid=="1" OR $pmygroupid=="24") {
     }else{
+        if ($pmyjabatanid=="08") $query .=" AND id_dm='$pmyidcard' ";
         if ($pmyjabatanid=="20") $query .=" AND id_sm='$pmyidcard' ";
         if ($pmyjabatanid=="38") $query .=" AND id_admin='$pmyidcard' ";
         

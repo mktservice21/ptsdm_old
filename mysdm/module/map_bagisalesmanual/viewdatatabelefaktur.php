@@ -39,7 +39,7 @@
     $now=date("mdYhis");
     $tmp01 =" dbtemp.tmpslsmapcustf01_".$puserid."_$now ";
     
-    $query = "select distinct a.fakturid, a.tgljual, a.cabangid, a.custid, b.nama "
+    $query = "select distinct a.fakturid, a.tgljual, a.cabangid, a.custid, b.nama, b.nama_eth_sks "
             . " from MKT.$pnmtblsales as a "
             . " LEFT JOIN MKT.ecust as b on '$piddist'=b.distid "
             . " and a.custid=b.ecustid and a.cabangid=b.cabangid where "
@@ -70,8 +70,13 @@
                 while ($row=mysqli_fetch_array($tampil)) {
                     $pidfaktur=$row['fakturid'];
                     $pnamaecust=$row['nama'];
+                    $pnmethsks=$row['nama_eth_sks'];
                     $pidecust=$row['custid'];
                     $ptgljual=$row['tgljual'];
+
+                    if ( ($piddist=="0000000031" OR $piddist=="31") AND !empty($pnmethsks) ) {
+                        $pnamaecust=$pnmethsks;
+                    }
                     
                     //if (!empty($pnamaecust)) $pnamaecust = str_replace('"', ' ', $pnamaecust);
                     //if (!empty($pnamaecust)) $pnamaecust = str_replace('*', ' ', $pnamaecust);

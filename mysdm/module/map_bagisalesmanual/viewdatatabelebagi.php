@@ -51,6 +51,8 @@
         $tampil=mysqli_query($cnms, $query);
         $row=mysqli_fetch_array($tampil);
         $pecusid=$row['custid'];
+
+        $pidesct=$pecusid;
     }
 
     $query = "SELECT nama, icabangid, areaid, icustid, nama_eth_sks FROM MKT.ecust WHERE distid='$piddist' AND cabangid='$pidecab' AND ecustid='$pecusid'";

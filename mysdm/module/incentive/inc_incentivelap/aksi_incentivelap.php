@@ -74,6 +74,8 @@ if ($pmodule=="incentivelappm") {
     $pdivprodid=$rowd['divprodid'];
     $filtjnsdiv=$pdivprodid."PM";
     $filterjenis=" IFNULL(jenis2,'')='$filtjnsdiv'";
+
+    if ($pidgroup=="1" OR $pidgroup=="24") $filterjenis=" IFNULL(jenis2,'')<>'GSM'";
 }
 
 

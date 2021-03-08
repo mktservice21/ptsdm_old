@@ -196,6 +196,16 @@
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
+    //PPH 10 khusus
+    $query = "INSERT INTO $tmp04 (jns_pajak, brOtcId, tgltrans, tglbr, tglrpsby, tglreal, icabangid_o, nama_cabang, "
+            . " noslip, kodeid, subpost, keterangan1, real1, realisasi, jumlah, COA4, nodivisi, nobbm, nobbk, amount)"
+            . " SELECT 'PPH21' jns_pajak, brOtcId, tgltrans, tglbr, tglrpsby, tglreal, icabangid_o, nama_cabang, "
+            . " noslip, kodeid, subpost, keterangan1, real1, realisasi, pph_rp, '205-02' COA4, nodivisi, nobbm, nobbk, pph_rp "
+            . " from $tmp03  WHERE pajak='Y' AND IFNULL(pph_rp,0)<>0 AND pph_jns='pph10'";
+    mysqli_query($cnit, $query);
+    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
     //PEMBULATAN
     $query = "INSERT INTO $tmp04 (jns_pajak, brOtcId, tgltrans, tglbr, tglrpsby, tglreal, icabangid_o, nama_cabang, "
             . " noslip, kodeid, subpost, keterangan1, real1, realisasi, jumlah, COA4, nodivisi, nobbm, nobbk, amount)"
@@ -224,7 +234,7 @@
         //cocokan COA dari tabel
         
         $query="UPDATE $tmp04 a SET a.COA4=IFNULL((select b.COA4 FROM dbmaster.coa_pajak b WHERE a.jns_pajak=b.jns_pajak),COA4) WHERE "
-                . " a.jns_pajak IN ('PPN', 'PPH23', 'PPH21', 'BULAT')";
+                . " a.jns_pajak IN ('PPN', 'PPH23', 'PPH21', 'BULAT', 'PPH10')";
         mysqli_query($cnit, $query);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
         
@@ -239,7 +249,7 @@
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
         
         //pph dijadikan negatif
-        $query="UPDATE $tmp04 SET jumlah=0-IFNULL(jumlah,0) WHERE jns_pajak IN ('PPH23', 'PPH21') AND IFNULL(jumlah,0) > 0";
+        $query="UPDATE $tmp04 SET jumlah=0-IFNULL(jumlah,0) WHERE jns_pajak IN ('PPH23', 'PPH21', 'PPH10') AND IFNULL(jumlah,0) > 0";
         mysqli_query($cnit, $query);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; } 
         

@@ -72,8 +72,8 @@ if ($pmodule=="incentivelappm") {
     $tampild=mysqli_query($cnms, $query);
     $rowd=mysqli_fetch_array($tampild);
     $pdivprodid=$rowd['divprodid'];
-
-    $filterjenis=" IFNULL(jenis2,'')='PM' ";
+    $filtjnsdiv=$pdivprodid."PM";
+    $filterjenis=" IFNULL(jenis2,'')='$filtjnsdiv'";
 }
 
 

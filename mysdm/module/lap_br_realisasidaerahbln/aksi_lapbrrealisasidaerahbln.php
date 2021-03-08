@@ -60,7 +60,7 @@ $(document).ready(function() {
 </style>
 
 <?php
-    include "config/koneksimysqli_it.php";
+    include "config/koneksimysqli.php";
     include "config/fungsi_combo.php";
     
     $rbtipe=$_POST['rb_rpttipe'];
@@ -154,20 +154,20 @@ $(document).ready(function() {
              DATE_FORMAT(a.tgltrans,'%Y-%m') between '$periode01' and '$periode02' $filterdivprod $filterkode $filtercab $filterdok $fillamp $filca $filvia";
     //echo $query; exit;
     $sql="create table $tmpbudgetreq1 ($query)";
-    mysqli_query($cnit, $sql);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnmy, $sql);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $sql="update $tmpbudgetreq1 set jumlah=jumlah1 where IFNULL(jumlah1,0)<>0";
-    mysqli_query($cnit, $sql);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnmy, $sql);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $sql="select distinct divprodid, region, icabangid, nama_cabang, "
             . "CAST(null AS DECIMAL(20,2)) as DCC, CAST(null AS DECIMAL(20,2)) as DSS, CAST(null AS DECIMAL(20,2)) as TOTAL "
             . " from $tmpbudgetreq1";
     $sql="create table $tmpbudgetreq2 ($sql)";
-    mysqli_query($cnit, $sql);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnmy, $sql);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $n_filed_add="";
     for($xi=1;$xi<=12;$xi++) {
@@ -176,8 +176,8 @@ $(document).ready(function() {
     $n_filed_add .=" ADD COLUMN vtotal_dcc DECIMAL(20,2), ADD COLUMN vtotal_dss DECIMAL(20,2)";
     
     $query = "ALTER TABLE $tmpbudgetreq2 $n_filed_add";
-    mysqli_query($cnit, $query);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     for($xi=1;$xi<=12;$xi++) {
@@ -189,8 +189,8 @@ $(document).ready(function() {
                 . " $tmpbudgetreq1.divprodid=$tmpbudgetreq2.divprodid and "
                 . " $tmpbudgetreq1.icabangid=$tmpbudgetreq2.icabangid and "
                 . " $tmpbudgetreq1.nama_kode like '%DCC%' AND $tmpbudgetreq1.tgltrans='$fbulan')";
-        mysqli_query($cnit, $sql);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        mysqli_query($cnmy, $sql);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         $n_filed_add2 = "dss_".$xi;
         
@@ -198,12 +198,12 @@ $(document).ready(function() {
                 . " $tmpbudgetreq1.divprodid=$tmpbudgetreq2.divprodid and "
                 . " $tmpbudgetreq1.icabangid=$tmpbudgetreq2.icabangid and "
                 . " $tmpbudgetreq1.nama_kode like '%DSS%' AND $tmpbudgetreq1.tgltrans='$fbulan')";
-        mysqli_query($cnit, $sql);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        mysqli_query($cnmy, $sql);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         $query="DELETE FROM $tmpbudgetreq1 WHERE tgltrans='$fbulan'";
-        mysqli_query($cnit, $query);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
     
                     $query ="update DTBUDGETBRRELDAR02_000000056610282019043735 a JOIN (
@@ -215,18 +215,18 @@ $(document).ready(function() {
     
     $query = "UPDATE $tmpbudgetreq2 SET vtotal_dcc=IFNULL(dcc_1,0)+IFNULL(dcc_2,0)+IFNULL(dcc_3,0)+IFNULL(dcc_4,0)+IFNULL(dcc_5,0)+IFNULL(dcc_6,0)+IFNULL(dcc_7,0)+IFNULL(dcc_8,0)+IFNULL(dcc_9,0)+IFNULL(dcc_10,0)+IFNULL(dcc_11,0)+IFNULL(dcc_12,0),"
             . " vtotal_dss=IFNULL(dss_1,0)+IFNULL(dss_2,0)+IFNULL(dss_3,0)+IFNULL(dss_4,0)+IFNULL(dss_5,0)+IFNULL(dss_6,0)+IFNULL(dss_7,0)+IFNULL(dss_8,0)+IFNULL(dss_9,0)+IFNULL(dss_10,0)+IFNULL(dss_11,0)+IFNULL(dss_12,0)";
-    mysqli_query($cnit, $query);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query="UPDATE $tmpbudgetreq2 SET TOTAL=IFNULL(vtotal_dcc,0)+IFNULL(vtotal_dss,0), DCC=vtotal_dcc, DSS=vtotal_dss";
-    mysqli_query($cnit, $query);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
 
     
-    mysqli_query($cnit, "update $tmpbudgetreq2 set region='N' WHERE IFNULL(region,'')=''");
-    mysqli_query($cnit, "update $tmpbudgetreq2 set icabangid='N', nama_cabang='NONE' WHERE IFNULL(icabangid,'')=''");
+    mysqli_query($cnmy, "update $tmpbudgetreq2 set region='N' WHERE IFNULL(region,'')=''");
+    mysqli_query($cnmy, "update $tmpbudgetreq2 set icabangid='N', nama_cabang='NONE' WHERE IFNULL(icabangid,'')=''");
     
     
     $printdate= date("d/m/Y");
@@ -250,7 +250,7 @@ $(document).ready(function() {
     
     $mytabl=trim($tmpbudgetreq1);
     $sql="select TABLE_NAME from information_schema.TABLES where RTRIM(CONCAT('dbtemp.',TABLE_NAME))='$mytabl'";
-    $adatable= mysqli_num_rows(mysqli_query($cnit, $sql));
+    $adatable= mysqli_num_rows(mysqli_query($cnmy, $sql));
     if ($adatable>0) {
         ?>
         <!--<table id='datatable' class='table nowrap table-striped table-bordered' width="100%">-->
@@ -289,7 +289,7 @@ $(document).ready(function() {
                 $pgrand_totdss=0;
                 $pgrand_total=0;
                 
-                $group0 = mysqli_query($cnit, "select distinct divprodid from $tmpbudgetreq2 order by divprodid");
+                $group0 = mysqli_query($cnmy, "select distinct divprodid from $tmpbudgetreq2 order by divprodid");
                 while ($g0=mysqli_fetch_array($group0)){
                     $divisi=$g0['divprodid'];
                     echo "<tr>";
@@ -315,7 +315,7 @@ $(document).ready(function() {
                     $psubdiv_totdss=0;
                     $psubdiv_total=0;
                         
-                    $group1 = mysqli_query($cnit, "select distinct divprodid, region from $tmpbudgetreq2 where divprodid='$g0[divprodid]' order by divprodid, region");
+                    $group1 = mysqli_query($cnmy, "select distinct divprodid, region from $tmpbudgetreq2 where divprodid='$g0[divprodid]' order by divprodid, region");
                     while ($g1=mysqli_fetch_array($group1)){
                         $region="Barat";
                         if ($g1['region']=="T") $region="Timur";
@@ -345,7 +345,7 @@ $(document).ready(function() {
                         $psub_total=0;
                         
                         $no=1;
-                        $group2 = mysqli_query($cnit, "select * from $tmpbudgetreq2 where divprodid='$g0[divprodid]' and region='$g1[region]' order by divprodid, region, nama_cabang");
+                        $group2 = mysqli_query($cnmy, "select * from $tmpbudgetreq2 where divprodid='$g0[divprodid]' and region='$g1[region]' order by divprodid, region, nama_cabang");
                         while ($g2=mysqli_fetch_array($group2)){
                             $jml1=$g2['DCC'];
                             $jml2=$g2['DSS'];
@@ -518,6 +518,6 @@ $(document).ready(function() {
         <?php
     }
 hapusdata:
-    mysqli_query($cnit, "drop table $tmpbudgetreq1");
-    mysqli_query($cnit, "drop table $tmpbudgetreq2");
+    mysqli_query($cnmy, "drop table $tmpbudgetreq1");
+    mysqli_query($cnmy, "drop table $tmpbudgetreq2");
 ?>

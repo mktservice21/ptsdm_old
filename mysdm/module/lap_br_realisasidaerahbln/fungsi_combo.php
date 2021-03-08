@@ -3,33 +3,33 @@
 function cBoxIsiDivisiProd($onclick){
     $onc="";
     if (!empty($onclick)) $onc=" onclick=".$onclick."";
-    include "config/koneksimysqli_it.php";
-    $sql=mysqli_query($cnit, "SELECT DivProdId, nama FROM dbmaster.divprod where br='Y' AND DivProdId Not IN ('OTHER', 'OTC') order by nama");
+    include "config/koneksimysqli_ms.php";
+    $sql=mysqli_query($cnms, "SELECT DivProdId, nama FROM mkt.divprod where br='Y' AND DivProdId Not IN ('OTHER', 'OTC') order by nama");
     while ($Xt=mysqli_fetch_array($sql)){
         echo "<input type=checkbox value='$Xt[DivProdId]' name='chkbox_divisiprod[]' $onc checked> $Xt[DivProdId]<br/>";
     }
 }
 function cBoxIsiKode(){
-    include "config/koneksimysqli_it.php";
-    $filtipe = " and kodeid in (select kodeid from dbmaster.br_kode where (br <> '') and (br<>'N')) ";
+    include "config/koneksimysqli.php";
+    $filtipe = " and kodeid in (select kodeid from hrd.br_kode where (br <> '') and (br<>'N')) ";
     
-    $sql=mysqli_query($cnit, "select kodeid,nama,divprodid from dbmaster.br_kode WHERE 1=1 $filtipe order by nama");
+    $sql=mysqli_query($cnmy, "select kodeid,nama,divprodid from hrd.br_kode WHERE 1=1 $filtipe order by nama");
     while ($Xt=mysqli_fetch_array($sql)){
         echo "<input type=checkbox value='$Xt[kodeid]' name=chkbox_kode[] checked> $Xt[kodeid] - $Xt[nama]<br/>";
     }
 }
 
 function cBoxIsiCabang(){
-    include "config/koneksimysqli_it.php";
-    $sql=mysqli_query($cnit, "SELECT distinct iCabangId, nama from dbmaster.icabang order by nama");
+    include "config/koneksimysqli_ms.php";
+    $sql=mysqli_query($cnms, "SELECT distinct iCabangId, nama from mkt.icabang order by nama");
     while ($Xt=mysqli_fetch_array($sql)){
         echo "<input type=checkbox value='$Xt[iCabangId]' name=chkbox_cabang[] checked> $Xt[nama]<br/>";
     }
 }
 
 function cBoxIsiCabangDaerah(){
-    include "config/koneksimysqli_it.php";
-    $sql=mysqli_query($cnit, "SELECT distinct idcabang, nama from MKT.cbgytd order by nama");
+    include "config/koneksimysqli_ms.php";
+    $sql=mysqli_query($cnms, "SELECT distinct idcabang, nama from ms.cbgytd order by nama");
     while ($Xt=mysqli_fetch_array($sql)){
         echo "<input type=checkbox value='$Xt[idcabang]' name=chkbox_cabangdaerah[] checked> $Xt[nama]<br/>";
     }

@@ -1,4 +1,4 @@
-<?PHP //include "config/cek_akses_modul.php"; ?>
+<?PHP include "config/cek_akses_modul.php"; ?>
 
 <div class="">
 
@@ -48,7 +48,7 @@
                             <div class='col-md-12 col-sm-12 col-xs-12'>
                                 <h2>
                                     <button type='button' class='btn btn-success' onclick="disp_confirm('')">Preview</button>
-                                    <button type='button' class='btn btn-danger' onclick="disp_confirm('excel')">Excel</button>
+                                    <span hidden><button type='button' class='btn btn-danger' onclick="disp_confirm('excel')">Excel</button></span>
                                     <a class='btn btn-default' href="<?PHP echo "?module=home"; ?>">Home</a>
                                 </h2>
                                 <div class='clearfix'></div>

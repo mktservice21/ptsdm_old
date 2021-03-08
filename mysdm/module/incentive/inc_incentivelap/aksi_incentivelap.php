@@ -168,7 +168,7 @@ $query = "DROP TEMPORARY TABLE $tmp02";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 //cari data sales
-$query = "select b.region, a.icabangid, b.nama as nama_cabang, sum(a.value_sales) as sales, CAST(0 as DECIMAL(20,2)) as incentive  
+$query = "select b.region, a.icabangid, b.nama as nama_cabang, sum(value_target) as value_target, sum(a.value_sales) as sales, CAST(0 as DECIMAL(20,2)) as incentive  
     from sls.sales as a JOIN sls.icabang as b on a.icabangid=b.icabangid 
     WHERE a.bulan between '$pbln1' AND '$pbln2' ";
 if (!empty($pregion)) {
@@ -286,9 +286,10 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
         <thead class="header" id="myHeader">
             <tr>
                 <th>&nbsp;</th>
-                <th>Cabang Id</th>
                 <th>Cabang</th>
                 <th>Sales</th>
+                <th>Target</th>
+                <th>Ach</th>
                 <th>Incentive</th>
                 <th>Ratio</th>
             </tr>
@@ -297,6 +298,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
             <?PHP
             $pidno=1;
             $ptotslsregion=0;
+            $ptottgtregion=0;
             $ptotincregion=0;
             $query = "select distinct region from $tmp03 Order by region";
             $tampil0= mysqli_query($cnms, $query);
@@ -306,18 +308,20 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                 if ($nregion=="T") $nnmregion="Timur";
 
                 echo "<tr>";
-                echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap><b>$nnmregion</b></td>";
                 echo "<td nowrap>&nbsp;</td>";
+                echo "<td nowrap align='right'>&nbsp;</td>";
+                echo "<td nowrap align='right'>&nbsp;</td>";
                 echo "<td nowrap align='right'>&nbsp;</td>";
                 echo "<td nowrap align='right'>&nbsp;</td>";
                 echo "<td nowrap align='right'>&nbsp;</td>";
                 echo "</tr>";
 
                 $ptotslscab=0;
+                $ptottgtcab=0;
                 $ptotinccab=0;
 
-                $query = "select icabangid, nama_cabang, SUM(sales) as sales, sum(incentive) as incentive FROM $tmp02 WHERE region='$nregion' ";
+                $query = "select icabangid, nama_cabang, SUM(sales) as sales, sum(value_target) as value_target, sum(incentive) as incentive FROM $tmp02 WHERE region='$nregion' ";
                 $query .=" GROUP BY 1,2";
                 $query .=" ORDER BY region, nama_cabang";
                 $tampil= mysqli_query($cnms, $query);
@@ -325,20 +329,27 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     $nicabangid=$row['icabangid'];
                     $nicabangnm=$row['nama_cabang'];
                     $nsales=$row['sales'];
+                    $ntarget=$row['value_target'];
                     $nincentive=$row['incentive'];
 
                     $ptotslsregion=(DOUBLE)$ptotslsregion+(DOUBLE)$nsales;
+                    $ptottgtregion=(DOUBLE)$ptottgtregion+(DOUBLE)$ntarget;
                     $ptotincregion=(DOUBLE)$ptotincregion+(DOUBLE)$nincentive;
 
                     $ptotslscab=(DOUBLE)$ptotslscab+(DOUBLE)$nsales;
+                    $ptottgtcab=(DOUBLE)$ptottgtcab+(DOUBLE)$ntarget;
                     $ptotinccab=(DOUBLE)$ptotinccab+(DOUBLE)$nincentive;
 
                     $nratio=0;
                     if ($nsales<>"0") {
                         $nratio=ROUND($nincentive/$nsales*100,2);
                     }
-                    
+
+                    $pach=0;
+                    if ($ntarget<>"0") $pach=ROUND($nsales/$ntarget*100,2);
+
                     $nsales=number_format($nsales,0,",",",");
+                    $ntarget=number_format($ntarget,0,",",",");
                     $nincentive=number_format($nincentive,0,",",",");
 
                     $pnamefield=$nicabangid;
@@ -347,17 +358,18 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 
 
                     echo "<tr>";
-                    echo "<td nowrap>$pbtnshow</td>";
-                    echo "<td nowrap>$nicabangid</td>";
+                    echo "<td nowrap>$pbtnshow</td>";;
                     echo "<td nowrap>$nicabangnm</td>";
                     echo "<td nowrap align='right'>$nsales</td>";
+                    echo "<td nowrap align='right'>$ntarget</td>";
+                    echo "<td nowrap align='right'>$pach</td>";
                     echo "<td nowrap align='right'>$nincentive</td>";
                     echo "<td nowrap align='right'>$nratio</td>";
                     echo "</tr>";
 
                     
                     echo "<tr id='$pnamefield' style='display:none;'>";
-                    echo "<td colspan='6'>";
+                    echo "<td colspan='7'>";
 
                         echo "<table id='mydatatable2' class='table table-striped table-bordered tbl2' width='100%' border='1px solid black'>";
                         echo "<tr>";
@@ -423,14 +435,19 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     $nratio=ROUND($ptotinccab/$ptotslscab*100,2);
                 }
 
+                $pach=0;
+                if ($ptottgtcab<>"0") $pach=ROUND($ptotslscab/$ptottgtcab*100,2);
+
                 $ptotslscab=number_format($ptotslscab,0,",",",");
+                $ptottgtcab=number_format($ptottgtcab,0,",",",");
                 $ptotinccab=number_format($ptotinccab,0,",",",");
 
                 echo "<tr style='font-weight:bold;'>";
                 echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap>Tota $nnmregion : </td>";
-                echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap align='right'>$ptotslscab</td>";
+                echo "<td nowrap align='right'>$ptottgtcab</td>";
+                echo "<td nowrap align='right'>$pach</td>";
                 echo "<td nowrap align='right'>$ptotinccab</td>";
                 echo "<td nowrap align='right'>$nratio</td>";
                 echo "</tr>";
@@ -445,14 +462,21 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     $nratio=ROUND($ptotincregion/$ptotslsregion*100,2);
                 }
 
+                $pach=0;
+                if ($ptottgtregion<>"0") $pach=ROUND($ptotslsregion/$ptottgtregion*100,2);
+
                 $ptotslsregion=number_format($ptotslsregion,0,",",",");
+                $ptottgtregion=number_format($ptottgtregion,0,",",",");
                 $ptotincregion=number_format($ptotincregion,0,",",",");
+
+                
 
                 echo "<tr style='font-weight:bold;'>";
                 echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap>Grand Total : </td>";
-                echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap align='right'>$ptotslsregion</td>";
+                echo "<td nowrap align='right'>$ptottgtregion</td>";
+                echo "<td nowrap align='right'>$pach</td>";
                 echo "<td nowrap align='right'>$ptotincregion</td>";
                 echo "<td nowrap align='right'>$nratio</td>";
                 echo "</tr>";
@@ -512,9 +536,12 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     $nsales=number_format($nsales,0,",",",");
                     $nincentive=number_format($nincentive,0,",",",");
 
+                    $pnamefield=$nkryid;
+                    $pnamebtnfld="btn".$nkryid;
+                    $pbtnshow = "<input type='button' id='$pnamebtnfld' name='$pnamebtnfld' class='btn btn-success btn-xs' value=' + ' onClick=\"showhideRow('$pnamefield')\">";
 
                     echo "<tr>";
-                    echo "<td nowrap>$no</td>";
+                    echo "<td nowrap>$pbtnshow</td>";
                     echo "<td nowrap>$nkryid</td>";
                     echo "<td nowrap>$nkrynm</td>";
                     //echo "<td nowrap align='right'>$nsales</td>";
@@ -522,10 +549,92 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     //echo "<td nowrap align='right'>$nratio</td>";
                     echo "</tr>";
 
+
+                    echo "<tr id='$pnamefield' style='display:none;'>";
+                    echo "<td class='divnone'>$nkryid</td>";
+                    echo "<td class='divnone'>$nkrynm</td>";
+                    echo "<td class='divnone'></td>";
+                    echo "<td class='divnone'></td>";
+                    echo "<td colspan='4'>";
+
+                        echo "<table id='mydatatable2' class='table table-striped table-bordered tbl2' width='100%' border='1px solid black'>";
+                        echo "<tr>";
+                        echo "<th>&nbsp;</th>";
+                        echo "<th>Jenis</th>";
+                        echo "<th>Sales</th>";
+                        echo "<th>Target</th>";
+                        echo "<th>Ach</th>";
+                        echo "<th>Incentive</th>";
+                        echo "</tr>";
+
+                        $precno=1;
+                        $ptotsaleskry=0;
+                        $ptotslskry_=0;
+                        $ptottgtkry_=0;
+                        $ptotinckry_=0;
+                        $ptotinckry=0;
+
+                        $query = "select * FROM $tmp03 WHERE sts='$njabatan' AND karyawanid='$nkryid' ";
+                        $query .=" ORDER BY jenis";
+                        $tampil2 = mysqli_query($cnms, $query);
+                        while ($row2= mysqli_fetch_array($tampil2)) {
+
+                            $pjenis=$row2['jenis'];
+                            $psales=$row2['sales'];
+                            $ptarget=$row2['target'];
+                            $pach=$row2['ach'];
+                            $pincentive=$row2['incentive'];
+
+                            $ptotslskry_=(DOUBLE)$ptotslskry_+(DOUBLE)$psales;
+                            $ptottgtkry_=(DOUBLE)$ptottgtkry_+(DOUBLE)$ptarget;
+                            $ptotinckry_=(DOUBLE)$ptotinckry_+(DOUBLE)$pincentive;
+                            $ptotinckry=(DOUBLE)$ptotinckry+(DOUBLE)$pincentive;
+
+                            $psales=number_format($psales,0,",",",");
+                            $ptarget=number_format($ptarget,0,",",",");
+                            $pincentive=number_format($pincentive,0,",",",");
+                            
+
+                            echo "<tr>";
+                            echo "<td nowrap>$precno</td>";
+                            echo "<td nowrap>$pjenis</td>";
+                            echo "<td nowrap align='right'>$psales</td>";
+                            echo "<td nowrap align='right'>$ptarget</td>";
+                            echo "<td nowrap align='right'>$pach</td>";
+                            echo "<td nowrap align='right'>$pincentive</td>";
+                            echo "</tr>";
+
+                            $precno++;
+                            
+                        }
+
+                        $pach=0;
+                        if ($ptottgtkry_<>"0") $pach=ROUND($ptotslskry_/$ptottgtkry_*100,2);
+
+                        $ptotslskry_=number_format($ptotslskry_,0,",",",");
+                        $ptottgtkry_=number_format($ptottgtkry_,0,",",",");
+                        $ptotinckry_=number_format($ptotinckry_,0,",",",");
+                        
+                        echo "<tr style='font-weight:bold;'>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>Total : </td>";
+                        echo "<td nowrap align='right'>$ptotslskry_</td>";
+                        echo "<td nowrap align='right'>$ptottgtkry_</td>";
+                        echo "<td nowrap align='right'>$pach</td>";
+                        echo "<td nowrap align='right'>$ptotinckry_</td>";
+                        echo "</tr>";
+
+                        echo "</table>";
+
+                    echo "</td>";
+                    echo "</tr>";
+
+
+
                     $no++;
 
                 }
-
+                
                 $nratio=0;
                 if ($ptotslskry<>"0") {
                     $nratio=ROUND($ptotinckry/$ptotslskry*100,2);
@@ -542,7 +651,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                 echo "<td nowrap align='right'>$ptotinckry</td>";
                 //echo "<td nowrap align='right'>$nratio</td>";
                 echo "</tr>";
-
+                
                 ?>
             </tbody>
         </table>
@@ -605,7 +714,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
         </tbody>
     </table>
 
-    
+    <?PHP if ($ppilihrpt!="excel") { ?>
     <div class='col-md-12 col-sm-12 col-xs-12'>
         <div class='x_panel'>
             <?PHP
@@ -652,6 +761,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 
         </div>
     </div>
+    <?PHP } ?>
 
     <br/><br/><br/><br/>
     <br/><br/><br/><br/>

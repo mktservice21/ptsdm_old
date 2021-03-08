@@ -1,4 +1,4 @@
-<?PHP include "config/cek_akses_modul.php"; ?>
+<?PHP //include "config/cek_akses_modul.php"; ?>
 
 <div class="">
 

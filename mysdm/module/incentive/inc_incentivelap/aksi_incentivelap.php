@@ -253,7 +253,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     
                     echo "<tr><td colspan=5 width='150px'>view date : $pviewdate</td></tr>";
                     if ($pstsapv=="approve") {
-                        echo "<tr><td colspan=5 width='150px'>Status : sudah approved</td></tr>";
+                        echo "<tr><td colspan=5 width='150px'>Status : sudah approve</td></tr>";
                     }else{
                         echo "<tr><td colspan=5 width='150px'>Status : belum approve</td></tr>";
                     }
@@ -265,7 +265,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     echo "<tr><td width='150px'><i>view date : $pviewdate</i></td></tr>";
                     echo "<tr><td width='150px'>Notes : Untuk approve silakan scroll ke paling bawah...</td></tr>";
                     if ($pstsapv=="approve") {
-                        echo "<tr><td width='150px'><i>Status : sudah approved</i></td></tr>";
+                        echo "<tr><td width='150px'><i>Status : sudah approve</i></td></tr>";
                     }else{
                         echo "<tr><td width='150px'><i>Status : belum approve</i></td></tr>";
                     }

@@ -132,7 +132,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 //mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 $query = "select 'MR' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
-    from ms.incentive_mr where bulan between '$pbln1' AND '$pbln2' AND
+    from ms.incentive_mr where bulan between '$pbln1' AND '$pbln2' AND IFNULL(jenis2,'')='GSM' AND
     karyawanid IN (select distinct IFNULL(karyawanid,'') FROM $tmp01 WHERE sts='MR')";
 $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);
@@ -140,13 +140,13 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
 $query = "INSERT INTO $tmp02 (sts, karyawanid, jenis, sales, `target`, ach, incentive)
     select 'AM' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
-    from ms.incentive_am where bulan between '$pbln1' AND '$pbln2' AND
+    from ms.incentive_am where bulan between '$pbln1' AND '$pbln2' AND IFNULL(jenis2,'')='GSM' AND
     karyawanid IN (select distinct IFNULL(karyawanid,'') FROM $tmp01 WHERE sts='AM')";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 $query = "INSERT INTO $tmp02 (sts, karyawanid, jenis, sales, `target`, ach, incentive)
     select 'DM' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
-    from ms.incentive_dm where bulan between '$pbln1' AND '$pbln2' AND
+    from ms.incentive_dm where bulan between '$pbln1' AND '$pbln2' AND IFNULL(jenis2,'')='GSM' AND
     karyawanid IN (select distinct IFNULL(karyawanid,'') FROM $tmp01 WHERE sts='DM')";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 

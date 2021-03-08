@@ -39,6 +39,8 @@ $pnamaregion="All";
 if ($pregion=="B") $pnamaregion="Barat";
 elseif ($pregion=="T") $pnamaregion="Timur";
 
+$pplblnapv = date("Y-m-01", strtotime($tgl01));
+$pplbulan = date("Y-m", strtotime($tgl01));
 $pbln1 = date("Y-m-01", strtotime($tgl01));
 $pbln2 = date("Y-m-t", strtotime($tgl01));
 $pbulan = date("F Y", strtotime($tgl01));
@@ -51,6 +53,18 @@ $tmp02 ="dbtemp.tmprptinclp02_".$puser."_$now$milliseconds";
 $tmp03 ="dbtemp.tmprptinclp03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
+
+$query = "select karyawanid, `status` as sts, sys_time from ms.approve_insentif WHERE karyawanid='$pmyidcard' AND LEFT(bulan,7)='$pplbulan'";
+$tampilp=mysqli_query($cnms, $query);
+$rowp=mysqli_fetch_array($tampilp);
+$pstsapv=$rowp['sts'];
+$ptglapv=$rowp['sys_time'];
+if ($pstsapv=="approve") {
+}else{
+    $pstsapv="";
+    $ptglapv="";
+}
+
 
 $query = "CREATE TEMPORARY TABLE $tmp01 (icabangid VARCHAR(10), karyawanid VARCHAR(10), sts VARCHAR(5))";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
@@ -238,6 +252,11 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     echo "<tr><td colspan=5 width='150px'><b>Region : $pnamaregion</b></td></tr>";
                     
                     echo "<tr><td colspan=5 width='150px'>view date : $pviewdate</td></tr>";
+                    if ($pstsapv=="approve") {
+                        echo "<tr><td colspan=5 width='150px'>Status : sudah approved</td></tr>";
+                    }else{
+                        echo "<tr><td colspan=5 width='150px'>Status : belum approve</td></tr>";
+                    }
                 }else{
                     echo "<tr><td width='150px'><b><h3>Laporan Incentive</h3></b></td></tr>";
                     echo "<tr><td width='150px'><b>Bulan : $pbulan</b></td></tr>";
@@ -245,6 +264,11 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     
                     echo "<tr><td width='150px'><i>view date : $pviewdate</i></td></tr>";
                     echo "<tr><td width='150px'>Notes : Untuk approve silakan scroll ke paling bawah...</td></tr>";
+                    if ($pstsapv=="approve") {
+                        echo "<tr><td width='150px'><i>Status : sudah approved</i></td></tr>";
+                    }else{
+                        echo "<tr><td width='150px'><i>Status : belum approve</i></td></tr>";
+                    }
                 }
                 ?>
             </table>
@@ -590,7 +614,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                 action="<?PHP echo "$aksi?module=$pmodule&act=input&idmenu=$pidmenu"; ?>" 
                 enctype='multipart/form-data' target="_blank">
 
-                <table>
+                <table id='mydatatable_' class='table-bordered' border="1px solid black">
                     <tr>
                         <td nowrap>Bulan </td>
                         <td nowrap> : </td>
@@ -601,8 +625,25 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                         <td nowrap>Region </td>
                         <td nowrap> : </td>
                         <td>
-                            <input type='text' id='e_region' name='e_region' required='required' class='form-control' value='<?PHP echo $pregion; ?>' Readonly>
+                            <input type='hidden' id='e_region' name='e_region' required='required' class='form-control' value='<?PHP echo $pregion; ?>' Readonly>
+                            <input type='text' id='e_nmregion' name='e_nmregion' required='required' class='form-control' value='<?PHP echo $pnamaregion; ?>' Readonly>
                         </td>
+                    </tr>
+                    <tr>
+                        
+                            <?PHP
+                            if ($pstsapv=="approve") {
+                                echo "<td>approved</td><td>&nbsp;</td>";
+                                echo "<td>$ptglapv</td>";
+                            }else{
+                                echo "<td>&nbsp;</td><td>&nbsp;</td>";
+                                echo "<td>
+                                    <input type='button' id='btnsimpan' name='btnsimpan' class='btn btn-warning' value='Approve' onClick=\"SimpanApproveInc('$pplblnapv', '$pmyidcard', '$pregion')\">
+                                    <label id='lblstatus'></label>
+                                    </td>";
+                            }
+                            ?>
+                        
                     </tr>
 
                 </table>
@@ -722,14 +763,14 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
             .divnone {
                 display: none;
             }
-            #mydatatable1, #mydatatable2, #mydatatable3, #mydatatable4, #mydatatable5, #mydatatable6 {
+            #mydatatable1, #mydatatable2, #mydatatable3, #mydatatable4, #mydatatable5, #mydatatable6, #mydatatable_ {
                 color:#000;
                 font-family: "Arial";
             }
             #mydatatable1 th, #mydatatable2 th, #mydatatable3 th, #mydatatable4 th, #mydatatable5 th, #mydatatable6 th {
                 font-size: 12px;
             }
-            #mydatatable1 td, #mydatatable2 td, #mydatatable3 td, #mydatatable4 td, #mydatatable5 td, #mydatatable6 td { 
+            #mydatatable1 td, #mydatatable2 td, #mydatatable3 td, #mydatatable4 td, #mydatatable5 td, #mydatatable6 td, #mydatatable_ td { 
                 font-size: 14px;
             }
 
@@ -774,6 +815,54 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
         }
         // END SCROLL
     
+        function SimpanApproveInc(itgl, ikaryawan, iregion) {
+            if (itgl=="") {
+                alert("tidak ada data yang akan diapprove...");
+                return false;
+            }
+            var pText_="Apakah akan melakukan approve...?";
+            ok_ = 1;
+            if (ok_) {
+                var r=confirm(pText_)
+                if (r==true) {
+                    
+                    $.ajax({
+                        type:"post",
+                        url:"module/incentive/inc_incentivelap/simpanapproveinc.php?module=simpandataapprove",
+                        data:"ubulan="+itgl+"&ukaryawan="+ikaryawan+"&uregion="+iregion,
+                        beforeSend: function () {
+                            //$('select[name=cb_karyawan]').attr('disabled',true)
+                            //$('select[name=cb_karyawan]').empty();
+                        },
+                        success:function(data){
+                            if (data.trim()=="berhasil") {
+                                alert("berhasil approve...");
+                                btnsimpan.style.display = "none";
+                                document.getElementById('lblstatus').innerHTML = 'berhasil approve';
+                            }else{
+                                alert(data);
+                                btnsimpan.style.display = "block";
+                                document.getElementById('lblstatus').innerHTML = '';
+                            }
+                        },
+                        complete: function () {
+                            //$('select[name=cb_karyawan]').attr('disabled',false)
+                            //$('select[name=cb_karyawan] option[value="loading"]').text('');
+                        },
+                        error: function () {
+                            //$('select[name=cb_karyawan]').attr('disabled',false)
+                            alert('Something wrong. Try Again!')            
+                        }
+                    });
+
+                }
+            } else {
+                //document.write("You pressed Cancel!")
+                return 0;
+            }
+
+        }
+
         var table13 = $('#mydatatable3, #mydatatable4, #mydatatable5').DataTable({
             fixedHeader: true,
             "ordering": false,

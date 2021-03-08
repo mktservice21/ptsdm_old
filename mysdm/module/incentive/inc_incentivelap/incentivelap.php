@@ -46,7 +46,7 @@
                 <script type="text/javascript">
                     $(document).ready(function() {
                         $('#cbln01').on('change dp.change', function(e){
-                            showDataKaryawan();
+                            //showDataKaryawan();
                         });
                     });
                 </script>

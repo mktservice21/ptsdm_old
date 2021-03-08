@@ -1,8 +1,15 @@
-<?PHP include "config/cek_akses_modul.php"; ?>
+<?PHP 
+    include "config/cek_akses_modul.php";
+    $pmodule="";
+    if (isset($_GET['module'])) $pmodule=$_GET['module'];
+
+    $plapket="GSM";
+    if ($pmodule=="incentivelappm") $plapket="PM";
+?>
 
 <div class="">
 
-    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Incentive</h3></div></div><div class="clearfix"></div>
+    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Incentive <?PHP echo $plapket; ?> </h3></div></div><div class="clearfix"></div>
     <!--row-->
     <div class="row">
         <?php
@@ -11,8 +18,6 @@
         $pidjabatan=$_SESSION['JABATANID'];
         $pidgroup=$_SESSION['GROUP'];
 
-        $pmodule="";
-        if (isset($_GET['module'])) $pmodule=$_GET['module'];
         
         
         $aksi="eksekusi3.php";

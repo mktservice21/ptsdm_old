@@ -54,11 +54,6 @@ $pbln1 = date("Y-m-01", strtotime($tgl01));
 $pbln2 = date("Y-m-t", strtotime($tgl01));
 $pbulan = date("F Y", strtotime($tgl01));
 
-$plapketerangan="GSM";
-if ($pmodule=="incentivelappm") {
-    $plapketerangan="PM";
-}
-
 
 $milliseconds = round(microtime(true) * 1000);
 $now=date("mdYhis");
@@ -67,6 +62,17 @@ $tmp02 ="dbtemp.tmprptinclp02_".$puser."_$now$milliseconds";
 $tmp03 ="dbtemp.tmprptinclp03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
+
+$pdivprodid="";
+$plapketerangan="GSM";
+if ($pmodule=="incentivelappm") {
+    $plapketerangan="PM";
+    $query = "select divprodid from ms.penempatan_pm WHERE karyawanid='$pmyidcard'";
+    $tampild=mysqli_query($cnms, $query);
+    $rowd=mysqli_fetch_array($tampild);
+    $pdivprodid=$rowd['divprodid'];
+}
+
 
 $query = "select karyawanid, `status` as sts, sys_time from ms.approve_insentif WHERE karyawanid='$pmyidcard' AND LEFT(bulan,7)='$pplbulan'";
 $tampilp=mysqli_query($cnms, $query);
@@ -585,7 +591,6 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                         $ptotslskry_=0;
                         $ptottgtkry_=0;
                         $ptotinckry_=0;
-                        $ptotinckry=0;
 
                         $query = "select * FROM $tmp03 WHERE sts='$njabatan' AND karyawanid='$nkryid' ";
                         $query .=" ORDER BY jenis";
@@ -601,7 +606,6 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                             $ptotslskry_=(DOUBLE)$ptotslskry_+(DOUBLE)$psales;
                             $ptottgtkry_=(DOUBLE)$ptottgtkry_+(DOUBLE)$ptarget;
                             $ptotinckry_=(DOUBLE)$ptotinckry_+(DOUBLE)$pincentive;
-                            $ptotinckry=(DOUBLE)$ptotinckry+(DOUBLE)$pincentive;
 
                             $psales=number_format($psales,0,",",",");
                             $ptarget=number_format($ptarget,0,",",",");

@@ -65,12 +65,15 @@ include("config/koneksimysqli_ms.php");
 
 $pdivprodid="";
 $plapketerangan="GSM";
+$filterjenis=" IFNULL(jenis2,'')='GSM' ";
 if ($pmodule=="incentivelappm") {
     $plapketerangan="PM";
     $query = "select divprodid from ms.penempatan_pm WHERE karyawanid='$pmyidcard'";
     $tampild=mysqli_query($cnms, $query);
     $rowd=mysqli_fetch_array($tampild);
     $pdivprodid=$rowd['divprodid'];
+
+    $filterjenis=" IFNULL(jenis2,'')='PM' ";
 }
 
 
@@ -152,7 +155,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 //mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 $query = "select 'MR' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
-    from ms.incentive_mr where bulan between '$pbln1' AND '$pbln2' AND IFNULL(jenis2,'')='GSM' AND
+    from ms.incentive_mr where bulan between '$pbln1' AND '$pbln2' AND $filterjenis AND
     karyawanid IN (select distinct IFNULL(karyawanid,'') FROM $tmp01 WHERE sts='MR')";
 $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);
@@ -160,13 +163,13 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
 $query = "INSERT INTO $tmp02 (sts, karyawanid, jenis, sales, `target`, ach, incentive)
     select 'AM' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
-    from ms.incentive_am where bulan between '$pbln1' AND '$pbln2' AND IFNULL(jenis2,'')='GSM' AND
+    from ms.incentive_am where bulan between '$pbln1' AND '$pbln2' AND $filterjenis AND
     karyawanid IN (select distinct IFNULL(karyawanid,'') FROM $tmp01 WHERE sts='AM')";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 $query = "INSERT INTO $tmp02 (sts, karyawanid, jenis, sales, `target`, ach, incentive)
     select 'DM' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
-    from ms.incentive_dm where bulan between '$pbln1' AND '$pbln2' AND IFNULL(jenis2,'')='GSM' AND
+    from ms.incentive_dm where bulan between '$pbln1' AND '$pbln2' AND $filterjenis AND
     karyawanid IN (select distinct IFNULL(karyawanid,'') FROM $tmp01 WHERE sts='DM')";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 

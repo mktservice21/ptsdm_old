@@ -354,7 +354,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 
                     $pnamefield=$nicabangid;
                     $pnamebtnfld="btn".$nicabangid;
-                    $pbtnshow = "<input type='button' id='$pnamebtnfld' name='$pnamebtnfld' class='btn btn-success btn-xs' value=' + ' onClick=\"showhideRow('$pnamefield')\">";
+                    $pbtnshow = "<input type='button' id='$pnamebtnfld' name='$pnamebtnfld' class='btn btn-success btn-xs' value='detail' onClick=\"showhideRow('$pnamefield')\">";
 
 
                     echo "<tr>";
@@ -503,8 +503,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
         <table id='<?PHP echo $pnamatabel; ?>' class='table table-striped table-bordered' width="100%" border="1px solid black">
             <thead class="header" id="myHeader">
                 <tr>
-                    <th>No</th>
-                    <th>Karyawan Id</th>
+                    <th>&nbsp;</th>
                     <th>Nama</th>
                     <th>Incentive</th>
                 </tr>
@@ -538,11 +537,11 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 
                     $pnamefield=$nkryid;
                     $pnamebtnfld="btn".$nkryid;
-                    $pbtnshow = "<input type='button' id='$pnamebtnfld' name='$pnamebtnfld' class='btn btn-success btn-xs' value=' + ' onClick=\"showhideRow('$pnamefield')\">";
+                    $pbtnshow = "<input type='button' id='$pnamebtnfld' name='$pnamebtnfld' class='btn btn-success btn-xs' value='detail' onClick=\"showhideRow('$pnamefield')\">";
 
                     echo "<tr>";
                     echo "<td nowrap>$pbtnshow</td>";
-                    echo "<td nowrap>$nkryid</td>";
+                    //echo "<td nowrap>$nkryid</td>";
                     echo "<td nowrap>$nkrynm</td>";
                     //echo "<td nowrap align='right'>$nsales</td>";
                     echo "<td nowrap align='right'>$nincentive</td>";
@@ -551,15 +550,15 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 
 
                     echo "<tr id='$pnamefield' style='display:none;'>";
-                    echo "<td class='divnone'>$nkryid</td>";
+                    //echo "<td class='divnone'>$nkryid</td>";
                     echo "<td class='divnone'>$nkrynm</td>";
                     echo "<td class='divnone'></td>";
                     echo "<td class='divnone'></td>";
-                    echo "<td colspan='4'>";
+                    echo "<td colspan='3'>";
 
                         echo "<table id='mydatatable2' class='table table-striped table-bordered tbl2' width='100%' border='1px solid black'>";
                         echo "<tr>";
-                        echo "<th>&nbsp;</th>";
+                        echo "<th>No</th>";
                         echo "<th>Jenis</th>";
                         echo "<th>Sales</th>";
                         echo "<th>Target</th>";
@@ -644,7 +643,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                 $ptotinckry=number_format($ptotinckry,0,",",",");
 
                 echo "<tr style='font-weight:bold;'>";
-                echo "<td nowrap>&nbsp;</td>";
+                //echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap>Total $njabatan : </td>";
                 echo "<td nowrap>&nbsp;</td>";
                 //echo "<td nowrap align='right'>$ptotslskry</td>";
@@ -981,8 +980,8 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
             "order": [[ 0, "asc" ]],
             "columnDefs": [
                 { "visible": false },
-                { className: "text-right", "targets": [3] },//right
-                { className: "text-nowrap", "targets": [0,1,2,3] }//nowrap
+                { className: "text-right", "targets": [2] },//right
+                { className: "text-nowrap", "targets": [0,1,2] }//nowrap
 
             ],
             bFilter: true, bInfo: true, "bLengthChange": false, "bLengthChange": true,
@@ -999,10 +998,10 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
         function showhideRow(rowId) {
             if (document.getElementById(rowId).style.display=="none") {
                 document.getElementById(rowId).style.display = "";
-                document.getElementById('btn'+rowId).value="  -  ";
+                document.getElementById('btn'+rowId).value="  ---  ";
             }else{
                 document.getElementById(rowId).style.display = "none";
-                document.getElementById('btn'+rowId).value=" + ";
+                document.getElementById('btn'+rowId).value="detail";
             }
         }    
 

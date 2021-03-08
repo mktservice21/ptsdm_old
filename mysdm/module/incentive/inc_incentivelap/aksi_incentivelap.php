@@ -35,6 +35,15 @@ $pviewdate=date("d/m/Y H:i:s");
 
 $tgl01=$_POST['bulan'];
 $pregion=$_POST['cb_region'];
+
+if (empty($pregion) AND ($pmyidcard=="0000000158" OR $pmyidcard=="0000000159")) {
+    $pmodule="incentivelap";
+
+    if ($pmyidcard=="0000000158") $pregion="B";
+    elseif ($pmyidcard=="0000000159") $pregion="T";
+    
+}
+
 $pnamaregion="All";
 if ($pregion=="B") $pnamaregion="Barat";
 elseif ($pregion=="T") $pnamaregion="Timur";
@@ -44,6 +53,11 @@ $pplbulan = date("Y-m", strtotime($tgl01));
 $pbln1 = date("Y-m-01", strtotime($tgl01));
 $pbln2 = date("Y-m-t", strtotime($tgl01));
 $pbulan = date("F Y", strtotime($tgl01));
+
+$plapketerangan="GSM";
+if ($pmodule=="incentivelappm") {
+    $plapketerangan="PM";
+}
 
 
 $milliseconds = round(microtime(true) * 1000);
@@ -247,7 +261,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                 <?PHP
                 
                 if ($ppilihrpt=="excel") {
-                    echo "<tr><td colspan=5 width='150px'><b>Laporan Incentive</b></td></tr>";
+                    echo "<tr><td colspan=5 width='150px'><b>Laporan Incentive $plapketerangan</b></td></tr>";
                     echo "<tr><td colspan=5 width='150px'><b>Bulan : $pbulan</b></td></tr>";
                     echo "<tr><td colspan=5 width='150px'><b>Region : $pnamaregion</b></td></tr>";
                     
@@ -258,7 +272,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                         echo "<tr><td colspan=5 width='150px'>Status : belum approve</td></tr>";
                     }
                 }else{
-                    echo "<tr><td width='150px'><b><h3>Laporan Incentive</h3></b></td></tr>";
+                    echo "<tr><td width='150px'><b><h3>Laporan Incentive $plapketerangan</h3></b></td></tr>";
                     echo "<tr><td width='150px'><b>Bulan : $pbulan</b></td></tr>";
                     echo "<tr><td width='150px'><b>Region : $pnamaregion</b></td></tr>";
                     

@@ -10,6 +10,10 @@
         $pidkaryawan=$_SESSION['IDCARD'];
         $pidjabatan=$_SESSION['JABATANID'];
         $pidgroup=$_SESSION['GROUP'];
+
+        $pmodule="";
+        if (isset($_GET['module'])) $pmodule=$_GET['module'];
+        
         
         $aksi="eksekusi3.php";
         switch($_GET['act']){
@@ -80,14 +84,20 @@
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <select class='form-control' name='cb_region' id='cb_region' onchange="">
                                                     <?PHP
-                                                    if ($pidkaryawan=="0000000158") {
-                                                        echo "<option value='B' selected>Barat</option>";
-                                                    }elseif ($pidkaryawan=="0000000159") {
-                                                        echo "<option value='T' selected>Timur</option>";
-                                                    }else{
+                                                    if ($pmodule=="incentivelappm") {
                                                         echo "<option value='' selected>All</option>";
                                                         echo "<option value='B'>Barat</option>";
                                                         echo "<option value='T'>Timur</option>";
+                                                    }else{
+                                                        if ($pidkaryawan=="0000000158") {
+                                                            echo "<option value='B' selected>Barat</option>";
+                                                        }elseif ($pidkaryawan=="0000000159") {
+                                                            echo "<option value='T' selected>Timur</option>";
+                                                        }else{
+                                                            echo "<option value='' selected>All</option>";
+                                                            echo "<option value='B'>Barat</option>";
+                                                            echo "<option value='T'>Timur</option>";
+                                                        }
                                                     }
                                                     ?>
                                                 </select>

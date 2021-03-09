@@ -63,7 +63,7 @@ $namacabangytd = DB::queryFirstField("SELECT nama FROM ms.cbgytd WHERE idcabang=
     
     $query ="select  s.distid, CONCAT(s.initial,'-',s.ecabangid) as initialcab, s.initial, s.ecabangid, 
         s.idcbg, s.icabangid, s.iprodid, p.nama as nama_produk, s.divprodid, sum(s.qty) as qty, SUM(s.qty*s.hna) as tvalue
-         from $tmp1 as s INNER JOIN ms.iproduk as p on s.iprodid=p.iProdId and s.divprodid=p.DivProdId
+         from $tmp1 as s INNER JOIN sls.iproduk as p on s.iprodid=p.iProdId and s.divprodid=p.DivProdId
         group by CONCAT(s.initial,'-',s.ecabangid), s.idcbg, s.icabangid, 
         s.iprodid, s.distid, s.initial, s.ecabangid, s.divprodid, p.nama";
     $results1 = DB::query("create table $tmp2($query)");

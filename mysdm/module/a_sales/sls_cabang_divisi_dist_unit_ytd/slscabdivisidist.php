@@ -149,7 +149,7 @@ $(document).ready(function() {
     $results1 = DB::query("create temporary table $tmp2($query)");
     
     //CAST(NULL as DECIMAL(30,2)) as
-    $query="select distinct CAST('' AS CHAR(50)) AS kategori, divprodid, iprodid, nama, hna from  ms.iproduk WHERE divprodId in (select distinct divprodid from $tmp1)";
+    $query="select distinct CAST('' AS CHAR(50)) AS kategori, divprodid, iprodid, nama, hna from  sls.iproduk WHERE divprodId in (select distinct divprodid from $tmp1)";
     $results1 = DB::query("create temporary table $tmp0($query)");
     
     

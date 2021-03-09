@@ -140,7 +140,7 @@ $(document).ready(function() {
     $results1 = DB::query("create table $tmp2($query)");
     
     
-    $query="select distinct CAST('' AS CHAR(50)) AS kategori, divprodid, iprodid, nama, hna from  ms.iproduk WHERE divprodId in (select distinct divprodid from $tmp1)";
+    $query="select distinct CAST('' AS CHAR(50)) AS kategori, divprodid, iprodid, nama, hna from  sls.iproduk WHERE divprodId in (select distinct divprodid from $tmp1)";
     $results1 = DB::query("create table $tmp0($query)");
     
     

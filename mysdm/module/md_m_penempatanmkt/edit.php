@@ -58,8 +58,8 @@ if ($pnact=="editdatamr" OR $pnact=="editdataam" OR $pnact=="editdatadm" OR $pna
     $query ="SELECT a.id, a.bulan, a.region, a.icabangid, b.nama nama_cabang, a.areaid, c.nama nama_area, a.divprodid, 
         a.gsm, d.nama nama_gsm, a.sm, e.nama nama_sm, a.dm, h.nama nama_dm, a.am, f.nama nama_am, a.mr, g.nama nama_mr 
         from ms.penempatan_marketing a 
-        LEFT JOIN ms.icabang b on a.icabangid=b.iCabangId 
-        LEFT JOIN ms.iarea c on a.icabangid=c.iCabangId AND a.areaid=c.areaId 
+        LEFT JOIN sls.icabang b on a.icabangid=b.iCabangId 
+        LEFT JOIN sls.iarea c on a.icabangid=c.iCabangId AND a.areaid=c.areaId 
         LEFT JOIN ms.karyawan d on a.gsm=d.karyawanId 
         LEFT JOIN ms.karyawan e on a.sm=e.karyawanId 
         LEFT JOIN ms.karyawan f on a.am=f.karyawanId 

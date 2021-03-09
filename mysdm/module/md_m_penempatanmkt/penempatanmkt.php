@@ -73,7 +73,7 @@
                             <div class="form-group">
                                 <select class='form-control input-sm' id="cb_cabang" name="cb_cabang" onchange="ShowDataArea()">
                                     <?PHP
-                                    $query = "select distinct iCabangId, nama from ms.icabang where region='$psregi' and ifnull(aktif,'')<>'N' order by nama";
+                                    $query = "select distinct iCabangId, nama from sls.icabang where region='$psregi' and ifnull(aktif,'')<>'N' order by nama";
                                     $tampil=mysqli_query($cnms, $query);
                                     echo "<option value=''>--Pilih--</option>";
                                     while ($r=  mysqli_fetch_array($tampil)) {
@@ -97,7 +97,7 @@
                                     <?PHP
                                     echo "<option value='' selected>--Pilih--</option>";
                                     if (!empty($picabangid)) {
-                                        $query = "select distinct areaId, Nama nama from ms.iarea where ifnull(aktif,'')<>'N' AND iCabangId='$pscab' order by Nama";
+                                        $query = "select distinct areaId, Nama nama from sls.iarea where ifnull(aktif,'')<>'N' AND iCabangId='$pscab' order by Nama";
                                         $tampil=mysqli_query($cnms, $query);
                                         while ($ra=  mysqli_fetch_array($tampil)) {
                                             $piareaid=$ra['areaId'];

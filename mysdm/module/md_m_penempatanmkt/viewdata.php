@@ -7,7 +7,7 @@ if ($_GET['module']=="viewdatacabang") {
     $ffilterregion=" AND region='$pidregion' ";
     if (empty($pidregion)) $ffilterregion="";
     
-    $query = "select distinct iCabangId, nama from ms.icabang where ifnull(aktif,'')<>'N' $ffilterregion order by nama";
+    $query = "select distinct iCabangId, nama from sls.icabang where ifnull(aktif,'')<>'N' $ffilterregion order by nama";
     $tampil=mysqli_query($cnms, $query);
     echo "<option value=''>--Pilih--</option>";
     while ($r=  mysqli_fetch_array($tampil)) {
@@ -26,7 +26,7 @@ if ($_GET['module']=="viewdatacabang") {
     if (empty($pidregion)) $ffilterregion="";
     
     $query = "select DISTINCT a.region, a.icabangid iCabangId, b.nama  
-        from ms.penempatan_marketing a JOIN ms.icabang b on a.icabangid=b.iCabangId where 
+        from ms.penempatan_marketing a JOIN sls.icabang b on a.icabangid=b.iCabangId where 
             date_Format(a.bulan,'%Y-%m')='$pperiode' $ffilterregion order by b.nama";
     $tampil=mysqli_query($cnms, $query);
     echo "<option value=''>--Pilih--</option>";
@@ -44,7 +44,7 @@ if ($_GET['module']=="viewdatacabang") {
     
     $ffiltercabang=" AND iCabangId='$pidcabang' ";
     
-    $query = "select distinct areaId, Nama nama from ms.iarea where ifnull(aktif,'')<>'N' $ffiltercabang order by Nama";
+    $query = "select distinct areaId, Nama nama from sls.iarea where ifnull(aktif,'')<>'N' $ffiltercabang order by Nama";
     $tampil=mysqli_query($cnms, $query);
     echo "<option value=''>--Pilih--</option>";
     while ($r=  mysqli_fetch_array($tampil)) {
@@ -61,7 +61,7 @@ if ($_GET['module']=="viewdatacabang") {
     $ffiltercabang=" AND a.iCabangId='$pidcabang' ";
     
     $query = "select DISTINCT a.region, a.icabangid, a.areaid areaId, b.nama   
-        from ms.penempatan_marketing a JOIN ms.iarea b on a.icabangid=b.iCabangId AND a.areaid=b.areaid
+        from ms.penempatan_marketing a JOIN sls.iarea b on a.icabangid=b.iCabangId AND a.areaid=b.areaid
         WHERE date_Format(a.bulan,'%Y-%m')='$pperiode' $ffiltercabang order by b.nama";
     $tampil=mysqli_query($cnms, $query);
     echo "<option value=''>--Pilih--</option>";

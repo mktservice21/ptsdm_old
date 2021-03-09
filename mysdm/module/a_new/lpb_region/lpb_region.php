@@ -84,7 +84,7 @@ if ($pilihdarims==true) {
 	SUM(s.`qty`) AS qty,
 	SUM(s.`qty` * s.hna) AS tvalue
         FROM sls.mr_sales2 s
-        JOIN ms.iproduk ip ON s.`iprodid` = ip.`iprodid`
+        JOIN sls.iproduk ip ON s.`iprodid` = ip.`iprodid`
         WHERE s.tgljual BETWEEN '$tgl_pertama'
         AND '$tgl_terakhir'
         AND s.`icabangid` IN (
@@ -120,7 +120,7 @@ if ($pilihdarims==true) {
     
     
     // tambah produk yang tidak ada jualannya
-    $query="select distinct b.DivProdId, a.iprodid, b.nama from sls.ytdprod  as a inner join ms.iproduk as b "
+    $query="select distinct b.DivProdId, a.iprodid, b.nama from sls.ytdprod  as a inner join sls.iproduk as b "
             . " on a.iprodid=b.iprodid where Date_Format(a.bulan,'%Y%m') = '$filblnprod' "
             . " and a.iprodid not in (select distinct iprodid from $tmp1)";
     $results1 = DB::query("create table $tmp5($query)");

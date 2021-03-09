@@ -110,7 +110,7 @@ $(document).ready(function() {
     
     $query ="select  s.distid, CONCAT(s.initial,'-',s.ecabangid) as initialcab, s.initial, s.ecabangid, 
         s.idcbg, s.icabangid, s.iprodid, p.nama as nama_produk, s.divprodid, sum(s.qty) as qty, SUM(s.qty*s.hna) as tvalue
-         from $tmp1 as s INNER JOIN ms.iproduk as p on s.iprodid=p.iProdId and s.divprodid=p.DivProdId
+         from $tmp1 as s INNER JOIN sls.iproduk as p on s.iprodid=p.iProdId and s.divprodid=p.DivProdId
         group by CONCAT(s.initial,'-',s.ecabangid), s.idcbg, s.icabangid, 
         s.iprodid, s.distid, s.initial, s.ecabangid, s.divprodid, p.nama";
     $results1 = DB::query("create table $tmp2($query)");
@@ -137,7 +137,7 @@ $(document).ready(function() {
     $results1 = DB::query("update $tmp1 set totval=(select sum(tvalue) from $tmp2 where $tmp1.divprodid=$tmp2.divprodid and $tmp1.iprodid=$tmp2.iprodid)");
     
     // tambah produk yang tidak ada jualannya
-    $query="select distinct b.DivProdId, a.iprodid, b.nama from sls.ytdprod  as a inner join ms.iproduk as b "
+    $query="select distinct b.DivProdId, a.iprodid, b.nama from sls.ytdprod  as a inner join sls.iproduk as b "
             . " on a.iprodid=b.iprodid where Date_Format(a.bulan,'%Y%m') = '$filbln' "
             . " and a.iprodid not in (select distinct iprodid from $tmp1)";
     $results1 = DB::query("create table $tmp5($query)");

@@ -34,7 +34,7 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query ="select a.iprodid, b.nama, a.divprodid, a.kategori, b.hna, CAST(0 as DECIMAL(20,2)) as qty, CAST(0 as DECIMAL(20,2)) as value "
-            . " from sls.ytdprod a LEFT JOIN ms.iproduk b on a.iprodid=b.iprodid"
+            . " from sls.ytdprod a LEFT JOIN sls.iproduk b on a.iprodid=b.iprodid"
             . " WHERE DATE_FORMAT(a.bulan,'%Y%m')=(select DATE_FORMAT(MAX(bulan),'%Y%m') FROM sls.ytdprod)";
     $query = "create temporary table $tmp02 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -43,7 +43,7 @@
     
     $query = "INSERT INTO $tmp02 (iprodid, nama, divprodid, hna)"
             . " SELECT a.iprodid, b.nama, a.divprodid, a.hna FROM $tmp01 a "
-            . " LEFT JOIN ms.iproduk b on a.iprodid=b.iprodid ";
+            . " LEFT JOIN sls.iproduk b on a.iprodid=b.iprodid ";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     

@@ -78,8 +78,8 @@ include "config/cek_akses_modul.php";
                                                 <select class='form-control' name='cb_region' id='cb_region' onchange="ShowDataCabangRegion()">
                                                     <option value="" selected>--Pilih--</option>
                                                     <?PHP
-                                                        if ($pmyidcard=="0000000158") echo "<option value='B' selected>Barat</option>";
-                                                        elseif ($pmyidcard=="0000000159") echo "<option value='T' selected>Timur</option>";
+                                                        if ($pmyidcard=="0000000158" OR $pmyidcard=="0000002329") echo "<option value='B' selected>Barat</option>";
+                                                        elseif ($pmyidcard=="0000000159" OR $pmyidcard=="0000002073") echo "<option value='T' selected>Timur</option>";
                                                         else{
                                                             echo "<option value='B'>Barat</option><option value='T'>Timur</option>";
                                                         }

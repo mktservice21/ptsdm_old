@@ -124,7 +124,7 @@ $(document).ready(function() {
     
     
     
-    $query="select distinct CAST('' AS CHAR(50)) AS kategori, divprodid, iprodid, nama, CAST(NULL as DECIMAL(30,2)) as hna from  ms.iproduk WHERE divprodId in (select distinct divprodid from $tmp1)";
+    $query="select distinct CAST('' AS CHAR(50)) AS kategori, divprodid, iprodid, nama, CAST(NULL as DECIMAL(30,2)) as hna from  sls.iproduk WHERE divprodId in (select distinct divprodid from $tmp1)";
     $results1 = DB::query("create table $tmp0($query)");
     
     //UPDATE KATEGORU 

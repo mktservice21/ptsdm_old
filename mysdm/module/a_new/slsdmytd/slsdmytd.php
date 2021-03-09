@@ -116,7 +116,7 @@ $(document).ready(function() {
     $results1 = DB::query("CREATE INDEX inx on $tmp1 (bulan, divprodid, iprodid)");
     
     
-    $query="select distinct divprodid, iprodid, nama, CAST(NULL as DECIMAL(30,2)) as hna from ms.iproduk WHERE divprodId in (select distinct divprodid from $tmp1)";
+    $query="select distinct divprodid, iprodid, nama, CAST(NULL as DECIMAL(30,2)) as hna from sls.iproduk WHERE divprodId in (select distinct divprodid from $tmp1)";
     $results1 = DB::query("create table $tmp0($query)");
     //create index temp dist
     $results1 = DB::query("CREATE INDEX inx on $tmp0 (divprodid, iprodid)");

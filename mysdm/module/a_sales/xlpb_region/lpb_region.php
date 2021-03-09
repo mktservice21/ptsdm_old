@@ -63,7 +63,7 @@ require_once 'meekrodb.2.3.class.php';
 	SUM(s.`qty`) AS qty,
 	SUM(s.`qty` * s.hna) AS tvalue
         FROM sls.mr_sales2 s
-        JOIN ms.iproduk ip ON s.`iprodid` = ip.`iprodid`
+        JOIN sls.iproduk ip ON s.`iprodid` = ip.`iprodid`
         WHERE s.tgljual BETWEEN '$tgl_pertama'
         AND '$tgl_terakhir'
         AND s.`icabangid` IN (

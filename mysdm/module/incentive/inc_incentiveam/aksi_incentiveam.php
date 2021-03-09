@@ -45,6 +45,7 @@ $now=date("mdYhis");
 $tmp01 ="dbtemp.tmprptincam01_".$puser."_$now$milliseconds";
 $tmp02 ="dbtemp.tmprptincam02_".$puser."_$now$milliseconds";
 $tmp03 ="dbtemp.tmprptincam03_".$puser."_$now$milliseconds";
+$tmp04 ="dbtemp.tmprptincam04_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 
@@ -89,7 +90,7 @@ if (!empty($pketdivisi)) {
     $filtercab="('')";
 }
 
-$query = "select jenis, sales, target, ach, incentive from ms.incentive_am WHERE bulan between '$pbln1' AND '$pbln2' AND karyawanid='$pkaryawanid'";
+$query = "select jenis, jenis2, sales, target, ach, incentive from ms.incentive_am WHERE bulan between '$pbln1' AND '$pbln2' AND karyawanid='$pkaryawanid'";
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
@@ -103,6 +104,18 @@ $query .= " GROUP BY 1,2,3,4";
 $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+$query = "select groupp, SUM(value_sales) as value_sales, SUM(value_target) as value_target 
+    from $tmp02 GROUP BY 1";
+$query = "CREATE TEMPORARY TABLE $tmp04 ($query)";
+mysqli_query($cnms, $query);
+$erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+$query = "INSERT INTO $tmp04 (groupp, value_sales, value_target)
+    SELECT 'GROUP99' as groupp, SUM(value_sales) as value_sales, SUM(value_target) as value_target 
+    FROM $tmp02 WHERE IFNULL(groupp,'') IN ('GROUP1', 'GROUP2') GROUP BY 1";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
 
 ?>
 
@@ -220,7 +233,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
     </table>
     
     
-    <div class="ijudul"><h2>Summary</h2></div>
+    <div class="ijudul"><h2>Incentive From GSM</h2></div>
     <table id='mydatatable2' class='table table-striped table-bordered' width="100%" border="1px solid black">
         <thead>
             <tr>
@@ -237,7 +250,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             $ptotaltgt=0;
             $ptotalinc=0;
             $query = "select jenis, sales, target, ach, incentive FROM "
-                    . " $tmp01 ";
+                    . " $tmp01 WHERE IFNULL(jenis2,'')='GSM' ";
             $query .=" ORDER BY jenis";
             $tampil= mysqli_query($cnms, $query);
             while ($row= mysqli_fetch_array($tampil)) {
@@ -262,7 +275,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 echo "<td nowrap align='right'>$pvalsls</td>";
                 echo "<td nowrap align='right'>$pvaltgt</td>";
                 echo "<td nowrap align='right'>$pach</td>";
-                echo "<td nowrap align='right'>$pinc</td>";
+                echo "<td nowrap align='right' class='txtincwarna'>$pinc</td>";
                 echo "</tr>";
             }
             
@@ -273,13 +286,74 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             echo "<td nowrap align='right'>&nbsp;</td>";
             echo "<td nowrap align='right'>&nbsp;</td>";
             echo "<td nowrap align='right'>&nbsp;</td>";
-            echo "<td nowrap align='right'>$ptotalinc</td>";
+            echo "<td nowrap align='right' class='txtincwarna'>$ptotalinc</td>";
             echo "</tr>";
             ?>
         </tbody>
     </table>
     
     
+    <div class="ijudul"><h2>Incentive From PM</h2></div>
+    <table id='mydatatable2_1' class='table table-striped table-bordered' width="100%" border="1px solid black">
+        <thead>
+            <tr>
+                <th>Jenis</th>
+                <th>Sales</th>
+                <th>Target</th>
+                <th>Ach</th>
+                <th>Incentive</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?PHP
+            $ptotalsls=0;
+            $ptotaltgt=0;
+            $ptotalinc=0;
+            $query = "select jenis, sales, target, ach, incentive FROM "
+                    . " $tmp01 WHERE IFNULL(jenis2,'') NOT IN ('', 'GSM') ";
+            $query .=" ORDER BY jenis";
+            $tampil= mysqli_query($cnms, $query);
+            while ($row= mysqli_fetch_array($tampil)) {
+                $pjenis=$row['jenis'];
+
+                $pvalsls=$row['sales'];
+                $pvaltgt=$row['target'];
+                $pach=$row['ach'];
+                $pinc=$row['incentive'];
+                
+                
+                $ptotalsls=(DOUBLE)$ptotalsls+(DOUBLE)$pvalsls;
+                $ptotaltgt=(DOUBLE)$ptotaltgt+(DOUBLE)$pvaltgt;
+                $ptotalinc=(DOUBLE)$ptotalinc+(DOUBLE)$pinc;
+                
+                $pvalsls=number_format($pvalsls,0,",",",");
+                $pvaltgt=number_format($pvaltgt,0,",",",");
+                $pinc=number_format($pinc,0,",",",");
+                
+                echo "<tr>";
+                echo "<td nowrap>$pjenis</td>";
+                echo "<td nowrap align='right'>$pvalsls</td>";
+                echo "<td nowrap align='right'>$pvaltgt</td>";
+                echo "<td nowrap align='right'>$pach</td>";
+                echo "<td nowrap align='right' class='txtincwarna'>$pinc</td>";
+                echo "</tr>";
+            }
+            
+            $ptotalinc=number_format($ptotalinc,0,",",",");
+            
+            echo "<tr style='font-weight:bold;'>";
+            echo "<td nowrap>TOTAL</td>";
+            echo "<td nowrap align='right'>&nbsp;</td>";
+            echo "<td nowrap align='right'>&nbsp;</td>";
+            echo "<td nowrap align='right'>&nbsp;</td>";
+            echo "<td nowrap align='right' class='txtincwarna'>$ptotalinc</td>";
+            echo "</tr>";
+            ?>
+        </tbody>
+    </table>
+
+
+
     <div class="ijudul"><h2>Summary Group</h2></div>
     <table id='mydatatable4' class='table table-striped table-bordered' width="100%" border="1px solid black">
         <thead>
@@ -294,12 +368,15 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             <?PHP
             $ptotalsls=0;
             $ptotaltgt=0;
-            $query = "select groupp, SUM(value_sales) as value_sales, SUM(value_target) as value_target 
-                    from $tmp02 GROUP BY 1";
+            //$query = "select groupp, SUM(value_sales) as value_sales, SUM(value_target) as value_target from $tmp02 GROUP BY 1";
+            $query = "select groupp, value_sales, value_target from $tmp04";
             $query .=" ORDER BY groupp";
             $tampil= mysqli_query($cnms, $query);
             while ($row= mysqli_fetch_array($tampil)) {
                 $ngroup=$row['groupp'];
+
+                $pnmgrpp=$ngroup;
+                if ($ngroup=="GROUP99") $pnmgrpp="GROUP1+GROUP2";
 
                 $pvalsls=$row['value_sales'];
                 $pvaltgt=$row['value_target'];
@@ -318,7 +395,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 $pach=ROUND($pach,2);
                 
                 echo "<tr>";
-                echo "<td nowrap>$ngroup</td>";
+                echo "<td nowrap>$pnmgrpp</td>";
                 echo "<td nowrap align='right'>$pvalsls</td>";
                 echo "<td nowrap align='right'>$pvaltgt</td>";
                 echo "<td nowrap align='right'>$pach</td>";
@@ -423,8 +500,34 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
         </tbody>
     </table>
 
-    
-    <br/><br/><br/><br/>
+    <hr/>
+    <br/><br/>
+    <div>
+        <u><b>Keterangan : </b></u><p/>
+        <?PHP
+            $query = "select id, parentid, urutan, untuk, catatan from ms.catatan_incentive WHERE parentid='0' AND untuk IN ('', 'AM', 'AMDM', 'MRAM', 'MRAMDM') order by urutan";
+            $tampil=mysqli_query($cnms, $query);
+            while ($row=mysqli_fetch_array($tampil)) {
+                $pid=$row['id'];
+                $pjudul=$row['catatan'];
+
+                echo "<div>";
+                echo "<b>$pjudul :</b><br/>";
+
+                $query = "select id, parentid, urutan, untuk, catatan from ms.catatan_incentive WHERE parentid='$pid' AND untuk IN ('', 'AM', 'AMDM', 'MRAM', 'MRAMDM') order by urutan";
+                $tampil1=mysqli_query($cnms, $query);
+                while ($row1=mysqli_fetch_array($tampil1)) {
+                    $pcatatan=$row1['catatan'];
+                    echo "- $pcatatan <br/>";
+
+                }
+
+                echo "</div>";echo "<br/>";
+            }
+        ?>
+    </div>
+
+    <br/><br/><br/>
     
     
 </div>
@@ -524,6 +627,9 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 font-size: 16px;
                 font-weight:bold;
             }
+            .txtincwarna {
+                color : #000080;
+            }
         </style>
     
         <style>
@@ -531,14 +637,14 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             .divnone {
                 display: none;
             }
-            #mydatatable1, #mydatatable2, #mydatatable3, #mydatatable4, #mydatatable5 {
+            #mydatatable1, #mydatatable2, #mydatatable2_1, #mydatatable3, #mydatatable4, #mydatatable5 {
                 color:#000;
                 font-family: "Arial";
             }
-            #mydatatable1 th, #mydatatable2 th, #mydatatable3 th, #mydatatable4 th, #mydatatable5 th {
+            #mydatatable1 th, #mydatatable2 th, #mydatatable2_1 th, #mydatatable3 th, #mydatatable4 th, #mydatatable5 th {
                 font-size: 12px;
             }
-            #mydatatable1 td, #mydatatable2 td, #mydatatable3 td, #mydatatable4 td, #mydatatable5 td { 
+            #mydatatable1 td, #mydatatable2 td, #mydatatable2_1 td, #mydatatable3 td, #mydatatable4 td, #mydatatable5 td { 
                 font-size: 14px;
             }
         </style>
@@ -589,11 +695,11 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     { className: "text-nowrap", "targets": [0,1,2] }//nowrap
 
                 ],
-                bFilter: false, bInfo: true, "bLengthChange": false, "bLengthChange": true,
+                bFilter: true, bInfo: true, "bLengthChange": false, "bLengthChange": true,
                 "bPaginate": false
             } );
             
-            var table12 = $('#mydatatable2').DataTable({
+            var table12 = $('#mydatatable2, #mydatatable2_1').DataTable({
                 fixedHeader: true,
                 "ordering": false,
                 "lengthMenu": [[10, 50, 100, -1], [10, 50, 100, "All"]],
@@ -605,7 +711,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     { className: "text-nowrap", "targets": [0,1,2,3] }//nowrap
 
                 ],
-                bFilter: true, bInfo: true, "bLengthChange": false, "bLengthChange": true,
+                bFilter: false, bInfo: false, "bLengthChange": false, "bLengthChange": true,
                 "bPaginate": false
             } );
             
@@ -654,5 +760,6 @@ hapusdata:
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp01");
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp02");
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp03");
+    mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp04");
     mysqli_close($cnms);
 ?>

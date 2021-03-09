@@ -78,7 +78,7 @@ if (!empty($pketdivisi)) {
     $filtercab="('')";
 }
 
-$query = "select jenis, sales, target, ach, incentive from ms.incentive_dm WHERE bulan between '$pbln1' AND '$pbln2' AND karyawanid='$pkaryawanid'";
+$query = "select jenis, jenis2, sales, target, ach, incentive from ms.incentive_dm WHERE bulan between '$pbln1' AND '$pbln2' AND karyawanid='$pkaryawanid'";
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
@@ -202,7 +202,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
     </table>
     
     
-    <div class="ijudul"><h2>Summary</h2></div>
+    <div class="ijudul"><h2>Incentive From GSM</h2></div>
     <table id='mydatatable2' class='table table-striped table-bordered' width="100%" border="1px solid black">
         <thead>
             <tr>
@@ -219,7 +219,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             $ptotaltgt=0;
             $ptotalinc=0;
             $query = "select jenis, sales, target, ach, incentive FROM "
-                    . " $tmp01 ";
+                    . " $tmp01 WHERE IFNULL(jenis2,'')='GSM' ";
             $query .=" ORDER BY jenis";
             $tampil= mysqli_query($cnms, $query);
             while ($row= mysqli_fetch_array($tampil)) {
@@ -244,7 +244,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 echo "<td nowrap align='right'>$pvalsls</td>";
                 echo "<td nowrap align='right'>$pvaltgt</td>";
                 echo "<td nowrap align='right'>$pach</td>";
-                echo "<td nowrap align='right'>$pinc</td>";
+                echo "<td nowrap align='right' class='txtincwarna'>$pinc</td>";
                 echo "</tr>";
             }
             
@@ -255,13 +255,73 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             echo "<td nowrap align='right'>&nbsp;</td>";
             echo "<td nowrap align='right'>&nbsp;</td>";
             echo "<td nowrap align='right'>&nbsp;</td>";
-            echo "<td nowrap align='right'>$ptotalinc</td>";
+            echo "<td nowrap align='right' class='txtincwarna'>$ptotalinc</td>";
             echo "</tr>";
             ?>
         </tbody>
     </table>
     
     
+    <div class="ijudul"><h2>Incentive From PM</h2></div>
+    <table id='mydatatable2_1' class='table table-striped table-bordered' width="100%" border="1px solid black">
+        <thead>
+            <tr>
+                <th>Jenis</th>
+                <th>Sales</th>
+                <th>Target</th>
+                <th>Ach</th>
+                <th>Incentive</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?PHP
+            $ptotalsls=0;
+            $ptotaltgt=0;
+            $ptotalinc=0;
+            $query = "select jenis, sales, target, ach, incentive FROM "
+                    . " $tmp01 WHERE IFNULL(jenis2,'') NOT IN ('', 'GSM') ";
+            $query .=" ORDER BY jenis";
+            $tampil= mysqli_query($cnms, $query);
+            while ($row= mysqli_fetch_array($tampil)) {
+                $pjenis=$row['jenis'];
+
+                $pvalsls=$row['sales'];
+                $pvaltgt=$row['target'];
+                $pach=$row['ach'];
+                $pinc=$row['incentive'];
+                
+                
+                $ptotalsls=(DOUBLE)$ptotalsls+(DOUBLE)$pvalsls;
+                $ptotaltgt=(DOUBLE)$ptotaltgt+(DOUBLE)$pvaltgt;
+                $ptotalinc=(DOUBLE)$ptotalinc+(DOUBLE)$pinc;
+                
+                $pvalsls=number_format($pvalsls,0,",",",");
+                $pvaltgt=number_format($pvaltgt,0,",",",");
+                $pinc=number_format($pinc,0,",",",");
+                
+                echo "<tr>";
+                echo "<td nowrap>$pjenis</td>";
+                echo "<td nowrap align='right'>$pvalsls</td>";
+                echo "<td nowrap align='right'>$pvaltgt</td>";
+                echo "<td nowrap align='right'>$pach</td>";
+                echo "<td nowrap align='right' class='txtincwarna'>$pinc</td>";
+                echo "</tr>";
+            }
+            
+            $ptotalinc=number_format($ptotalinc,0,",",",");
+            
+            echo "<tr style='font-weight:bold;'>";
+            echo "<td nowrap>TOTAL</td>";
+            echo "<td nowrap align='right'>&nbsp;</td>";
+            echo "<td nowrap align='right'>&nbsp;</td>";
+            echo "<td nowrap align='right'>&nbsp;</td>";
+            echo "<td nowrap align='right' class='txtincwarna'>$ptotalinc</td>";
+            echo "</tr>";
+            ?>
+        </tbody>
+    </table>
+
+
     <div class="ijudul"><h2>Summary Group</h2></div>
     <table id='mydatatable4' class='table table-striped table-bordered' width="100%" border="1px solid black">
         <thead>
@@ -506,6 +566,9 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 font-size: 16px;
                 font-weight:bold;
             }
+            .txtincwarna {
+                color : #000080;
+            }
         </style>
     
         <style>
@@ -513,14 +576,14 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
             .divnone {
                 display: none;
             }
-            #mydatatable1, #mydatatable2, #mydatatable3, #mydatatable4, #mydatatable5 {
+            #mydatatable1, #mydatatable2, #mydatatable2_1, #mydatatable3, #mydatatable4, #mydatatable5 {
                 color:#000;
                 font-family: "Arial";
             }
-            #mydatatable1 th, #mydatatable2 th, #mydatatable3 th, #mydatatable4 th, #mydatatable5 th {
+            #mydatatable1 th, #mydatatable2 th, #mydatatable2_1 th, #mydatatable3 th, #mydatatable4 th, #mydatatable5 th {
                 font-size: 12px;
             }
-            #mydatatable1 td, #mydatatable2 td, #mydatatable3 td, #mydatatable4 td, #mydatatable5 td { 
+            #mydatatable1 td, #mydatatable2 td, #mydatatable2_1 td, #mydatatable3 td, #mydatatable4 td, #mydatatable5 td { 
                 font-size: 14px;
             }
         </style>
@@ -575,7 +638,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 "bPaginate": false
             } );
             
-            var table12 = $('#mydatatable2').DataTable({
+            var table12 = $('#mydatatable2, #mydatatable2_1').DataTable({
                 fixedHeader: true,
                 "ordering": false,
                 "lengthMenu": [[10, 50, 100, -1], [10, 50, 100, "All"]],
@@ -587,7 +650,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     { className: "text-nowrap", "targets": [0,1,2,3] }//nowrap
 
                 ],
-                bFilter: true, bInfo: true, "bLengthChange": false, "bLengthChange": true,
+                bFilter: false, bInfo: false, "bLengthChange": false, "bLengthChange": true,
                 "bPaginate": false
             } );
             

@@ -185,7 +185,7 @@ echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1' width='100%
         echo "<th align='center'>Jabatan</th>";
         if ($pincfrom=="GSM" OR $pincfrom=="ALL") {
             echo "<th align='center'>Sales</th>";
-            echo "<th align='center'>Targer</th>";
+            echo "<th align='center'>Target</th>";
             echo "<th align='center'>Ach</th>";
         }
         echo "<th align='center'>Incentive</th>";

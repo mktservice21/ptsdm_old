@@ -79,8 +79,8 @@ include "config/cek_akses_modul.php";
                                                 <select class='form-control' name='cb_region' id='cb_region' onchange="ShowDataCabangRegion()">
                                                     <option value="" selected>--All--</option>
                                                     <?PHP
-                                                        if ($pmyidcard=="0000000158") echo "<option value='B' selected>Barat</option>";
-                                                        elseif ($pmyidcard=="0000000159") echo "<option value='T' selected>Timur</option>";
+                                                        if ($pmyidcard=="0000000158" OR $pmyidcard=="0000002329") echo "<option value='B' selected>Barat</option>";
+                                                        elseif ($pmyidcard=="0000000159" OR $pmyidcard=="0000002073") echo "<option value='T' selected>Timur</option>";
                                                         else{
                                                             echo "<option value='B'>Barat</option><option value='T'>Timur</option>";
                                                         }
@@ -100,13 +100,17 @@ include "config/cek_akses_modul.php";
                                                             . " aktif='Y' ";
                                                     if ($pmygroupid=="1" OR $pmygroupid=="24") {
                                                     }else{
-                                                        if ($pmyjabatanid=="08") $query .=" AND id_dm='$pmyidcard' ";
-                                                        if ($pmyjabatanid=="20") $query .=" AND id_sm='$pmyidcard' ";
-                                                        if ($pmyjabatanid=="38") $query .=" AND id_admin='$pmyidcard' ";
-                                                        
-                                                        if ($pmyidcard=="0000000158") $query .=" AND region='B' ";
-                                                        if ($pmyidcard=="0000000159") $query .=" AND region='T' ";
-                                                        
+                                                        if ($pmyidcard=="0000002329" OR $pmyidcard=="0000002073") {
+                                                            if ($pmyidcard=="0000002329") $query .=" AND region='B' ";
+                                                            elseif ($pmyidcard=="0000002073") $query .=" AND region='T' ";
+                                                        }else{
+                                                            if ($pmyjabatanid=="08") $query .=" AND id_dm='$pmyidcard' ";
+                                                            if ($pmyjabatanid=="20") $query .=" AND id_sm='$pmyidcard' ";
+                                                            if ($pmyjabatanid=="38") $query .=" AND id_admin='$pmyidcard' ";
+                                                            
+                                                            if ($pmyidcard=="0000000158") $query .=" AND region='B' ";
+                                                            if ($pmyidcard=="0000000159") $query .=" AND region='T' ";
+                                                        }
                                                     }
                                                     
                                                     $query .=" order by nama";

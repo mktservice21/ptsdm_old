@@ -1,3 +1,7 @@
+<?PHP
+include "config/cek_akses_modul.php";
+?>
+
 <div class="">
 
     <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Sales Per Sektor By SM</h3></div></div><div class="clearfix"></div>
@@ -210,14 +214,21 @@
                                                 <select class='form-control' name='cb_sm' id='cb_sm' onchange="ShowDataPilihDataSM()">
                                                     <?PHP
                                                     echo "<option value='' selected>--Pilih--</option>";
-                                                    $query = "select DISTINCT a.karyawanid, b.nama from sls.ism0 a JOIN ms.karyawan b on a.karyawanid=b.karyawanid WHERE 1=1 ";
-                                                    if ($pmyjabatanid=="20" OR (DOUBLE)$pmyjabatanid==20) $query .= " AND a.karyawanid='$pmyidcard' ";
-                                                    else{
-                                                        if (!empty($pfiltercabpilih)) {
-                                                            $query .= " AND a.icabangid in $pfiltercabpilih ";
+                                                    if ($pmyidcard=="0000002329" OR $pmyidcard=="0000002073") {
+                                                        $query = "select DISTINCT a.karyawanid, b.nama from sls.ism0 a JOIN ms.karyawan b on a.karyawanid=b.karyawanid JOIN mkt.icabang as c on a.icabangid=c.icabangid WHERE 1=1 ";
+                                                        if ($pmyidcard=="0000002329") $query .=" And c.region='B' ";
+                                                        elseif ($pmyidcard=="0000002073") $query .=" And c.region='T' ";
+                                                        $query .= "order by b.nama ";
+                                                    }else{
+                                                        $query = "select DISTINCT a.karyawanid, b.nama from sls.ism0 a JOIN ms.karyawan b on a.karyawanid=b.karyawanid WHERE 1=1 ";
+                                                        if ($pmyjabatanid=="20" OR (DOUBLE)$pmyjabatanid==20) $query .= " AND a.karyawanid='$pmyidcard' ";
+                                                        else{
+                                                            if (!empty($pfiltercabpilih)) {
+                                                                $query .= " AND a.icabangid in $pfiltercabpilih ";
+                                                            }
                                                         }
+                                                        $query .= "order by b.nama ";
                                                     }
-                                                    $query .= "order by b.nama ";
                                                     $tampil = mysqli_query($cnms, $query);
                                                     while ($rx= mysqli_fetch_array($tampil)) {
                                                         $nidsm=$rx['karyawanid'];

@@ -9,7 +9,7 @@
     
     $padamodulekhususmenu=false;
     
-    $query = "select distinct b.`id` as idmenu from dbmaster.t_karyawan_menu as a join dbmaster.t_karyawan_menu_d as b on a.igroup=b.igroup where a.karyawanid='$npicardid_'";
+    $query = "select distinct b.`id` as idmenu from dbmaster.t_karyawan_menu as a join dbmaster.t_karyawan_menu_d as b on a.igroup=b.igroup where a.karyawanid='$npicardid_' AND b.id='$pnpidmenu_'";
     $nptampiltm_= mysqli_query($cnmy, $query);
     $ketemupiltmgrp= mysqli_num_rows($nptampiltm_);
     if ((DOUBLE)$ketemupiltmgrp>0) $padamodulekhususmenu=true;

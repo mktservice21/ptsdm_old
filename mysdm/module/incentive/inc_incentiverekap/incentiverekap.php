@@ -95,6 +95,19 @@
                                         </div>
                                         
                                         
+                                        <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Incentive From <span class='required'></span></label>
+                                            <div class='col-md-9 col-sm-9 col-xs-12'>
+                                                <select class='form-control' name='cb_from' id='cb_from' onchange="">
+                                                    <?PHP
+                                                    echo "<option value='GSM' selected>GSM</option>";
+                                                    echo "<option value='PM'>PM</option>";
+                                                    echo "<option value='ALL'>--ALL--</option>";
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         
                                     </div>
                                 </div>

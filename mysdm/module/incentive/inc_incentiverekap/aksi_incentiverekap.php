@@ -34,6 +34,7 @@ $pviewdate=date("d/m/Y H:i:s");
 
 $tgl01=$_POST['bulan'];
 $pjabatan=$_POST['cb_jabatan'];
+$pincfrom=$_POST['cb_from'];
 
 $pfbln = date("Y-m", strtotime($tgl01));
 $pbln1 = date("Y-m-01", strtotime($tgl01));
@@ -51,6 +52,8 @@ include("config/common.php");
 
 $query = "select 'MR' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
     from ms.incentive_mr where bulan between '$pbln1' AND '$pbln2' ";
+if ($pincfrom=="GSM") $query .= " AND IFNULL(jenis2,'')='GSM' ";
+elseif ($pincfrom=="PM") $query .= " AND IFNULL(jenis2,'') Not In ('GSM', '') ";
 if (empty($pjabatan) OR $pjabatan=="MR") {
 }else{
     $query .=" AND karyawanid='NON NONE'";
@@ -62,16 +65,49 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 if (empty($pjabatan) OR $pjabatan=="AM") {
     $query = "INSERT INTO $tmp01 (sts, karyawanid, jenis, sales, `target`, ach, incentive)
         select 'AM' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
-        from ms.incentive_am where bulan between '$pbln1' AND '$pbln2'";
+        from ms.incentive_am where bulan between '$pbln1' AND '$pbln2' ";
+    if ($pincfrom=="GSM") $query .= " AND IFNULL(jenis2,'')='GSM' ";
+    elseif ($pincfrom=="PM") $query .= " AND IFNULL(jenis2,'') Not In ('GSM', '') ";
     mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 }
 
 if (empty($pjabatan) OR $pjabatan=="DM") {
     $query = "INSERT INTO $tmp01 (sts, karyawanid, jenis, sales, `target`, ach, incentive)
         select 'DM' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
-        from ms.incentive_dm where bulan between '$pbln1' AND '$pbln2'";
+        from ms.incentive_dm where bulan between '$pbln1' AND '$pbln2' ";
+    if ($pincfrom=="GSM") $query .= " AND IFNULL(jenis2,'')='GSM' ";
+    elseif ($pincfrom=="PM") $query .= " AND IFNULL(jenis2,'') Not In ('GSM', '') ";
     mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 }
+
+//Sales
+if ($pincfrom=="GSM" OR $pincfrom=="ALL") {
+    $query = "select 'MR' as sts, karyawanid, sum(value_sales) as value_sales, sum(value_target) as value_target 
+        from ms.sales_mr where bulan between '$pbln1' AND '$pbln2' ";
+    $query .=" Group By 1,2";
+    if (empty($pjabatan) OR $pjabatan=="MR") {
+    }else{
+        $query .=" AND karyawanid='NON NONE'";
+    }
+    $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+    if (empty($pjabatan) OR $pjabatan=="AM") {
+        $query = "INSERT INTO $tmp03 (sts, karyawanid, value_sales, value_target)
+            select 'AM' as sts, karyawanid, sum(value_sales) as value_sales, sum(value_target) as value_target 
+            from ms.sales_am where bulan between '$pbln1' AND '$pbln2' Group By 1,2";
+        mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    }
+
+    if (empty($pjabatan) OR $pjabatan=="DM") {
+        $query = "INSERT INTO $tmp03 (sts, karyawanid, value_sales, value_target)
+            select 'DM' as sts, karyawanid, sum(value_sales) as value_sales, sum(value_target) as value_target 
+            from ms.sales_dm where bulan between '$pbln1' AND '$pbln2' Group By 1,2";
+        mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    }
+}
+//END Sales
 
 
 $query = "select a.sts, a.karyawanid, b.nama as nama_karyawan, sum(a.sales) as sales, sum(a.`target`) as `target`, 
@@ -80,6 +116,13 @@ $query .=" GROUP BY 1,2,3";
 $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+//update sales
+if ($pincfrom=="GSM" OR $pincfrom=="ALL") {
+    $query = "UPDATE $tmp02 as a JOIN $tmp03 as b on a.karyawanid=b.karyawanid AND a.sts=b.sts SET 
+        a.sales=b.value_sales, a.`target`=b.value_target";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+}
 
 $query = "UPDATE $tmp02 SET ach=CASE WHEN IFNULL(`target`,0)=0 THEN 0 ELSE IFNULL(`sales`,0)/IFNULL(`target`,0)*100 END";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
@@ -129,6 +172,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 <?PHP
 
 echo "<center><b>Incentive All (DM,AM,MR) - $pbulan</b></center><br>";
+echo "<center>Incentive From $pincfrom</center><br>";
 if (!empty($pjabatan)) {
     echo "<center>Jabatan : $pjabatan</center><br>";
 }
@@ -139,9 +183,11 @@ echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1' width='100%
         echo "<th align='center'>No</th>";
         echo "<th align='center'>Karyawan</th>";
         echo "<th align='center'>Jabatan</th>";
-        echo "<th align='center'>Sales</th>";
-        echo "<th align='center'>Targer</th>";
-        echo "<th align='center'>Ach</th>";
+        if ($pincfrom=="GSM" OR $pincfrom=="ALL") {
+            echo "<th align='center'>Sales</th>";
+            echo "<th align='center'>Targer</th>";
+            echo "<th align='center'>Ach</th>";
+        }
         echo "<th align='center'>Incentive</th>";
     echo "</tr>";
     echo "</thead>";
@@ -171,9 +217,11 @@ echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1' width='100%
             echo "<td nowrap>$no</td>";
             echo "<td nowrap>$nkrynm</td>";
             echo "<td nowrap>$njabatan</td>";
-            echo "<td nowrap align='right'>$psales</td>";
-            echo "<td nowrap align='right'>$ptarget</td>";
-            echo "<td nowrap align='right'>$pach</td>";
+            if ($pincfrom=="GSM" OR $pincfrom=="ALL") {
+                echo "<td nowrap align='right'>$psales</td>";
+                echo "<td nowrap align='right'>$ptarget</td>";
+                echo "<td nowrap align='right'>$pach</td>";
+            }
             echo "<td nowrap align='right'>$pincentive</td>";
             echo "</tr>";
 
@@ -181,10 +229,15 @@ echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1' width='100%
         }
 
         $ptotalinc=number_format($ptotalinc,0,",",",");
-
-        echo "<tr class='trtotal'>";
-        echo "<td nowrap colspan='6' align='center'>GRAND TOTAL</td>";
-        echo "<td nowrap align='right'>$ptotalinc</td>";
+        if ($pincfrom=="GSM" OR $pincfrom=="ALL") {
+            echo "<tr class='trtotal'>";
+            echo "<td nowrap colspan='6' align='center'>GRAND TOTAL</td>";
+            echo "<td nowrap align='right'>$ptotalinc</td>";
+        }else{
+            echo "<tr class='trtotal'>";
+            echo "<td nowrap colspan='3' align='center'>GRAND TOTAL</td>";
+            echo "<td nowrap align='right'>$ptotalinc</td>";
+        }
         echo "</tr>";
 
 

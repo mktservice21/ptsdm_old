@@ -71,9 +71,7 @@
         FROM
         sls.mr_sales2 s
         LEFT JOIN sls.icust ic
-        ON s.icabangid = ic.iCabangId
-        AND s.areaid = ic.areaId
-        AND s.icustid = ic.iCustId
+        ON s.icustid = ic.iCustId
         LEFT JOIN sls.iproduk ip
         ON s.iprodid = ip.iprodid
         LEFT JOIN sls.icabang c

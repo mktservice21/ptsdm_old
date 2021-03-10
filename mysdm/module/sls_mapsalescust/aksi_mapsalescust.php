@@ -42,7 +42,7 @@ if ($module=='mapsalescust')
         
         $query = "select s.fakturid, s.iprodid from sls.mr_sales2 s WHERE s.tgljual BETWEEN '$ptgl1' AND '$ptgl2'
                 AND s.icabangid NOT IN (30,31) 
-                AND s.fakturid='$pidfaktur' AND s.icabangid='$pidcab' AND s.areaid='$pidarea' AND s.icustid='$pidcustlama'";
+                AND s.fakturid='$pidfaktur' AND s.icustid='$pidcustlama'";
         
         $tampil= mysqli_query($cnms, $query);
         $pjmlrec= mysqli_num_rows($tampil);

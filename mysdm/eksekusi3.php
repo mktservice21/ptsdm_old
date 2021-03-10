@@ -610,6 +610,8 @@
         include 'module/incentive/inc_incentivelap/aksi_incentivelap.php';
     }elseif ($_GET['module']=='incentivelappm'){
         include 'module/incentive/inc_incentivelap/aksi_incentivelap.php';
+    }elseif ($_GET['module']=='incentiverekap'){
+        include 'module/incentive/inc_incentiverekap/aksi_incentiverekap.php';
         
     }elseif ($_GET['module']=='ksprosesdatakscab'){
         include 'module/ks_proseskscab/aksi_proseskscab.php';

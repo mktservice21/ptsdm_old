@@ -63,7 +63,7 @@
             . " from hrd.br0 WHERE IFNULL(batal,'')<>'Y' AND "
             . " brId NOT IN (select DISTINCT IFNULL(brId,'') FROM hrd.br0_reject) AND "
             . " DATE_FORMAT(tgltrans,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' ";
-    $query .=" AND IFNULL(kode,'') IN $filterkode ";
+    $query .=" AND ( IFNULL(kode,'') IN $filterkode OR karyawanid='$picardid')";
     
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -82,7 +82,7 @@
                     . " WHERE IFNULL(b.batal,'')<>'Y' AND "
                     . " a.bridinput NOT IN (select DISTINCT IFNULL(brId,'') FROM hrd.br0_reject) AND "
                     . " DATE_FORMAT(a.tgltransfersby,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' ";
-            $query .=" AND IFNULL(kode,'') IN $filterkode ";
+            $query .=" AND (IFNULL(kode,'') IN $filterkode OR karyawanid='$picardid') ";
             $query = "create TEMPORARY table $tmp02 ($query)"; 
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

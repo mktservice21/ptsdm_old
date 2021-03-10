@@ -147,7 +147,11 @@
                                                 <select class='form-control' name='cb_divisi' id='cb_divisi' style='width: 100%;' onchange="">
                                                     <option value='' selected>--All--</option>
                                                     <?PHP
-                                                    $query = "select divprodid, nama from MKT.divprod WHERE br='Y' and divprodid NOT IN ('OTHER', 'OTHERS', 'CAN', 'OTC') order by divprodid";
+                                                    $query = "select divprodid, nama from MKT.divprod WHERE br='Y' and divprodid NOT IN ('OTHER', 'OTHERS', 'CAN', 'OTC') ";
+                                                    if ($fkaryawan=="0000000159" OR $fkaryawan=="0000000158") {
+                                                        $query .=" AND divprodid NOT IN ('HO')";
+                                                    }
+                                                    $query .=" order by divprodid";
                                                     $tampil= mysqli_query($cnmy, $query);
                                                     while($na= mysqli_fetch_array($tampil)) {
                                                         $niprodid=$na['divprodid'];
@@ -163,11 +167,25 @@
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_pilihtipe'>Pilih Tipe <span class='required'></span></label>
                                             <div class='col-xs-9'>
                                                 <select class='form-control' name='e_pilihtipe' id='e_pilihtipe' style='width: 100%;' onchange="">
+                                                <?PHP
+                                                if ($fkaryawan=="0000000159" OR $fkaryawan=="0000000158") {
+                                                ?>
+                                                    <option value='DC' selected>DSS & DCC</option>
+                                                    <option value='D'>DSS</option>
+                                                    <option value='C'>DCC</option>
+                                                <?PHP
+                                                }else {
+
+                                                ?>
                                                     <option value='' selected>--All--</option>
                                                     <option value='D'>DSS</option>
                                                     <option value='C'>DCC</option>
                                                     <option value='DC'>DSS & DCC</option>
                                                     <option value='N'>Non DSS & DCC</option>
+
+                                                <?PHP
+                                                }
+                                                ?>
                                                 </select>
                                             </div>
                                         </div>

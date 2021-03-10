@@ -848,6 +848,8 @@
         include 'module/incentive/inc_incentivelap/incentivelap.php';
     }elseif ($_GET['module']=='incentivelappm'){
         include 'module/incentive/inc_incentivelap/incentivelap.php';
+    }elseif ($_GET['module']=='incentiverekap'){
+        include 'module/incentive/inc_incentiverekap/incentiverekap.php';
         
     }elseif ($_GET['module']=='ksprosesdatakscab'){
         include 'module/ks_proseskscab/proseskscab.php';

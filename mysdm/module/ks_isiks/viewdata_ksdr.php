@@ -2,7 +2,7 @@
     session_start();
     
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
     
@@ -29,7 +29,17 @@
         $filterkaryawan="('')";
     }
 
+    $pidcard=$_SESSION['IDCARD']; 
+    $fjbtid=$_SESSION['JABATANID']; 
+    $pidgrpuser=$_SESSION['GROUP']; 
+    $fregion=$_SESSION['REGION'];
 
+    $pbukaks=false;
+    $padminkhs=false;
+    if ( $pidgrpuser=="1" OR $pidgrpuser=="24" OR ($fregion=="T" AND $fjbtid=="38") ) {
+        $pbukaks=true;
+        if ($fjbtid=="38")  $padminkhs=true;
+    }
     
     $userid=$_SESSION['USERID'];
     
@@ -43,7 +53,11 @@
     
     
     $query ="select distinct a.dokterid as dokterid, a.nama as nama, a.alamat1 as alamat1, a.alamat2 as alamat2 "
-            . " from hrd.dokter as a JOIN hrd.mrdoktbaru as b on a.dokterid=b.dokterid WHERE b.karyawanid IN $filterkaryawan";
+            . " from hrd.dokter as a JOIN hrd.mrdoktbaru as b on a.dokterid=b.dokterid ";
+    if ($padminkhs==true) {
+        $query .=" JOIN hrd.ks1_karyawan_khusus as c on a.dokterid=c.dokterid ";
+    }
+    $query .=" WHERE b.karyawanid IN $filterkaryawan";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnit, $query);
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

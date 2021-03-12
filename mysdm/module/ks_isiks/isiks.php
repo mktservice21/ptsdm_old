@@ -1,6 +1,6 @@
 
 <?PHP
-    include "config/cek_akses_modul.php";
+    //include "config/cek_akses_modul.php";
     //include "config/koneksimysqli_it.php";
     $cnit=$cnmy;
 	//server 2020 11 19
@@ -24,6 +24,12 @@
     $fstsadmin=$_SESSION['STSADMIN'];
     $flvlposisi=$_SESSION['LVLPOSISI'];
     $fdivisi=$_SESSION['DIVISI'];
+    $fregion=$_SESSION['REGION'];
+    
+    $pbukaks=false;
+    if ($fgroupid=="1" OR $fgroupid=="24" OR $fregion=="T") {
+        $pbukaks=true;
+    }
     
 
     //$fkaryawan="0000000158"; $fjbtid="05";//hapussaja
@@ -162,7 +168,7 @@
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                     <div class='x_panel'>
                         <?PHP
-                        if ($fgroupid=="1" OR $fgroupid=="24") {
+                        if ($pbukaks==true) {
                         ?>
                             <div class='x_title'>
                                 <h2><input class='btn btn-default' type=button value='Tambah Baru'

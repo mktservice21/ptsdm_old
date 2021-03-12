@@ -24,6 +24,13 @@ $pidcard=$_POST['e_idcarduser'];
 $pidgrpuser=$_POST['e_idgrpuser'];
 
 
+$pbukaid=$_POST['e_idbuka'];
+$pbukaadmid=$_POST['e_idadmbuka'];
+
+//cek khusus
+$pbukakhusus=false;
+if ($pbukaid==true) $pbukakhusus=true;
+
 $ppilihdoktid=$_POST['e_iddokt'];
 $pkaryawanid=$_POST['cb_karyawan'];
 $ppilihbln=$_POST['e_bulan'];
@@ -53,14 +60,6 @@ $ppilihdoktnm=getfield("select nama as lcfields from hrd.dokter where dokterid='
 
 //echo "$ppilihdoktid, $pkaryawanid, $ppilihbln, $ppilaptid, $ppilihcn";
 
-    //cek khusus
-    $pbukakhusus=false;
-    $query = "select * from hrd.ks1_karyawan_khusus where karyawanid='$pkaryawanid' AND dokterid='$ppilihdoktid'";
-    $tampilkh = mysqli_query($cnit, $query);
-    $ketemukh = mysqli_num_rows($tampilkh);
-    if ((INT)$ketemukh>0) {
-        $pbukakhusus=true;
-    }
 
     if ($pbukakhusus==true){
     }else{

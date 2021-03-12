@@ -11,13 +11,6 @@ $pidjbt=$_SESSION['JABATANID'];
 $pidgrpuser=$_SESSION['GROUP']; 
 $fregion=$_SESSION['REGION'];
 
-$pbukaks=false;
-$padminkhs=false;
-if ( $fgroupid=="1" OR $fgroupid=="24" OR ($fregion=="T" AND $fjbtid=="38") ) {
-    $pbukaks=true;
-    if ($fjbtid=="38" AND $fgroupid<>"24")  $padminkhs=true;
-}
-
 if ($pbukaks==true) {
 }else{
     exit;
@@ -134,6 +127,9 @@ if ($pidact=="editdata"){
                                         <input type='hidden' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='hidden' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
                                         <input type='hidden' id='e_idgrpuser' name='e_idgrpuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidgrpuser; ?>' Readonly>
+                                        
+                                        <input type='hidden' id='e_idbuka' name='e_idbuka' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pbukaks; ?>' >
+                                        <input type='hidden' id='e_idadmbuka' name='e_idadmbuka' class='form-control col-md-7 col-xs-12' value='<?PHP echo $padminkhs; ?>' >
                                     </div>
                                 </div>
                                 
@@ -145,9 +141,7 @@ if ($pidact=="editdata"){
                                           <select class='form-control input-sm' id='cb_karyawan' name='cb_karyawan' onchange="ShowDataKry()" data-live-search="true">
                                               
                                               <?PHP 
-                                                    if ( ($pidjbt=="38" OR $pidjbt=="33") AND $fgroupid<>"24") {
-
-                                                    }else{
+                                                    
                                                         echo "<option value='' selected>--Pilihan--</option>";
                                                         if ($pidjbt=="38" OR $pidjbt=="33") {
                                                             if (!empty($pfilterkaryawan)) {
@@ -184,7 +178,7 @@ if ($pidact=="editdata"){
                                                                 }
                                                             }
                                                         }
-                                                    }
+                                                    
                                                     $query .= " ORDER BY a.nama";
 
                                                     if ($pbukaks==true AND $padminkhs==true) {
@@ -370,11 +364,13 @@ if ($pidact=="editdata"){
     
     function getDataDokter(data1, data2){
         var eidkry =document.getElementById('cb_karyawan').value;
+        var ebkid =document.getElementById('e_idbuka').value;
+        var eadmidbk =document.getElementById('e_idadmbuka').value;
         
         $.ajax({
             type:"post",
             url:"module/ks_isiks/viewdata_ksdr.php?module=viewdatadokter",
-            data:"udata1="+data1+"&udata2="+data2+"&uidkry="+eidkry,
+            data:"udata1="+data1+"&udata2="+data2+"&uidkry="+eidkry+"&ubkid="+ebkid+"&uadmidbk="+eadmidbk,
             success:function(data){
                 $("#myModal").html(data);
                 document.getElementById(data1).value="";
@@ -440,11 +436,13 @@ if ($pidact=="editdata"){
     function ShowDataPilihBulan(){
         var eidkry =document.getElementById('cb_karyawan').value;
         var eiddr =document.getElementById('e_iddokt').value;
+        var ebkid =document.getElementById('e_idbuka').value;
+        var eadmidbk =document.getElementById('e_idadmbuka').value;
         
         $.ajax({
             type:"post",
             url:"module/ks_isiks/viewdataksisi.php?module=viewdatapilihbulan",
-            data:"uiddr="+eiddr+"&uidkry="+eidkry,
+            data:"uiddr="+eiddr+"&uidkry="+eidkry+"&ubkid="+ebkid+"&uadmidbk="+eadmidbk,
             success:function(data){
                 $("#div_bulan").html(data);
             }
@@ -469,6 +467,8 @@ if ($pidact=="editdata"){
         var iaptid = document.getElementById('cb_apotik').value;
         var ettl = document.getElementById('e_total').value;
         var ebln =document.getElementById('e_bulan').value;
+        var ebkid =document.getElementById('e_idbuka').value;
+        var eadmidbk =document.getElementById('e_idadmbuka').value;
         
         var newchar = '';
         if (ettl=="") ettl="0";
@@ -498,7 +498,7 @@ if ($pidact=="editdata"){
             $.ajax({
                 type:"post",
                 url:"module/ks_isiks/viewdataksisi.php?module=cekdatasudahada",
-                data:"ukry="+ikry+"&udoktid="+idoktid+"&uaptid="+iaptid+"&ubln="+ebln,
+                data:"ukry="+ikry+"&udoktid="+idoktid+"&uaptid="+iaptid+"&ubln="+ebln+"&ubkid="+ebkid+"&uadmidbk="+eadmidbk,
                 success:function(data){
                     //var tjml = data.length;
                     //alert(data);
@@ -546,6 +546,8 @@ if ($pidact=="editdata"){
         var ebln =document.getElementById('e_bulan').value;
         var iapotikid = document.getElementById('cb_apotik').value;
         var ipl_cn = document.getElementById('e_cn').value;
+        var ebkid =document.getElementById('e_idbuka').value;
+        var eadmidbk =document.getElementById('e_idadmbuka').value;
                                 
         if (ikry=="") {
             alert("karyawan masih kosong...");
@@ -571,7 +573,7 @@ if ($pidact=="editdata"){
             $.ajax({
                 type:"post",
                 url:"module/ks_isiks/viewdataksisi.php?module=cekdatasudahada",
-                data:"ukry="+ikry+"&udoktid="+idoktid+"&uaptid="+iaptid+"&ubln="+ebln+"&uapotikid="+iapotikid,
+                data:"ukry="+ikry+"&udoktid="+idoktid+"&uaptid="+iaptid+"&ubln="+ebln+"&uapotikid="+iapotikid+"&ubkid="+ebkid+"&uadmidbk="+eadmidbk,
                 success:function(data){
                     //var tjml = data.length;
                     //alert(data);

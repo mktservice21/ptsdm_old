@@ -114,6 +114,9 @@ if ($pmodule=="viewdataaptdr") {
     $pbulan = date('Y-m', strtotime($pbulan));
     $pthn = date('Y', strtotime($pbulan));
     
+    $pbukaid=$_POST['ubkid'];
+    $pbukaadmid=$_POST['uadmidbk'];
+    
     $pidgrpuser="";
     if (isset($_SESSION['GROUP'])) $pidgrpuser=$_SESSION['GROUP'];
     
@@ -121,23 +124,20 @@ if ($pmodule=="viewdataaptdr") {
     $cnit=$cnmy;
 
 
-    //cek khusus
-    $query = "select * from hrd.ks1_karyawan_khusus where karyawanid='$pidkar' AND dokterid='$piddokt'";
-    $tampilkh = mysqli_query($cnit, $query);
-    $ketemukh = mysqli_num_rows($tampilkh);
-    if ((INT)$ketemukh>0) {
-        mysqli_close($cnit);
-        $bolehinput="boleh";
-        echo $bolehinput;
-        exit;
-    }
-
     //jika ks samasekali belum ada, maka tidak bisa input.
     $query  = "select distinct dokterid FROM hrd.ks1 WHERE srid='$pidkar' AND dokterid='$piddokt'";
     $tampil = mysqli_query($cnit, $query);
     $ketemu = mysqli_num_rows($tampil);
     if ((INT)$ketemu<=0) {
         
+        //cek khusus
+        if ($pbukaid==true) {
+            mysqli_close($cnit);
+            $bolehinput="boleh";
+            echo $bolehinput;
+            exit;
+        }
+
         //boleh input jika ada data exspsion
         $query = "select distinct dokterid FROM hrd.ks1_buka WHERE srid='$pidkar' AND dokterid='$piddokt' AND ifnull(aktif,'')<>'N'";
         $tampilb = mysqli_query($cnit, $query);
@@ -179,6 +179,8 @@ if ($pmodule=="viewdataaptdr") {
 
     $pidkar=$_POST['uidkry'];
     $piddokt=$_POST['uiddr'];
+    $pbukaid=$_POST['ubkid'];
+    $pbukaadmid=$_POST['uadmidbk'];
     
     include "../../config/koneksimysqli.php";
     include "../../config/fungsi_sql.php";
@@ -216,11 +218,15 @@ if ($pmodule=="viewdataaptdr") {
     
 
     $pbukakhusus=false;
-    $query = "select * from hrd.ks1_karyawan_khusus where karyawanid='$pidkar' AND dokterid='$piddokt'";
-    $tampil = mysqli_query($cnit, $query);
-    $ketemu = mysqli_num_rows($tampil);
-    if ((INT)$ketemu>0) {
-        $pbukakhusus=true;
+    if ($pbukaid==true AND $pbukaadmid==true) {
+        $query = "select * from hrd.ks1_karyawan_khusus where karyawanid='$pidkar' AND dokterid='$piddokt'";
+        $tampil = mysqli_query($cnit, $query);
+        $ketemu = mysqli_num_rows($tampil);
+        if ((INT)$ketemu>0) {
+            $nr=mysqli_fetch_array($tampil);
+            $pallper=$nr['allperiode'];
+            if ($pallper=="Y") $pbukakhusus=true;
+        }
     }
     
     if ($fgroupid=="1" OR $fgroupid==24) $pbukakhusus=true;

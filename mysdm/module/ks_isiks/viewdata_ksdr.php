@@ -11,6 +11,8 @@
     $cnit=$cnmy;
     $pdatainp1=$_POST['udata1'];
     $pdatainp2=$_POST['udata2'];
+    $pdatainp3=$_POST['ubkid'];
+    $pdatainp4=$_POST['uadmidbk'];
     
     $filterkaryawan="";
     $nmkaryawan="";
@@ -34,12 +36,15 @@
     $pidgrpuser=$_SESSION['GROUP']; 
     $fregion=$_SESSION['REGION'];
 
+
+
     $pbukaks=false;
     $padminkhs=false;
-    if ( $pidgrpuser=="1" OR $pidgrpuser=="24" OR ($fregion=="T" AND $fjbtid=="38") ) {
-        $pbukaks=true;
-        if ($fjbtid=="38")  $padminkhs=true;
-    }
+    if ($pdatainp3==true) $pbukaks=true;
+    if ($pdatainp4==true) $padminkhs=true;
+
+    //echo "$pdatainp3, $pdatainp4";
+    
     
     $userid=$_SESSION['USERID'];
     

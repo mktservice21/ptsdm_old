@@ -1,8 +1,4 @@
 <?php
-if ($fgroupid=="1" OR $fgroupid=="24") {
-}else{
-    exit;
-}
 //include "config/koneksimysqli_it.php";
 $cnit=$cnmy;
 $pidmodule=$_GET['module'];
@@ -13,6 +9,20 @@ $piduser=$_SESSION['USERID'];
 $pidcard=$_SESSION['IDCARD']; 
 $pidjbt=$_SESSION['JABATANID']; 
 $pidgrpuser=$_SESSION['GROUP']; 
+$fregion=$_SESSION['REGION'];
+
+$pbukaks=false;
+$padminkhs=false;
+if ( $fgroupid=="1" OR $fgroupid=="24" OR ($fregion=="T" AND $fjbtid=="38") ) {
+    $pbukaks=true;
+    if ($fjbtid=="38")  $padminkhs=true;
+}
+
+if ($pbukaks==true) {
+}else{
+    exit;
+}
+
 
 $hari_ini = date("Y-m-d");
 //$pbulanpilih = date('F Y', strtotime($hari_ini));
@@ -135,43 +145,56 @@ if ($pidact=="editdata"){
                                           <select class='form-control input-sm' id='cb_karyawan' name='cb_karyawan' onchange="ShowDataKry()" data-live-search="true">
                                               
                                               <?PHP 
-                                                    echo "<option value='' selected>--Pilihan--</option>";
                                                     if ($pidjbt=="38" OR $pidjbt=="33") {
-                                                        if (!empty($pfilterkaryawan)) {
-                                                            $query = "select a.karyawanid as karyawanid, a.nama as nama FROM hrd.karyawan as a WHERE a.karyawanid IN $pfilterkaryawan ";
-                                                        }else{
-                                                            $query = "select DISTINCT a.karyawanid as karyawanid, a.nama as nama  
-                                                                from hrd.karyawan as a 
-                                                                left join MKT.iarea as b ON a.areaid=b.areaid and a.icabangid=b.icabangid 
-                                                                where (a.jabatanid='15') and (a.tglkeluar='0000-00-00' OR a.aktif='Y') 
-                                                                and (a.divisiid<>'OTC')
-                                                                and a.icabangid in (select IFNULL(icabangid,'') from hrd.rsm_auth where karyawanid='$pidcard') ";
-                                                        }
+
                                                     }else{
-                                                        
-                                                        $query = "select karyawanId as karyawanid, nama as nama From hrd.karyawan as a
-                                                            WHERE 1=1 ";
-                                                        if ($pidact=="editdata"){
-                                                            $query .= " AND a.karyawanid ='$pkaryawanid'";
-                                                        }else{
+                                                        echo "<option value='' selected>--Pilihan--</option>";
+                                                        if ($pidjbt=="38" OR $pidjbt=="33") {
                                                             if (!empty($pfilterkaryawan)) {
-                                                                $query .= " AND a.karyawanid IN $pfilterkaryawan ";
+                                                                $query = "select a.karyawanid as karyawanid, a.nama as nama FROM hrd.karyawan as a WHERE a.karyawanid IN $pfilterkaryawan ";
                                                             }else{
-                                                                /*
-                                                                $query .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
-                                                                $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
-                                                                        . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
-                                                                        . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
-                                                                        . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
-                                                                        . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
-                                                                 * 
-                                                                 */
-                                                                $query .= " AND a.nama NOT IN ('ACCOUNTING')";
-                                                                $query .= " AND a.karyawanid NOT IN ('0000002200', '0000002083')";
+                                                                $query = "select DISTINCT a.karyawanid as karyawanid, a.nama as nama  
+                                                                    from hrd.karyawan as a 
+                                                                    left join MKT.iarea as b ON a.areaid=b.areaid and a.icabangid=b.icabangid 
+                                                                    where (a.jabatanid='15') and (a.tglkeluar='0000-00-00' OR a.aktif='Y') 
+                                                                    and (a.divisiid<>'OTC')
+                                                                    and a.icabangid in (select IFNULL(icabangid,'') from hrd.rsm_auth where karyawanid='$pidcard') ";
+                                                            }
+                                                        }else{
+                                                            
+                                                            $query = "select karyawanId as karyawanid, nama as nama From hrd.karyawan as a
+                                                                WHERE 1=1 ";
+                                                            if ($pidact=="editdata"){
+                                                                $query .= " AND a.karyawanid ='$pkaryawanid'";
+                                                            }else{
+                                                                if (!empty($pfilterkaryawan)) {
+                                                                    $query .= " AND a.karyawanid IN $pfilterkaryawan ";
+                                                                }else{
+                                                                    /*
+                                                                    $query .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
+                                                                    $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                                            . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                                            . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                                            . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                                            . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                                                    * 
+                                                                    */
+                                                                    $query .= " AND a.nama NOT IN ('ACCOUNTING')";
+                                                                    $query .= " AND a.karyawanid NOT IN ('0000002200', '0000002083')";
+                                                                }
                                                             }
                                                         }
                                                     }
                                                     $query .= " ORDER BY a.nama";
+
+                                                    if ($pbukaks==true AND $padminkhs==true) {
+                                                        $query = "select distinct a.karyawanid, b.nama  
+                                                            FROM hrd.ks1_karyawan_khusus as a 
+                                                            JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid
+                                                            WHERE a.userid='$fkaryawan'";
+                                                        $query .= " ORDER BY b.nama";
+                                                    }
+
                                                     $tampil = mysqli_query($cnit, $query);
                                                     while ($z= mysqli_fetch_array($tampil)) {
                                                         $pkaryid=$z['karyawanid'];
@@ -185,6 +208,7 @@ if ($pidact=="editdata"){
                                                 
                                               ?>
                                           </select>
+                                          
                                     </div>
                                 </div>
                                 

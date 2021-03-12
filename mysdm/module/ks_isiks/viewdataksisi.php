@@ -120,6 +120,18 @@ if ($pmodule=="viewdataaptdr") {
     include "../../config/koneksimysqli.php";
     $cnit=$cnmy;
 
+
+    //cek khusus
+    $query = "select * from hrd.ks1_karyawan_khusus where karyawanid='$pidkar' AND dokterid='$piddokt'";
+    $tampilkh = mysqli_query($cnit, $query);
+    $ketemukh = mysqli_num_rows($tampilkh);
+    if ((INT)$ketemukh>0) {
+        mysqli_close($cnit);
+        $bolehinput="boleh";
+        echo $bolehinput;
+        exit;
+    }
+
     //jika ks samasekali belum ada, maka tidak bisa input.
     $query  = "select distinct dokterid FROM hrd.ks1 WHERE srid='$pidkar' AND dokterid='$piddokt'";
     $tampil = mysqli_query($cnit, $query);
@@ -163,7 +175,8 @@ if ($pmodule=="viewdataaptdr") {
     echo $bolehinput;
     
 }elseif ($pmodule=="viewdatapilihbulan") {
-    
+    $fgroupid=$_SESSION['GROUP'];
+
     $pidkar=$_POST['uidkry'];
     $piddokt=$_POST['uiddr'];
     
@@ -201,6 +214,16 @@ if ($pmodule=="viewdataaptdr") {
     
     //$pblnselish="-1M";
     
+
+    $pbukakhusus=false;
+    $query = "select * from hrd.ks1_karyawan_khusus where karyawanid='$pidkar' AND dokterid='$piddokt'";
+    $tampil = mysqli_query($cnit, $query);
+    $ketemu = mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $pbukakhusus=true;
+    }
+    
+    if ($fgroupid=="1" OR $fgroupid==24) $pbukakhusus=true;
     
     ?>
     <div class='form-group'>
@@ -225,9 +248,12 @@ if ($pmodule=="viewdataaptdr") {
                 changeMonth: true,
                 changeYear: true,
                 dateFormat: 'MM yy',
-                //minDate: '-3M',
-                minDate: '<?PHP echo $pblnselish; ?>',
-                maxDate: '-3M',
+                //minDate: '<?PHP //echo $pblnselish; ?>',
+                //maxDate: '-3M',
+                <?PHP if ($pbukakhusus==true) {}else{ ?>
+                minDate: new Date(2020, 0 , 01),
+                maxDate: new Date(2020, 11 , 01),
+                <?PHP } ?>
                 onSelect: function(dateStr) {
 
                 },

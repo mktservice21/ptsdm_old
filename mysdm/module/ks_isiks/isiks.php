@@ -27,8 +27,21 @@
     $fregion=$_SESSION['REGION'];
     
     $pbukaks=false;
-    if ($fgroupid=="1" OR $fgroupid=="24" OR $fregion=="T") {
+    $padminkhs=false;
+    $padminkhsperiode=false;
+    $query = "select userid from hrd.ks1_karyawan_khusus where userid='$fkaryawan'";
+    $tmapiln=mysqli_query($cnmy, $query);
+    $ketemun=mysqli_num_rows($tmapiln);
+    if ((INT)$ketemun<=0) {
+        if ($fgroupid=="1" OR $fgroupid=="24") {
+            $pbukaks=true;
+        }
+    }else{
         $pbukaks=true;
+    }
+
+    if ($pbukaks==true AND $fjbtid=="38" AND $fgroupid<>"24") {
+        $padminkhs=true;
     }
 
     //$fkaryawan="0000000158"; $fjbtid="05";//hapussaja
@@ -189,6 +202,9 @@
                                 <div class="form-group">
                                     
                                   <input type='hidden' id='e_idkaryawanpilih' name='e_idkaryawanpilih' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pfilterkaryawan2; ?>' >
+                                  <input type='hidden' id='e_idbuka' name='e_idbuka' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pbukaks; ?>' >
+                                  <input type='hidden' id='e_idadmbuka' name='e_idadmbuka' class='form-control col-md-7 col-xs-12' value='<?PHP echo $padminkhs; ?>' >
+                                  
                                   <select class='form-control input-sm' id='cb_karyawan' name='cb_karyawan' onchange="ShowDataDokter()" data-live-search="true">
                                       <?PHP 
                                             //echo "<option value='' selected>-- Pilihan --</option>";
@@ -224,27 +240,6 @@
                                                     echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
                                                 
                                             }
-
-                                            /*
-                                            if ($pbukaks==true) {
-                                                $query = "select distinct a.karyawanid, b.nama  
-                                                    FROM hrd.ks1_karyawan_khusus as a 
-                                                    JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid
-                                                    WHERE a.userid='$fkaryawan'";
-                                                $query .= " ORDER BY b.nama";
-                                                $tampil = mysqli_query($cnit, $query);
-                                                while ($z= mysqli_fetch_array($tampil)) {
-                                                    $pkaryid=$z['karyawanid'];
-                                                    $pkarynm=$z['nama'];
-                                                    $pkryid=(INT)$pkaryid;
-                                                    if ($pkaryid==$pkaryawanid)
-                                                        echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
-                                                    else
-                                                        echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
-                                                }
-                                            }
-                                            */
-
 
                                       ?>
                                   </select>

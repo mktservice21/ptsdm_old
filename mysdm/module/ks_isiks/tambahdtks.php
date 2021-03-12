@@ -15,7 +15,7 @@ $pbukaks=false;
 $padminkhs=false;
 if ( $fgroupid=="1" OR $fgroupid=="24" OR ($fregion=="T" AND $fjbtid=="38") ) {
     $pbukaks=true;
-    if ($fjbtid=="38")  $padminkhs=true;
+    if ($fjbtid=="38" AND $fgroupid<>"24")  $padminkhs=true;
 }
 
 if ($pbukaks==true) {
@@ -145,7 +145,7 @@ if ($pidact=="editdata"){
                                           <select class='form-control input-sm' id='cb_karyawan' name='cb_karyawan' onchange="ShowDataKry()" data-live-search="true">
                                               
                                               <?PHP 
-                                                    if ($pidjbt=="38" OR $pidjbt=="33") {
+                                                    if ( ($pidjbt=="38" OR $pidjbt=="33") AND $fgroupid<>"24") {
 
                                                     }else{
                                                         echo "<option value='' selected>--Pilihan--</option>";
@@ -208,7 +208,7 @@ if ($pidact=="editdata"){
                                                 
                                               ?>
                                           </select>
-                                          
+
                                     </div>
                                 </div>
                                 
@@ -609,9 +609,10 @@ if ($pidact=="editdata"){
             changeMonth: true,
             changeYear: true,
             dateFormat: 'MM yy',
-            //minDate: '-3M',
-            minDate: '<?PHP echo $pblnselish; ?>',
-            maxDate: '-3M',
+            //minDate: '<?PHP echo $pblnselish; ?>',
+            //maxDate: '-3M',
+            minDate: new Date(2020, 0 , 01),
+            maxDate: new Date(2020, 11 , 01),
             onSelect: function(dateStr) {
                 
             },

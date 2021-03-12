@@ -62,7 +62,7 @@
             "ajax":{
                 url :"module/ks_isiks/mydata_ksisi.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&uidkry="+eidkry+"&uidpilihkry="+eidpilihkry+"&uiddokt="+eiddokt+"&ubln="+ebln+"&ubln2="+ebln2, // json datasource
                 type: "post",  // method  , by default get
-                data:"uidkry="+eidkry+"&uidpilihkry="+eidpilihkry+"&uiddokt="+eiddokt+"&ubln="+ebln+"&ubln2="+ebln2,
+                //data:"uidkry="+eidkry+"&uidpilihkry="+eidpilihkry+"&uiddokt="+eiddokt+"&ubln="+ebln+"&ubln2="+ebln2,
                 error: function(){  // error handling
                     $(".data-grid-error").html("");
                     $("#datatable").append('<tbody class="data-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');

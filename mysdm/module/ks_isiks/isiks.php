@@ -30,7 +30,6 @@
     if ($fgroupid=="1" OR $fgroupid=="24" OR $fregion=="T") {
         $pbukaks=true;
     }
-    
 
     //$fkaryawan="0000000158"; $fjbtid="05";//hapussaja
     
@@ -225,6 +224,27 @@
                                                     echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
                                                 
                                             }
+
+                                            /*
+                                            if ($pbukaks==true) {
+                                                $query = "select distinct a.karyawanid, b.nama  
+                                                    FROM hrd.ks1_karyawan_khusus as a 
+                                                    JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid
+                                                    WHERE a.userid='$fkaryawan'";
+                                                $query .= " ORDER BY b.nama";
+                                                $tampil = mysqli_query($cnit, $query);
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $pkaryid=$z['karyawanid'];
+                                                    $pkarynm=$z['nama'];
+                                                    $pkryid=(INT)$pkaryid;
+                                                    if ($pkaryid==$pkaryawanid)
+                                                        echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                    else
+                                                        echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                                }
+                                            }
+                                            */
+
 
                                       ?>
                                   </select>

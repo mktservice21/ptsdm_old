@@ -53,33 +53,44 @@ $ppilihdoktnm=getfield("select nama as lcfields from hrd.dokter where dokterid='
 
 //echo "$ppilihdoktid, $pkaryawanid, $ppilihbln, $ppilaptid, $ppilihcn";
 
-
-
-    //jika ks samasekali belum ada, maka tidak bisa input.
-    $query  = "select distinct dokterid FROM hrd.ks1 WHERE srid='$pkaryawanid' AND dokterid='$ppilihdoktid'";
-    $tampil = mysqli_query($cnit, $query);
-    $ketemu = mysqli_num_rows($tampil);
-    if ((INT)$ketemu<=0) {
-        
-        //boleh input jika ada data exspsion
-        $query = "select distinct dokterid FROM hrd.ks1_buka WHERE srid='$pkaryawanid' AND dokterid='$ppilihdoktid' AND ifnull(aktif,'')<>'N'";
-        $tampilb = mysqli_query($cnit, $query);
-        $ketemub = mysqli_num_rows($tampilb);
-        if ((INT)$ketemub>0) {
-        }else{
-            
-            if ($pthn=="2020") {
-                
-            }else{
-                mysqli_close($cnit);
-                $bolehinput="KS samasekali belum ada, silakan info ke MS untuk input...";
-                echo $bolehinput;
-                exit;
-            }
-            
-        }
+    //cek khusus
+    $pbukakhusus=false;
+    $query = "select * from hrd.ks1_karyawan_khusus where karyawanid='$pkaryawanid' AND dokterid='$ppilihdoktid'";
+    $tampilkh = mysqli_query($cnit, $query);
+    $ketemukh = mysqli_num_rows($tampilkh);
+    if ((INT)$ketemukh>0) {
+        $pbukakhusus=true;
     }
-    
+
+    if ($pbukakhusus==true){
+    }else{
+
+        //jika ks samasekali belum ada, maka tidak bisa input.
+        $query  = "select distinct dokterid FROM hrd.ks1 WHERE srid='$pkaryawanid' AND dokterid='$ppilihdoktid'";
+        $tampil = mysqli_query($cnit, $query);
+        $ketemu = mysqli_num_rows($tampil);
+        if ((INT)$ketemu<=0) {
+            
+            //boleh input jika ada data exspsion
+            $query = "select distinct dokterid FROM hrd.ks1_buka WHERE srid='$pkaryawanid' AND dokterid='$ppilihdoktid' AND ifnull(aktif,'')<>'N'";
+            $tampilb = mysqli_query($cnit, $query);
+            $ketemub = mysqli_num_rows($tampilb);
+            if ((INT)$ketemub>0) {
+            }else{
+                
+                if ($pthn=="2020") {
+                    
+                }else{
+                    mysqli_close($cnit);
+                    $bolehinput="KS samasekali belum ada, silakan info ke MS untuk input...";
+                    echo $bolehinput;
+                    exit;
+                }
+                
+            }
+        }
+
+    }
     
     
 ?>

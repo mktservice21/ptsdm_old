@@ -38,7 +38,7 @@
             . " a.aktivitas1 as aktivitas1, a.aktivitas2 as aktivitas2, a.ketkuranglebih, "
             . " a.karyawanid, c.nama nama_karyawan, b.gambar, "
             . " b.atasan4, e.nama nama_atasan4, b.tgl_atasan4, b.gbr_atasan4, "
-            . " b.atasan5, f.nama nama_atasan5, b.tgl_atasan5, b.gbr_atasan5 "
+            . " b.atasan5, f.nama nama_atasan5, b.tgl_atasan5, b.gbr_atasan5, a.jenisklaim "
             . " from hrd.klaim as a "
             . " LEFT JOIN dbttd.klaim_ttd b on a.klaimid=b.klaimid "
             . " LEFT JOIN hrd.karyawan c on a.karyawanid=c.karyawanid "
@@ -156,6 +156,12 @@
             
             if (TRIM($pnmreal)!=TRIM($pnamadistributor)) $pnamarealisasi=$pnmreal;
             
+            $pjenisklaim=$row['jenisklaim'];
+            $pnamajenisklm="";
+            if ($pjenisklaim=="S") $pnamajenisklm="SDM ONLINE";
+            elseif ($pjenisklaim=="D") $pnamajenisklm="DISTRIBUTOR ONLINE";
+
+
             $pbln=$row['bulan'];
             $pbulan = date("F Y", strtotime($pbln));
             
@@ -282,6 +288,11 @@
                                     <tr><td>Realisasi</td><td>:</td><td nowrap><?PHP echo "$pnamarealisasi"; ?></td></tr>
                                 <?PHP } ?>
                                 <tr><td>Periode</td><td>:</td><td nowrap><?PHP echo "$pbulan"; ?></td></tr>
+                                <?PHP
+                                if (!empty($pnamajenisklm)) {
+                                    echo "<tr><td>&nbsp;</td><td>&nbsp;</td><td nowrap>$pnamajenisklm</td></tr>";
+                                }
+                                ?>
                             </table>
                         </div>
                         <div id="isikanan">

@@ -40,6 +40,165 @@ mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 
+$tmp04 ="dbtemp.tmprptincrkp04_".$puser."_$now$milliseconds";
+$tmp05 ="dbtemp.tmprptincrkp05_".$puser."_$now$milliseconds";
+
+//pivot
+if ($preportpl=="P") {
+
+
+    //AM
+    $pfiltersts="('AM')";
+
+    $query = "select distinct karyawanid, nama_karyawan FROM $tmp02 WHERE sts IN $pfiltersts";
+    $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+    $arridjenisam[]="";
+    unset($arridjenisam);
+    $addcolumn="";
+    $columntotal="";
+    $query = "select distinct jenis from $tmp02 WHERE sts IN $pfiltersts Order by jenis";
+    $tampil=mysqli_query($cnms, $query);
+    $ketemuam=mysqli_num_rows($tampil);
+    if ((INT)$ketemuam>0) {
+
+        while ($row=mysqli_fetch_array($tampil)) {
+            $pnmjenis=$row['jenis'];
+            $arridjenisam[]=$pnmjenis;
+
+            $columntotal .="IFNULL(`$pnmjenis`,0)+";
+            $addcolumn .= " ADD COLUMN `$pnmjenis` DECIMAL(20,2),";
+        }
+        $addcolumn .= " ADD TOTAL DECIMAL(20,2)";
+
+        $query = "ALTER TABLE $tmp03 $addcolumn";
+        mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+
+        for($ix=0;$ix<count($arridjenisam);$ix++) {
+            $pnmjenis=$arridjenisam[$ix];
+
+            $query = "UPDATE $tmp03 as a JOIN (select karyawanid, sum(incentive) as incentive FROM 
+                $tmp01 WHERE jenis='$pnmjenis' AND sts IN $pfiltersts GROUP BY 1) as b
+                on a.karyawanid=b.karyawanid SET a.`$pnmjenis`=b.incentive";
+            //echo "$query<br/>";
+            mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+        }
+
+        if (!empty($columntotal)) {
+            $columntotal=substr($columntotal, 0, -1);
+            $query = "UPDATE $tmp03 SET TOTAL=$columntotal";
+            mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+        }
+
+    }
+    // END AM
+
+    //DM
+    $pfiltersts="('DM')";
+
+    $query = "select distinct karyawanid, nama_karyawan FROM $tmp02 WHERE sts IN $pfiltersts";
+    $query = "CREATE TEMPORARY TABLE $tmp04 ($query)";
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+    $arridjenisdm[]="";
+    unset($arridjenisdm);
+    $addcolumn="";
+    $columntotal="";
+    $query = "select distinct jenis from $tmp02 WHERE sts IN $pfiltersts Order by jenis";
+    $tampil=mysqli_query($cnms, $query);
+    $ketemudm=mysqli_num_rows($tampil);
+    if ((INT)$ketemudm>0) {
+
+        while ($row=mysqli_fetch_array($tampil)) {
+            $pnmjenis=$row['jenis'];
+            $arridjenisdm[]=$pnmjenis;
+
+            $columntotal .="IFNULL(`$pnmjenis`,0)+";
+            $addcolumn .= " ADD COLUMN `$pnmjenis` DECIMAL(20,2),";
+        }
+        $addcolumn .= " ADD TOTAL DECIMAL(20,2)";
+
+        $query = "ALTER TABLE $tmp04 $addcolumn";
+        mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+
+        for($ix=0;$ix<count($arridjenisdm);$ix++) {
+            $pnmjenis=$arridjenisdm[$ix];
+
+            $query = "UPDATE $tmp04 as a JOIN (select karyawanid, sum(incentive) as incentive FROM 
+                $tmp01 WHERE jenis='$pnmjenis' AND sts IN $pfiltersts GROUP BY 1) as b
+                on a.karyawanid=b.karyawanid SET a.`$pnmjenis`=b.incentive";
+            //echo "$query<br/>";
+            mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+        }
+
+        if (!empty($columntotal)) {
+            $columntotal=substr($columntotal, 0, -1);
+            $query = "UPDATE $tmp04 SET TOTAL=$columntotal";
+            mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+        }
+
+    }
+
+    // END DM
+
+    //MR
+    $pfiltersts="('MR')";
+
+    $query = "select distinct karyawanid, nama_karyawan FROM $tmp02 WHERE sts IN $pfiltersts";
+    $query = "CREATE TEMPORARY TABLE $tmp05 ($query)";
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+    $arridjenismr[]="";
+    unset($arridjenismr);
+    $addcolumn="";
+    $columntotal="";
+    $query = "select distinct jenis from $tmp02 WHERE sts IN $pfiltersts Order by jenis";
+    $tampil=mysqli_query($cnms, $query);
+    $ketemumr=mysqli_num_rows($tampil);
+    if ((INT)$ketemumr>0) {
+
+        while ($row=mysqli_fetch_array($tampil)) {
+            $pnmjenis=$row['jenis'];
+            $arridjenismr[]=$pnmjenis;
+
+            $columntotal .="IFNULL(`$pnmjenis`,0)+";
+            $addcolumn .= " ADD COLUMN `$pnmjenis` DECIMAL(20,2),";
+        }
+        $addcolumn .= " ADD TOTAL DECIMAL(20,2)";
+
+        $query = "ALTER TABLE $tmp05 $addcolumn";
+        mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+
+        for($ix=0;$ix<count($arridjenismr);$ix++) {
+            $pnmjenis=$arridjenismr[$ix];
+
+            $query = "UPDATE $tmp05 as a JOIN (select karyawanid, sum(incentive) as incentive FROM 
+                $tmp01 WHERE jenis='$pnmjenis' AND sts IN $pfiltersts GROUP BY 1) as b
+                on a.karyawanid=b.karyawanid SET a.`$pnmjenis`=b.incentive";
+            //echo "$query<br/>";
+            mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+        }
+
+        if (!empty($columntotal)) {
+            $columntotal=substr($columntotal, 0, -1);
+            $query = "UPDATE $tmp05 SET TOTAL=$columntotal";
+            mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+        }
+
+    }
+    // END MR
+
+
+}
+
+
 ?>
 
 <HTML>
@@ -66,6 +225,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
         .ibuton {
             display:none;
         }
+        
+        .page-break { display: block; page-break-before: always; }
     }
     </style>
 
@@ -85,96 +246,337 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
 
 <?PHP
-echo "<center><b>Incentive All (DM,AM,MR) - $pbulan</b></center><br>";
-echo "<center>Incentive From $pincfrom</center><br>";
-if (!empty($pjabatan)) {
-    echo "<center>Jabatan : $pjabatan</center><br>";
-}
+//pivot
+if ($preportpl=="P") {
 
-$pgrandtotinc=0;
-echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1'>";
-    echo "<thead>";
-    echo "<tr>";
-        $header_ = add_space('Karyawan',40);
-        echo "<th align='center'>Karyawan</th>";
-        echo "<th align='center'>Incentive</th>";
-    echo "</tr>";
-    echo "</thead>";
-    echo "<tbody>";
+    //AM
+    echo "<div class='page-break'>";
 
-    $query = "select distinct sts from $tmp02 Order by sts";
-    $tampil0=mysqli_query($cnms, $query);
-    while ($row0=mysqli_fetch_array($tampil0)) {
-        $njabatan=$row0['sts'];
+        echo "<center><b>Incentive AM - $pbulan</b></center><br>";
+        echo "<center>Incentive From $pincfrom</center><br>";
+        
+        if ((INT)$ketemuam>0) {
 
-        $no=1;
-        $ptotincjbt=0;
-        $query = "select distinct karyawanid, nama_karyawan from $tmp02 WHERE sts='$njabatan' Order by sts, nama_karyawan, karyawanid";
-        $tampil1=mysqli_query($cnms, $query);
-        while ($row1=mysqli_fetch_array($tampil1)) {
-            $pkaryawanid=$row1['karyawanid'];
-            $pkaryawannm=$row1['nama_karyawan'];
-
-
-            echo "<tr>";
-            echo "<td nowrap>$pkaryawannm</td>";
-            echo "<td nowrap align='right'></td>";
-            echo "</tr>";
-
-            $ptotalincjenis=0;
-
-            $query = "select * from $tmp02 WHERE karyawanid='$pkaryawanid' AND sts='$njabatan' Order by sts, nama_karyawan, karyawanid, jenis";
-            $tampil2=mysqli_query($cnms, $query);
-            while ($row2=mysqli_fetch_array($tampil2)) {
-                $pjenisid=$row2['jenis'];
-
-                $pnmjenis=$pjenisid;
-
-                $pincentive=$row2['incentive'];
-
-                $ptotalincjenis=(DOUBLE)$ptotalincjenis+(DOUBLE)$pincentive;
-                $ptotincjbt=(DOUBLE)$ptotincjbt+(DOUBLE)$pincentive;
-                $pgrandtotinc=(DOUBLE)$pgrandtotinc+(DOUBLE)$pincentive;
-
-
-                $pincentive=number_format($pincentive,0,",",",");
-
-                echo "<tr>";
-                echo "<td nowrap class='tdijenis'>$pnmjenis</td>";
-                echo "<td nowrap align='right'>$pincentive</td>";
-                echo "</tr>";
-
+            $pgrandtotinc=0;
+            for($ix=0;$ix<count($arridjenisam);$ix++) {
+                $ptotperjenis[$ix]=0;
             }
 
+            echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1'>";
+                echo "<thead>";
+                echo "<tr>";
+                    echo "<th align='center'>Karyawan</th>";
+                    for($ix=0;$ix<count($arridjenisam);$ix++) {
+                        $pnmjenis=$arridjenisam[$ix];
+                        echo "<th align='center'>$pnmjenis</th>";
+                    }
+                    echo "<th align='center'>Total</th>";
+                echo "</tr>";
+                echo "</thead>";
+                echo "<tbody>";
 
-            $no++;
+                    $query = "select * from $tmp03 order by nama_karyawan, karyawanid";
+                    $tampil1=mysqli_query($cnms, $query);
+                    while ($row1=mysqli_fetch_array($tampil1)) {
+                        $pkaryawanid=$row1['karyawanid'];
+                        $pkaryawannm=$row1['nama_karyawan'];
+                        $ptotalkry=$row1['TOTAL'];
+
+                        $pgrandtotinc=(DOUBLE)$pgrandtotinc+(DOUBLE)$ptotalkry;
+
+                        $ptotalkry=number_format($ptotalkry,0,",",",");
+                        
+
+                        echo "<tr>";
+                        echo "<td nowrap>$pkaryawannm</td>";
+                        for($ix=0;$ix<count($arridjenisam);$ix++) {
+                            $pincfld=$row1[$arridjenisam[$ix]];
+
+                            $ptotperjenis[$ix]=(DOUBLE)$ptotperjenis[$ix]+(DOUBLE)$pincfld;
+
+                            $pincfld=number_format($pincfld,0,",",",");
+
+                            echo "<td nowrap align='right'>$pincfld</td>";
+                        }
+                        echo "<td nowrap align='right'><b>$ptotalkry</b></td>";
+                        echo "</tr>";
+
+                    }
+                    
+                    //grand total
+                    $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+                    echo "<tr class='trtotal'>";
+                    echo "<td nowrap>Grand Total</td>";
+                    for($ix=0;$ix<count($arridjenisam);$ix++) {
+                        $pincfld=$ptotperjenis[$ix];
+
+                        $pincfld=number_format($pincfld,0,",",",");
+
+                        echo "<td nowrap align='right'>$pincfld</td>";
+                    }
+                    echo "<td nowrap align='right'><b>$pgrandtotinc</b></td>";
+                    echo "</tr>";
+
+
+                echo "</tbody>";
+            echo "</table>";
+            echo "<br/>";
+
         }
 
-        $ptotincjbt=number_format($ptotincjbt,0,",",",");
+    echo "</div>";
 
-        echo "<tr class='trtotal'>";
-        echo "<td nowrap class='tdijenis'>Total $njabatan</td>";
-        echo "<td nowrap align='right'>$ptotincjbt</td>";
-        echo "</tr>";
+    //DM
+    echo "<div class='page-break'>";
 
+        echo "<center><b>Incentive DM - $pbulan</b></center><br>";
+        echo "<center>Incentive From $pincfrom</center><br>";
+
+        if ((INT)$ketemudm>0) {
+
+            $pgrandtotinc=0;
+            for($ix=0;$ix<count($arridjenisdm);$ix++) {
+                $ptotperjenis[$ix]=0;
+            }
+
+            echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1'>";
+                echo "<thead>";
+                echo "<tr>";
+                    echo "<th align='center'>Karyawan</th>";
+                    for($ix=0;$ix<count($arridjenisdm);$ix++) {
+                        $pnmjenis=$arridjenisdm[$ix];
+                        echo "<th align='center'>$pnmjenis</th>";
+                    }
+                    echo "<th align='center'>Total</th>";
+                echo "</tr>";
+                echo "</thead>";
+                echo "<tbody>";
+
+                    $query = "select * from $tmp04 order by nama_karyawan, karyawanid";
+                    $tampil1=mysqli_query($cnms, $query);
+                    while ($row1=mysqli_fetch_array($tampil1)) {
+                        $pkaryawanid=$row1['karyawanid'];
+                        $pkaryawannm=$row1['nama_karyawan'];
+                        $ptotalkry=$row1['TOTAL'];
+
+                        $pgrandtotinc=(DOUBLE)$pgrandtotinc+(DOUBLE)$ptotalkry;
+
+                        $ptotalkry=number_format($ptotalkry,0,",",",");
+                        
+
+                        echo "<tr>";
+                        echo "<td nowrap>$pkaryawannm</td>";
+                        for($ix=0;$ix<count($arridjenisdm);$ix++) {
+                            $pincfld=$row1[$arridjenisdm[$ix]];
+
+                            $ptotperjenis[$ix]=(DOUBLE)$ptotperjenis[$ix]+(DOUBLE)$pincfld;
+
+                            $pincfld=number_format($pincfld,0,",",",");
+
+                            echo "<td nowrap align='right'>$pincfld</td>";
+                        }
+                        echo "<td nowrap align='right'><b>$ptotalkry</b></td>";
+                        echo "</tr>";
+
+                    }
+                    
+                    //grand total
+                    $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+                    echo "<tr class='trtotal'>";
+                    echo "<td nowrap>Grand Total</td>";
+                    for($ix=0;$ix<count($arridjenisdm);$ix++) {
+                        $pincfld=$ptotperjenis[$ix];
+
+                        $pincfld=number_format($pincfld,0,",",",");
+
+                        echo "<td nowrap align='right'>$pincfld</td>";
+                    }
+                    echo "<td nowrap align='right'><b>$pgrandtotinc</b></td>";
+                    echo "</tr>";
+
+
+                echo "</tbody>";
+            echo "</table>";
+            echo "<br/>";
+
+        }
+
+    echo "</div>";
+
+
+    //MR
+    echo "<div class='page-break'>";
+
+        echo "<center><b>Incentive MR - $pbulan</b></center><br>";
+        echo "<center>Incentive From $pincfrom</center><br>";
+
+        if ((INT)$ketemumr>0) {
+
+            $pgrandtotinc=0;
+            for($ix=0;$ix<count($arridjenismr);$ix++) {
+                $ptotperjenis[$ix]=0;
+            }
+
+            echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1'>";
+                echo "<thead>";
+                echo "<tr>";
+                    echo "<th align='center'>Karyawan</th>";
+                    for($ix=0;$ix<count($arridjenismr);$ix++) {
+                        $pnmjenis=$arridjenismr[$ix];
+                        echo "<th align='center'>$pnmjenis</th>";
+                    }
+                    echo "<th align='center'>Total</th>";
+                echo "</tr>";
+                echo "</thead>";
+                echo "<tbody>";
+
+                    $query = "select * from $tmp05 order by nama_karyawan, karyawanid";
+                    $tampil1=mysqli_query($cnms, $query);
+                    while ($row1=mysqli_fetch_array($tampil1)) {
+                        $pkaryawanid=$row1['karyawanid'];
+                        $pkaryawannm=$row1['nama_karyawan'];
+                        $ptotalkry=$row1['TOTAL'];
+
+                        $pgrandtotinc=(DOUBLE)$pgrandtotinc+(DOUBLE)$ptotalkry;
+
+                        $ptotalkry=number_format($ptotalkry,0,",",",");
+                        
+
+                        echo "<tr>";
+                        echo "<td nowrap>$pkaryawannm</td>";
+                        for($ix=0;$ix<count($arridjenismr);$ix++) {
+                            $pincfld=$row1[$arridjenismr[$ix]];
+
+                            $ptotperjenis[$ix]=(DOUBLE)$ptotperjenis[$ix]+(DOUBLE)$pincfld;
+
+                            $pincfld=number_format($pincfld,0,",",",");
+
+                            echo "<td nowrap align='right'>$pincfld</td>";
+                        }
+                        echo "<td nowrap align='right'><b>$ptotalkry</b></td>";
+                        echo "</tr>";
+
+                    }
+                    
+                    //grand total
+                    $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+                    echo "<tr class='trtotal'>";
+                    echo "<td nowrap>Grand Total</td>";
+                    for($ix=0;$ix<count($arridjenismr);$ix++) {
+                        $pincfld=$ptotperjenis[$ix];
+
+                        $pincfld=number_format($pincfld,0,",",",");
+
+                        echo "<td nowrap align='right'>$pincfld</td>";
+                    }
+                    echo "<td nowrap align='right'><b>$pgrandtotinc</b></td>";
+                    echo "</tr>";
+
+
+                echo "</tbody>";
+            echo "</table>";
+            echo "<br/>";
+
+        }
+
+
+    echo "</div>";
+
+
+}else{
+
+    echo "<center><b>Incentive All (DM,AM,MR) - $pbulan</b></center><br>";
+    echo "<center>Incentive From $pincfrom</center><br>";
+    if (!empty($pjabatan)) {
+        echo "<center>Jabatan : $pjabatan</center><br>";
     }
 
-    if (empty($pjabatan)) {
-        echo "<tr class='trtotal'>";
-        echo "<td nowrap class='tdijenis'>&nbsp;</td>";
-        echo "<td nowrap align='right'>&nbsp;</td>";
+    $pgrandtotinc=0;
+    echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1'>";
+        echo "<thead>";
+        echo "<tr>";
+            $header_ = add_space('Karyawan',40);
+            echo "<th align='center'>Karyawan</th>";
+            echo "<th align='center'>Incentive</th>";
         echo "</tr>";
+        echo "</thead>";
+        echo "<tbody>";
 
-        $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+        $query = "select distinct sts from $tmp02 Order by sts";
+        $tampil0=mysqli_query($cnms, $query);
+        while ($row0=mysqli_fetch_array($tampil0)) {
+            $njabatan=$row0['sts'];
 
-        echo "<tr class='trtotal'>";
-        echo "<td nowrap class='tdijenis'>Grand Total </td>";
-        echo "<td nowrap align='right'>$pgrandtotinc</td>";
-        echo "</tr>";
-    }
+            $no=1;
+            $ptotincjbt=0;
+            $query = "select distinct karyawanid, nama_karyawan from $tmp02 WHERE sts='$njabatan' Order by sts, nama_karyawan, karyawanid";
+            $tampil1=mysqli_query($cnms, $query);
+            while ($row1=mysqli_fetch_array($tampil1)) {
+                $pkaryawanid=$row1['karyawanid'];
+                $pkaryawannm=$row1['nama_karyawan'];
 
-    echo "</tbody>";
-echo "</table>";
+
+                echo "<tr>";
+                echo "<td nowrap>$pkaryawannm</td>";
+                echo "<td nowrap align='right'></td>";
+                echo "</tr>";
+
+                $ptotalincjenis=0;
+
+                $query = "select * from $tmp02 WHERE karyawanid='$pkaryawanid' AND sts='$njabatan' Order by sts, nama_karyawan, karyawanid, jenis";
+                $tampil2=mysqli_query($cnms, $query);
+                while ($row2=mysqli_fetch_array($tampil2)) {
+                    $pjenisid=$row2['jenis'];
+
+                    $pnmjenis=$pjenisid;
+
+                    $pincentive=$row2['incentive'];
+
+                    $ptotalincjenis=(DOUBLE)$ptotalincjenis+(DOUBLE)$pincentive;
+                    $ptotincjbt=(DOUBLE)$ptotincjbt+(DOUBLE)$pincentive;
+                    $pgrandtotinc=(DOUBLE)$pgrandtotinc+(DOUBLE)$pincentive;
+
+
+                    $pincentive=number_format($pincentive,0,",",",");
+
+                    echo "<tr>";
+                    echo "<td nowrap class='tdijenis'>$pnmjenis</td>";
+                    echo "<td nowrap align='right'>$pincentive</td>";
+                    echo "</tr>";
+
+                }
+
+
+                $no++;
+            }
+
+            $ptotincjbt=number_format($ptotincjbt,0,",",",");
+
+            echo "<tr class='trtotal'>";
+            echo "<td nowrap class='tdijenis'>Total $njabatan</td>";
+            echo "<td nowrap align='right'>$ptotincjbt</td>";
+            echo "</tr>";
+
+        }
+
+        if (empty($pjabatan)) {
+            echo "<tr class='trtotal'>";
+            echo "<td nowrap class='tdijenis'>&nbsp;</td>";
+            echo "<td nowrap align='right'>&nbsp;</td>";
+            echo "</tr>";
+
+            $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+
+            echo "<tr class='trtotal'>";
+            echo "<td nowrap class='tdijenis'>Grand Total </td>";
+            echo "<td nowrap align='right'>$pgrandtotinc</td>";
+            echo "</tr>";
+        }
+
+        echo "</tbody>";
+    echo "</table>";
+
+}
 
 echo "<br/><br/>";
 
@@ -288,5 +690,7 @@ hapusdata:
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp01");
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp02");
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp03");
+    mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp04");
+    mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp05");
     mysqli_close($cnms);
 ?>

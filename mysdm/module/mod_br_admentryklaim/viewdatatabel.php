@@ -278,7 +278,7 @@
                     
                     $pnamajenisklm="";
                     if ($pjenisklaim=="S") $pnamajenisklm="SDM ONLINE";
-                    elseif ($pjenisklaim=="D") $pnamajenisklm="DISTRIBUTOR ONLINE";
+                    elseif ($pjenisklaim=="D") $pnamajenisklm="SKS ONLINE";
 
 
                     echo "<tr>";

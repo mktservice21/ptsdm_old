@@ -108,6 +108,18 @@
                                             </div>
                                         </div>
 
+                                        <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Report Type <span class='required'></span></label>
+                                            <div class='col-md-9 col-sm-9 col-xs-12'>
+                                                <select class='form-control' name='cb_rpttipe' id='cb_rpttipe' onchange="">
+                                                    <?PHP
+                                                    echo "<option value='S' selected>Summary</option>";
+                                                    echo "<option value='D'>Detail</option>";
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         
                                     </div>
                                 </div>

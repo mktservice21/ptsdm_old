@@ -602,15 +602,15 @@ if ($pact=="editdata"){
                                                 if ($pjenisonline=="S") {
                                                     echo "<option value=''>&nbsp;</option>";
                                                     echo "<option value='S' selected>SDM ONLINE</option>";
-                                                    echo "<option value='D'>DISTRIBUTOR ONLINE</option>";
+                                                    echo "<option value='D'>SKS ONLINE</option>";
                                                 }elseif ($pjenisonline=="D") {
                                                     echo "<option value=''>&nbsp;</option>";
                                                     echo "<option value='S'>SDM ONLINE</option>";
-                                                    echo "<option value='D' selected>DISTRIBUTOR ONLINE</option>";
+                                                    echo "<option value='D' selected>SKS ONLINE</option>";
                                                 }else{
                                                     echo "<option value='' selected>&nbsp;</option>";
                                                     echo "<option value='S'>SDM ONLINE</option>";
-                                                    echo "<option value='D'>DISTRIBUTOR ONLINE</option>";
+                                                    echo "<option value='D'>SKS ONLINE</option>";
                                                 }
                                                 
                                             ?>

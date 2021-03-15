@@ -121,6 +121,7 @@ elseif ($module=='bgtadmentrybrklaim')
     $pregion=$_POST['cb_region'];
     $paktivitas1=$_POST['e_aktivitas'];
     $paktivitas2=$_POST['e_aktivitas2'];
+    $pklaimjenis=$_POST['cb_jenisklaim'];
     $pnppn=$_POST['e_jmlppn'];
     $pnpph=$_POST['e_jmlpph'];
     
@@ -346,10 +347,10 @@ elseif ($module=='bgtadmentrybrklaim')
 
             $query="insert into $dbname.klaim (klaimId, tgl, karyawanid, distid, pengajuan, "
                     . " aktivitas1, aktivitas2, jumlah, realisasi1, DIVISI, COA4, KODEWILAYAH, user1, "
-                    . " region, bulan, periode1, periode2, jmlkuranglebih, ketkuranglebih, blnkuranglebih)values"
+                    . " region, bulan, periode1, periode2, jmlkuranglebih, ketkuranglebih, blnkuranglebih, jenisklaim)values"
                     . "('$kodenya', '$ptglinput', '$pkaryawan', '$pdist', '$pdivpengajuan', "
                     . " '$paktivitas1', '$paktivitas2', '$pgtotal_rl', '$pnmrealisasi', '$pdivisi', '$pcoa', '$pwilgabungan', '$puserid', "
-                    . " '$pregion', '$pbulan', '$pperiode1', '$pperiode2', '$ptotkuranglebih', '$pketkurleb', '$pblnsusulan')";
+                    . " '$pregion', '$pbulan', '$pperiode1', '$pperiode2', '$ptotkuranglebih', '$pketkurleb', '$pblnsusulan', '$pklaimjenis')";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         }
         
@@ -376,6 +377,7 @@ elseif ($module=='bgtadmentrybrklaim')
                  realisasi1='$pnmrealisasi',
                  karyawanid='$pkaryawan',
                  tgltrans='$ptgltras',
+                 jenisklaim='$pklaimjenis',
                  user1='$puserid',
                  distid='$pdist', "
                 . " DIVISI='$pdivisi', COA4='$pcoa', pengajuan='$pdivpengajuan', "

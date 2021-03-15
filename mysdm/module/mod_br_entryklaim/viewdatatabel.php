@@ -89,7 +89,8 @@
 	coa.NAMA4,
 	k.KODEWILAYAH,
 	wil.nama nama_wilayah,
-	k.pengajuan
+	k.pengajuan,
+    k.jenisklaim
         FROM
 	$tmp01 k
 	LEFT JOIN hrd.karyawan kr ON k.karyawanid = kr.karyawanId
@@ -144,6 +145,7 @@
                     <th width='80px'>Distributor</th>
                     <th width='50px'>Jumlah</th>
                     <th width='50px'>Realisasi</th>
+                    <th width='50px'>Jenis Klaim</th>
                     <th width='50px'>No Slip</th>
                     <th>Lampiran</th>
                     <th width='50px'>Nodivisi</th>
@@ -169,6 +171,7 @@
                     $paktivitas2 = $row["aktivitas2"];
                     $pnodivisi = $row["nodivisi"];
                     $pustinput = $row["user1"];
+                    $pjenisklaim= $row["jenisklaim"];
                     
                     $plink = "<a href='#' data-toggle=\"tooltip\" data-placement=\"top\" title=".$pklaimid.">".$ptlg."</a>";
                     
@@ -191,6 +194,10 @@
                         $pedit=$peditnon;
                     }
                     
+                    $pnamajenisklm="";
+                    if ($pjenisklaim=="S") $pnamajenisklm="SDM ONLINE";
+                    elseif ($pjenisklaim=="D") $pnamajenisklm="SKS ONLINE";
+                    
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap></td>";
@@ -202,6 +209,7 @@
                     echo "<td nowrap>$pnamadist</td>";
                     echo "<td nowrap>$pjumlah</td>";
                     echo "<td nowrap>$pnmrealisasi</td>";
+                    echo "<td nowrap>$pnamajenisklm</td>";
                     echo "<td nowrap>$pnoslip</td>";
                     echo "<td nowrap>$plampiran</td>";
                     echo "<td nowrap>$pnodivisi</td>";
@@ -235,7 +243,7 @@
                 { "orderable": false, "targets": 2 },
                 { "orderable": true, "targets": 4 },
                 { className: "text-right", "targets": [8] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12] }//nowrap
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12,13] }//nowrap
 
             ],
             "language": {

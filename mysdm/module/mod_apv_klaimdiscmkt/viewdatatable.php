@@ -85,7 +85,7 @@ session_start();
             . " a.distid, d.nama nama_distributor, a.tgl, a.bulan, a.periode1, a.periode2, a.tgltrans, "
             . " a.user1, a.COA4, "
             . " a.aktivitas1, a.aktivitas2, "
-            . " b.atasan4, b.tgl_atasan4, b.atasan5, b.tgl_atasan5, a.jumlah "
+            . " b.atasan4, b.tgl_atasan4, b.atasan5, b.tgl_atasan5, a.jenisklaim, a.jumlah "
             . " FROM hrd.klaim a "
             . " JOIN dbttd.klaim_ttd b on a.klaimId=b.klaimId "
             . " LEFT JOIN hrd.karyawan c on a.karyawanid=c.karyawanid "
@@ -302,6 +302,7 @@ session_start();
                     <th width='100px'>Yg. Membuat</th>
                     <th width='50px'>Distributor</th>
                     <th width='50px'>Jumlah</th>
+                    <th width='50px'>Jenis Klaim</th>
                     <th width='50px'>Keterangan</th>
                     <th width='50px'>Satus Approve</th>
                 </tr>
@@ -325,6 +326,7 @@ session_start();
                     $pketerangan=$row1['aktivitas1'];
                     $pketerangan1=$row1['aktivitas1'];
                     $pketerangan2=$row1['aktivitas2'];
+                    $pjenisklaim= $row1["jenisklaim"];
                     $prpjumlah=$row1['jumlah'];
                     
                     $ptglatasan5=$row1['tgl_atasan5'];
@@ -401,6 +403,10 @@ session_start();
                         $pstsapvoleh="";
                     }
                     
+                    $pnamajenisklm="";
+                    if ($pjenisklaim=="S") $pnamajenisklm="SDM ONLINE";
+                    elseif ($pjenisklaim=="D") $pnamajenisklm="DISTRIBUTOR ONLINE";
+
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$ceklisnya</td>";
@@ -410,6 +416,7 @@ session_start();
                     echo "<td nowrap>$pnmkaryawan</td>";
                     echo "<td nowrap>$pnmdist</td>";
                     echo "<td nowrap align='right'>$prpjumlah</td>";
+                    echo "<td nowrap>$pnamajenisklm</td>";
                     echo "<td >$pketerangan</td>";
                     echo "<td nowrap>$pstsapvoleh</td>";
                     echo "</tr>";

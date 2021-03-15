@@ -30,6 +30,7 @@ $tgl01=$_POST['bulan'];
 $pjabatan=$_POST['cb_jabatan'];
 $pincfrom=$_POST['cb_from'];
 $ptiperpt=$_POST['cb_rpttipe'];
+$preportpl=$_POST['cb_report'];
 
 $pfbln = date("Y-m", strtotime($tgl01));
 $pbln1 = date("Y-m-01", strtotime($tgl01));

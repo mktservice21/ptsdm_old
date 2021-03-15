@@ -763,7 +763,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     <tr>
                         
                             <?PHP
-                            if ($pstsapv=="approve") {
+                            if ($pstsapv=="approve" AND $pidgroup<>"1" AND $pidgroup<>"24") {
                                 echo "<td>approved</td><td>&nbsp;</td>";
                                 echo "<td>$ptglapv</td>";
                             }else{

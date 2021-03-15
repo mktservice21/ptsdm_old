@@ -192,6 +192,9 @@ $ppilihdoktnm=getfield("select nama as lcfields from hrd.dokter where dokterid='
                                         <input type='text' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
                                         <input type='text' id='e_idgrpuser' name='e_idgrpuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidgrpuser; ?>' Readonly>
+
+                                        <input type='hidden' id='e_idbuka' name='e_idbuka' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pbukaid; ?>' >
+                                        <input type='hidden' id='e_idadmbuka' name='e_idadmbuka' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pbukaadmid; ?>' >
                                     </div>
                                 </div>
                                 
@@ -632,6 +635,8 @@ $ppilihdoktnm=getfield("select nama as lcfields from hrd.dokter where dokterid='
         var etotalinput = document.getElementById('e_total').value;
         var ebln =document.getElementById('e_bulan').value;
         var ipl_cn = document.getElementById('e_cn').value;
+        var ebkid =document.getElementById('e_idbuka').value;
+        var eadmidbk =document.getElementById('e_idadmbuka').value;
         
         var newchar = '';
         if (ettl=="") ettl="0";
@@ -711,7 +716,7 @@ Setelah disimpan, data tidak bisa diubah / hapus..";
             $.ajax({
                 type:"post",
                 url:"module/ks_isiks/viewdataksisi.php?module=cekdatasudahada",
-                data:"ukry="+ikry+"&udoktid="+idoktid+"&uaptid="+iaptid+"&ubln="+ebln+"&uapotikid="+iapotikid,
+                data:"ukry="+ikry+"&udoktid="+idoktid+"&uaptid="+iaptid+"&ubln="+ebln+"&uapotikid="+iapotikid+"&ubkid="+ebkid+"&uadmidbk="+eadmidbk,
                 success:function(data){
                     //var tjml = data.length;
                     //alert(data);

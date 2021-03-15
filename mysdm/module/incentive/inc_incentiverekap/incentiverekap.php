@@ -32,6 +32,16 @@
                             return 1;
                         }
                     }
+
+                    function cekTipeRpt() {
+                        var itipe = document.getElementById('cb_rpttipe').value;
+                        if (itipe=="S") {
+                            ireport.style.display = "none";
+                        }else{
+                            ireport.style.display = "block";
+                        }
+                        
+                    }
                 </script>
 
                 <script type="text/javascript">
@@ -43,7 +53,7 @@
 
                     
                     $(document).ready(function() {
-                        
+                        cekTipeRpt();
                     } );
                 </script>
 
@@ -109,12 +119,24 @@
                                         </div>
 
                                         <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Report Type <span class='required'></span></label>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Type <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
-                                                <select class='form-control' name='cb_rpttipe' id='cb_rpttipe' onchange="">
+                                                <select class='form-control' name='cb_rpttipe' id='cb_rpttipe' onchange="cekTipeRpt()">
                                                     <?PHP
                                                     echo "<option value='S' selected>Summary</option>";
                                                     echo "<option value='D'>Detail</option>";
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div id='ireport' class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Report Type <span class='required'></span></label>
+                                            <div class='col-md-9 col-sm-9 col-xs-12'>
+                                                <select class='form-control' name='cb_report' id='cb_report' onchange="">
+                                                    <?PHP
+                                                    echo "<option value='N'>Normal</option>";
+                                                    echo "<option value='P' selected>Pivot</option>";
                                                     ?>
                                                 </select>
                                             </div>

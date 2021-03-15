@@ -92,7 +92,7 @@
     $pjenisklaim=$row['jenisklaim'];
     $pnamajenisklm="";
     if ($pjenisklaim=="S") $pnamajenisklm="SDM ONLINE";
-    elseif ($pjenisklaim=="D") $pnamajenisklm="DISTRIBUTOR ONLINE";
+    elseif ($pjenisklaim=="D") $pnamajenisklm="SKS ONLINE";
     
     
     $pnamapengaju=$row['nama_karyawan'];

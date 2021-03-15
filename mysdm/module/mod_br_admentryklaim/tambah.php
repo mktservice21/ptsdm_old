@@ -113,6 +113,8 @@ $ptglfakturpajak = "";
 $pnoseripajak="";
 $pkenapajak="";
 
+$pjenisonline="";
+
 
 
 $ptotrpklaim=0;
@@ -208,6 +210,7 @@ if ($pact=="editdata"){
     $pjmlbulat=$r['pembulatan'];
     
     $pbulatreal=$r['pembulatan'];
+    $pjenisonline=$r['jenisklaim'];
     
     $ppilregion=$r['region'];
     if ($ppilregion=="B") {
@@ -590,6 +593,31 @@ if ($pact=="editdata"){
                                 </div>
                                 
                                 
+
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis Klaim (Online) <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <select class='soflow' id='cb_jenisklaim' name='cb_jenisklaim' onchange="">
+                                            <?PHP //$pdivpengajuan
+                                                if ($pjenisonline=="S") {
+                                                    echo "<option value=''>&nbsp;</option>";
+                                                    echo "<option value='S' selected>SDM ONLINE</option>";
+                                                    echo "<option value='D'>DISTRIBUTOR ONLINE</option>";
+                                                }elseif ($pjenisonline=="D") {
+                                                    echo "<option value=''>&nbsp;</option>";
+                                                    echo "<option value='S'>SDM ONLINE</option>";
+                                                    echo "<option value='D' selected>DISTRIBUTOR ONLINE</option>";
+                                                }else{
+                                                    echo "<option value='' selected>&nbsp;</option>";
+                                                    echo "<option value='S'>SDM ONLINE</option>";
+                                                    echo "<option value='D'>DISTRIBUTOR ONLINE</option>";
+                                                }
+                                                
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 
                             </div>
                         </div>

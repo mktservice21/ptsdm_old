@@ -169,12 +169,12 @@
                     <th width='80px'>Distributor</th>
                     <th width='50px'>Jumlah</th>
                     <th width='50px'>Divisi</th>
+                    <th width='50px'>Jenis Klaim</th>
                     <th width='50px'>Nodivisi</th>
                     <th width='50px'>Aktivitas</th>
                     <th width='30px'>User</th>
                     <th width='50px'>Realisasi</th>
                     <th width='50px'>No Slip</th>
-                    <th width='50px'>Jenis Klaim</th>
                     <th>Lampiran</th>
                     <th>&nbsp;</th>
                 </tr>
@@ -293,12 +293,12 @@
                     echo "<td nowrap>$pnamadist</td>";
                     echo "<td nowrap>$pjumlah</td>";
                     echo "<td nowrap>$pnmpengajuan</td>";
+                    echo "<td nowrap>$pnamajenisklm</td>";
                     echo "<td nowrap>$pnodivisi</td>";
                     echo "<td nowrap>$paktivitas1 $paktivitas2</td>";
                     echo "<td nowrap>$pnmuser</td>";
                     echo "<td nowrap>$pnmrealisasi</td>";
                     echo "<td nowrap>$pnoslip</td>";
-                    echo "<td nowrap>$pnamajenisklm</td>";
                     echo "<td nowrap>$plampiran</td>";
                     echo "<td nowrap>$peditttdpl</td>";
                     echo "</tr>";

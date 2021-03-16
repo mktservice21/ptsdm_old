@@ -117,12 +117,11 @@
                     echo "$chkall";
                     ?>
                     </th>
+                    <th width='100px'>Area</th>
                     <th width='100px'>Nama Customer</th>
                     <th width='100px'>Alamat 1</th>
                     <th width='100px'>Alamat 2</th>
                     <th width='50px'>Kota</th>
-                    <th width='100px'>Cabang</th>
-                    <th width='100px'>Area</th>
                     <th width='100px'>Value</th>
                     <th width='100px'>Tgl. Input</th>
                 </tr>
@@ -170,12 +169,12 @@
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$cekbox $txt_idcab $txt_idarea $txt_idcust $txt_value</td>";
+                    echo "<td nowrap>$pnmarea ($pidar)</td>";
                     echo "<td nowrap>$pnmcust ($pidcusttomer)</td>";
                     echo "<td nowrap>$palamat1</td>";
                     echo "<td nowrap>$palamat2</td>";
                     echo "<td nowrap>$pkota</td>";
-                    echo "<td nowrap>$pnmcabang ($pidcab)</td>";
-                    echo "<td nowrap>$pnmarea ($pidar)</td>";
+                    //echo "<td nowrap>$pnmcabang ($pidcab)</td>";
                     echo "<td nowrap align='right'>$pvalue</td>";
                     echo "<td nowrap>$ptglinput</td>";
                     echo "</tr>";

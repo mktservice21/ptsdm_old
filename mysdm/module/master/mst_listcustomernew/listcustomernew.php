@@ -139,6 +139,7 @@
                                                 $pcabangidpl=$pidcab;
                                             }
                                             
+                                            /*
                                             $query_non =$query_cb." AND IFNULL(aktif,'')<>'Y' ";
                                             $query_non .=" order by nama";
                                             $tampil= mysqli_query($cnmy, $query_non);
@@ -157,6 +158,7 @@
                                                     $pcabangidpl=$pidcab;
                                                 }
                                             }
+                                            */
                                         ?>
                                     </select>
                                     

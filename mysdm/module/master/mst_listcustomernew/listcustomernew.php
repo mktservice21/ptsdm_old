@@ -112,7 +112,11 @@
                                             $query_cb = "select icabangid as icabangid, nama as nama from mkt.icabang WHERE 1=1 ";
                                             if ($fgroupidcard=="1" OR $fgroupidcard=="24") {
                                             }else{
-                                                $query_cb .=" AND icabangid IN (select distinct IFNULL(icabangid,'') FROM mkt.idm0 WHERE karyawanid='$fkaryawan') ";
+                                                if ($fjbtid=="20") {
+                                                    $query_cb .=" AND icabangid IN (select distinct IFNULL(icabangid,'') FROM mkt.ism0 WHERE karyawanid='$fkaryawan') ";
+                                                }else{
+                                                    $query_cb .=" AND icabangid IN (select distinct IFNULL(icabangid,'') FROM mkt.idm0 WHERE karyawanid='$fkaryawan') ";
+                                                }
                                             }
                                             $query_aktif =$query_cb." AND IFNULL(aktif,'')='Y' ";
                                             $query_aktif .=" order by nama";

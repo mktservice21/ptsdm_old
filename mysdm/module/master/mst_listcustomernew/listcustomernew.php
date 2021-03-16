@@ -106,7 +106,7 @@
                             <div class='col-sm-2'>
                                 Cabang
                                 <div class="form-group">
-                                    <select class='form-control input-sm' id="cb_cabang" name="cb_cabang" onchange="ShowDataArea()">
+                                    <select class='form-control input-sm' id="cb_cabang" name="cb_cabang" onchange="">
                                         <?PHP
                                             echo "<option value=''>--Piihan--</option>";
                                             $query_cb = "select icabangid as icabangid, nama as nama from mkt.icabang WHERE 1=1 ";
@@ -159,12 +159,13 @@
                                 </div>
                             </div>
                             
-                            <div class='col-sm-2'>
+                            <div hidden class='col-sm-2'>
                                 Area
                                 <div class="form-group">
                                     <select class='form-control input-sm' id="cb_area" name="cb_area" onchange="">
                                         <?PHP
                                         echo "<option value=''>--All--</option>";
+                                        /*
                                         if (!empty($pidcabangpl)) {
                                             $query_area="SELECT areaid as areaid, Nama as nama from MKT.iarea where icabangid='$pidcabangpl' ";
                                             $query_ak =$query_area." AND IFNULL(aktif,'')='Y' ";
@@ -200,6 +201,7 @@
                                                 }
                                             }
                                         }
+                                        */
                                         ?>
                                     </select>
                                 </div>

@@ -43,7 +43,7 @@ function caridatainsentif_query($con, $temp, $bulan, $jabatan, $pdivprod) {
               ON i.karyawanid = pm.mr
             JOIN sls.icabang c
               ON pm.icabangid = c.iCabangId
-          WHERE bulan = '$ptgl1' $fildivisi 
+          WHERE bulan = '$ptgl1' $fildivisi AND i.jenis2='GSM' 
           GROUP BY k.nama,
             c.region,
             c.nama";
@@ -110,7 +110,7 @@ if ($pdivprod=="" OR $pdivprod=="CAN") {
           ON i.karyawanid = k.karyawanId
         JOIN sls.icabang c
           ON pm.icabangid = c.iCabangId
-      WHERE i.bulan = '$ptgl1' 
+      WHERE i.bulan = '$ptgl1' AND i.jenis2='GSM' 
       GROUP BY k.nama,
         c.region,
         c.nama";
@@ -142,7 +142,7 @@ if ($pdivprod=="" OR $pdivprod=="CAN") {
           ON i.karyawanid = k.karyawanId
         JOIN sls.icabang c
           ON pm.icabangid = c.iCabangId
-      WHERE i.bulan = '$ptgl1' 
+      WHERE i.bulan = '$ptgl1' AND i.jenis2='GSM' 
       GROUP BY k.nama,
         c.region,
         c.nama";

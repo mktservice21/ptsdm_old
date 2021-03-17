@@ -161,9 +161,11 @@ echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1' width='100%
 
             $ptotalinc=(DOUBLE)$ptotalinc+(DOUBLE)$pincentive;
 
-            $psales=number_format($psales,0,",",",");
-            $ptarget=number_format($ptarget,0,",",",");
-            $pincentive=number_format($pincentive,0,",",",");
+            if ($ppilihrpt!="excel") {
+                $psales=number_format($psales,0,",",",");
+                $ptarget=number_format($ptarget,0,",",",");
+                $pincentive=number_format($pincentive,0,",",",");
+            }
 
 
             echo "<tr>";
@@ -181,7 +183,10 @@ echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1' width='100%
             $no++;
         }
 
-        $ptotalinc=number_format($ptotalinc,0,",",",");
+        if ($ppilihrpt!="excel") {
+            $ptotalinc=number_format($ptotalinc,0,",",",");
+        }
+        
         if ($pincfrom=="GSM" OR $pincfrom=="ALL") {
             echo "<tr class='trtotal'>";
             echo "<td nowrap colspan='6' align='center'>GRAND TOTAL</td>";

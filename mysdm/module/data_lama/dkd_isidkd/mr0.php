@@ -8,16 +8,15 @@
 <script src="mr0.js"></script>
 
 <!-- <script type="text/javascript" src="jquery/css/ui-lightness/jquery-ui-1.10.3.custom.css" ></script> -->
-<script type="text/javascript" src="jquery/js/jquery-1.9.1.js" ></script>
-<script type="text/javascript" src="jquery/js/jquery-ui-1.10.3.custom.js" ></script>
-<script type="text/javascript" src="jquery/js/jquery-ui-1.10.3.custom.min.js" ></script>
-<script type="text/javascript" src="jquery/themes/ui-lightness/jquery.ui.datepicker.css" ></script>
-<link rel="stylesheet" href="jquery/css/ui-lightness/jquery-ui-1.10.3.custom.css" type="text/css" media="all">
-<link rel="stylesheet" href="jquery/css/ui-lightness/jquery-ui-1.10.3.custom.min.css" type="text/css" media="all">
+<script type="text/javascript" src="../jquery/js/jquery-1.9.1.js" ></script>
+<script type="text/javascript" src="../jquery/js/jquery-ui-1.10.3.custom.js" ></script>
+<script type="text/javascript" src="../jquery/js/jquery-ui-1.10.3.custom.min.js" ></script>
+<script type="text/javascript" src="../jquery/themes/ui-lightness/jquery.ui.datepicker.css" ></script>
+<link rel="stylesheet" href="../jquery/css/ui-lightness/jquery-ui-1.10.3.custom.css" type="text/css" media="all">
+<link rel="stylesheet" href="../jquery/css/ui-lightness/jquery-ui-1.10.3.custom.min.css" type="text/css" media="all">
 
 <script>
 	$(document).ready(function(){
-		alert("dasd");
 		initDate();
 	});
 
@@ -55,16 +54,26 @@
 		$tanggal = date('Y-m-d');
 
 		$srid = $_SESSION['USERID'];		
-		$tgl = $_GET['tgl'];
-		$tgl1 = $_GET['tgl1'];
-		$tgl2 = $_GET['tgl2'];
+		$tgl = $tanggal;
+		$tgl1 = $tanggal;
+		$tgl2 = $tanggal;
 		
-		$set_focus = $_POST['set_focus'];
+		$dokter="";
+		$jv_dokter ="";
+		$compl ="";
+		$compl2 ="";
+		$akt ="";
+		$saran ="";
+		$saran2 ="";
+		$ket ="";
+		$ket2 ="";
+
+		$set_focus = "";
 		if ($set_focus=="") {		    
 			$set_focus = "icabangid";
 		}
 		
-		$entrymode = $_GET['entrymode'];
+		$entrymode = "";
 		if ($entrymode=='E') {
 			echo "<big><b>View/Edit DKD</b></big><br />";		 
 		}
@@ -77,7 +86,7 @@
 			echo "<big><b>Delete DKD</b></big><br />";
 			$disabled_ = "disabled";
 		}
-		$srid = $_SESSION['srid'];
+		$srid = $_SESSION['USERID'];
 	    $sr_id = substr('0000000000'.$srid,-10);
 	    $query = "select nama,pin from hrd.karyawan where karyawanId='".$sr_id."'";
 	    $result = mysqli_query($cnmy, $query);
@@ -117,7 +126,7 @@
 		';	
 
 		if ($entrymode=='E') {
-			$tgl = $_GET['tgl'];
+			$tgl = $tanggal;
 			echo '
 				<td>
 					<input type=text id="tgl" name="tgl" onclick="initDate()" value="'.$tgl.'" "'.$disabled_.'" maxlength=10 size=10 readonly>
@@ -242,9 +251,9 @@
 	echo "<input type=hidden id='srid' name='srid' value='$sr_id'>";
 	echo "<input type=hidden id='pin' name='pin' value='$pin'>";
 
-	if (empty($_SESSION['srid'])) {
+	if (empty($_SESSION['USERID'])) {
 	} else {
-		do_show_menu($_SESSION['jabatanid'],'N');
+		//do_show_menu($_SESSION['jabatanid'],'N');
 	}
 ?>
  
@@ -289,9 +298,9 @@
 	// 	$tanggal = date('Y-m-d');
 
 	// 	$srid = $_GET['srid'];		
-	// 	$tgl = $_GET['tgl'];
-	// 	$tgl1 = $_GET['tgl1'];
-	// 	$tgl2 = $_GET['tgl2'];
+	// 	$tgl = $tanggal;
+	// 	$tgl1 = $tanggal;
+	// 	$tgl2 = $tanggal;
 		
 	// 	$set_focus = $_POST['set_focus'];
 	// 	if ($set_focus=="") {		    
@@ -346,7 +355,7 @@
 	// 	echo "<table>";		
 	// 	echo '<tr>Tgl :</tr>';	
 	// 	if ($entrymode=='E') {
-	// 		$tgl = $_GET['tgl'];
+	// 		$tgl = $tanggal;
 	// 		echo "<br><tr><input type=text id='tgl' name='tgl' maxlength=35 size=37 value='$tgl' $disabled_></tr>";	  
 	// 	} else {
 	// 		echo "<br><tr><input type=text id='tgl' name='tgl' maxlength=10 size=12 value='$tanggal' $disabled_></tr>";	  

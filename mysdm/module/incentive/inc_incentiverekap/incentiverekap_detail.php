@@ -284,7 +284,9 @@ if ($preportpl=="P") {
 
                         $pgrandtotinc=(DOUBLE)$pgrandtotinc+(DOUBLE)$ptotalkry;
 
-                        $ptotalkry=number_format($ptotalkry,0,",",",");
+                        if ($ppilihrpt!="excel") {
+                            $ptotalkry=number_format($ptotalkry,0,",",",");
+                        }
                         
 
                         echo "<tr>";
@@ -293,8 +295,10 @@ if ($preportpl=="P") {
                             $pincfld=$row1[$arridjenisam[$ix]];
 
                             $ptotperjenis[$ix]=(DOUBLE)$ptotperjenis[$ix]+(DOUBLE)$pincfld;
-
-                            $pincfld=number_format($pincfld,0,",",",");
+                            
+                            if ($ppilihrpt!="excel") {
+                                $pincfld=number_format($pincfld,0,",",",");
+                            }
 
                             echo "<td nowrap align='right'>$pincfld</td>";
                         }
@@ -304,13 +308,18 @@ if ($preportpl=="P") {
                     }
                     
                     //grand total
-                    $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+                    if ($ppilihrpt!="excel") {
+                        $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+                    }
+
                     echo "<tr class='trtotal'>";
                     echo "<td nowrap>Grand Total</td>";
                     for($ix=0;$ix<count($arridjenisam);$ix++) {
                         $pincfld=$ptotperjenis[$ix];
 
-                        $pincfld=number_format($pincfld,0,",",",");
+                        if ($ppilihrpt!="excel") {
+                            $pincfld=number_format($pincfld,0,",",",");
+                        }
 
                         echo "<td nowrap align='right'>$pincfld</td>";
                     }
@@ -361,7 +370,9 @@ if ($preportpl=="P") {
 
                         $pgrandtotinc=(DOUBLE)$pgrandtotinc+(DOUBLE)$ptotalkry;
 
-                        $ptotalkry=number_format($ptotalkry,0,",",",");
+                        if ($ppilihrpt!="excel") {
+                            $ptotalkry=number_format($ptotalkry,0,",",",");
+                        }
                         
 
                         echo "<tr>";
@@ -371,7 +382,9 @@ if ($preportpl=="P") {
 
                             $ptotperjenis[$ix]=(DOUBLE)$ptotperjenis[$ix]+(DOUBLE)$pincfld;
 
-                            $pincfld=number_format($pincfld,0,",",",");
+                            if ($ppilihrpt!="excel") {
+                                $pincfld=number_format($pincfld,0,",",",");
+                            }
 
                             echo "<td nowrap align='right'>$pincfld</td>";
                         }
@@ -381,13 +394,18 @@ if ($preportpl=="P") {
                     }
                     
                     //grand total
-                    $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+                    if ($ppilihrpt!="excel") {
+                        $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+                    }
+
                     echo "<tr class='trtotal'>";
                     echo "<td nowrap>Grand Total</td>";
                     for($ix=0;$ix<count($arridjenisdm);$ix++) {
                         $pincfld=$ptotperjenis[$ix];
 
-                        $pincfld=number_format($pincfld,0,",",",");
+                        if ($ppilihrpt!="excel") {
+                            $pincfld=number_format($pincfld,0,",",",");
+                        }
 
                         echo "<td nowrap align='right'>$pincfld</td>";
                     }
@@ -439,7 +457,9 @@ if ($preportpl=="P") {
 
                         $pgrandtotinc=(DOUBLE)$pgrandtotinc+(DOUBLE)$ptotalkry;
 
-                        $ptotalkry=number_format($ptotalkry,0,",",",");
+                        if ($ppilihrpt!="excel") {
+                            $ptotalkry=number_format($ptotalkry,0,",",",");
+                        }
                         
 
                         echo "<tr>";
@@ -449,7 +469,9 @@ if ($preportpl=="P") {
 
                             $ptotperjenis[$ix]=(DOUBLE)$ptotperjenis[$ix]+(DOUBLE)$pincfld;
 
-                            $pincfld=number_format($pincfld,0,",",",");
+                            if ($ppilihrpt!="excel") {
+                                $pincfld=number_format($pincfld,0,",",",");
+                            }
 
                             echo "<td nowrap align='right'>$pincfld</td>";
                         }
@@ -459,13 +481,18 @@ if ($preportpl=="P") {
                     }
                     
                     //grand total
-                    $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+                    if ($ppilihrpt!="excel") {
+                        $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+                    }
+
                     echo "<tr class='trtotal'>";
                     echo "<td nowrap>Grand Total</td>";
                     for($ix=0;$ix<count($arridjenismr);$ix++) {
                         $pincfld=$ptotperjenis[$ix];
 
-                        $pincfld=number_format($pincfld,0,",",",");
+                        if ($ppilihrpt!="excel") {
+                            $pincfld=number_format($pincfld,0,",",",");
+                        }
 
                         echo "<td nowrap align='right'>$pincfld</td>";
                     }
@@ -536,8 +563,9 @@ if ($preportpl=="P") {
                     $ptotincjbt=(DOUBLE)$ptotincjbt+(DOUBLE)$pincentive;
                     $pgrandtotinc=(DOUBLE)$pgrandtotinc+(DOUBLE)$pincentive;
 
-
-                    $pincentive=number_format($pincentive,0,",",",");
+                    if ($ppilihrpt!="excel") {
+                        $pincentive=number_format($pincentive,0,",",",");
+                    }
 
                     echo "<tr>";
                     echo "<td nowrap class='tdijenis'>$pnmjenis</td>";
@@ -550,7 +578,9 @@ if ($preportpl=="P") {
                 $no++;
             }
 
-            $ptotincjbt=number_format($ptotincjbt,0,",",",");
+            if ($ppilihrpt!="excel") {
+                $ptotincjbt=number_format($ptotincjbt,0,",",",");
+            }
 
             echo "<tr class='trtotal'>";
             echo "<td nowrap class='tdijenis'>Total $njabatan</td>";
@@ -565,7 +595,9 @@ if ($preportpl=="P") {
             echo "<td nowrap align='right'>&nbsp;</td>";
             echo "</tr>";
 
-            $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+            if ($ppilihrpt!="excel") {
+                $pgrandtotinc=number_format($pgrandtotinc,0,",",",");
+            }
 
             echo "<tr class='trtotal'>";
             echo "<td nowrap class='tdijenis'>Grand Total </td>";

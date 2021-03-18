@@ -28,6 +28,7 @@ elseif ($module=='spdincentive')
     
     $pkode=$_POST['cb_kode'];
     $psubkode=$_POST['cb_kodesub'];
+    $pincfrom=$_POST['cb_incfrom'];
     $pdivisi="";
     $pnomor="";
     
@@ -87,13 +88,13 @@ elseif ($module=='spdincentive')
     $pcoa="101-02-002";
     if ($act=="input") {
         $query = "INSERT INTO $dbname.t_suratdana_br (idinput, divisi, kodeid, subkode, nomor, tgl, nodivisi, jumlah, "
-                . " userid, coa4, lampiran, tglf, tglt, kodeperiode, karyawanid, periodeby, jenis_rpt)values"
+                . " userid, coa4, lampiran, tglf, tglt, kodeperiode, karyawanid, periodeby, jenis_rpt, keterangan)values"
                 . "('$kodenya', '$pdivisi', '$pkode', '$psubkode', '$pnomor', '$periode1', '$pdivno', '$pjumlah', "
-                . " '$_SESSION[IDCARD]', '$pcoa', '$pjenis', '$periodef', '$periodet', '$pkodeperiode', '$_SESSION[IDCARD]', '$ppertipe', '$padvance')";
+                . " '$_SESSION[IDCARD]', '$pcoa', '$pjenis', '$periodef', '$periodet', '$pkodeperiode', '$_SESSION[IDCARD]', '$ppertipe', '$padvance', '$pincfrom')";
     }else{
         $query = "UPDATE $dbname.t_suratdana_br SET lampiran='$pjenis', pilih='Y', coa4='$pcoa', divisi='$pdivisi', kodeid='$pkode', "
                 . " subkode='$psubkode', nomor='$pnomor', tgl='$periode1', nodivisi='$pdivno', jumlah='$pjumlah', userid='$_SESSION[IDCARD]', "
-                . " tglf='$periodef', tglt='$periodet', kodeperiode='$pkodeperiode', periodeby='$ppertipe', jenis_rpt='$padvance' WHERE "
+                . " tglf='$periodef', tglt='$periodet', kodeperiode='$pkodeperiode', periodeby='$ppertipe', jenis_rpt='$padvance', keterangan='$pincfrom' WHERE "
                 . " idinput='$kodenya'";
     }
     mysqli_query($cnmy, $query);

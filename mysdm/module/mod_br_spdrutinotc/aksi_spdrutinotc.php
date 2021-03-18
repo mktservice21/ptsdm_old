@@ -34,6 +34,7 @@ elseif ($module=='spdrutinotc')
     
     $ppertipe="";
     $pdivisi=$_POST['cb_divisi'];
+    $ppilihdari=$_POST['cb_daripilihan'];
     $pjenis="";
     
     $padvance = "A";
@@ -92,14 +93,14 @@ elseif ($module=='spdrutinotc')
     $pcoa="101-02-002";
     if ($act=="input") {
         $query = "INSERT INTO $dbname.t_suratdana_br (idinput, divisi, kodeid, subkode, nomor, tgl, nodivisi, jumlah, "
-                . " userid, coa4, lampiran, tglf, tglt, kodeperiode, sts, karyawanid, periodeby, jenis_rpt)values"
+                . " userid, coa4, lampiran, tglf, tglt, kodeperiode, sts, karyawanid, periodeby, jenis_rpt, keterangan)values"
                 . "('$kodenya', '$pdivisi', '$pkode', '$psubkode', '$pnomor', '$periode1', '$pdivno', '$pjumlah', "
-                . " '$_SESSION[IDCARD]', '$pcoa', '$pjenis', '$periodef', '$periodet', '$pkodeperiode', '$pstspilihan', '$_SESSION[IDCARD]', '$ppertipe', '$padvance')";
+                . " '$_SESSION[IDCARD]', '$pcoa', '$pjenis', '$periodef', '$periodet', '$pkodeperiode', '$pstspilihan', '$_SESSION[IDCARD]', '$ppertipe', '$padvance', '$ppilihdari')";
     }else{
         $query = "UPDATE $dbname.t_suratdana_br SET lampiran='$pjenis', pilih='Y', coa4='$pcoa', divisi='$pdivisi', kodeid='$pkode', "
                 . " subkode='$psubkode', nomor='$pnomor', tgl='$periode1', nodivisi='$pdivno', jumlah='$pjumlah', userid='$_SESSION[IDCARD]', "
-                . " tglf='$periodef', tglt='$periodet', kodeperiode='$pkodeperiode', sts='$pstspilihan', periodeby='$ppertipe', jenis_rpt='$padvance' WHERE "
-                . " idinput='$kodenya'";
+                . " tglf='$periodef', tglt='$periodet', kodeperiode='$pkodeperiode', sts='$pstspilihan', periodeby='$ppertipe', jenis_rpt='$padvance', keterangan='$ppilihdari' WHERE "
+                . " idinput='$kodenya' LIMIT 1";
     }
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
@@ -168,9 +169,15 @@ elseif ($module=='spdrutinotc')
         $pkodepilih=" AND kode=2";
         if ((double)$psubkode==3) $pkodepilih=" AND kode=1";
         
-        $query="SELECT DISTINCT idrutin nobrid, sum(jumlah) jumlah from dbmaster.t_brrutin0 where "
-                . " divisi='$pdivisi' AND IFNULL(stsnonaktif,'')<>'Y' $pkodepilih and DATE_FORMAT(bulan,'%Y%m')='$thnblninput' "
-                . " GROUP BY 1 ORDER BY 1";
+        if ($ppilihdari=="CA" AND (double)$psubkode==21) {
+            $query="SELECT DISTINCT idca nobrid, sum(jumlah) jumlah from dbmaster.t_ca0 where "
+                    . " divisi='$pdivisi' AND IFNULL(stsnonaktif,'')<>'Y' and DATE_FORMAT(bulan,'%Y%m')='$thnblninput' "
+                    . " GROUP BY 1 ORDER BY 1";
+        }else{
+            $query="SELECT DISTINCT idrutin nobrid, sum(jumlah) jumlah from dbmaster.t_brrutin0 where "
+                    . " divisi='$pdivisi' AND IFNULL(stsnonaktif,'')<>'Y' $pkodepilih and DATE_FORMAT(bulan,'%Y%m')='$thnblninput' "
+                    . " GROUP BY 1 ORDER BY 1";
+        }
         //echo $query;
         $tampil= mysqli_query($cnmy, $query);
         $ketemu= mysqli_num_rows($tampil);

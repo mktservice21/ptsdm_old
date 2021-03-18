@@ -8,28 +8,44 @@
     $_SESSION['PIPERENTY1']=$_POST['uperiode1'];
     $_SESSION['PIPERENTY2']=$_POST['uperiode2'];
     $_SESSION['PIDIVISI']=$_POST['udivisi'];
+    $_SESSION['PIINCFROM']=$_POST['uincfrom'];
     
     $figroupuser=$_SESSION['GROUP'];
     
+    $pincfrom=$_POST['uincfrom'];
     $pdivprod=$_POST['udivisi'];
     $tgltipe=$_POST['utgltipe'];
     $date1=$_POST['uperiode1'];
     $date2=$_POST['uperiode2'];
     $ptgl1= date("Y-m-01", strtotime($date1));
+    $ptahun= date("Y", strtotime($date1));
     $tgl2= date("Y-m-01", strtotime($date2));
     
     echo "<input type='hidden' name='cb_tgltipe' id='cb_tgltipe' value='$tgltipe'>";
     echo "<input type='hidden' name='xtgl1' id='xtgl1' value='$ptgl1'>";
     echo "<input type='hidden' name='xtgl2' id='xtgl2' value='$tgl2'>";
+    echo "<input type='hidden' name='x_incfrom' id='x_incfrom' value='$pincfrom'>";
     
         $nfildivisi="";
         if (!empty($pdivprod)) $nfildivisi=" AND IFNULL(divisi,'')='$pdivprod'";
         if ($pdivprod=="blank") $nfildivisi=" AND IFNULL(divisi,'')=''";
-        
+    
+    $pfilterincfrom=" AND IFNULL(jenis2,'')='$pincfrom' ";
+    $pfilterincfrom2=" AND IFNULL(a.jenis2,'')='$pincfrom' ";
+    if ($pincfrom=="PM") {
+        $pfilterincfrom=" AND IFNULL(jenis2,'') NOT IN ('GSM', '') ";
+        $pfilterincfrom2=" AND IFNULL(a.jenis2,'') NOT IN ('GSM', '') ";
+    }
+
+    if ((INT)$ptahun<=2020) {
+        $pfilterincfrom="";
+        $pfilterincfrom2="";
+    }
+
     $nhilang1="";
     $nhilang2="hidden";
     $sudahproses=false;
-    $query = "SELECT * FROM ms.incentiveperdivisi WHERE bulan='$ptgl1' $nfildivisi";
+    $query = "SELECT * FROM ms.incentiveperdivisi WHERE bulan='$ptgl1' $nfildivisi $pfilterincfrom";
     $tampil= mysqli_query($cnmy, $query);
     $ketemu= mysqli_num_rows($tampil);
     if ($ketemu>0) {
@@ -48,7 +64,7 @@
         
         include "prosesdatainc.php";
 
-        $tmp01 =caridatainsentif_query($cnmy, "", $ptgl1, "", $pdivprod);
+        $tmp01 =caridatainsentif_query($cnmy, "", $ptgl1, "", $pdivprod, $pincfrom);
 
         $query = "SELECT table_name FROM information_schema.tables WHERE table_name='$tmp01'";
         $tampil= mysqli_query($cnmy, $query);
@@ -66,7 +82,7 @@
         
         $query = "SELECT CAST(null as DECIMAL(10,0)) as urutan, a.bulan, a.divisi, a.cabang icabangid, b.nama cabang, "
                 . " a.jabatan, a.karyawanid, a.nama, a.region, a.jumlah FROM ms.incentiveperdivisi a "
-                . " LEFT JOIN sls.icabang b on a.cabang=b.iCabangId WHERE a.bulan='$ptgl1' $fildivisi";
+                . " LEFT JOIN sls.icabang b on a.cabang=b.iCabangId WHERE a.bulan='$ptgl1' $fildivisi $pfilterincfrom2";
         //echo $query; goto hapusdata;
         $query = "create  table $tmp01 ($query)";
         mysqli_query($cnmy, $query);
@@ -263,6 +279,8 @@
                 <div class='col-xs-3'>
                     <input type='hidden' id='e_per1' name='e_per1' class='form-control col-md-7 col-xs-12' value='<?PHP echo $ptgl1; ?>' Readonly>
                     <input type='hidden' id='e_divp' name='e_divp' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pdivprod; ?>' Readonly>
+                    <input type='hidden' id='e_frominc' name='e_frominc' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pincfrom; ?>' Readonly>
+                    
                 </div>
             </div>
 
@@ -383,9 +401,15 @@
         
         var etgl =document.getElementById('e_per1').value;
         var edivisi =document.getElementById('e_divp').value;
+        var eincfm =document.getElementById('e_frominc').value;
 
         if (etgl=="") {
             alert("Periode kosong...");
+            return false;    
+        }
+
+        if (eincfm=="") {
+            alert("Incentive From nya kosong...");
             return false;    
         }
         
@@ -403,7 +427,7 @@
                 $.ajax({
                     type:"post",
                     url:"module/md_m_prosesdatainsentif/aksi_prosesdatainsentif.php?module="+module+"&act="+eact+"&idmenu="+idmenu,
-                    data:"utgl="+etgl+"&uact="+eact+"&udivisi="+edivisi,
+                    data:"utgl="+etgl+"&uact="+eact+"&udivisi="+edivisi+"&uincfm="+eincfm,
                     success:function(data){
                         $("#loading2").html("");
                         alert(data);

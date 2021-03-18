@@ -171,7 +171,7 @@ elseif ($module=='spdrutinotc')
         
         if ($ppilihdari=="CA" AND (double)$psubkode==21) {
             
-            $query = "UPDATE $dbname.t_suratdana_br SET pilih='N', jenis_rpt='C' WHERE idinput='$kodenya' LIMIT 1";
+            $query = "UPDATE $dbname.t_suratdana_br SET pilih='N', jenis_rpt='C', jumlah3=jumlah WHERE idinput='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
 
             $query="SELECT DISTINCT idca nobrid, sum(jumlah) jumlah from dbmaster.t_ca0 where "

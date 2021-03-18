@@ -35,8 +35,8 @@ if (empty($puser)) {
     
     
     //ubah juga di _uploaddata
-    include "../../config/koneksimysqli_ms.php";
-    $cnmy=$cnms;
+    include "../../config/koneksimysqli_it.php";
+    $cnmy=$cnit;
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true

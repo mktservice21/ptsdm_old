@@ -130,6 +130,7 @@ if ($_GET['module']=="viewkode"){
     $pkode = trim($_POST['ukode']);
     $psubkode = trim($_POST['ukodesub']);
     $padvance = trim($_POST['uadvance']);
+    $pdaripilihan=$_POST['upilihdari'];
     
     $tgl01=$_POST['utgl'];
     $thnblninput= date("Ym", strtotime($tgl01));
@@ -139,20 +140,44 @@ if ($_GET['module']=="viewkode"){
     if ((double)$psubkode==3) $pkodepilih=" AND kode=1";
     if ((double)$psubkode==21) $pkodepilih=" AND kode=2";
     
-    if (!empty($pkodepilih)) {
-        
-        $query ="select sum(jumlah) jumlah from dbmaster.t_brrutin0 where divisi='$pdivsi' AND IFNULL(stsnonaktif,'')<>'Y' $pkodepilih and "
-                . " DATE_FORMAT(bulan,'%Y%m')='$thnblninput' "
-                . " AND idrutin NOT IN (select distinct IFNULL(a.bridinput,'') FROM dbmaster.t_suratdana_br1 a JOIN "
-                . " dbmaster.t_suratdana_br b on a.idinput=b.idinput WHERE IFNULL(b.stsnonaktif,'')<>'Y' AND b.divisi='$pdivsi')";
+    if ($pdaripilihan=="CA" AND (double)$psubkode==21) {
+        $query ="select sum(jumlah) jumlah from dbmaster.t_ca0 where divisi='$pdivsi' 
+            AND IFNULL(stsnonaktif,'')<>'Y' and "
+            . " DATE_FORMAT(bulan,'%Y%m')='$thnblninput' "
+            . " AND idca NOT IN (select distinct IFNULL(a.bridinput,'') FROM dbmaster.t_suratdana_br1 a JOIN "
+            . " dbmaster.t_suratdana_br b on a.idinput=b.idinput WHERE IFNULL(b.stsnonaktif,'')<>'Y' AND b.divisi='$pdivsi')";
         $tampil= mysqli_query($cnmy, $query);
         $ketemu= mysqli_num_rows($tampil);
         if ($ketemu>0) {
             $tr= mysqli_fetch_array($tampil);
             if (!empty($tr['jumlah'])) $totalinput=$tr['jumlah'];
         }
+    }else{
+        if (!empty($pkodepilih)) {
+        
+            $query ="select sum(jumlah) jumlah from dbmaster.t_brrutin0 where divisi='$pdivsi' AND IFNULL(stsnonaktif,'')<>'Y' $pkodepilih and "
+                    . " DATE_FORMAT(bulan,'%Y%m')='$thnblninput' "
+                    . " AND idrutin NOT IN (select distinct IFNULL(a.bridinput,'') FROM dbmaster.t_suratdana_br1 a JOIN "
+                    . " dbmaster.t_suratdana_br b on a.idinput=b.idinput WHERE IFNULL(b.stsnonaktif,'')<>'Y' AND b.divisi='$pdivsi')";
+            $tampil= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($tampil);
+            if ($ketemu>0) {
+                $tr= mysqli_fetch_array($tampil);
+                if (!empty($tr['jumlah'])) $totalinput=$tr['jumlah'];
+            }
+        }
     }
+
+
     echo $totalinput;
+}elseif ($_GET['module']=="viewdaripilihan"){
+    $pkode = trim($_POST['ukode']);
+    if ($pkode=="1") {
+        echo "<option value='RT'>Rutin</option>";
+    }else{
+        echo "<option value='LK' selected>Luar Kota</option>";
+        echo "<option value='CA'>CA</option>";
+    }
 }elseif ($_GET['module']=="xxx"){
     
 }

@@ -51,7 +51,7 @@
         divisi, kodeid, nama, subkode, subnama, FORMAT(jumlah,0,'de_DE') as jumlah, FORMAT(jumlah2,0,'de_DE') as jumlah2,
 			FORMAT(ifnull(jumlah,0)+ifnull(jumlah2,0),0,'de_DE') as jmltcatrans, 
         nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, ifnull(tgl_proses,'0000-00-00') tgl_proses, ifnull(tgl_dir,'0000-00-00') tgl_dir
-        , ifnull(tgl_dir2,'0000-00-00') tgl_dir2, ifnull(tgl_apv1,'0000-00-00') tgl_apv1, ifnull(tgl_apv2,'0000-00-00') tgl_apv2, ifnull(tgl_apv3,'0000-00-00') tgl_apv3 ";
+        , ifnull(tgl_dir2,'0000-00-00') tgl_dir2, ifnull(tgl_apv1,'0000-00-00') tgl_apv1, ifnull(tgl_apv2,'0000-00-00') tgl_apv2, ifnull(tgl_apv3,'0000-00-00') tgl_apv3, keterangan";
     $sql.=" FROM dbmaster.v_suratdana_br ";
     $sql.=" WHERE 1=1 AND IFNULL(kodeid,'')<>'3' ";
     $sql.=" AND ( (Date_format(tgl, '%Y-%m') between '$tgl1' and '$tgl2') OR (Date_format(tglspd, '%Y-%m') between '$tgl1' and '$tgl2') ) $n_filterkaryawan";
@@ -194,6 +194,7 @@
                     $subnama = $row["subnama"];
                     $pkaryawanid=$row['karyawanid'];
                     $pjenisrpt=$row["jenis_rpt"];
+                    $pketpilih=RTRIM($row["keterangan"]);
                     
                     $pmystsyginput="";
                     if ($pkaryawanid=="0000000566") {
@@ -251,7 +252,11 @@
                             if ( ($pkode=="1" AND $psubkode=="03") ) {
                                 $pmymodule="module=rekapbiayarutinotc&act=input&idmenu=171&ket=bukan&ispd=$idno";
                             }elseif ( ($pkode=="2" AND $psubkode=="21") ) {
-                                $pmymodule="module=rekapbiayaluarotc&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                                if ($pketpilih=="CA") {
+                                    $pmymodule="module=rekapbiayaluarotcca&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                                }else{
+                                    $pmymodule="module=rekapbiayaluarotc&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                                }
                             }elseif ( ($pkode=="2" AND $psubkode=="36") ) {
                                 $pmymodule="module=rekapbiayarutincaotc&act=input&idmenu=245&ket=bukan&ispd=$idno";
                             }else{

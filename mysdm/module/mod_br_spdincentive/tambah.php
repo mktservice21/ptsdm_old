@@ -47,6 +47,7 @@ $pkode="1";
 $psubkode="04";
 $pnomor="";
 $pdivnomor="";
+$pketinc="";
 
 $jmle="";
 $jmlh="";
@@ -81,6 +82,8 @@ if ($_GET['act']=="editdata"){
     $jenis = $r['lampiran'];
     $stspilihrpt = $r['sts'];
     $pjnsrpt = $r['jenis_rpt'];
+
+    $pketinc = $r['keterangan'];
     
     if ($r['pilih']=="N") $chkpilih="checked";
     
@@ -100,6 +103,9 @@ if ($_GET['act']=="editdata"){
     }
     
 }
+
+$preadonlyincfrom="";
+if ($pketinc=="PM") $preadonlyincfrom="Readonly";
 ?>
 
 <script> window.onload = function() { document.getElementById("e_id").focus(); } </script>
@@ -168,6 +174,24 @@ if ($_GET['act']=="editdata"){
                                           </select>
                                     </div>
                                 </div>
+
+
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Incentive From <span class='required'></span></label>
+                                    <div class='col-xs-5'>
+                                          <select class='form-control input-sm' id='cb_incfrom' name='cb_incfrom' data-live-search="true" onchange="PilihFromInc()">
+                                              <?PHP
+                                              if ($pketinc=="PM") {
+                                                echo "<option value='GSM'>GSM</option>";
+                                                echo "<option value='PM'selected>PM</option>";
+                                              }else{
+                                                echo "<option value='GSM' selected>GSM</option>";
+                                                echo "<option value='PM'>PM</option>";
+                                              }
+                                              ?>
+                                          </select>
+                                    </div>
+                                </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal Pengajuan Dana</label>
@@ -218,7 +242,7 @@ if ($_GET['act']=="editdata"){
                                         <div id='loading2'></div>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><b>CANARY</b></label>
                                         <div class='col-md-3'>
-                                            <input type='text' id='e_jmlc' name='e_jmlc' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmlc; ?>' >
+                                            <input type='text' id='e_jmlc' name='e_jmlc' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmlc; ?>' <?PHP echo $preadonlyincfrom; ?>>
                                         </div>
                                     </div>
                                 </div>
@@ -419,4 +443,14 @@ if ($_GET['act']=="editdata"){
                 ShowNoBukti();
         <?PHP } ?>
     } );
+
+    function PilihFromInc() {
+        var eincfrm =document.getElementById('cb_incfrom').value;
+        if (eincfrm=="PM") {
+            document.getElementById("e_jmlc").value = "0";
+            document.getElementById("e_jmlc").readOnly = true;
+        }else{
+            document.getElementById("e_jmlc").readOnly = false;
+        }
+    }
 </script>

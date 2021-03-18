@@ -33,7 +33,7 @@
     $sql = "SELECT tgl as tglinput, idinput, DATE_FORMAT(tgl,'%M %Y') bulan, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, DATE_FORMAT(tglf,'%M %Y') as tglf,
         divisi, kodeid, subkode, FORMAT(jumlah,0,'de_DE') as jumlah, 
         nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, ifnull(tgl_proses,'0000-00-00') tgl_proses, ifnull(tgl_dir,'0000-00-00') tgl_dir,
-        ifnull(tgl_dir2,'0000-00-00') tgl_dir2, ifnull(tgl_apv1,'0000-00-00') tgl_apv1, ifnull(tgl_apv2,'0000-00-00') tgl_apv2 ";
+        ifnull(tgl_dir2,'0000-00-00') tgl_dir2, ifnull(tgl_apv1,'0000-00-00') tgl_apv1, ifnull(tgl_apv2,'0000-00-00') tgl_apv2, keterangan ";
     //$sql.=" FROM dbmaster.v_suratdana_br ";
     $sql.=" FROM dbmaster.t_suratdana_br ";
     //$sql.=" WHERE 1=1 AND (divisi='OTC' OR (kodeid='2' AND subkode='25') ) ";// and IFNULL(pilih,'')='Y'
@@ -179,6 +179,7 @@
                     $pjenisrpt=$row["jenis_rpt"];
                     $pstsp=$row["istsp"];
                     $pidkodinput=$row["idkodeidinput"];
+                    $pketpilih=RTRIM($row["keterangan"]);
                     
                     if ($pstsp=="BPJS") {
                         $idno=$pidkodinput;
@@ -236,7 +237,11 @@
                             if ( ($pkode=="1" AND $psubkode=="03") ) {
                                 $pmymodule="module=rekapbiayarutinotc&act=input&idmenu=171&ket=bukan&ispd=$idno";
                             }elseif ( ($pkode=="2" AND $psubkode=="21") ) {
-                                $pmymodule="module=rekapbiayaluarotc&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                                if ($pketpilih=="CA") {
+                                    $pmymodule="module=rekapbiayaluarotcca&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                                }else{
+                                    $pmymodule="module=rekapbiayaluarotc&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                                }
                             }else{
                                 $pmymodule="module=lapbrotcpermorpt&act=input&idmenu=134&ket=bukan&ispd=$idno";
                             }

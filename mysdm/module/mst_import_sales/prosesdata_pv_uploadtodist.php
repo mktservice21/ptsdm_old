@@ -35,6 +35,12 @@
         exit;
     }
     
+
+    
+    //Jika ada perubahan query, di script / koding bagian IT harus diupdate juga,
+    //scroll ke bawah
+
+
     
     //ubah juga di _uploaddata
     include "../../config/koneksimysqli_ms.php";

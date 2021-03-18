@@ -257,7 +257,7 @@
         <div id="isikiri">
             <table class='tjudul' width='100%'>
                 <tr><td width="150px"><b>PT SDM</b></td><td></td></tr>
-                <tr><td width="200px"><b>Realisasi Luar Kota OTC Per </b></td><td align="left"><?PHP echo "$per1 "; ?></td></tr>
+                <tr><td width="200px"><b>CA OTC Per </b></td><td align="left"><?PHP echo "$per1 "; ?></td></tr>
                 <tr><td width="150px"><b>No.BR </b></td><td><?PHP echo "$pnomorbr"; ?></td></tr>
 				<?PHP
 				if (!empty($ptgltransbank)) {

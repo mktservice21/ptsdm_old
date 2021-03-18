@@ -24,7 +24,7 @@
     $sql = "SELECT tgl as tglinput, idinput, DATE_FORMAT(tgl,'%M %Y') bulan, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, DATE_FORMAT(tglf,'%M %Y') as tglf,
         divisi, kodeid, nama, subkode, subnama, FORMAT(jumlah,0,'de_DE') as jumlah, 
         nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, ifnull(tgl_proses,'0000-00-00') tgl_proses, ifnull(tgl_dir,'0000-00-00') tgl_dir,
-        ifnull(tgl_dir2,'0000-00-00') tgl_dir2, ifnull(tgl_apv1,'0000-00-00') tgl_apv1, ifnull(tgl_apv2,'0000-00-00') tgl_apv2 ";
+        ifnull(tgl_dir2,'0000-00-00') tgl_dir2, ifnull(tgl_apv1,'0000-00-00') tgl_apv1, ifnull(tgl_apv2,'0000-00-00') tgl_apv2, keterangan ";
     $sql.=" FROM dbmaster.v_suratdana_br ";
     $sql.=" WHERE 1=1 ";// and IFNULL(pilih,'')='Y'
     $sql.=" AND ( (Date_format(tgl, '%Y-%m') between '$tgl1' and '$tgl2') OR (Date_format(tglspd, '%Y-%m') between '$tgl1' and '$tgl2') ) ";
@@ -42,7 +42,7 @@
     if ($pses_idcard=="0000001372"){//bu ira
         //$sql.=" and IFNULL(pilih,'')='Y' ";, '21', '03'
         $sql.=" and subkode NOT IN ('05', '04') AND idinput not in ('2006', '2017') ";//'23', 
-        $sql.=" AND CONCAT(IFNULL(divisi,''),RTRIM(IFNULL(keterangan,''))) <>'OTCCA'";
+        $sql.=" AND CONCAT(IFNULL(pilih,''), IFNULL(divisi,''), RTRIM(IFNULL(keterangan,''))) <>'NOTCCA'";
     }
     
     if (strtoupper($cket)=="APPROVE") {

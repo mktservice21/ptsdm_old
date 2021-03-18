@@ -40,6 +40,7 @@ if (empty($puser)) {
     $dbname = "MKT";
     
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
+    $plogit_akses=false;
     if ($plogit_akses==true) {
         include "../../config/koneksimysqli_it.php";
     }
@@ -91,7 +92,7 @@ if (empty($puser)) {
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "DROP TEMPORARY tmp1 : $erropesan"; exit; }
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp002");
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "DROP TEMPORARY tmp2 : $erropesan"; exit; }
-		mysqli_query($cnmy, "DROP  TABLE IF EXISTS $temp003");
+		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp003");
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "DROP TEMPORARY tmp2 : $erropesan"; exit; }
 		
 		mysqli_query($cnmy, "CREATE TEMPORARY TABLE $temp001 (select distinct distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif from MKT.ecust WHERE distid='$distributor')");
@@ -107,7 +108,7 @@ if (empty($puser)) {
 		mysqli_query($cnmy, "CREATE INDEX `norm1` ON $temp002 (noidauto, distid, BRANCH_ID,CUST_SHIP_ID)");
 		
 		
-		$query_pp = "CREATE  TABLE $temp003 (select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
+		$query_pp = "CREATE TEMPORARY TABLE $temp003 (select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
 			from $temp002 as a LEFT JOIN 
 			(select distinct cabangid, ecustid from $temp001) b on IFNULL(a.CUST_SHIP_ID,'')=IFNULL(b.ecustid,'')
 			and IFNULL(a.BRANCH_ID,'')=IFNULL(b.cabangid,'') WHERE IFNULL(b.ecustid,'')='')";
@@ -179,7 +180,7 @@ if (empty($puser)) {
     
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp001");
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp002");
-		mysqli_query($cnmy, "DROP  TABLE IF EXISTS $temp003");
+		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp003");
     
                 
             //IT

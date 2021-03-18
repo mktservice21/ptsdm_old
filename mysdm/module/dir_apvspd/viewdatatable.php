@@ -71,6 +71,7 @@
                     $subnama = $row["subnama"];
                     $pkaryawanid=$row['karyawanid'];
                     $pjenisrpt=$row["jenis_rpt"];
+                    $pketpilih=RTRIM($row["keterangan"]);
                     
                     
                     $pmystsyginput="";
@@ -124,7 +125,11 @@
 							if ( ($pkode=="1" AND $psubkode=="03") ) {
 								$pmymodule="module=rekapbiayarutinotc&act=input&idmenu=171&ket=bukan&ispd=$idno";
 							}elseif ( ($pkode=="2" AND $psubkode=="21") ) {
-								$pmymodule="module=rekapbiayaluarotc&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                                if ($pketpilih=="CA") {
+                                    $pmymodule="module=rekapbiayaluarotcca&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                                }else{
+								    $pmymodule="module=rekapbiayaluarotc&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                                }
 							}else{
 								$pmymodule="module=lapbrotcpermorpt&act=input&idmenu=134&ket=bukan&ispd=$idno";
 							}

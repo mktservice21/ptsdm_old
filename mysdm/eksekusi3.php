@@ -174,6 +174,8 @@
         include 'module/laporan/mod_rekap_brrutin_rek/aksi_rekapbrrutin.php';
     }elseif ($_GET['module']=='rekapbiayaluarotc'){
         include 'module/laporan/mod_rekap_brluarotc/aksi_rekapbrluarotc.php';
+    }elseif ($_GET['module']=='rekapbiayaluarotcca'){
+        include 'module/mod_br_spdrutinotc/rptlkdarica.php';
     }elseif ($_GET['module']=='rekapbiayaluar'){
         include 'module/laporan/mod_rekap_brluar/aksi_rekapbrluar.php';
     }elseif ($_GET['module']=='lapbiayaluarotc'){

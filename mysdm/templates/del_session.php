@@ -368,6 +368,7 @@
     $_SESSION['PIPERENTY1']="";
     $_SESSION['PIPERENTY2']="";
     $_SESSION['PIDIVISI']="";
+    $_SESSION['PIINCFROM']="";
     
     
     //closingan LK ethical

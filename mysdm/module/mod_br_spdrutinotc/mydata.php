@@ -31,7 +31,7 @@
     // getting total number records without any search
     $sql = "SELECT idinput, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, "
             . "divisi, kodeid, nama, subkode, subnama, FORMAT(jumlah,0,'de_DE') as jumlah, "
-            . " nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, DATE_FORMAT(tgl_proses,'%d/%m/%Y') tgl_proses, jenis_rpt, periodeby ";
+            . " nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, DATE_FORMAT(tgl_proses,'%d/%m/%Y') tgl_proses, jenis_rpt, periodeby, keterangan ";
     $sql.=" FROM dbmaster.v_suratdana_br ";
     $sql.=" WHERE stsnonaktif <> 'Y' ";
     $sql.=" AND Date_format(tglinput, '%Y-%m') between '$tgl1' and '$tgl2' ";
@@ -82,6 +82,7 @@
         $ptglproses=$row["tgl_proses"];
         $pjenis_rpt=$row["jenis_rpt"];
         $pperiodeby=$row["periodeby"];
+        $pket=RTRIM($row["keterangan"]);
         $nourut = "";
         
         $pmystsyginput="";
@@ -106,6 +107,10 @@
         $pedit="<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$idno'>Edit</a>";
         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$idno')\">";
 
+        if ($pket=="CA") {
+            $plihatview = "<a class='btn btn-info btn-xs' href='eksekusi3.php?module=rekapbiayaluarotcca&act=input&idmenu=245&ket=bukan&ispd=$idno&bln=$ptgl' target='_blank'>View</a>";
+            $plihatexcel = "<a class='btn btn-info btn-xs' href='eksekusi3.php?module=rekapbiayaluarotcca&act=input&idmenu=245&ket=excel&ispd=$idno&bln=$ptgl' target='_blank'>Excel</a>";
+        }
 
         $plihat="$plihatview $plihatexcel";
         $prptsby="";

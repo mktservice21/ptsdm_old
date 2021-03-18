@@ -170,12 +170,12 @@ if (empty($puser)) {
                 
     
     //$query6="SELECT DISTINCT '$distributor', BRANCH_ID, CUST_SHIP_ID, CUST_NAME, CUST_ADDR1, CUST_CITY, 'Y', 'Y' FROM $dbname.pv_import_cust";
-	$query6="SELECT * FROM $temp003";
+	//$query6="SELECT * FROM $temp003";
 			
-    $tampil=mysqli_query($cnmy, $query6);
-    $totalcust= mysqli_num_rows($tampil);
+    //$tampil=mysqli_query($cnmy, $query6);
+    //$totalcust= mysqli_num_rows($tampil);
     
-    echo "Total Customer baru yg berhasil diinput: $totalcust<br><hr><br>";
+    //echo "Total Customer baru yg berhasil diinput: $totalcust<br><hr><br>";
     
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp001");
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp002");

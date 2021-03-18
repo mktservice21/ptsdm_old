@@ -42,6 +42,7 @@
     if ($pses_idcard=="0000001372"){//bu ira
         //$sql.=" and IFNULL(pilih,'')='Y' ";, '21', '03'
         $sql.=" and subkode NOT IN ('05', '04') AND idinput not in ('2006', '2017') ";//'23', 
+        $sql.=" AND CONCAT(IFNULL(divisi,''),RTRIM(IFNULL(keterangan,''))) <>'OTCCA'";
     }
     
     if (strtoupper($cket)=="APPROVE") {

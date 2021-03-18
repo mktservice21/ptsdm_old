@@ -128,13 +128,13 @@ if (empty($puser)) {
                         
                         $temp001="dbtemp.tmpisicustfrpv00231x_01";
                         $temp002="dbtemp.tmpisicustfrpv00231x_02";
-                        $temp003="dbtemp.tmpisicustfrpv00231x_03";
+                        $temp003A="dbtemp.tmpisicustfrpv00231x_03";
 
                         mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp001");
                         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... DROP TEMPORARY tmp1 : $erropesan"; exit; }
                         mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp002");
                         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... DROP TEMPORARY tmp2 : $erropesan"; exit; }
-                        mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp003");
+                        mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp003A");
                         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... DROP TEMPORARY tmp2 : $erropesan"; exit; }
 
                         mysqli_query($cnit, "CREATE TEMPORARY TABLE $temp001 (select distinct distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif from MKT.ecust WHERE distid='$distributor')");
@@ -150,7 +150,7 @@ if (empty($puser)) {
                         mysqli_query($cnit, "CREATE INDEX `norm1` ON $temp002 (noidauto, distid, BRANCH_ID,CUST_SHIP_ID)");
 
 
-                        $query_pp = "CREATE TEMPORARY TABLE $temp003 (select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
+                        $query_pp = "CREATE TEMPORARY TABLE $temp003A (select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
                                 from $temp002 as a LEFT JOIN 
                                 (select distinct cabangid, ecustid from $temp001) b on IFNULL(a.CUST_SHIP_ID,'')=IFNULL(b.ecustid,'')
                                 and IFNULL(a.BRANCH_ID,'')=IFNULL(b.cabangid,'') WHERE IFNULL(b.ecustid,'')='')";
@@ -160,7 +160,7 @@ if (empty($puser)) {
 
                         $queryMKT = "insert into MKT.ecust (distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif) 
                                 select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
-                                from $temp003 as a";
+                                from $temp003A as a";
                         mysqli_query($cnit, $queryMKT);
                         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT MKT CUST ADA : $erropesan"; exit; }
                         
@@ -168,7 +168,7 @@ if (empty($puser)) {
                     }
                     //END IT
                 
-    
+    exit;
     //$query6="SELECT DISTINCT '$distributor', BRANCH_ID, CUST_SHIP_ID, CUST_NAME, CUST_ADDR1, CUST_CITY, 'Y', 'Y' FROM $dbname.pv_import_cust";
 	$query6="SELECT * FROM $temp003";
 			
@@ -184,9 +184,9 @@ if (empty($puser)) {
                 
             //IT
             if ($plogit_akses==true) {
-		mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp001");
-		mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp002");
-		mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp003");
+                mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp001");
+                mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp002");
+                mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp003A");
             }
             //END IT
     

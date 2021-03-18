@@ -219,15 +219,15 @@ $data = [
   
   if (empty($httpcode)) $httpcode=0;
   if ((INT)$httpcode==201) {
-      echo "<br/>Berhasil insert elastic...";
+      echo "<br/>Berhasil insert elastic...<br/>";
   }else{
-      echo "<br/>Gagal insert elastic...";
+      echo "<br/>Gagal insert elastic...<br/>";
   }
 ?>
 
 
 <?PHP
-echo "<br/>PROSES SALES IMPORT DI IT</br/>";
+echo "<br/><br/><b>PROSES SALES IMPORT DI IT</b></br/>";
 ?>
 
 <?PHP

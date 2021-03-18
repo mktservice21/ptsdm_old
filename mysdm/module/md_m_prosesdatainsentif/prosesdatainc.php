@@ -1,12 +1,22 @@
 <?PHP
-function caridatainsentif_query($con, $temp, $bulan, $jabatan, $pdivprod) {
+function caridatainsentif_query($con, $temp, $bulan, $jabatan, $pdivprod, $pincfrom) {
     $cnmy=$con;
     $ptgl1=$bulan;
-    
+    $ptahun= date("Y", strtotime($ptgl1));
+
     $fildivisi="";
     if (!empty($pdivprod)) $fildivisi=" AND IFNULL(g.divprodid,'')='$pdivprod'";
     if ($pdivprod=="blank") $fildivisi=" AND IFNULL(g.divprodid,'')=''";
-        
+    
+    
+
+    $pfilterincfrom=" AND IFNULL(i.jenis2,'')='$pincfrom' ";
+    if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(i.jenis2,'') NOT IN ('GSM', '') ";
+
+    if ((INT)$ptahun<=2020) {
+        $pfilterincfrom="";
+    }
+
     $now=date("mdYhis");
     $tmp01 ="RTMPPROSINC01_".$_SESSION['USERID']."_$now";
     
@@ -43,7 +53,7 @@ function caridatainsentif_query($con, $temp, $bulan, $jabatan, $pdivprod) {
               ON i.karyawanid = pm.mr
             JOIN sls.icabang c
               ON pm.icabangid = c.iCabangId
-          WHERE bulan = '$ptgl1' $fildivisi AND i.jenis2='GSM' 
+          WHERE bulan = '$ptgl1' $fildivisi $pfilterincfrom 
           GROUP BY k.nama,
             c.region,
             c.nama";
@@ -110,7 +120,7 @@ if ($pdivprod=="" OR $pdivprod=="CAN") {
           ON i.karyawanid = k.karyawanId
         JOIN sls.icabang c
           ON pm.icabangid = c.iCabangId
-      WHERE i.bulan = '$ptgl1' AND i.jenis2='GSM' 
+      WHERE i.bulan = '$ptgl1' $pfilterincfrom 
       GROUP BY k.nama,
         c.region,
         c.nama";
@@ -142,7 +152,7 @@ if ($pdivprod=="" OR $pdivprod=="CAN") {
           ON i.karyawanid = k.karyawanId
         JOIN sls.icabang c
           ON pm.icabangid = c.iCabangId
-      WHERE i.bulan = '$ptgl1' AND i.jenis2='GSM' 
+      WHERE i.bulan = '$ptgl1' $pfilterincfrom 
       GROUP BY k.nama,
         c.region,
         c.nama";

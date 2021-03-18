@@ -5,9 +5,11 @@
     $tgl_akhir = date('F Y', strtotime($hari_ini2));
     
     $fdivisi="";
+    $ffrominc="";
     if (!empty($_SESSION['PIPERENTY1'])) $tgl_pertama = $_SESSION['PIPERENTY1'];
     if (!empty($_SESSION['PIPERENTY2'])) $tgl_akhir = $_SESSION['PIPERENTY2'];
     if (!empty($_SESSION['PIDIVISI'])) $fdivisi = $_SESSION['PIDIVISI'];
+    if (!empty($_SESSION['PIINCFROM'])) $ffrominc = $_SESSION['PIINCFROM'];
     
     $fkaryawan=$_SESSION['IDCARD'];
     $fstsadmin=$_SESSION['STSADMIN'];
@@ -56,13 +58,14 @@
                         var etgl1=document.getElementById('tgl1').value;
                         var etgl2=document.getElementById('tgl2').value;
                         var edivisi=document.getElementById('e_divisi').value;
+                        var eincfrom=document.getElementById('e_incfrom').value;
                         var eidc=<?PHP echo $_SESSION['USERID']; ?> ;
 
                         $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                         $.ajax({
                             type:"post",
                             url:"module/md_m_prosesdatainsentif/viewdatatabel.php?module="+ket,
-                            data:"eket="+ket+"&utgltipe="+etgltipe+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&udivisi="+edivisi+"&uidc="+eidc+"&ucabang=",
+                            data:"eket="+ket+"&utgltipe="+etgltipe+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&udivisi="+edivisi+"&uidc="+eidc+"&ucabang="+"&uincfrom="+eincfrom,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
@@ -148,6 +151,26 @@
                                     </select>
                                 </div>
                             </div>
+
+
+                            <div class='col-sm-2'>
+                                Incentive From 
+                                <div class="form-group">
+                                    <select class='form-control input-sm' id='e_incfrom' name='e_incfrom' onchange="">
+                                        <?PHP
+                                            if ($ffrominc=="PM") {
+                                                echo "<option value='GSM'>GSM</option>";
+                                                echo "<option value='PM' selected>PM</option>";
+                                            }else{
+                                                echo "<option value='GSM' selected>GSM</option>";
+                                                echo "<option value='PM'>PM</option>";
+                                            }
+                                            
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+
 
                             <div class='col-sm-3'>
                                 <small>&nbsp;</small>

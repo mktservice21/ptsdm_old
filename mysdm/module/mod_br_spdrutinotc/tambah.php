@@ -148,6 +148,22 @@ if ($_GET['act']=="editdata"){
                                           </select>
                                     </div>
                                 </div>
+
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Dari <span class='required'></span></label>
+                                    <div class='col-xs-5'>
+                                          <select class='form-control input-sm' id='cb_daripilihan' name='cb_daripilihan' data-live-search="true" onchange="">
+                                              <?PHP
+                                                if ($pkode=="1") {
+                                                    echo "<option value='RT'>Rutin</option>";
+                                                }else{
+                                                    echo "<option value='LK' selected>Luar Kota</option>";
+                                                    echo "<option value='CA'>CA</option>";
+                                                }
+                                              ?>
+                                          </select>
+                                    </div>
+                                </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal Pengajuan Dana</label>
@@ -328,6 +344,19 @@ if ($_GET['act']=="editdata"){
             success:function(data){
                 $("#cb_kodesub").html(data);
                 ShowDataKode();
+                ShowDariPilihan();
+            }
+        });
+    }
+
+    function ShowDariPilihan() {
+        var ikode = document.getElementById('cb_kode').value;
+        $.ajax({
+            type:"post",
+            url:"module/mod_br_spdrutinotc/viewdata.php?module=viewdaripilihan",
+            data:"ukode="+ikode,
+            success:function(data){
+                $("#cb_daripilihan").html(data);
             }
         });
     }
@@ -375,12 +404,13 @@ if ($_GET['act']=="editdata"){
         var ikode = document.getElementById('cb_kode').value;
         var ikodesub = document.getElementById('cb_kodesub').value;
         var itgl = document.getElementById('e_periode').value;
+        var ipilihdari = document.getElementById('cb_daripilihan').value;
         var iadvance = "";
         //alert(ikodesub); return false;
         $.ajax({
             type:"post",
             url:"module/mod_br_spdrutinotc/viewdata.php?module=hideungjumlahrp",
-            data:"udivisi="+idiv+"&ukode="+ikode+"&ukodesub="+ikodesub+"&utgl="+itgl+"&uadvance="+iadvance,
+            data:"udivisi="+idiv+"&ukode="+ikode+"&ukodesub="+ikodesub+"&utgl="+itgl+"&uadvance="+iadvance+"&upilihdari="+ipilihdari,
             success:function(data){
                 document.getElementById('e_jmlusulan').value=data;
             }

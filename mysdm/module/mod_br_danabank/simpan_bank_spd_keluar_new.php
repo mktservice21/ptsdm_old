@@ -66,6 +66,9 @@
 
         
         if ($pact=="simpandatabankkeluar") {
+
+            $query = "";
+
             if (empty($pnobukti)) {
                 $berhasil="No Bukti / BBK Kosong, tidak ada data yang diupdate...";
             }else{

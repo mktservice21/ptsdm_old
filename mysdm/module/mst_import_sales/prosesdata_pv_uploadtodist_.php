@@ -189,7 +189,7 @@ if (empty($puser)) {
                 mysqli_query($cnit, "DROP TEMPORARY TABLE IF EXISTS $temp003A");
             }
             //END IT
-    exit;
+    
     // -----------------------------  insert sales
     $totalsalesqty=0;
     $totalsalessum=0;

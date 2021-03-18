@@ -91,7 +91,7 @@ if (empty($puser)) {
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "DROP TEMPORARY tmp1 : $erropesan"; exit; }
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp002");
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "DROP TEMPORARY tmp2 : $erropesan"; exit; }
-		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp003");
+		mysqli_query($cnmy, "DROP  TABLE IF EXISTS $temp003");
 		$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "DROP TEMPORARY tmp2 : $erropesan"; exit; }
 		
 		mysqli_query($cnmy, "CREATE TEMPORARY TABLE $temp001 (select distinct distid,cabangid,ecustid,nama,alamat1,kota,oldflag,aktif from MKT.ecust WHERE distid='$distributor')");
@@ -107,7 +107,7 @@ if (empty($puser)) {
 		mysqli_query($cnmy, "CREATE INDEX `norm1` ON $temp002 (noidauto, distid, BRANCH_ID,CUST_SHIP_ID)");
 		
 		
-		$query_pp = "CREATE TEMPORARY TABLE $temp003 (select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
+		$query_pp = "CREATE  TABLE $temp003 (select DISTINCT a.distid, a.BRANCH_ID, a.CUST_SHIP_ID, a.CUST_NAME, a.CUST_ADDR1, a.CUST_CITY, a.oldflag, a.aktif 
 			from $temp002 as a LEFT JOIN 
 			(select distinct cabangid, ecustid from $temp001) b on IFNULL(a.CUST_SHIP_ID,'')=IFNULL(b.ecustid,'')
 			and IFNULL(a.BRANCH_ID,'')=IFNULL(b.cabangid,'') WHERE IFNULL(b.ecustid,'')='')";
@@ -170,16 +170,16 @@ if (empty($puser)) {
                 
     
     //$query6="SELECT DISTINCT '$distributor', BRANCH_ID, CUST_SHIP_ID, CUST_NAME, CUST_ADDR1, CUST_CITY, 'Y', 'Y' FROM $dbname.pv_import_cust";
-	//$query6="SELECT * FROM $temp003";
+	$query6="SELECT * FROM $temp003";
 			
-    //$tampil=mysqli_query($cnmy, $query6);
-    //$totalcust= mysqli_num_rows($tampil);
+    $tampil=mysqli_query($cnmy, $query6);
+    $totalcust= mysqli_num_rows($tampil);
     
-    //echo "Total Customer baru yg berhasil diinput: $totalcust<br><hr><br>";
+    echo "Total Customer baru yg berhasil diinput: $totalcust<br><hr><br>";
     
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp001");
 		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp002");
-		mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $temp003");
+		mysqli_query($cnmy, "DROP  TABLE IF EXISTS $temp003");
     
                 
             //IT

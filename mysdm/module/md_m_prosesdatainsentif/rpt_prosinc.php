@@ -16,7 +16,7 @@
     
     //$cnmy=$cnms;
     
-    
+    $pincfrom="";
     $pnmidspd="";
     $pdivprod="";
     $date1 = date("Y-m-d");
@@ -36,11 +36,26 @@
     }else{
     
         $pdivprod=$_POST['e_divisi'];
+        $pincfrom=$_POST['e_incfrom'];
         $date1=$_POST['e_periode01'];
     }
     $ptgl1= date("Y-m-01", strtotime($date1));
+    $ptahun= date("Y", strtotime($date1));
     $per1= date("F Y", strtotime($date1));
     
+    $pfilterincfrom=" AND IFNULL(jenis2,'')='$pincfrom' ";
+    $pfilterincfrom2=" AND IFNULL(a.jenis2,'')='$pincfrom' ";
+    if ($pincfrom=="PM") {
+        $pfilterincfrom=" AND IFNULL(jenis2,'') NOT IN ('GSM', '') ";
+        $pfilterincfrom2=" AND IFNULL(a.jenis2,'') NOT IN ('GSM', '') ";
+    }
+    
+    if ((INT)$ptahun<=2020) {
+        $pfilterincfrom="";
+        $pfilterincfrom2="";
+    }
+
+
     $now=date("mdYhis");
     $tmp01 =" dbtemp.DTBRRETRLCLS01_".$_SESSION['IDCARD']."_$now ";
     
@@ -67,7 +82,7 @@
         
         include "prosesdatainc.php";
 
-        $tmp01 =caridatainsentif_query($cnmy, "", $ptgl1, "", $pdivprod);
+        $tmp01 =caridatainsentif_query($cnmy, "", $ptgl1, "", $pdivprod, $pincfrom);
 
         $query = "SELECT table_name FROM information_schema.tables WHERE table_name='$tmp01'";
         $tampil= mysqli_query($cnmy, $query);
@@ -85,7 +100,7 @@
         
         $query = "SELECT CAST(null as DECIMAL(10,0)) as urutan, a.bulan, a.divisi, a.cabang icabangid, b.nama cabang, "
                 . " a.jabatan, a.karyawanid, a.nama, a.region, a.jumlah FROM dbmaster.incentiveperdivisi a "
-                . " LEFT JOIN mkt.icabang b on a.cabang=b.iCabangId WHERE a.bulan='$ptgl1' $fildivisi";
+                . " LEFT JOIN mkt.icabang b on a.cabang=b.iCabangId WHERE a.bulan='$ptgl1' $fildivisi $pfilterincfrom2";
         //echo $query; goto hapusdata;
         $query = "create  table $tmp01 ($query)";
         mysqli_query($cnmy, $query);

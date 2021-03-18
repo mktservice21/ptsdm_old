@@ -168,7 +168,7 @@ if (empty($puser)) {
                     }
                     //END IT
                 
-    exit;
+    
     //$query6="SELECT DISTINCT '$distributor', BRANCH_ID, CUST_SHIP_ID, CUST_NAME, CUST_ADDR1, CUST_CITY, 'Y', 'Y' FROM $dbname.pv_import_cust";
 	$query6="SELECT * FROM $temp003";
 			

@@ -170,6 +170,10 @@ elseif ($module=='spdrutinotc')
         if ((double)$psubkode==3) $pkodepilih=" AND kode=1";
         
         if ($ppilihdari=="CA" AND (double)$psubkode==21) {
+            
+            $query = "UPDATE $dbname.t_suratdana_br SET pilih='N' WHERE idinput='$kodenya' LIMIT 1";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
             $query="SELECT DISTINCT idca nobrid, sum(jumlah) jumlah from dbmaster.t_ca0 where "
                     . " divisi='$pdivisi' AND IFNULL(stsnonaktif,'')<>'Y' and DATE_FORMAT(bulan,'%Y%m')='$thnblninput' "
                     . " GROUP BY 1 ORDER BY 1";

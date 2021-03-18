@@ -41,6 +41,8 @@
     $cnmy=$cnms;
     $dbname = "MKT";
 
+    $totalproduk=0;
+
     $query1 = "DELETE FROM $dbname.pv_import_produk WHERE CONCAT(IFNULL(PROD_ID,''),'$distributor') in
             (SELECT DISTINCT CONCAT(IFNULL(eprodid,''),'$distributor') FROM MKT.eproduk WHERE distid='$distributor')";
     mysqli_query($cnmy, $query1);
@@ -235,6 +237,8 @@ echo "<br/><br/><b>PROSES SALES IMPORT DI IT</b></br/>";
     include "../../config/koneksimysqli_it.php";
     $cnmy=$cnit;
     $dbname = "MKT";
+
+    $totalproduk=0;
 
     $query1 = "DELETE FROM $dbname.pv_import_produk WHERE CONCAT(IFNULL(PROD_ID,''),'$distributor') in
             (SELECT DISTINCT CONCAT(IFNULL(eprodid,''),'$distributor') FROM MKT.eproduk WHERE distid='$distributor')";

@@ -128,6 +128,8 @@
 	 }
 	 
 	 //echo"$jab<br>";
+	 if (empty($jab)) $jab=0;
+	 if (empty($jml_hari_krj)) $jml_hari_krj=0;
 	 
 	 $jpoint = $jab * $jml_hari_krj;
 	 //echo"$jpoint = $jab * $jumlah<br>";

@@ -63,8 +63,8 @@ if (empty($puser)) {
     
     //IT
     if ($plogit_akses==true) {
-        mysqli_query($cnit, "DELETE FROM $dbname.importsst");
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE importsst : $erropesan"; exit; }
+        //mysqli_query($cnit, "DELETE FROM $dbname.importsst");
+        //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE importsst : $erropesan"; exit; }
     }
     //END IT
     
@@ -445,6 +445,11 @@ if (empty($puser)) {
     if ($plogit_akses==true AND $isimpan==true) {
         include "../../config/koneksimysqli_it.php";
 
+        
+        if ($plogit_akses==true) {
+            mysqli_query($cnit, "DELETE FROM $dbname.importsst");
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE importsst : $erropesan"; exit; }
+        }
 
         mysqli_query($cnit, $query_sst);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }

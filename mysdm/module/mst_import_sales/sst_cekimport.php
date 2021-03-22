@@ -52,7 +52,7 @@ if (empty($puser)) {
     $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
     //$plogit_akses==false;
     if ($plogit_akses==true) {
-        //include "../../config/koneksimysqli_it.php";
+        include "../../config/koneksimysqli_it.php";
     }
     
     
@@ -63,8 +63,8 @@ if (empty($puser)) {
     
     //IT
     if ($plogit_akses==true) {
-        //mysqli_query($cnit, "DELETE FROM $dbname.importsst");
-        //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE importsst : $erropesan"; exit; }
+        mysqli_query($cnit, "DELETE FROM $dbname.importsst");
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE importsst : $erropesan"; exit; }
     }
     //END IT
     
@@ -222,8 +222,8 @@ if (empty($puser)) {
         
         //IT
         if ($plogit_akses==true) {
-            //mysqli_query($cnit, $query_sst);
-            //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
+            mysqli_query($cnit, $query_sst);
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
         }
         //END IT
 
@@ -234,6 +234,12 @@ if (empty($puser)) {
     
     mysqli_query($cnmy, "update $dbname.importsst set `asl_data`= 'HO' where IFNULL(`asl_data`,'')=''");
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error UPDATE asl_data : $erropesan"; exit; }
+    
+
+    if ($plogit_akses==true) {
+        mysqli_query($cnit, "update $dbname.importsst set `asl_data`= 'HO' where IFNULL(`asl_data`,'')=''");
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error UPDATE asl_data : $erropesan"; exit; }
+    }
     
     
     $query = "select * from $dbname.importsst WHERE IFNULL(`Tgl Dok`,'')= '' OR IFNULL(`Tgl Dok`,'0000-00-00')= '0000-00-00' OR IFNULL(`Tgl Dok`,'1970-01-01')= '1970-01-01'";
@@ -267,7 +273,6 @@ if (empty($puser)) {
     }
     
     
-
     //hapus data
     //unlink($target_dir.$filename);
     
@@ -433,30 +438,7 @@ if (empty($puser)) {
     
     //IT
     if ($plogit_akses==true) {
-        //mysqli_close($cnit);
-    }
-    
-?>
-
-
-<?PHP
-    $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
-    //$plogit_akses==false;
-    if ($plogit_akses==true AND $isimpan==true) {
-        include "../../config/koneksimysqli_it.php";
-
-        
-        if ($plogit_akses==true) {
-            mysqli_query($cnit, "DELETE FROM $dbname.importsst");
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE importsst : $erropesan"; exit; }
-        }
-
-        mysqli_query($cnit, $query_sst);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
-
-        mysqli_query($cnit, "update $dbname.importsst set `asl_data`= 'HO' where IFNULL(`asl_data`,'')=''");
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "Error UPDATE asl_data : $erropesan"; exit; }
-
         mysqli_close($cnit);
     }
+    
 ?>

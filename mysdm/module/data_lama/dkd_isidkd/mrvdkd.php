@@ -68,8 +68,10 @@
 		 } else {
 			   $query = "select karyawanid,nama from hrd.karyawan
                    where
+                   ( 
                    (jabatanid='08' or (jabatanid='10' or jabatanid='18') or
                     jabatanid='15') and tglkeluar='0000-00-00'
+                    ) OR karyawanid='$_SESSION[IDCARD]'
                    order by nama";
 		 }
 		 

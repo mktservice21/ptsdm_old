@@ -400,14 +400,14 @@ $data = [
 
 echo "<br/><br/>Upload IT...<br/><br/>";
 
-unset($pinsert_sls);//kosongkan array
-unset($pinsert_prod);//kosongkan array
-unset($pinsert_cust);//kosongkan array
 
     include "../../config/koneksimysqli_it.php";
     $cnmy=$cnit;
     $dbname = "MKT";
     
+    unset($pinsert_sls);//kosongkan array
+    unset($pinsert_prod);//kosongkan array
+    unset($pinsert_cust);//kosongkan array
     
     echo "Sapta sari ~ $bulan ~ $id_cabang<br>";
     

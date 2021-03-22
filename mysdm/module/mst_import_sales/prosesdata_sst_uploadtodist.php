@@ -400,6 +400,9 @@ $data = [
 
 echo "<br/><br/>Upload IT...<br/><br/>";
 
+unset($pinsert_sls);//kosongkan array
+unset($pinsert_prod);//kosongkan array
+unset($pinsert_cust);//kosongkan array
 
     include "../../config/koneksimysqli_it.php";
     $cnmy=$cnit;
@@ -625,7 +628,7 @@ echo "<br/><br/>Upload IT...<br/><br/>";
     }
     
     
-    
+
     if ($isimpan_cus==true) {
         $query_cust = "INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif) VALUES "
                 . " ".implode(', ', $pinsert_cust);
@@ -635,7 +638,8 @@ echo "<br/><br/>Upload IT...<br/><br/>";
         
     }
     
-    
+
+
     if ($isimpan_prod==true) {
         $query_prod = "INSERT INTO MKT.eproduk(distid,eprodid,nama,hna,oldflag,aktif) VALUES "
                 . " ".implode(', ', $pinsert_prod);

@@ -194,7 +194,6 @@
    echo '<tr>';
    echo '<td>Bulan : </td>';
    echo '<td>';
-   mysqli_select_db('hrd');
    $tahun = date('Y');
    $tahun_1 = $tahun - 1;
    $curBln = date('Y-m');

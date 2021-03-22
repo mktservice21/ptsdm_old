@@ -43,25 +43,8 @@ if (empty($puser)) {
     $cnmy=$cnms;
     $dbname = "MKT";
     
-    $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
-    //$plogit_akses==false;
-    if ($plogit_akses==true) {
-        include "../../config/koneksimysqli_it.php";
-    }
-    
-    
     
     echo "Sapta sari ~ $bulan ~ $id_cabang<br>";
-    
-    /*
-    //hapus dipindah ke bawah
-    mysqli_query($cnmy, "DELETE FROM $dbname.salessaptabaru WHERE left(tgljual,7)='$bulan' AND asl_data = '$id_cabang'");
-    //IT
-    if ($plogit_akses==true) {
-        mysqli_query($cnit, "DELETE FROM $dbname.salessaptabaru WHERE left(tgljual,7)='$bulan' AND asl_data = '$id_cabang'");
-    }
-    //END IT
-    */
     
     $isimpan_cus=false;
     $isimpan_prod=false;
@@ -272,41 +255,9 @@ if (empty($puser)) {
             $bonus = 0;
         }
         
-        /*
-        $cekcust0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(ecustid) FROM MKT.ecust WHERE distid = '$kodedist' AND cabangid = '$kodecabang' AND ecustid = '$kodepelanggan'"));
-        
-        $cekcust=$cekcust0[0];
-        
-        if ($cekcust==0){
-            
-            $isimpan_cus=true;
-            
-            $pinsert_cust[] = "('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y')";
-            
-            //mysqli_query($cnmy, "INSERT INTO MKT.ecust(distid,cabangid,ecustid,nama,alamat1,oldflag,aktif) VALUES ('$kodedist','$kodecabang','$kodepelanggan','$namapelanggan','$alamat','Y','Y')");
-            
-        }
-        
-    
-        $cekprod0=mysqli_fetch_array(mysqli_query($cnmy, "SELECT COUNT(eprodid) AS total FROM MKT.eproduk WHERE distid = '$kodedist' AND eprodid = '$kodeproduk'"));
-        $cekprod=$cekprod0[0];
-        if ($cekprod==0){
-            
-            $isimpan_prod=true;
-            
-            $pinsert_prod[] = "('$kodedist','$kodeproduk','$namaproduk','$harga','Y','Y')";
-            
-            //mysqli_query($cnmy, "INSERT INTO MKT.eproduk(distid,eprodid,nama,hna,oldflag,aktif) VALUES ('$kodedist','$kodeproduk','$namaproduk','$harga','Y','Y')");
-            
-        }
-        */
-        
         $isimpan_sls=true;
         
         $pinsert_sls[] = "('$id_cabang','$kodecabang','$kodepelanggan','$tglfaktur','$kodeproduk',$harga,$qty,$bonus,'$nofaktur','$kodepelanggan','$noacu')";
-        
-        //mysqli_query($cnmy, "INSERT INTO $dbname.salessaptabaru(asl_data,cabangid,custid,tgljual,brgid,harga,qbeli,qbonus,fakturid,custid3,NoAcu) VALUES ('$id_cabang','$kodecabang','$kodepelanggan','$tglfaktur','$kodeproduk',$harga,$qty,$bonus,'$nofaktur','$kodepelanggan','$noacu')");
-    
         
         
     }
@@ -319,12 +270,6 @@ if (empty($puser)) {
         mysqli_query($cnmy, $query_cust);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT CUST : $erropesan"; exit; }
         
-        //IT
-        if ($plogit_akses==true) {
-            mysqli_query($cnit, $query_cust);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT CUST : $erropesan"; exit; }
-        }
-        //END IT
         
     }
     
@@ -335,24 +280,12 @@ if (empty($puser)) {
         mysqli_query($cnmy, $query_prod);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT PROD : $erropesan"; exit; }
         
-        //IT
-        if ($plogit_akses==true) {
-            mysqli_query($cnit, $query_prod);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT PROD : $erropesan"; exit; }
-        }
-        //END IT
-        
     }
     
     
     
     //hapus data sales perbulan, dari atas
     mysqli_query($cnmy, "DELETE FROM $dbname.salessaptabaru WHERE left(tgljual,7)='$bulan' AND asl_data = '$id_cabang'");
-    //IT
-    if ($plogit_akses==true) {
-        mysqli_query($cnit, "DELETE FROM $dbname.salessaptabaru WHERE left(tgljual,7)='$bulan' AND asl_data = '$id_cabang'");
-    }
-    //END IT
     
     if ($isimpan_sls==true) {
         $query_sales = "INSERT INTO $dbname.salessaptabaru(asl_data,cabangid,custid,tgljual,brgid,harga,qbeli,qbonus,fakturid,custid3,NoAcu) VALUES "
@@ -360,13 +293,6 @@ if (empty($puser)) {
         mysqli_query($cnmy, $query_sales);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT SALES : $erropesan"; exit; }
         
-        
-        //IT
-        if ($plogit_akses==true) {
-            mysqli_query($cnit, $query_sales);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT SALES : $erropesan"; exit; }
-        }
-        //END IT
         
     }
     
@@ -436,21 +362,8 @@ if (empty($puser)) {
     }
     
     
-    
-    $time = microtime();
-    $time = explode(' ', $time);
-    $time = $time[1] + $time[0];
-    $finish = $time;
-    $total_time = round(($finish - $start), 4);
-    
-    echo "<br/>Selesai dalam ".$total_time." detik<br/>&nbsp;<br/>&nbsp;";
 
     mysqli_close($cnmy);
-    
-    //IT
-    if ($plogit_akses==true) {
-        mysqli_close($cnit);
-    }
     
 ?>
 
@@ -480,4 +393,16 @@ $data = [
   }else{
       echo "<br/>Gagal insert elastic...";
   }
+?>
+
+
+
+<?PHP
+    $time = microtime();
+    $time = explode(' ', $time);
+    $time = $time[1] + $time[0];
+    $finish = $time;
+    $total_time = round(($finish - $start), 4);
+    
+    echo "<br/>Selesai dalam ".$total_time." detik<br/>&nbsp;<br/>&nbsp;";
 ?>

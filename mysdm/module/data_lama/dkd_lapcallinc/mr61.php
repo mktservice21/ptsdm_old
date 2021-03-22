@@ -139,7 +139,7 @@
 	 }else{
 		$summary_ = (((DOUBLE)$totcall+(DOUBLE)$totpoint2) / ((DOUBLE)$jpoint-(DOUBLE)$totpoint1)) * 100;
 	 }
-	 
+	 //echo "call : $totcall, point2 : $totpoint2, jpoint : $jpoint, point1 : $totpoint1<br/>";
 	 // echo "($totcall+$totpoint2) / ($jpoint-$totpoint1)";
 
 	 echo '<tr>';

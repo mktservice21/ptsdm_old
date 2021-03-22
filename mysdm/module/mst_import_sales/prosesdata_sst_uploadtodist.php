@@ -402,7 +402,7 @@ echo "<br/><br/>Upload IT...<br/><br/>";
 
 
     include "../../config/koneksimysqli_it.php";
-    $cnmy=$cnms;
+    $cnmy=$cnit;
     $dbname = "MKT";
     
     

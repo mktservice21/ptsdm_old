@@ -102,8 +102,6 @@ if (empty($puser)) {
             $pfile17 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(17, $row)->getValue());
             $pfile18 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(18, $row)->getValue());
 			
-            if (empty($pfile16)) $pfile16="0000-00-00";
-            if (empty($pfile18)) $pfile18="0000-00-00";
 
 			//error_reporting(0);
             $pfile19 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(19, $row)->getValue());

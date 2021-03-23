@@ -39,7 +39,8 @@
     $puserid=$_SESSION['USERID'];
     
     $ppilformat="1";
-    if (($picardid=="0000000143" OR $picardid=="0000000329") AND $ppilihrpt=="excel") {
+    //if (($picardid=="0000000143" OR $picardid=="0000000329") AND $ppilihrpt=="excel") {
+    if ($ppilihrpt=="excel") {
         $ppilformat="2";
     }
     

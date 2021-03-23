@@ -99,9 +99,9 @@ if (empty($puser)) {
             //$pfile16 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(16, $row)->getValue());
 			
 			//error_reporting(0);
-            $pfile17 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(17, $row)->getValue());
+            $pfile19 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(19, $row)->getValue());
             //error_reporting(-1);
-			//if (empty($pfile17)) $pfile17="0000-00-00";
+			//if (empty($pfile19)) $pfile19="0000-00-00";
 			
 			
             if (empty($pfile0) AND empty($pfile1) AND empty($pfile2) AND empty($pfile3) AND empty($pfile4) AND empty($pfile5)
@@ -187,7 +187,7 @@ if (empty($puser)) {
             
             $pinsert_sst[] = "('$pfile0', '$pfile1', '$pfile2', '$pfile3', "
                     . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', "
-                    . " '$pfile11', '$pfile12', '$pfile13', '$pfile14', '$pfile15', '$pfile17')";//, '$pfile16'
+                    . " '$pfile11', '$pfile12', '$pfile13', '$pfile14', '$pfile15', '$pfile19')";//, '$pfile16'
             
             $isimpan=true;
             

@@ -715,10 +715,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
 								echo "
 									<tr>
-										<td><small>$no</small></td>
-										<td><small>$fakturid</small></td>
+										<td nowrap><small>$no</small></td>
+										<td nowrap><small>$fakturid</small></td>
 										<td><small>$nm_prod</small></td>
-										<td><small>$tgljual</small></td>
+										<td nowrap><small>$tgljual</small></td>
 								";
 
 								if ($nama_cst == '') {

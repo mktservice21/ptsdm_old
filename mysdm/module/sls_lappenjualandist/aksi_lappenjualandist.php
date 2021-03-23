@@ -646,7 +646,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 						// echo 2;
 						// ---------------------------------------------- tampilan All data
 						echo '
-							<table border="1" cellspacing="0" cellpadding="1"><br>
+                        <table id="datatable2" class="table table-striped table-bordered" width="100%" border="1px solid black"><br>
 								<tr>
 									<th align="left"><small>No</small></th>
 									<th align="center"><small>No Faktur</small></th>
@@ -767,7 +767,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
-							<td align=right><b>Grand Total :</td>
+							<td align=right nowrap><b>Grand Total :</td>
 							<td align=right><b>".number_format($g_qbeli,0)."</b></td>
 							<td align=right><b>".number_format($g_qbonus,0)."</b></td>
 							<td align=right><b>".number_format($g_qtotal,0)."</b></td>

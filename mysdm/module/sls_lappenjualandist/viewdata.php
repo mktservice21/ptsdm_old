@@ -5,7 +5,7 @@ if ($_GET['module']=="caridataecust") {
     include "../../config/koneksimysqli_ms.php";
     $pdistidpl=$_POST['ucabang'];
     
-    echo "<option value='' selected>--All--</option>";
+    
     if (!empty($pdistidpl)) {
 	echo "
 		<option value='A'>ALL</option>
@@ -21,6 +21,8 @@ if ($_GET['module']=="caridataecust") {
             echo "<option value='$pidecab'>$pnmecab ($pidecab)</option>";
         }
        
+    }else{
+        echo "<option value='' selected>--All--</option>";
     }
     
     mysqli_close($cnms);

@@ -96,8 +96,15 @@ if (empty($puser)) {
             $pfile13 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(13, $row)->getValue());
             $pfile14 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(14, $row)->getValue());
             $pfile15 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(15, $row)->getValue());
-            //$pfile16 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(16, $row)->getValue());
+
+            //ExpireDate
+            $pfile16 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(16, $row)->getValue());
+            $pfile17 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(17, $row)->getValue());
+            $pfile18 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(18, $row)->getValue());
 			
+            if (empty($pfile16)) $pfile16="0000-00-00";
+            if (empty($pfile18)) $pfile18="0000-00-00";
+
 			//error_reporting(0);
             $pfile19 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(19, $row)->getValue());
             //error_reporting(-1);
@@ -107,7 +114,7 @@ if (empty($puser)) {
             if (empty($pfile0) AND empty($pfile1) AND empty($pfile2) AND empty($pfile3) AND empty($pfile4) AND empty($pfile5)
                      AND empty($pfile6) AND empty($pfile7) AND empty($pfile8) AND empty($pfile9) 
                      AND empty($pfile10) AND empty($pfile11) AND empty($pfile12)
-                     AND empty($pfile13) AND empty($pfile14) AND empty($pfile15) AND empty($pfile16) AND empty($pfile17)) {
+                     AND empty($pfile13) AND empty($pfile14) AND empty($pfile15)) {
                 continue;
             }
 
@@ -187,7 +194,7 @@ if (empty($puser)) {
             
             $pinsert_sst[] = "('$pfile0', '$pfile1', '$pfile2', '$pfile3', "
                     . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', "
-                    . " '$pfile11', '$pfile12', '$pfile13', '$pfile14', '$pfile15', '$pfile19')";//, '$pfile16'
+                    . " '$pfile11', '$pfile12', '$pfile13', '$pfile14', '$pfile15', '$pfile19', '$pfile16', '$pfile17', '$pfile18')";//, '$pfile16'
             
             $isimpan=true;
             
@@ -215,8 +222,8 @@ if (empty($puser)) {
         
         $query_sst = "INSERT INTO $dbname.importsst (`Prinsipal`, `Cabang`, `Kode Produk`, `Nama Produk`, "
                 . " `Kode Pelanggan`, `Nama Pelanggan`, `Alamat`, `No Faktur`, `Tgl Dok`, `Unit`, `Harga`, "
-                . " `Bonus Faktur`, `Diskon Prinsipal`, `Diskon Cabang`, `Total HNA`, `BatchNo`, `asl_data`)values "
-                . " ".implode(', ', $pinsert_sst);//, `ExpDate`
+                . " `Bonus Faktur`, `Diskon Prinsipal`, `Diskon Cabang`, `Total HNA`, `BatchNo`, `asl_data`, `ExpDate`, acu, tgl_acu)values "
+                . " ".implode(', ', $pinsert_sst);
         mysqli_query($cnmy, $query_sst);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsst : $erropesan"; exit; }
         

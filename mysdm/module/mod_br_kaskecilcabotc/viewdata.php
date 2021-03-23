@@ -94,6 +94,7 @@ if ($pmodule=="caricabang") {
     $pbln=$_POST['ubulan'];
     $pidkar=$_POST['ukry'];
     $pidcab=$_POST['ucabid'];
+    $pidarea=$_POST['uareaid'];
     $pcoa=$_POST['ucoap'];
     
     $ptanggal = str_replace('/', '-', $ptgl);
@@ -106,7 +107,7 @@ if ($pmodule=="caricabang") {
     
     //$pidcab="xxxxxx";//hilangkan kalau dibuka
     $query = "select idkascab from dbmaster.t_kaskecilcabang WHERE DATE_FORMAT(bulan,'%Y%m')='$pbulan' AND "
-            . " IFNULL(icabangid_o,'')='$pidcab' AND IFNULL(stsnonaktif,'')<>'Y' AND idkascab<>'$pid'";
+            . " IFNULL(icabangid_o,'')='$pidcab' AND areaid_o='$pidarea' AND IFNULL(stsnonaktif,'')<>'Y' AND idkascab<>'$pid'";
     
     
     $tampil= mysqli_query($cnmy, $query);

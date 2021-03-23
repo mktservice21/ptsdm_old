@@ -204,6 +204,7 @@ function ReloadTandaTangan(){
             var ibulan = document.getElementById('e_bulan').value;
             var ikry = document.getElementById('cb_karyawan').value;
             var icabid = document.getElementById('cb_cabang').value;
+            var iareaid = document.getElementById('cb_area').value;
             var icoap = document.getElementById('cb_coa').value;
             var ijml = document.getElementById('e_jml').value;
             var iket = document.getElementById('e_ket').value;
@@ -270,7 +271,7 @@ Jika Saldo Minus, silakan minta tambahan saldo pc untuk dibuka.");
             $.ajax({
                 type:"post",
                 url:"module/mod_br_kaskecilcabotc/viewdata.php?module=cekdatasudahada",
-                data:"utgl="+itgl+"&uid="+iid+"&ukry="+ikry+"&ucabid="+icabid+"&ucoap="+icoap+"&ubulan="+ibulan,
+                data:"utgl="+itgl+"&uid="+iid+"&ukry="+ikry+"&ucabid="+icabid+"&ucoap="+icoap+"&ubulan="+ibulan+"&uareaid="+iareaid,
                 success:function(data){
                     //var tjml = data.length;
                     //alert(data);

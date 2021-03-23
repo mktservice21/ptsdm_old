@@ -153,7 +153,10 @@ if (empty($puser)) {
           i.`Bonus faktur` AS bonus,
           i.`Harga` AS harga,
           i.`asl_data`,
-          i.`Total HNA` total_hna
+          i.`Total HNA` total_hna,
+          i.`ExpDate`, 
+          i.`acu`,
+          i.`tgl_acu` 
         FROM
           $dbname.importsst i
         WHERE LEFT(i.`Tgl Dok`, 7) = '$bulan' AND asl_data = '$id_cabang'
@@ -236,8 +239,12 @@ if (empty($puser)) {
           $kodecabang = 'NON';
         }
     
-        $noacu="";
-	  // $noacu = $data1['NoAcu'];
+        
+	      $noacu = $data1['acu'];
+	      $ntglacu = $data1['tgl_acu'];
+	      $nexpdate = $data1['ExpDate'];
+        
+
         $tglfaktur=$data1['tglfaktur'];
         $qty=$data1['qty'];
         $bonus=$data1['bonus'];
@@ -257,7 +264,7 @@ if (empty($puser)) {
         
         $isimpan_sls=true;
         
-        $pinsert_sls[] = "('$id_cabang','$kodecabang','$kodepelanggan','$tglfaktur','$kodeproduk',$harga,$qty,$bonus,'$nofaktur','$kodepelanggan','$noacu')";
+        $pinsert_sls[] = "('$id_cabang','$kodecabang','$kodepelanggan','$tglfaktur','$kodeproduk',$harga,$qty,$bonus,'$nofaktur','$kodepelanggan','$noacu', '$ntglacu', '$nexpdate')";
         
         
     }
@@ -288,7 +295,7 @@ if (empty($puser)) {
     mysqli_query($cnmy, "DELETE FROM $dbname.salessaptabaru WHERE left(tgljual,7)='$bulan' AND asl_data = '$id_cabang'");
     
     if ($isimpan_sls==true) {
-        $query_sales = "INSERT INTO $dbname.salessaptabaru(asl_data,cabangid,custid,tgljual,brgid,harga,qbeli,qbonus,fakturid,custid3,NoAcu) VALUES "
+        $query_sales = "INSERT INTO $dbname.salessaptabaru(asl_data,cabangid,custid,tgljual,brgid,harga,qbeli,qbonus,fakturid,custid3,NoAcu, tgl_acu, expdate) VALUES "
                 . " ".implode(', ', $pinsert_sls);
         mysqli_query($cnmy, $query_sales);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT SALES : $erropesan"; exit; }

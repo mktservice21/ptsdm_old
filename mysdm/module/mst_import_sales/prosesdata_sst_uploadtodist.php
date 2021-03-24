@@ -24,6 +24,7 @@ if (empty($puser)) {
     
     $distributor="0000000010";
     $ptgl=$_POST['ubln'];
+    $ppilihandb=$_POST['upilihdb'];
     
     $pbulan =  date("Ym", strtotime($ptgl));
     $bulan =  date("Y-m", strtotime($ptgl));
@@ -408,7 +409,9 @@ $data = [
 
 
 <?PHP
-
+if ($ppilihandb=="M") {
+  exit;
+}
 echo "<br/><br/>Upload IT...<br/><br/>";
 
 

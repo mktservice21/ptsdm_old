@@ -8,9 +8,11 @@
     
     $pdistiidpil="";
     $pfilename="";
+    $pdbkonekpilih="";
     
     if (!empty($_SESSION['MSTIMPDISTPIL'])) $pdistiidpil=$_SESSION['MSTIMPDISTPIL'];
     if (!empty($_SESSION['MSTIMPFOLDPIL'])) $pfilename=$_SESSION['MSTIMPFOLDPIL'];
+    if (!empty($_SESSION['MSTIMPKONEPIL'])) $pdbkonekpilih=$_SESSION['MSTIMPKONEPIL'];
     
     $nact="";
     if (isset($_GET['act'])) $nact=$_GET['act'];
@@ -63,9 +65,9 @@
                                         ?>
                                     </select>
                                     <input type="hidden" id="txtpilfoder" name="txtpilfoder" value="<?PHP echo $pfilename; ?>">
+                                    <input type="hidden" id="txtkoneksi" name="txtkoneksi" value="<?PHP echo $pdbkonekpilih; ?>">
                                 </div>
                             </div>
-                        
                         
                         
                             <div id='div_distributor'>
@@ -713,8 +715,8 @@
                         var ebln = document.getElementById("tgl1").value;
                         var eiddist = document.getElementById("cb_distid").value;
                         var epilfolder = document.getElementById("txtpilfoder").value;
-                        var epildb = document.getElementById("cb_pildb").value;
-
+                        var epilkoneksi = document.getElementById("txtkoneksi").value;
+                        
                         var myurl = window.location;
                         var urlku = new URL(myurl);
                         var module = urlku.searchParams.get("module");
@@ -735,7 +737,7 @@
                                 $.ajax({
                                     type:"post",
                                     url:"module/mst_import_sales/sst_cekimport.php?module="+module+"&idmenu="+idmenu+"&act="+iactpil,
-                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&upilfolder="+epilfolder+"&upildb="+epildb,
+                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&upilfolder="+epilfolder+"&upilkoneksi="+epilkoneksi,
                                     success:function(data){
                                         $("#c-data").html(data);
                                         $("#loading").html("");
@@ -967,7 +969,7 @@
                         
                         var ket="";
                         var nmfileprostotbl="";
-                        var ipilihdb="";
+                        var epilkoneksi="";
                         
                         if (eiddist=="0000000021") {
                             nmfileprostotbl="prosesdata_akf_uploadtodist.php";
@@ -992,7 +994,7 @@
                         }else if (eiddist=="0000000010") {
                             nmfileprostotbl="prosesdata_sst_uploadtodist.php";
                             ket="SST";
-                            ipilihdb = document.getElementById("cb_pildb").value;
+                            epilkoneksi = document.getElementById("txtkoneksi").value;
                         }else if (eiddist=="0000000011") {
                             enmfilecab = document.getElementById("e_tgl_01").value;
                             if (enmfilecab=="") {
@@ -1046,7 +1048,7 @@
                                 $.ajax({
                                     type:"post",
                                     url:"module/mst_import_sales/"+nmfileprostotbl+"?module="+module+"&idmenu="+idmenu+"&act=prosesdata",
-                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&unmfilecab="+enmfilecab+"&upilihdb="+ipilihdb,
+                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&unmfilecab="+enmfilecab+"&upilkoneksi="+epilkoneksi,
                                     success:function(data){
                                         $("#c-data").html(data);
                                         $("#loading").html("");

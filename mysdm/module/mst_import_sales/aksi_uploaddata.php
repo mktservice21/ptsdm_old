@@ -14,12 +14,14 @@ if (empty($puser)) {
     $target_dir = "../../fileupload/";
     $pdist=$_POST['cb_distid'];
     $ptgl=$_POST['e_periode01'];
+    $pdbkonekpilih=$_POST['cb_pildb'];
     
     
     
     $_SESSION['MSTIMPPERTPIL']=$ptgl;
     $_SESSION['MSTIMPDISTPIL']=$pdist;
     $_SESSION['MSTIMPFILEPIL']="";
+    $_SESSION['MSTIMPKONEPIL']=$pdbkonekpilih;
     
     
 

@@ -213,9 +213,9 @@ if (empty($puser)) {
     
     mysqli_query($cnmy, "delete from $dbname.salesams where left(tgljual,7)='$bulan' AND fakturid LIKE 'R%'");
     
-    $pinsert_retur="INSERT INTO $dbname.salesams(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid,qbonus)"
+    $pinsert_retur="INSERT INTO $dbname.salesams(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid,qbonus,C_EXFAK,D_EXTGL)"
             . " SELECT C_KDCAB, C_CUSNO, D_INVDATE, C_ITENO, N_SALPRI, "
-            . " nqty, C_INVNO, 0 as qbonus FROM $dbname.tmp_importfilesdt_ipmsams WHERE LEFT(D_INVDATE,7) = '$bulan'";
+            . " nqty, C_INVNO, 0 as qbonus,C_EXFAK,D_EXTGL FROM $dbname.tmp_importfilesdt_ipmsams WHERE LEFT(D_INVDATE,7) = '$bulan'";
     mysqli_query($cnmy, $pinsert_retur);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT salesams RETUR : $erropesan"; exit; }
     

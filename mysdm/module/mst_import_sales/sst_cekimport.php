@@ -31,6 +31,8 @@ if (empty($puser)) {
     $pdist=$_POST['uiddist'];
     $ptgl=$_POST['ubln'];
     $pnmfolder=$_POST['upilfolder'];
+    $ppilihandb=$_POST['upildb'];
+    
     
     $_SESSION['MSTIMPPERTPIL']=$ptgl;
     $_SESSION['MSTIMPDISTPIL']=$pdist;
@@ -46,14 +48,26 @@ if (empty($puser)) {
     $filenameWX = preg_replace("/\.[^.]+$/", "", $filename);
     
     //ubah juga di prosesdata_
-    include "../../config/koneksimysqli_ms.php";
-    $cnmy=$cnms;
-    $dbname = "MKT";
     
-    $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
-    //$plogit_akses==false;
-    if ($plogit_akses==true) {
+    $plogit_akses==false;
+    if ($ppilihandb=="A") {
+        
+        include "../../config/koneksimysqli_ms.php";
+        $cnmy=$cnms;
+        $dbname = "MKT";
+
+        $plogit_akses=$_SESSION['PROSESLOGKONEK_IT'];//true or false || status awal true
+        if ($plogit_akses==true) {
+            include "../../config/koneksimysqli_it.php";
+        }
+    }elseif ($ppilihandb=="I") {
         include "../../config/koneksimysqli_it.php";
+        $cnmy=$cnit;
+        $dbname = "MKT";
+    }else{
+        include "../../config/koneksimysqli_ms.php";
+        $cnmy=$cnms;
+        $dbname = "MKT";
     }
     
     
@@ -198,7 +212,7 @@ if (empty($puser)) {
             $isimpan=true;
             
             
-
+            /*
             $query_instdtsls = "INSERT INTO $dbname.importsst 
                 (`Prinsipal`, `Cabang`, `Kode Produk`, `Nama Produk`, "
                 . " `Kode Pelanggan`, `Nama Pelanggan`, `Alamat`, `No Faktur`, `Tgl Dok`, `Unit`, `Harga`, "
@@ -216,7 +230,7 @@ if (empty($puser)) {
                 $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
             }
             //END IT
-
+            */
             
             
             $jmlrec++;
@@ -233,13 +247,13 @@ if (empty($puser)) {
                 . " `Kode Pelanggan`, `Nama Pelanggan`, `Alamat`, `No Faktur`, `Tgl Dok`, `Unit`, `Harga`, "
                 . " `Bonus Faktur`, `Diskon Prinsipal`, `Diskon Cabang`, `Total HNA`, `BatchNo`, `asl_data`, `ExpDate`, acu, tgl_acu)values "
                 . " ".implode(', ', $pinsert_sst);
-        //mysqli_query($cnmy, $query_sst);
-        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsst : $erropesan"; exit; }
+        mysqli_query($cnmy, $query_sst);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsst : $erropesan"; exit; }
         
         //IT
         if ($plogit_akses==true) {
-            //mysqli_query($cnit, $query_sst);
-            //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
+            mysqli_query($cnit, $query_sst);
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
         }
         //END IT
 

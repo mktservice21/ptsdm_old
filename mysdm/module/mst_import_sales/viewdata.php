@@ -206,6 +206,22 @@ if ($pmodule=="sppviewdata" OR $pmodule=="sppcaridatafolder") {
             </div>
         </div>
 
+        <?PHP
+        if ($ppildistnya=="0000000010") {
+            echo "<div class='col-sm-2'>";
+                echo "Pilih DB";
+                echo "<div class='form-group'>";
+                    echo "<select class='form-group' id='cb_pildb' name='cb_pildb'>'";
+                    echo "<option value='A' selected>--All (MS & IT)--</option>";
+                    echo "<option value='M'>MS</option>";
+                    echo "<option value='I'>IT</option>";
+                echo "</select>";
+                echo "</div>";
+            echo "</div>";
+        }
+        ?>
+
+
         <div class='col-sm-3'>
             <small>&nbsp;</small>
            <div class="form-group">

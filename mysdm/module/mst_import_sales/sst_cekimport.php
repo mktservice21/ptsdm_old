@@ -207,13 +207,13 @@ if (empty($puser)) {
                 . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', "
                 . " '$pfile11', '$pfile12', '$pfile13', '$pfile14', '$pfile15', '$pfile19', '$pfile16', '$pfile17', '$pfile18')";
             
-            //mysqli_query($cnmy, $query_instdtsls);
-            //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsst : $erropesan"; exit; }
+            mysqli_query($cnmy, $query_instdtsls);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsst : $erropesan"; exit; }
 
             //IT
             if ($plogit_akses==true) {
-                //mysqli_query($cnit, $query_instdtsls);
-                //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
+                mysqli_query($cnit, $query_instdtsls);
+                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
             }
             //END IT
 
@@ -233,13 +233,13 @@ if (empty($puser)) {
                 . " `Kode Pelanggan`, `Nama Pelanggan`, `Alamat`, `No Faktur`, `Tgl Dok`, `Unit`, `Harga`, "
                 . " `Bonus Faktur`, `Diskon Prinsipal`, `Diskon Cabang`, `Total HNA`, `BatchNo`, `asl_data`, `ExpDate`, acu, tgl_acu)values "
                 . " ".implode(', ', $pinsert_sst);
-        mysqli_query($cnmy, $query_sst);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsst : $erropesan"; exit; }
+        //mysqli_query($cnmy, $query_sst);
+        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsst : $erropesan"; exit; }
         
         //IT
         if ($plogit_akses==true) {
-            mysqli_query($cnit, $query_sst);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
+            //mysqli_query($cnit, $query_sst);
+            //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT importsst : $erropesan"; exit; }
         }
         //END IT
 

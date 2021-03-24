@@ -967,6 +967,7 @@
                         
                         var ket="";
                         var nmfileprostotbl="";
+                        var ipilihdb="";
                         
                         if (eiddist=="0000000021") {
                             nmfileprostotbl="prosesdata_akf_uploadtodist.php";
@@ -991,6 +992,7 @@
                         }else if (eiddist=="0000000010") {
                             nmfileprostotbl="prosesdata_sst_uploadtodist.php";
                             ket="SST";
+                            ipilihdb = document.getElementById("cb_pildb").value;
                         }else if (eiddist=="0000000011") {
                             enmfilecab = document.getElementById("e_tgl_01").value;
                             if (enmfilecab=="") {
@@ -1044,7 +1046,7 @@
                                 $.ajax({
                                     type:"post",
                                     url:"module/mst_import_sales/"+nmfileprostotbl+"?module="+module+"&idmenu="+idmenu+"&act=prosesdata",
-                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&unmfilecab="+enmfilecab,
+                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&unmfilecab="+enmfilecab+"&upilihdb="+ipilihdb,
                                     success:function(data){
                                         $("#c-data").html(data);
                                         $("#loading").html("");

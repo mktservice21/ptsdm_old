@@ -116,6 +116,12 @@ if ($pmodule=="viewdatacombocoa") {
                     . " and LEFT(nama,3) NOT IN ('TO.', 'TO-') "
                     . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ') ";
 
+
+            if ($icabangid=="0000000030") {
+                $query = "select karyawanId as karyawanid, nama as nama from hrd.karyawan WHERE karyawanId=159 ";
+            }elseif ($icabangid=="0000000031") {
+                $query = "select karyawanId as karyawanid, nama as nama from hrd.karyawan WHERE karyawanId=158 ";
+            }
             $query .=" order by nama";
 
             $tampil=mysqli_query($cnmy, $query);
@@ -179,6 +185,13 @@ if ($pmodule=="viewdatacombocoa") {
             $query .=" AND (jabatanid = ('15') OR karyawanid='$karyawanId') ";
 
             $query .=" order by nama";
+
+            if ($icabangid=='0000000030' OR $icabangid=='0000000031') {
+                $query = "select distinct a.karyawanid as karyawanid, b.nama as nama 
+                    FROM MKT.imr0 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId 
+                    WHERE a.icabangid='$icabangid'";
+                    $query .=" order by b.nama";
+            }
 
             $tampil=mysqli_query($cnmy, $query);
             echo "<option value='' selected>-- Pilihan --</option>";

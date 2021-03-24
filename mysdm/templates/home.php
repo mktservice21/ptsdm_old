@@ -857,6 +857,10 @@
     }elseif ($_GET['module']=='mstlistcustbaru'){
         include 'module/master/mst_listcustomernew/listcustomernew.php';
         
+    }elseif ($_GET['module']=='dkdweeklyvisit'){
+        include 'module/dkd/dkd_wekvisitplan/wekvisitplan.php';
+
+
     }else{
         include 'del_session.php';
         include 'ahome.php';

@@ -644,7 +644,7 @@ echo "<br/><br/>Upload IT...<br/><br/>";
         
         $isimpan_sls=true;
         
-        $pinsert_sls[] = "('$id_cabang','$kodecabang','$kodepelanggan','$tglfaktur','$kodeproduk',$harga,$qty,$bonus,'$nofaktur','$kodepelanggan','$noacu','$noacu','$ntglacu','$nexpdate')";
+        $pinsert_sls[] = "('$id_cabang','$kodecabang','$kodepelanggan','$tglfaktur','$kodeproduk',$harga,$qty,$bonus,'$nofaktur','$kodepelanggan','$noacu','$ntglacu','$nexpdate')";
         
         
     }

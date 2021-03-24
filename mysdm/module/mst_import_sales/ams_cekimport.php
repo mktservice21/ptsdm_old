@@ -346,10 +346,12 @@ if (empty($puser)) {
             $pfile10=$record[10];
             $pfile11=$record[11];
             $pfile12=$record[12];
+            $pfile13=$record[13];
+            $pfile14=$record[14];
             
             
             $query_parts_retur[] = "('$pfile0', '$pfile1', '$pfile2', '$pfile3', "
-                    . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12')";
+                    . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12', '$pfile13', '$pfile14')";
             
             
             /*
@@ -373,7 +375,7 @@ if (empty($puser)) {
         
         
         $query_imp_retur = "INSERT INTO $dbname.AMS_RETUR (C_KDCAB, C_CUSNO, C_CUSNO2, C_INVNO, "
-                    . " D_INVDATE, C_ITENO, N_QTYSALG, N_QTYSALB, N_QTYBONG, N_QTYBONB, N_SALPRI, N_DISC2PRI, N_DISC3PRI)values "
+                    . " D_INVDATE,C_EXFAK,D_EXTGL, C_ITENO, N_QTYSALG, N_QTYSALB, N_QTYBONG, N_QTYBONB, N_SALPRI, N_DISC2PRI, N_DISC3PRI)values "
                 . " ".implode(', ', $query_parts_retur);
         mysqli_query($cnmy, $query_imp_retur);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { dbase_close($pinsert); mysqli_close($cnmy); echo "Error INSERT RETUR : $erropesan"; exit; }

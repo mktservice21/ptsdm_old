@@ -321,9 +321,9 @@ if (empty($puser)) {
     
     echo "Total penjualan yg berhasil diinput: $totalsalessum , dengan jumlah no faktur sebanyak $totalsalesqty.<br>sekian dan terimakasih";
 
-    mysqli_query($cnmy, "DELETE FROM $dbname.tmp_importsst_ipms");
+    //mysqli_query($cnmy, "DELETE FROM $dbname.tmp_importsst_ipms");
     
-    mysqli_query($cnmy, "DELETE FROM $dbname.importsst WHERE LEFT(`Tgl Dok`, 7) = '$bulan' AND asl_data = '$id_cabang'");
+    //mysqli_query($cnmy, "DELETE FROM $dbname.importsst WHERE LEFT(`Tgl Dok`, 7) = '$bulan' AND asl_data = '$id_cabang'");
 
     
     

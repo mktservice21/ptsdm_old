@@ -713,6 +713,7 @@
                         var ebln = document.getElementById("tgl1").value;
                         var eiddist = document.getElementById("cb_distid").value;
                         var epilfolder = document.getElementById("txtpilfoder").value;
+                        var epildb = document.getElementById("cb_pildb").value;
 
                         var myurl = window.location;
                         var urlku = new URL(myurl);
@@ -734,7 +735,7 @@
                                 $.ajax({
                                     type:"post",
                                     url:"module/mst_import_sales/sst_cekimport.php?module="+module+"&idmenu="+idmenu+"&act="+iactpil,
-                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&upilfolder="+epilfolder,
+                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&upilfolder="+epilfolder+"&upildb="+epildb,
                                     success:function(data){
                                         $("#c-data").html(data);
                                         $("#loading").html("");

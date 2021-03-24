@@ -31,12 +31,13 @@ if (empty($puser)) {
     $pdist=$_POST['uiddist'];
     $ptgl=$_POST['ubln'];
     $pnmfolder=$_POST['upilfolder'];
-    $ppilihandb=$_POST['upildb'];
+    $ppilihandb=$_POST['upilkoneksi'];
     
     
     $_SESSION['MSTIMPPERTPIL']=$ptgl;
     $_SESSION['MSTIMPDISTPIL']=$pdist;
     $_SESSION['MSTIMPFOLDPIL']=$pnmfolder;
+    $_SESSION['MSTIMPKONEPIL']=$ppilihandb;
             
     $pname_foder_dist=CekNamaDist($pdist);
     $pbulan =  date("Ym", strtotime($ptgl));
@@ -49,7 +50,7 @@ if (empty($puser)) {
     
     //ubah juga di prosesdata_
     
-    $plogit_akses==false;
+    $plogit_akses=false;
     if ($ppilihandb=="A") {
         
         include "../../config/koneksimysqli_ms.php";

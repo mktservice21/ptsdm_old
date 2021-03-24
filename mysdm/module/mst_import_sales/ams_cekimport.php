@@ -324,7 +324,7 @@ if (empty($puser)) {
     //END IT
     
     $jum_record=0;
-    $pinsert=dbase_open($target_dir.'RETUR.DBF',0) or die("Error! Could not open dbase database file");
+    $pinsert=dbase_open($target_dir.'RETURSD.DBF',0) or die("Error! Could not open dbase database file");
     if ($pinsert){
         $jum_record=dbase_numrecords($pinsert);
         

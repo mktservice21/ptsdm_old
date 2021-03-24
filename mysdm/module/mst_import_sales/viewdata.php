@@ -211,7 +211,7 @@ if ($pmodule=="sppviewdata" OR $pmodule=="sppcaridatafolder") {
         <?PHP
         if ($ppildistnya=="0000000010") { ?>
             <div class='col-sm-2'>
-            Pilih DB
+            Pilih Koneksi
                 <div class="form-group">
                     <select class='form-control input-sm' id="cbpilih" name="cb_pildb" onchange="">
                     <?PHP

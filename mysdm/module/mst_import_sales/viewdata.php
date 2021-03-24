@@ -190,6 +190,8 @@ if ($pmodule=="sppviewdata" OR $pmodule=="sppcaridatafolder") {
     $pnmdir = "$target_dir/$ppilfolder/";
     
     $pnmfle=$_SESSION['MSTIMPFILEPIL'];
+    $pkoenkdb="";
+    if (isset($_SESSION['MSTIMPKONEPIL'])) $pkoenkdb=$_SESSION['MSTIMPKONEPIL'];
     
     $ppildistnya=$_POST['upildistnya'];
     $prosesuploaddata_asli="";
@@ -207,21 +209,34 @@ if ($pmodule=="sppviewdata" OR $pmodule=="sppcaridatafolder") {
         </div>
 
         <?PHP
-        if ($ppildistnya=="0000000010") {
-            echo "<div class='col-sm-2'>";
-                echo "Pilih DB";
-                echo "<div class='form-group'>";
-                    echo "<select class='form-group' id='cb_pildb' name='cb_pildb'>'";
-                    echo "<option value='A' selected>--All (MS & IT)--</option>";
-                    echo "<option value='M'>MS</option>";
-                    echo "<option value='I'>IT</option>";
-                echo "</select>";
-                echo "</div>";
-            echo "</div>";
-        }
+        if ($ppildistnya=="0000000010") { ?>
+            <div class='col-sm-2'>
+            Pilih DB
+                <div class="form-group">
+                    <select class='form-control input-sm' id="cbpilih" name="cb_pildb" onchange="">
+                    <?PHP
+                    if ($pkoenkdb=="M") {
+                        echo "<option value='A'>--All (MS & IT)--</option>";
+                        echo "<option value='M' selected>MS</option>";
+                        echo "<option value='I'>IT</option>";
+                    }elseif ($pkoenkdb=="I") {
+                        echo "<option value='A'>--All (MS & IT)--</option>";
+                        echo "<option value='M'>MS</option>";
+                        echo "<option value='I' selected>IT</option>";
+                    }else{
+                        echo "<option value='A' selected>--All (MS & IT)--</option>";
+                        echo "<option value='M'>MS</option>";
+                        echo "<option value='I'>IT</option>";
+                    }
+                    ?>
+                    </select>
+                </div>
+            </div>
+
+        <?PHP }
         ?>
 
-
+        
         <div class='col-sm-3'>
             <small>&nbsp;</small>
            <div class="form-group">

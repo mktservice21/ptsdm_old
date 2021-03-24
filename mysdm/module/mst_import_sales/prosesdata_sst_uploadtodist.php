@@ -24,7 +24,7 @@ if (empty($puser)) {
     
     $distributor="0000000010";
     $ptgl=$_POST['ubln'];
-    $ppilihandb=$_POST['upilihdb'];
+    $ppilihandb=$_POST['upilkoneksi'];
     
     $pbulan =  date("Ym", strtotime($ptgl));
     $bulan =  date("Y-m", strtotime($ptgl));

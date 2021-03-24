@@ -40,8 +40,13 @@ if (empty($puser)) {
     
     
     //ubah juga di _uploaddata
-    include "../../config/koneksimysqli_ms.php";
-    $cnmy=$cnms;
+    if ($ppilihandb=="I") {
+      include "../../config/koneksimysqli_it.php";
+      $cnmy=$cnit;
+    }else{
+      include "../../config/koneksimysqli_ms.php";
+      $cnmy=$cnms;
+    }
     $dbname = "MKT";
     
     
@@ -409,7 +414,7 @@ $data = [
 
 
 <?PHP
-if ($ppilihandb=="M") {
+if ($ppilihandb=="M" OR $ppilihandb=="I") {
   exit;
 }
 echo "<br/><br/>Upload IT...<br/><br/>";

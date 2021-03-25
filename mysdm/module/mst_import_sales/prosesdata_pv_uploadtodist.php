@@ -127,12 +127,12 @@
     mysqli_query($cnmy, $query_sls1);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE salespv : $erropesan"; exit; }
     
-    $query_sls2="INSERT INTO $dbname.salespv(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid,qbonus)"
+    $query_sls2="INSERT INTO $dbname.salespv(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid,qbonus,INV_REFF,INV_REFF_DATE)"
             . "SELECT BRANCH_ID, CUSTOMER_ID, STR_TO_DATE(INV_DATE,'%d-%b-%Y') as INV_DATE, PRODUCT_ID, "
             . " REPLACE(REPLACE(SELL_PRICE, ',', ''), '.00', '') as SELL_PRICE, "
             . " REPLACE(REPLACE(NETT_QTY_SOLD, ',', ''), '.00', '') as NETT_QTY_SOLD, "
             . " INV_NO, "
-            . " REPLACE(REPLACE(TOT_QTY_BNS, ',', ''), '.00', '') as TOT_QTY_BNS "
+            . " REPLACE(REPLACE(TOT_QTY_BNS, ',', ''), '.00', '') as TOT_QTY_BNS,INV_REFF,INV_REFF_DATE "
             . " FROM $dbname.pv_import_sales WHERE LEFT(STR_TO_DATE(INV_DATE,'%d-%b-%Y'),7) = '$bulan'";
     mysqli_query($cnmy, $query_sls2);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT salespv : $erropesan"; exit; }
@@ -324,12 +324,12 @@ echo "<br/><br/><b>PROSES SALES IMPORT DI IT</b></br/>";
     mysqli_query($cnmy, $query_sls1);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE salespv : $erropesan"; exit; }
     
-    $query_sls2="INSERT INTO $dbname.salespv(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid,qbonus)"
+    $query_sls2="INSERT INTO $dbname.salespv(cabangid,custid,tgljual,brgid,harga,qbeli,fakturid,qbonus,INV_REFF,INV_REFF_DATE)"
             . "SELECT BRANCH_ID, CUSTOMER_ID, STR_TO_DATE(INV_DATE,'%d-%b-%Y') as INV_DATE, PRODUCT_ID, "
             . " REPLACE(REPLACE(SELL_PRICE, ',', ''), '.00', '') as SELL_PRICE, "
             . " REPLACE(REPLACE(NETT_QTY_SOLD, ',', ''), '.00', '') as NETT_QTY_SOLD, "
             . " INV_NO, "
-            . " REPLACE(REPLACE(TOT_QTY_BNS, ',', ''), '.00', '') as TOT_QTY_BNS "
+            . " REPLACE(REPLACE(TOT_QTY_BNS, ',', ''), '.00', '') as TOT_QTY_BNS,INV_REFF,INV_REFF_DATE "
             . " FROM $dbname.pv_import_sales WHERE LEFT(STR_TO_DATE(INV_DATE,'%d-%b-%Y'),7) = '$bulan'";
     mysqli_query($cnmy, $query_sls2);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT salespv : $erropesan"; exit; }

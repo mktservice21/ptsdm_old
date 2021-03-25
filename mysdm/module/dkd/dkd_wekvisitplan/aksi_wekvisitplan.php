@@ -91,10 +91,10 @@ if ($module=='dkdweeklyvisit')
 
         }elseif ($act=="update") {
 
-            $query = "UPDATE hrd.dkd_new0 
+            $query = "UPDATE hrd.dkd_new0 SET
                 tanggal='$ptanggal', karyawanid='$pkaryawanid', 
                 ketid='$pketid', compl='$pcompl', aktivitas='$paktivitas', userid='$pidcard' WHERE
-                idinput='$kodenya'";
+                idinput='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query); 
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
@@ -129,7 +129,7 @@ if ($module=='dkdweeklyvisit')
 
         if ($psimpandata==true) {
 
-            mysqli_query($cnmy, "DELETE FROM hrd.dkd_new1 WHERE idinput='$kodenya'");
+            mysqli_query($cnmy, "DELETE FROM hrd.dkd_new1 WHERE idinput='$kodenya' AND IFNULL(jenis,'') IN ('', 'JV')");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
             $query_detail="INSERT INTO hrd.dkd_new1 (idinput, jenis, dokterid, notes) VALUES ".implode(', ', $pinsert_data_detail);
@@ -167,8 +167,11 @@ if ($module=='dkdweeklyvisit')
 
 
         mysqli_close($cnmy);
-
-        header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=tambahbaru');
+        if ($act=="update") {
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilupdate');
+        }else{
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=tambahbaru');
+        }
 
         exit;
 

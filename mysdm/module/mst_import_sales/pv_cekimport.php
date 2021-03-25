@@ -244,7 +244,7 @@ if (empty($puser)) {
                 
             if ((double)$no==0) { $no++; continue; }
 
-            list($pfile0,$pfile1,$pfile2,$pfile3,$pfile4,$pfile5,$pfile6,$pfile7,$pfile8,$pfile9,$pfile10,$pfile11,$pfile12,$pfile13,$pfile14,$pfile15) = $explodeLine;
+            list($pfile0,$pfile1,$pfile2,$pfile3,$pfile4,$pfile5,$pfile6,$pfile7,$pfile8,$pfile9,$pfile10,$pfile11,$pfile12,$pfile13,$pfile14,$pfile15,$pfile16,$pfile17) = $explodeLine;
 
             if (!empty($pfile1)) $pfile1 = str_replace("'", " ", $pfile1);
             if (!empty($pfile2)) $pfile2 = str_replace("'", " ", $pfile2);
@@ -257,6 +257,9 @@ if (empty($puser)) {
             if (!empty($pfile14)) $pfile14 = str_replace("'", " ", $pfile14);
 			
 			if (!empty($pfile15)) $pfile15 = str_replace("'", " ", $pfile15);
+
+			if (!empty($pfile16)) $pfile16 = str_replace("'", " ", $pfile16);
+			if (!empty($pfile17)) $pfile17 = str_replace("'", " ", $pfile17);
 			
 			
 			if (empty($pfile1)) $pfile1=$pfile15;
@@ -266,14 +269,14 @@ if (empty($puser)) {
                         
             $query_parts_sls[] = "('$pfile0', '$pfile1', '$pfile2', '$pfile3', "
                     . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', "
-                    . " '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12', '$pfile13', '$pfile14')";
+                    . " '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12', '$pfile13', '$pfile14', '$pfile16', '$pfile17')";
             
             $query = "INSERT INTO $dbname.pv_import_sales (BRANCH_ID, CUSTOMER_ID, PANEL_ID, INV_DATE, "
                     . " PRODUCT_ID, SELL_PRICE, QTY_SOLD, QTY_BONUS, "
-                    . " INV_NO, SECTOR_ID, QTY_BNS_SDM, QTY_BNS_CONV, TOT_QTY_BNS, NETT_QTY_SOLD, f15)values"
+                    . " INV_NO, SECTOR_ID, QTY_BNS_SDM, QTY_BNS_CONV, TOT_QTY_BNS, NETT_QTY_SOLD, f15,INV_REFF,INV_REFF_DATE)values"
                     . " ('$pfile0', '$pfile1', '$pfile2', '$pfile3', "
                     . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', "
-                    . " '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12', '$pfile13', '$pfile14')";
+                    . " '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12', '$pfile13', '$pfile14', '$pfile16', '$pfile17')";
             //mysqli_query($cnmy, $query);
             //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { fclose($open); mysqli_close($cnmy); echo "Error INSERT SLS : $erropesan"; exit; }
             
@@ -285,7 +288,7 @@ if (empty($puser)) {
         
         $querysls = "INSERT INTO $dbname.pv_import_sales (BRANCH_ID, CUSTOMER_ID, PANEL_ID, INV_DATE, "
                 . " PRODUCT_ID, SELL_PRICE, QTY_SOLD, QTY_BONUS, "
-                . " INV_NO, SECTOR_ID, QTY_BNS_SDM, QTY_BNS_CONV, TOT_QTY_BNS, NETT_QTY_SOLD, f15)"
+                . " INV_NO, SECTOR_ID, QTY_BNS_SDM, QTY_BNS_CONV, TOT_QTY_BNS, NETT_QTY_SOLD, f15,INV_REFF,INV_REFF_DATE)"
                 . " VALUES ".implode(', ', $query_parts_sls);
         mysqli_query($cnmy, $querysls);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { fclose($open); mysqli_close($cnmy); echo "Error INSERT SLS : $erropesan"; exit; }

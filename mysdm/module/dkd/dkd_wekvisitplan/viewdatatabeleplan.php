@@ -19,7 +19,8 @@
     $ptgl2=$_POST['utgl2'];
 
     $ptgl1 = date('Y-m-d', strtotime($ptgl1));
-    $ptgl2 = date('Y-m-d', strtotime($ptgl2));
+    //$ptgl2 = date('Y-m-d', strtotime($ptgl2));
+    $ptgl2 = date('Y-m-d', strtotime('+4 days', strtotime($ptgl1)));
 
     $pmodule=$_GET['module'];
     $pact=$_GET['act'];
@@ -67,36 +68,47 @@
             <tbody>
             <?PHP
             $no=1;
-            $query = "select * from $tmp01 order by tanggal, jenis, nama_dokter";
-            $tampil=mysqli_query($cnmy, $query);
-            while ($row=mysqli_fetch_array($tampil)) {
-                $ntgl=$row['tanggal'];
-                $nnamaket=$row['nama_ket'];
-                $ncompl=$row['compl'];
-                $naktivitas=$row['aktivitas'];
-                $njenis=$row['jenis'];
-                $nnamadokt=$row['nama_dokter'];
-                $nnotes=$row['notes'];
-                $nsaran=$row['saran'];
+            $query = "select distinct idinput, tanggal from $tmp01 order by tanggal";
+            $tampil0=mysqli_query($cnmy, $query);
+            while ($row0=mysqli_fetch_array($tampil0)) {
+                $cidinput=$row0['idinput'];
 
-                $pedit="";
-                $phapus="";
+                $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$cidinput'>Edit</a>";
 
-                echo "<tr>";
-                echo "<td nowrap>$no</td>";
-                echo "<td nowrap>$pedit &nbsp; &nbsp; $phapus</td>";
-                echo "<td nowrap>$ntgl</td>";
-                echo "<td nowrap>$nnamaket</td>";
-                echo "<td nowrap>$ncompl</td>";
-                echo "<td nowrap>$naktivitas</td>";
-                echo "<td nowrap>$njenis</td>";
-                echo "<td nowrap>$nnamadokt</td>";
-                echo "<td nowrap>$nnotes</td>";
-                echo "<td nowrap>$nsaran</td>";
-                echo "</tr>";
+                
+                $query = "select * from $tmp01 where idinput='$cidinput' order by tanggal, jenis, nama_dokter";
+                $tampil=mysqli_query($cnmy, $query);
+                while ($row=mysqli_fetch_array($tampil)) {
+                    $ntgl=$row['tanggal'];
+                    $nnamaket=$row['nama_ket'];
+                    $ncompl=$row['compl'];
+                    $naktivitas=$row['aktivitas'];
+                    $njenis=$row['jenis'];
+                    $nnamadokt=$row['nama_dokter'];
+                    $nnotes=$row['notes'];
+                    $nsaran=$row['saran'];
 
-                $no++;
+                    
+                    $phapus="";
+
+                    echo "<tr>";
+                    echo "<td nowrap>$no</td>";
+                    echo "<td nowrap>$pedit &nbsp; &nbsp; $phapus</td>";
+                    echo "<td nowrap>$ntgl</td>";
+                    echo "<td nowrap>$nnamaket</td>";
+                    echo "<td nowrap>$ncompl</td>";
+                    echo "<td nowrap>$naktivitas</td>";
+                    echo "<td nowrap>$njenis</td>";
+                    echo "<td nowrap>$nnamadokt</td>";
+                    echo "<td nowrap>$nnotes</td>";
+                    echo "<td nowrap>$nsaran</td>";
+                    echo "</tr>";
+
+                    $pedit="";
+                    $no++;
+                }
             }
+
             ?>
             </tbody>
         </table>

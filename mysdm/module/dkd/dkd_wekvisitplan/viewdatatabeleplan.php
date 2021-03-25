@@ -38,11 +38,29 @@
         LEFT JOIN hrd.ket as c on a.ketid=c.ketId
         LEFT JOIN dr.masterdokter as d on b.dokterid=d.id WHERE a.karyawanid='$pkaryawanid' ";
     $sql .=" AND a.tanggal between '$ptgl1' AND '$ptgl2'";
+
+
+
+    $sql = "select idinput, tanggal FROM hrd.dkd_new0 WHERE karyawanid='$pkaryawanid'";
+    $sql .=" AND tanggal between '$ptgl1' AND '$ptgl2'";
     $query = "create TEMPORARY table $tmp01 ($sql)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+    $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
+        "Juni", "Juli", "Agustus", "September", 
+        "Oktober", "November", "Desember");
 
+    $hari_array = array(
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu'
+    );
+    
 ?>
 
 
@@ -56,6 +74,7 @@
                     <th width='50px'>No</th>
                     <th width='50px'>&nbsp;</th>
                     <th width='100px'>Tanggal</th>
+                    <!--
                     <th width='100px'>Keperluan</th>
                     <th width='100px'>Compl.</th>
                     <th width='50px'>Aktivitas</th>
@@ -63,6 +82,7 @@
                     <th width='100px'>Dokter</th>
                     <th width='100px'>Notes</th>
                     <th width='100px'>Saran</th>
+                    -->
                 </tr>
             </thead>
             <tbody>
@@ -72,10 +92,27 @@
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
                 $cidinput=$row0['idinput'];
+                $ntgl=$row0['tanggal'];
+
+                $ntanggal = date('l d F Y', strtotime($ntgl));
+
+                $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+                $xtgl= date('d', strtotime($ntgl));
+                $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
+                $xthn= date('Y', strtotime($ntgl));
 
                 $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$cidinput'>Edit</a>";
+                $phapus="";
 
-                
+                echo "<tr>";
+                echo "<td nowrap>$no</td>";
+                echo "<td nowrap>$pedit &nbsp; &nbsp; $phapus</td>";
+                echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
+                echo "</tr>";
+
+                $no++;
+
+                /*
                 $query = "select * from $tmp01 where idinput='$cidinput' order by tanggal, jenis, nama_dokter";
                 $tampil=mysqli_query($cnmy, $query);
                 while ($row=mysqli_fetch_array($tampil)) {
@@ -107,6 +144,7 @@
                     $pedit="";
                     $no++;
                 }
+                */
             }
 
             ?>

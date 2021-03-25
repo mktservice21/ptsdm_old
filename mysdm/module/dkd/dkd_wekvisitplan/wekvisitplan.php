@@ -55,8 +55,8 @@
                     } );
 
                     function KlikDataTabel() {
-                        var etgl1=document.getElementById('tgl1').value;
-                        var etgl2=document.getElementById('tgl2').value;
+                        var etgl1=document.getElementById('e_tanggal').value;
+                        var etgl2=document.getElementById('e_tanggal').value;
                         
                         var myurl = window.location;
                         var urlku = new URL(myurl);
@@ -77,11 +77,33 @@
                     }
                 </script>
 
-                <?PHP
+                <script type="text/javascript">
+                    $(function() {
 
+                        $('#e_tanggal').datepicker({
+                            changeMonth: true,
+                            changeYear: true,
+                            numberOfMonths: 1,
+                            dateFormat: 'dd MM yy',
+                            onSelect: function(dateStr) {
+                                
+                            },
+                            beforeShowDay: function (date) {
+                                var day = date.getDay();
+                                return [(day == 1)];
+                            }
+                        });
+
+                    });
+                </script>
+
+                <?PHP
+                //echo date('Y-m-d',time()+( 8 - date('w'))*24*3600);
                 $hari_ini = date("Y-m-d");
                 $tgl_pertama = date('01 F Y', strtotime($hari_ini));
                 $tgl_akhir = date('t F Y', strtotime($hari_ini));
+
+                $tgl_pertama = date('d F Y',time()+( 8 - date('w'))*24*3600);
                 ?>
 
                 
@@ -97,26 +119,12 @@
                         </div>
 
                         <div class='col-sm-3'>
-                            Periode Input
-                            <div class="form-group">
-                                <div class='input-group date' id='tgl01'>
-                                    <input type='text' id='tgl1' name='e_periode01' required='required' class='form-control input-sm' placeholder='tgl awal' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
-                                    <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class='col-sm-3'>
-                            <small>s/d.</small>
-                            <div class="form-group">
-                                <div class='input-group date' id='tgl02'>
-                                    <input type='text' id='tgl2' name='e_periode02' required='required' class='form-control input-sm' placeholder='tgl akhir' value='<?PHP echo $tgl_akhir; ?>' placeholder='dd mmm yyyy' Readonly>
-                                    <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
-                                </div>
+                            Tanggal 
+                            <div class='input-group date' id=''>
+                                <input type="text" class="form-control" id='e_tanggal' name='e_tanggal' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $tgl_pertama; ?>' Readonly>
+                                <span class='input-group-addon'>
+                                    <span class='glyphicon glyphicon-calendar'></span>
+                                </span>
                             </div>
                         </div>
 
@@ -146,6 +154,11 @@
             case "tambahbaru":
                 include "tambah_wekvisit.php";
             break;
+
+            case "editdata":
+                include "tambah_wekvisit.php";
+            break;
+
         }
         ?>
     </div>

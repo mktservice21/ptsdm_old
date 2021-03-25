@@ -54,7 +54,7 @@
             OR
             (
             (tgl between '$periode1' AND '$periode2') 
-            AND ( a.subkode IN ('22', '23', '36') OR a.pilih='N')
+            AND ( subkode IN ('22', '23', '36') OR pilih='N')
             )
         )";
         
@@ -66,7 +66,7 @@
         nodivisi, CASE WHEN IFNULL(nodivisi,'')='' THEN idinput ELSE nodivisi END as nodivisi2, 
         nomor, jumlah, jumlah2, jumlah3 from dbmaster.t_suratdana_br 
         WHERE IFNULL(stsnonaktif,'')<>'Y' $n_filterkaryawan AND 
-        ( tglspd between '$periode1' AND '$periode2' OR tgl between '$periode1' AND '$periode2' ) ";
+        $fil_keluar_ ";
     $query = "create TEMPORARY table $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -78,7 +78,7 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "DELETE FROM $tmp02 WHERE ( IFNULL(nomor,'')='' AND IFNULL(igroup,'') IN ('1') ) OR ( IFNULL(igroup,'')='3' AND IFNULL(ibank,'')='Y' )";
+    $query = "DELETE FROM $tmp02 WHERE ( IFNULL(nomor,'')='' AND IFNULL(igroup,'') IN ('1') ) OR ( subkode IN ('29') )";//IFNULL(igroup,'')='3' AND IFNULL(ibank,'')='Y'
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
     $query = "ALTER TABLE $tmp02 ADD COLUMN sdh varchar(1)";
@@ -89,6 +89,9 @@
         on a.idinput=b.idinput SET a.sdh='1'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+
+    $query = "update $tmp02 set igroup='99', inama='PC-M' WHERE pilih='N' AND IFNULL(nomor,'')=''";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 ?>
 
@@ -104,6 +107,7 @@
             <thead>
                 <tr>
                     <th width='20px' align='center'>Divisi</th>
+                    <th width='40px' align='center'>Nomor</th>
                     <th width='40px' align='center'>No Divisi</th>
                     <th width='40px' align='center'>Tanggal</th>
                     <th width='50px' align='center'>Jumlah</th>
@@ -122,9 +126,10 @@
                     echo "<td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
                     echo "</tr>";
 
-                    $query = "select * from $tmp02 WHERE igroup='$pigroup' order by igroup, divisi";
+                    $query = "select * from $tmp02 WHERE igroup='$pigroup' order by igroup, tglspd, divisi";
                     $tampil1=mysqli_query($cnmy, $query);
                     while ($row1=mysqli_fetch_array($tampil1)) {
                         $pidinput=$row1['idinput'];
@@ -133,6 +138,7 @@
                         $pkodeid=$row1['kodeid'];
                         $pnsubdiv=$row1['subkode'];
                         $psubnama=$row1['subnama'];
+                        $pnospd=$row1['nomor'];
                         $pnodivisi=$row1['nodivisi'];
                         $ptglspd=$row1['tglspd'];
                         $pjumlah1=$row1['jumlah'];
@@ -171,11 +177,12 @@
                                 . " onClick=\"InputBankKeluar('$pidinput', '$pidnomor', '$pnodivisi', '$pjumlah')\">$pjumlah</button>";
                                 
                         if (empty($pnodivisi)) {
-                            $pbtninputjumlah=$pjumlah;
+                            //$pbtninputjumlah=$pjumlah;
                         }
 
                         echo "<tr>";
                         echo "<td nowrap>$psubnama - $pnmdivisi</td>";
+                        echo "<td nowrap>$pnospd</td>";
                         echo "<td nowrap>$pbtnnodivisi</td>";
                         echo "<td nowrap>$ptglspd</td>";
                         echo "<td nowrap align='right'>$pbtninputjumlah</td>";

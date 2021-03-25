@@ -8,6 +8,7 @@ if (isset($_GET['module'])) $pmodule=$_GET['module'];
 if ($pmodule=="cekdatasudahada") {
     include "../../config/koneksimysqli.php";
 
+    $pidinput=$_POST['uid'];
     $ptgl=$_POST['utgl'];
     $pkaryawanid=$_POST['ukaryawan'];
 
@@ -15,7 +16,7 @@ if ($pmodule=="cekdatasudahada") {
 
     $boleh="boleh";
 
-    $query = "select tanggal from hrd.dkd_new0 where tanggal='$ptanggal' And karyawanid='$pkaryawanid'";
+    $query = "select tanggal from hrd.dkd_new0 where idinput<>'$pidinput' AND tanggal='$ptanggal' And karyawanid='$pkaryawanid'";
     $tampil=mysqli_query($cnmy, $query);
     $ketemu=mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {

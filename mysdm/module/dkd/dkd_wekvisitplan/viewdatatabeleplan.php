@@ -19,6 +19,9 @@
     $ptgl2=$_POST['utgl2'];
     $pkryid=$_POST['ukryid'];
 
+    $bukanuser=false;
+    if ($pkaryawanid==$pkryid) $bukanuser=true;
+
     $ptgl1 = date('Y-m-d', strtotime($ptgl1));
     //$ptgl2 = date('Y-m-d', strtotime($ptgl2));
     $ptgl2 = date('Y-m-d', strtotime('+4 days', strtotime($ptgl1)));
@@ -109,6 +112,10 @@
                 . "Detail</a>";
 
                 $phapus="";
+
+                if ($bukanuser==false) {
+                    $pedit="";
+                }
 
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";

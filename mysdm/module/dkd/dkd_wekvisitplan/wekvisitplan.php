@@ -1,6 +1,6 @@
 <?PHP 
     date_default_timezone_set('Asia/Jakarta');
-    //include "config/cek_akses_modul.php"; 
+    include "config/cek_akses_modul.php"; 
     $aksi="eksekusi3.php";
     $pact="";
     $pmodule=$_GET['module'];
@@ -39,6 +39,26 @@
         $pidkaryawan=$_SESSION['IDCARD'];
         $pidjabatan=$_SESSION['JABATANID'];
         $pidgroup=$_SESSION['GROUP'];
+        
+        $pfilterkaryawan="";
+        $pfilterkaryawan2="";
+        $pfilterkry="";
+        //$pidjabatan=="38" OR $pidjabatan=="33" OR 
+        if ($pidjabatan=="38" OR $pidjabatan=="33" OR $pidjabatan=="05" OR $pidjabatan=="20" OR $pidjabatan=="08" OR $pidjabatan=="10" OR $pidjabatan=="18" OR $pidjabatan=="15") {
+
+            $pnregion="";
+            if ($pidkaryawan=="0000000159") $pnregion="T";
+            elseif ($pidkaryawan=="0000000158") $pnregion="B";
+            $pfilterkry=CariDataKaryawanByCabJbt($pidkaryawan, $pidjabatan, $pnregion);
+
+            if (!empty($pfilterkry)) {
+                $parry_kry= explode(" | ", $pfilterkry);
+                if (isset($parry_kry[0])) $pfilterkaryawan=TRIM($parry_kry[0]);
+                if (isset($parry_kry[1])) $pfilterkaryawan2=TRIM($parry_kry[1]);
+            }
+
+        }
+
         
         $aksi="eksekusi3.php";
         switch($pact){
@@ -137,7 +157,7 @@
                                             $query_kry .=" ORDER BY nama";
                                         }else{
                                             $query_kry = "select karyawanId as karyawanid, nama as nama 
-                                                FROM hrd.karyawan WHERE karyawanId='$pidkaryawan' ";
+                                                FROM hrd.karyawan WHERE karyawanId IN $pfilterkaryawan ";
                                                 
                                             $query_kry .=" ORDER BY nama";
                                         }

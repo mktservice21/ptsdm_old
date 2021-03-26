@@ -618,6 +618,10 @@
     }elseif ($_GET['module']=='ksprosesdatakscab'){
         include 'module/ks_proseskscab/aksi_proseskscab.php';
         
+    }elseif ($_GET['module']=='dkdweeklyvisit'){
+        include 'module/dkd/dkd_wekvisitplan/iviewdatadkdplan.php';
+
+
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';
         

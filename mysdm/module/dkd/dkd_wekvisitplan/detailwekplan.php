@@ -27,7 +27,7 @@
 
 <HTML>
 <HEAD>
-    <title>Detail Weekly Visit Plan</title>
+    <title>Detail Weekly Plan</title>
     <meta http-equiv="Expires" content="Mon, 01 Sep 2030 1:00:00 GMT">
     <meta http-equiv="Pragma" content="no-cache">
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>
@@ -60,10 +60,10 @@ $naktivitas=$row['aktivitas'];
 
 ?>
 
-<div>Weekly Visit Plan</div>
+<div>Weekly Plan</div>
 <div><?PHP echo $ptanggal; ?></div>
 <hr/>
-<b><u>Aktivitas</u></b><br/>
+<b><u>Activity</u></b><br/>
 <table>
     <tr>
         <td nowrap>Keperluan</td><td> : </td><td nowrap><?PHP echo $nnamaket; ?></td>
@@ -77,7 +77,7 @@ $naktivitas=$row['aktivitas'];
 </table>
 
 <br/>
-<b><u>Kunjungan</u></b><br/>
+<b><u>Visit</u></b><br/>
 
 <table id='dtabel' class='table table-striped table-bordered' width='100%'>
 <thead>

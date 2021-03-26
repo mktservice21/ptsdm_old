@@ -57,6 +57,7 @@
                     function KlikDataTabel() {
                         var etgl1=document.getElementById('e_tanggal').value;
                         var etgl2=document.getElementById('e_tanggal').value;
+                        var ekryid=document.getElementById('cb_karyawan').value;
                         
                         var myurl = window.location;
                         var urlku = new URL(myurl);
@@ -68,7 +69,7 @@
                         $.ajax({
                             type:"post",
                             url:"module/dkd/dkd_wekvisitplan/viewdatatabeleplan.php?module="+module+"&idmenu="+idmenu+"&act="+act,
-                            data:"utgl1="+etgl1+"&utgl2="+etgl2,
+                            data:"utgl1="+etgl1+"&utgl2="+etgl2+"&ukryid="+ekryid,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
@@ -117,6 +118,53 @@
                             </h2>
                             <div class='clearfix'></div>
                         </div>
+
+                        
+                        <div class='col-sm-3'>
+                            Karyawan
+                            <div class="form-group">
+                                <select class='form-control' id="cb_karyawan" name="cb_karyawan">
+                                    <?PHP
+                                        if ($pidgroup=="1" OR $pidgroup=="24") {
+                                            $query_kry = "select karyawanId as karyawanid, nama as nama 
+                                                FROM hrd.karyawan WHERE 1=1 ";
+                                            $query_kry .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
+                                            $query_kry .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                    . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                    . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                    . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                    . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                            $query_kry .=" ORDER BY nama";
+                                        }else{
+                                            $query_kry = "select karyawanId as karyawanid, nama as nama 
+                                                FROM hrd.karyawan WHERE karyawanId='$pidkaryawan' ";
+                                                
+                                            $query_kry .=" ORDER BY nama";
+                                        }
+
+                                        if (!empty($query_kry)) {
+                                            $tampil = mysqli_query($cnmy, $query_kry);
+                                            $ketemu= mysqli_num_rows($tampil);
+                                            if ((INT)$ketemu<=0) echo "<option value='' selected>-- Pilih --</option>";
+
+                                            while ($z= mysqli_fetch_array($tampil)) {
+                                                $pkaryid=$z['karyawanid'];
+                                                $pkarynm=$z['nama'];
+                                                $pkryid=(INT)$pkaryid;
+
+                                                if ($pkaryid==$pidkaryawan)
+                                                    echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                else
+                                                    echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                            }
+                                        }else{
+                                            echo "<option value='' selected>-- Pilih --</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        
 
                         <div class='col-sm-3'>
                             Tanggal 

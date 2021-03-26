@@ -371,6 +371,7 @@
                         if (!empty($apvdir2)) $cekbox="";
                     }
                     
+                    
                     if ($pses_grpuser=="38") {
                         if (!empty($apvdir)) $cekbox="";
                     }

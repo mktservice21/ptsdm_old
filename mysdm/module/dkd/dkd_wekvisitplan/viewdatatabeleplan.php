@@ -102,11 +102,16 @@
                 $xthn= date('Y', strtotime($ntgl));
 
                 $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$cidinput'>Edit</a>";
+                $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+                . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&iprint=detail',"
+                . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                . "Detail</a>";
+
                 $phapus="";
 
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
-                echo "<td nowrap>$pedit &nbsp; &nbsp; $phapus</td>";
+                echo "<td nowrap>$pedit &nbsp; &nbsp; $print</td>";
                 echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
                 echo "</tr>";
 

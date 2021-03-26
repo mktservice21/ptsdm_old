@@ -17,7 +17,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                $judul="Weekly Visit Plan";
+                $judul="Weekly Plan";
                 if ($pact=="tambahbaru")
                     echo "Input $judul";
                 elseif ($pact=="editdata")

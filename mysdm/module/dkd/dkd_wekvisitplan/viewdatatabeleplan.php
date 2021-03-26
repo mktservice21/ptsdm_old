@@ -51,6 +51,18 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+
+    $query = "Alter table $tmp01 ADD totakv INT(4), ADD totvisit INT(4)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query = "UPDATE $tmp01 SET totakv=1";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
+        hrd.dkd_new1 GROUP BY 1) as b on a.idinput=b.idinput SET a.totvisit=b.jml";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
     $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
         "Juni", "Juli", "Agustus", "September", 
         "Oktober", "November", "Desember");
@@ -78,6 +90,7 @@
                     <th width='50px'>No</th>
                     <th width='100px'>Tanggal</th>
                     <th width='50px'>&nbsp;</th>
+                    <th width='50px'>&nbsp;</th>
                     <!--
                     <th width='100px'>Keperluan</th>
                     <th width='100px'>Compl.</th>
@@ -92,11 +105,16 @@
             <tbody>
             <?PHP
             $no=1;
-            $query = "select distinct idinput, tanggal from $tmp01 order by tanggal";
+            $query = "select distinct idinput, tanggal, totakv, totvisit from $tmp01 order by tanggal";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
                 $cidinput=$row0['idinput'];
                 $ntgl=$row0['tanggal'];
+                $ntotakv=$row0['totakv'];
+                $ntotvisit=$row0['totvisit'];
+
+                if (empty($ntotakv)) $ntotakv=1;
+                if (empty($ntotvisit)) $ntotvisit=0;
 
                 $ntanggal = date('l d F Y', strtotime($ntgl));
 
@@ -120,6 +138,7 @@
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
+                echo "<td nowrap>$ntotakv Activity $ntotvisit Visit</td>";
                 echo "<td nowrap>$pedit &nbsp; &nbsp; $print</td>";
                 echo "</tr>";
 

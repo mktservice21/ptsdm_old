@@ -138,7 +138,7 @@
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
-                echo "<td nowrap>$ntotakv Activity $ntotvisit Visit</td>";
+                echo "<td nowrap>$ntotakv Activity, $ntotvisit Visit</td>";
                 echo "<td nowrap>$pedit &nbsp; &nbsp; $print</td>";
                 echo "</tr>";
 

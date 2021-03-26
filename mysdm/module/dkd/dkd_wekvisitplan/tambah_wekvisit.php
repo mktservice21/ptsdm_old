@@ -228,7 +228,7 @@ if ($pidact=="editdata"){
 
                     <!--kiri-->
                     <div class='col-md-6 col-xs-12'>
-                        <b>Aktivitas</b>
+                        <b>Activity</b>
                         <div class='x_panel'>
                             <div class='x_content form-horizontal form-label-left'>
                                 
@@ -311,7 +311,7 @@ if ($pidact=="editdata"){
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                         <div class='col-xs-9'>
-                                            <button type='button' id='btnakv' class='btn btn-info btn-xs add-aktv' onclick=''>&nbsp; &nbsp; &nbsp; Tambah Aktivitas &nbsp; &nbsp; &nbsp;</button>
+                                            <button type='button' id='btnakv' class='btn btn-info btn-xs add-aktv' onclick=''>&nbsp; &nbsp; &nbsp; Tambah Activity &nbsp; &nbsp; &nbsp;</button>
                                         </div>
                                     </div>
 
@@ -405,7 +405,7 @@ if ($pidact=="editdata"){
                     <div class='clearfix'></div>
                     <!--kiri-->
                     <div class='col-md-6 col-xs-12'>
-                        <b>Kunjungan</b>
+                        <b>Visit</b>
                         <div class='x_panel'>
                             <div class='x_content form-horizontal form-label-left'>
                                 <div hidden class='form-group'>
@@ -514,7 +514,7 @@ if ($pidact=="editdata"){
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <button type='button' class='btn btn-dark btn-xs add-row' onclick=''>&nbsp; &nbsp; &nbsp; Tambah Kunjungan &nbsp; &nbsp; &nbsp;</button>
+                                        <button type='button' class='btn btn-dark btn-xs add-row' onclick=''>&nbsp; &nbsp; &nbsp; Tambah Visit &nbsp; &nbsp; &nbsp;</button>
                                     </div>
                                 </div>
 
@@ -593,7 +593,7 @@ if ($pidact=="editdata"){
                                             ?>
                                             </tbody>
                                         </table>
-                                        <button type='button' class='btn btn-danger btn-xs delete-row' >&nbsp; &nbsp; Hapus Kunjungan &nbsp; &nbsp;</button>
+                                        <button type='button' class='btn btn-danger btn-xs delete-row' >&nbsp; &nbsp; Hapus Visit &nbsp; &nbsp;</button>
 
                                     </div>
 

@@ -73,8 +73,8 @@
             <thead>
                 <tr>
                     <th width='50px'>No</th>
-                    <th width='50px'>&nbsp;</th>
                     <th width='100px'>Tanggal</th>
+                    <th width='50px'>&nbsp;</th>
                     <!--
                     <th width='100px'>Keperluan</th>
                     <th width='100px'>Compl.</th>
@@ -112,8 +112,8 @@
 
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
-                echo "<td nowrap>$pedit &nbsp; &nbsp; $print</td>";
                 echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
+                echo "<td nowrap>$pedit &nbsp; &nbsp; $print</td>";
                 echo "</tr>";
 
                 $no++;

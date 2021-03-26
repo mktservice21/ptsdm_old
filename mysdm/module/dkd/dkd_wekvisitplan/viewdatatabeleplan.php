@@ -17,6 +17,7 @@
 
     $ptgl1=$_POST['utgl1'];
     $ptgl2=$_POST['utgl2'];
+    $pkryid=$_POST['ukryid'];
 
     $ptgl1 = date('Y-m-d', strtotime($ptgl1));
     //$ptgl2 = date('Y-m-d', strtotime($ptgl2));
@@ -36,12 +37,12 @@
         a.compl, a.aktivitas, b.jenis, b.dokterid, d.namalengkap as nama_dokter, b.notes, b.saran 
         from hrd.dkd_new0 as a left join hrd.dkd_new1 as b on a.idinput=b.idinput 
         LEFT JOIN hrd.ket as c on a.ketid=c.ketId
-        LEFT JOIN dr.masterdokter as d on b.dokterid=d.id WHERE a.karyawanid='$pkaryawanid' ";
+        LEFT JOIN dr.masterdokter as d on b.dokterid=d.id WHERE a.karyawanid='$pkryid' ";
     $sql .=" AND a.tanggal between '$ptgl1' AND '$ptgl2'";
 
 
 
-    $sql = "select idinput, tanggal FROM hrd.dkd_new0 WHERE karyawanid='$pkaryawanid'";
+    $sql = "select idinput, tanggal FROM hrd.dkd_new0 WHERE karyawanid='$pkryid'";
     $sql .=" AND tanggal between '$ptgl1' AND '$ptgl2'";
     $query = "create TEMPORARY table $tmp01 ($sql)"; 
     mysqli_query($cnmy, $query);

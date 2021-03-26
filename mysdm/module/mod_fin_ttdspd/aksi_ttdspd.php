@@ -43,6 +43,7 @@ if ($module=="ttdspdfin") {
                         . " idinput in $noidbr AND IFNULL(tgl_apv1,'')<>'' AND IFNULL(tgl_dir,'')='' AND "
                         . " CONCAT(kodeid, subkode) NOT IN ('103', '221', '236')");
             }elseif ($pses_grpuser=="38") {//pa asykur
+                
                 mysqli_query($cnmy, "update $dbname.t_suratdana_br set apv3='$karyawanapv', tgl_apv3=NOW(), gbr_apv3='$gbrapv' WHERE idinput in $noidbr AND IFNULL(tgl_apv2,'')<>'' AND IFNULL(tgl_dir,'')='' AND CONCAT(kodeid,subkode) IN ('102') ");
             }
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }

@@ -735,6 +735,30 @@
                     }
                     
                 }
+
+                $query = "select idinput, jumlah, keterangan from dbmaster.t_suratdana_br 
+                    where IFNULL(stsnonaktif,'')<>'Y' and nodivisi2='$nodivisi' and subkode=50";
+                //echo $query;
+                $tampiladj=mysqli_query($cnmy, $query);
+                while ($rad=mysqli_fetch_array($tampiladj)) {
+                    $pketadj=$rad['keterangan'];
+                    $prpadj=$rad['jumlah'];
+
+                    $prpadj=number_format($prpadj,0,",",",");
+
+                    echo "<tr style='color:red;'>";
+                    echo "<td></td>";
+                    echo "<td></td>";
+                    echo "<td></td>";
+                    echo "<td></td>";
+                    echo "<td>Adjustment</td>";
+                    echo "<td>$pketadj</td>";
+                    echo "<td nowrap></td>";
+                    echo "<td></td>";
+                    echo "<td nowrap align='right'>$prpadj</td>";
+                    echo "<td></td>";
+                    echo "</tr>";
+                }
             ?>
         </tbody>
     </table>
@@ -833,7 +857,8 @@
             echo "</table>";
             
         }
-            
+        
+
             
         /*
         echo "<table width='100%' style='border:0px;' >";

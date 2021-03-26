@@ -427,17 +427,67 @@ if ($pidact=="editdata"){
                                     </div>
                                 </div>
 
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang <span class='required'></span></label>
+                                    <div class='col-xs-4'>
+                                        <select class='soflow' name='cb_cabid' id='cb_cabid' onchange="ShowDataDokter('1', '', '')">
+                                            <?php
+                                            if ($pidgroup=="1" OR $pidgroup=="24") {
+                                                $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE IFNULL(aktif,'')<>'N' ";
+                                                $query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
+                                                $query .=" order by nama, iCabangId";
+                                            }else{
+                                                if ($pidjbt=="10" OR $pidjbt=="18") {
+                                                    $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                        FROM mkt.ispv0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                        WHERE a.karyawanid='$pidcard'";
+                                                        $query .=" order by b.nama, a.icabangid";
+                                                }elseif ($pidjbt=="08") {
+                                                    $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                        FROM mkt.idm0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                        WHERE a.karyawanid='$pidcard'";
+                                                        $query .=" order by b.nama, a.icabangid";
+                                                }elseif ($pidjbt=="20") {
+                                                    $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                        FROM mkt.ism0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                        WHERE a.karyawanid='$pidcard'";
+                                                        $query .=" order by b.nama, a.icabangid";
+                                                }else{
+                                                    $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                        FROM mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                        WHERE a.karyawanid='$pidcard'";
+                                                        $query .=" order by b.nama, a.icabangid";
+                                                }
+                                            }
+                                            $tampilket= mysqli_query($cnmy, $query);
+                                            $ketemu=mysqli_num_rows($tampilket);
+                                            if ((INT)$ketemu<=0) echo "<option value='' selected>-- Pilih --</option>";
+                                            $cno=1; $ppilihcab="";
+                                            while ($du= mysqli_fetch_array($tampilket)) {
+                                                $nidcab=$du['icabangid'];
+                                                $nnmcab=$du['nama_cabang'];
+
+                                                echo "<option value='$nidcab'>$nnmcab ($nidcab)</option>";
+                                                if ($cno==1) $ppilihcab=$nidcab;
+
+                                                $cno++;
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Dokter <span class='required'></span></label>
                                     <div class='col-xs-4'>
                                         <select class='soflow' name='cb_doktid' id='cb_doktid' onchange="">
                                             <?php
-                                            $ipcabid="0000000094";
+                                            //$ipcabid="0000000094";
                                             $query = "select `id` as iddokter, namalengkap, gelar, spesialis from dr.masterdokter WHERE 1=1 ";
-                                            $query .=" AND icabangid='$ipcabid' ";
+                                            $query .=" AND icabangid='$ppilihcab' ";
                                             $query .=" order by namalengkap, `id`";
-                                            $query .=" limit 100";
+                                            //$query .=" limit 100";
                                             $tampilket= mysqli_query($cnmy, $query);
                                             while ($du= mysqli_fetch_array($tampilket)) {
                                                 $niddokt=$du['iddokter'];
@@ -502,12 +552,13 @@ if ($pidact=="editdata"){
                                                 //echo "<input type='hidden' id='m_iddokt[$nnjmlrc]' name='m_iddokt[$nnjmlrc]' value=''>";
                                                 if ($pact=="editdata") {
                                                     
-                                                    $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis FROM hrd.dkd_new1 as a
+                                                    $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis, b.icabangid FROM hrd.dkd_new1 as a
                                                         LEFT JOIN dr.masterdokter as b on a.dokterid=b.id 
                                                          WHERE a.idinput='$pidinput' AND IFNULL(a.jenis,'') IN ('', 'JV')";
                                                     $tampild=mysqli_query($cnmy, $query);
                                                     while ($nrd= mysqli_fetch_array($tampild)) {
                                                         $pjenis=$nrd['jenis'];
+                                                        $vcabid=$nrd['icabangid'];
                                                         $pdokterid=$nrd['dokterid'];
                                                         $pnmdokt=$nrd['nama_dokter'];
                                                         $pgelardokt=$nrd['gelar'];
@@ -522,6 +573,7 @@ if ($pidact=="editdata"){
                                                         echo "<td nowrap><input type='checkbox' name='record'>";
                                                         echo "<input type='hidden' id='m_idjmrec[$nnjmlrc]' name='m_idjmrec[]' value='$nnjmlrc' Readonly>";
                                                         echo "<input type='hidden' id='m_iddokt[$nnjmlrc]' name='m_iddokt[$nnjmlrc]' value='$pdokterid'>";
+                                                        echo "<input type='hidden' id='m_idcab[$nnjmlrc]' name='m_idcab[$nnjmlrc]' value='$vcabid'>";
                                                         echo "</td>";
                                                         echo "<td nowrap class='divnone'><input type='checkbox' name='chkbox_br[]' id='chkbox_br[$nnjmlrc]' value='$nnjmlrc' checked></td>";
                                                         
@@ -754,6 +806,7 @@ if ($pidact=="editdata"){
             var i_jv = $("#cb_jv").val();
             var i_iddokt = $("#cb_doktid").val();
             var i_ket = $("#e_ketdetail").val();
+            var i_cab = $("#cb_cabid").val();
 
             var x = document.getElementById("cb_doktid").selectedIndex;
             var y = document.getElementById("cb_doktid").options;
@@ -780,6 +833,7 @@ if ($pidact=="editdata"){
             markup += "<td nowrap><input type='checkbox' name='record'>";
             markup += "<input type='hidden' id='m_idjmrec["+i_idjmlrec+"]' name='m_idjmrec[]' value='"+i_idjmlrec+"' Readonly>";
             markup += "<input type='hidden' id='m_iddokt["+i_idjmlrec+"]' name='m_iddokt["+i_idjmlrec+"]' value='"+i_iddokt+"'>";
+            markup += "<input type='hidden' id='m_idcab["+i_idjmlrec+"]' name='m_idcab["+i_idjmlrec+"]' value='"+i_cab+"'>";
             markup += "</td>";
             markup += "<td nowrap class='divnone'><input type='checkbox' name='chkbox_br[]' id='chkbox_br["+i_idjmlrec+"]' value='"+i_idjmlrec+"' checked></td>";
             
@@ -822,13 +876,17 @@ if ($pidact=="editdata"){
     function EditDataDetail(xchk, xidjmlrec) {
         var xkddokt = document.getElementById('m_iddokt['+xidjmlrec+']').value;
         var xkdjv = document.getElementById('m_jv['+xidjmlrec+']').value;
+        var xkdcab = document.getElementById('m_idcab['+xidjmlrec+']').value;
         
         var xket = document.getElementById('txt_ketdokt['+xidjmlrec+']').value;        
         
         document.getElementById("cb_jv").value = xkdjv;
         document.getElementById("cb_doktid").value = xkddokt;
         document.getElementById('e_ketdetail').value=xket;
+        document.getElementById('cb_cabid').value=xkdcab;
         
+        ShowDataDokter('2', xkdcab, xkddokt);
+
         $("table tbody.inputdata").find('input[id="chkbox_br['+xidjmlrec+']"]').each(function(){
             $(this).parents("tr").remove();
         });
@@ -889,8 +947,19 @@ if ($pidact=="editdata"){
         
         
     }
-
-
+    
+    function ShowDataDokter(sKey, incab, indokt){
+        var eidcan =document.getElementById('cb_cabid').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/dkd/viewdatadkd.php?module=viewdatadoktercabang",
+            data:"uidcab="+eidcan+"&ukdcab="+incab+"&ukddokt="+indokt+"&skode="+sKey,
+            success:function(data){
+                $("#cb_doktid").html(data);
+            }
+        });
+    }
 </script>
 
 
@@ -981,7 +1050,7 @@ th {
         }//else{
             var dateToday = new Date();
             var dayToday = dateToday.getDay();
-            var setMinDate=7-dayToday;
+            var setMinDate=8-dayToday;
 
             $('#e_periode1').datepicker({
                 changeMonth: true,

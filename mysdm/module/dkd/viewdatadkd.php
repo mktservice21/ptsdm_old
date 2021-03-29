@@ -239,6 +239,34 @@ if ($pmodule=="cekdatasudahada") {
                     WHERE b.region='$pfregion' AND a.icabangid='$pidcab'";
                 $query_kry .=" Order by c.nama";
             }
+        }else{
+            if ($pidjbt=="05") {
+                $query_kry = "select karyawanId as karyawanid, nama as nama from hrd.karyawan WHERE karyawanid='$pidkaryawan'";
+            }elseif ($pidjbt=="15") {
+                $query_kry = "select distinct a.karyawanid as karyawanid, c.nama as nama 
+                    from mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid 
+                    JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId 
+                    WHERE a.icabangid='$pidcab'";
+                $query_kry .=" Order by c.nama";
+            }elseif ($pidjbt=="10") {
+                $query_kry = "select distinct a.karyawanid as karyawanid, c.nama as nama 
+                    from mkt.ispv0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid 
+                    JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId 
+                    WHERE a.icabangid='$pidcab'";
+                $query_kry .=" Order by c.nama";
+            }elseif ($pidjbt=="08") {
+                $query_kry = "select distinct a.karyawanid as karyawanid, c.nama as nama 
+                    from mkt.idm0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid 
+                    JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId 
+                    WHERE a.icabangid='$pidcab'";
+                $query_kry .=" Order by c.nama";
+            }elseif ($pidjbt=="20") {
+                $query_kry = "select distinct a.karyawanid as karyawanid, c.nama as nama 
+                    from mkt.ism0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid 
+                    JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId 
+                    WHERE a.icabangid='$pidcab'";
+                $query_kry .=" Order by c.nama";
+            }
         }
 
     }

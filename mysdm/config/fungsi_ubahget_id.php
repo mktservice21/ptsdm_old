@@ -1,7 +1,7 @@
 <?PHP
 
 function encryptForId( $q ) {
-    return( $q ); exit;
+    //return( $q ); exit;
 
     $cryptKey  = 'qJB0rGtIn5UB1xG03efyCp';
     $qEncoded      = base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_256, md5( $cryptKey ), $q, MCRYPT_MODE_CBC, md5( md5( $cryptKey ) ) ) );
@@ -10,7 +10,7 @@ function encryptForId( $q ) {
 }
 
 function decryptForId( $q ) {
-    return( $q ); exit;
+    //return( $q ); exit;
 
     if (!empty($q)) $q = str_replace("_a/_", "+", $q);
     $cryptKey  = 'qJB0rGtIn5UB1xG03efyCp';
@@ -22,16 +22,19 @@ function encodeString($str){
     for($i=0; $i<5;$i++) {
         $str=strrev(base64_encode($str)); //apply base64 first and then reverse the string
     }
+    if (!empty($str)) $str = str_replace("+", "_a/_", $str);
     return $str;
   }
   
   
   function decodeString($str){
+    if (!empty($str)) $str = str_replace("_a/_", "+", $str);
+
     for($i=0; $i<5;$i++) {
         $str=base64_decode(strrev($str)); //apply base64 first and then reverse the string}
     }
     return $str;
   }
 
-  
+
 ?>

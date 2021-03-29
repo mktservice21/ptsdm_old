@@ -32,6 +32,7 @@
     $pidmenu=$_GET['idmenu'];
     
     include "../../config/koneksimysqli.php";
+    include "../../config/fungsi_ubahget_id.php";
     
     
     $pfilterkrypilih="";
@@ -176,14 +177,15 @@
                     $apv3="";
                     $apvfin="";
                     
+                    $pidnoget=encodeString($pidno);
                     
-                    $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidno'>Edit</a>";
+                    $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidnoget'>Edit</a>";
                     $phapus="<input type='button' class='btn btn-danger btn-xs' value='Hapus' onClick=\"ProsesDataHapusCa('hapus', '$pidno')\">";
                     
-                    $pttdedit="<a class='btn btn-warning btn-xs' href='?module=$pmodule&act=editttddata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidno'>Edit ttd</a>";
+                    $pttdedit="<a class='btn btn-warning btn-xs' href='?module=$pmodule&act=editttddata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidnoget'>Edit ttd</a>";
                     
                     $pprint="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
-                        . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$pidno&iprint=print',"
+                        . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$pidnoget&iprint=print',"
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                         . "Print</a>";
                     

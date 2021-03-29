@@ -174,7 +174,11 @@ $pjmlrec=1;
 $act="input";
 if ($pidact=="editdata"){
     $act="update";
-    $pidinput=$_GET['id'];
+
+    include "config/fungsi_ubahget_id.php";
+    
+    $pidinput_ec=$_GET['id'];
+    $pidinput = decryptForId($pidinput_ec);
 
     $edit = mysqli_query($cnmy, "SELECT * FROM hrd.dkd_new0 WHERE idinput='$pidinput'");
     $r    = mysqli_fetch_array($edit);

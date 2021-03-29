@@ -39,6 +39,7 @@
     $pidmenu=$_GET['idmenu'];
 
     include "../../../config/koneksimysqli.php";
+    include "../../../config/fungsi_ubahget_id.php";
 
     $now=date("mdYhis");
     $tmp01 =" dbtemp.tmpdkdentry01_".$puserid."_$now ";
@@ -121,6 +122,8 @@
                 $ntotakv=$row0['totakv'];
                 $ntotvisit=$row0['totvisit'];
 
+                $pidget=encryptForId($cidinput);
+
                 if (empty($ntotakv)) $ntotakv=1;
                 if (empty($ntotvisit)) $ntotvisit=0;
 
@@ -131,7 +134,7 @@
                 $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
                 $xthn= date('Y', strtotime($ntgl));
 
-                $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$cidinput'>Edit</a>";
+                $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
                 $print="<a title='detail' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
                 . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&iprint=detail',"
                 . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "

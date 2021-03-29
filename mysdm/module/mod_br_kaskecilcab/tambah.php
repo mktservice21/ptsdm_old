@@ -533,7 +533,7 @@ $nrs2= mysqli_fetch_array($ptampil2);
 $pkdgsm=$nrs2['gsm'];
 $pnamagsm=$nrs2['nama_gsm'];
 
-if ($pcabangid=="0000000003" OR $pcabangid=="0000000005" OR $pcabangid=="0000000081") {
+if ($pcabangid=="0000000003" OR $pcabangid=="0000000005") {
     $pkdspv="";
     $pnamaspv="";
     $pkddm="";

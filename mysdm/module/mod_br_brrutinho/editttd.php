@@ -49,7 +49,11 @@ $pidarea="0000000001";//ETH HO
 
 if ($pidact=="editttddata"){
     $act="ttdupdate";
-    $pidrutin=$_GET['id'];
+
+    include "config/fungsi_ubahget_id.php";
+
+    $pidinput_ec=$_GET['id'];
+    $pidrutin = decodeString($pidinput_ec);
     
     $edit = mysqli_query($cnmy, "SELECT * FROM dbmaster.t_brrutin0 WHERE kode=1 AND idrutin='$pidrutin' AND karyawanid='$pidcard'");
     $r    = mysqli_fetch_array($edit);

@@ -1,6 +1,8 @@
 <?PHP
 
 function encryptForId( $q ) {
+    return( $q ); exit;
+    
     $cryptKey  = 'qJB0rGtIn5UB1xG03efyCp';
     $qEncoded      = base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_256, md5( $cryptKey ), $q, MCRYPT_MODE_CBC, md5( md5( $cryptKey ) ) ) );
     if (!empty($qEncoded)) $qEncoded = str_replace("+", "_a/_", $qEncoded);
@@ -8,6 +10,8 @@ function encryptForId( $q ) {
 }
 
 function decryptForId( $q ) {
+    return( $q ); exit;
+
     if (!empty($q)) $q = str_replace("_a/_", "+", $q);
     $cryptKey  = 'qJB0rGtIn5UB1xG03efyCp';
     $qDecoded      = rtrim( mcrypt_decrypt( MCRYPT_RIJNDAEL_256, md5( $cryptKey ), base64_decode( $q ), MCRYPT_MODE_CBC, md5( md5( $cryptKey ) ) ), "\0");

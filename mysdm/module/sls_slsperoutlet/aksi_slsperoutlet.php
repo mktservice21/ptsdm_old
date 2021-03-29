@@ -283,7 +283,13 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
         <table id='datatable2' class='table table-striped table-bordered' width="100%" border="1px solid black">
             <thead>
                 <tr>
-                <th align="center" class="divnone">&nbsp;</th>
+                <?PHP
+                if ($ppilihrpt!="excel") {
+                    echo "<th align='center' class='divnone'>&nbsp;</th>";
+                }else{
+
+                }
+                ?>
                 <th align="center">No</th>
                 <th align="center">Nama Outlet / Produk</th>
                 <th align="center">Distributor</th>
@@ -332,9 +338,9 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     if ($ppilihrpt=="excel") {
                         $pnuntuknamaoutlet="";
                     }
-                    
+                    if ($ppilihrpt!="excel")
                     echo "<tr>";
-                    echo "<td nowrap class='divnone'>$pnuntuknamaoutlet</td>";
+                    if ($ppilihrpt!="excel") echo "<td nowrap class='divnone'>$pnuntuknamaoutlet</td>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap><b>$npnmcust</b> ($npidcab - $npidarea - <b>$npidcustpl</b>)</td>";
                     
@@ -374,7 +380,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
 
                         echo "<tr>";
-                        echo "<td nowrap class='divnone'>$pnuntuknamaoutlet</td>";
+                        if ($ppilihrpt!="excel") echo "<td nowrap class='divnone'>$pnuntuknamaoutlet</td>";
                         echo "<td nowrap></td>";
                         echo "<td nowrap>$npnmprod</td>";
                         echo "<td nowrap>$npdistid</td>";
@@ -391,7 +397,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     $pnsubtotval=number_format($pnsubtotval,0,"","");
                     
                     echo "<tr>";
-                    echo "<td nowrap class='divnone'>$pnuntuknamaoutlet</td>";
+                    if ($ppilihrpt!="excel") echo "<td nowrap class='divnone'>$pnuntuknamaoutlet</td>";
                     echo "<td nowrap></td>";
                     echo "<td nowrap><b>Total $npnmcust : </b></td>";
                     echo "<td nowrap></td>";
@@ -408,7 +414,7 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 $ptotvalue=number_format($ptotvalue,0,"","");
 
                 echo "<tr>";
-                echo "<td nowrap class='divnone'>$pnuntuknamaoutlet</td>";
+                if ($ppilihrpt!="excel") echo "<td nowrap class='divnone'>$pnuntuknamaoutlet</td>";
                 echo "<td nowrap></td>";
                 echo "<td nowrap></td>";
                 echo "<td nowrap></td>";

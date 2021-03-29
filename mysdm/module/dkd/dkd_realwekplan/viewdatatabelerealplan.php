@@ -46,7 +46,7 @@
 
     $sql = "select a.idinput, a.tanggal, a.karyawanid, a.ketid, c.nama as nama_ket,
         a.compl, a.aktivitas, b.jenis, b.dokterid, d.namalengkap as nama_dokter, b.notes, b.saran,
-        a.real_user as realisasi, a.real_date as realisasidate, b.real_user, b.real_date   
+        a.real_user1 as realisasi, a.real_date1 as realisasidate, b.real_user, b.real_date   
         from hrd.dkd_new0 as a left join hrd.dkd_new1 as b on a.idinput=b.idinput 
         LEFT JOIN hrd.ket as c on a.ketid=c.ketId
         LEFT JOIN dr.masterdokter as d on b.dokterid=d.id WHERE a.karyawanid='$pkryid' ";
@@ -178,7 +178,7 @@
 
                         $prealisasi="<input type='button' value='Realisasi' class='btn btn-warning btn-xs' onClick=\"ProsesDataReal('1', 'm_idinput[$nnjmlrc]', 'm_tgl[$nnjmlrc]', 'm_dokterid[$nnjmlrc]', 'm_saran[$nnjmlrc]')\">";
 
-                        if ($bukanuser==false) {
+                        if ($bukanuser==false OR $njenis=="EC") {
                             $prealisasi="";
                         }
 

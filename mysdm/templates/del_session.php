@@ -626,4 +626,10 @@
     $_SESSION['PCHPRITTGL1']="";
     $_SESSION['PCHPRITTGL2']="";
     
+
+    //WEEKLY PLAN
+    $_SESSION['WEKPLNCAB']="";
+    $_SESSION['WEKPLNJBT']="";
+    $_SESSION['WEKPLNKRY']="";
+    $_SESSION['WEKPLNTGL']="";
 ?>

@@ -1,6 +1,6 @@
 <?PHP 
     date_default_timezone_set('Asia/Jakarta');
-    include "config/cek_akses_modul.php"; 
+    //include "config/cek_akses_modul.php"; 
     $aksi="eksekusi3.php";
     $pact="";
     $pmodule=$_GET['module'];
@@ -59,6 +59,28 @@
 
         }
 
+
+         
+        $pcabid_pl=$_SESSION['WEKPLNCAB'];
+        $pjbtid_pl=$_SESSION['WEKPLNJBT'];
+        $pkryid_pl=$_SESSION['WEKPLNKRY'];
+        $ptgl1_pl=$_SESSION['WEKPLNTGL'];
+
+        $pseljbt0="";
+        $pseljbt1="";
+        $pseljbt2="";
+        $pseljbt3="";
+        $pseljbt4="";
+        $pseljbt5="";
+
+        if (empty($pjbtid_pl)) $pseljbt0="selected";
+        else{
+            if ($pjbtid_pl=="05") $pseljbt1="selected";
+            elseif ($pjbtid_pl=="20") $pseljbt2="selected";
+            elseif ($pjbtid_pl=="08") $pseljbt3="selected";
+            elseif ($pjbtid_pl=="10") $pseljbt4="selected";
+            elseif ($pjbtid_pl=="15") $pseljbt5="selected";
+        }
         
         $aksi="eksekusi3.php";
         switch($pact){
@@ -78,6 +100,8 @@
                         var etgl1=document.getElementById('e_tanggal').value;
                         var etgl2=document.getElementById('e_tanggal').value;
                         var ekryid=document.getElementById('cb_karyawan').value;
+                        var ecabid=document.getElementById('cb_cabang').value;
+                        var ejbtid=document.getElementById('cb_jabatan').value;
                         
                         var myurl = window.location;
                         var urlku = new URL(myurl);
@@ -89,10 +113,25 @@
                         $.ajax({
                             type:"post",
                             url:"module/dkd/dkd_wekvisitplan/viewdatatabeleplan.php?module="+module+"&idmenu="+idmenu+"&act="+act,
-                            data:"utgl1="+etgl1+"&utgl2="+etgl2+"&ukryid="+ekryid,
+                            data:"utgl1="+etgl1+"&utgl2="+etgl2+"&ukryid="+ekryid+"&ucabid="+ecabid+"&ujbtid="+ejbtid,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
+                            }
+                        });
+                    }
+
+                    function ShowDataKaryawan() {
+                        //cb_cabang,cb_jabatan
+                        var eidcan =document.getElementById('cb_cabang').value;
+                        var eidjbt =document.getElementById('cb_jabatan').value;
+        
+                        $.ajax({
+                            type:"post",
+                            url:"module/dkd/viewdatadkd.php?module=viewdatakaryawancabjbt",
+                            data:"uidcab="+eidcan+"&uidjbt="+eidjbt,
+                            success:function(data){
+                                $("#cb_karyawan").html(data);
                             }
                         });
                     }
@@ -125,6 +164,8 @@
                 $tgl_akhir = date('t F Y', strtotime($hari_ini));
 
                 $tgl_pertama = date('d F Y',time()+( 8 - date('w'))*24*3600);
+
+                if (!empty($ptgl1_pl)) $tgl_pertama=$ptgl1_pl;
                 ?>
 
                 
@@ -140,6 +181,103 @@
                         </div>
 
                         
+                        <div class='col-sm-2'>
+                            Cabang
+                            <div class="form-group">
+                                <select class='form-control' id="cb_cabang" name="cb_cabang" onchange="ShowDataKaryawan()">
+                                    <?PHP
+                                        if ($pidgroup=="1" OR $pidgroup=="24") {
+                                            $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE IFNULL(aktif,'')<>'N' ";
+                                            $query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
+                                            $query .=" order by nama, iCabangId";
+                                        }else{
+                                            if ($pidjabatan=="10" OR $pidjabatan=="18") {
+                                                $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                    FROM mkt.ispv0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                    WHERE a.karyawanid='$pidkaryawan'";
+                                                    $query .=" order by b.nama, a.icabangid";
+                                            }elseif ($pidjabatan=="08") {
+                                                $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                    FROM mkt.idm0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                    WHERE a.karyawanid='$pidkaryawan'";
+                                                    $query .=" order by b.nama, a.icabangid";
+                                            }elseif ($pidjabatan=="20") {
+                                                $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                    FROM mkt.ism0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                    WHERE a.karyawanid='$pidkaryawan'";
+                                                    $query .=" order by b.nama, a.icabangid";
+                                            }elseif ($pidjabatan=="05") {
+                                                $pfregion="XXX";
+                                                if ((INT)$pidkaryawan==158) $pfregion="B";
+                                                elseif ((INT)$pidkaryawan==159) $pfregion="T";
+
+                                                $query = "select icabangid as icabangid, nama as nama_cabang from 
+                                                    MKT.icabang WHERE region='$pfregion' AND IFNULL(aktif,'')<>'N' ";
+                                                $query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -') ";
+                                                $query .=" order by nama, icabangid";
+                                            }else{
+                                                $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                    FROM mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                    WHERE a.karyawanid='$pidkaryawan'";
+                                                $query .=" order by b.nama, a.icabangid";
+                                            }
+                                        }
+                                        $tampilket= mysqli_query($cnmy, $query);
+                                        $ketemu=mysqli_num_rows($tampilket);
+                                        //if ((INT)$ketemu<=0) 
+                                        echo "<option value='' selected>-- Pilih --</option>";
+                                        
+                                        while ($du= mysqli_fetch_array($tampilket)) {
+                                            $nidcab=$du['icabangid'];
+                                            $nnmcab=$du['nama_cabang'];
+                                            $nidcab_=(INT)$nidcab;
+                                            if ($nidcab==$pcabid_pl)
+                                                echo "<option value='$nidcab' selected>$nnmcab ($nidcab_)</option>";
+                                            else
+                                                echo "<option value='$nidcab'>$nnmcab ($nidcab_)</option>";
+
+                                        }
+                                        
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <div class='col-sm-2'>
+                            Jabatan
+                            <div class="form-group">
+                                <select class='form-control' name='cb_jabatan' id='cb_jabatan' onchange="ShowDataKaryawan()">
+                                    <?PHP
+                                    echo "<option value='' $pseljbt0>--All--</option>";
+                                    if ($pidjabatan=="15") {
+                                        echo "<option value='15' $pseljbt5>MR</option>";
+                                    }elseif ($pidjabatan=="10" OR $pidjabatan=="18") {
+                                        echo "<option value='10' $pseljbt4>AM/SPV</option>";
+                                        echo "<option value='15' $pseljbt5>MR</option>";
+                                    }elseif ($pidjabatan=="08") {
+                                        echo "<option value='08' $pseljbt3>DM</option>";
+                                        echo "<option value='10' $pseljbt4>AM/SPV</option>";
+                                        echo "<option value='15' $pseljbt5>MR</option>";
+                                    }elseif ($pidjabatan=="20") {
+                                        echo "<option value='20' $pseljbt2>SM</option>";
+                                        echo "<option value='08' $pseljbt3>DM</option>";
+                                        echo "<option value='10' $pseljbt4>AM/SPV</option>";
+                                        echo "<option value='15' $pseljbt5>MR</option>";
+                                    }else{
+                                        echo "<option value='05' $pseljbt1>GSM</option>";
+                                        echo "<option value='20' $pseljbt2>SM</option>";
+                                        echo "<option value='08' $pseljbt3>DM</option>";
+                                        echo "<option value='10' $pseljbt4>AM/SPV</option>";
+                                        echo "<option value='15' $pseljbt5>MR</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+
                         <div class='col-sm-3'>
                             Karyawan
                             <div class="form-group">
@@ -172,10 +310,15 @@
                                                 $pkarynm=$z['nama'];
                                                 $pkryid=(INT)$pkaryid;
 
-                                                if ($pkaryid==$pidkaryawan)
+                                                if ($pkaryid==$pkryid_pl) {
                                                     echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
-                                                else
-                                                    echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                                    $pidkaryawan=$pkryid_pl;
+                                                }else{
+                                                    if ($pkaryid==$pidkaryawan)
+                                                        echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                    else
+                                                        echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                                }
                                             }
                                         }else{
                                             echo "<option value='' selected>-- Pilih --</option>";

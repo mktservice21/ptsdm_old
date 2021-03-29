@@ -118,7 +118,7 @@
                 $nrealisasi=$row0['realisasi'];
                 $nrealdate=$row0['realisasidate'];
 
-                $pidget=encryptForId($cidinput);
+                $pidget=encodeString($cidinput);
 
                 if (empty($ntotakv)) $ntotakv=1;
                 if (empty($ntotvisit)) $ntotvisit=0;

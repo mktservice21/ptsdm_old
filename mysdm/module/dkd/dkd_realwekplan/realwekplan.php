@@ -172,7 +172,7 @@
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                     <div class='x_panel'>
 
-                        <div class='x_title'>
+                        <div hidden class='x_title'>
                             <h2><input class='btn btn-default' type=button value='Tambah Extra Call'
                                 onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=tambahbaru"; ?>';">
                                 <small></small>

@@ -61,14 +61,18 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-    $query = "Alter table $tmp01 ADD totakv INT(4), ADD totvisit INT(4)";
+    $query = "Alter table $tmp01 ADD totakv INT(4), ADD totvisit INT(4), ADD totec INT(4)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
     $query = "UPDATE $tmp01 SET totakv=1";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
     $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-        hrd.dkd_new1 GROUP BY 1) as b on a.idinput=b.idinput SET a.totvisit=b.jml";
+        hrd.dkd_new1 WHERE IFNULL(jenis,'') NOT IN ('EC') GROUP BY 1) as b on a.idinput=b.idinput SET a.totvisit=b.jml";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
+        hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.idinput=b.idinput SET a.totec=b.jml";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
@@ -114,18 +118,20 @@
             <tbody>
             <?PHP
             $no=1;
-            $query = "select distinct idinput, tanggal, totakv, totvisit from $tmp01 order by tanggal";
+            $query = "select distinct idinput, tanggal, totakv, totvisit, totec from $tmp01 order by tanggal";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
                 $cidinput=$row0['idinput'];
                 $ntgl=$row0['tanggal'];
                 $ntotakv=$row0['totakv'];
                 $ntotvisit=$row0['totvisit'];
+                $ntotec=$row0['totec'];
 
                 $pidget=encryptForId($cidinput);
 
                 if (empty($ntotakv)) $ntotakv=1;
                 if (empty($ntotvisit)) $ntotvisit=0;
+                if (empty($ntotec)) $ntotec=0;
 
                 $ntanggal = date('l d F Y', strtotime($ntgl));
 
@@ -146,10 +152,14 @@
                     $pedit="";
                 }
 
+                $pkettotal="$ntotakv Activity, $ntotvisit Visit";
+                if ((INT)$ntotec>0) {
+                    $pkettotal="$ntotakv Activity, $ntotvisit Visit, $ntotec Extra Call";
+                }
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
-                echo "<td nowrap>$ntotakv Activity, $ntotvisit Visit</td>";
+                echo "<td nowrap>$pkettotal</td>";
                 echo "<td nowrap>$pedit &nbsp; &nbsp; $print</td>";
                 echo "</tr>";
 

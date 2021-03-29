@@ -16,6 +16,7 @@
     include "config/koneksimysqli.php";
     include "config/fungsi_sql.php";
     include "config/library.php";
+    include "config/fungsi_ubahget_id.php";
     
     
     $pfilterkrypilih="";
@@ -32,7 +33,8 @@
     else $pfilterkrypilih="('00XXX00')";
     
     
-    $pidrutin=$_GET['brid'];
+    $pidinput_ec=$_GET['brid'];
+    $pidrutin = decodeString($pidinput_ec);
     
     $namapengaju="";
     $nmatasan4="";

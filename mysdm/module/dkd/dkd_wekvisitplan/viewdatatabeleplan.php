@@ -137,7 +137,7 @@
                 $ntotec=$row0['totec'];
                 $nsudahreal=$row0['sudahreal'];
 
-                $pidget=encryptForId($cidinput);
+                $pidget=encodeString($cidinput);
 
                 if (empty($ntotakv)) $ntotakv=1;
                 if (empty($ntotvisit)) $ntotvisit=0;

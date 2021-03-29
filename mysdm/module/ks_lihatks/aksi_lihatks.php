@@ -167,7 +167,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
                     $p_isaldo=(DOUBLE)$p_isaldo+(DOUBLE)$psldawal;
 
-                    $psldawal = number_format($psldawal,0);
+                    //$psldawal = number_format($psldawal,0);
+                    $psldawal=number_format($psldawal,0,"","");
 
                     echo "<tr>";
                     echo "<td><small>$pmin_bulan</small></td>";  
@@ -214,7 +215,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
                         $p_isaldo=(DOUBLE)$p_isaldo+(DOUBLE)$pjumlahki;
 
-                        $pjumlahki = number_format($pjumlahki,0);
+                        //$pjumlahki = number_format($pjumlahki,0);
+                        $pjumlahki=number_format($pjumlahki,0,"","");
 
                         echo "<tr>";
                         echo "<td><small>$ptglki</small></td>";  
@@ -281,10 +283,15 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                             $ptotalsldcn=(DOUBLE)$ptotalsldcn+(DOUBLE)$psldcnminus;
                             
 
-                            $pqty = number_format($pqty,0);
-                            $phna = number_format($phna,0);
-                            $pvalue = number_format($pvalue,0);
-                            $psaldocn = number_format($psaldocn,0);
+                            //$pqty = number_format($pqty,0);
+                            //$phna = number_format($phna,0);
+                            //$pvalue = number_format($pvalue,0);
+                            //$psaldocn = number_format($psaldocn,0);
+
+                            $pqty=number_format($pqty,0,"","");
+                            $phna=number_format($phna,0,"","");
+                            $pvalue=number_format($pvalue,0,"","");
+                            $psaldocn=number_format($psaldocn,0,"","");
 
 
                             if ($ptypeapotik=="1") {
@@ -378,8 +385,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 
                         if ($plewatks==true) {
-                            $ptotalval = number_format($ptotalval,0);
-                            $ptotalsldcn = number_format($ptotalsldcn,0);
+                            //$ptotalval = number_format($ptotalval,0);
+                            //$ptotalsldcn = number_format($ptotalsldcn,0);
+
+                            $ptotalval=number_format($ptotalval,0,"","");
+                            $ptotalsldcn=number_format($ptotalsldcn,0,"","");
 
                             echo "<tr>";
                             echo "<td><small>&nbsp;</small></td>";  
@@ -410,7 +420,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
                                 $p_isaldo=(DOUBLE)$p_isaldo+(DOUBLE)$pjumlahki;
 
-                                $pjumlahki = number_format($pjumlahki,0);
+                                //$pjumlahki = number_format($pjumlahki,0);
+                                $pjumlahki=number_format($pjumlahki,0,"","");
 
                                 echo "<tr>";
                                 echo "<td><small>$ptglki</small></td>";  
@@ -431,7 +442,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
                         $psaldoakhir=$p_isaldo;
 
-                        $psaldoakhir = number_format($psaldoakhir,0);
+                        //$psaldoakhir = number_format($psaldoakhir,0);
+                        $psaldoakhir=number_format($psaldoakhir,0,"","");
 
                         echo "<tr>";
                         echo "<td><small>&nbsp;</small></td>";  
@@ -462,7 +474,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
                 if (empty($p_isaldo)) $p_isaldo=0;
 
-                $p_isaldo = number_format($p_isaldo,0);
+                //$p_isaldo = number_format($p_isaldo,0);
+                $p_isaldo=number_format($p_isaldo,0,"","");
 
                 echo "<tr>";
                 echo "<td><small>&nbsp;</small></td>";  

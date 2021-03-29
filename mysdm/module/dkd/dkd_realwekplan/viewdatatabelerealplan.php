@@ -39,6 +39,7 @@
     $pidmenu=$_GET['idmenu'];
 
     include "../../../config/koneksimysqli.php";
+    include "../../../config/fungsi_ubahget_id.php";
 
     $now=date("mdYhis");
     $tmp01 =" dbtemp.tmpdkdrlpln01_".$puserid."_$now ";
@@ -97,7 +98,7 @@
                     <th width='100px'>Keperluan / Dokter</th>
                     <th width='100px'>Compl. / Notes</th>
                     <th width='50px'>Aktivitas / Saran</th>
-                    <th width='50px'>Realisasi</th>
+                    <th width='50px'>&nbsp;</th>
                     
                 </tr>
             </thead>
@@ -116,6 +117,8 @@
                 $naktivitas=$row0['aktivitas'];
                 $nrealisasi=$row0['realisasi'];
                 $nrealdate=$row0['realisasidate'];
+
+                $pidget=encryptForId($cidinput);
 
                 if (empty($ntotakv)) $ntotakv=1;
                 if (empty($ntotvisit)) $ntotvisit=0;
@@ -137,15 +140,19 @@
                     $prealisasi="<input type='button' value='Realisasi' class='btn btn-warning btn-xs' onClick=\"ProsesDataReal('0', 'm_idinput[$nnjmlrc]', 'm_tgl[$nnjmlrc]', 'm_dokterid[$nnjmlrc]', 'm_saran[$nnjmlrc]')\">";
                 }
 
+                $pextracall="<a class='btn btn-default btn-xs' href='?module=$pmodule&act=tambahbaru&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Extra Call</a>";
+
                 $nnjmlrc++;
 
                 if ($bukanuser==false) {
                     $prealisasi="";
+                    $pextracall="";
                 }
 
                 //sudah realisasi
                 if (!empty($nrealisasi)) {
                     $prealisasi="$nrealdate";
+                    $pextracall="";
                 }
 
                 echo "<tr style='font-weight:bold;'>";
@@ -154,7 +161,7 @@
                 echo "<td nowrap>$nnamaket</td>";
                 echo "<td nowrap>$ncompl</td>";
                 echo "<td nowrap>$naktivitas</td>";
-                echo "<td nowrap>$prealisasi</td>";
+                echo "<td nowrap>$pextracall &nbsp; &nbsp; $prealisasi</td>";
                 echo "</tr>";
 
                 if ((INT)$ntotvisit>0) {

@@ -466,8 +466,8 @@ if ($pidact=="editdata"){
                                             while ($du= mysqli_fetch_array($tampilket)) {
                                                 $nidcab=$du['icabangid'];
                                                 $nnmcab=$du['nama_cabang'];
-
-                                                echo "<option value='$nidcab'>$nnmcab ($nidcab)</option>";
+                                                $nidcab_=(INT)$nidcab;
+                                                echo "<option value='$nidcab'>$nnmcab ($nidcab_)</option>";
                                                 if ($cno==1) $ppilihcab=$nidcab;
 
                                                 $cno++;

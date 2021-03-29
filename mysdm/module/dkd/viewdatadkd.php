@@ -266,6 +266,25 @@ if ($pmodule=="cekdatasudahada") {
                     JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId 
                     WHERE a.icabangid='$pidcab'";
                 $query_kry .=" Order by c.nama";
+            }else{
+                $query_kry = "select distinct a.karyawanid FROM mkt.imr0 as a 
+                    LEFT JOIN mkt.icabang as b on a.icabangid=b.icabangid 
+                    WHERE a.icabangid='$pidcab'
+                    UNION
+                    select distinct a.karyawanid FROM mkt.ispv0 as a 
+                    LEFT JOIN mkt.icabang as b on a.icabangid=b.icabangid 
+                    WHERE a.icabangid='$pidcab'
+                    UNION
+                    select distinct a.karyawanid FROM mkt.idm0 as a 
+                    LEFT JOIN mkt.icabang as b on a.icabangid=b.icabangid 
+                    WHERE a.icabangid='$pidcab'
+                    UNION
+                    select distinct karyawanid FROm mkt.ism0 WHERE 
+                    icabangid='$pidcab'";
+                $query_kry = "select a.karyawanid as karyawanid, b.nama as nama 
+                    from ($query_kry) as a
+                    JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId";
+                $query_kry .=" Order by b.nama";
             }
         }
 

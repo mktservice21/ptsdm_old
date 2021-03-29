@@ -46,7 +46,8 @@
     $tmp02 =" dbtemp.tmpdkdentry02_".$puserid."_$now ";
 
     $sql = "select a.idinput, a.tanggal, a.karyawanid, a.ketid, c.nama as nama_ket,
-        a.compl, a.aktivitas, b.jenis, b.dokterid, d.namalengkap as nama_dokter, b.notes, b.saran 
+        a.compl, a.aktivitas, b.jenis, b.dokterid, d.namalengkap as nama_dokter, b.notes, b.saran,
+        a.real_user1, a.real_date1  
         from hrd.dkd_new0 as a left join hrd.dkd_new1 as b on a.idinput=b.idinput 
         LEFT JOIN hrd.ket as c on a.ketid=c.ketId
         LEFT JOIN dr.masterdokter as d on b.dokterid=d.id WHERE a.karyawanid='$pkryid' ";
@@ -54,14 +55,14 @@
 
 
 
-    $sql = "select idinput, tanggal FROM hrd.dkd_new0 WHERE karyawanid='$pkryid'";
+    $sql = "select idinput, tanggal, real_user1, real_date1 FROM hrd.dkd_new0 WHERE karyawanid='$pkryid'";
     $sql .=" AND tanggal between '$ptgl1' AND '$ptgl2'";
     $query = "create TEMPORARY table $tmp01 ($sql)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-    $query = "Alter table $tmp01 ADD totakv INT(4), ADD totvisit INT(4), ADD totec INT(4)";
+    $query = "Alter table $tmp01 ADD totakv INT(4), ADD totvisit INT(4), ADD totec INT(4), ADD sudahreal VARCHAR(1)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
     $query = "UPDATE $tmp01 SET totakv=1";
@@ -73,6 +74,14 @@
 
     $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
         hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.idinput=b.idinput SET a.totec=b.jml";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+    $query = "UPDATE $tmp01 as a JOIN (select idinput, real_user FROM 
+        hrd.dkd_new1 WHERE IFNULL(jenis,'') NOT IN ('EC') AND IFNULL(real_user,'')<>'') as b on a.idinput=b.idinput SET a.sudahreal='Y'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query = "UPDATE $tmp01 SET sudahreal='Y' WHERE IFNULL(real_user1,'')<>'' AND IFNULL(sudahreal,'')=''";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
@@ -118,7 +127,7 @@
             <tbody>
             <?PHP
             $no=1;
-            $query = "select distinct idinput, tanggal, totakv, totvisit, totec from $tmp01 order by tanggal";
+            $query = "select distinct idinput, tanggal, totakv, totvisit, totec, sudahreal from $tmp01 order by tanggal";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
                 $cidinput=$row0['idinput'];
@@ -126,6 +135,7 @@
                 $ntotakv=$row0['totakv'];
                 $ntotvisit=$row0['totvisit'];
                 $ntotec=$row0['totec'];
+                $nsudahreal=$row0['sudahreal'];
 
                 $pidget=encryptForId($cidinput);
 
@@ -156,6 +166,12 @@
                 if ((INT)$ntotec>0) {
                     $pkettotal="$ntotakv Activity, $ntotvisit Visit, $ntotec Extra Call";
                 }
+
+                if ($nsudahreal=="Y") {
+                    $pedit="";
+                    $phapus="";
+                }
+
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";

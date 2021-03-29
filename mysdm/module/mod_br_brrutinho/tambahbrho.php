@@ -77,7 +77,12 @@ if (empty($pidatasan)) {
 $act="input";
 if ($pidact=="editdata"){
     $act="update";
-    $pidrutin=$_GET['id'];
+
+    include "config/fungsi_ubahget_id.php";
+
+    $pidinput_ec=$_GET['id'];
+    $pidrutin = decodeString($pidinput_ec);
+    
     if ($pidgroup=="50") {
         $edit = mysqli_query($cnmy, "SELECT * FROM dbmaster.t_brrutin0 WHERE kode=1 AND idrutin='$pidrutin' AND ( karyawanid='$pidcard' OR karyawanid IN $pfilterkrypilih )");
     }else{

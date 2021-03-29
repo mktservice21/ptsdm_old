@@ -18,6 +18,14 @@
     $ptgl1=$_POST['utgl1'];
     $ptgl2=$_POST['utgl2'];
     $pkryid=$_POST['ukryid'];
+    $pcabid=$_POST['ucabid'];
+    $pjbtidpl=$_POST['ujbtid'];
+
+
+    $_SESSION['WEKPLNCAB']=$pcabid;
+    $_SESSION['WEKPLNJBT']=$pjbtidpl;
+    $_SESSION['WEKPLNKRY']=$pkryid;
+    $_SESSION['WEKPLNTGL']=$ptgl1;
 
     $bukanuser=false;
     if ($pkaryawanid==$pkryid) $bukanuser=true;

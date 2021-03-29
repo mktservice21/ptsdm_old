@@ -19,9 +19,9 @@
                 <?PHP
                 $judul="Realisasi Weekly Plan";
                 if ($pact=="tambahbaru")
-                    echo "Input $judul";
+                    echo "Input Extra Call Weekly Plan";
                 elseif ($pact=="editdata")
-                    echo "Edit $judul";
+                    echo "Edit Extra Call Weekly Plan";
                 else
                     echo "$judul";
                 ?>

@@ -26,7 +26,7 @@ if ($pmodule=="simpanrealisasiwekly") {
     if (!empty($psaran)) $psaran = str_replace("'", " ", $psaran);
 
     if ((INT)$pskey==0) {
-        $query = "UPDATE hrd.dkd_new0 SET real_user='$pcardidlog', real_date=NOW() WHERE idinput='$pidinput' AND tanggal='$ptgl' LIMIT 1";
+        $query = "UPDATE hrd.dkd_new0 SET real_user1='$pcardidlog', real_date1=NOW() WHERE idinput='$pidinput' AND tanggal='$ptgl' LIMIT 1";
     }else{
         $query = "UPDATE hrd.dkd_new1 as a JOIN hrd.dkd_new0 as b on a.idinput=b.idinput 
             SET a.real_user='$pcardidlog', a.real_date=NOW(), 

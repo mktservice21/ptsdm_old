@@ -38,6 +38,8 @@ if ($module=='dkdweeklyvisit')
         include "../../../config/koneksimysqli.php";
 
         $pkaryawanid=$_POST['e_idcarduser'];
+        $pidjabatan=$_POST['e_idjbt'];
+        
         $kodenya=$_POST['e_id'];
         $ptgl=$_POST['e_periode1'];
         $pketid=$_POST['cb_ketid'];//keperluan
@@ -48,7 +50,9 @@ if ($module=='dkdweeklyvisit')
         if (!empty($pcompl)) $pcompl = str_replace("'", " ", $pcompl);
         if (!empty($paktivitas)) $paktivitas = str_replace("'", " ", $paktivitas);
 
-
+        if (empty($pidjabatan)) {
+            if (isset($_SESSION['JABATANID'])) $pidjabatan=$_SESSION['JABATANID'];
+        }
         
         $pkdspv=$_POST['e_kdspv'];
         $pkddm=$_POST['e_kddm'];
@@ -81,9 +85,9 @@ if ($module=='dkdweeklyvisit')
 
         if ($act=="input") {
 
-            $query = "INSERT INTO hrd.dkd_new0 (tanggal, karyawanid, ketid, compl, aktivitas, userid)
+            $query = "INSERT INTO hrd.dkd_new0 (tanggal, karyawanid, ketid, compl, aktivitas, userid, jabatanid)
                 VALUES
-                ('$ptanggal', '$pkaryawanid', '$pketid', '$pcompl', '$paktivitas', '$pidcard')";
+                ('$ptanggal', '$pkaryawanid', '$pketid', '$pcompl', '$paktivitas', '$pidcard', '$pidjabatan')";
             mysqli_query($cnmy, $query); 
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
@@ -93,7 +97,7 @@ if ($module=='dkdweeklyvisit')
 
             $query = "UPDATE hrd.dkd_new0 SET
                 tanggal='$ptanggal', karyawanid='$pkaryawanid', 
-                ketid='$pketid', compl='$pcompl', aktivitas='$paktivitas', userid='$pidcard' WHERE
+                ketid='$pketid', compl='$pcompl', aktivitas='$paktivitas', userid='$pidcard', jabatanid='$pidjabatan' WHERE
                 idinput='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query); 
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }

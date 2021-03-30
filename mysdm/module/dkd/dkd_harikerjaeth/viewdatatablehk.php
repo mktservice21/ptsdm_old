@@ -65,6 +65,10 @@
                 $ptext_jumlah="<input type='text' id='m_jumlah[$no]' name='m_jumlah[$no]' value='$pjml' class='inputmaskrp2'>";
                 $psimpan="<input type='button' value='Save' class='btn btn-warning btn-xs' onClick=\"SimpanDataHK('$ptahun', '$pbln', 'm_jumlah[$no]')\">";
 
+                if ((INT)$ptahun<2021) {
+                    $psimpan="";
+                }
+                
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$pnmbulan</td>";

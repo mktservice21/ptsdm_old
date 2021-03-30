@@ -101,6 +101,29 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         'Sabtu'
     );
 
+
+    $query = "SELECT jumlah FROM hrd.hrkrj WHERE left(periode1,7)='$pbulan'";
+    $tampilk=mysqli_query($cnmy, $query);
+    $rowk=mysqli_fetch_array($tampilk);
+    $jml_hari_krj=$rowk['jumlah'];
+
+    if ($pjabatanid=='08') {
+        $jab = 4;
+	} else {
+		if (($pjabatanid=='10') or ($pjabatanid=='18')) {
+		    $jab = 6;
+		} else {
+		    if ($pjabatanid=='15') {
+			    $jab = 10;
+			}
+		}
+	}
+    if (empty($jab)) $jab=0;
+    if (empty($jml_hari_krj)) $jml_hari_krj=0;
+
+    $jpoint = (DOUBLE)$jab * (DOUBLE)$jml_hari_krj;
+
+
 ?>
 
 <HTML>
@@ -123,6 +146,10 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
     echo "<b>Jabatan : $pnamajabatan</b><br/><br/>";
+
+    $totcall=0;
+    $totpoint1=0;
+    $totpoint2=0;
 
     echo "<table border='1' cellspacing='0' cellpadding='1'>";
         echo "<tr>";
@@ -150,6 +177,15 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             $nnamaket=$row0['nama_ket'];
             $ntotpoint=$row0['jpoint'];
 
+            $totcall = (DOUBLE)$totcall + (DOUBLE)$ntotvisit;
+            if ((DOUBLE)$ntotpoint != 0) {
+                if ((DOUBLE)$ntotpoint >= 0) {
+                    $totpoint2 = (DOUBLE)$totpoint2 + (DOUBLE)$ntotpoint;
+                }else{
+                    $totpoint1 = (DOUBLE)$totpoint1 + abs((DOUBLE)$ntotpoint);
+                }
+            }
+
             $ntotpoint=number_format($ntotpoint,0,"","");
             $ntotvisit=number_format($ntotvisit,0,"","");
 
@@ -168,7 +204,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             if ((INT)$ntotec>0) {
                 $pkettotal="$ntotakv Activity, $ntotvisit Visit, $ntotec Extra Call";
             }
-
+            
             echo "<tr>";
             echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
             echo "<td nowrap>$nnamaket</td>";
@@ -178,6 +214,19 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
             $no++;
         }
+
+        if ((DOUBLE)$jpoint-(DOUBLE)$totpoint1==0) {
+            $summary_=0;
+         }else{
+            $summary_ = (((DOUBLE)$totcall+(DOUBLE)$totpoint2) / ((DOUBLE)$jpoint-(DOUBLE)$totpoint1)) * 100;
+         }
+
+        echo "<tr style='font-weight:bold;'>";
+        echo "<td nowrap></td>";
+        echo "<td nowrap>Summary : </td>";
+        echo "<td nowrap align='right'>".round($summary_,2)." %</td>";
+        echo "<td nowrap align='right'></td>";
+        echo "</tr>";
 
     echo "</table>";
 

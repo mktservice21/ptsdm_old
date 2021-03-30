@@ -9,6 +9,7 @@ session_start();
     
     
     include "../../config/koneksimysqli.php";
+    include "../../config/fungsi_ubahget_id.php";
     
     //ini_set('display_errors', '0');
     date_default_timezone_set('Asia/Jakarta');
@@ -152,6 +153,8 @@ session_start();
                     
                     $pjumlah=$row1['jumlah'];
                     
+                    $pidnoget=encodeString($pidrutin);
+
                     $apv1="";
                     $apv2="";
                     $apv3="";
@@ -178,7 +181,7 @@ session_start();
                     
                     
                     $pprint="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
-                        . "onClick=\"window.open('eksekusi3.php?module=entrybrrutinho&brid=$pidrutin&iprint=print',"
+                        . "onClick=\"window.open('eksekusi3.php?module=entrybrrutinho&brid=$pidnoget&iprint=print',"
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                         . "$pnmkry</a>";
                     

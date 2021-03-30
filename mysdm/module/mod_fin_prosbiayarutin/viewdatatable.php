@@ -3,6 +3,7 @@
     session_start();
     include "../../config/koneksimysqli.php";
     include "../../config/fungsi_sql.php";
+    include "../../config/fungsi_ubahget_id.php";
     
     $kodeinput = " AND br.kode=1 "; //membedakan biaya luar kota dan rutin
     
@@ -222,6 +223,8 @@
                     if ($pdivisi=="CAN") $pdivisi = "CANARY";
                     $cekbox = "<input type=checkbox value='$idno' name=chkbox_br[]>";
                     
+                    $pidnoget=encodeString($idno);
+
                     $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
                         . "onClick=\"window.open('eksekusi3.php?module=entrybrrutin&brid=$idno&iprint=print',"
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
@@ -293,7 +296,7 @@
                         }
                         
                         $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
-                            . "onClick=\"window.open('eksekusi3.php?module=entrybrrutinho&brid=$idno&iprint=print',"
+                            . "onClick=\"window.open('eksekusi3.php?module=entrybrrutinho&brid=$pidnoget&iprint=print',"
                             . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                             . "$idno</a>";
                     }

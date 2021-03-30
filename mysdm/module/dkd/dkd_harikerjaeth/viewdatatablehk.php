@@ -68,10 +68,10 @@
                 if ((INT)$ptahun<2021) {
                     $psimpan="";
                 }
-                
+
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
-                echo "<td nowrap>$pnmbulan</td>";
+                echo "<td nowrap>$pnmbulan $ptahun</td>";
                 echo "<td nowrap align='right'>$ptext_jumlah</td>";
                 echo "<td nowrap>$psimpan</td>";
                 echo "</tr>";

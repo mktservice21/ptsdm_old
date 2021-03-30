@@ -865,6 +865,8 @@
         include 'module/dkd/dkd_processcallinc/processcallinc.php';
     }elseif ($_GET['module']=='dkdlapcallinc'){
         include 'module/dkd/dkd_laporancallinc/laporancallinc.php';
+    }elseif ($_GET['module']=='dkdharikerja'){
+        include 'module/dkd/dkd_harikerjaeth/harikerjaeth.php';
         
 
     }else{

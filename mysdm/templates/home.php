@@ -861,6 +861,10 @@
         include 'module/dkd/dkd_wekvisitplan/wekvisitplan.php';
     }elseif ($_GET['module']=='dkdrealweeklyplan'){
         include 'module/dkd/dkd_realwekplan/realwekplan.php';
+    }elseif ($_GET['module']=='dkdprocescallinc'){
+        include 'module/dkd/dkd_processcallinc/processcallinc.php';
+    }elseif ($_GET['module']=='dkdlapcallinc'){
+        include 'module/dkd/dkd_laporancallinc/laporancallinc.php';
         
 
     }else{

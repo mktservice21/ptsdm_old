@@ -188,6 +188,7 @@ if ($pidact=="editdata"){
     $ppketstatus=$r['ketid'];
     $paktivitas=$r['aktivitas'];
     $pcompl=$r['compl'];
+    $pidjbt=$r['jabatanid'];
 
     $tgl_pertama = date('d F Y', strtotime($pnewdate));
 
@@ -204,6 +205,10 @@ if ($pidact=="editdata"){
 
 }
 
+$query = "select nama from hrd.jabatan where jabatanId='$pidjbt'";
+$ntampil=mysqli_query($cnmy, $query);
+$nr=mysqli_fetch_array($ntampil);
+$pnamajabatan=$nr['nama'];
 
 ?>
 <div class="">
@@ -249,6 +254,7 @@ if ($pidact=="editdata"){
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput; ?>' Readonly>
                                         <input type='text' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
+                                        <input type='text' id='e_idjbt' name='e_idjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbt; ?>' Readonly>
                                     </div>
                                 </div>
 
@@ -258,6 +264,15 @@ if ($pidact=="editdata"){
                                         <input type='text' id='e_namauser' name='e_namauser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamalengkap; ?>' Readonly>
                                     </div>
                                 </div>
+
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jabatan <span class='required'></span></label>
+                                    <div class='col-md-6'>
+                                        <input type='text' id='e_namajbt' name='e_namajbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamajabatan; ?>' Readonly>
+                                    </div>
+                                </div>
+
+                                
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
@@ -904,6 +919,7 @@ if ($pidact=="editdata"){
         var ijmldata = document.getElementById('e_idjmlrec').value;
         var itgl = document.getElementById('e_periode1').value;
         var ikaryawan = document.getElementById('e_idcarduser').value;
+        var ijbtid = document.getElementById('e_idjbt').value;
         var ikeperluan = document.getElementById('cb_ketid').value;
         
         if (ikeperluan=="000") {
@@ -911,6 +927,11 @@ if ($pidact=="editdata"){
                 alert("Dokter belum dipilih...");
                 return false;
             }
+        }
+
+        if (ijbtid=="") {
+            alert("Jabatan kosong...");
+            return false;
         }
 
         $.ajax({

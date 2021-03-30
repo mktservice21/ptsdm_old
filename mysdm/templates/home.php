@@ -867,6 +867,8 @@
         include 'module/dkd/dkd_laporancallinc/laporancallinc.php';
     }elseif ($_GET['module']=='dkdharikerja'){
         include 'module/dkd/dkd_harikerjaeth/harikerjaeth.php';
+    }elseif ($_GET['module']=='dkdmasterdokt'){
+        include 'module/dkd/dkd_masterdokter/masterdokterdkd.php';
         
 
     }else{

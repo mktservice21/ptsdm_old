@@ -67,7 +67,11 @@ if ($_SESSION['IDCARD']=="0000000825" OR $_SESSION['IDCARD']=="0000000178" OR $_
     }
     
 }else{
-    if ($_SESSION['JABATANID']==38) $sql .=" and karyawanid ='$_SESSION[IDCARD]' ";
+    if ($_SESSION['GROUP']==24) {
+
+    }else{
+        if ($_SESSION['JABATANID']==38) $sql .=" and karyawanid ='$_SESSION[IDCARD]' ";
+    }
     /*
     if ($_SESSION['JABATANID']==38) {
         if (!empty($_SESSION['AKSES_CABANG'])) {

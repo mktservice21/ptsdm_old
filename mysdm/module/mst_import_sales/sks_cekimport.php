@@ -71,6 +71,7 @@ if (empty($puser)) {
     
     include("../../PHPExcel-1.8/Classes/PHPExcel/IOFactory.php");
     $objPHPExcel = PHPExcel_IOFactory::load($target_dir.$pnmfolder);
+    unset($pinsert_data);//kosongkan array
     $padasheetkosong=false;
     $jmlrec=0;
     foreach ($objPHPExcel->getWorksheetIterator() as $worksheet){

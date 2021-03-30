@@ -360,7 +360,6 @@ if (empty($puser)) {
         echo "</span>";
     }
     
-    echo "Selesai dalam ".$total_time." detik";
     
     
     
@@ -527,4 +526,21 @@ echo "<br/><br/><br/>Import IT....<br/><br/><br/>";
     }
 
 
+    $query = "select CABANG, SUM(IFNULL(`kuantitas`,0)*IFNULL(`HNA`,0)) as ttotal from $dbname.importsks Group BY 1";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ($ketemu>0) {
+        echo "<span style='color:blue;'>";
+        while ($row= mysqli_fetch_array($tampil)) {
+            $npcab=$row['CABANG'];
+            $ntotal=$row['ttotal'];
+            
+            $ntotal=number_format($ntotal,0,",",",");
+            echo "<b>TOTAL SALES $npcab : $ntotal</b><br/>&nbsp;<br/>&nbsp;";
+        }
+        echo "</span>";
+    }
+    
+    echo "Selesai dalam ".$total_time." detik";
+    
 ?>

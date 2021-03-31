@@ -98,7 +98,11 @@
                 
                 $pnilaireadonly="";
                 if ((DOUBLE)$prpnilai<>0) {
-                    $pnilaireadonly="Readonly";
+                    if ($pidcard=="0000002414") {
+
+                    }else{
+                        $pnilaireadonly="Readonly";
+                    }
                 }
                 
                 $pfldtgl01="<div hidden><input type='date' class='input-xs' name='e_tglpilih01[$pkodeidbr]' id='e_tglpilih01[$pkodeidbr]' value='$ptgl01'></div>";

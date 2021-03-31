@@ -710,7 +710,7 @@ elseif ($module=='entrybrluarkota')
 	
 	
 	
-    if ($_SESSION['GROUP']=="28") {
+    if ($_SESSION['GROUP']=="28" OR $_SESSION['GROUP']=="61") {
         if ($pdivprodid=="OTC") $pdivprodid="HO";
         $query = "update $dbname.t_brrutin0 set divisi='$pdivprodid', tgl_atasan1=NOW(), tgl_atasan2=NOW(), tgl_atasan3=NOW() WHERE idrutin='$kodenya'";
         mysqli_query($cnmy, $query);

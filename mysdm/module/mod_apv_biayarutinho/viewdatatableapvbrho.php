@@ -51,7 +51,9 @@ session_start();
         a.keterangan, a.atasan4, a.tgl_atasan4, a.fin, a.tgl_fin 
         from dbmaster.t_brrutin0 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId 
         WHERE 1=1 ";
-    
+
+    $query .=" AND ( (DATE_FORMAT(a.bulan,'%Y%m') BETWEEN '$pbulan1' AND '$pbulan2') OR ((DATE_FORMAT(a.tgl,'%Y%m') BETWEEN '$pbulan1' AND '$pbulan2')) ) ";
+
     if ($pidgroup=="46") {
         $query .=" AND ( atasan4='$pkaryawanid' OR a.karyawanid='$pkaryawanid' ) ";
     }elseif ($pidgroup=="38") {//asykur

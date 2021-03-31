@@ -1,9 +1,8 @@
 <?PHP
     include "config/cek_akses_modul.php";
     $aksi="module/dkd/dkd_processcallinc/aksi_processcallinc.php";
-    $hari_ini = date("Y-m-d");
-    $tgl_pertama = date('F Y', strtotime('-2 month', strtotime($hari_ini)));
-    $tgl_akhir = date('F Y', strtotime($hari_ini));
+    $hari_ini = date("Y-m-01");
+    $tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
     
     $pkaryawanid = trim($_SESSION['IDCARD']);
     $pnamauser = trim($_SESSION['NAMALENGKAP']);
@@ -77,9 +76,8 @@
                 <div class='x_panel'>
                     
                     <div class="well" style="overflow: auto; margin-top: -5px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 6px;">
-                        <input onclick="pilihData('approve')" class='btn btn-warning btn-sm' type='button' name='buttonview1' value='Lihat Belum Approve'>
-                        <input onclick="pilihData('unapprove')" class='btn btn-success btn-sm' type='button' name='buttonview2' value='Lihat Sudah Approve'>
-                        <input onclick="pilihData('reject')" class='btn btn-danger btn-sm' type='button' name='buttonview2' value='Lihat Data Reject'>
+                        <input onclick="pilihData('approve')" class='btn btn-warning btn-sm' type='button' name='buttonview1' value='Lihat Belum Proses'>
+                        <input onclick="pilihData('unapprove')" class='btn btn-success btn-sm' type='button' name='buttonview2' value='Lihat Sudah Proses'>
                     </div>
                     
                      <div hidden class='col-sm-3'>

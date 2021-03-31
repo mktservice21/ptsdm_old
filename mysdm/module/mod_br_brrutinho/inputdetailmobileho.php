@@ -149,7 +149,10 @@
         
         $pnilaireadonly="";
         if ((DOUBLE)$prpnilai<>0) {
-            $pnilaireadonly="Readonly";
+            if ($pidcard=="0000002414") {
+            }else{
+                $pnilaireadonly="Readonly";
+            }
         }
 
         $phiddentxt_km=" class='divnone' ";

@@ -98,7 +98,7 @@
                 
                 $pnilaireadonly="";
                 if ((DOUBLE)$prpnilai<>0) {
-                    if ($pidcard=="0000002414") {
+                    if ($pjabatanid=="02") {
 
                     }else{
                         $pnilaireadonly="Readonly";

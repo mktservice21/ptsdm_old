@@ -1,12 +1,12 @@
 <?php
 
 if ($_GET['module']=="viewdatacabangkaryawan"){
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli.php";
     
     $karyawanId = $_POST['umr']; 
-    $query = "select karyawan.iCabangId, cabang.nama from dbmaster.karyawan as karyawan join dbmaster.icabang as cabang on "
+    $query = "select karyawan.iCabangId, cabang.nama from hrd.karyawan as karyawan join mkt.icabang as cabang on "
             . " karyawan.icabangid=cabang.icabangid where karyawanId='$karyawanId'"; 
-    $result = mysqli_query($cnit, $query); 
+    $result = mysqli_query($cnmy, $query); 
     $record = mysqli_num_rows($result);
     echo "<option value='' selected>-- Pilihan --</option>";
     for ($i=0;$i < $record;$i++) {
@@ -17,10 +17,10 @@ if ($_GET['module']=="viewdatacabangkaryawan"){
     }
 }
 elseif ($_GET['module']=="viewdivisimr"){
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli.php";
     include "../../config/fungsi_sql.php";
     $karyawanId = $_POST['umr'];
-    $jabatan = getfieldcnit("select distinct rank as lcfields from dbmaster.v_karyawan_all where karyawanId='$karyawanId'");
+    $jabatan = getfieldcnmy("select distinct rank as lcfields from dbmaster.v_karyawan_all where karyawanId='$karyawanId'");
     
     if ($jabatan=="04")
         $query = "select distinct divisiid as lcfields from MKT.ispv0 WHERE karyawanid='$karyawanId'";
@@ -30,10 +30,10 @@ elseif ($_GET['module']=="viewdivisimr"){
         $query = "select divisiId as lcfields from hrd.karyawan WHERE karyawanid='$karyawanId' and ifnull(divisiId,'') <>'' 
             UNION select divisiId2 as lcfields from hrd.karyawan WHERE karyawanid='$karyawanId' and ifnull(divisiId2,'') <>''";
     
-    $tampil = mysqli_query($cnit, $query);
+    $tampil = mysqli_query($cnmy, $query);
     $ketemu= mysqli_num_rows($tampil);
     if ($ketemu==0) {
-        $tampil = mysqli_query($cnit, "select DivProdId lcfields from MKT.divprod WHERE br='Y'");
+        $tampil = mysqli_query($cnmy, "select DivProdId lcfields from MKT.divprod WHERE br='Y'");
     }
     echo "<option value='' selected>--Pilihan--</option>";
     while ($z= mysqli_fetch_array($tampil)) {
@@ -45,14 +45,14 @@ elseif ($_GET['module']=="viewdivisimr"){
     ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli.php";
     include "../../config/fungsi_sql.php";
     $karyawanId = $_POST['umr'];
     $mydivisi = $_POST['udivi'];
     $fil="";
     
     if (empty($mydivisi)) {
-        $jabatan = getfieldcnit("select distinct rank as lcfields from dbmaster.v_karyawan_all where karyawanId='$karyawanId'");
+        $jabatan = getfieldcnmy("select distinct rank as lcfields from dbmaster.v_karyawan_all where karyawanId='$karyawanId'");
 
         if ($jabatan=="04")
             $query = "select distinct divisiid as lcfields from MKT.ispv0 WHERE karyawanid='$karyawanId'";
@@ -62,7 +62,7 @@ elseif ($_GET['module']=="viewdivisimr"){
             $query = "select CASE WHEN IFNULL(divisiId2,'')='' THEN CONCAT('''',divisiId,'''') ELSE "
                 . "CONCAT('''',divisiId,''',','''',divisiId2,''',') END lcfields from hrd.karyawan WHERE karyawanid='$karyawanId'";
 
-        $tampil = mysqli_query($cnit, $query);
+        $tampil = mysqli_query($cnmy, $query);
         $divisi="";
         while ($z= mysqli_fetch_array($tampil)) {
             if ($jabatan=="04" OR $jabatan=="05") {
@@ -86,7 +86,7 @@ elseif ($_GET['module']=="viewdivisimr"){
         LEFT JOIN dbmaster.coa_level2 c on b.COA2=c.COA2
         WHERE a.COA4 in (select distinct ifnull(COA4,'') from dbmaster.posting_coa_rutin) $fil ";
     
-    $tampil = mysqli_query($cnit, $query);
+    $tampil = mysqli_query($cnmy, $query);
     echo "<option value='' selected>--Pilihan--</option>";
     while ($z= mysqli_fetch_array($tampil)) {
         echo "<option value='$z[COA4]'>$z[NAMA4]</option>";
@@ -94,7 +94,7 @@ elseif ($_GET['module']=="viewdivisimr"){
     
     
 }elseif ($_GET['module']=="viewareadivisi"){
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli.php";
     $mydivisi = trim($_POST['udivi']);
     if ($mydivisi=="OTC") {
         $query = "select icabangid_o iCabangId, nama from dbmaster.v_icabang_o where aktif='Y' and "
@@ -102,7 +102,7 @@ elseif ($_GET['module']=="viewdivisimr"){
     }else{
         $query = "select iCabangId, nama from dbmaster.icabang where aktif='Y' order by nama"; 
     }
-    $result = mysqli_query($cnit, $query); 
+    $result = mysqli_query($cnmy, $query); 
     $record = mysqli_num_rows($result);
     echo "<option value='' selected>-- Pilihan --</option>";
     for ($i=0;$i < $record;$i++) {

@@ -63,8 +63,11 @@ $pidcabang="0000000001";//ETH HO
 $pidarea="0000000001";//ETH HO
 
 $pidnopol = getfield("select nopol as lcfields from dbmaster.t_kendaraan_pemakai where karyawanid='$pkaryawanid' AND IFNULL(stsnonaktif,'')<>'Y' order by tglawal desc LIMIT 1");
-
-$pidatasan = getfield("select atasanid as lcfields from hrd.karyawan WHERE karyawanid='$pkaryawanid'");
+if ($pkaryawanid=="0000000962") {
+    $pidatasan = getfield("select atasanid2 as lcfields from hrd.karyawan WHERE karyawanid='$pkaryawanid'");
+}else{
+    $pidatasan = getfield("select atasanid as lcfields from hrd.karyawan WHERE karyawanid='$pkaryawanid'");
+}
 if (empty($pidatasan)) {
     $pidatasan = getfield("select atasanid as lcfields from dbmaster.t_karyawan_posisi WHERE karyawanid='$pkaryawanid'");
 }

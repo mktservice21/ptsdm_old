@@ -161,13 +161,13 @@
                                 <div class="form-group">
                                     <?PHP
                                     $pilih=$_SESSION['FINBLDIV'];
-                                    include "config/koneksimysqli_it.php";
-                                    $query="SELECT DivProdId, nama FROM dbmaster.divprod where br='Y' ";
+                                    include "config/koneksimysqli_ms.php";
+                                    $query="SELECT DivProdId, nama FROM mkt.divprod where br='Y' ";
                                     if ($_SESSION['ADMINKHUSUS']=="Y") {
                                         //if (!empty($_SESSION['KHUSUSSEL'])) $query .=" AND DivProdId in $_SESSION[KHUSUSSEL]";
                                     }
                                     $query .=" order by nama";
-                                    $sql=mysqli_query($cnit, $query);
+                                    $sql=mysqli_query($cnms, $query);
                                     echo "<select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange=\"ShowCabangDivisi()\">";
                                     echo "<option value=''>-- Pilihan --</option>";
                                     while ($Xt=mysqli_fetch_array($sql)){
@@ -187,7 +187,7 @@
                                     <select class='form-control input-sm' id='e_idcabang' name='e_idcabang'>
                                       <option value='' selected>-- Pilihan --</option>
                                       <?PHP
-                                        include "config/koneksimysqli_it.php";
+                                        
                                         if (trim($pilih)=="OTC") {
                                             $query = "select icabangid_o iCabangId, nama from dbmaster.v_icabang_o where "
                                                     . " (aktif='Y' and "
@@ -196,7 +196,7 @@
                                         }else{
                                             $query = "select cabang.iCabangId, cabang.nama from dbmaster.icabang as cabang  order by nama";
                                         }
-                                        $result = mysqli_query($cnit, $query); 
+                                        $result = mysqli_query($cnmy, $query); 
                                         $record = mysqli_num_rows($result);
                                         for ($i=0;$i < $record;$i++) {
                                             $row = mysqli_fetch_array($result); 

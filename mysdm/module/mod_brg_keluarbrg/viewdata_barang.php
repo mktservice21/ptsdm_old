@@ -2,7 +2,7 @@
     session_start();
     
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
     
@@ -17,9 +17,9 @@
     $pidcabang=$_POST['ucabang'];
     $ptgl=$_POST['utgl'];
     
-    
+    $ptglasli = date('Y-m-01', strtotime($ptgl));
     $pbulan = date('Ym', strtotime($ptgl));
-    $pbulanlalu = date('Ym', strtotime('-1 month', strtotime($ptgl)));
+    $pbulanlalu = date('Ym', strtotime('-1 month', strtotime($ptglasli)));
     
     $userid=$_SESSION['USERID'];
     

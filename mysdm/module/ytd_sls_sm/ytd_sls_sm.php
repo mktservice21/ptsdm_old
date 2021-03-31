@@ -84,7 +84,7 @@
                                                             echo "<option value='' selected>--All--</option>";
                                                         }
                                                         if ($pmyidcard=="0000000158" OR $pmygroupid=="27") echo "<option value='B' selected>Barat</option>";
-                                                        elseif ($pmyidcard=="0000000159") echo "<option value='T' selected>Timur</option>";
+                                                        elseif ($pmyidcard=="0000000159" OR $pmyidcard=="0000002073") echo "<option value='T' selected>Timur</option>";
                                                         else{
                                                             echo "<option value='B'>Barat</option><option value='T'>Timur</option>";
                                                         }
@@ -103,7 +103,7 @@
                                                     $filregion="";
                                                     if ($pmyidcard=="0000000158" OR $pmygroupid=="27") {
                                                         $filregion=" AND karyawanid in (select distinct IFNULL(id_sm,'') from ms.cbgytd where region ='B') ";
-                                                    }elseif ($pmyidcard=="0000000159"){
+                                                    }elseif ($pmyidcard=="0000000159" OR $pmyidcard=="0000002073"){
                                                         $filregion=" AND karyawanid in (select distinct IFNULL(id_sm,'') from ms.cbgytd where region ='T') ";
                                                     }else{
                                                         $pfilter=true;

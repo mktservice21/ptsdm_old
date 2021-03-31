@@ -54,6 +54,8 @@ session_start();
     
     if ($pidgroup=="46") {
         $query .=" AND ( atasan4='$pkaryawanid' OR a.karyawanid='$pkaryawanid' ) ";
+    }elseif ($pidgroup=="38") {//asykur
+        $query .=" AND IFNULL(a.divisi,'')='HO' AND atasan4='$pkaryawanid' ";
     }else{
         $query .=" AND atasan4='$pkaryawanid' ";
     }

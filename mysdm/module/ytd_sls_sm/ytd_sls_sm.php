@@ -77,9 +77,13 @@
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for='distibutor'>Region <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <select class='form-control' name='cb_region' id='cb_region' onchange="ShowDataCabangRegion()">
-                                                    <option value="" selected>--All--</option>
+                                                    
                                                     <?PHP
-                                                        if ($pmyidcard=="0000000158") echo "<option value='B' selected>Barat</option>";
+                                                        if ($pmygroupid=="27"){
+                                                        }else{
+                                                            echo "<option value='' selected>--All--</option>";
+                                                        }
+                                                        if ($pmyidcard=="0000000158" OR $pmygroupid=="27") echo "<option value='B' selected>Barat</option>";
                                                         elseif ($pmyidcard=="0000000159") echo "<option value='T' selected>Timur</option>";
                                                         else{
                                                             echo "<option value='B'>Barat</option><option value='T'>Timur</option>";
@@ -97,7 +101,7 @@
                                                     <?PHP
                                                     $pfilter=false;
                                                     $filregion="";
-                                                    if ($pmyidcard=="0000000158") {
+                                                    if ($pmyidcard=="0000000158" OR $pmygroupid=="27") {
                                                         $filregion=" AND karyawanid in (select distinct IFNULL(id_sm,'') from ms.cbgytd where region ='B') ";
                                                     }elseif ($pmyidcard=="0000000159"){
                                                         $filregion=" AND karyawanid in (select distinct IFNULL(id_sm,'') from ms.cbgytd where region ='T') ";

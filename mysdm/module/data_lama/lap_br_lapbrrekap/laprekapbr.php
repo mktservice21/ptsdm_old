@@ -5,7 +5,8 @@
     $fdivisi=$_SESSION['DIVISI'];
     
     $aksi="eksekusi3.php";
-    include "config/koneksimysqli_it.php";
+    //include "config/koneksimysqli_it.php";
+    $cnit=$cnmy;
     $hari_ini = date("Y-m-d");
     $tgl_pertama = date('F Y', strtotime($hari_ini));
 ?>

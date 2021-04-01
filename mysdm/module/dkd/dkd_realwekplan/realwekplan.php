@@ -1,6 +1,6 @@
 <?PHP 
     date_default_timezone_set('Asia/Jakarta');
-    include "config/cek_akses_modul.php"; 
+    //include "config/cek_akses_modul.php"; 
     $aksi="eksekusi3.php";
     $pact="";
     $pmodule=$_GET['module'];

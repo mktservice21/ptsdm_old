@@ -114,8 +114,8 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
     <?PHP
     echo "<b>Report Monthly Plan By Dokter</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
-    echo "<b>Jabatan : $pnamajabatan</b><br/><br/>";
-    echo "<hr/>";
+    echo "<b>Jabatan : $pnamajabatan</b><br/>";
+    echo "<hr/><br/>";
     
     $pcolor0="";//tidak ada visit
     $pcolor1="style='background-color:#ccff33'";//ada visit belum realisasi (VS)

@@ -97,7 +97,7 @@
 			}
 	   } 
 		
-	   if (($_SESSION['JABATANID']=='12') or ($_SESSION['JABATANID']=='24') or ($_SESSION['JABATANID']=='13')){ //adm,audit
+	   if (($_SESSION['JABATANID']=='11') or ($_SESSION['JABATANID']=='12') or ($_SESSION['JABATANID']=='24') or ($_SESSION['JABATANID']=='13')){ //adm,audit
                
 			if ($divprodid=="PIGEO" or $divprodid=="PEACO" or $divprodid=="HO") {
 				$query = "select * from hrd.br0 br0  where (divprodid='$divprodid' or divprodid='OTC')
@@ -439,7 +439,7 @@
 		}	
 		
 		
-		if ($_SESSION['JABATANID']=='12' or $_SESSION['JABATANID']=='13'){ //adm     
+		if ($_SESSION['JABATANID']=='11' or $_SESSION['JABATANID']=='12' or $_SESSION['JABATANID']=='13'){ //adm     
 			echo '<br><tr>';
 			echo '<td align=right>Tanggal Report SBY :</td>';
 			echo "<td>&nbsp;&nbsp;<select name='tanggal1' id='tanggal1' >";
@@ -479,7 +479,7 @@
 
     }  // if (empty($_SESSION['srid'])) 
     echo "<br><br>";
-	if ($_SESSION['JABATANID']=='12' or $_SESSION['JABATANID']=='13'){ //adm     
+	if ($_SESSION['JABATANID']=='11' or $_SESSION['JABATANID']=='12' or $_SESSION['JABATANID']=='13'){ //adm     
 		echo "<input type=submit name=cmdSave id=cmdSave value=Save>";
 	}
 	

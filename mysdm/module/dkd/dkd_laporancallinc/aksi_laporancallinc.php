@@ -143,7 +143,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
 
     <?PHP
-
+    echo "<b>Laporan Call Incentive</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
     echo "<b>Jabatan : $pnamajabatan</b><br/><br/>";
 

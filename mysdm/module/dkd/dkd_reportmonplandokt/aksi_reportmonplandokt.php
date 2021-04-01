@@ -122,7 +122,7 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
     $pcolor2="style='background-color:#009900'";//ada visit sudah realisasi (VR)
     $pcolor3="style='background-color:#ff9900'";//join visit (JV)
     $pcolor4="style='background-color:#009999'";//extra call (EC)
-    $pcolor5="style='background-color:#ff0000'";
+    $pcolor5="style='background-color:#000066'";
     
     
     echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";

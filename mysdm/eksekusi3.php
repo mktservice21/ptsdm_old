@@ -622,6 +622,8 @@
         include 'module/dkd/dkd_wekvisitplan/iviewdatadkdplan.php';
     }elseif ($_GET['module']=='dkdlapcallinc'){
         include 'module/dkd/dkd_laporancallinc/aksi_laporancallinc.php';
+    }elseif ($_GET['module']=='dkdlapweklyplan'){
+        include 'module/dkd/dkd_reportwekplan/aksi_reportwekplan.php';
 
 
     }elseif ($_GET['module']=='eksekusifileelastik'){

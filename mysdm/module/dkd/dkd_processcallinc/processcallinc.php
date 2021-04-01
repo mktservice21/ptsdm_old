@@ -90,7 +90,7 @@
                     </div>
                     
                     <div class='col-sm-3'>
-                        Periode
+                        Bulan
                         <div class="form-group">
                             <div class='input-group date' id='cbln01'>
                                 <input type='text' id='tgl1' name='e_periode01' required='required' class='form-control input-sm' placeholder='tgl awal' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
@@ -102,7 +102,7 @@
                     </div>
 
                      <div class='col-sm-3'>
-                        Approve By
+                        Karyawan
                         <div class="form-group">
                             <select class='form-control input-sm' id='cb_karyawan' name='cb_karyawan' onchange="KosongkanData()" data-live-search="true">
                                 <?PHP 

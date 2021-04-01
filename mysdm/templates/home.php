@@ -869,6 +869,8 @@
         include 'module/dkd/dkd_harikerjaeth/harikerjaeth.php';
     }elseif ($_GET['module']=='dkdmasterdokt'){
         include 'module/dkd/dkd_masterdokter/masterdokterdkd.php';
+    }elseif ($_GET['module']=='dkdlapweklyplan'){
+        include 'module/dkd/dkd_reportwekplan/reportwekplan.php';
         
 
     }else{

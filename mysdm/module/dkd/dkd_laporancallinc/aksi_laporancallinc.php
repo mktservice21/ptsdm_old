@@ -145,8 +145,9 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     <?PHP
     echo "<b>Laporan Call Incentive</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
-    echo "<b>Jabatan : $pnamajabatan</b><br/><br/>";
-
+    echo "<b>Jabatan : $pnamajabatan</b><br/>";
+    echo "<hr/><br/>";
+    
     $totcall=0;
     $totpoint1=0;
     $totpoint2=0;

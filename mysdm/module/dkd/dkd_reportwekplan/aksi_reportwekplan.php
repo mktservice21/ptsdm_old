@@ -163,7 +163,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
     echo "<b>Report Call Incentive (Weekly)</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
-    echo "<b>Jabatan : $pnamajabatan</b><br/><br/>";
+    echo "<b>Jabatan : $pnamajabatan</b><br/>";
+    echo "<hr/><br/>";
 
     $totcall=0;
     $totpoint1=0;

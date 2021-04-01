@@ -296,6 +296,34 @@ switch($pactpilih){
                                             </div>
                                         </div>
 
+                                        <div class='form-group'>
+                                            <div class='col-sm-12'>
+                                                <b><u>Keterangan Point</u></b>
+                                                <div class="form-group">
+                                                <?PHP
+                                                $pjab_15="10";
+                                                $pjab_10="6";
+                                                $pjab_08="4";
+                                                
+                                                if ($fjbtid=="08") {
+                                                    echo "MR : $pjab_15<br/>";
+                                                    echo "AM : $pjab_10<br/>";
+                                                    echo "DM : $pjab_08<br/>";
+                                                }elseif ($fjbtid=="10" OR $fjbtid=="18") {
+                                                    echo "MR : $pjab_15<br/>";
+                                                    echo "AM : $pjab_10<br/>";
+                                                }elseif ($fjbtid=="15") {
+                                                    echo "MR : $pjab_15<br/>";
+                                                }else{
+                                                    echo "MR : $pjab_15<br/>";
+                                                    echo "AM : $pjab_10<br/>";
+                                                    echo "DM : $pjab_08<br/>";
+                                                }
+                                                
+                                                ?>
+                                                </div>
+                                            </div>
+                                        </div>
 
 
                                     </div>

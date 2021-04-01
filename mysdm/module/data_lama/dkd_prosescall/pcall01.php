@@ -12,28 +12,23 @@
 <body>
 <form id="pcall01" action="pcall00.php" method=post>
 <?php
-   include("common.php");
-   include("common3.php");
+	include("../../../config/koneksimysqli.php");
+	include("../../../config/common.php");
    session_start();
-   if (!connect_server())
-   {
-     echo 'Error connection to database';
-     exit;
-   }
+   
 
-   if (empty($_SESSION['srid'])) {
+   if (empty($_SESSION['USERID'])) {
       echo 'not authorized';
       exit;
    } else {
          //setfocus
-		 $set_focus = $_POST['set_focus'];
+		 $set_focus = "";//$_POST['set_focus'];
 		 if ($set_focus=="") {		    
 			$set_focus = "icabangid";
 		 }
 		 		 
-         mysql_select_db('hrd');
-         $srid = $_SESSION['srid'];
-         $srnama = $_SESSION['srnama'];
+         $srid = $_SESSION['USERID'];
+         $srnama = $_SESSION['NAMALENGKAP'];
 		 $sr_id = substr('0000000000'.$srid,-10);
 		 $tahun = date('Y');
 		 
@@ -42,11 +37,11 @@
 		 $tahun = $_POST['tahun'];
 		 $thnbln = $tahun.'-'.$bulan;
 		 //cycle		 
-		 
-		 $query = "drop temporary table if exists tmp_call";
-		 $result = mysql_query($query);		  		 
+
+		 $query = "drop table if exists dbtemp.tmp_call";
+		 $result = mysqli_query($cnmy, $query);		  		 
 		 $query = "
-		 	CREATE TEMPORARY TABLE tmp_call (
+		 	CREATE  TABLE dbtemp.tmp_call (
 		 		cycleid varchar(10), 
 		 		icabangid varchar(10), 
 		 		jabatanid varchar(10), 
@@ -62,19 +57,22 @@
 				totpoint2 decimal(6,2) not null default '0', 
 				rata decimal(6,2) not null default '0'
 			)ENGINE=MyISAM character set='latin1'
-			(SELECT dkd0.* FROM dkd0 WHERE 0)
-		 "; 					 
-		 $result = mysql_query($query);	 		 
+			(SELECT dkd0.* FROM hrd.dkd0 as dkd0 WHERE 0)
+		 "; 	
+		 			 
+		 mysqli_query($cnmy, $query);	 		 
+		 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error : $erropesan"; exit; }
+
 		 
-		 $query = "SELECT * FROM cycle WHERE thnbln='$thnbln' ORDER BY tgl";		 		 
+		 $query = "SELECT * FROM hrd.cycle WHERE thnbln='$thnbln' ORDER BY tgl";		 		 
 		 // echo "$query<br>";die();
 
-         $result = mysql_query($query);
-         $num_results = mysql_num_rows($result);		 		 		 
+         $result = mysqli_query($cnmy, $query);
+         $num_results = mysqli_num_rows($result);		 		 		 
 		 $num_results_1 = $num_results-1;		 
 		 if ($num_results) {
 			for ($i=0; $i<$num_results;$i++) {
-				$row = mysql_fetch_array($result);				
+				$row = mysqli_fetch_array($result);				
 				if ($i==0) {
 					$awal_ = $row['tgl'];
 				}
@@ -98,15 +96,16 @@
 
 		$query = "
 		 	SELECT dkd0.*,cycle.cycleid, karyawan.icabangid, karyawan.jabatanid, karyawan.nama, jabatan.nama as nmjabatan, jabatan.point_ as pointjbt
-			FROM dkd0 
-			JOIN cycle on dkd0.tgl = cycle.tgl 
-			JOIN karyawan on karyawan.karyawanid = dkd0.srid
-			JOIN jabatan on jabatan.jabatanId = karyawan.jabatanId 				  
+			FROM hrd.dkd0 as dkd0  
+			JOIN hrd.cycle as cycle on dkd0.tgl = cycle.tgl 
+			JOIN hrd.karyawan as karyawan on karyawan.karyawanid = dkd0.srid
+			JOIN hrd.jabatan as jabatan on jabatan.jabatanId = karyawan.jabatanId 				  
 			WHERE left(dkd0.tgl,7)='$thnbln' 
-				AND (posted='1') 
+			and dkd0.srid='0000001888'
 				AND (karyawan.icabangid='$icabangid')
 			ORDER BY srid,cycleid,tgl
-		";		 
+		";		//AND (posted='1')  
+		
 		// echo"$query";die();
 
 		 /*$query = "select dkd0.*,cycle.cycleid, karyawan.icabangid, karyawan.jabatanid, 
@@ -119,14 +118,14 @@
 					(karyawan.icabangid='$icabangid') and dkd0.srid='0000000259'
 					order by srid,cycleid,tgl";		 //echo"$query";*/
 
-         $result = mysql_query($query);
-         $num_results = mysql_num_rows($result);			 		 
+         $result = mysqli_query($cnmy, $query);
+         $num_results = mysqli_num_rows($result);			 		 
 		 $i=0;
 
 		 echo "<br>";
 
 		 if ($num_results) {
-			$row = mysql_fetch_array($result);
+			$row = mysqli_fetch_array($result);
 			while ($i<$num_results) {
 				$msrId_ = $row['srid'];
 				$mCycleId_ = $row['cycleid'];
@@ -161,9 +160,9 @@
 					// echo count(explode(' ',$jvdokter_)).'~~'.$call.'~~'.$i.'<br>';
 					$ok = 0;
 					
-					$query_call = "SELECT * FROM tmp_call WHERE srid='$msrId_' AND cycleid='$mCycleId_'";
-					$result_call = mysql_query($query_call);
-					$num_results_call = mysql_num_rows($result_call);
+					$query_call = "SELECT * FROM dbtemp.tmp_call WHERE srid='$msrId_' AND cycleid='$mCycleId_'";
+					$result_call = mysqli_query($cnmy, $query_call);
+					$num_results_call = mysqli_num_rows($result_call);
 					if (!$num_results_call or $ketid) {
 						$ok = 1;
 					}
@@ -175,11 +174,11 @@
 					if ($first_ or $ok) {
 						$first_ = 0;
 						if ($ketid) {
-							$query_ket1 = "SELECT * FROM ket WHERE ketid='$ketid'";
-							$result_ket1 = mysql_query($query_ket1);
-							$num_results_ket1 = mysql_num_rows($result_ket1);
+							$query_ket1 = "SELECT * FROM hrd.ket WHERE ketid='$ketid'";
+							$result_ket1 = mysqli_query($cnmy, $query_ket1);
+							$num_results_ket1 = mysqli_num_rows($result_ket1);
 							if ($num_results_ket1) {
-								$row_ket1 = mysql_fetch_array($result_ket1);
+								$row_ket1 = mysqli_fetch_array($result_ket1);
 								$nmket1 = $row_ket1['nama'];
 								$pointDM = $row_ket1['pointDM'];
 								$pointSPV = $row_ket1['pointSpv'];
@@ -214,10 +213,10 @@
 					/*	
 						if (($ketid2) and ($ketid1 <> $ketid2)) {
 							$query_ket2 = "select * from ket where ketid='$ketid2'";
-							$result_ket2 = mysql_query($query_ket2);
-							$num_results_ket2 = mysql_num_rows($result_ket2);
+							$result_ket2 = mysqli_query($cnmy, $query_ket2);
+							$num_results_ket2 = mysqli_num_rows($result_ket2);
 							if ($num_results_ket2) {
-								$row_ket2 = mysql_fetch_array($result_ket2);
+								$row_ket2 = mysqli_fetch_array($result_ket2);
 								$nmket2 = $row_ket2['nama'];
 								$pointDM = $row_ket2['pointDM'];
 								$pointSPV = $row_ket2['pointSpv'];
@@ -248,11 +247,11 @@
 					*/
 						
 						$query_add = "
-							INSERT INTO tmp_call (srid,nama,cycleid,call1,ketid,icabangid,tgl,jabatan,jabatanid,ket,point1) 
+							INSERT INTO dbtemp.tmp_call (srid,nama,cycleid,call1,ketid,icabangid,tgl,jabatan,jabatanid,ket,point1) 
 							VALUES ('$msrId_','$nama','$mCycleId_','$call','$ketid','$icabangid','$tgl','$jabatan','$jabatanid','$nmket1','$point_')
 						";
 
-					   $result_add = mysql_query($query_add);
+					   $result_add = mysqli_query($cnmy, $query_add);
 						//echo "$query_add<br>";
 						if ($result_add) {
 							//echo "<br>Save OK !<br><br>";
@@ -268,7 +267,7 @@
 					}
 
 					$query_update = "
-						UPDATE tmp_call 
+						UPDATE dbtemp.tmp_call 
 						SET persen='$persen_',
 						totcall='$totCall_',
 						totpoint1='$totPoint1_',
@@ -277,22 +276,26 @@
 						WHERE srid = '$msrId_' AND cycleid='$mCycleId_'
 					";						
 											
-					$result_update = mysql_query($query_update);					
-					$row = mysql_fetch_array($result);
+					$result_update = mysqli_query($cnmy, $query_update);					
+					$row = mysqli_fetch_array($result);
 					$i++;
 				}
 			}
 		}
-		$query_del = "DELETE FROM persen_call WHERE icabangid='$icabangid' AND left(tgl,7)='$thnbln'";
+
+		echo "disini";
+		exit;
+
+		$query_del = "DELETE FROM hrd.persen_call WHERE icabangid='$icabangid' AND left(tgl,7)='$thnbln'";
 		//echo"$query_del";
 
-		$result_del = mysql_query($query_del);
+		$result_del = mysqli_query($cnmy, $query_del);
 		
 		$i = 0; $record=0;
-		$query_tmp = "SELECT * FROM tmp_call";
-		$result_tmp = mysql_query($query_tmp);
-        $num_results_tmp = mysql_num_rows($result_tmp);			 		 
-		$row_tmp = mysql_fetch_array($result_tmp);
+		$query_tmp = "SELECT * FROM dbtemp.tmp_call";
+		$result_tmp = mysqli_query($cnmy, $query_tmp);
+        $num_results_tmp = mysqli_num_rows($result_tmp);			 		 
+		$row_tmp = mysqli_fetch_array($result_tmp);
 
 		while ($i<$num_results_tmp) {
 			$srid=$row_tmp['srid'];
@@ -320,32 +323,32 @@
 
 			//Insert Field Jabatan ID, modified by Subhan			
 			$query_add="
-				INSERT INTO persen_call (srid,tgl,thnbln,ketid,ket,cycleid,call1,persen,point1,jpoint,totcall,totpoint1,totpoint2,icabangid,jabatanid) 
+				INSERT INTO hrd.persen_call (srid,tgl,thnbln,ketid,ket,cycleid,call1,persen,point1,jpoint,totcall,totpoint1,totpoint2,icabangid,jabatanid) 
 				VALUES ('$srid','$tgl','$thnbln','$ketid','$ket','$cycleid','$call','$persen','$point','$jpoint','$totcall','$totpoint1','$totpoint2','$icabangid','$jabatanid')
 			";
 			//	echo"$query_add<br>";
 			
-			$result_add = mysql_query($query_add);
+			$result_add = mysqli_query($cnmy, $query_add);
 			if ($result_add) {
 				$record = $record + 1;
 			} else {
 				echo "Error : ".mysql_error();
 			}			
 			$i ++;
-			$row_tmp = mysql_fetch_array($result_tmp);
+			$row_tmp = mysqli_fetch_array($result_tmp);
 		}
 
 		$query_add_log ="
-			INSERT INTO persen_call_log (cabangid,periode,sys_now) 
+			INSERT INTO hrd.persen_call_log (cabangid,periode,sys_now) 
 			VALUES ('$icabangid','$thnbln',NOW())
 		";
 		mysql_query($query_add_log);
 
 		$qry_nm_cabang = "SELECT * FROM MKT.icabang WHERE icabangid = '$icabangid'";
-		$result_cbg = mysql_query($qry_nm_cabang);
-        $num_results_cbg = mysql_num_rows($result_cbg);	
+		$result_cbg = mysqli_query($cnmy, $qry_nm_cabang);
+        $num_results_cbg = mysqli_num_rows($result_cbg);	
 		// echo $qry_nm_cabang;
-		$row_cabang = mysql_fetch_array($result_cbg);
+		$row_cabang = mysqli_fetch_array($result_cbg);
 		// while ($i<$num_results_cbg) {
 			$nma_cabang = $row_cabang['nama'];
 		// }
@@ -358,11 +361,11 @@
 		echo "   set_focus('$set_focus');\n";
 		echo "</SCRIPT>\n";
 		 
-	}  // if (empty($_SESSION['srid']))
+	}  // if (empty($_SESSION['USERID']))
 
-	if (empty($_SESSION['srid'])) {
+	if (empty($_SESSION['USERID'])) {
 	} else {
-		do_show_menu($_SESSION['jabatanid'],'N');
+		//do_show_menu($_SESSION['jabatanid'],'N');
 	}
 ?>
 </form>

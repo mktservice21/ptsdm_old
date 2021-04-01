@@ -151,7 +151,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     $totpoint1=0;
     $totpoint2=0;
 
-    echo "<table border='1' cellspacing='0' cellpadding='1'>";
+    echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
         echo "<tr>";
             $header_ = add_space('Tanggal',40);
             echo "<th align='left'><small>$header_</small></th>";
@@ -280,6 +280,25 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         // END SCROLL
     </script>
 
+    
+    <style>
+        #tbltable {
+            border-collapse: collapse;
+        }
+        th {
+            font-size : 16px;
+            padding:5px;
+            background-color: #ccccff;
+        }
+        tr td {
+            font-size : 12px;
+        }
+        tr td {
+            padding : 3px;
+        }
+        tr:hover {background-color:#f5f5f5;}
+        thead tr:hover {background-color:#cccccc;}
+    </style>
 
 </HTML>
 

@@ -339,17 +339,21 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
     <style>
         #tbltable {
-            
+            border-collapse: collapse;
         }
         th {
             font-size : 16px;
-        }
-        tr {
-            font-size : 14px;
+            padding:5px;
+            background-color: #ccccff;
         }
         tr td {
-            padding : 2px;
+            font-size : 12px;
         }
+        tr td {
+            padding : 3px;
+        }
+        tr:hover {background-color:#f5f5f5;}
+        thead tr:hover {background-color:#cccccc;}
     </style>
 
     <script>

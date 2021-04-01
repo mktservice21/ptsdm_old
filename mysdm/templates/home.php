@@ -871,6 +871,8 @@
         include 'module/dkd/dkd_masterdokter/masterdokterdkd.php';
     }elseif ($_GET['module']=='dkdlapweklyplan'){
         include 'module/dkd/dkd_reportwekplan/reportwekplan.php';
+    }elseif ($_GET['module']=='dkdreportmonthlyplandokt'){
+        include 'module/dkd/dkd_reportmonplandokt/reportmonplandokt.php';
         
 
     }else{

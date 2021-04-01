@@ -624,7 +624,8 @@
         include 'module/dkd/dkd_laporancallinc/aksi_laporancallinc.php';
     }elseif ($_GET['module']=='dkdlapweklyplan'){
         include 'module/dkd/dkd_reportwekplan/aksi_reportwekplan.php';
-
+    }elseif ($_GET['module']=='dkdreportmonthlyplandokt'){
+        include 'module/dkd/dkd_reportmonplandokt/aksi_reportmonplandokt.php';
 
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';

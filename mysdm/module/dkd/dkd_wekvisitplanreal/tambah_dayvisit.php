@@ -24,6 +24,7 @@ $pdate = date('Y-m-d', strtotime('+1 days', strtotime($hari_ini)));
 $pnewdate = strtotime ( 'monday 0 week' , strtotime ( $pdate ) ) ;
 //$tgl_pertama = date ( 'd F Y' , $pnewdate );
 $tgl_pertama = date('d F Y');
+$tglnow = date('Y-m-d');
 
 $ppketstatus="000";//blank
 $paktivitas="";
@@ -123,8 +124,8 @@ $pnamajabatan=$nr['nama'];
                                     <div class='col-xs-4'>
                                         <select class='soflow' name='cb_jv' id='cb_jv' onchange="">
                                             <?php
-                                            echo "<option value='N' selected>N</option>";
-                                            echo "<option value='Y'>Y</option>";
+                                            echo "<option value='' selected>N</option>";
+                                            echo "<option value='JV'>Y</option>";
                                             ?>
                                         </select>
                                     </div>
@@ -228,6 +229,78 @@ $pnamajabatan=$nr['nama'];
                                     <div class='col-xs-9'>
                                         <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
                                     </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <!--kanan-->
+                    <div class='col-md-6 col-xs-12'>
+                        <div class='x_panel'>
+                            <div class='x_content form-horizontal form-label-left'>
+                                
+                                <div id='loading3'></div>
+                                <div id="s_div">
+
+                                    <div class='x_content'>
+
+                                        <table id='dtabel' class='table table-striped table-bordered' width='100%'>
+                                            <thead>
+                                                <tr>
+                                                    <th width='5px' align='center'>Tanggal</th>
+                                                    <th width='5px' align='center'>JV</th>
+                                                    <th width='200px' align='center'>Nama Dokter</th>
+                                                    <th width='200px' align='center'>Notes</th>
+                                                    <th width='200px' align='center'>Saran</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class='inputdata'>
+                                            <?PHP
+                                                $nnjmlrc=0;
+                                                
+                                                    
+                                                    $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis, b.icabangid FROM hrd.dkd_new_real1 as a
+                                                        LEFT JOIN dr.masterdokter as b on a.dokterid=b.id 
+                                                         WHERE a.tanggal='$tglnow' and a.karyawanid='$pidcard'";
+                                                    $tampild=mysqli_query($cnmy, $query);
+                                                    while ($nrd= mysqli_fetch_array($tampild)) {
+                                                        $ntglinput=$nrd['tglinput'];
+                                                        $pjenis=$nrd['jenis'];
+                                                        $vcabid=$nrd['icabangid'];
+                                                        $pdokterid=$nrd['dokterid'];
+                                                        $pnmdokt=$nrd['nama_dokter'];
+                                                        $pgelardokt=$nrd['gelar'];
+                                                        $pspesdokt=$nrd['spesialis'];
+                                                        $pnotes=$nrd['notes'];
+                                                        $psaran=$nrd['saran'];
+                                                        
+                                                        $pnmjenis='N';
+                                                        if ($pjenis=="JV") $pnmjenis='Y';
+
+                                                        $pnmdokt_=$pnmdokt."(".$pgelardokt.") ".$pspesdokt;
+
+                                                        echo "<tr>";
+                                                        echo "<td nowrap>$ntglinput</td>";
+                                                        echo "<td nowrap>$pnmjenis<input type='hidden' id='m_jv[$nnjmlrc]' name='m_jv[$nnjmlrc]' value='$pnmjenis'></td>";
+                                                        echo "<td nowrap>$pnmdokt_ - $pdokterid<input type='hidden' id='m_nmdokt[$nnjmlrc]' name='m_nmdokt[$nnjmlrc]' value='$pnmdokt'></td>";
+                                                        echo "<td >$pnotes<span hidden><textarea class='form-control' id='txt_ketdokt[$nnjmlrc]' name='txt_ketdokt[$nnjmlrc]'>$pnotes</textarea></span></td>";
+                                                        echo "<td >$psaran<span hidden><textarea class='form-control' id='txt_saran[$nnjmlrc]' name='txt_saran[$nnjmlrc]'>$psaran</textarea></span></td>";
+                                                        echo "</tr>";
+
+                                                        
+                                                        $nnjmlrc++;
+
+                                                    }
+                                                
+
+                                            ?>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
                                 </div>
 
                             </div>

@@ -513,8 +513,10 @@ $pnamajabatan=$nr['nama'];
                                                 $nnmdokt=$du['namalengkap'];
                                                 $ngelar=$du['gelar'];
                                                 $nspesial=$du['spesialis'];
-
-                                                echo "<option value='$niddokt'>$nnmdokt ($ngelar), $nspesial</option>";
+                                                
+                                                if (!empty($pnmdokt)) $pnmdokt=rtrim($pnmdokt, ',');
+                                                
+                                                echo "<option value='$niddokt'>$nnmdokt ($ngelar), $nspesial - $niddokt</option>";
 
                                             }
                                             ?>
@@ -585,8 +587,10 @@ $pnamajabatan=$nr['nama'];
                                                         $pnotes=$nrd['notes'];
                                                         $pnmjenis='N';
                                                         if ($pjenis=="JV") $pnmjenis='Y';
-
-                                                        $pnmdokt_=$pnmdokt."(".$pgelardokt.") ".$pspesdokt;
+                                                        
+                                                        if (!empty($pnmdokt)) $pnmdokt=rtrim($pnmdokt, ',');
+                                                        
+                                                        $pnmdokt_=$pnmdokt."(".$pgelardokt.") ".$pspesdokt." - ".$pdokterid;
 
                                                         echo "<tr>";
                                                         echo "<td nowrap><input type='checkbox' name='record'>";

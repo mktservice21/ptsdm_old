@@ -59,11 +59,11 @@ if ($pmodule=="cekdatasudahada") {
 
     $boleh="boleh";
 
-    $query = "select tanggal from hrd.dkd_new_real1 where idinput<>'$pidinput' AND tanggal='$ptanggal' And karyawanid='$pkaryawanid' AND dokterid='$pdokterid'";
+    $query = "select tanggal from hrd.dkd_new_real1 where tanggal='$ptanggal' And karyawanid='$pkaryawanid' AND dokterid='$pdokterid'";
     $tampil=mysqli_query($cnmy, $query);
     $ketemu=mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {
-        $boleh="Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
+        $boleh="Dokter dan Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
     }
 
     mysqli_close($cnmy);

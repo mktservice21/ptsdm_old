@@ -23,6 +23,7 @@ if ($module=='dkdrealisasiplan')
     if ($act=="hapus") {
         $kodenya=$_GET['id'];
         if (!empty($kodenya)) {
+            include "../../../config/koneksimysqli.php";
             
             mysqli_query($cnmy, "DELETE FROM hrd.dkd_new_real1 WHERE idinput='$kodenya'");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
@@ -30,6 +31,7 @@ if ($module=='dkdrealisasiplan')
             mysqli_query($cnmy, "DELETE FROM hrd.dkd_new_real0 WHERE idinput='$kodenya' LIMIT 1");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
+            mysqli_close($cnmy);
             header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilhapus');
         }
         exit;

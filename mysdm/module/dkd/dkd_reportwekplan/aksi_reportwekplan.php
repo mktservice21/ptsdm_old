@@ -280,7 +280,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             $pnamadoktall="";
 
             $query = "select distinct jenis, dokterid, namalengkap, gelar, spesialis from $tmp02 WHERE 
-                idinput='$cidinput' order by namalengkap";
+                idinput='$cidinput' order by jenis, namalengkap";
             $tampil1=mysqli_query($cnmy, $query);
             while ($row1=mysqli_fetch_array($tampil1)) {
                 $njenis=TRIM($row1['jenis']);
@@ -289,6 +289,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 $pspesialis=$row1['spesialis'];
 
                 if (!empty($pnmdokt)) $pnmdokt=$pgelar." ".rtrim($pnmdokt, ',')." ".$pspesialis;
+                if ($njenis=="JV") $pnmdokt =$pnmdokt." (JV)";
                 
                 $pnamadoktall .=RTRIM($pnmdokt)." | ";
                 

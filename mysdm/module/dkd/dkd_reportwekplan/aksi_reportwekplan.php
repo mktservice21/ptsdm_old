@@ -61,7 +61,7 @@ $rowk=mysqli_fetch_array($tampilk);
 $pnamajabatan=$rowk['nama_jabatan'];
 $pjabatanid=$rowk['jabatanid'];
 
-$query = "ALTER TABLE $tmp01 ADD COLUMN jpoint DECIMAL(20,2), ADD totakv INT(4), ADD totvisit INT(4), ADD totjv INT(4), ADD totec INT(4), ADD tototh INT(4), ADD sudahreal VARCHAR(1)";
+$query = "ALTER TABLE $tmp01 ADD COLUMN jpoint DECIMAL(20,2), ADD totakv INT(4), ADD totvisit INT(4), ADD totjv INT(4), ADD totec INT(4), ADD tototh INT(4), ADD totall INT(4), ADD sudahreal VARCHAR(1)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
@@ -101,6 +101,9 @@ $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as j
     $tmp02 WHERE IFNULL(jenis,'') NOT IN ('', 'EC', 'JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.tototh=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+$query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
+    $tmp02 WHERE IFNULL(jenis,'') NOT IN ('JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.totall=b.jml";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
 
@@ -169,26 +172,25 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     $totcall=0;
     $totpoint1=0;
     $totpoint2=0;
-
+    
+    echo "<br/><b>Activity</b><br/>";
+    
     echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
         echo "<tr>";
             $header_ = add_space('Tanggal',40);
             echo "<th align='left'><small>$header_</small></th>";
-            $header_ = add_space('Jenis',30);
-            echo "<th align='left'><small>$header_</small></th>";
             $header_ = add_space('Keterangan',60);
-            echo "<th align='left'><small>$header_</small></th>";
-            $header_ = add_space('Call',40);
             echo "<th align='left'><small>$header_</small></th>";
             $header_ = add_space('Point',40);
             echo "<th align='left'><small>$header_</small></th>";
         echo "</tr>";
 
         $no=1;
-        $query = "select distinct idinput, tanggal, jpoint, totakv, totvisit, totjv, totec, tototh, sudahreal, nama_ket from $tmp01 order by tanggal";
+        $query = "select distinct idinput, tanggal, jpoint, totakv, totvisit, totjv, totec, tototh, sudahreal, ketid, nama_ket from $tmp01 order by tanggal";
         $tampil0=mysqli_query($cnmy, $query);
         while ($row0=mysqli_fetch_array($tampil0)) {
             $cidinput=$row0['idinput'];
+            $nketid=$row0['ketid'];
             $ntgl=$row0['tanggal'];
 
             $ntotakv=$row0['totakv'];
@@ -211,11 +213,71 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             $ntotec=number_format($ntotec,0,"","");
             $ntotjv=number_format($ntotjv,0,"","");
             $ntototh=number_format($ntototh,0,"","");
+            
+            if ($nketid!="000") {//BLANK
+                echo "<tr>";
+                echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
+                echo "<td nowrap>$nnamaket</td>";
+                echo "<td nowrap align='right'>$ntotpoint</td>";
+                echo "</tr>";
+            }
+
+            $no++;
+        }
+
+    echo "</table>";
+
+
+
+    echo "<br/><b>Visist</b><br/>";
+    $totcall=0;
+    $totpoint1=0;
+    $totpoint2=0;
+
+    echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
+        echo "<tr>";
+            $header_ = add_space('Tanggal',40);
+            echo "<th align='left'><small>$header_</small></th>";
+            $header_ = add_space('Keterangan',60);
+            echo "<th align='left'><small>$header_</small></th>";
+            $header_ = add_space('Call',40);
+            echo "<th align='left'><small>$header_</small></th>";
+        echo "</tr>";
+
+        $no=1;
+        $query = "select distinct idinput, tanggal, jpoint, totakv, totvisit, totjv, totec, tototh, totall, sudahreal, nama_ket from $tmp01 order by tanggal";
+        $tampil0=mysqli_query($cnmy, $query);
+        while ($row0=mysqli_fetch_array($tampil0)) {
+            $cidinput=$row0['idinput'];
+            $ntgl=$row0['tanggal'];
+
+            $ntotakv=$row0['totakv'];
+            $ntotvisit=$row0['totvisit'];
+            $ntotec=$row0['totec'];
+            $ntotjv=$row0['totjv'];
+            $ntototh=$row0['tototh'];
+            $ntotpoint=$row0['jpoint'];
+            $ntotall=$row0['totall'];
+
+            $nsudahreal=$row0['sudahreal'];
+            $nnamaket=$row0['nama_ket'];
+
+
+            $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+            $xtgl= date('d', strtotime($ntgl));
+            $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
+            $xthn= date('Y', strtotime($ntgl));
+
+            $ntotpoint=number_format($ntotpoint,0,"","");
+            $ntotec=number_format($ntotec,0,"","");
+            $ntotjv=number_format($ntotjv,0,"","");
+            $ntototh=number_format($ntototh,0,"","");
 
             $pnamadokt="";
             $pnamadoktjv="";
             $pnamadoktec="";
             $pnamadoktoth="";
+            $pnamadoktall="";
 
             $query = "select distinct jenis, dokterid, namalengkap, gelar, spesialis from $tmp02 WHERE 
                 idinput='$cidinput' order by namalengkap";
@@ -227,6 +289,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 $pspesialis=$row1['spesialis'];
 
                 if (!empty($pnmdokt)) $pnmdokt=$pgelar." ".rtrim($pnmdokt, ',')." ".$pspesialis;
+                
+                $pnamadoktall .=RTRIM($pnmdokt)." | ";
                 
                 if (empty($njenis)) {
                     $pnamadokt .=RTRIM($pnmdokt).", ";
@@ -242,15 +306,18 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 
             }
 
-
-            echo "<tr>";
-            echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
-            echo "<td nowrap>Activity</td>";
-            echo "<td nowrap>$nnamaket</td>";
-            echo "<td nowrap align='right'></td>";
-            echo "<td nowrap align='right'>$ntotpoint</td>";
-            echo "</tr>";
-
+            
+            
+            if (!empty($pnamadoktall)) {
+                $pnamadoktall = substr($pnamadoktall, 0, -2);
+            }
+                echo "<tr>";
+                echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
+                echo "<td >$pnamadoktall</td>";
+                echo "<td nowrap align='right'>$ntotall</td>";
+                echo "</tr>";
+                
+            /*
             if (!empty($pnamadokt)) {
                 $pnamadokt = substr($pnamadokt, 0, -2);
             }
@@ -302,14 +369,14 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "</tr>";
 
             }
-
+            */
+            
             $no++;
         }
 
     echo "</table>";
-
-
-
+    
+    
     ?>
 
 </BODY>

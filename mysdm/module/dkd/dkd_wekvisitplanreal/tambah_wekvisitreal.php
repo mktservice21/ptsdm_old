@@ -441,7 +441,7 @@ $pnamajabatan=$nr['nama'];
                                                     
                                                     $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis, b.icabangid FROM hrd.dkd_new_real1 as a
                                                         LEFT JOIN dr.masterdokter as b on a.dokterid=b.id 
-                                                         WHERE a.idinput='$pidinput' AND IFNULL(a.jenis,'') IN ('', 'JV')";
+                                                         WHERE a.idinput='$pidinput'";
                                                     $tampild=mysqli_query($cnmy, $query);
                                                     while ($nrd= mysqli_fetch_array($tampild)) {
                                                         $pjenis=$nrd['jenis'];

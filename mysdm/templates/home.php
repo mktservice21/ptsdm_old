@@ -859,6 +859,8 @@
         
     }elseif ($_GET['module']=='dkdweeklyvisit'){
         include 'module/dkd/dkd_wekvisitplan/wekvisitplan.php';
+    }elseif ($_GET['module']=='dkdrealisasiplan'){
+        include 'module/dkd/dkd_wekvisitplanreal/wekvisitplanreal.php';        
     }elseif ($_GET['module']=='dkdrealweeklyplan'){
         include 'module/dkd/dkd_realwekplan/realwekplan.php';
     }elseif ($_GET['module']=='dkdprocescallinc'){

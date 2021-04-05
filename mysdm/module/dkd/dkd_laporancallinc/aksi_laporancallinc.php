@@ -24,8 +24,10 @@ $tmp02 =" dbtemp.tmplapcallinc02_".$puserid."_$now ";
 
 $pkryid = $_POST['cb_karyawan']; 
 $pbln = $_POST['e_bulan'];
+$ptanggal = date('Y-m-01', strtotime($pbln));
 
-$pbulan = date('Y-m', strtotime($pbln));
+$pbulan = date('Y-m', strtotime($ptanggal));
+$pperiode = date('F Y', strtotime($ptanggal));
 
 $query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from hrd.karyawan as a 
     LEFT join hrd.jabatan as b on a.jabatanId=b.jabatanId 
@@ -144,6 +146,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
     <?PHP
     echo "<b>Laporan Call Incentive</b><br/>";
+    echo "<b>Periode : $pperiode</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
     echo "<b>Jabatan : $pnamajabatan</b><br/>";
     echo "<hr/><br/>";

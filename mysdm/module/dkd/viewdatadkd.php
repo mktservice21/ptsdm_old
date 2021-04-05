@@ -47,6 +47,28 @@ if ($pmodule=="cekdatasudahada") {
     mysqli_close($cnmy);
 
     echo $boleh;
+}elseif ($pmodule=="cekdatasudahadarealvisit") {
+    include "../../config/koneksimysqli.php";
+
+    $pidinput=$_POST['uid'];
+    $ptgl=$_POST['utgl'];
+    $pkaryawanid=$_POST['ukaryawan'];
+    $pdokterid=$_POST['uidoktid'];
+
+    $ptanggal= date("Y-m-d", strtotime($ptgl));
+
+    $boleh="boleh";
+
+    $query = "select tanggal from hrd.dkd_new_real1 where idinput<>'$pidinput' AND tanggal='$ptanggal' And karyawanid='$pkaryawanid' AND dokterid='$pdokterid'";
+    $tampil=mysqli_query($cnmy, $query);
+    $ketemu=mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $boleh="Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
+    }
+
+    mysqli_close($cnmy);
+
+    echo $boleh;
 }elseif ($pmodule=="viewdatadoktercabang") {
     include "../../config/koneksimysqli.php";
     $pidcab=$_POST['uidcab'];
@@ -68,10 +90,13 @@ if ($pmodule=="cekdatasudahada") {
         $nnmdokt=$du['namalengkap'];
         $ngelar=$du['gelar'];
         $nspesial=$du['spesialis'];
+        
+        if (!empty($pnmdokt)) $pnmdokt=rtrim($pnmdokt, ',');
+        
         if ($niddokt==$pdoktpilih)
-            echo "<option value='$niddokt' selected>$nnmdokt ($ngelar), $nspesial</option>";
+            echo "<option value='$niddokt' selected>$nnmdokt ($ngelar), $nspesial - $niddokt</option>";
         else
-            echo "<option value='$niddokt'>$nnmdokt ($ngelar), $nspesial</option>";
+            echo "<option value='$niddokt'>$nnmdokt ($ngelar), $nspesial - $niddokt</option>";
 
     }
     mysqli_close($cnmy);

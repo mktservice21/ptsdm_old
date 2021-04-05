@@ -140,7 +140,7 @@ if ($module=='dkdrealisasiplan')
 
             $query_detail="INSERT INTO hrd.dkd_new_real1 (idinput, jenis, dokterid, notes, saran) VALUES ".implode(', ', $pinsert_data_detail);
             mysqli_query($cnmy, $query_detail);
-            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
 
         }
 
@@ -153,24 +153,40 @@ if ($module=='dkdrealisasiplan')
         $query ="select * from hrd.dkd_new_real1 WHERE idinput='$kodenya'";
         $query = "create TEMPORARY table $tmp01 ($query)"; 
         mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
 
         $query = "alter table $tmp01 ADD COLUMN dokter_plan varchar(10), ADD COLUMN jenis2 varchar(5)";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
 
         $query = "UPDATE $tmp01 as a JOIN (select distinct a.dokterid From hrd.dkd_new1 as a JOIN hrd.dkd_new0 as b on "
                 . " a.idinput=b.idinput WHERE b.tanggal='$ptanggal' AND b.karyawanid='$pkaryawanid') as b on a.dokterid=b.dokterid SET "
                 . " a.dokter_plan=b.dokterid";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
         
         $query = "UPDATE $tmp01 SET jenis2='EC' WHERE IFNULL(dokter_plan,'')=''";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
         
         $query = "UPDATE hrd.dkd_new_real1 as a JOIN $tmp01 as b on a.idinput=b.idinput AND "
                 . " a.dokterid=b.dokterid SET a.jenis=b.jenis2 WHERE a.idinput='$kodenya'";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
         
-        mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp01");
+        
+        goto iberhasil;
+        
+        igagal:
+            mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp01");
+            if ($act=="update") {
+            }else{
+            
+                mysqli_query($cnmy, "DELETE FROM hrd.dkd_new_real1 WHERE idinput='$kodenya'");
+                mysqli_query($cnmy, "DELETE FROM hrd.dkd_new_real0 WHERE idinput='$kodenya'");
+            
+            }
+            mysqli_close($cnmy);
+            exit;
+            
+        iberhasil:
+            mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp01");
         
         
     

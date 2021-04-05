@@ -17,7 +17,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                $judul="Realisasi Weekly Plan";
+                $judul="Daily Realisasi Visit";
                 if ($pact=="tambahbaru")
                     echo "Isi $judul";
                 elseif ($pact=="editdata")
@@ -85,8 +85,14 @@
         $aksi="eksekusi3.php";
         switch($pact){
             default:
-                ?>
+                
+                include "tambah_dayvisit.php";
+                
+            break;
 
+            case "lihatdata":
+                
+                ?>
                 <script>
                     function RefreshDataTabel() {
                         KlikDataTabel();
@@ -381,13 +387,7 @@
 
                     </div>
                 </div>
-
-                
                 <?PHP
-            break;
-
-            case "tambahbaru":
-                include "tambah_wekvisitreal.php";
             break;
 
             case "editdata":

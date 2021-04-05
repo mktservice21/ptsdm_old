@@ -154,7 +154,8 @@ if ($module=='dkdrealisasiplan')
         $query = "create TEMPORARY table $tmp01 ($query)"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
-
+        
+        
         $query = "alter table $tmp01 ADD COLUMN dokter_plan varchar(10), ADD COLUMN jenis2 varchar(5)";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
 
@@ -163,7 +164,10 @@ if ($module=='dkdrealisasiplan')
                 . " a.dokter_plan=b.dokterid";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
         
-        $query = "UPDATE $tmp01 SET jenis2='EC' WHERE IFNULL(dokter_plan,'')=''";
+        $query = "UPDATE $tmp01 SET jenis='EC' WHERE IFNULL(dokter_plan,'')=''";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
+
+        $query = "UPDATE $tmp01 SET jenis2=jenis";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
         
         $query = "UPDATE hrd.dkd_new_real1 as a JOIN $tmp01 as b on a.idinput=b.idinput AND "

@@ -68,6 +68,17 @@ if ($module=='dkdrealisasiplan')
             if (isset($_SESSION['JABATANID'])) $pidjabatan=$_SESSION['JABATANID'];
         }
         
+        if ($pjenis=="JV") {
+            
+        }else{
+            $query = "select dokterid from hrd.dkd_new1 as a JOIN hrd.dkd_new0 as b on a.idinput=b.idinput WHERE "
+                    . " a.dokterid='$pdokterid' AND b.tanggal='$ptanggal'";
+            $tampil=mysqli_query($cnmy, $query);
+            $ketemu=mysqli_num_rows($tampil);
+            if ((INT)$ketemu<=0) {
+                $pjenis="EC";
+            }
+        }
         
         
 

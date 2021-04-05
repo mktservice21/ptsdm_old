@@ -168,7 +168,7 @@
                 }
 
                 if ($nsudahreal=="Y") {
-                    $pedit="";
+                    //$pedit="";
                     $phapus="";
                 }
 

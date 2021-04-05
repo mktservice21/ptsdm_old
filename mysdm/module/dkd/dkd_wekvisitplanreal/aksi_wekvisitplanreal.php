@@ -35,6 +35,70 @@ if ($module=='dkdrealisasiplan')
             header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilhapus');
         }
         exit;
+    }elseif ($act=="dailyinput" OR $act=="dailyupdate") {
+        
+        $pcardidlog=$_POST['e_idcarduser'];
+        if (empty($pcardidlog)) $pcardidlog=$pidcard;
+        
+        if (empty($pcardidlog)) {
+            echo "ANDA HARUS LOGIN ULANG...";
+            exit;
+        }
+
+
+        include "../../../config/koneksimysqli.php";
+
+        $pkaryawanid=$_POST['e_idcarduser'];
+        $pidjabatan=$_POST['e_idjbt'];
+        
+        
+        $ptgl=$_POST['e_periode1'];
+        $pjenis=$_POST['cb_jv'];
+        $pcabid=$_POST['cb_cabid'];
+        $pdokterid=$_POST['cb_doktid'];
+        $pketdokt=$_POST['e_ketdetail'];
+        $psaran=$_POST['e_saran'];
+        
+        $ptanggal= date("Y-m-d", strtotime($ptgl));
+        
+        if (!empty($pketdokt)) $pketdokt = str_replace("'", " ", $pketdokt);
+        if (!empty($psaran)) $psaran = str_replace("'", " ", $psaran);
+        
+        if (empty($pidjabatan)) {
+            if (isset($_SESSION['JABATANID'])) $pidjabatan=$_SESSION['JABATANID'];
+        }
+        
+        
+        
+
+        if ($act=="dailyinput") {
+
+            $query = "INSERT INTO hrd.dkd_new_real1 (tanggal, karyawanid, jenis, dokterid, notes, saran)
+                VALUES
+                ('$ptanggal', '$pkaryawanid', '$pjenis', '$pdokterid', '$pketdokt', '$psaran')";
+            mysqli_query($cnmy, $query); 
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+
+            $kodenya = mysqli_insert_id($cnmy);
+
+        }elseif ($act=="dailyupdate") {
+            
+            
+        }
+        
+        
+        
+        mysqli_close($cnmy);
+        if ($act=="update") {
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilupdate');
+        }else{
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilupdate');
+        }
+
+        exit;
+        
+        
+        exit;
     }elseif ($act=="input" OR $act=="update") {
 
         $pcardidlog=$_POST['e_idcarduser'];

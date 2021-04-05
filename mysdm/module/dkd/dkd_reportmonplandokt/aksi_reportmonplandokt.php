@@ -31,6 +31,7 @@ $ptgl02 = date('t', strtotime($ptanggal));
 $nbln = date('m', strtotime($ptanggal));
 $nthn = date('Y', strtotime($ptanggal));
 $pbulan = date('Y-m', strtotime($ptanggal));
+$pperiode = date('F Y', strtotime($ptanggal));
 
 
 $query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from hrd.karyawan as a 
@@ -113,6 +114,7 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
     <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
     <?PHP
     echo "<b>Report Monthly Plan By Dokter</b><br/>";
+    echo "<b>Periode : $pperiode</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
     echo "<b>Jabatan : $pnamajabatan</b><br/>";
     echo "<hr/><br/>";

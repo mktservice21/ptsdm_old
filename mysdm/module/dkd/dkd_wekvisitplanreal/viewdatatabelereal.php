@@ -153,10 +153,11 @@
                 . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                 . "Detail</a>";
 
-                $phapus="";
+                $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$cidinput')\">";
 
                 if ($bukanuser==false) {
                     $pedit="";
+                    $phapus="";
                 }
 
                 $pkettotal="$ntotakv Activity, $ntotvisit Visit";
@@ -173,7 +174,7 @@
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
                 echo "<td nowrap>$pkettotal</td>";
-                echo "<td nowrap>$pedit &nbsp; &nbsp; $print</td>";
+                echo "<td nowrap>$pedit &nbsp; &nbsp; $print &nbsp; &nbsp; $phapus</td>";
                 echo "</tr>";
 
                 $no++;

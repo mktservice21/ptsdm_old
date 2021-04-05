@@ -295,7 +295,7 @@ $pnamajabatan=$nr['nama'];
                                         <div class='col-xs-4'>
                                             <select class='soflow' name='cb_ketid' id='cb_ketid' onchange="">
                                                 <?php
-                                                $query = "select ketId as ketid, nama as nama From hrd.ket order by ketId, nama";
+                                                $query = "select ketId as ketid, nama as nama From hrd.ket WHERE IFNULL(aktif,'')<>'N' order by ketId, nama";
                                                 $tampilket= mysqli_query($cnmy, $query);
                                                 while ($du= mysqli_fetch_array($tampilket)) {
                                                     $nidket=$du['ketid'];

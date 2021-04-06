@@ -90,7 +90,7 @@
                 
             break;
 
-            case "lihatdata":
+            case "lihatrlvisit":
                 
                 ?>
                 <script>

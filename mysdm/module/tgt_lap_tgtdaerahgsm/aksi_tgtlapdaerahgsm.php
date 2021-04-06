@@ -152,9 +152,15 @@
                     $ptotalqty=(double)$ptotalqty+(double)$pqty;
                     $ptotalval=(double)$ptotalval+(double)$pvalue;
                     
-                    $phna=number_format($phna,0,",",",");
-                    $pqty=number_format($pqty,0,",",",");
-                    $pvalue=number_format($pvalue,0,",",",");
+                    if ($ppilihrpt=="excel") {
+                        $phna=number_format($phna,0,"","");
+                        $pqty=number_format($pqty,0,"","");
+                        $pvalue=number_format($pvalue,0,"","");
+                    }else{
+                        $phna=number_format($phna,0,",",",");
+                        $pqty=number_format($pqty,0,",",",");
+                        $pvalue=number_format($pvalue,0,",",",");
+                    }
                     
 
                     
@@ -170,8 +176,14 @@
                     
                 }
                 
-                $ptotalqty=number_format($ptotalqty,0,",",",");
-                $ptotalval=number_format($ptotalval,0,",",",");
+                if ($ppilihrpt=="excel") {
+                    $ptotalqty=number_format($ptotalqty,0,"","");
+                    $ptotalval=number_format($ptotalval,0,"","");
+                }else{
+                    $ptotalqty=number_format($ptotalqty,0,",",",");
+                    $ptotalval=number_format($ptotalval,0,",",",");
+                }
+                
                 
                 echo "<tr class='tebal'>";
                 echo "<td nowrap></td>";
@@ -212,8 +224,13 @@
                     $ptotalqty=(double)$ptotalqty+(double)$pqty;
                     $ptotalval=(double)$ptotalval+(double)$pvalue;
                     
-                    $pqty=number_format($pqty,0,",",",");
-                    $pvalue=number_format($pvalue,0,",",",");
+                    if ($ppilihrpt=="excel") {
+                        $pqty=number_format($pqty,0,"","");
+                        $pvalue=number_format($pvalue,0,"","");
+                    }else{
+                        $pqty=number_format($pqty,0,",",",");
+                        $pvalue=number_format($pvalue,0,",",",");
+                    }
                     
                     
                     echo "<tr>";
@@ -224,8 +241,13 @@
                     
                 }
                 
-                $ptotalqty=number_format($ptotalqty,0,",",",");
-                $ptotalval=number_format($ptotalval,0,",",",");
+                if ($ppilihrpt=="excel") {
+                    $ptotalqty=number_format($ptotalqty,0,"","");
+                    $ptotalval=number_format($ptotalval,0,"","");
+                }else{
+                    $ptotalqty=number_format($ptotalqty,0,",",",");
+                    $ptotalval=number_format($ptotalval,0,",",",");
+                }
                 
                 echo "<tr class='tebal'>";
                 echo "<td nowrap>Total : </td>";

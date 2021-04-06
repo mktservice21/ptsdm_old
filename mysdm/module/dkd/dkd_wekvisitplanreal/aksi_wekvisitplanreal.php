@@ -78,6 +78,8 @@ if ($module=='dkdrealisasiplan')
         $pketdokt=$_POST['e_ketdetail'];
         $psaran=$_POST['e_saran'];
         
+        $_SESSION['RLWEKPLNCAB']=$pcabid;
+                
         $ptanggal= date("Y-m-d", strtotime($ptgl));
         
         if (!empty($pketdokt)) $pketdokt = str_replace("'", " ", $pketdokt);

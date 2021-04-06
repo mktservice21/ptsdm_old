@@ -63,10 +63,10 @@
 
 
          
-        $pcabid_pl=$_SESSION['RLWEKPLNCAB'];
-        $pjbtid_pl=$_SESSION['RLWEKPLNJBT'];
-        $pkryid_pl=$_SESSION['RLWEKPLNKRY'];
-        $ptgl1_pl=$_SESSION['RLWEKPLNTGL'];
+        $pcabid_pl=$_SESSION['RLACWEKPLNCAB'];
+        $pjbtid_pl=$_SESSION['RLACWEKPLNJBT'];
+        $pkryid_pl=$_SESSION['RLACWEKPLNKRY'];
+        $ptgl1_pl=$_SESSION['RLACWEKPLNTGL'];
 
         $pseljbt0="";
         $pseljbt1="";
@@ -120,7 +120,7 @@
                         $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                         $.ajax({
                             type:"post",
-                            url:"module/dkd/dkd_wekvisitplanreal/viewdatatabelereal.php?module="+module+"&idmenu="+idmenu+"&act="+act,
+                            url:"module/dkd/dkd_wekvisitactreal/viewdatatabelerealact.php?module="+module+"&idmenu="+idmenu+"&act="+act,
                             data:"utgl1="+etgl1+"&utgl2="+etgl2+"&ukryid="+ekryid+"&ucabid="+ecabid+"&ujbtid="+ejbtid,
                             success:function(data){
                                 $("#c-data").html(data);
@@ -158,7 +158,7 @@
                                 var idmenu = urlku.searchParams.get("idmenu");
 
                                 //document.write("You pressed OK!")
-                                document.getElementById("d-form2").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&idmenu="+idmenu+"&act=hapusdaily&ket="+ket+"&id="+noid+"&utgl="+ntgl;
+                                document.getElementById("d-form2").action = "module/dkd/dkd_wekvisitactreal/aksi_wekvisitactreal.php?module="+module+"&idmenu="+idmenu+"&act=hapusdaily&ket="+ket+"&id="+noid+"&utgl="+ntgl;
                                 document.getElementById("d-form2").submit();
                                 return 1;
                             }

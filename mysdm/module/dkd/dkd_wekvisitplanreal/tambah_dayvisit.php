@@ -267,7 +267,6 @@ $pnamajabatan=$nr['nama'];
                                                     <th width='200px' align='center'>Nama Dokter</th>
                                                     <th width='200px' align='center'>Notes</th>
                                                     <th width='200px' align='center'>Saran</th>
-                                                    <th align='center'>&nbsp;</th>
                                                 </tr>
                                             </thead>
                                             <tbody class='inputdata'>
@@ -311,7 +310,7 @@ $pnamajabatan=$nr['nama'];
                                                         echo "<td nowrap>$pnmdokt_ - $pdokterid</td>";
                                                         echo "<td >$pnotes</td>";
                                                         echo "<td >$psaran</td>";
-                                                        echo "<td >$phapus</td>";
+                                                        //echo "<td >$phapus</td>";
                                                         echo "</tr>";
 
                                                         

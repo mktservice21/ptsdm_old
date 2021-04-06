@@ -196,7 +196,7 @@ $pnamajabatan=$nr['nama'];
                                                     <th width='200px' align='center'>Keperluan</th>
                                                     <th width='200px' align='center'>Compl.</th>
                                                     <th width='200px' align='center'>Aktivitas</th>
-                                                    <th align='center'>&nbsp;</th>
+                                                    <!--<th align='center'>&nbsp;</th>-->
                                                 </tr>
                                             </thead>
                                             <tbody class='inputdata'>
@@ -224,7 +224,7 @@ $pnamajabatan=$nr['nama'];
                                                         echo "<td nowrap>$nnmket</td>";
                                                         echo "<td >$ncompl</td>";
                                                         echo "<td >$naktivitas</td>";
-                                                        echo "<td >$phapus</td>";
+                                                        //echo "<td >$phapus</td>";
                                                         echo "</tr>";
 
                                                         

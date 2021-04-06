@@ -23,6 +23,7 @@
 
 
     include "config/koneksimysqli.php";
+    include "config/fungsi_ubahget_id.php";
 ?>
 
 <HTML>
@@ -38,12 +39,9 @@
 <BODY>
 
 <?PHP
-$pidinput=$_GET['brid'];
-$query = "select a.*, b.nama as nama_ket from hrd.dkd_new_real0 as a LEFT JOIN
-    hrd.ket as b on a.ketid=b.ketId WHERE a.idinput='$pidinput'";
-$tampil=mysqli_query($cnmy, $query);
-$row=mysqli_fetch_array($tampil);
-$ntgl=$row['tanggal'];
+$pidinput_ec=$_GET['brid'];
+$pidinput = decodeString($pidinput_ec);
+$ntgl=$_GET['id'];
 
 $ntanggal = date('l d F Y', strtotime($ntgl));
 
@@ -54,28 +52,11 @@ $xthn= date('Y', strtotime($ntgl));
 
 $ptanggal="$xhari, $xtgl $xbulan $xthn";
 
-$nnamaket=$row['nama_ket'];
-$ncompl=$row['compl'];
-$naktivitas=$row['aktivitas'];
-
 ?>
 
 <div>Weekly Plan</div>
 <div><?PHP echo $ptanggal; ?></div>
 <hr/>
-<b><u>Activity</u></b><br/>
-<table>
-    <tr>
-        <td nowrap>Keperluan</td><td> : </td><td nowrap><?PHP echo $nnamaket; ?></td>
-    </tr>
-    <tr>
-        <td nowrap>Compl.</td><td> : </td><td nowrap><?PHP echo $ncompl; ?></td>
-    </tr>
-    <tr>
-        <td nowrap>Aktivitas</td><td> : </td><td><?PHP echo $naktivitas; ?></td>
-    </tr>
-</table>
-
 <br/>
 <b><u>Visit</u></b><br/>
 
@@ -83,7 +64,7 @@ $naktivitas=$row['aktivitas'];
 <thead>
     <tr>
         <th width='5px' align='center'>No</th>
-        <th width='10px' align='center'>Jenis</th>
+        <th width='5px' align='center'>Jenis</th>
         <th width='200px' align='center'>Nama Dokter</th>
         <th width='200px' align='center'>Notes</th>
         <th width='200px' align='center'>Saran</th>
@@ -95,7 +76,7 @@ $naktivitas=$row['aktivitas'];
         $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis 
             FROM hrd.dkd_new_real1 as a
             LEFT JOIN dr.masterdokter as b on a.dokterid=b.id 
-            WHERE a.idinput='$pidinput'";
+            WHERE a.karyawanid='$pidinput' AND a.tanggal='$ntgl'";
         $tampild=mysqli_query($cnmy, $query);
         while ($nrd= mysqli_fetch_array($tampild)) {
             $pjenis=$nrd['jenis'];

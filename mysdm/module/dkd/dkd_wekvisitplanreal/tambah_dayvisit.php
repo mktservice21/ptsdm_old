@@ -86,6 +86,14 @@ $pnamajabatan=$nr['nama'];
                 <form method='POST' action='<?PHP echo "$aksi?module=$pidmodule&act=input&idmenu=$pidmenu"; ?>' 
                         id='form_data1' name='form1' data-parsley-validate class='form-horizontal form-label-left'  enctype='multipart/form-data'>
                         
+                    <div class='col-md-12 col-sm-12 col-xs-12'>
+                        <h2>
+                            <input class='btn btn-default' type=button value='Lihat Realisasi'
+                                onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=lihatrlvisit"; ?>';">
+                        </h2>
+                        <div class='clearfix'></div>
+                    </div>
+
 
                         
                     <div class='clearfix'></div>
@@ -244,7 +252,7 @@ $pnamajabatan=$nr['nama'];
                                 <div id='loading3'></div>
                                 <div id="s_div">
 
-                                    <div class='x_content'>
+                                    <div class='x_content' style="overflow: auto;">
 
                                         <table id='dtabel' class='table table-striped table-bordered' width='100%'>
                                             <thead>

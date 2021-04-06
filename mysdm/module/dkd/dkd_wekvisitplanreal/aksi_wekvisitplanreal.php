@@ -20,20 +20,39 @@ $idmenu=$_GET['idmenu'];
 
 if ($module=='dkdrealisasiplan')
 {
-    if ($act=="hapus") {
-        $kodenya=$_GET['id'];
-        if (!empty($kodenya)) {
+    if ($act=="hapusdailydokt") {
+        
+        $kodenya=$_GET['ukryid'];
+        $ntgl=$_GET['utgl'];
+        $doktid=$_GET['udokt'];
+        
+        
+        if (!empty($kodenya) AND !empty($ntgl) AND !empty($doktid)) {
             include "../../../config/koneksimysqli.php";
             
-            mysqli_query($cnmy, "DELETE FROM hrd.dkd_new_real1 WHERE idinput='$kodenya'");
+            mysqli_query($cnmy, "DELETE FROM hrd.dkd_new_real1 WHERE karyawanid='$kodenya' AND tanggal='$ntgl' AND dokterid='$doktid'");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
-            mysqli_query($cnmy, "DELETE FROM hrd.dkd_new_real0 WHERE idinput='$kodenya' LIMIT 1");
-            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
             mysqli_close($cnmy);
             header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilhapus');
         }
+        exit;
+    }elseif ($act=="hapusdaily") {
+        $kodenya=$_GET['id'];
+        $ntgl=$_GET['utgl'];
+        
+        if (!empty($kodenya) AND !empty($ntgl)) {
+            include "../../../config/koneksimysqli.php";
+            
+            mysqli_query($cnmy, "DELETE FROM hrd.dkd_new_real1 WHERE karyawanid='$kodenya' AND tanggal='$ntgl'");
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            
+            
+            mysqli_close($cnmy);
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=lihatrlvisit');
+        }
+        
         exit;
     }elseif ($act=="dailyinput" OR $act=="dailyupdate") {
         

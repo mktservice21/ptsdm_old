@@ -14,7 +14,8 @@
     }
 
     $pkaryawanid=$_SESSION['IDCARD'];
-
+    
+    $tglnow = date('Y-m-d');
     $ptgl1=$_POST['utgl1'];
     $ptgl2=$_POST['utgl2'];
     $pkryid=$_POST['ukryid'];
@@ -45,21 +46,17 @@
     $tmp01 =" dbtemp.tmpdkdrlenty01_".$puserid."_$now ";
     $tmp02 =" dbtemp.tmpdkdrlenty02_".$puserid."_$now ";
 
-    $sql = "select a.idinput, a.tanggal, a.karyawanid, a.ketid, c.nama as nama_ket,
-        a.compl, a.aktivitas, b.jenis, b.dokterid, d.namalengkap as nama_dokter, b.notes, b.saran
-        from hrd.dkd_new_real0 as a left join hrd.dkd_new_real1 as b on a.idinput=b.idinput 
-        LEFT JOIN hrd.ket as c on a.ketid=c.ketId
-        LEFT JOIN dr.masterdokter as d on b.dokterid=d.id WHERE a.karyawanid='$pkryid' ";
-    $sql .=" AND a.tanggal between '$ptgl1' AND '$ptgl2'";
-
-
-
-    $sql = "select idinput, tanggal FROM hrd.dkd_new_real0 WHERE karyawanid='$pkryid'";
+    $sql = "select * FROM hrd.dkd_new_real1 WHERE karyawanid='$pkryid'";
     $sql .=" AND tanggal between '$ptgl1' AND '$ptgl2'";
-    $query = "create TEMPORARY table $tmp01 ($sql)"; 
+    $query = "create TEMPORARY table $tmp02 ($sql)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+    
+    $sql = "select distinct tanggal FROM $tmp02";
+    $query = "create TEMPORARY table $tmp01 ($sql)"; 
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
     $query = "Alter table $tmp01 ADD totakv INT(4), ADD totvisit INT(4), ADD totec INT(4), ADD totjv INT(4), ADD sudahreal VARCHAR(1)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -67,16 +64,16 @@
     $query = "UPDATE $tmp01 SET totakv=1";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-        hrd.dkd_new_real1 WHERE IFNULL(jenis,'') NOT IN ('EC', 'JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.totvisit=b.jml";
+    $query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
+        $tmp02 WHERE IFNULL(jenis,'') NOT IN ('EC', 'JV') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totvisit=b.jml";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-        hrd.dkd_new_real1 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.idinput=b.idinput SET a.totec=b.jml";
+    $query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
+        $tmp02 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totec=b.jml";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-        hrd.dkd_new_real1 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.totjv=b.jml";
+    $query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
+        $tmp02 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totjv=b.jml";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
@@ -108,24 +105,15 @@
                     <th width='100px'>Tanggal</th>
                     <th width='50px'>&nbsp;</th>
                     <th width='50px'>&nbsp;</th>
-                    <!--
-                    <th width='100px'>Keperluan</th>
-                    <th width='100px'>Compl.</th>
-                    <th width='50px'>Aktivitas</th>
-                    <th width='80px'>Jenis</th>
-                    <th width='100px'>Dokter</th>
-                    <th width='100px'>Notes</th>
-                    <th width='100px'>Saran</th>
-                    -->
                 </tr>
             </thead>
             <tbody>
             <?PHP
             $no=1;
-            $query = "select distinct idinput, tanggal, totakv, totvisit, totec, totjv, sudahreal from $tmp01 order by tanggal";
+            $query = "select distinct tanggal, totakv, totvisit, totec, totjv, sudahreal from $tmp01 order by tanggal";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
-                $cidinput=$row0['idinput'];
+                $cidinput=$row0['tanggal'];
                 $ntgl=$row0['tanggal'];
                 $ntotakv=$row0['totakv'];
                 $ntotvisit=$row0['totvisit'];
@@ -141,6 +129,7 @@
                 if (empty($ntotjv)) $ntotjv=0;
 
                 $ntanggal = date('l d F Y', strtotime($ntgl));
+                $ntglnow = date('Y-m-d', strtotime($ntgl));
 
                 $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
                 $xtgl= date('d', strtotime($ntgl));
@@ -149,25 +138,26 @@
 
                 $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
                 $print="<a title='detail' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
-                . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&iprint=detail',"
-                . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                . "Detail</a>";
+                    . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&iprint=detail',"
+                    . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                    . "Detail</a>";
 
+                $pedit="";
                 $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$cidinput')\">";
 
                 if ($bukanuser==false) {
                     $pedit="";
                     $phapus="";
                 }
-
-                $pkettotal="$ntotakv Activity, $ntotvisit Visit";
-                if ((INT)$ntotec>0 OR (INT)$ntotjv>0) {
-                    $pkettotal="$ntotakv Activity, $ntotvisit Visit, $ntotjv Join Visit, $ntotec Extra Call";
-                }
-
-                if ($nsudahreal=="Y") {
+                
+                if ($tglnow!=$ntglnow) {
                     $pedit="";
                     $phapus="";
+                }
+                
+                $pkettotal="$ntotakv Activity, $ntotvisit Visit";
+                if ((INT)$ntotec>0 OR (INT)$ntotjv>0) {
+                    $pkettotal="$ntotvisit Visit, $ntotjv Join Visit, $ntotec Extra Call";
                 }
 
                 echo "<tr>";

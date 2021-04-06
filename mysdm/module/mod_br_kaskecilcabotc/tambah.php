@@ -121,11 +121,12 @@ function ShowDataAtasan() {
 function ShowDataJumlah() {
     var ikry = document.getElementById('cb_karyawan').value;
     var icab = document.getElementById('cb_cabang').value;
+    var iarea = document.getElementById('cb_area').value;
     var iuntuk = document.getElementById('cb_untuk').value;
     $.ajax({
         type:"post",
         url:"module/mod_br_kaskecilcabotc/datajumlah.php?module=caridatajumlah",
-        data:"ukry="+ikry+"&ucab="+icab+"&uuntuk="+iuntuk,
+        data:"ukry="+ikry+"&ucab="+icab+"&uuntuk="+iuntuk+"&uarea="+iarea,
         success:function(data){
             $("#div_jumlah").html(data);
             //ShowDataOTS();
@@ -333,6 +334,16 @@ $pidgroup=$_SESSION['GROUP'];
 $pidcardpl=$_SESSION['IDCARD'];
 $idajukan=$_SESSION['IDCARD'];
 $nmajukan=$_SESSION['NAMALENGKAP']; 
+
+if ($pidcardpl=="0000002400") {
+    $pidcardpl="0000002712";
+    $idajukan="0000002712";
+    $query = "select nama from hrd.karyawan where karyawanid='$idajukan'";
+    $tampiln=mysqli_query($cnmy, $query);
+    $nr=mysqli_fetch_array($tampiln);
+    $nmajukan=$nr['nama'];
+}
+
 $keterangan="";
 $pdivisi="OTC";
 if ($_SESSION['DIVISI']=="OTC") $pdivisi="OTC";
@@ -777,7 +788,7 @@ if ($pact=="editdata"){
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Area <span class='required'></span></label>
                                     <div class='col-xs-5'>
-                                        <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="">
+                                        <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="ShowDataJumlah()">
                                             <option value='' selected>-- Pilihan --</option>
                                             <?PHP
                                             //if ($pact=="editdata"){
@@ -1219,6 +1230,7 @@ if ($pact=="editdata"){
 <script>
                                     
     $(document).ready(function() {
+        ShowDataJumlah();
 
         $('#e_bulan').datepicker({
             showButtonPanel: true,

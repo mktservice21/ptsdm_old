@@ -10,9 +10,7 @@ $pidjbt=$_SESSION['JABATANID'];
 $pidgroup=$_SESSION['GROUP']; 
 $pnamalengkap=$_SESSION['NAMALENGKAP'];
 
-$pcabangid="";
-
-// END CABANG & ATASAN
+$pcabid_pl=$_SESSION['RLWEKPLNCAB'];
 
 
 
@@ -174,13 +172,20 @@ $pnamajabatan=$nr['nama'];
                                             $tampilket= mysqli_query($cnmy, $query);
                                             $ketemu=mysqli_num_rows($tampilket);
                                             if ((INT)$ketemu<=0) echo "<option value='' selected>-- Pilih --</option>";
-                                            $cno=1; $ppilihcab="";
+                                            $cno=1; $ppilihcab=""; $pbelum=false;
                                             while ($du= mysqli_fetch_array($tampilket)) {
                                                 $nidcab=$du['icabangid'];
                                                 $nnmcab=$du['nama_cabang'];
                                                 $nidcab_=(INT)$nidcab;
-                                                echo "<option value='$nidcab'>$nnmcab ($nidcab_)</option>";
-                                                if ($cno==1) $ppilihcab=$nidcab;
+                                                
+                                                if ($nidcab==$pcabid_pl){
+                                                    echo "<option value='$nidcab' selected>$nnmcab ($nidcab_)</option>";
+                                                    $ppilihcab=$nidcab;
+                                                    $pbelum=true;
+                                                }else{
+                                                    echo "<option value='$nidcab'>$nnmcab ($nidcab_)</option>";
+                                                    if ($cno==1 AND $pbelum==false) $ppilihcab=$nidcab;
+                                                }
 
                                                 $cno++;
                                             }

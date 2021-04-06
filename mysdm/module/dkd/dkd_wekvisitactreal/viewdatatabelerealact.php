@@ -82,7 +82,7 @@
                     <th width='50px'>Keperluan</th>
                     <th width='50px'>Compl</th>
                     <th width='50px'>Aktivitas</th>
-                    <th width='50px'>&nbsp;</th>
+                    <!--<th width='50px'>&nbsp;</th>-->
                 </tr>
             </thead>
             <tbody>
@@ -111,9 +111,12 @@
 
                 $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
 
-                $pedit="";
+                
                 $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$cidinput', '$ntglnow')\">";
-
+                
+                $pedit="";
+                $phapus="";
+                
                 if ($bukanuser==false) {
                     $pedit="";
                     $phapus="";
@@ -130,7 +133,7 @@
                 echo "<td nowrap>$nnamaket</td>";
                 echo "<td >$ncompl</td>";
                 echo "<td >$naktivitas</td>";
-                echo "<td nowrap>$pedit &nbsp; &nbsp; $phapus</td>";
+                //echo "<td nowrap>$pedit &nbsp; &nbsp; $phapus</td>";
                 echo "</tr>";
 
                 $no++;

@@ -44,7 +44,11 @@ $sql.=" FROM dbmaster.v_kaskecilcabang ";
 $sql.=" WHERE IFNULL(stsnonaktif,'') <> 'Y' AND IFNULL(pengajuan,'') IN ('OTC', 'CHC') ";
 if ($pidgroup=="40" OR $pidgroup=="23" OR $pidgroup=="26" OR $pidgroup=="1") {
 }else{
-    $sql.=" AND karyawanid='$pidcard' ";
+    if ($pidcard=="0000002400") {
+        $sql.=" AND karyawanid IN ('$pidcard', '0000002712') ";//hermanto
+    }else{
+        $sql.=" AND karyawanid='$pidcard' ";
+    }
 }
 //$sql.=" AND Date_format(tgl, '%Y-%m') between '$tgl1' and '$tgl2' ";
 $sql.=" AND (bulan between '$tgl1' and '$tgl2' OR tglinput between '$tgl1' and '$tgl2') ";

@@ -12,6 +12,7 @@ if (isset($_GET['module'])) $pmodule=$_GET['module'];
     $pidkar=$_POST['ukry'];
     $pidcabang=$_POST['ucab'];
     $pidpengajuan=$_POST['uuntuk'];
+    $pidarea=$_POST['uarea'];
     
     
     include "../../config/koneksimysqli.php";
@@ -27,42 +28,92 @@ if (isset($_GET['module'])) $pmodule=$_GET['module'];
     
     $prpblnlalu=0;
     
-    $query = "select * from dbmaster.t_uangmuka_kascabang WHERE icabangid_o='$pidcabang'";
-    $tampilp= mysqli_query($cnmy, $query);
+
+    $query = "select * from dbmaster.t_uangmuka_kascabang_area WHERE icabangid_o='$pidcabang' AND areaid_o='$pidarea'";
+    $tampilpa= mysqli_query($cnmy, $query);
+    $ketemupa=mysqli_num_rows($tampilpa);
+
+    if ((INT)$ketemupa>0) {
+
+        $query = "select * from dbmaster.t_uangmuka_kascabang_area WHERE icabangid_o='$pidcabang' AND areaid_o='$pidarea'";
+        $tampilp= mysqli_query($cnmy, $query);
+        
+        $pr= mysqli_fetch_array($tampilp);
+        $prpjumlah=$pr['jumlah'];
+        if (empty($prpjumlah)) $prpjumlah=0;
+        $prppc=$pr['pcm'];
+        if (empty($prppc)) $prppc=0;
+        //$prpsldawal=$pr['saldoawal'];
+        //if (empty($prpsldawal)) $prpsldawal=0;
+        $prptambah=$pr['jmltambahan'];
+        if (empty($prptambah)) $prptambah=0;
+        
+        
+        
+        $query = "select * from dbmaster.t_outstanding_kaskecilcab_area WHERE icabangid='$pidcabang' AND pengajuan='$pidpengajuan' AND areaid='$pidarea'";
+        $tampilp= mysqli_query($cnmy, $query);
+        $pr= mysqli_fetch_array($tampilp);
+        $prpots=$pr['jmlsisa'];
+        if (empty($prpots)) $prpots=0;
+        
+        $prpblnlalu=$pr['saldobln_jalan'];
+        if (empty($prpblnlalu)) $prpblnlalu=0;
+        
+        $prpsldawal=$pr['saldo_awal'];
+        if (empty($prpsldawal)) $prpsldawal=0;
+        
+        if ((DOUBLE)$prpsldawal==0) $prpsldawal=$prppc;
+
+        $prpjumlah=(DOUBLE)$prpsldawal+(DOUBLE)$prpblnlalu+(DOUBLE)$prptambah;
+        
+        if ((DOUBLE)$prpots>0) {
+            $prpjumlah=(DOUBLE)$prpjumlah-(DOUBLE)$prpots;
+            
+            $prpsldawal=(DOUBLE)$prpsldawal-(DOUBLE)$prpots;
+        }
+
+    }else{
+
+        $query = "select * from dbmaster.t_uangmuka_kascabang WHERE icabangid_o='$pidcabang'";
+        $tampilp= mysqli_query($cnmy, $query);
+        
+        $pr= mysqli_fetch_array($tampilp);
+        $prpjumlah=$pr['jumlah'];
+        if (empty($prpjumlah)) $prpjumlah=0;
+        $prppc=$pr['pcm'];
+        if (empty($prppc)) $prppc=0;
+        //$prpsldawal=$pr['saldoawal'];
+        //if (empty($prpsldawal)) $prpsldawal=0;
+        $prptambah=$pr['jmltambahan'];
+        if (empty($prptambah)) $prptambah=0;
+        
+        
+        
+        $query = "select * from dbmaster.t_outstanding_kaskecilcab WHERE icabangid='$pidcabang' AND pengajuan='$pidpengajuan'";
+        $tampilp= mysqli_query($cnmy, $query);
+        $pr= mysqli_fetch_array($tampilp);
+        $prpots=$pr['jmlsisa'];
+        if (empty($prpots)) $prpots=0;
+        
+        $prpblnlalu=$pr['saldobln_jalan'];
+        if (empty($prpblnlalu)) $prpblnlalu=0;
+        
+        $prpsldawal=$pr['saldo_awal'];
+        if (empty($prpsldawal)) $prpsldawal=0;
+        
+        $prpjumlah=(DOUBLE)$prpsldawal+(DOUBLE)$prpblnlalu+(DOUBLE)$prptambah;
+        
+        if ((DOUBLE)$prpots>0) {
+            $prpjumlah=(DOUBLE)$prpjumlah-(DOUBLE)$prpots;
+            
+            $prpsldawal=(DOUBLE)$prpsldawal-(DOUBLE)$prpots;
+        }
     
-    $pr= mysqli_fetch_array($tampilp);
-    $prpjumlah=$pr['jumlah'];
-    if (empty($prpjumlah)) $prpjumlah=0;
-    $prppc=$pr['pcm'];
-    if (empty($prppc)) $prppc=0;
-    //$prpsldawal=$pr['saldoawal'];
-    //if (empty($prpsldawal)) $prpsldawal=0;
-    $prptambah=$pr['jmltambahan'];
-    if (empty($prptambah)) $prptambah=0;
     
-    
-    
-    $query = "select * from dbmaster.t_outstanding_kaskecilcab WHERE icabangid='$pidcabang' AND pengajuan='$pidpengajuan'";
-    $tampilp= mysqli_query($cnmy, $query);
-    $pr= mysqli_fetch_array($tampilp);
-    $prpots=$pr['jmlsisa'];
-    if (empty($prpots)) $prpots=0;
-    
-    $prpblnlalu=$pr['saldobln_jalan'];
-    if (empty($prpblnlalu)) $prpblnlalu=0;
-    
-    $prpsldawal=$pr['saldo_awal'];
-    if (empty($prpsldawal)) $prpsldawal=0;
-    
-    $prpjumlah=(DOUBLE)$prpsldawal+(DOUBLE)$prpblnlalu+(DOUBLE)$prptambah;
-    
-	if ((DOUBLE)$prpots>0) {
-		$prpjumlah=(DOUBLE)$prpjumlah-(DOUBLE)$prpots;
-		
-		$prpsldawal=(DOUBLE)$prpsldawal-(DOUBLE)$prpots;
-	}
-    
-    
+    }
+
+
+
 ?>
 
 

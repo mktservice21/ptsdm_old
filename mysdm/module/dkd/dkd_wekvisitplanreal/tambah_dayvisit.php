@@ -88,7 +88,7 @@ $pnamajabatan=$nr['nama'];
                         
                     <div class='col-md-12 col-sm-12 col-xs-12'>
                         <h2>
-                            <input class='btn btn-default' type=button value='Lihat Realisasi'
+                            <input class='btn btn-default' type=button value='Lihat Realisasi Visit'
                                 onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=lihatrlvisit"; ?>';">
                         </h2>
                         <div class='clearfix'></div>

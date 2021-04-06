@@ -69,6 +69,28 @@ if ($pmodule=="cekdatasudahada") {
     mysqli_close($cnmy);
 
     echo $boleh;
+}elseif ($pmodule=="cekdatasudahadarealactivity") {
+    include "../../config/koneksimysqli.php";
+
+    $pidinput=$_POST['uid'];
+    $ptgl=$_POST['utgl'];
+    $pkaryawanid=$_POST['ukaryawan'];
+    $pketid=$_POST['uidket'];
+
+    $ptanggal= date("Y-m-d", strtotime($ptgl));
+
+    $boleh="boleh";
+
+    $query = "select tanggal from hrd.dkd_new_real0 where tanggal='$ptanggal' And karyawanid='$pkaryawanid'";// AND ketid='$pketid'
+    $tampil=mysqli_query($cnmy, $query);
+    $ketemu=mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $boleh="Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
+    }
+
+    mysqli_close($cnmy);
+
+    echo $boleh;
 }elseif ($pmodule=="viewdatadoktercabang") {
     include "../../config/koneksimysqli.php";
     $pidcab=$_POST['uidcab'];

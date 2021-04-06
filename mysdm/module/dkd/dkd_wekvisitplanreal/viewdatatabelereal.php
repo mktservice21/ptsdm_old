@@ -53,7 +53,7 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
     
-    $sql = "select distinct tanggal FROM $tmp02";
+    $sql = "select distinct karyawanid, tanggal FROM $tmp02";
     $query = "create TEMPORARY table $tmp01 ($sql)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -64,16 +64,16 @@
     $query = "UPDATE $tmp01 SET totakv=1";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
-        $tmp02 WHERE IFNULL(jenis,'') NOT IN ('EC', 'JV') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totvisit=b.jml";
+    $query = "UPDATE $tmp01 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+        $tmp02 WHERE IFNULL(jenis,'') NOT IN ('EC', 'JV') GROUP BY 1) as b on a.tanggal=b.tanggal AND a.karyawanid=b.karyawanid SET a.totvisit=b.jml";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
-        $tmp02 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totec=b.jml";
+    $query = "UPDATE $tmp01 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+        $tmp02 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.tanggal=b.tanggal AND a.karyawanid=b.karyawanid SET a.totec=b.jml";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
-        $tmp02 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totjv=b.jml";
+    $query = "UPDATE $tmp01 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+        $tmp02 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1) as b on a.tanggal=b.tanggal AND a.karyawanid=b.karyawanid SET a.totjv=b.jml";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
@@ -110,10 +110,10 @@
             <tbody>
             <?PHP
             $no=1;
-            $query = "select distinct tanggal, totakv, totvisit, totec, totjv, sudahreal from $tmp01 order by tanggal";
+            $query = "select distinct karyawanid, tanggal, totakv, totvisit, totec, totjv, sudahreal from $tmp01 order by tanggal";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
-                $cidinput=$row0['tanggal'];
+                $cidinput=$row0['karyawanid'];
                 $ntgl=$row0['tanggal'];
                 $ntotakv=$row0['totakv'];
                 $ntotvisit=$row0['totvisit'];
@@ -138,12 +138,12 @@
 
                 $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
                 $print="<a title='detail' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
-                    . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&iprint=detail',"
+                    . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$pidget&id=$ntglnow&iprint=detail',"
                     . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                     . "Detail</a>";
 
                 $pedit="";
-                $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$cidinput')\">";
+                $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$cidinput', '$ntglnow')\">";
 
                 if ($bukanuser==false) {
                     $pedit="";

@@ -142,9 +142,12 @@
                     . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                     . "Detail</a>";
 
-                $pedit="";
+                
                 $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$cidinput', '$ntglnow')\">";
-
+                
+                $pedit="";
+                $phapus="";
+                
                 if ($bukanuser==false) {
                     $pedit="";
                     $phapus="";

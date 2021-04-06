@@ -20,7 +20,7 @@
             //mysqli_query($cnmy, "CALL dbmaster.proses_outstanding_kaskecilcab_sld_awal()");
 			//mysqli_query($cnmy, "CALL dbmaster.proses_outstanding_kaskecilcab_sld_bln_jalan()");
 			mysqli_query($cnmy, "CALL dbmaster.proses_outstanding_kaskecilcabang_all('2020')");
-			mysqli_query($cnmy, "CALL dbmaster.proses_outstanding_kaskecilcab_all_area()");
+			mysqli_query($cnmy, "CALL dbmaster.proses_outstanding_kaskecilcab_all_area('2020')");
         }
     }
 ?>

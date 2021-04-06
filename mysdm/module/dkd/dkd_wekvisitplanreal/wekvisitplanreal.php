@@ -17,11 +17,13 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                $judul="Daily Realisasi Visit";
+                $judul="Daily Visit - Realisasi";
                 if ($pact=="tambahbaru")
-                    echo "Isi $judul";
+                    echo "$judul";
                 elseif ($pact=="editdata")
                     echo "Edit $judul";
+                elseif ($pact=="lihatrlvisit")
+                    echo "Lihat $judul";
                 else
                     echo "$judul";
                 ?>
@@ -142,7 +144,7 @@
                         });
                     }
                     
-                    function ProsesDataHapus(ket, noid){
+                    function ProsesDataHapus(ket, noid, ntgl){
 
                         ok_ = 1;
                         if (ok_) {
@@ -156,7 +158,7 @@
                                 var idmenu = urlku.searchParams.get("idmenu");
 
                                 //document.write("You pressed OK!")
-                                document.getElementById("d-form2").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&idmenu="+idmenu+"&act=hapus&ket="+ket+"&id="+noid;
+                                document.getElementById("d-form2").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&idmenu="+idmenu+"&act=hapusdaily&ket="+ket+"&id="+noid+"&utgl="+ntgl;
                                 document.getElementById("d-form2").submit();
                                 return 1;
                             }

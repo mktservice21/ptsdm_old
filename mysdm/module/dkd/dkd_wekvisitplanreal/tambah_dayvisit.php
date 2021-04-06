@@ -262,6 +262,7 @@ $pnamajabatan=$nr['nama'];
                                                     <th width='200px' align='center'>Nama Dokter</th>
                                                     <th width='200px' align='center'>Notes</th>
                                                     <th width='200px' align='center'>Saran</th>
+                                                    <th align='center'>&nbsp;</th>
                                                 </tr>
                                             </thead>
                                             <tbody class='inputdata'>
@@ -275,6 +276,7 @@ $pnamajabatan=$nr['nama'];
                                                     $tampild=mysqli_query($cnmy, $query);
                                                     while ($nrd= mysqli_fetch_array($tampild)) {
                                                         $ntglinput=$nrd['tglinput'];
+                                                        $ntgl=$nrd['tanggal'];
                                                         $pjenis=$nrd['jenis'];
                                                         $vcabid=$nrd['icabangid'];
                                                         $pdokterid=$nrd['dokterid'];
@@ -283,18 +285,22 @@ $pnamajabatan=$nr['nama'];
                                                         $pspesdokt=$nrd['spesialis'];
                                                         $pnotes=$nrd['notes'];
                                                         $psaran=$nrd['saran'];
+                                                        $pkaryawanid=$nrd['karyawanid'];
                                                         
                                                         $pnmjenis='N';
                                                         if ($pjenis=="JV") $pnmjenis='Y';
 
                                                         $pnmdokt_=$pnmdokt."(".$pgelardokt.") ".$pspesdokt;
-
+                                                        
+                                                        $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapusDokt('hapusdailydokt', '$pkaryawanid', '$ntgl', '$pdokterid')\">";
+                                                        
                                                         echo "<tr>";
                                                         echo "<td nowrap>$ntglinput</td>";
-                                                        echo "<td nowrap>$pnmjenis<input type='hidden' id='m_jv[$nnjmlrc]' name='m_jv[$nnjmlrc]' value='$pnmjenis'></td>";
-                                                        echo "<td nowrap>$pnmdokt_ - $pdokterid<input type='hidden' id='m_nmdokt[$nnjmlrc]' name='m_nmdokt[$nnjmlrc]' value='$pnmdokt'></td>";
-                                                        echo "<td >$pnotes<span hidden><textarea class='form-control' id='txt_ketdokt[$nnjmlrc]' name='txt_ketdokt[$nnjmlrc]'>$pnotes</textarea></span></td>";
-                                                        echo "<td >$psaran<span hidden><textarea class='form-control' id='txt_saran[$nnjmlrc]' name='txt_saran[$nnjmlrc]'>$psaran</textarea></span></td>";
+                                                        echo "<td nowrap>$pnmjenis</td>";
+                                                        echo "<td nowrap>$pnmdokt_ - $pdokterid</td>";
+                                                        echo "<td >$pnotes</td>";
+                                                        echo "<td >$psaran</td>";
+                                                        echo "<td >$phapus</td>";
                                                         echo "</tr>";
 
                                                         
@@ -396,6 +402,31 @@ $pnamajabatan=$nr['nama'];
                 $("#cb_doktid").html(data);
             }
         });
+    }
+    
+    
+    function ProsesDataHapusDokt(ket, kryid, tgl, doktid){
+
+        ok_ = 1;
+        if (ok_) {
+            var r = confirm('Apakah akan melakukan proses hapus ...?');
+            if (r==true) {
+
+
+                var myurl = window.location;
+                var urlku = new URL(myurl);
+                var module = urlku.searchParams.get("module");
+                var idmenu = urlku.searchParams.get("idmenu");
+
+                //document.write("You pressed OK!")
+                document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&idmenu="+idmenu+"&ket=hapus&act="+ket+"&ukryid="+kryid+"&utgl="+tgl+"&udokt="+doktid;
+                document.getElementById("form_data1").submit();
+                return 1;
+            }
+        } else {
+            //document.write("You pressed Cancel!")
+            return 0;
+        }
     }
 </script>
 

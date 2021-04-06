@@ -263,7 +263,7 @@ $pnamajabatan=$nr['nama'];
                                             <thead>
                                                 <tr>
                                                     <th width='5px' align='center'>Tanggal</th>
-                                                    <th width='5px' align='center'>JV</th>
+                                                    <th width='5px' align='center'>Jenis</th>
                                                     <th width='200px' align='center'>Nama Dokter</th>
                                                     <th width='200px' align='center'>Notes</th>
                                                     <th width='200px' align='center'>Saran</th>
@@ -277,7 +277,7 @@ $pnamajabatan=$nr['nama'];
                                                     
                                                     $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis, b.icabangid FROM hrd.dkd_new_real1 as a
                                                         LEFT JOIN dr.masterdokter as b on a.dokterid=b.id 
-                                                         WHERE a.tanggal='$tglnow' and a.karyawanid='$pidcard'";
+                                                         WHERE a.tanggal='$tglnow' and a.karyawanid='$pidcard' Order by a.tglinput";
                                                     $tampild=mysqli_query($cnmy, $query);
                                                     while ($nrd= mysqli_fetch_array($tampild)) {
                                                         $ntglinput=$nrd['tglinput'];
@@ -292,8 +292,14 @@ $pnamajabatan=$nr['nama'];
                                                         $psaran=$nrd['saran'];
                                                         $pkaryawanid=$nrd['karyawanid'];
                                                         
-                                                        $pnmjenis='N';
-                                                        if ($pjenis=="JV") $pnmjenis='Y';
+                                                        $pnmjenis="";
+                                                        //$pnmjenis='N';
+                                                        if ($pjenis=="JV") $pnmjenis="Join Visit";
+                                                        elseif ($pjenis=="EC") $pnmjenis="Extra Call";
+                                                        else{
+                                                            if (empty($pjenis)) $pnmjenis="Visit";
+                                                            else $pnmjenis="Others";
+                                                        }
 
                                                         $pnmdokt_=$pnmdokt."(".$pgelardokt.") ".$pspesdokt;
                                                         

@@ -102,9 +102,17 @@
         $query = "bulan DATE, idcbg varchar(3), nama_cabdist varchar(100), distid varchar(10), nama_dist varchar(100), divprodid varchar(5), "
                 . " iprodid varchar(10), qty DECIMAL(20,2), hna DECIMAL(20,2), tvalue DECIMAL(20,2)";
         if ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") {
-            $query = "select CONCAT(LEFT(tgljual,8), '01') as bulan, distid, sum(`value`) as tvalue "
-                    . " from MKT.otc_etl where year(tgljual)='$pthn' AND divprodid ='OTHER' and icabangid <> 22 "
-                    . " GROUP BY 1,2";
+            $query = "select CONCAT(LEFT(a.tgljual,8), '01') as bulan, a.distid, sum(a.`value`) as tvalue "
+                    . " from MKT.otc_etl as a JOIN mkt.icabang_o as c on a.icabangid=c.icabangid_o "
+                    . " where year(a.tgljual)='$pthn' AND a.divprodid ='OTHER' and a.icabangid <> 22 ";
+            if (!empty($pidregion)) {
+                if ($pidregion=="BB") $query .=" AND c.region='B'";
+                else $query .=" AND c.region='$pidregion'";
+            }
+            if (!empty($pdistid)) {
+                $query .=" AND a.distid='$pdistid'";
+            }
+            $query .= "GROUP BY 1,2";
         }else{
             $query = "select CONCAT(LEFT(tgljual,8), '01') as bulan, distid, sum(`value`) as tvalue "
                     . " from MKT.otc_etl where year(tgljual)='$pthn' AND divprodid <>'OTHER' and icabangid <> 22 "

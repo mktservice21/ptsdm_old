@@ -357,9 +357,22 @@ $pnamajabatan=$nr['nama'];
         var idoktid = document.getElementById('cb_doktid').value;
         var itgl = document.getElementById('e_periode1').value;
         var ikaryawan = document.getElementById('e_idcarduser').value;
-
+        var iketdetail = document.getElementById('e_ketdetail').value;
+        var isaran = document.getElementById('e_saran').value;
+        
+        
         if (idoktid=="") {
             alert("dokter kosong...");
+            return false;
+        }
+        
+        if (iketdetail=="") {
+            alert("notes masih kosong...");
+            return false;
+        }
+        
+        if (isaran=="") {
+            alert("saran masih kosong...");
             return false;
         }
 

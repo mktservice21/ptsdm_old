@@ -497,7 +497,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         
     echo "</table>";
 
-    
+    echo "<br/><br/><br/><br/><br/>";
     
     ?>
 

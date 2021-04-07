@@ -22,6 +22,9 @@ $tmp01 =" dbtemp.tmprptplanreal01_".$puserid."_$now ";
 $tmp02 =" dbtemp.tmprptplanreal02_".$puserid."_$now ";
 $tmp03 =" dbtemp.tmprptplanreal03_".$puserid."_$now ";
 $tmp04 =" dbtemp.tmprptplanreal04_".$puserid."_$now ";
+$tmp05 =" dbtemp.tmprptplanreal05_".$puserid."_$now ";
+$tmp06 =" dbtemp.tmprptplanreal06_".$puserid."_$now ";
+$tmp07 =" dbtemp.tmprptplanreal07_".$puserid."_$now ";
 
 
 $pkryid = $_POST['cb_karyawan']; 
@@ -38,7 +41,7 @@ $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
 
-$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
+$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.tglinput, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
     FROM hrd.dkd_new0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
     WHERE a.karyawanid='$pkryid' ";
 $sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
@@ -46,7 +49,7 @@ $query = "create TEMPORARY table $tmp01 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, 
+$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.tglinput, 
     c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, c.saran 
     FROM $tmp01 as a LEFT JOIN hrd.dkd_new1 as c on a.idinput=c.idinput JOIN dr.masterdokter as d on c.dokterid=d.id";
 $query = "create TEMPORARY table $tmp02 ($sql)"; 
@@ -54,7 +57,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$sql = "select a.idinput, a.karyawanid, a.tanggal, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
+$sql = "select a.idinput, a.karyawanid, a.tanggal, a.tglinput, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
     FROM hrd.dkd_new_real0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
     WHERE a.karyawanid='$pkryid' ";
 $sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
@@ -63,7 +66,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$sql = "select a.karyawanid, a.tanggal, 
+$sql = "select a.karyawanid, a.tanggal, a.tglinput, 
     a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran 
     FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
     WHERE a.karyawanid='$pkryid' ";
@@ -73,7 +76,45 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-goto hapusdata;
+//$query = "CREATE TEMPORARY TABLE $tmp05 (ino INT(10) AUTO_INCREMENT PRIMARY KEY)";
+//mysqli_query($cnmy, $query);
+//$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "select distinct tanggal, karyawanid from $tmp01 ORDER BY karyawanid, tanggal";
+$query = "create TEMPORARY table $tmp05 ($query)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "INSERT INTO $tmp05 (tanggal, karyawanid) "
+        . " select distinct tanggal, karyawanid FROM $tmp03 WHERE "
+        . " CONCAT(tanggal,karyawanid) NOT IN (select IFNULL(CONCAT(tanggal,karyawanid),'') FROM $tmp01) ORDER BY karyawanid, tanggal"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "select distinct tanggal, karyawanid from $tmp02 ORDER BY karyawanid, tanggal";
+$query = "create TEMPORARY table $tmp06 ($query)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "INSERT INTO $tmp06 (tanggal, karyawanid) "
+        . " select distinct tanggal, karyawanid FROM $tmp04 WHERE "
+        . " CONCAT(tanggal,karyawanid) NOT IN (select IFNULL(CONCAT(tanggal,karyawanid),'') FROM $tmp02) ORDER BY karyawanid, tanggal"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "select distinct tanggal, karyawanid, dokterid from $tmp02 ORDER BY karyawanid, tanggal";
+$query = "create TEMPORARY table $tmp07 ($query)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "INSERT INTO $tmp07 (tanggal, karyawanid, dokterid) "
+        . " select distinct tanggal, karyawanid, dokterid FROM $tmp04 WHERE "
+        . " CONCAT(tanggal,karyawanid) NOT IN (select IFNULL(CONCAT(tanggal,karyawanid),'') FROM $tmp02) ORDER BY karyawanid, tanggal"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
     $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
         "Juni", "Juli", "Agustus", "September", 
@@ -114,7 +155,7 @@ goto hapusdata;
 
     echo "<b>Report Daily Plan & Realisasi</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
-    echo "<b>Jabatan : $pnamajabatan</b><br/>";
+    //echo "<b>Jabatan : $pnamajabatan</b><br/>";
     echo "<hr/><br/>";
 
     $totcall=0;
@@ -122,208 +163,330 @@ goto hapusdata;
     $totpoint2=0;
     
     echo "<br/><b>Activity</b><br/>";
-    
     echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
         echo "<tr>";
-            $header_ = add_space('Tanggal',40);
-            echo "<th align='left'><small>$header_</small></th>";
-            $header_ = add_space('Keterangan',60);
-            echo "<th align='left'><small>$header_</small></th>";
-            $header_ = add_space('Point',40);
-            echo "<th align='left'><small>$header_</small></th>";
-        echo "</tr>";
-
-        $no=1;
-        $query = "select distinct idinput, tanggal, jpoint, totakv, totvisit, totjv, totec, tototh, sudahreal, ketid, nama_ket from $tmp01 order by tanggal";
-        $tampil0=mysqli_query($cnmy, $query);
-        while ($row0=mysqli_fetch_array($tampil0)) {
-            $cidinput=$row0['idinput'];
-            $nketid=$row0['ketid'];
-            $ntgl=$row0['tanggal'];
-
-            $ntotakv=$row0['totakv'];
-            $ntotvisit=$row0['totvisit'];
-            $ntotec=$row0['totec'];
-            $ntotjv=$row0['totjv'];
-            $ntototh=$row0['tototh'];
-            $ntotpoint=$row0['jpoint'];
-
-            $nsudahreal=$row0['sudahreal'];
-            $nnamaket=$row0['nama_ket'];
-
-
-            $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
-            $xtgl= date('d', strtotime($ntgl));
-            $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
-            $xthn= date('Y', strtotime($ntgl));
-
-            $ntotpoint=number_format($ntotpoint,0,"","");
-            $ntotec=number_format($ntotec,0,"","");
-            $ntotjv=number_format($ntotjv,0,"","");
-            $ntototh=number_format($ntototh,0,"","");
+        
+            echo "<th align='left' rowspan='2'><small>Tanggal</small></th>";
+            echo "<th align='cener' colspan='3'><small>Plan</small></th>";
+            echo "<th align='cener' colspan='4'><small>Realisasi</small></th>";
             
-            if ($nketid!="000") {//BLANK
-                echo "<tr>";
-                echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
-                echo "<td nowrap>$nnamaket</td>";
-                echo "<td nowrap align='right'>$ntotpoint</td>";
-                echo "</tr>";
+        echo "</tr>";
+        
+        echo "<tr>";
+        
+            echo "<th align='left'><small>Keperluan</small></th>";
+            echo "<th align='left'><small>Compl.</small></th>";
+            echo "<th align='left'><small>Aktivitas</small></th>";
+            
+            echo "<th align='left'><small>Jam</small></th>";
+            echo "<th align='left'><small>Keperluan</small></th>";
+            echo "<th align='left'><small>Compl.</small></th>";
+            echo "<th align='left'><small>Aktivitas</small></th>";
+            
+        echo "</tr>";
+        
+        $query = "select distinct tanggal, karyawanid from $tmp05 order by karyawanid, tanggal";
+        $tampil1=mysqli_query($cnmy, $query);
+        while ($row1=mysqli_fetch_array($tampil1)) {
+            $ftgl=$row1['tanggal'];
+            $fkryid=$row1['karyawanid'];
+            
+            $query = "select * from $tmp01 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' order by tanggal, nama_ket";
+            $tampil0=mysqli_query($cnmy, $query);
+            $ketemu0=mysqli_num_rows($tampil0);
+            $pada=false;
+            if ((INT)$ketemu0<=0) {
+                
+                $query = "select * from $tmp03 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' order by tanggal, nama_ket";
+                $tampil0=mysqli_query($cnmy, $query);
+                $pada=true;
             }
+                
+            
+                while ($row0=mysqli_fetch_array($tampil0)) {
+                    $nketid=$row0['ketid'];
+                    $ntgl=$row0['tanggal'];
+                    $nnamaket=$row0['nama_ket'];
+                    $ncompl=$row0['compl'];
+                    $naktivitas=$row0['aktivitas'];
+                    $ntglinput=$row0['tglinput'];
+                    
+                    $pjam="";
+                    if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
+                    
+                    $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+                    $xtgl= date('d', strtotime($ntgl));
+                    $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
+                    $xthn= date('Y', strtotime($ntgl));
 
-            $no++;
+                    
+                    if ($pada==false) {
+                        echo "<tr>";
+                        echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
+                        echo "<td nowrap>$nnamaket</td>";
+                        echo "<td >$ncompl</td>";
+                        echo "<td >$naktivitas</td>";
+                        
+                        $query = "select * from $tmp03 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' order by tanggal, nama_ket";
+                        $tampil2=mysqli_query($cnmy, $query);
+                        $ketemu2=mysqli_num_rows($tampil2);
+                        if ((INT)$ketemu2<=0) {
+                            echo "<td nowrap></td>";
+                            echo "<td nowrap></td>";
+                            echo "<td ></td>";
+                            echo "<td ></td>";
+                            
+                            echo "</tr>";
+                        }else{
+                            $ifirst=false;
+                            while ($row2=mysqli_fetch_array($tampil2)) {
+                                
+                                $nketid=$row2['ketid'];
+                                $nnamaket=$row2['nama_ket'];
+                                $ncompl=$row2['compl'];
+                                $naktivitas=$row2['aktivitas'];
+                                $ntglinput=$row2['tglinput'];
+
+                                $pjam="";
+                                if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
+                                
+                                $ntgl=$row2['tanggal'];
+                                $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+                                $xtgl= date('d', strtotime($ntgl));
+                                $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
+                                $xthn= date('Y', strtotime($ntgl));
+                    
+                                if ($ifirst==true) {
+                                    echo "<tr>";
+                                    echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
+                                    echo "<td nowrap>&nbsp;</td>";
+                                    echo "<td >&nbsp;</td>";
+                                    echo "<td >&nbsp;</td>";
+                                }
+                                echo "<td nowrap>$pjam</td>";
+                                echo "<td nowrap>$nnamaket</td>";
+                                echo "<td >$ncompl</td>";
+                                echo "<td >$naktivitas</td>";
+
+                                echo "</tr>";
+                                $ifirst=true;
+                            }
+                            
+                        }
+                        
+                    }else{
+                        echo "<tr>";
+                        echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td >&nbsp;</td>";
+                        echo "<td >&nbsp;</td>";
+                        
+                        echo "<td nowrap>$pjam</td>";
+                        echo "<td nowrap>$nnamaket</td>";
+                        echo "<td >$ncompl</td>";
+                        echo "<td >$naktivitas</td>";
+                        
+                        
+                        echo "</tr>";
+                    }
+                    
+                }
+            
+            
+            
         }
+        
 
     echo "</table>";
 
+    
+    echo "<br/>";
 
-
-    echo "<br/><b>Visist</b><br/>";
-    $totcall=0;
-    $totpoint1=0;
-    $totpoint2=0;
-
+    echo "<br/><b>Visit</b><br/>";
     echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
         echo "<tr>";
-            $header_ = add_space('Tanggal',40);
-            echo "<th align='left'><small>$header_</small></th>";
-            $header_ = add_space('Keterangan',60);
-            echo "<th align='left'><small>$header_</small></th>";
-            $header_ = add_space('Call',40);
-            echo "<th align='left'><small>$header_</small></th>";
+        
+            echo "<th align='left' rowspan='2'><small>Tanggal</small></th>";
+            echo "<th align='cener' colspan='4'><small>Plan</small></th>";
+            echo "<th align='cener' colspan='5'><small>Realisasi</small></th>";
+            
         echo "</tr>";
-
-        $no=1;
-        $query = "select distinct idinput, tanggal, jpoint, totakv, totvisit, totjv, totec, tototh, totall, sudahreal, nama_ket from $tmp01 order by tanggal";
-        $tampil0=mysqli_query($cnmy, $query);
-        while ($row0=mysqli_fetch_array($tampil0)) {
-            $cidinput=$row0['idinput'];
-            $ntgl=$row0['tanggal'];
-
-            $ntotakv=$row0['totakv'];
-            $ntotvisit=$row0['totvisit'];
-            $ntotec=$row0['totec'];
-            $ntotjv=$row0['totjv'];
-            $ntototh=$row0['tototh'];
-            $ntotpoint=$row0['jpoint'];
-            $ntotall=$row0['totall'];
-
-            $nsudahreal=$row0['sudahreal'];
-            $nnamaket=$row0['nama_ket'];
-
-
-            $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
-            $xtgl= date('d', strtotime($ntgl));
-            $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
-            $xthn= date('Y', strtotime($ntgl));
-
-            $ntotpoint=number_format($ntotpoint,0,"","");
-            $ntotec=number_format($ntotec,0,"","");
-            $ntotjv=number_format($ntotjv,0,"","");
-            $ntototh=number_format($ntototh,0,"","");
-
-            $pnamadokt="";
-            $pnamadoktjv="";
-            $pnamadoktec="";
-            $pnamadoktoth="";
-            $pnamadoktall="";
-
-            $query = "select distinct jenis, dokterid, namalengkap, gelar, spesialis from $tmp02 WHERE 
-                idinput='$cidinput' order by jenis, namalengkap";
-            $tampil1=mysqli_query($cnmy, $query);
-            while ($row1=mysqli_fetch_array($tampil1)) {
-                $njenis=TRIM($row1['jenis']);
-                $pnmdokt=$row1['namalengkap'];
-                $pgelar=$row1['gelar'];
-                $pspesialis=$row1['spesialis'];
-
-                if (!empty($pnmdokt)) $pnmdokt=$pgelar." ".rtrim($pnmdokt, ',')." ".$pspesialis;
-                if ($njenis=="JV") $pnmdokt =$pnmdokt." (JV)";
+        
+        echo "<tr>";
+        
+            echo "<th align='left'><small>Jenis</small></th>";
+            echo "<th align='left'><small>Dokter</small></th>";
+            echo "<th align='left'><small>Notes</small></th>";
+            echo "<th align='left'><small>Saran</small></th>";
+            
+            echo "<th align='left'><small>Jam</small></th>";
+            echo "<th align='left'><small>Jenis</small></th>";
+            echo "<th align='left'><small>Dokter</small></th>";
+            echo "<th align='left'><small>Notes</small></th>";
+            echo "<th align='left'><small>Saran</small></th>";
+            
+        echo "</tr>";
+        
+        
+        $query = "select distinct tanggal, karyawanid from $tmp06 order by karyawanid, tanggal";
+        $tampil1=mysqli_query($cnmy, $query);
+        while ($row1=mysqli_fetch_array($tampil1)) {
+            $ftgl=$row1['tanggal'];
+            $fkryid=$row1['karyawanid'];
+            
+            $psudahtanggal=false;
+            $query = "select distinct dokterid from $tmp07 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' order by karyawanid, tanggal, dokterid";
+            $tampil01=mysqli_query($cnmy, $query);
+            while ($row01=mysqli_fetch_array($tampil01)) {
+                $pdokterid=$row01['dokterid'];
                 
-                $pnamadoktall .=RTRIM($pnmdokt)." | ";
+                $query = "select * from $tmp02 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' AND dokterid='$pdokterid' order by tanggal, namalengkap";
+                $tampil0=mysqli_query($cnmy, $query);
+                $ketemu0=mysqli_num_rows($tampil0);
+                $pada=false;
+                if ((INT)$ketemu0<=0) {
+
+                    $query = "select * from $tmp04 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' AND dokterid='$pdokterid' order by tanggal, namalengkap";
+                    $tampil0=mysqli_query($cnmy, $query);
+                    $pada=true;
+                }
+
                 
-                if (empty($njenis)) {
-                    $pnamadokt .=RTRIM($pnmdokt).", ";
-                }else{
-                    if ($njenis=="JV"){
-                        $pnamadoktjv .=RTRIM($pnmdokt).", ";
-                    }elseif ($njenis=="EC"){
-                        $pnamadoktec .=RTRIM($pnmdokt).", ";
-                    }else{
-                        $pnamadoktoth .=RTRIM($pnmdokt).", ";
+                while ($row0=mysqli_fetch_array($tampil0)) {
+                    $ndoktid=$row0['dokterid'];
+                    $ntgl=$row0['tanggal'];
+                    $nnamalengkap=$row0['namalengkap'];
+                    $nnotes=$row0['notes'];
+                    $nsaran=$row0['saran'];
+                    $njenis=$row0['jenis'];
+                    $ngelar=$row0['gelar'];
+                    $nspesialis=$row0['spesialis'];
+                    $ntglinput=$row0['tglinput'];
+                    
+                    $pjam="";
+                    if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
+                    
+                    $pnmdokt_=$nnamalengkap." (".$ngelar.") ".$nspesialis." - ".$ndoktid;
+                    $pnmjenis="";
+                    if ($njenis=="JV") $pnmjenis="Join Visit";
+                    elseif ($njenis=="EC") $pnmjenis="Extra Call";
+                    else{
+                        if (!empty($njenis)) {
+                            $pnmjenis="Other";
+                        }
                     }
+                    
+                    $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+                    $xtgl= date('d', strtotime($ntgl));
+                    $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
+                    $xthn= date('Y', strtotime($ntgl));
+                    
+                    $ppilihtgl="$xhari, $xtgl $xbulan $xthn";
+                    if ($psudahtanggal==true) $ppilihtgl="";
+                    
+                    if ($pada==false) {
+                        echo "<tr>";
+                        echo "<td nowrap>$ppilihtgl</td>";
+                        echo "<td >$pnmjenis</td>";
+                        echo "<td nowrap>$pnmdokt_</td>";
+                        echo "<td >$nnotes</td>";
+                        echo "<td >$nsaran</td>";
+                        
+                        $query = "select * from $tmp04 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' AND dokterid='$pdokterid' order by tanggal, namalengkap";
+                        $tampil2=mysqli_query($cnmy, $query);
+                        $ketemu2=mysqli_num_rows($tampil2);
+                        if ((INT)$ketemu2<=0) {
+                            echo "<td nowrap></td>";
+                            echo "<td nowrap></td>";
+                            echo "<td nowrap></td>";
+                            echo "<td ></td>";
+                            echo "<td ></td>";
+                            
+                            echo "</tr>";
+                        }else{
+                            $ifirst=false;
+                            while ($row2=mysqli_fetch_array($tampil2)) {
+                                
+                                $ndoktid=$row2['dokterid'];
+                                $ntgl=$row2['tanggal'];
+                                $nnamalengkap=$row2['namalengkap'];
+                                $nnotes=$row2['notes'];
+                                $nsaran=$row2['saran'];
+                                $njenis=$row2['jenis'];
+                                $ngelar=$row2['gelar'];
+                                $nspesialis=$row2['spesialis'];
+                                $ntglinput=$row2['tglinput'];
+                                
+                                $pjam="";
+                                if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
+                                
+                                $pnmdokt_=$nnamalengkap." (".$ngelar.") ".$nspesialis." - ".$ndoktid;
+                                $pnmjenis="";
+                                if ($njenis=="JV") $pnmjenis="Join Visit";
+                                elseif ($njenis=="EC") $pnmjenis="Extra Call";
+                                else{
+                                    if (!empty($njenis)) {
+                                        $pnmjenis="Other";
+                                    }
+                                }
+                    
+                                $ntgl=$row2['tanggal'];
+                                $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+                                $xtgl= date('d', strtotime($ntgl));
+                                $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
+                                $xthn= date('Y', strtotime($ntgl));
+                    
+                                $ppilihtgl="$xhari, $xtgl $xbulan $xthn";
+                                if ($psudahtanggal==true) $ppilihtgl="";
+                                
+                                if ($ifirst==true) {
+                                    echo "<tr>";
+                                    echo "<td nowrap>$ppilihtgl</td>";
+                                    echo "<td nowrap>&nbsp;</td>";
+                                    echo "<td nowrap>&nbsp;</td>";
+                                    echo "<td >&nbsp;</td>";
+                                    echo "<td >&nbsp;</td>";
+                                }
+                                echo "<td nowrap>$pjam</td>";
+                                echo "<td nowrap>$pnmjenis</td>";
+                                echo "<td nowrap>$pnmdokt_</td>";
+                                echo "<td >$nnotes</td>";
+                                echo "<td >$nsaran</td>";
+
+                                echo "</tr>";
+                                $ifirst=true;
+                            }
+                            
+                        }
+                    }else{
+                        echo "<tr>";
+                        echo "<td nowrap>$ppilihtgl</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td >&nbsp;</td>";
+                        echo "<td >&nbsp;</td>";
+
+                        echo "<td nowrap>$pjam</td>";
+                        echo "<td nowrap>$pnmjenis</td>";
+                        echo "<td nowrap>$pnmdokt_</td>";
+                        echo "<td >$nnotes</td>";
+                        echo "<td >$nsaran</td>";
+                    }
+
+                    echo "</tr>";
+
+
                 }
                 
-            }
-
+                $psudahtanggal=true;
             
+            }
             
-            if (!empty($pnamadoktall)) {
-                $pnamadoktall = substr($pnamadoktall, 0, -2);
-            }
-                echo "<tr>";
-                echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
-                echo "<td >$pnamadoktall</td>";
-                echo "<td nowrap align='right'>$ntotall</td>";
-                echo "</tr>";
-                
-            /*
-            if (!empty($pnamadokt)) {
-                $pnamadokt = substr($pnamadokt, 0, -2);
-            }
-                echo "<tr>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>Visit</td>";
-                echo "<td >$pnamadokt</td>";
-                echo "<td nowrap align='right'>$ntotvisit</td>";
-                echo "<td nowrap align='right'></td>";
-                echo "</tr>";
-
-            
-
-            if (!empty($pnamadoktjv)) {
-                $pnamadoktjv = substr($pnamadoktjv, 0, -2);
-
-                echo "<tr>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>Join Visit</td>";
-                echo "<td >$pnamadoktjv</td>";
-                echo "<td nowrap align='right'>$ntotjv</td>";
-                echo "<td nowrap align='right'></td>";
-                echo "</tr>";
-
-            }
-
-            if (!empty($pnamadoktec)) {
-                $pnamadoktec = substr($pnamadoktec, 0, -2);
-
-                echo "<tr>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>Extra Call</td>";
-                echo "<td >$pnamadoktec</td>";
-                echo "<td nowrap align='right'>$ntotec</td>";
-                echo "<td nowrap align='right'></td>";
-                echo "</tr>";
-
-            }
-
-            if (!empty($pnamadoktoth)) {
-                $pnamadoktoth = substr($pnamadoktoth, 0, -2);
-
-                echo "<tr>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>Others</td>";
-                echo "<td >$pnamadoktoth</td>";
-                echo "<td nowrap align='right'>$ntototh</td>";
-                echo "<td nowrap align='right'></td>";
-                echo "</tr>";
-
-            }
-            */
-            
-            $no++;
         }
-
+        
+        
     echo "</table>";
+
     
     
     ?>
@@ -402,5 +565,8 @@ hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp02");
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp03");
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp04");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp05");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp06");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp07");
     mysqli_close($cnmy);
 ?>

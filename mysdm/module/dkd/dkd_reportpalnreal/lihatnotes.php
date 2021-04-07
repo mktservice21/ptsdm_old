@@ -169,6 +169,82 @@ if (!empty($pusrkomen)) {
     </div>
 </div>
 
+    <link href="css/inputselectbox.css" rel="stylesheet" type="text/css" />
+    <link href="css/stylenew.css" rel="stylesheet" type="text/css" />
+    <script type='text/javascript' src='datetime/js/jquery-ui.min.js'></script>
+
+    <!-- jquery.inputmask -->
+    <script src="vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
+
+    <!-- bootstrap-daterangepicker -->
+    <script src="vendors/moment/min/moment.min.js"></script>
+    <script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Custom Theme Scripts -->
+
+<script>
+    function disp_confirm_notes(pText_,nid)  {
+        // pText_, nid e_idkry, e_periode1, e_doktid, e_komen, e_idcarduser
+        var eact="inputkomentar";
+        var eidkry = document.getElementById("e_idkry").value;
+        var etgl = document.getElementById("e_periode1").value;
+        var edoktid = document.getElementById("e_doktid").value;
+        var eiduserinput = document.getElementById("e_idcarduser").value;
+        var ekomen = document.getElementById("e_komen").value;
+        
+        if (eiduserinput=="") {
+            alert("Anda harus login ulang...");
+            return false;
+        }
+        
+        if (eidkry=="") {
+            alert("karyawan kosong...");
+            return false;
+        }
+        
+        if (etgl=="") {
+            alert("tanggal kosong...");
+            return false;
+        }
+        
+        if (edoktid=="") {
+            alert("dokter kosong...");
+            return false;
+        }
+        
+        if (ekomen=="") {
+            alert("komentar masih kosong...");
+            return false;
+        }
+        
+        ok_ = 1;
+        if (ok_) {
+            var r=confirm(pText_)
+            if (r==true) {
+                var myurl = window.location;
+                var urlku = new URL(myurl);
+                var module = urlku.searchParams.get("module");
+                var idmenu = urlku.searchParams.get("idmenu");
+                
+                $.ajax({
+                    type:"post",
+                    url:"module/dkd/dkd_reportpalnreal/simpan_komentar.php?module="+module+"&act="+eact+"&idmenu="+idmenu,
+                    data:"uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid+"&uiduserinput="+eiduserinput+"&ukomen="+ekomen,
+                    success:function(data){
+                        if (data.length > 2) {
+                            alert(data);
+                        }
+                        nm_btn_save.style.display='none';
+                        $('#myModal').modal('hide');
+                    }
+                });
+            }
+        } else {
+            //document.write("You pressed Cancel!")
+            return 0;
+        }
+    }
+</script>
 
 <?PHP
 mysqli_close($cnmy);

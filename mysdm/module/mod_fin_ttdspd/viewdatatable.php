@@ -80,7 +80,7 @@
             //$sql.=" and IFNULL(pilih,'')='Y' ";
         }
     
-        if ($pses_grpuser=="3" OR $pses_grpuser=="23" OR $pses_grpuser=="28" OR $pses_grpuser=="40") {
+        if ($pses_grpuser=="3" OR $pses_grpuser=="23" OR $pses_grpuser=="28" OR $pses_grpuser=="61" OR $pses_grpuser=="40") {
             if (strtoupper($cket)=="APPROVE") {
                 $sql.=" AND IFNULL(tgl_apv1,'')='' ";
             }elseif (strtoupper($cket)=="UNAPPROVE") {
@@ -325,7 +325,7 @@
                     if (strtoupper($cket)=="APVDIRFIN") {
                     }else{
                         
-                        if ($pses_grpuser=="3" OR $pses_grpuser=="23" OR $pses_grpuser=="28") {
+                        if ($pses_grpuser=="3" OR $pses_grpuser=="23" OR $pses_grpuser=="28" OR $pses_grpuser=="61") {
                             if (!empty($napv2)) $cekbox="";
                         }elseif ($pses_grpuser=="25" OR $pses_grpuser=="26") {
                             if ($pkaryawanid!=$pses_idcard){

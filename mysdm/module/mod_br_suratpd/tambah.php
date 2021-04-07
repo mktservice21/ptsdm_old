@@ -485,7 +485,19 @@ if ($_GET['act']=="editdata"){
     }
     
     
+    //HitungTotalDariCekBox
+    
     function disp_confirm(pText_,ket)  {
+        
+        HitungTotalDariCekBox();
+        
+        setTimeout(function () {
+            disp_confirm_ext(pText_,ket)
+        }, 500);
+        
+    }
+    
+    function disp_confirm_ext(pText_,ket)  {
         var ijml =document.getElementById('e_jmlusulan').value;
         if(ijml==""){
             ijml="0";

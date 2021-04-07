@@ -123,6 +123,17 @@ if ($pmodule=="cekdatasudahada") {
 
     }
     mysqli_close($cnmy);
+}elseif ($pmodule=="viewdatatanggal") {
+    $tgl_pertama=$_POST['utgl'];
+    $ptglpilih = date('Y-m-d', strtotime($tgl_pertama));
+    $p_tgl = date('d', strtotime($ptglpilih));
+    echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih' checked> $p_tgl &nbsp; &nbsp; ";
+    for ($ix=1;$ix<5;$ix++) {
+        $ptglpilih = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih)));
+        $p_tgl = date('d', strtotime($ptglpilih));
+        
+        echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih'> $p_tgl &nbsp; &nbsp; ";
+    }
 }elseif ($pmodule=="viewdatakaryawancabjbt") {
     include "../../config/koneksimysqli.php";
     $pidcab=$_POST['uidcab'];

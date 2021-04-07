@@ -430,7 +430,9 @@ $pjabatanid=$rowk['jabatanid'];
                     $ppilihtgl="$xhari, $xtgl $xbulan $xthn";
                     if ($psudahtanggal==true) $ppilihtgl="";
                     
-                    $plihatnotes="Lihat Notes";
+                    
+                    $plihatnotes="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
+                            . " data-target='#myModal' onClick=\"LiatNotes('real', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
                     
                     if ($pada==false) {
                         echo "<tr>";
@@ -494,7 +496,7 @@ $pjabatanid=$rowk['jabatanid'];
                                     . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                                     . "Lihat Notes</a>";
                                 $plihatnotes="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
-                                        . " data-target='#myModal' onClick=\"LiatNotes('real', '$nkaryawanid', '$ntgl')\">Lihat Notes</button>";
+                                        . " data-target='#myModal' onClick=\"LiatNotes('real', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
                                 
                                 if ($ifirst==true) {
                                     echo "<tr>";
@@ -545,8 +547,9 @@ $pjabatanid=$rowk['jabatanid'];
     ?>
 
 </BODY>
-<script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-<style>
+
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <style>
         #myBtn {
             display: none;
             position: fixed;
@@ -608,7 +611,19 @@ $pjabatanid=$rowk['jabatanid'];
         }
         // END SCROLL
     </script>
-
+    
+    <script>
+        function LiatNotes(ests, eidkry, etgl, edoktid){
+            $.ajax({
+                type:"post",
+                url:"module/dkd/dkd_reportpalnreal/lihatnotes.php?module=viewnotes",
+                data:"usts="+ests+"&uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid,
+                success:function(data){
+                    $("#myModal").html(data);
+                }
+            });
+        }
+    </script>
 
 </HTML>
 

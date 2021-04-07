@@ -17,7 +17,7 @@ switch($pactpilih){
         $tgl_pertama = date('01 F Y', strtotime($hari_ini));
         $tgl_akhir = date('t F Y', strtotime($hari_ini));
 
-        $tgl_pertama = date('d F Y',time()+( 8 - date('w'))*24*3600);
+        $tgl_pertama = date('d F Y',time()+( 1 - date('w'))*24*3600);
 
         if (!empty($ptgl1_pl)) $tgl_pertama=$ptgl1_pl;
 

@@ -42,6 +42,14 @@
     $piddivisi=$_POST['e_iddivisi'];
     $pstsdiscount=$_POST['e_stsdisc'];
     $prptby=$_POST['e_rptby'];
+    $pprodukoth="0000000055";
+    
+    if (!empty($pprodukoth)) {
+        $query = "select nama from MKT.iproduk WHERE iProdId='$pprodukoth'";
+        $tampilp=mysqli_query($cnmy, $query);
+        $nrow=mysqli_fetch_array($tampilp);
+        $pnmprodukoth=$nrow['nama'];
+    }
     
     $periode=$pthn;
     
@@ -106,17 +114,30 @@
                     . " from MKT.otc_etl as a JOIN mkt.icabang_o as c on a.icabangid=c.icabangid_o "
                     . " where year(a.tgljual)='$pthn' AND a.divprodid ='OTHER' and a.icabangid <> 22 ";
             if (!empty($pidregion)) {
+                if ($pidregion=="BB") $query .=" AND c.region='B' ";
+                else $query .=" AND c.region='$pidregion' ";
+            }
+            if (!empty($pdistid)) {
+                $query .=" AND a.distid='$pdistid' ";
+            }
+            if (!empty($pprodukoth)) {
+                $query .=" AND a.iprodid='$pprodukoth' ";//, '0000000214', '0000000068'
+            }
+            $query .= " GROUP BY 1,2";
+        }else{
+            $query = "select CONCAT(LEFT(tgljual,8), '01') as bulan, distid, sum(`value`) as tvalue "
+                    . " from MKT.otc_etl where year(tgljual)='$pthn' AND divprodid <>'OTHER' and icabangid <> 22 "
+                    . " ";
+            if (!empty($pidregion)) {
                 if ($pidregion=="BB") $query .=" AND c.region='B'";
                 else $query .=" AND c.region='$pidregion'";
             }
             if (!empty($pdistid)) {
                 $query .=" AND a.distid='$pdistid'";
             }
+            //$query .=" AND a.iprodid IN ('0000000055')";//, '0000000214', '0000000068'
             $query .= "GROUP BY 1,2";
-        }else{
-            $query = "select CONCAT(LEFT(tgljual,8), '01') as bulan, distid, sum(`value`) as tvalue "
-                    . " from MKT.otc_etl where year(tgljual)='$pthn' AND divprodid <>'OTHER' and icabangid <> 22 "
-                    . " GROUP BY 1,2";
+            echo $query;
         }
     }
     $query = "create TEMPORARY table $tmp01 ($query)"; 
@@ -305,6 +326,11 @@
             <tr class='miring text2'><td>Divisi</td><td>:</td><td><?PHP echo "$pnotest"; ?></td></tr>
             <tr class='miring text2'><td>Periode By</td><td>:</td><td><?PHP echo "$pperiodeby"; ?></td></tr>
             <tr class='miring text2'><td>Status Disc.</td><td>:</td><td><?PHP echo "$pketstsdic"; ?></td></tr>
+            <?PHP
+            if ( ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") AND !empty($pprodukoth)) {
+                echo "<tr class='miring text2'><td>Produk</td><td>:</td><td>$pnmprodukoth</td></tr>";
+            }
+            ?>
         </table>
     </div>
     <div class="clearfix"></div>

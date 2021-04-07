@@ -444,6 +444,8 @@ if (empty($puser)) {
 <?PHP
     
     $query = "select sum(`Unit`*`Harga`) as tvalue from $dbname.importsst";
+    $query = "select SUM(CASE WHEN IFNULL(`Bonus faktur`,0)<>0 THEN 
+            IFNULL(`Unit`,0)-IFNULL(`Bonus faktur`,0) ELSE `Unit` END * `Harga`) as tvalue from $dbname.importsst";
     $tampil= mysqli_query($cnmy, $query);
     $ketemu= mysqli_num_rows($tampil);
     if ($ketemu>0) {

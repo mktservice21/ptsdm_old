@@ -200,6 +200,7 @@ $pnamajabatan=$nr['nama'];
                                     <div class='col-xs-4'>
                                         <select class='soflow' name='cb_doktid' id='cb_doktid' onchange="">
                                             <?php
+                                            echo "<option value='' selected>-- Pilih --</option>";
                                             //$ipcabid="0000000094";
                                             $query = "select `id` as iddokter, namalengkap, gelar, spesialis from dr.masterdokter WHERE 1=1 ";
                                             $query .=" AND icabangid='$ppilihcab' ";

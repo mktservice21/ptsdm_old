@@ -14,6 +14,7 @@ $pmodule=$_GET['module'];
 
 include("config/koneksimysqli.php");
 include("config/common.php");
+include "config/fungsi_ubahget_id.php";
 
 
 $puserid=$_SESSION['USERID'];
@@ -34,6 +35,18 @@ $pbulan = date('Y-m', strtotime($ptgl1));
 $ptgl1 = date('Y-m-d', strtotime($ptgl1));
 $ptgl2 = date('Y-m-d', strtotime('+4 days', strtotime($ptgl1)));
 
+$ftglfilter="";
+if (isset($_POST['chktgl'])) {
+    foreach ($_POST['chktgl'] as $pntgl) {
+        if (!empty($pntgl)) {
+            $ftglfilter .="'".$pntgl."',";
+        }
+    }
+    if (!empty($ftglfilter)) $ftglfilter="(".substr($ftglfilter, 0, -1).")";
+}else{
+    $ftglfilter="('".$ptgl1."')";
+}
+    
 $query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from hrd.karyawan as a 
     LEFT join hrd.jabatan as b on a.jabatanId=b.jabatanId 
     where a.karyawanid='$pkryid'";
@@ -45,7 +58,11 @@ $sql = "select a.idinput, a.karyawanid, c.nama as namakaryawan, a.jabatanid, a.t
     FROM hrd.dkd_new0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
     WHERE a.karyawanid='$pkryid' ";
-$sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
+if (!empty($ftglfilter)) {
+    $sql .=" AND a.tanggal IN $ftglfilter ";
+}else{
+    $sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
+}
 $query = "create TEMPORARY table $tmp01 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -62,7 +79,11 @@ $sql = "select a.idinput, a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tgl
     FROM hrd.dkd_new_real0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
     WHERE a.karyawanid='$pkryid' ";
-$sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
+if (!empty($ftglfilter)) {
+    $sql .=" AND a.tanggal IN $ftglfilter ";
+}else{
+    $sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
+}
 $query = "create TEMPORARY table $tmp03 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -73,7 +94,11 @@ $sql = "select a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput,
     FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
     WHERE a.karyawanid='$pkryid' ";
-$sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
+if (!empty($ftglfilter)) {
+    $sql .=" AND a.tanggal IN $ftglfilter ";
+}else{
+    $sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
+}
 $query = "create TEMPORARY table $tmp04 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -161,12 +186,16 @@ $pjabatanid=$rowk['jabatanid'];
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>
     <link rel="shortcut icon" href="images/icon.ico" />
     <style> .str{ mso-number-format:\@; } </style>
+    
+    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
 </HEAD>
 <script>
 </script>
 
-<BODY onload="initVar()">
-
+<BODY onload="initVar()" style="margin-left:10px; color:#000;">
+    
+    <div class='modal fade' id='myModal' role='dialog'></div>
     <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
 
     <?PHP
@@ -325,8 +354,8 @@ $pjabatanid=$rowk['jabatanid'];
         echo "<tr>";
         
             echo "<th align='left' rowspan='2'><small>Tanggal</small></th>";
-            echo "<th align='cener' colspan='3'><small>Plan</small></th>";
-            echo "<th align='cener' colspan='5'><small>Realisasi</small></th>";
+            echo "<th align='cener' colspan='2'><small>Plan</small></th>";
+            echo "<th align='cener' colspan='4'><small>Realisasi</small></th>";
             
         echo "</tr>";
         
@@ -334,13 +363,11 @@ $pjabatanid=$rowk['jabatanid'];
         
             echo "<th align='left'><small>Jenis</small></th>";
             echo "<th align='left'><small>Dokter</small></th>";
-            echo "<th align='left'><small>Notes</small></th>";
             
             echo "<th align='left'><small>Jam</small></th>";
             echo "<th align='left'><small>Jenis</small></th>";
             echo "<th align='left'><small>Dokter</small></th>";
-            echo "<th align='left'><small>Notes</small></th>";
-            echo "<th align='left'><small>Saran</small></th>";
+            echo "<th align='left'><small>&nbsp;</small></th>";
             
         echo "</tr>";
         
@@ -371,6 +398,7 @@ $pjabatanid=$rowk['jabatanid'];
                 
                 while ($row0=mysqli_fetch_array($tampil0)) {
                     $ndoktid=$row0['dokterid'];
+                    $nkaryawanid=$row0['karyawanid'];
                     $ntgl=$row0['tanggal'];
                     $nnamalengkap=$row0['namalengkap'];
                     $nnotes=$row0['notes'];
@@ -379,6 +407,7 @@ $pjabatanid=$rowk['jabatanid'];
                     $ngelar=$row0['gelar'];
                     $nspesialis=$row0['spesialis'];
                     $ntglinput=$row0['tglinput'];
+                    
                     
                     $pjam="";
                     if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
@@ -401,12 +430,14 @@ $pjabatanid=$rowk['jabatanid'];
                     $ppilihtgl="$xhari, $xtgl $xbulan $xthn";
                     if ($psudahtanggal==true) $ppilihtgl="";
                     
+                    $plihatnotes="Lihat Notes";
+                    
                     if ($pada==false) {
                         echo "<tr>";
                         echo "<td nowrap>$ppilihtgl</td>";
                         echo "<td >$pnmjenis</td>";
                         echo "<td nowrap>$pnmdokt_</td>";
-                        echo "<td >$nnotes</td>";
+                        //echo "<td >$nnotes</td>";
                         
                         $query = "select * from $tmp04 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' AND dokterid='$pdokterid' order by tanggal, namalengkap";
                         $tampil2=mysqli_query($cnmy, $query);
@@ -416,7 +447,6 @@ $pjabatanid=$rowk['jabatanid'];
                             echo "<td nowrap></td>";
                             echo "<td nowrap></td>";
                             echo "<td ></td>";
-                            echo "<td ></td>";
                             
                             echo "</tr>";
                         }else{
@@ -424,6 +454,7 @@ $pjabatanid=$rowk['jabatanid'];
                             while ($row2=mysqli_fetch_array($tampil2)) {
                                 
                                 $ndoktid=$row2['dokterid'];
+                                $nkaryawanid=$row2['karyawanid'];
                                 $ntgl=$row2['tanggal'];
                                 $nnamalengkap=$row2['namalengkap'];
                                 $nnotes=$row2['notes'];
@@ -432,6 +463,7 @@ $pjabatanid=$rowk['jabatanid'];
                                 $ngelar=$row2['gelar'];
                                 $nspesialis=$row2['spesialis'];
                                 $ntglinput=$row2['tglinput'];
+                                
                                 
                                 $pjam="";
                                 if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
@@ -455,18 +487,26 @@ $pjabatanid=$rowk['jabatanid'];
                                 $ppilihtgl="$xhari, $xtgl $xbulan $xthn";
                                 if ($psudahtanggal==true) $ppilihtgl="";
                                 
+                                
+                                $pidget=encodeString($nkaryawanid);
+                                $plihatnotes="<a title='detail' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+                                    . "onClick=\"window.open('eksekusi3.php?module=dkdrptplanrealliahtnotes&brid=$pidget&id=$ntgl&iprint=detail',"
+                                    . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                                    . "Lihat Notes</a>";
+                                $plihatnotes="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
+                                        . " data-target='#myModal' onClick=\"LiatNotes('real', '$nkaryawanid', '$ntgl')\">Lihat Notes</button>";
+                                
                                 if ($ifirst==true) {
                                     echo "<tr>";
                                     echo "<td nowrap>$ppilihtgl</td>";
                                     echo "<td nowrap>&nbsp;</td>";
                                     echo "<td nowrap>&nbsp;</td>";
-                                    echo "<td >&nbsp;</td>";
+                                    //echo "<td >&nbsp;</td>";
                                 }
                                 echo "<td nowrap>$pjam</td>";
                                 echo "<td nowrap>$pnmjenis</td>";
                                 echo "<td nowrap>$pnmdokt_</td>";
-                                echo "<td >$nnotes</td>";
-                                echo "<td >$nsaran</td>";
+                                echo "<td >$plihatnotes</td>";
 
                                 echo "</tr>";
                                 $ifirst=true;
@@ -478,13 +518,12 @@ $pjabatanid=$rowk['jabatanid'];
                         echo "<td nowrap>$ppilihtgl</td>";
                         echo "<td nowrap>&nbsp;</td>";
                         echo "<td nowrap>&nbsp;</td>";
-                        echo "<td >&nbsp;</td>";
+                        //echo "<td >&nbsp;</td>";
 
                         echo "<td nowrap>$pjam</td>";
                         echo "<td nowrap>$pnmjenis</td>";
                         echo "<td nowrap>$pnmdokt_</td>";
-                        echo "<td >$nnotes</td>";
-                        echo "<td >$nsaran</td>";
+                        echo "<td >$plihatnotes</td>";
                     }
 
                     echo "</tr>";
@@ -506,7 +545,7 @@ $pjabatanid=$rowk['jabatanid'];
     ?>
 
 </BODY>
-
+<script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
 <style>
         #myBtn {
             display: none;

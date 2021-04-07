@@ -106,7 +106,8 @@ if ($pmodule=="cekdatasudahada") {
     $query .=" order by namalengkap, `id`";
     $tampilket= mysqli_query($cnmy, $query);
     $ketemu=mysqli_num_rows($tampilket);
-    if ((INT)$ketemu<=0) echo "<option value='' selected>-- Pilih --</option>";
+    //if ((INT)$ketemu<=0) 
+        echo "<option value='' selected>-- Pilih --</option>";
     while ($du= mysqli_fetch_array($tampilket)) {
         $niddokt=$du['iddokter'];
         $nnmdokt=$du['namalengkap'];

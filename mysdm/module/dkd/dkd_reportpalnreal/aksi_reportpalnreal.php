@@ -41,15 +41,16 @@ $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
 
-$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.tglinput, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
+$sql = "select a.idinput, a.karyawanid, c.nama as namakaryawan, a.jabatanid, a.tanggal, a.tglinput, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
     FROM hrd.dkd_new0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
+    LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
     WHERE a.karyawanid='$pkryid' ";
 $sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
 $query = "create TEMPORARY table $tmp01 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.tglinput, 
+$sql = "select a.idinput, a.karyawanid, a.namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
     c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, c.saran 
     FROM $tmp01 as a LEFT JOIN hrd.dkd_new1 as c on a.idinput=c.idinput JOIN dr.masterdokter as d on c.dokterid=d.id";
 $query = "create TEMPORARY table $tmp02 ($sql)"; 
@@ -57,8 +58,9 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$sql = "select a.idinput, a.karyawanid, a.tanggal, a.tglinput, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
+$sql = "select a.idinput, a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
     FROM hrd.dkd_new_real0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
+    LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
     WHERE a.karyawanid='$pkryid' ";
 $sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
 $query = "create TEMPORARY table $tmp03 ($sql)"; 
@@ -66,9 +68,10 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$sql = "select a.karyawanid, a.tanggal, a.tglinput, 
+$sql = "select a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput, 
     a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran 
     FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
+    LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
     WHERE a.karyawanid='$pkryid' ";
 $sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
 $query = "create TEMPORARY table $tmp04 ($sql)"; 
@@ -81,40 +84,47 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "select distinct tanggal, karyawanid from $tmp01 ORDER BY karyawanid, tanggal";
+$query = "select distinct tanggal, karyawanid, namakaryawan from $tmp01 ORDER BY karyawanid, tanggal";
 $query = "create TEMPORARY table $tmp05 ($query)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "INSERT INTO $tmp05 (tanggal, karyawanid) "
-        . " select distinct tanggal, karyawanid FROM $tmp03 WHERE "
+$query = "INSERT INTO $tmp05 (tanggal, karyawanid, namakaryawan) "
+        . " select distinct tanggal, karyawanid, namakaryawan FROM $tmp03 WHERE "
         . " CONCAT(tanggal,karyawanid) NOT IN (select IFNULL(CONCAT(tanggal,karyawanid),'') FROM $tmp01) ORDER BY karyawanid, tanggal"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "select distinct tanggal, karyawanid from $tmp02 ORDER BY karyawanid, tanggal";
+$query = "select distinct tanggal, karyawanid, namakaryawan from $tmp02 ORDER BY karyawanid, tanggal";
 $query = "create TEMPORARY table $tmp06 ($query)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "INSERT INTO $tmp06 (tanggal, karyawanid) "
-        . " select distinct tanggal, karyawanid FROM $tmp04 WHERE "
+$query = "INSERT INTO $tmp06 (tanggal, karyawanid, namakaryawan) "
+        . " select distinct tanggal, karyawanid, namakaryawan FROM $tmp04 WHERE "
         . " CONCAT(tanggal,karyawanid) NOT IN (select IFNULL(CONCAT(tanggal,karyawanid),'') FROM $tmp02) ORDER BY karyawanid, tanggal"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "select distinct tanggal, karyawanid, dokterid from $tmp02 ORDER BY karyawanid, tanggal";
+$query = "select distinct tanggal, karyawanid, namakaryawan, dokterid, namalengkap from $tmp02 ORDER BY karyawanid, tanggal";
 $query = "create TEMPORARY table $tmp07 ($query)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "INSERT INTO $tmp07 (tanggal, karyawanid, dokterid) "
-        . " select distinct tanggal, karyawanid, dokterid FROM $tmp04 WHERE "
+$query = "INSERT INTO $tmp07 (tanggal, karyawanid, namakaryawan, dokterid) "
+        . " select distinct tanggal, karyawanid, namakaryawan, dokterid FROM $tmp04 WHERE "
         . " CONCAT(tanggal,karyawanid) NOT IN (select IFNULL(CONCAT(tanggal,karyawanid),'') FROM $tmp02) ORDER BY karyawanid, tanggal"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "ALTER TABLE $tmp07 ADD COLUMN tglinput timestamp";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp07 as a JOIN $tmp04 as b on a.dokterid=b.dokterid AND a.karyawanid=b.karyawanid AND "
+        . " a.tanggal=b.tanggal SET a.tglinput=b.tglinput";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
     $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
         "Juni", "Juli", "Agustus", "September", 
@@ -185,7 +195,7 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
             
         echo "</tr>";
         
-        $query = "select distinct tanggal, karyawanid from $tmp05 order by karyawanid, tanggal";
+        $query = "select distinct tanggal, karyawanid from $tmp05 order by namakaryawan, karyawanid, tanggal";
         $tampil1=mysqli_query($cnmy, $query);
         while ($row1=mysqli_fetch_array($tampil1)) {
             $ftgl=$row1['tanggal'];
@@ -335,7 +345,7 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
             $fkryid=$row1['karyawanid'];
             
             $psudahtanggal=false;
-            $query = "select distinct dokterid from $tmp07 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' order by karyawanid, tanggal, dokterid";
+            $query = "select distinct dokterid from $tmp07 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' order by karyawanid, tanggal, tglinput, namalengkap, dokterid";
             $tampil01=mysqli_query($cnmy, $query);
             while ($row01=mysqli_fetch_array($tampil01)) {
                 $pdokterid=$row01['dokterid'];

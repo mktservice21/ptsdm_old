@@ -773,8 +773,23 @@ if ($pilihperiodetipe=="S") $ptupeper4="selected";
     }
     
     
-    
     function disp_confirm(pText_,ket)  {
+        
+        var ijenispl =document.getElementById('cb_jenispilih').value;
+        if (ijenispl=="D" || ijenispl=="C") {
+            HitungTotalDariCekBoxKD();
+        }else{
+            HitungTotalDariCekBox();
+        }
+        
+        setTimeout(function () {
+            disp_confirm_ext(pText_,ket)
+        }, 500);
+        
+    }
+    
+    function disp_confirm_ext(pText_,ket)  {
+
         var ijml =document.getElementById('e_jmlusulan').value;
         if(ijml==""){
             ijml="0";
@@ -783,6 +798,7 @@ if ($pilihperiodetipe=="S") $ptupeper4="selected";
             alert("jumlah masih kosong...");
             return false;
         }
+        
         /*
         var cmt = confirm('Apakah akan melakukan proses '+ket+' ...?');
         if (cmt == false) {

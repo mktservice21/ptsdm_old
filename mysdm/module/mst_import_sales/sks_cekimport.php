@@ -78,6 +78,7 @@ if (empty($puser)) {
 		elseif (strtoupper(TRIM($pnamasheet))=="PALU") $mynamesheet="PLU";
         
         if (!empty($mynamesheet)) {
+            $pbisasimpan=false;
             unset($pinsert_data);//kosongkan array
             for($row=2; $row<=$totalrow; $row++){
                 $pfile0 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(0, $row)->getValue());
@@ -159,7 +160,7 @@ if (empty($puser)) {
 				
                 $pinsert_data[] = "('$pfile3', '$pfile4', '$pfile1', '$pfile2', "
                         . " '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12')";
-                
+                $pbisasimpan=true;
                 /*
                 $query = "INSERT INTO $dbname.importsks (`No. Faktur Faktur`, `Tgl Faktur Faktur`, `No. Pelanggan`, `Nama Pelanggan`, "
                         . " `KODE BARANG`, `Keterangan Barang`, `kuantitas`, `HNA`, `CABANG`, `Alamat 1 Pelanggan`)values"
@@ -178,13 +179,14 @@ if (empty($puser)) {
         }
         
         
-        $query_ins_pil = "INSERT INTO $dbname.importsks (`No. Faktur Faktur`, `Tgl Faktur Faktur`, `No. Pelanggan`, `Nama Pelanggan`, "
-                . " `KODE BARANG`, `Keterangan Barang`, `kuantitas`, `HNA`, `CABANG`, `Alamat 1 Pelanggan`, `HEADER`) values "
-                . " ".implode(', ', $pinsert_data);
+        if ($pbisasimpan==true) {
+            $query_ins_pil = "INSERT INTO $dbname.importsks (`No. Faktur Faktur`, `Tgl Faktur Faktur`, `No. Pelanggan`, `Nama Pelanggan`, "
+                    . " `KODE BARANG`, `Keterangan Barang`, `kuantitas`, `HNA`, `CABANG`, `Alamat 1 Pelanggan`, `HEADER`) values "
+                    . " ".implode(', ', $pinsert_data);
 
-        mysqli_query($cnmy, $query_ins_pil);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsks : $erropesan"; exit; }
-        
+            mysqli_query($cnmy, $query_ins_pil);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsks : $erropesan"; exit; }
+        }
         
     }
 
@@ -403,6 +405,7 @@ echo "<br/><br/><br/>Import IT....<br/><br/><br/>";
 		elseif (strtoupper(TRIM($pnamasheet))=="PALU") $mynamesheet="PLU";
         
         if (!empty($mynamesheet)) {
+            $pbisasimpan=false;
             unset($pinsert_data);//kosongkan array
             for($row=2; $row<=$totalrow; $row++){
                 $pfile0 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(0, $row)->getValue());
@@ -484,6 +487,7 @@ echo "<br/><br/><br/>Import IT....<br/><br/><br/>";
 				
                 $pinsert_data[] = "('$pfile3', '$pfile4', '$pfile1', '$pfile2', "
                         . " '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12')";
+                $pbisasimpan=true;
                 
                 /*
                 $query = "INSERT INTO $dbname.importsks (`No. Faktur Faktur`, `Tgl Faktur Faktur`, `No. Pelanggan`, `Nama Pelanggan`, "
@@ -503,12 +507,14 @@ echo "<br/><br/><br/>Import IT....<br/><br/><br/>";
         }
         
         
-        $query_ins_pil = "INSERT INTO $dbname.importsks (`No. Faktur Faktur`, `Tgl Faktur Faktur`, `No. Pelanggan`, `Nama Pelanggan`, "
-                . " `KODE BARANG`, `Keterangan Barang`, `kuantitas`, `HNA`, `CABANG`, `Alamat 1 Pelanggan`, `HEADER`) values "
-                . " ".implode(', ', $pinsert_data);
+        if ($pbisasimpan == true) {
+            $query_ins_pil = "INSERT INTO $dbname.importsks (`No. Faktur Faktur`, `Tgl Faktur Faktur`, `No. Pelanggan`, `Nama Pelanggan`, "
+                    . " `KODE BARANG`, `Keterangan Barang`, `kuantitas`, `HNA`, `CABANG`, `Alamat 1 Pelanggan`, `HEADER`) values "
+                    . " ".implode(', ', $pinsert_data);
 
-        mysqli_query($cnmy, $query_ins_pil);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsks : $erropesan"; exit; }
+            mysqli_query($cnmy, $query_ins_pil);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsks : $erropesan"; exit; }
+        }
         
         
     }

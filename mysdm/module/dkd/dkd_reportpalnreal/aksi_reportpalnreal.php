@@ -126,6 +126,14 @@ $query = "UPDATE $tmp07 as a JOIN $tmp04 as b on a.dokterid=b.dokterid AND a.kar
         . " a.tanggal=b.tanggal SET a.tglinput=b.tglinput";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+
+$query = "select a.jabatanid as jabatanid, b.nama as nama_jabatan from $tmp01 as a 
+    LEFT join hrd.jabatan as b on a.jabatanid=b.jabatanId ";
+$tampilk=mysqli_query($cnmy, $query);
+$rowk=mysqli_fetch_array($tampilk);
+$pnamajabatan=$rowk['nama_jabatan'];
+$pjabatanid=$rowk['jabatanid'];
+
     $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
         "Juni", "Juli", "Agustus", "September", 
         "Oktober", "November", "Desember");
@@ -165,7 +173,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
     echo "<b>Report Daily Plan & Realisasi</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
-    //echo "<b>Jabatan : $pnamajabatan</b><br/>";
+    echo "<b>Jabatan : $pnamajabatan</b><br/>";
     echo "<hr/><br/>";
 
     $totcall=0;

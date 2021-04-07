@@ -148,7 +148,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 <HTML>
 <HEAD>
-  <TITLE>Laporan Call Incentive</TITLE>
+  <TITLE>Report Weekly Plan</TITLE>
     <meta http-equiv="Expires" content="Mon, 01 Jan 2030 1:00:00 GMT">
     <meta http-equiv="Pragma" content="no-cache">
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>

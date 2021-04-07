@@ -319,23 +319,17 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                 <tr>
                     <th rowspan="2" align="center">Produk</th>
                     <th rowspan="2" align="center">HNA</th>
-                    <th colspan="5" align="center">Monthly</th>
-                    <th colspan="5" align="center">Year to Date</th>
-                    <th colspan="2" align="center">Year</th>
+                    <th colspan="3" align="center">Monthly</th>
+                    <th colspan="3" align="center">Year to Date</th>
                 </tr>
                 <tr>
                     <th>Target</th>
                     <th>Sales</th>
                     <th>Ach</th>
-                    <th>Last Year</th>
-                    <th>Growth</th>
+                    
                     <th>Target</th>
                     <th>Sales</th>
                     <th>Ach</th>
-                    <th>Last Year</th>
-                    <th>Growth</th>
-                    <th>Year Target</th>
-                    <th>Ach Year</th>
                 </tr>
             </thead>
             <tbody>
@@ -354,14 +348,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                     $npnamadivprod=$ndivprod;
 
                     echo "<tr>";
-                    echo "<td nowrap colspan='14'><b>$npnamadivprod</b></td>";
+                    echo "<td nowrap colspan='8'><b>$npnamadivprod</b></td>";
                     if ($ppilihrpt!="excel") {
-                        echo "<td nowrap class='divnone'></td>";
-                        echo "<td nowrap class='divnone'></td>";
-                        echo "<td nowrap class='divnone'></td>";
-                        echo "<td nowrap class='divnone'></td>";
-                        echo "<td nowrap class='divnone'></td>";
-                        echo "<td nowrap class='divnone'></td>";
                         echo "<td nowrap class='divnone'></td>";
                         echo "<td nowrap class='divnone'></td>";
                         echo "<td nowrap class='divnone'></td>";
@@ -389,12 +377,6 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                         echo "<tr>";
                         echo "<td nowrap align='center'><b>$npnmkaegori</b></td>";
                         if ($ppilihrpt!="excel") {
-                            echo "<td nowrap ></td>";
-                            echo "<td nowrap ></td>";
-                            echo "<td nowrap ></td>";
-                            echo "<td nowrap ></td>";
-                            echo "<td nowrap ></td>";
-                            echo "<td nowrap ></td>";
                             echo "<td nowrap ></td>";
                             echo "<td nowrap ></td>";
                             echo "<td nowrap ></td>";
@@ -448,20 +430,38 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                             $gtotmont_sls=(double)$gtotmont_sls+(double)$nmsls_val;
                             $gtotmont_last=(double)$gtotmont_last+(double)$nmlstyear_value;
                             
-                            $nhna=number_format($nhna,0,",",",");
-                            
-                            $nmtgt_qty=number_format($nmtgt_qty,0,",",",");
-                            $nmtgt_val=number_format($nmtgt_val,0,",",",");
-                            
-                            $nmsls_qty=number_format($nmsls_qty,0,",",",");
-                            $nmsls_val=number_format($nmsls_val,0,",",",");
-                            
-                            $nm_ach=ROUND($nm_ach,2);
-                            
-                            $nmlstyear_qty=number_format($nmlstyear_qty,0,",",",");
-                            $nmlstyear_value=number_format($nmlstyear_value,0,",",",");
-                            
-                            $nm_growth=ROUND($nm_growth,2);
+                            if ($ppilihrpt=="excel") {
+                                $nhna=number_format($nhna,0,"","");
+
+                                $nmtgt_qty=number_format($nmtgt_qty,0,"","");
+                                $nmtgt_val=number_format($nmtgt_val,0,"","");
+
+                                $nmsls_qty=number_format($nmsls_qty,0,"","");
+                                $nmsls_val=number_format($nmsls_val,0,"","");
+
+                                $nm_ach=ROUND($nm_ach,2);
+
+                                $nmlstyear_qty=number_format($nmlstyear_qty,0,"","");
+                                $nmlstyear_value=number_format($nmlstyear_value,0,"","");
+
+                                $nm_growth=ROUND($nm_growth,2);
+                            }else{
+                                $nhna=number_format($nhna,0,",",",");
+
+                                $nmtgt_qty=number_format($nmtgt_qty,0,",",",");
+                                $nmtgt_val=number_format($nmtgt_val,0,",",",");
+
+                                $nmsls_qty=number_format($nmsls_qty,0,",",",");
+                                $nmsls_val=number_format($nmsls_val,0,",",",");
+
+                                $nm_ach=ROUND($nm_ach,2);
+
+                                $nmlstyear_qty=number_format($nmlstyear_qty,0,",",",");
+                                $nmlstyear_value=number_format($nmlstyear_value,0,",",",");
+
+                                $nm_growth=ROUND($nm_growth,2);
+                            }
+
                             
                             
                             //YTD
@@ -490,19 +490,33 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                             $gtotytd_sls=(double)$gtotytd_sls+(double)$nytdsls_val;
                             $gtotytd_last=(double)$gtotytd_last+(double)$nytdlstyear_value;
                             
-                            $nytdtgt_qty=number_format($nytdtgt_qty,0,",",",");
-                            $nytdtgt_val=number_format($nytdtgt_val,0,",",",");
-                            
-                            $nytdsls_qty=number_format($nytdsls_qty,0,",",",");
-                            $nytdsls_val=number_format($nytdsls_val,0,",",",");
-                            
-                            $nytd_ach=ROUND($nytd_ach,2);
-                            
-                            $nytdlstyear_qty=number_format($nytdlstyear_qty,0,",",",");
-                            $nytdlstyear_value=number_format($nytdlstyear_value,0,",",",");
-                            
-                            $nytd_growth=ROUND($nytd_growth,2);
-                            
+                            if ($ppilihrpt=="excel") {
+                                $nytdtgt_qty=number_format($nytdtgt_qty,0,"","");
+                                $nytdtgt_val=number_format($nytdtgt_val,0,"","");
+
+                                $nytdsls_qty=number_format($nytdsls_qty,0,"","");
+                                $nytdsls_val=number_format($nytdsls_val,0,"","");
+
+                                $nytd_ach=ROUND($nytd_ach,2);
+
+                                $nytdlstyear_qty=number_format($nytdlstyear_qty,0,"","");
+                                $nytdlstyear_value=number_format($nytdlstyear_value,0,"","");
+
+                                $nytd_growth=ROUND($nytd_growth,2);
+                            }else{
+                                $nytdtgt_qty=number_format($nytdtgt_qty,0,",",",");
+                                $nytdtgt_val=number_format($nytdtgt_val,0,",",",");
+
+                                $nytdsls_qty=number_format($nytdsls_qty,0,",",",");
+                                $nytdsls_val=number_format($nytdsls_val,0,",",",");
+
+                                $nytd_ach=ROUND($nytd_ach,2);
+
+                                $nytdlstyear_qty=number_format($nytdlstyear_qty,0,",",",");
+                                $nytdlstyear_value=number_format($nytdlstyear_value,0,",",",");
+
+                                $nytd_growth=ROUND($nytd_growth,2);
+                            }
                             
                             
                             //YEAR
@@ -523,13 +537,23 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                             $gtotyear_tgt=(double)$gtotyear_tgt+(double)$nyeart_val;
                             $gtotyear_sls=(double)$gtotyear_sls+(double)$nyears_val;
                             
-                            $nyeart_qty=number_format($nyeart_qty,0,",",",");
-                            $nyeart_val=number_format($nyeart_val,0,",",",");
-                            
-                            $nyears_qty=number_format($nyears_qty,0,",",",");
-                            $nyears_val=number_format($nyears_val,0,",",",");
-                            
-                            $nyear_ach=ROUND($nyear_ach,2);
+                            if ($ppilihrpt=="excel") {
+                                $nyeart_qty=number_format($nyeart_qty,0,"","");
+                                $nyeart_val=number_format($nyeart_val,0,"","");
+
+                                $nyears_qty=number_format($nyears_qty,0,"","");
+                                $nyears_val=number_format($nyears_val,0,"","");
+
+                                $nyear_ach=ROUND($nyear_ach,2);
+                            }else{
+                                $nyeart_qty=number_format($nyeart_qty,0,",",",");
+                                $nyeart_val=number_format($nyeart_val,0,",",",");
+
+                                $nyears_qty=number_format($nyears_qty,0,",",",");
+                                $nyears_val=number_format($nyears_val,0,",",",");
+
+                                $nyear_ach=ROUND($nyear_ach,2);
+                            }
                             
                             echo "<tr>";
                             echo "<td nowrap>$npnmprod</td>";
@@ -537,15 +561,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                             echo "<td nowrap>$nmtgt_qty</td>";
                             echo "<td nowrap>$nmsls_qty</td>";
                             echo "<td nowrap>$nm_ach</td>";
-                            echo "<td nowrap>$nmlstyear_qty</td>";
-                            echo "<td nowrap>$nm_growth</td>";
+                            
                             echo "<td nowrap>$nytdtgt_qty</td>";
                             echo "<td nowrap>$nytdsls_qty</td>";
                             echo "<td nowrap>$nytd_ach</td>";
-                            echo "<td nowrap>$nytdlstyear_qty</td>";
-                            echo "<td nowrap>$nytd_growth</td>";
-                            echo "<td nowrap>$nyeart_qty</td>";
-                            echo "<td nowrap>$nyear_ach</td>";
                             echo "</tr>";
 
                         }
@@ -556,12 +575,19 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                         if ((DOUBLE)$totmont_last==0) $totmont_growth=0;
                         else $totmont_growth=((DOUBLE)$totmont_sls/(DOUBLE)$totmont_last)*100-100;
                         
-                        $totmont_tgt=number_format($totmont_tgt,0,",",",");
-                        $totmont_sls=number_format($totmont_sls,0,",",",");
-                        $totmont_ach=ROUND($totmont_ach,2);
-                        $totmont_last=number_format($totmont_last,0,",",",");
-                        $totmont_growth=ROUND($totmont_growth,2);
-                        
+                        if ($ppilihrpt=="excel") {
+                            $totmont_tgt=number_format($totmont_tgt,0,"","");
+                            $totmont_sls=number_format($totmont_sls,0,"","");
+                            $totmont_ach=ROUND($totmont_ach,2);
+                            $totmont_last=number_format($totmont_last,0,"","");
+                            $totmont_growth=ROUND($totmont_growth,2);
+                        }else{
+                            $totmont_tgt=number_format($totmont_tgt,0,",",",");
+                            $totmont_sls=number_format($totmont_sls,0,",",",");
+                            $totmont_ach=ROUND($totmont_ach,2);
+                            $totmont_last=number_format($totmont_last,0,",",",");
+                            $totmont_growth=ROUND($totmont_growth,2);
+                        }
                         
                         if ((DOUBLE)$totytd_tgt==0) $totytd_ach=0;
                         else $totytd_ach=(DOUBLE)$totytd_sls/(DOUBLE)$totytd_tgt*100;
@@ -569,19 +595,32 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                         if ((DOUBLE)$totytd_last==0) $totytd_growth=0;
                         else $totytd_growth=((DOUBLE)$totytd_sls/(DOUBLE)$totytd_last)*100-100;
                         
-                        $totytd_tgt=number_format($totytd_tgt,0,",",",");
-                        $totytd_sls=number_format($totytd_sls,0,",",",");
-                        $totytd_ach=ROUND($totytd_ach,2);
-                        $totytd_last=number_format($totytd_last,0,",",",");
-                        $totytd_growth=ROUND($totytd_growth,2);
-                        
+                        if ($ppilihrpt=="excel") {
+                            $totytd_tgt=number_format($totytd_tgt,0,"","");
+                            $totytd_sls=number_format($totytd_sls,0,"","");
+                            $totytd_ach=ROUND($totytd_ach,2);
+                            $totytd_last=number_format($totytd_last,0,"","");
+                            $totytd_growth=ROUND($totytd_growth,2);
+                        }else{
+                            $totytd_tgt=number_format($totytd_tgt,0,",",",");
+                            $totytd_sls=number_format($totytd_sls,0,",",",");
+                            $totytd_ach=ROUND($totytd_ach,2);
+                            $totytd_last=number_format($totytd_last,0,",",",");
+                            $totytd_growth=ROUND($totytd_growth,2);
+                        }
                         
                         if ((DOUBLE)$totyear_tgt==0) $totyear_ach=0;
                         else $totyear_ach=(DOUBLE)$totyear_sls/(DOUBLE)$totyear_tgt*100;
                         
-                        $totyear_tgt=number_format($totyear_tgt,0,",",",");
-                        $totyear_sls=number_format($totyear_sls,0,",",",");
-                        $totyear_ach=ROUND($totyear_ach,2);
+                        if ($ppilihrpt=="excel") {
+                            $totyear_tgt=number_format($totyear_tgt,0,"","");
+                            $totyear_sls=number_format($totyear_sls,0,"","");
+                            $totyear_ach=ROUND($totyear_ach,2);
+                        }else{
+                            $totyear_tgt=number_format($totyear_tgt,0,",",",");
+                            $totyear_sls=number_format($totyear_sls,0,",",",");
+                            $totyear_ach=ROUND($totyear_ach,2);
+                        }
                         
                         echo "<tr>";
                         echo "<td nowrap align='center'><b>TOTAL $npnamadivprod $npnmkaegori : </b></td>";
@@ -589,15 +628,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                         echo "<td nowrap><b>$totmont_tgt</b></td>";
                         echo "<td nowrap><b>$totmont_sls</b></td>";
                         echo "<td nowrap><b>$totmont_ach</b></td>";
-                        echo "<td nowrap><b>$totmont_last</b></td>";
-                        echo "<td nowrap><b>$totmont_growth</b></td>";
+                        
                         echo "<td nowrap><b>$totytd_tgt</b></td>";
                         echo "<td nowrap><b>$totytd_sls</b></td>";
                         echo "<td nowrap><b>$totytd_ach</b></td>";
-                        echo "<td nowrap><b>$totytd_last</b></td>";
-                        echo "<td nowrap><b>$totytd_growth</b></td>";
-                        echo "<td nowrap><b>$totyear_tgt</b></td>";
-                        echo "<td nowrap><b>$totyear_ach</b></td>";
                         echo "</tr>";
                      
                     }
@@ -609,12 +643,20 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
 
                     if ((DOUBLE)$dtotmont_last==0) $dtotmont_growth=0;
                     else $dtotmont_growth=((DOUBLE)$dtotmont_sls/(DOUBLE)$dtotmont_last)*100-100;
-
-                    $dtotmont_tgt=number_format($dtotmont_tgt,0,",",",");
-                    $dtotmont_sls=number_format($dtotmont_sls,0,",",",");
-                    $dtotmont_ach=ROUND($dtotmont_ach,2);
-                    $dtotmont_last=number_format($dtotmont_last,0,",",",");
-                    $dtotmont_growth=ROUND($dtotmont_growth,2);
+                    
+                    if ($ppilihrpt=="excel") {
+                        $dtotmont_tgt=number_format($dtotmont_tgt,0,"","");
+                        $dtotmont_sls=number_format($dtotmont_sls,0,"","");
+                        $dtotmont_ach=ROUND($dtotmont_ach,2);
+                        $dtotmont_last=number_format($dtotmont_last,0,"","");
+                        $dtotmont_growth=ROUND($dtotmont_growth,2);
+                    }else{
+                        $dtotmont_tgt=number_format($dtotmont_tgt,0,",",",");
+                        $dtotmont_sls=number_format($dtotmont_sls,0,",",",");
+                        $dtotmont_ach=ROUND($dtotmont_ach,2);
+                        $dtotmont_last=number_format($dtotmont_last,0,",",",");
+                        $dtotmont_growth=ROUND($dtotmont_growth,2);
+                    }
 
 
                     if ((DOUBLE)$dtotytd_tgt==0) $dtotytd_ach=0;
@@ -622,20 +664,34 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
 
                     if ((DOUBLE)$dtotytd_last==0) $dtotytd_growth=0;
                     else $dtotytd_growth=((DOUBLE)$dtotytd_sls/(DOUBLE)$dtotytd_last)*100-100;
-
-                    $dtotytd_tgt=number_format($dtotytd_tgt,0,",",",");
-                    $dtotytd_sls=number_format($dtotytd_sls,0,",",",");
-                    $dtotytd_ach=ROUND($dtotytd_ach,2);
-                    $dtotytd_last=number_format($dtotytd_last,0,",",",");
-                    $dtotytd_growth=ROUND($dtotytd_growth,2);
+                    
+                    if ($ppilihrpt=="excel") {
+                        $dtotytd_tgt=number_format($dtotytd_tgt,0,"","");
+                        $dtotytd_sls=number_format($dtotytd_sls,0,"","");
+                        $dtotytd_ach=ROUND($dtotytd_ach,2);
+                        $dtotytd_last=number_format($dtotytd_last,0,"","");
+                        $dtotytd_growth=ROUND($dtotytd_growth,2);
+                    }else{
+                        $dtotytd_tgt=number_format($dtotytd_tgt,0,",",",");
+                        $dtotytd_sls=number_format($dtotytd_sls,0,",",",");
+                        $dtotytd_ach=ROUND($dtotytd_ach,2);
+                        $dtotytd_last=number_format($dtotytd_last,0,",",",");
+                        $dtotytd_growth=ROUND($dtotytd_growth,2);
+                    }
 
 
                     if ((DOUBLE)$dtotyear_tgt==0) $dtotyear_ach=0;
                     else $dtotyear_ach=(DOUBLE)$dtotyear_sls/(DOUBLE)$dtotyear_tgt*100;
-
-                    $dtotyear_tgt=number_format($dtotyear_tgt,0,",",",");
-                    $dtotyear_sls=number_format($dtotyear_sls,0,",",",");
-                    $dtotyear_ach=ROUND($dtotyear_ach,2);
+                    
+                    if ($ppilihrpt=="excel") {
+                        $dtotyear_tgt=number_format($dtotyear_tgt,0,"","");
+                        $dtotyear_sls=number_format($dtotyear_sls,0,"","");
+                        $dtotyear_ach=ROUND($dtotyear_ach,2);
+                    }else{
+                        $dtotyear_tgt=number_format($dtotyear_tgt,0,",",",");
+                        $dtotyear_sls=number_format($dtotyear_sls,0,",",",");
+                        $dtotyear_ach=ROUND($dtotyear_ach,2);
+                    }
 
                     echo "<tr>";
                     echo "<td nowrap><b>TOTAL $npnamadivprod : </b></td>";
@@ -643,15 +699,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                     echo "<td nowrap><b>$dtotmont_tgt</b></td>";
                     echo "<td nowrap><b>$dtotmont_sls</b></td>";
                     echo "<td nowrap><b>$dtotmont_ach</b></td>";
-                    echo "<td nowrap><b>$dtotmont_last</b></td>";
-                    echo "<td nowrap><b>$dtotmont_growth</b></td>";
+                    
                     echo "<td nowrap><b>$dtotytd_tgt</b></td>";
                     echo "<td nowrap><b>$dtotytd_sls</b></td>";
                     echo "<td nowrap><b>$dtotytd_ach</b></td>";
-                    echo "<td nowrap><b>$dtotytd_last</b></td>";
-                    echo "<td nowrap><b>$dtotytd_growth</b></td>";
-                    echo "<td nowrap><b>$dtotyear_tgt</b></td>";
-                    echo "<td nowrap><b>$dtotyear_ach</b></td>";
                     echo "</tr>";
                     
                 }
@@ -661,12 +712,20 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
 
                 if ((DOUBLE)$gtotmont_last==0) $gtotmont_growth=0;
                 else $gtotmont_growth=((DOUBLE)$gtotmont_sls/(DOUBLE)$gtotmont_last)*100-100;
-
-                $gtotmont_tgt=number_format($gtotmont_tgt,0,",",",");
-                $gtotmont_sls=number_format($gtotmont_sls,0,",",",");
-                $gtotmont_ach=ROUND($gtotmont_ach,2);
-                $gtotmont_last=number_format($gtotmont_last,0,",",",");
-                $gtotmont_growth=ROUND($gtotmont_growth,2);
+                
+                if ($ppilihrpt=="excel") {
+                    $gtotmont_tgt=number_format($gtotmont_tgt,0,"","");
+                    $gtotmont_sls=number_format($gtotmont_sls,0,"","");
+                    $gtotmont_ach=ROUND($gtotmont_ach,2);
+                    $gtotmont_last=number_format($gtotmont_last,0,"","");
+                    $gtotmont_growth=ROUND($gtotmont_growth,2);
+                }else{
+                    $gtotmont_tgt=number_format($gtotmont_tgt,0,",",",");
+                    $gtotmont_sls=number_format($gtotmont_sls,0,",",",");
+                    $gtotmont_ach=ROUND($gtotmont_ach,2);
+                    $gtotmont_last=number_format($gtotmont_last,0,",",",");
+                    $gtotmont_growth=ROUND($gtotmont_growth,2);
+                }
 
 
                 if ((DOUBLE)$gtotytd_tgt==0) $gtotytd_ach=0;
@@ -674,20 +733,34 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
 
                 if ((DOUBLE)$gtotytd_last==0) $gtotytd_growth=0;
                 else $gtotytd_growth=((DOUBLE)$gtotytd_sls/(DOUBLE)$gtotytd_last)*100-100;
-
-                $gtotytd_tgt=number_format($gtotytd_tgt,0,",",",");
-                $gtotytd_sls=number_format($gtotytd_sls,0,",",",");
-                $gtotytd_ach=ROUND($gtotytd_ach,2);
-                $gtotytd_last=number_format($gtotytd_last,0,",",",");
-                $gtotytd_growth=ROUND($gtotytd_growth,2);
+                
+                if ($ppilihrpt=="excel") {
+                    $gtotytd_tgt=number_format($gtotytd_tgt,0,"","");
+                    $gtotytd_sls=number_format($gtotytd_sls,0,"","");
+                    $gtotytd_ach=ROUND($gtotytd_ach,2);
+                    $gtotytd_last=number_format($gtotytd_last,0,"","");
+                    $gtotytd_growth=ROUND($gtotytd_growth,2);
+                }else{
+                    $gtotytd_tgt=number_format($gtotytd_tgt,0,",",",");
+                    $gtotytd_sls=number_format($gtotytd_sls,0,",",",");
+                    $gtotytd_ach=ROUND($gtotytd_ach,2);
+                    $gtotytd_last=number_format($gtotytd_last,0,",",",");
+                    $gtotytd_growth=ROUND($gtotytd_growth,2);
+                }
 
 
                 if ((DOUBLE)$gtotyear_tgt==0) $gtotyear_ach=0;
                 else $gtotyear_ach=(DOUBLE)$gtotyear_sls/(DOUBLE)$gtotyear_tgt*100;
-
-                $gtotyear_tgt=number_format($gtotyear_tgt,0,",",",");
-                $gtotyear_sls=number_format($gtotyear_sls,0,",",",");
-                $gtotyear_ach=ROUND($gtotyear_ach,2);
+                
+                if ($ppilihrpt=="excel") {
+                    $gtotyear_tgt=number_format($gtotyear_tgt,0,"","");
+                    $gtotyear_sls=number_format($gtotyear_sls,0,"","");
+                    $gtotyear_ach=ROUND($gtotyear_ach,2);
+                }else{
+                    $gtotyear_tgt=number_format($gtotyear_tgt,0,",",",");
+                    $gtotyear_sls=number_format($gtotyear_sls,0,",",",");
+                    $gtotyear_ach=ROUND($gtotyear_ach,2);
+                }
 
                 echo "<tr>";
                 echo "<td nowrap><b>GRAND TOTAL : </b></td>";
@@ -695,15 +768,10 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                 echo "<td nowrap><b>$gtotmont_tgt</b></td>";
                 echo "<td nowrap><b>$gtotmont_sls</b></td>";
                 echo "<td nowrap><b>$gtotmont_ach</b></td>";
-                echo "<td nowrap><b>$gtotmont_last</b></td>";
-                echo "<td nowrap><b>$gtotmont_growth</b></td>";
+                
                 echo "<td nowrap><b>$gtotytd_tgt</b></td>";
                 echo "<td nowrap><b>$gtotytd_sls</b></td>";
                 echo "<td nowrap><b>$gtotytd_ach</b></td>";
-                echo "<td nowrap><b>$gtotytd_last</b></td>";
-                echo "<td nowrap><b>$gtotytd_growth</b></td>";
-                echo "<td nowrap><b>$gtotyear_tgt</b></td>";
-                echo "<td nowrap><b>$gtotyear_ach</b></td>";
                 echo "</tr>";
 
                 
@@ -871,8 +939,8 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan UPD
                 "order": [[ 0, "asc" ]],
                 "columnDefs": [
                     { "visible": false },
-                    { className: "text-right", "targets": [1,2,3,4,5,6,7,8,9,10,11,12,13] },//right
-                    { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7,8,9,10,11,12,13] }//nowrap
+                    { className: "text-right", "targets": [1,2,3,4,5,6,7] },//right
+                    { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7] }//nowrap
 
                 ],
                 bFilter: true, bInfo: true, "bLengthChange": true, "bLengthChange": true,

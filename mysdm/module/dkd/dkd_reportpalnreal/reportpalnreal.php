@@ -18,7 +18,8 @@ switch($pactpilih){
         $tgl_akhir = date('t F Y', strtotime($hari_ini));
 
         $tgl_pertama = date('d F Y',time()+( 1 - date('w'))*24*3600);
-
+        $ptglpilih = date('Y-m-d', strtotime($tgl_pertama));
+        
         if (!empty($ptgl1_pl)) $tgl_pertama=$ptgl1_pl;
 
         $fkaryawan=$_SESSION['IDCARD'];
@@ -132,7 +133,7 @@ switch($pactpilih){
                     numberOfMonths: 1,
                     dateFormat: 'dd MM yy',
                     onSelect: function(dateStr) {
-                        
+                        ShowTanggalPilih();
                     },
                     beforeShowDay: function (date) {
                         var day = date.getDay();
@@ -141,6 +142,19 @@ switch($pactpilih){
                 });
 
             });
+            
+            function ShowTanggalPilih() {
+                var etgl =document.getElementById('e_tanggal').value;
+
+                $.ajax({
+                    type:"post",
+                    url:"module/dkd/viewdatadkd.php?module=viewdatatanggal",
+                    data:"utgl="+etgl,
+                    success:function(data){
+                        $("#div_tgl").html(data);
+                    }
+                });
+            }
         </script>
 
 
@@ -289,6 +303,26 @@ switch($pactpilih){
                                             </div>
                                         </div>
 
+
+                                        <div class='form-group'>
+                                            <div class='col-sm-12'>
+                                                <b>Tanggal</b>
+                                                <div class="form-group">
+                                                    <div id="div_tgl">
+                                                        <?PHP
+                                                            $p_tgl = date('d', strtotime($ptglpilih));
+                                                            echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih' checked> $p_tgl &nbsp; &nbsp; ";
+                                                            for ($ix=1;$ix<5;$ix++) {
+                                                                $ptglpilih = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih)));
+                                                                $p_tgl = date('d', strtotime($ptglpilih));
+
+                                                                echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih'> $p_tgl &nbsp; &nbsp; ";
+                                                            }
+                                                        ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class='form-group'>
                                             <div class='col-sm-12'>

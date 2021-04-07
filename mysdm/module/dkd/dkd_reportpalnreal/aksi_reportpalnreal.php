@@ -325,7 +325,7 @@ $pjabatanid=$rowk['jabatanid'];
         echo "<tr>";
         
             echo "<th align='left' rowspan='2'><small>Tanggal</small></th>";
-            echo "<th align='cener' colspan='4'><small>Plan</small></th>";
+            echo "<th align='cener' colspan='3'><small>Plan</small></th>";
             echo "<th align='cener' colspan='5'><small>Realisasi</small></th>";
             
         echo "</tr>";
@@ -335,7 +335,6 @@ $pjabatanid=$rowk['jabatanid'];
             echo "<th align='left'><small>Jenis</small></th>";
             echo "<th align='left'><small>Dokter</small></th>";
             echo "<th align='left'><small>Notes</small></th>";
-            echo "<th align='left'><small>Saran</small></th>";
             
             echo "<th align='left'><small>Jam</small></th>";
             echo "<th align='left'><small>Jenis</small></th>";
@@ -408,7 +407,6 @@ $pjabatanid=$rowk['jabatanid'];
                         echo "<td >$pnmjenis</td>";
                         echo "<td nowrap>$pnmdokt_</td>";
                         echo "<td >$nnotes</td>";
-                        echo "<td >$nsaran</td>";
                         
                         $query = "select * from $tmp04 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' AND dokterid='$pdokterid' order by tanggal, namalengkap";
                         $tampil2=mysqli_query($cnmy, $query);
@@ -463,7 +461,6 @@ $pjabatanid=$rowk['jabatanid'];
                                     echo "<td nowrap>&nbsp;</td>";
                                     echo "<td nowrap>&nbsp;</td>";
                                     echo "<td >&nbsp;</td>";
-                                    echo "<td >&nbsp;</td>";
                                 }
                                 echo "<td nowrap>$pjam</td>";
                                 echo "<td nowrap>$pnmjenis</td>";
@@ -481,7 +478,6 @@ $pjabatanid=$rowk['jabatanid'];
                         echo "<td nowrap>$ppilihtgl</td>";
                         echo "<td nowrap>&nbsp;</td>";
                         echo "<td nowrap>&nbsp;</td>";
-                        echo "<td >&nbsp;</td>";
                         echo "<td >&nbsp;</td>";
 
                         echo "<td nowrap>$pjam</td>";

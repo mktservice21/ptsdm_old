@@ -877,6 +877,8 @@
         include 'module/dkd/dkd_reportwekplan/reportwekplan.php';
     }elseif ($_GET['module']=='dkdreportmonthlyplandokt'){
         include 'module/dkd/dkd_reportmonplandokt/reportmonplandokt.php';
+    }elseif ($_GET['module']=='dkdrptplanreal'){
+        include 'module/dkd/dkd_reportpalnreal/reportpalnreal.php';
         
 
     }else{

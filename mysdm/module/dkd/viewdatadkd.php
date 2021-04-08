@@ -134,6 +134,48 @@ if ($pmodule=="cekdatasudahada") {
         
         echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih'> $p_tgl &nbsp; &nbsp; ";
     }
+}elseif ($pmodule=="viewdatakomentar") {
+    
+    include "../../config/koneksimysqli.php";
+    $pidinput=$_POST['unoid'];
+    $psts=$_POST['usts'];
+    
+    $query = "select a.*, b.nama as namakoentar, b.jabatanId as jabatanid, c.nama as namajabatan "
+            . " from hrd.dkd_new_real1_komen as a "
+            . " JOIN hrd.karyawan as b on a.komen_user=b.karyawanId "
+            . " LEFT JOIN hrd.jabatan as c on b.jabatanId=c.jabatanId "
+            . " WHERE a.nourut='$pidinput' AND a.`sts`='$psts' order by komen_date DESC";
+    $tampil1=mysqli_query($cnmy, $query);
+    while ($row1= mysqli_fetch_array($tampil1)) {
+        $pjbkomen=$row1['jabatanid'];
+        $pikomen=$row1['komentar'];
+        $pikoentgl=$row1['komen_date'];
+        $pikoenuser=$row1['komen_user'];
+        $pikoenusernm=$row1['namakoentar'];
+        $pikoenuserjbt=$row1['namajabatan'];
+
+        echo "<li>";
+            echo "<div class='block'>";
+                echo "<div class='block_content'>";
+
+                    echo "<h2 class='title' style='font-size:11px; font-weight:bold;'>";
+                        echo "$pikoenusernm <span class='byline'>$pikoentgl</span> ";
+                    echo "</h2>";
+                    /*
+                    echo "<div class='byline'>";
+                        echo "<span>$pikoentgl</span> ";
+                    echo "</div>";
+                    */
+                    echo "<p class=excerpt'>";
+                        echo "$pikomen";
+                    echo "</p>";
+
+                echo "</div>";
+            echo "</div>";
+
+        echo "</li>";
+    }
+    mysqli_close($cnmy);
 }elseif ($pmodule=="viewdatakaryawancabjbt") {
     include "../../config/koneksimysqli.php";
     $pidcab=$_POST['uidcab'];

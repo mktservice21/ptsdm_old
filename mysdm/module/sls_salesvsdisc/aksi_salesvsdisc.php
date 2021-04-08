@@ -84,7 +84,7 @@
     if ($pidregion=="B") $ppilihregion="Barat";
     if ($pidregion=="BB") $ppilihregion="Barat";
     if ($pidregion=="T") $ppilihregion="Timur";
-    if ($piddivisi=="OTC" AND $pidregion=="BB") $ppilihregion="All Region";
+    if ($piddivisi=="OTC" OR $piddivisi=="CHC" OR $piddivisi=="OTHER" OR $piddivisi=="OTHERS") $ppilihregion="All Region";
     
     $pketstsdic="Termasuk PPN & PPH";
     if ($pstsdiscount=="S") $pketstsdic="Sebelum PPN & PPH";
@@ -126,12 +126,15 @@
                 . " iprodid varchar(10), qty DECIMAL(20,2), hna DECIMAL(20,2), tvalue DECIMAL(20,2)";
         if ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") {
             $query = "select CONCAT(LEFT(a.tgljual,8), '01') as bulan, a.distid, sum(a.`value`) as tvalue "
-                    . " from MKT.otc_etl as a JOIN MKT.icabang_o as c on a.icabangid=c.icabangid_o "
+                    . " from MKT.otc_etl as a "//JOIN MKT.icabang_o as c on a.icabangid=c.icabangid_o
                     . " where year(a.tgljual)='$pthn' AND a.divprodid ='OTHER' and a.icabangid <> 22 ";
+            /*
             if (!empty($pidregion)) {
                 if ($pidregion=="BB") $query .=" AND c.region='B' ";
                 else $query .=" AND c.region='$pidregion' ";
             }
+             * 
+             */
             if (!empty($pdistid)) {
                 $query .=" AND a.distid='$pdistid' ";
             }
@@ -142,12 +145,8 @@
             //echo $query;
         }else{
             $query = "select CONCAT(LEFT(a.tgljual,8), '01') as bulan, a.distid, sum(`value`) as tvalue "
-                    . " from MKT.otc_etl as a JOIN MKT.icabang_o as c on a.icabangid=c.icabangid_o "
+                    . " from MKT.otc_etl as a "
                     . " where year(a.tgljual)='$pthn' AND a.divprodid <>'OTHER' and a.icabangid <> 22 ";
-            if (!empty($pidregion)) {
-                if ($pidregion=="BB") $query .=" AND c.region='B' ";
-                else $query .=" AND c.region='$pidregion' ";
-            }
             if (!empty($pdistid)) {
                 $query .=" AND a.distid='$pdistid'";
             }

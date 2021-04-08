@@ -42,14 +42,30 @@
     $piddivisi=$_POST['e_iddivisi'];
     $pstsdiscount=$_POST['e_stsdisc'];
     $prptby=$_POST['e_rptby'];
-    $pprodukoth="0000000055";
     
-    if (!empty($pprodukoth)) {
-        $query = "select nama from MKT.iproduk WHERE iProdId='$pprodukoth'";
-        $tampilp=mysqli_query($cnmy, $query);
-        $nrow=mysqli_fetch_array($tampilp);
-        $pnmprodukoth=$nrow['nama'];
+    
+    $fprodothfilter="";
+    if (isset($_POST['chkprodoth'])) {
+        foreach ($_POST['chkprodoth'] as $pnprod) {
+            if (!empty($pnprod)) {
+                $fprodothfilter .="'".$pnprod."',";
+            }
+        }
+        
+        if (!empty($fprodothfilter)) $fprodothfilter="(".substr($fprodothfilter, 0, -1).")";
     }
+    
+    $pnmprodukoth="";
+    if (!empty($fprodothfilter)) {
+        $query = "select nama from MKT.iproduk WHERE iProdId IN $fprodothfilter";
+        $tampilp=mysqli_query($cnmy, $query);
+        while ($nrow=mysqli_fetch_array($tampilp)) {
+            $pnmprodukoth .=$nrow['nama'].",";
+        }
+        if (!empty($pnmprodukoth)) $pnmprodukoth="(".substr($pnmprodukoth, 0, -1).")";
+    }
+    
+    
     
     $periode=$pthn;
     
@@ -105,13 +121,12 @@
         }else{
             $query .=" AND a.divprodid='$piddivisi'";
         }
-        
     }else{
         $query = "bulan DATE, idcbg varchar(3), nama_cabdist varchar(100), distid varchar(10), nama_dist varchar(100), divprodid varchar(5), "
                 . " iprodid varchar(10), qty DECIMAL(20,2), hna DECIMAL(20,2), tvalue DECIMAL(20,2)";
         if ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") {
             $query = "select CONCAT(LEFT(a.tgljual,8), '01') as bulan, a.distid, sum(a.`value`) as tvalue "
-                    . " from MKT.otc_etl as a JOIN mkt.icabang_o as c on a.icabangid=c.icabangid_o "
+                    . " from MKT.otc_etl as a JOIN MKT.icabang_o as c on a.icabangid=c.icabangid_o "
                     . " where year(a.tgljual)='$pthn' AND a.divprodid ='OTHER' and a.icabangid <> 22 ";
             if (!empty($pidregion)) {
                 if ($pidregion=="BB") $query .=" AND c.region='B' ";
@@ -120,24 +135,24 @@
             if (!empty($pdistid)) {
                 $query .=" AND a.distid='$pdistid' ";
             }
-            if (!empty($pprodukoth)) {
-                $query .=" AND a.iprodid='$pprodukoth' ";//, '0000000214', '0000000068'
+            if (!empty($fprodothfilter)) {
+                $query .=" AND a.iprodid IN $fprodothfilter ";
             }
             $query .= " GROUP BY 1,2";
+            //echo $query;
         }else{
-            $query = "select CONCAT(LEFT(tgljual,8), '01') as bulan, distid, sum(`value`) as tvalue "
-                    . " from MKT.otc_etl where year(tgljual)='$pthn' AND divprodid <>'OTHER' and icabangid <> 22 "
-                    . " ";
+            $query = "select CONCAT(LEFT(a.tgljual,8), '01') as bulan, a.distid, sum(`value`) as tvalue "
+                    . " from MKT.otc_etl as a JOIN MKT.icabang_o as c on a.icabangid=c.icabangid_o "
+                    . " where year(a.tgljual)='$pthn' AND a.divprodid <>'OTHER' and a.icabangid <> 22 ";
             if (!empty($pidregion)) {
-                if ($pidregion=="BB") $query .=" AND c.region='B'";
-                else $query .=" AND c.region='$pidregion'";
+                if ($pidregion=="BB") $query .=" AND c.region='B' ";
+                else $query .=" AND c.region='$pidregion' ";
             }
             if (!empty($pdistid)) {
                 $query .=" AND a.distid='$pdistid'";
             }
-            //$query .=" AND a.iprodid IN ('0000000055')";//, '0000000214', '0000000068'
-            $query .= "GROUP BY 1,2";
-            echo $query;
+            $query .= " GROUP BY 1,2";
+            //echo $query;
         }
     }
     $query = "create TEMPORARY table $tmp01 ($query)"; 
@@ -327,7 +342,7 @@
             <tr class='miring text2'><td>Periode By</td><td>:</td><td><?PHP echo "$pperiodeby"; ?></td></tr>
             <tr class='miring text2'><td>Status Disc.</td><td>:</td><td><?PHP echo "$pketstsdic"; ?></td></tr>
             <?PHP
-            if ( ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") AND !empty($pprodukoth)) {
+            if ( ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") AND !empty($fprodothfilter)) {
                 echo "<tr class='miring text2'><td>Produk</td><td>:</td><td>$pnmprodukoth</td></tr>";
             }
             ?>

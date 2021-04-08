@@ -80,6 +80,20 @@ if (!empty($pusrkomen)) {
 }
 ?>
 
+<!--
+<script>
+
+setInterval(function() {
+    var ests = document.getElementById("e_idstatus").value;
+    var eidinput = document.getElementById("e_idinput").value;
+    ShowDataKomentar(ests, eidinput);
+}, 500);
+
+</script>
+    
+<meta http-equiv="refresh" content="30"/>
+-->
+
 <div class='modal-dialog modal-lg'>
     <!-- Modal content-->
     <div class='modal-content'>

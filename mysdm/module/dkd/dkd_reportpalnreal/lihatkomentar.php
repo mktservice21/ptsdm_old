@@ -38,7 +38,7 @@ $pkomen_dm=""; $pusrkomen_dm="";
 $pkomen_sm=""; $pusrkomen_sm="";
 $pkomen_gsm=""; $pusrkomen_gsm="";
 
-$query = "select * from hrd.dkd_new_real1_komen WHERE nourut='$pidinput'";
+$query = "select * from hrd.dkd_new_real1_komen WHERE nourut='$pidinput' AND `sts`='$psts'";
 $tampil1=mysqli_query($cnmy, $query);
 while ($row1= mysqli_fetch_array($tampil1)) {
     $pjbkomen=$row1['jabatanid'];
@@ -111,6 +111,7 @@ if (!empty($pusrkomen)) {
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
                                             <div class='col-md-4'>
                                                 <input type='text' id='e_idinput' name='e_idinput' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput; ?>' Readonly>
+                                                <input type='text' id='e_idstatus' name='e_idstatus' class='form-control col-md-7 col-xs-12' value='<?PHP echo $psts; ?>' Readonly>
                                                 <input type='text' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                                 <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
                                                 <input type='text' id='e_idjbt' name='e_idjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbt; ?>' Readonly>
@@ -131,7 +132,7 @@ if (!empty($pusrkomen)) {
                                         </div>
 
                                         <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama <span class='required'></span></label>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Karyawan <span class='required'></span></label>
                                             <div class='col-md-4'>
                                                 <input type='hidden' id='e_idkry' name='e_idkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkryid; ?>' Readonly>
                                                 <input type='text' id='e_namakry' name='e_namakry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmkaryawan; ?>' Readonly>
@@ -202,6 +203,7 @@ if (!empty($pusrkomen)) {
     function disp_confirm_notes(pText_,nid)  {
         // pText_, nid e_idkry, e_periode1, e_doktid, e_komen, e_idcarduser
         var eact="inputkomentar";
+        var ests = document.getElementById("e_idstatus").value;
         var eidinput = document.getElementById("e_idinput").value;
         var eidkry = document.getElementById("e_idkry").value;
         var etgl = document.getElementById("e_periode1").value;
@@ -209,6 +211,7 @@ if (!empty($pusrkomen)) {
         var eiduserinput = document.getElementById("e_idcarduser").value;
         var eidjbtinput = document.getElementById("e_idjbt").value;
         var ekomen = document.getElementById("e_komen").value;
+        
         
         if (eiduserinput=="") {
             alert("Anda harus login ulang...");
@@ -252,7 +255,7 @@ if (!empty($pusrkomen)) {
                 $.ajax({
                     type:"post",
                     url:"module/dkd/dkd_reportpalnreal/simpan_komentar.php?module="+module+"&act="+eact+"&idmenu="+idmenu,
-                    data:"uidinput="+eidinput+"&uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid+"&uiduserinput="+eiduserinput+"&ukomen="+ekomen+"&uidjbtinput="+eidjbtinput,
+                    data:"usts="+ests+"&uidinput="+eidinput+"&uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid+"&uiduserinput="+eiduserinput+"&ukomen="+ekomen+"&uidjbtinput="+eidjbtinput,
                     success:function(data){
                         if (data.length > 2) {
                             alert(data);

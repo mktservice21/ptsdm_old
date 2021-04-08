@@ -75,7 +75,7 @@ $phiddensave="";
 if (!empty($pusrkomen)) {
     if ($pusrkomen==$pidcard) {
     }else{
-        $phiddensave="hidden";
+        //$phiddensave="hidden";
     }
 }
 ?>

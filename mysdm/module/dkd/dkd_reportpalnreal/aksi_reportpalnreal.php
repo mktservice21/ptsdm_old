@@ -67,7 +67,7 @@ $query = "create TEMPORARY table $tmp01 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$sql = "select a.idinput, a.karyawanid, a.namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
+$sql = "select c.nourut, a.idinput, a.karyawanid, a.namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
     c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, c.saran 
     FROM $tmp01 as a LEFT JOIN hrd.dkd_new1 as c on a.idinput=c.idinput JOIN dr.masterdokter as d on c.dokterid=d.id";
 $query = "create TEMPORARY table $tmp02 ($sql)"; 
@@ -89,7 +89,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$sql = "select a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput, 
+$sql = "select a.nourut, a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput, 
     a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran 
     FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
@@ -355,7 +355,7 @@ $pjabatanid=$rowk['jabatanid'];
         
             echo "<th align='left' rowspan='2'><small>Tanggal</small></th>";
             echo "<th align='cener' colspan='2'><small>Plan</small></th>";
-            echo "<th align='cener' colspan='4'><small>Realisasi</small></th>";
+            echo "<th align='cener' colspan='5'><small>Realisasi</small></th>";
             
         echo "</tr>";
         
@@ -367,6 +367,7 @@ $pjabatanid=$rowk['jabatanid'];
             echo "<th align='left'><small>Jam</small></th>";
             echo "<th align='left'><small>Jenis</small></th>";
             echo "<th align='left'><small>Dokter</small></th>";
+            echo "<th align='left'><small>&nbsp;</small></th>";
             echo "<th align='left'><small>&nbsp;</small></th>";
             
         echo "</tr>";
@@ -397,6 +398,7 @@ $pjabatanid=$rowk['jabatanid'];
 
                 
                 while ($row0=mysqli_fetch_array($tampil0)) {
+                    $cnourut=$row0['nourut'];
                     $ndoktid=$row0['dokterid'];
                     $nkaryawanid=$row0['karyawanid'];
                     $ntgl=$row0['tanggal'];
@@ -432,7 +434,10 @@ $pjabatanid=$rowk['jabatanid'];
                     
                     
                     $plihatnotes="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
-                            . " data-target='#myModal' onClick=\"LiatNotes('real', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
+                            . " data-target='#myModal' onClick=\"LiatNotes('real', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
+                    
+                    $plihatkomen="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
+                            . " data-target='#myModal' onClick=\"LiatKomentar('real', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
                     
                     if ($pada==false) {
                         echo "<tr>";
@@ -449,12 +454,14 @@ $pjabatanid=$rowk['jabatanid'];
                             echo "<td nowrap></td>";
                             echo "<td nowrap></td>";
                             echo "<td ></td>";
+                            echo "<td ></td>";
                             
                             echo "</tr>";
                         }else{
                             $ifirst=false;
                             while ($row2=mysqli_fetch_array($tampil2)) {
                                 
+                                $cnourut=$row2['nourut'];
                                 $ndoktid=$row2['dokterid'];
                                 $nkaryawanid=$row2['karyawanid'];
                                 $ntgl=$row2['tanggal'];
@@ -496,7 +503,10 @@ $pjabatanid=$rowk['jabatanid'];
                                     . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                                     . "Lihat Notes</a>";
                                 $plihatnotes="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
-                                        . " data-target='#myModal' onClick=\"LiatNotes('real', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
+                                        . " data-target='#myModal' onClick=\"LiatNotes('real', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
+                                
+                                $plihatkomen="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
+                                        . " data-target='#myModal' onClick=\"LiatKomentar('real', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
                                 
                                 if ($ifirst==true) {
                                     echo "<tr>";
@@ -509,6 +519,7 @@ $pjabatanid=$rowk['jabatanid'];
                                 echo "<td nowrap>$pnmjenis</td>";
                                 echo "<td nowrap>$pnmdokt_</td>";
                                 echo "<td >$plihatnotes</td>";
+                                echo "<td >$plihatkomen</td>";
 
                                 echo "</tr>";
                                 $ifirst=true;
@@ -526,6 +537,7 @@ $pjabatanid=$rowk['jabatanid'];
                         echo "<td nowrap>$pnmjenis</td>";
                         echo "<td nowrap>$pnmdokt_</td>";
                         echo "<td >$plihatnotes</td>";
+                        echo "<td >$plihatkomen</td>";
                     }
 
                     echo "</tr>";
@@ -613,11 +625,21 @@ $pjabatanid=$rowk['jabatanid'];
     </script>
     
     <script>
-        function LiatNotes(ests, eidkry, etgl, edoktid){
+        function LiatNotes(ests, enourut, eidkry, etgl, edoktid){
             $.ajax({
                 type:"post",
                 url:"module/dkd/dkd_reportpalnreal/lihatnotes.php?module=viewnotes",
-                data:"usts="+ests+"&uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid,
+                data:"usts="+ests+"&unourut="+enourut+"&uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid,
+                success:function(data){
+                    $("#myModal").html(data);
+                }
+            });
+        }
+        function LiatKomentar(ests, enourut, eidkry, etgl, edoktid){
+            $.ajax({
+                type:"post",
+                url:"module/dkd/dkd_reportpalnreal/lihatkomentar.php?module=viewnotes",
+                data:"usts="+ests+"&unourut="+enourut+"&uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid,
                 success:function(data){
                     $("#myModal").html(data);
                 }

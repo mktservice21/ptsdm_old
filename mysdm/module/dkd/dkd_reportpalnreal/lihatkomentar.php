@@ -20,11 +20,20 @@ $itgl = date('Y-m-d', strtotime($ptgl));
 include "../../../config/koneksimysqli.php";
 include "../../../config/fungsi_sql.php";
 
-$sql = "select a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput, 
-    a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran
-    FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
-    LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
-    WHERE a.karyawanid='$pkryid' AND a.tanggal='$itgl' AND a.dokterid='$pudoktid' ";
+if ($psts=="plan") {
+    $sql = "select c.nourut, a.idinput, a.karyawanid, e.nama as namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
+        c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, c.saran 
+        FROM hrd.dkd_new0 as a LEFT JOIN hrd.dkd_new1 as c on a.idinput=c.idinput 
+        JOIN dr.masterdokter as d on c.dokterid=d.id JOIN hrd.karyawan as e on a.karyawanid=e.karyawanId 
+        WHERE a.karyawanid='$pkryid' AND a.tanggal='$itgl' AND c.dokterid='$pudoktid'";
+}else{
+    $sql = "select a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput, 
+        a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran
+        FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
+        LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
+        WHERE a.karyawanid='$pkryid' AND a.tanggal='$itgl' AND a.dokterid='$pudoktid' ";
+}
+$pisql=$sql;
 $tampil=mysqli_query($cnmy, $sql);
 $row= mysqli_fetch_array($tampil);
 $pnmkaryawan= $row['namakaryawan'];
@@ -71,134 +80,202 @@ if (!empty($pusrkomen)) {
 }
 ?>
 
-<!-- bootstrap-datetimepicker -->
-<link href="vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
-
-<script src="js/hanyaangka.js"></script>
-<!-- jQuery -->
-<script src="vendors/jquery/dist/jquery.min.js"></script>
-<!--input mask -->
-<script src="js/inputmask.js"></script>
-
-
 <div class='modal-dialog modal-lg'>
     <!-- Modal content-->
     <div class='modal-content'>
+        
         <div class='modal-header'>
             <button type='button' class='close' data-dismiss='modal'>&times;</button>
             <h4 class='modal-title'>Komentar</h4>
         </div>
-
-        
-        
+        <br/>
         <div class="">
-
-            <!--row-->
+            
+            <?PHP //echo $pisql; ?>
+            
             <div class="row">
 
-                <form method='POST' action='<?PHP echo "$aksi?module=isidatakomentarwekplan&act=input&idmenu=483"; ?>' 
-                      id='d-form4' name='form4' data-parsley-validate class='form-horizontal form-label-left'>
+                <div class="col-md-6 col-sm-6 col-xs-12">
 
-                    <div class='col-md-12 col-sm-12 col-xs-12'>
-                        <div class='x_panel'>
+                    <div class="x_panel">
+                        
+                        <div class="x_title">
+                          <h2><?PHP echo $pnmdokt; ?> <small><?PHP echo $pnmkaryawan; ?></small></h2>
+                          <div class="clearfix"></div>
+                        </div>
+                        
+                        <div class="x_content">
+                            <div class="dashboard-widget-content">
 
-                            <div class='x_panel'>
-                                <div class='x_content'>
-                                    <div class='col-md-12 col-sm-12 col-xs-12'>
+                                <div hidden class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
+                                    <div class='col-md-9'>
+                                        <input type='text' id='e_idinput' name='e_idinput' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput; ?>' Readonly>
+                                        <input type='text' id='e_idstatus' name='e_idstatus' class='form-control col-md-7 col-xs-12' value='<?PHP echo $psts; ?>' Readonly>
+                                        <input type='text' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
+                                        <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
+                                        <input type='text' id='e_idjbt' name='e_idjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbt; ?>' Readonly>
+                                    </div>
+                                </div>
 
-
-                                        <div hidden class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
-                                            <div class='col-md-4'>
-                                                <input type='text' id='e_idinput' name='e_idinput' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput; ?>' Readonly>
-                                                <input type='text' id='e_idstatus' name='e_idstatus' class='form-control col-md-7 col-xs-12' value='<?PHP echo $psts; ?>' Readonly>
-                                                <input type='text' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
-                                                <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
-                                                <input type='text' id='e_idjbt' name='e_idjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbt; ?>' Readonly>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
-                                            <div class='col-md-4'>
-                                            <div class='input-group date' id=''>
-                                                <input type="text" class="form-control" id='e_periode1' name='e_periode1' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $tgl_pertama; ?>' Readonly>
-                                                <span class='input-group-addon'>
-                                                    <span class='glyphicon glyphicon-calendar'></span>
-                                                </span>
-
-                                            </div>
-                                            </div>
-                                        </div>
-
-                                        <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Karyawan <span class='required'></span></label>
-                                            <div class='col-md-4'>
-                                                <input type='hidden' id='e_idkry' name='e_idkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkryid; ?>' Readonly>
-                                                <input type='text' id='e_namakry' name='e_namakry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmkaryawan; ?>' Readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Dokter <span class='required'></span></label>
-                                            <div class='col-md-4'>
-                                                <input type='hidden' id='e_doktid' name='e_doktid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pudoktid; ?>' Readonly>
-                                                <input type='text' id='e_doktnm' name='e_doktnm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmdokt; ?>' Readonly>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Komentar <span class='required'></span></label>
-                                            <div class='col-md-4'>
-                                                <textarea class='form-control' id="e_komen" name='e_komen' maxlength='300'><?PHP echo $pkomen; ?></textarea>
-                                            </div>
-                                        </div>
-                                        
-                                        
-                                        <div <?PHP echo $phiddensave; ?> class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
-                                            <div class='col-xs-9'>
-                                                <div class="checkbox">
-                                                    <button type='button' id='nm_btn_save' class='btn btn-success' onclick='disp_confirm_notes("Simpan ?", "simapn")'>Save</button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
+                                    <div class='col-md-9'>
+                                    <div class='input-group date' id=''>
+                                        <input type="text" class="form-control" id='e_periode1' name='e_periode1' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $tgl_pertama; ?>' Readonly>
+                                        <span class='input-group-addon'>
+                                            <span class='glyphicon glyphicon-calendar'></span>
+                                        </span>
 
                                     </div>
-
+                                    </div>
                                 </div>
+                                
+                                
+                                <div hidden class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Karyawan <span class='required'></span></label>
+                                    <div class='col-md-9'>
+                                        <input type='hidden' id='e_idkry' name='e_idkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkryid; ?>' Readonly>
+                                        <input type='text' id='e_namakry' name='e_namakry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmkaryawan; ?>' Readonly>
+                                    </div>
+                                </div>
+
+                                <div hidden class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Dokter <span class='required'></span></label>
+                                    <div class='col-md-9'>
+                                        <input type='hidden' id='e_doktid' name='e_doktid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pudoktid; ?>' Readonly>
+                                        <input type='text' id='e_doktnm' name='e_doktnm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmdokt; ?>' Readonly>
+                                    </div>
+                                </div>
+
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama <span class='required'></span></label>
+                                    <div class='col-md-9'>
+                                        <input type='hidden' id='e_komenidkry' name='e_komenidkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
+                                        <input type='text' id='e_komennamakry' name='e_komennamakry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamalengkap; ?>' Readonly>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Komentar <span class='required'></span></label>
+                                    <div class='col-md-9'>
+                                        <textarea class='form-control' id="e_komen" name='e_komen' maxlength='300'><?PHP echo ""; ?></textarea>
+                                    </div>
+                                </div>
+
+
+                                <div <?PHP echo $phiddensave; ?> class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <div class="checkbox">
+                                            <button type='button' id='nm_btn_save' class='btn btn-success' onclick='disp_confirm_notes("Simpan ?", "simapn")'>Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
                             </div>
-
-
+                            
                         </div>
+                        
                     </div>
 
+                </div>
+                
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="row">
+                        
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                
+                                <div class="x_title">
+                                  <h2>List Komentar <small>&nbsp;</small></h2>
+                                  <div class="clearfix"></div>
+                                </div>
 
-                </form>
+                                <div class="x_content" style="overflow: scroll; max-height: 300px;">
+                                    <div class="dashboard-widget-content">
+
+                                        <ul class="list-unstyled timeline widget">
+                                            <?PHP
+                                            $query = "select a.*, b.nama as namakoentar, b.jabatanId as jabatanid, c.nama as namajabatan "
+                                                    . " from hrd.dkd_new_real1_komen as a "
+                                                    . " JOIN hrd.karyawan as b on a.komen_user=b.karyawanId "
+                                                    . " LEFT JOIN hrd.jabatan as c on b.jabatanId=c.jabatanId "
+                                                    . " WHERE a.nourut='$pidinput' AND a.`sts`='$psts' order by komen_date DESC";
+                                            $tampil1=mysqli_query($cnmy, $query);
+                                            while ($row1= mysqli_fetch_array($tampil1)) {
+                                                $pjbkomen=$row1['jabatanid'];
+                                                $pikomen=$row1['komentar'];
+                                                $pikoentgl=$row1['komen_date'];
+                                                $pikoenuser=$row1['komen_user'];
+                                                $pikoenusernm=$row1['namakoentar'];
+                                                $pikoenuserjbt=$row1['namajabatan'];
+                                                
+                                                echo "<li>";
+                                                    echo "<div class='block'>";
+                                                        echo "<div class='block_content'>";
+                                                        
+                                                            echo "<h2 class='title' style='font-size:11px; font-weight:bold;'>";
+                                                                echo "$pikoenusernm <span class='byline'>$pikoentgl</span> ";
+                                                            echo "</h2>";
+                                                            /*
+                                                            echo "<div class='byline'>";
+                                                                echo "<span>$pikoentgl</span> ";
+                                                            echo "</div>";
+                                                            */
+                                                            echo "<p class=excerpt'>";
+                                                                echo "$pikomen";
+                                                            echo "</p>";
+                                                            
+                                                        echo "</div>";
+                                                    echo "</div>";
+                                                    
+                                                echo "</li>";
+                                            }
+                                            ?>
+                                            <!--
+                                            <li>
+                                                <div class="block">
+                                                    <div class="block_content">
+                                                        <h2 class="title">
+                                                            <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
+                                                        </h2>
+                                                        <div class="byline">
+                                                            <span>13 hours ago</span> by <a>Jane Smith</a>
+                                                        </div>
+                                                        <p class="excerpt">
+                                                            Film festivals used to be do-or-die moments for movie makers. 
+                                                            They were where you met the producers that could fund your project, 
+                                                            and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            -->
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <!--end row-->
+        
         </div>
         
         
         <div class='modal-footer'>
             <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
         </div>
+        
     </div>
 </div>
 
-    <link href="css/inputselectbox.css" rel="stylesheet" type="text/css" />
-    <link href="css/stylenew.css" rel="stylesheet" type="text/css" />
-    <script type='text/javascript' src='datetime/js/jquery-ui.min.js'></script>
-
-    <!-- jquery.inputmask -->
-    <script src="vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
-
-    <!-- bootstrap-daterangepicker -->
-    <script src="vendors/moment/min/moment.min.js"></script>
-    <script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-    <script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-    <!-- Custom Theme Scripts -->
-
+<link href="css/inputselectbox.css" rel="stylesheet" type="text/css" />
+<link href="css/stylenew.css" rel="stylesheet" type="text/css" />
 <script>
     function disp_confirm_notes(pText_,nid)  {
         // pText_, nid e_idkry, e_periode1, e_doktid, e_komen, e_idcarduser

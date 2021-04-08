@@ -328,6 +328,23 @@ include "config/cek_akses_modul.php";
                                             </div>
                                         </div>
                                         
+                                        
+                                        <div class='form-group grp-periode'>
+                                            <label class='control-label control-periode col-md-3 col-sm-3 col-xs-12' for='cbln02'>s/d. <span class='required'></span></label>
+                                            <div class='col-md-6'>
+                                                <div class="form-group grp-periode">
+                                                    
+                                                    <div class='input-group date' id='cbln02'>
+                                                        <input type='text' id='e_periode02' name='e_periode02' required='required' class='form-control' placeholder='tgl akhir' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
+                                                        <span class="input-group-addon">
+                                                           <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for='distibutor'>Distributor <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
@@ -348,23 +365,6 @@ include "config/cek_akses_modul.php";
                                                 </select>
                                             </div>
                                         </div>
-                                        
-                                        <div class='form-group grp-periode'>
-                                            <label class='control-label control-periode col-md-3 col-sm-3 col-xs-12' for='cbln02'>s/d. <span class='required'></span></label>
-                                            <div class='col-md-6'>
-                                                <div class="form-group grp-periode">
-                                                    
-                                                    <div class='input-group date' id='cbln02'>
-                                                        <input type='text' id='e_periode02' name='e_periode02' required='required' class='form-control' placeholder='tgl akhir' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
-                                                        <span class="input-group-addon">
-                                                           <span class="glyphicon glyphicon-calendar"></span>
-                                                        </span>
-                                                    </div>
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
                                         
                                         <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Report By <span class='required'></span></label>

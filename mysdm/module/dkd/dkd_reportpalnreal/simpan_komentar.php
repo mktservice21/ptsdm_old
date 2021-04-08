@@ -3,6 +3,7 @@
 session_start();
 //data:"uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid+"&uiduserinput="+eiduserinput+"&ukomen="+ekomen,
 
+$pidstatus=$_POST['usts'];
 $pidinput=$_POST['uidinput'];
 $pkryid=$_POST['uidkry'];
 $ptgl=$_POST['utgl'];
@@ -35,8 +36,8 @@ if (!empty($pidinput) AND !empty($pkryid) AND !empty($ptgl) AND !empty($pdoktid)
     $query = "UPDATE hrd.dkd_new_real1 SET komentar='$pkomentar', komen_user='$puserinput', komen_date=NOW() WHERE "
             . " karyawanid='$pkryid' AND tanggal='$ptgl' and dokterid='$pdoktid' LIMIT 1";
     
-    $query = "INSERT INTO hrd.dkd_new_real1_komen (nourut, jabatanid, komen_user, komen_date, komentar)VALUES"
-            . " ('$pidinput', '$pjbtinput', '$puserinput', NOW(), '$pkomentar')";
+    $query = "INSERT INTO hrd.dkd_new_real1_komen (sts, nourut, jabatanid, komen_user, komen_date, komentar)VALUES"
+            . " ('$pidstatus', '$pidinput', '$pjbtinput', '$puserinput', NOW(), '$pkomentar')";
     mysqli_query($cnmy, $query); 
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
     $pberhasil="berhasil input...";

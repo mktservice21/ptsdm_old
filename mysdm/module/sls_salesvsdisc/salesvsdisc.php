@@ -222,8 +222,20 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <hr/>
+                                        <div id="div_prodoth">
+                                            <div class='form-group'>
+                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Produk Other <span style="color:blue;">(Divisi Other)</span> <span class='required'></span></label>
+                                                <div class='col-md-9 col-sm-9 col-xs-12'>
+                                                    <?PHP
+                                                    echo "<input type='checkbox' name='chkprodoth[]' value='0000000001' checked> ANTHRAMED <br/> ";
+                                                    echo "<input type='checkbox' name='chkprodoth[]' value='0000000043' checked> MELANOX CREAM <br/> ";
+                                                    echo "<input type='checkbox' name='chkprodoth[]' value='0000000055' checked> VITAQUIN ";
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
                                         
-                                                    
                                                     
                                     </div>
                                 </div>

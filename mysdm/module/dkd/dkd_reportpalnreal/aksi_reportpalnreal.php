@@ -432,12 +432,14 @@ $pjabatanid=$rowk['jabatanid'];
                     $ppilihtgl="$xhari, $xtgl $xbulan $xthn";
                     if ($psudahtanggal==true) $ppilihtgl="";
                     
+                    $pstsvisitreal="plan";
+                    if ($pada==true) $pstsvisitreal="realisasi";
                     
                     $plihatnotes="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
-                            . " data-target='#myModal' onClick=\"LiatNotes('real', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
+                            . " data-target='#myModal' onClick=\"LiatNotes('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
                     
                     $plihatkomen="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
-                            . " data-target='#myModal' onClick=\"LiatKomentar('real', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
+                            . " data-target='#myModal' onClick=\"LiatKomentar('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
                     
                     if ($pada==false) {
                         echo "<tr>";
@@ -454,7 +456,7 @@ $pjabatanid=$rowk['jabatanid'];
                             echo "<td nowrap></td>";
                             echo "<td nowrap></td>";
                             echo "<td ></td>";
-                            echo "<td ></td>";
+                            echo "<td >$plihatkomen</td>";
                             
                             echo "</tr>";
                         }else{
@@ -496,17 +498,15 @@ $pjabatanid=$rowk['jabatanid'];
                                 $ppilihtgl="$xhari, $xtgl $xbulan $xthn";
                                 if ($psudahtanggal==true) $ppilihtgl="";
                                 
+                                $pstsvisitreal="realisasi";
                                 
                                 $pidget=encodeString($nkaryawanid);
-                                $plihatnotes="<a title='detail' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
-                                    . "onClick=\"window.open('eksekusi3.php?module=dkdrptplanrealliahtnotes&brid=$pidget&id=$ntgl&iprint=detail',"
-                                    . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                                    . "Lihat Notes</a>";
+                                
                                 $plihatnotes="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
-                                        . " data-target='#myModal' onClick=\"LiatNotes('real', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
+                                        . " data-target='#myModal' onClick=\"LiatNotes('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
                                 
                                 $plihatkomen="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
-                                        . " data-target='#myModal' onClick=\"LiatKomentar('real', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
+                                        . " data-target='#myModal' onClick=\"LiatKomentar('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
                                 
                                 if ($ifirst==true) {
                                     echo "<tr>";

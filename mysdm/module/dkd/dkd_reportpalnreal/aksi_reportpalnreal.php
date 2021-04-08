@@ -187,13 +187,20 @@ $pjabatanid=$rowk['jabatanid'];
     <link rel="shortcut icon" href="images/icon.ico" />
     <style> .str{ mso-number-format:\@; } </style>
     
+    
+    <!-- Bootstrap -->
     <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Font Awesome -->
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    
+    <!-- Custom Theme Style -->
+    <link href="build/css/custom.min.css" rel="stylesheet">
 </HEAD>
 <script>
 </script>
 
-<BODY onload="initVar()" style="margin-left:10px; color:#000;">
+<BODY onload="initVar()" style="margin-left:10px; color:#000; background-color:#fff;">
     
     <div class='modal fade' id='myModal' role='dialog'></div>
     <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
@@ -560,7 +567,15 @@ $pjabatanid=$rowk['jabatanid'];
 
 </BODY>
 
+    <!-- jQuery -->
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
     <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="build/js/custom.min.js"></script>
+
+   
     <style>
         #myBtn {
             display: none;

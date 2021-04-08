@@ -2,6 +2,7 @@
 session_start();
 $aksi="";
 $psts=$_POST['usts'];
+$pidinput=$_POST['unourut'];
 $pkryid=$_POST['uidkry'];
 $ptgl=$_POST['utgl'];
 $pudoktid=$_POST['udoktid'];
@@ -20,7 +21,7 @@ include "../../../config/koneksimysqli.php";
 include "../../../config/fungsi_sql.php";
 
 $sql = "select a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput, 
-    a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran, a.komentar, a.komen_user, a.komen_date   
+    a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran
     FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
     WHERE a.karyawanid='$pkryid' AND a.tanggal='$itgl' AND a.dokterid='$pudoktid' ";
@@ -30,16 +31,7 @@ $pnmkaryawan= $row['namakaryawan'];
 $pnmdokt= $row['namalengkap'];
 $pnotes= $row['notes'];
 $psaran= $row['saran'];
-$pkomen= $row['komentar'];
-$pusrkomen= $row['komen_user'];
 
-$phiddensave="";
-if (!empty($pusrkomen)) {
-    if ($pusrkomen==$pidcard) {
-    }else{
-        $phiddensave="hidden";
-    }
-}
 ?>
 
 <!-- bootstrap-datetimepicker -->
@@ -81,6 +73,7 @@ if (!empty($pusrkomen)) {
                                         <div hidden class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
                                             <div class='col-md-4'>
+                                                <input type='text' id='e_idinput' name='e_idinput' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput; ?>' Readonly>
                                                 <input type='text' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                                 <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
                                                 <input type='text' id='e_idjbt' name='e_idjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbt; ?>' Readonly>
@@ -129,23 +122,6 @@ if (!empty($pusrkomen)) {
                                                 <textarea class='form-control' id="e_saran" name='e_saran' maxlength='300' readonly><?PHP echo $psaran; ?></textarea>
                                             </div>
                                         </div>
-                                        
-                                        <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Komentar <span class='required'></span></label>
-                                            <div class='col-md-4'>
-                                                <textarea class='form-control' id="e_komen" name='e_komen' maxlength='300'><?PHP echo $pkomen; ?></textarea>
-                                            </div>
-                                        </div>
-                                        
-                                        
-                                        <div <?PHP echo $phiddensave; ?> class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
-                                            <div class='col-xs-9'>
-                                                <div class="checkbox">
-                                                    <button type='button' id='nm_btn_save' class='btn btn-success' onclick='disp_confirm_notes("Simpan ?", "simapn")'>Save</button>
-                                                </div>
-                                            </div>
-                                        </div>
 
                                     </div>
 
@@ -182,69 +158,6 @@ if (!empty($pusrkomen)) {
     <script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
     <!-- Custom Theme Scripts -->
 
-<script>
-    function disp_confirm_notes(pText_,nid)  {
-        // pText_, nid e_idkry, e_periode1, e_doktid, e_komen, e_idcarduser
-        var eact="inputkomentar";
-        var eidkry = document.getElementById("e_idkry").value;
-        var etgl = document.getElementById("e_periode1").value;
-        var edoktid = document.getElementById("e_doktid").value;
-        var eiduserinput = document.getElementById("e_idcarduser").value;
-        var ekomen = document.getElementById("e_komen").value;
-        
-        if (eiduserinput=="") {
-            alert("Anda harus login ulang...");
-            return false;
-        }
-        
-        if (eidkry=="") {
-            alert("karyawan kosong...");
-            return false;
-        }
-        
-        if (etgl=="") {
-            alert("tanggal kosong...");
-            return false;
-        }
-        
-        if (edoktid=="") {
-            alert("dokter kosong...");
-            return false;
-        }
-        
-        if (ekomen=="") {
-            alert("komentar masih kosong...");
-            return false;
-        }
-        
-        ok_ = 1;
-        if (ok_) {
-            var r=confirm(pText_)
-            if (r==true) {
-                var myurl = window.location;
-                var urlku = new URL(myurl);
-                var module = urlku.searchParams.get("module");
-                var idmenu = urlku.searchParams.get("idmenu");
-                
-                $.ajax({
-                    type:"post",
-                    url:"module/dkd/dkd_reportpalnreal/simpan_komentar.php?module="+module+"&act="+eact+"&idmenu="+idmenu,
-                    data:"uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid+"&uiduserinput="+eiduserinput+"&ukomen="+ekomen,
-                    success:function(data){
-                        if (data.length > 2) {
-                            alert(data);
-                        }
-                        nm_btn_save.style.display='none';
-                        $('#myModal').modal('hide');
-                    }
-                });
-            }
-        } else {
-            //document.write("You pressed Cancel!")
-            return 0;
-        }
-    }
-</script>
 
 <?PHP
 mysqli_close($cnmy);

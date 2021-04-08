@@ -196,7 +196,7 @@ if (!empty($pusrkomen)) {
                                 <div class="x_content" style="overflow: scroll; max-height: 300px;">
                                     <div class="dashboard-widget-content">
 
-                                        <ul class="list-unstyled timeline widget">
+                                        <ul id="div_komentar" class="list-unstyled timeline widget">
                                             <?PHP
                                             $query = "select a.*, b.nama as namakoentar, b.jabatanId as jabatanid, c.nama as namajabatan "
                                                     . " from hrd.dkd_new_real1_komen as a "
@@ -334,11 +334,14 @@ if (!empty($pusrkomen)) {
                     url:"module/dkd/dkd_reportpalnreal/simpan_komentar.php?module="+module+"&act="+eact+"&idmenu="+idmenu,
                     data:"usts="+ests+"&uidinput="+eidinput+"&uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid+"&uiduserinput="+eiduserinput+"&ukomen="+ekomen+"&uidjbtinput="+eidjbtinput,
                     success:function(data){
+                        ShowDataKomentar(ests, eidinput);
+                        /*
                         if (data.length > 2) {
                             alert(data);
                         }
                         nm_btn_save.style.display='none';
                         $('#myModal').modal('hide');
+                         */
                     }
                 });
             }
@@ -346,6 +349,17 @@ if (!empty($pusrkomen)) {
             //document.write("You pressed Cancel!")
             return 0;
         }
+    }
+    
+    function ShowDataKomentar(ests, enoid) {
+        $.ajax({
+            type:"post",
+            url:"module/dkd/viewdatadkd.php?module=viewdatakomentar",
+            data:"usts="+ests+"&unoid="+enoid,
+            success:function(data){
+                $("#div_komentar").html(data);
+            }
+        });
     }
 </script>
 

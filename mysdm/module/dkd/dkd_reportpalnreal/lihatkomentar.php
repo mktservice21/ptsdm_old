@@ -100,7 +100,7 @@ if (!empty($pusrkomen)) {
                     <div class="x_panel">
                         
                         <div class="x_title">
-                          <h2><?PHP echo $pnmdokt; ?> <small><?PHP echo $pnmkaryawan; ?></small></h2>
+                          <h2><?PHP echo $pnmdokt; ?> <small><?PHP echo "$pnmkaryawan ($tgl_pertama)"; ?></small></h2>
                           <div class="clearfix"></div>
                         </div>
                         
@@ -118,7 +118,7 @@ if (!empty($pusrkomen)) {
                                     </div>
                                 </div>
 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
                                     <div class='col-md-9'>
                                     <div class='input-group date' id=''>

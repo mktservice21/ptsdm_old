@@ -291,7 +291,7 @@ switch($pactpilih){
 
                                         <div class='form-group'>
                                             <div class='col-sm-12'>
-                                                <b>Bulan</b>
+                                                <b>Week</b>
                                                 <div class="form-group">
                                                 <div class='input-group date' id=''>
                                                     <input type="text" class="form-control" id='e_tanggal' name='e_tanggal' required='required' placeholder='MMMM yyyy' value='<?PHP echo $tgl_pertama; ?>' Readonly>

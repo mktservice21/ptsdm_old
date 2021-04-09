@@ -46,8 +46,7 @@
     $tmp02 =" dbtemp.tmpdkdentry02_".$puserid."_$now ";
 
     $sql = "select a.idinput, a.tanggal, a.karyawanid, a.ketid, c.nama as nama_ket,
-        a.compl, a.aktivitas, b.jenis, b.dokterid, d.namalengkap as nama_dokter, b.notes, b.saran,
-        a.real_user1, a.real_date1  
+        a.compl, a.aktivitas, b.jenis, b.dokterid, d.namalengkap as nama_dokter, b.notes, b.saran
         from hrd.dkd_new0 as a left join hrd.dkd_new1 as b on a.idinput=b.idinput 
         LEFT JOIN hrd.ket as c on a.ketid=c.ketId
         LEFT JOIN dr.masterdokter as d on b.dokterid=d.id WHERE a.karyawanid='$pkryid' ";
@@ -55,7 +54,7 @@
 
 
 
-    $sql = "select idinput, tanggal, real_user1, real_date1 FROM hrd.dkd_new0 WHERE karyawanid='$pkryid'";
+    $sql = "select idinput, tanggal FROM hrd.dkd_new0 WHERE karyawanid='$pkryid'";
     $sql .=" AND tanggal between '$ptgl1' AND '$ptgl2'";
     $query = "create TEMPORARY table $tmp01 ($sql)"; 
     mysqli_query($cnmy, $query);
@@ -79,7 +78,7 @@
 
     $query = "UPDATE $tmp01 as a JOIN (select idinput, real_user FROM 
         hrd.dkd_new1 WHERE IFNULL(jenis,'') NOT IN ('EC') AND IFNULL(real_user,'')<>'') as b on a.idinput=b.idinput SET a.sudahreal='Y'";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
         hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.totjv=b.jml";
@@ -87,7 +86,7 @@
     
     
     $query = "UPDATE $tmp01 SET sudahreal='Y' WHERE IFNULL(real_user1,'')<>'' AND IFNULL(sudahreal,'')=''";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 

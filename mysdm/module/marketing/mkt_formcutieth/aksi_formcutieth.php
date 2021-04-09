@@ -124,6 +124,11 @@ if ($module=='mktformcutieth')
                 
             }elseif ($act=="update") {
                 
+                $query = "UPDATE hrd.t_cuti0 SET karyawanid='$pkaryawanid', jabatanid='$pidjabatan', id_jenis='$pidjeniscuti', "
+                        . " keperluan='$pkeperluan', bulan1='$pbulan1', bulan2='$pbulan2', userid='$pidcard' WHERE idcuti='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); 
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                
             }
             
             

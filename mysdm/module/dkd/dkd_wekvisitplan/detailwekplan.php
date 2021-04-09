@@ -38,9 +38,10 @@
 <BODY>
 
 <?PHP
-$pidinput=$_GET['brid'];
+$pidkaryawan=$_GET['brid'];
+$ptgl=$_GET['nid'];
 $query = "select a.*, b.nama as nama_ket from hrd.dkd_new0 as a LEFT JOIN
-    hrd.ket as b on a.ketid=b.ketId WHERE a.idinput='$pidinput'";
+    hrd.ket as b on a.ketid=b.ketId WHERE a.karyawanid='$pidkaryawan' AND a.tanggal='$ptgl'";
 $tampil=mysqli_query($cnmy, $query);
 $row=mysqli_fetch_array($tampil);
 $ntgl=$row['tanggal'];
@@ -94,7 +95,7 @@ $naktivitas=$row['aktivitas'];
         $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis 
             FROM hrd.dkd_new1 as a
             LEFT JOIN dr.masterdokter as b on a.dokterid=b.id 
-            WHERE a.idinput='$pidinput'";
+            WHERE a.karyawanid='$pidkaryawan' AND a.tanggal='$ptgl'";
         $tampild=mysqli_query($cnmy, $query);
         while ($nrd= mysqli_fetch_array($tampild)) {
             $pjenis=$nrd['jenis'];

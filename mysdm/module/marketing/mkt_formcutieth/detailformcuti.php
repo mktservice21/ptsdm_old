@@ -1,8 +1,20 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+    session_start();
+    $puserid="";
+    if (isset($_SESSION['USERID'])) $puserid=$_SESSION['USERID'];
 
+    if (empty($puserid)) {
+        echo "<center>Maaf, Anda Harus Login Ulang.<br>"; exit;
+    }
+    
+    include "config/koneksimysqli.php";
+    
+?>
+
+
+
+<?PHP
+hapusdata:
+    mysqli_close($cnmy);
+?>

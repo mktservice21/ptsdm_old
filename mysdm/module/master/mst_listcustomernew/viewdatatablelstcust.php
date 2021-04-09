@@ -99,6 +99,9 @@
     $query = "create TEMPORARY table $tmp03 ($query)"; 
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "DELETE FROM $tmp03 WHERE IFNULL(isudah,'')<>'Y' AND IFNULL(tvalue,0)=0";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 ?>
 

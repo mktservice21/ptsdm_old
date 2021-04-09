@@ -94,7 +94,7 @@
                     }
 
                     $(document).ready(function() {
-                        //KlikDataTabel();
+                        KlikDataTabel();
                     } );
 
                     function KlikDataTabel() {
@@ -113,7 +113,7 @@
                         $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                         $.ajax({
                             type:"post",
-                            url:"module/dkd/dkd_wekvisitplan/viewdatatabeleplan.php?module="+module+"&idmenu="+idmenu+"&act="+act,
+                            url:"module/marketing/mkt_formcutieth/viewdatatablefcuti.php?module="+module+"&idmenu="+idmenu+"&act="+act,
                             data:"utgl1="+etgl1+"&utgl2="+etgl2+"&ukryid="+ekryid+"&ucabid="+ecabid+"&ujbtid="+ejbtid,
                             success:function(data){
                                 $("#c-data").html(data);
@@ -129,7 +129,7 @@
         
                         $.ajax({
                             type:"post",
-                            url:"module/dkd/viewdatadkd.php?module=viewdatakaryawancabjbt",
+                            url:"module/marketing/viewdatadkd.php?module=viewdatakaryawancabjbt",
                             data:"uidcab="+eidcan+"&uidjbt="+eidjbt,
                             success:function(data){
                                 $("#cb_karyawan").html(data);
@@ -160,10 +160,10 @@
 
                 <?PHP
                 $hari_ini = date("Y-m-01");
-                $tgl_pertama = date('F Y', strtotime($hari_ini));
                 
-                $tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
-                $tgl_akhir = date('F Y', strtotime($hari_ini));
+                $tgl_pertama = date('F Y', strtotime($hari_ini));
+                $tgl_akhir = date('F Y', strtotime('+1 month', strtotime($hari_ini)));
+                
     
                 if (!empty($ptgl1_pl01)) $tgl_pertama=$ptgl1_pl01;
                 if (!empty($ptgl1_pl02)) $tgl_akhir=$ptgl1_pl02;

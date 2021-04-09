@@ -42,11 +42,13 @@ if ($module=='dkdweeklyvisit')
         
         $kodenya=$_POST['e_id'];
         $ptgl=$_POST['e_periode1'];
+        $ptgledit=$_POST['e_idtgledit'];
         $pketid=$_POST['cb_ketid'];//keperluan
         $pcompl=$_POST['e_compl'];
         $paktivitas=$_POST['e_aktivitas'];
 
         $ptanggal= date("Y-m-d", strtotime($ptgl));
+        $pedittgl= date("Y-m-d", strtotime($ptgledit));
         if (!empty($pcompl)) $pcompl = str_replace("'", " ", $pcompl);
         if (!empty($paktivitas)) $paktivitas = str_replace("'", " ", $paktivitas);
 
@@ -80,25 +82,32 @@ if ($module=='dkdweeklyvisit')
             }
         }
 
+        
+        
+        $query = "select * from hrd.dkd_new0 WHERE karyawanid='$pkaryawanid' AND tanggal='$ptanggal'";
+        $tampilm=mysqli_query($cnmy, $query);
+        $ketemum=mysqli_num_rows($tampilm);
+        
+        //echo "$ketemum : $pkaryawanid, $kodenya, $ptanggal, $pketid, $pcompl, $paktivitas<br/>"; exit;
+        
+        if ($act=="input" OR (INT)$ketemum<=0) {
+            
+            if (!empty($pketid)) {
+                $query = "INSERT INTO hrd.dkd_new0 (tanggal, karyawanid, ketid, compl, aktivitas, userid, jabatanid)
+                    VALUES
+                    ('$ptanggal', '$pkaryawanid', '$pketid', '$pcompl', '$paktivitas', '$pidcard', '$pidjabatan')";
+                mysqli_query($cnmy, $query); 
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
-        //echo "$pkaryawanid, $kodenya, $ptanggal, $pketid, $pcompl, $paktivitas<br/>";
-
-        if ($act=="input") {
-
-            $query = "INSERT INTO hrd.dkd_new0 (tanggal, karyawanid, ketid, compl, aktivitas, userid, jabatanid)
-                VALUES
-                ('$ptanggal', '$pkaryawanid', '$pketid', '$pcompl', '$paktivitas', '$pidcard', '$pidjabatan')";
-            mysqli_query($cnmy, $query); 
-            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-
-            $kodenya = mysqli_insert_id($cnmy);
-
+                $kodenya = mysqli_insert_id($cnmy);
+            }
+            
         }elseif ($act=="update") {
-
+            
             $query = "UPDATE hrd.dkd_new0 SET
                 tanggal='$ptanggal', karyawanid='$pkaryawanid', 
                 ketid='$pketid', compl='$pcompl', aktivitas='$paktivitas', userid='$pidcard', jabatanid='$pidjabatan' WHERE
-                idinput='$kodenya' LIMIT 1";
+                karyawanid='$pkaryawanid' AND tanggal='$ptanggal' LIMIT 1";
             mysqli_query($cnmy, $query); 
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
@@ -125,7 +134,7 @@ if ($module=='dkdweeklyvisit')
                 
                 //echo "$pjv : $piddokt, $pketdokt<br/>";
                 
-                $pinsert_data_detail[] = "('$kodenya', '$pnamajenis', '$piddokt', '$pketdokt')";
+                $pinsert_data_detail[] = "('$pkaryawanid', '$ptanggal', '$pidjabatan', '$pnamajenis', '$piddokt', '$pketdokt', '$kodenya')";
                 $psimpandata=true;
                     
             }
@@ -133,41 +142,40 @@ if ($module=='dkdweeklyvisit')
 
         if ($psimpandata==true) {
 
-            mysqli_query($cnmy, "DELETE FROM hrd.dkd_new1 WHERE idinput='$kodenya' AND IFNULL(jenis,'') IN ('', 'JV')");
+            mysqli_query($cnmy, "DELETE FROM hrd.dkd_new1 WHERE karyawanid='$pkaryawanid' AND tanggal='$ptanggal'");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
-            $query_detail="INSERT INTO hrd.dkd_new1 (idinput, jenis, dokterid, notes) VALUES ".implode(', ', $pinsert_data_detail);
+            $query_detail="INSERT INTO hrd.dkd_new1 (karyawanid, tanggal, jabatanid, jenis, dokterid, notes, idinput) VALUES ".implode(', ', $pinsert_data_detail);
             mysqli_query($cnmy, $query_detail);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
         }
 
 
-
-        $query = "UPDATE hrd.dkd_new0 SET atasan1='$pkdspv', atasan2='$pkddm', atasan3='$pkdsm', atasan4='$pkdgsm' WHERE idinput='$kodenya' LIMIT 1";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-    
-        
-        if ($pisitglspv==true) {
-            $query = "UPDATE hrd.dkd_new0 SET tgl_atasan1=NOW() WHERE idinput='$kodenya' LIMIT 1";
+        /*
+            $query = "UPDATE hrd.dkd_new0 SET atasan1='$pkdspv', atasan2='$pkddm', atasan3='$pkdsm', atasan4='$pkdgsm' WHERE idinput='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-        }
 
-        if ($pisitgldm==true) {
-            $query = "UPDATE hrd.dkd_new0 SET tgl_atasan2=NOW() WHERE idinput='$kodenya' LIMIT 1";
-            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-        }
+            if ($pisitglspv==true) {
+                $query = "UPDATE hrd.dkd_new0 SET tgl_atasan1=NOW() WHERE idinput='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
 
-        if ($pisitglsm==true) {
-            $query = "UPDATE hrd.dkd_new0 SET tgl_atasan3=NOW() WHERE idinput='$kodenya' LIMIT 1";
-            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-        }
+            if ($pisitgldm==true) {
+                $query = "UPDATE hrd.dkd_new0 SET tgl_atasan2=NOW() WHERE idinput='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
 
-        if ($pisitglgsm==true) {
-            $query = "UPDATE hrd.dkd_new0 SET tgl_atasan4=NOW() WHERE idinput='$kodenya' LIMIT 1";
-            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-        }
+            if ($pisitglsm==true) {
+                $query = "UPDATE hrd.dkd_new0 SET tgl_atasan3=NOW() WHERE idinput='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
 
+            if ($pisitglgsm==true) {
+                $query = "UPDATE hrd.dkd_new0 SET tgl_atasan4=NOW() WHERE idinput='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
+        */
 
 
         mysqli_close($cnmy);

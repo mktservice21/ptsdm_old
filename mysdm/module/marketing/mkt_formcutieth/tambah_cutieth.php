@@ -591,16 +591,15 @@ th {
         var ikeperluan = document.getElementById('e_keperluan').value;
         var ijenis = document.getElementById('cb_jeniscuti').value;
         var ikry = document.getElementById('e_idcarduser').value;
+        var ibln1 = document.getElementById('e_bulan01').value;
+        var ibln2 = document.getElementById('e_bulan02').value;
         
 
         if (ikry=="") {
             alert("Anda harus login ulang...");
             return false;
         }
-        if (ikeperluan=="") {
-            alert("Keperluan harus diisi...");
-            return false;
-        }
+        
 
         var chk_arr =  document.getElementsByName("chktgl[]");
         var chklength = chk_arr.length;             
@@ -612,13 +611,23 @@ th {
                 itglpilih =itglpilih + chk_arr[k].value+",";
             }
         }
-        if (itglpilih.length > 0) {
-            var lastIndex = itglpilih.lastIndexOf(",");
-            //itglpilih = "("+itglpilih.substring(0, lastIndex)+")";
-            itglpilih = itglpilih.substring(0, lastIndex);
+        
+        if (ijenis=="02") {//melahirkan
+            
         }else{
-            alert("Tidak ada tanggal yang dipilih...!!!");
-            return false;
+            if (ikeperluan=="") {
+                alert("Keperluan harus diisi...");
+                return false;
+            }
+            
+            if (itglpilih.length > 0) {
+                var lastIndex = itglpilih.lastIndexOf(",");
+                //itglpilih = "("+itglpilih.substring(0, lastIndex)+")";
+                itglpilih = itglpilih.substring(0, lastIndex);
+            }else{
+                alert("Tidak ada tanggal yang dipilih...!!!");
+                return false;
+            }
         }
             
         //alert(itglpilih); return false;
@@ -632,7 +641,7 @@ th {
         $.ajax({
             type:"post",
             url:"module/marketing/viewdatamkt.php?module=cekdatasudahada",
-            data:"uact="+iact+"&uid="+iid+"&ukry="+ikry+"&utglpilih="+itglpilih,
+            data:"uact="+iact+"&uid="+iid+"&ukry="+ikry+"&utglpilih="+itglpilih+"&ujenis="+ijenis+"&ubln1="+ibln1+"&ubln2="+ibln2,
             success:function(data){
                 //var tjml = data.length;
                 //alert(data);

@@ -25,6 +25,12 @@ if ($pmodule=="viewdatatanggal") {
     $pidinput=$_POST['uid'];
     $ppilihtgl=$_POST['utglpilih'];
     $pkaryawanid=$_POST['ukry'];
+    $pjenis=$_POST['ujenis'];
+    $pbln1=$_POST['ubln1'];
+    $pbln2=$_POST['ubln2'];
+    
+    $pbln1= date("Ym", strtotime($pbln1));
+    $pbln2= date("Ym", strtotime($pbln2));
     
     $itgl=explode(',',$ppilihtgl);
     $pilihantgl="";
@@ -40,9 +46,20 @@ if ($pmodule=="viewdatatanggal") {
     
     //echo "$boleh"; exit;
     
+    if ($pjenis=="02") {
+        if ($pbln1>$pbln2) {
+            mysqli_close($cnmy); echo "Bulan tidak sesuai..."; exit;
+        }
+        
+        $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
+                . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$pidinput' AND "
+                . " (b.tanggal in $pilihantgl OR (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') ) "
+                . " AND a.karyawanid='$pkaryawanid'";
+    }else{
+        $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
+                . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$pidinput' AND b.tanggal in $pilihantgl AND a.karyawanid='$pkaryawanid'";
+    }
     
-    $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
-            . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$pidinput' AND b.tanggal in $pilihantgl AND a.karyawanid='$pkaryawanid'";
     $tampil=mysqli_query($cnmy, $query);
     $ketemu=mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {

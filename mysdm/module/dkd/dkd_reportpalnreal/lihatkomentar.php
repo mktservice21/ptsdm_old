@@ -22,7 +22,7 @@ include "../../../config/fungsi_sql.php";
 
 if ($psts=="plan") {
     $sql = "select c.nourut, a.idinput, a.karyawanid, e.nama as namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
-        c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, c.saran 
+        c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, '' as saran 
         FROM hrd.dkd_new0 as a LEFT JOIN hrd.dkd_new1 as c on a.idinput=c.idinput 
         JOIN dr.masterdokter as d on c.dokterid=d.id JOIN hrd.karyawan as e on a.karyawanid=e.karyawanId 
         WHERE a.karyawanid='$pkryid' AND a.tanggal='$itgl' AND c.dokterid='$pudoktid'";

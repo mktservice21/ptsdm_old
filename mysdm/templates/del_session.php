@@ -656,4 +656,12 @@
     $_SESSION['DKDMSTDOKTJBT']="";
     $_SESSION['DKDMSTDOKTKRY']="";
     $_SESSION['DKDMSTDOKTTGL']="";
+    
+    
+    //FORM CUTI
+    $_SESSION['FCUTICAB']="";
+    $_SESSION['FCUTIJBT']="";
+    $_SESSION['FCUTIKRY']="";
+    $_SESSION['FCUTITGL01']="";
+    $_SESSION['FCUTITGL02']="";
 ?>

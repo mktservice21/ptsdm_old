@@ -26,7 +26,7 @@ if ($module=='mstlistcustbaru' AND $act=='simpandatalitcust')
 
     $puserapv=$_POST['e_idcard'];
     
-    $bulaninput="2021-02-01";
+    $bulaninput="2021-03-01";
 
 
     unset($pinsert_data);//kosongkan array

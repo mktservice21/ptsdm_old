@@ -45,9 +45,9 @@ $pnamakarywanpl=$rowk['nama'];
 
 
 
-$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket, a.real_user1, a.real_date1,
+$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
     b.pointMR, b.pointSpv, b.pointDM,
-    c.jenis, c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.real_user, c.real_date 
+    c.jenis, c.dokterid, d.namalengkap, d.gelar, d.spesialis 
     FROM hrd.dkd_new0 as a JOIN hrd.ket as b on a.ketid=b.ketId 
     JOIN hrd.dkd_new1 as c on a.idinput=c.idinput
     LEFT JOIN dr.masterdokter as d on c.dokterid=d.id
@@ -57,6 +57,9 @@ $query = "create TEMPORARY table $tmp01 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+
+$query = "ALTER TABLE $tmp01 ADD COLUMN real_user VARCHAR(10)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "create TEMPORARY table $tmp04 (select * from $tmp01)"; 
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -75,10 +78,10 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 
 $query = "INSERT INTO $tmp01 (idinput, karyawanid, jabatanid, tanggal, ketid, nama_ket, "
         . " pointMR, pointSpv, pointDM, "
-        . " jenis, dokterid, namalengkap, gelar, spesialis, real_user1, real_user)"
+        . " jenis, dokterid, namalengkap, gelar, spesialis, real_user)"
         . " SELECT idinput, karyawanid, jabatanid, tanggal, ketid, nama_ket, "
         . " pointMR, pointSpv, pointDM, "
-        . " jenis, dokterid, namalengkap, gelar, spesialis, karyawanid as real_user1, karyawanid as real_user "
+        . " jenis, dokterid, namalengkap, gelar, spesialis, karyawanid as real_user "
         . " FROM $tmp03 WHERE CONCAT(karyawanid,dokterid,tanggal) NOT IN "
         . " (select DISTINCT IFNULL(CONCAT(karyawanid,dokterid,tanggal),'') FROM $tmp04)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

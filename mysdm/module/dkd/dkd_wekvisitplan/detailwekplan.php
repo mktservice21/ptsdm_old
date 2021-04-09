@@ -103,7 +103,7 @@ $naktivitas=$row['aktivitas'];
             $pgelardokt=$nrd['gelar'];
             $pspesdokt=$nrd['spesialis'];
             $pnotes=$nrd['notes'];
-            $psaran=$nrd['saran'];
+            $psaran="";
             $pnmjenis='';
             if ($pjenis=="JV") $pnmjenis='Join Visit';
             elseif ($pjenis=="EC") $pnmjenis='Extra Call';

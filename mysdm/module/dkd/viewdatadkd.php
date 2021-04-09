@@ -86,7 +86,7 @@ if ($pmodule=="cekdatasudahada") {
 
     mysqli_close($cnmy);
 
-    echo $boleh;
+    echo $boleh; exit;
 }elseif ($pmodule=="cekdatasudahadarealvisit") {
     include "../../config/koneksimysqli.php";
 
@@ -108,7 +108,7 @@ if ($pmodule=="cekdatasudahada") {
 
     mysqli_close($cnmy);
 
-    echo $boleh;
+    echo $boleh; exit;
 }elseif ($pmodule=="cekdatasudahadarealactivity") {
     include "../../config/koneksimysqli.php";
 
@@ -130,7 +130,7 @@ if ($pmodule=="cekdatasudahada") {
 
     mysqli_close($cnmy);
 
-    echo $boleh;
+    echo $boleh; exit;
 }elseif ($pmodule=="viewdatadoktercabang") {
     include "../../config/koneksimysqli.php";
     $pidcab=$_POST['uidcab'];

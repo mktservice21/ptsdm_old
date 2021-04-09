@@ -44,49 +44,52 @@
     $now=date("mdYhis");
     $tmp01 =" dbtemp.tmpdkdentry01_".$puserid."_$now ";
     $tmp02 =" dbtemp.tmpdkdentry02_".$puserid."_$now ";
-
-    $sql = "select a.idinput, a.tanggal, a.karyawanid, a.ketid, c.nama as nama_ket,
-        a.compl, a.aktivitas, b.jenis, b.dokterid, d.namalengkap as nama_dokter, b.notes, b.saran
-        from hrd.dkd_new0 as a left join hrd.dkd_new1 as b on a.idinput=b.idinput 
-        LEFT JOIN hrd.ket as c on a.ketid=c.ketId
-        LEFT JOIN dr.masterdokter as d on b.dokterid=d.id WHERE a.karyawanid='$pkryid' ";
-    $sql .=" AND a.tanggal between '$ptgl1' AND '$ptgl2'";
-
-
-
-    $sql = "select idinput, tanggal FROM hrd.dkd_new0 WHERE karyawanid='$pkryid'";
+    $tmp03 =" dbtemp.tmpdkdentry03_".$puserid."_$now ";
+    
+    $sql = "select idinput, karyawanid, tanggal, ketid FROM hrd.dkd_new0 WHERE karyawanid='$pkryid'";
     $sql .=" AND tanggal between '$ptgl1' AND '$ptgl2'";
     $query = "create TEMPORARY table $tmp01 ($sql)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-    $query = "Alter table $tmp01 ADD totakv INT(4), ADD totvisit INT(4), ADD totec INT(4), ADD totjv INT(4), ADD sudahreal VARCHAR(1)";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-    $query = "UPDATE $tmp01 SET totakv=1";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-    $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-        hrd.dkd_new1 WHERE IFNULL(jenis,'') NOT IN ('EC', 'JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.totvisit=b.jml";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-    $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-        hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.idinput=b.idinput SET a.totec=b.jml";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-    $query = "UPDATE $tmp01 as a JOIN (select idinput, real_user FROM 
-        hrd.dkd_new1 WHERE IFNULL(jenis,'') NOT IN ('EC') AND IFNULL(real_user,'')<>'') as b on a.idinput=b.idinput SET a.sudahreal='Y'";
-    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-        hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.totjv=b.jml";
+    $sql = "select karyawanid, tanggal, dokterid, jenis FROM hrd.dkd_new1 WHERE karyawanid='$pkryid'";
+    $sql .=" AND tanggal between '$ptgl1' AND '$ptgl2'";
+    $query = "create TEMPORARY table $tmp02 ($sql)"; 
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+
+    $query = "create TEMPORARY table $tmp03 (select distinct karyawanid, tanggal from $tmp01)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "INSERT INTO $tmp03 (karyawanid, tanggal) SELECT distinct karyawanid, tanggal FROM $tmp02 WHERE CONCAT(karyawanid, tanggal) NOT IN "
+            . " (select distinct IFNULL(CONCAT(karyawanid, tanggal),'') FROM $tmp01)"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "UPDATE $tmp01 SET sudahreal='Y' WHERE IFNULL(real_user1,'')<>'' AND IFNULL(sudahreal,'')=''";
-    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+    $query = "Alter table $tmp03 ADD totakv INT(4), ADD totvisit INT(4), ADD totec INT(4), ADD totjv INT(4), ADD sudahreal VARCHAR(1)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, count(distinct ketid) as jml FROM 
+        $tmp01 GROUP BY 1,2) as b on a.tanggal=b.tanggal AND a.karyawanid=b.karyawanid SET a.totakv=b.jml";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+
+    $query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+        $tmp02 WHERE IFNULL(jenis,'') NOT IN ('EC', 'JV') GROUP BY 1,2) as b on a.tanggal=b.tanggal AND a.karyawanid=b.karyawanid SET a.totvisit=b.jml";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+       $tmp02 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1,2) as b on a.tanggal=b.tanggal AND a.karyawanid=b.karyawanid SET a.totec=b.jml";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    
+    $query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+        $tmp02 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1,2) as b on a.tanggal=b.tanggal AND a.karyawanid=b.karyawanid SET a.totjv=b.jml";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
     
     
     $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
@@ -117,24 +120,15 @@
                     <th width='100px'>Tanggal</th>
                     <th width='50px'>&nbsp;</th>
                     <th width='50px'>&nbsp;</th>
-                    <!--
-                    <th width='100px'>Keperluan</th>
-                    <th width='100px'>Compl.</th>
-                    <th width='50px'>Aktivitas</th>
-                    <th width='80px'>Jenis</th>
-                    <th width='100px'>Dokter</th>
-                    <th width='100px'>Notes</th>
-                    <th width='100px'>Saran</th>
-                    -->
                 </tr>
             </thead>
             <tbody>
             <?PHP
             $no=1;
-            $query = "select distinct idinput, tanggal, totakv, totvisit, totec, totjv, sudahreal from $tmp01 order by tanggal";
+            $query = "select distinct karyawanid, tanggal, totakv, totvisit, totec, totjv, sudahreal from $tmp03 order by tanggal";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
-                $cidinput=$row0['idinput'];
+                $cidinput=$row0['karyawanid'];
                 $ntgl=$row0['tanggal'];
                 $ntotakv=$row0['totakv'];
                 $ntotvisit=$row0['totvisit'];
@@ -144,7 +138,7 @@
 
                 $pidget=encodeString($cidinput);
 
-                if (empty($ntotakv)) $ntotakv=1;
+                if (empty($ntotakv)) $ntotakv=0;
                 if (empty($ntotvisit)) $ntotvisit=0;
                 if (empty($ntotec)) $ntotec=0;
                 if (empty($ntotjv)) $ntotjv=0;
@@ -156,11 +150,11 @@
                 $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
                 $xthn= date('Y', strtotime($ntgl));
 
-                $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
+                $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget&nid=$ntgl'>Edit</a>";
                 $print="<a title='detail' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
-                . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&iprint=detail',"
-                . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                . "Detail</a>";
+                    . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&nid=$ntgl&iprint=detail',"
+                    . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                    . "Detail</a>";
 
                 $phapus="";
 
@@ -169,8 +163,12 @@
                 }
 
                 $pkettotal="$ntotakv Activity, $ntotvisit Visit";
-                if ((INT)$ntotec>0 OR (INT)$ntotjv>0) {
+                if ((INT)$ntotec>0) {
                     $pkettotal="$ntotakv Activity, $ntotvisit Visit, $ntotjv Join Visit, $ntotec Extra Call";
+                }else{
+                    if ((INT)$ntotec>0 OR (INT)$ntotjv>0) {
+                        $pkettotal="$ntotakv Activity, $ntotvisit Visit, $ntotjv Join Visit";
+                    }
                 }
 
                 if ($nsudahreal=="Y") {
@@ -187,39 +185,6 @@
 
                 $no++;
 
-                /*
-                $query = "select * from $tmp01 where idinput='$cidinput' order by tanggal, jenis, nama_dokter";
-                $tampil=mysqli_query($cnmy, $query);
-                while ($row=mysqli_fetch_array($tampil)) {
-                    $ntgl=$row['tanggal'];
-                    $nnamaket=$row['nama_ket'];
-                    $ncompl=$row['compl'];
-                    $naktivitas=$row['aktivitas'];
-                    $njenis=$row['jenis'];
-                    $nnamadokt=$row['nama_dokter'];
-                    $nnotes=$row['notes'];
-                    $nsaran=$row['saran'];
-
-                    
-                    $phapus="";
-
-                    echo "<tr>";
-                    echo "<td nowrap>$no</td>";
-                    echo "<td nowrap>$pedit &nbsp; &nbsp; $phapus</td>";
-                    echo "<td nowrap>$ntgl</td>";
-                    echo "<td nowrap>$nnamaket</td>";
-                    echo "<td nowrap>$ncompl</td>";
-                    echo "<td nowrap>$naktivitas</td>";
-                    echo "<td nowrap>$njenis</td>";
-                    echo "<td nowrap>$nnamadokt</td>";
-                    echo "<td nowrap>$nnotes</td>";
-                    echo "<td nowrap>$nsaran</td>";
-                    echo "</tr>";
-
-                    $pedit="";
-                    $no++;
-                }
-                */
             }
 
             ?>
@@ -314,5 +279,6 @@
 hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp01");
     mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp02");
+    mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp03");
     mysqli_close($cnmy);
 ?>

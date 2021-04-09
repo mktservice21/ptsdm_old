@@ -26,6 +26,46 @@ if ($pmodule=="cekdatasudahada") {
     mysqli_close($cnmy);
 
     echo $boleh;
+}elseif ($pmodule=="cekdatasudahadabytgl") {
+    include "../../config/koneksimysqli.php";
+
+    $pidinput=$_POST['uid'];
+    $pidinput=$_POST['uact'];
+    $ptgl=$_POST['utgl'];
+    $ptgledit=$_POST['utgledit'];
+    $pkaryawanid=$_POST['ukaryawan'];
+
+    $ptanggal= date("Y-m-d", strtotime($ptgl));
+    $pedittgl= date("Y-m-d", strtotime($ptgledit));
+
+    $boleh="boleh";
+    
+    $filteredit=" ";
+    if ($pidinput=="editdata") {
+        if ($ptanggal==$pedittgl) {
+            mysqli_close($cnmy);
+
+            echo $boleh; exit;
+        }
+    }
+    
+    $query = "select tanggal from hrd.dkd_new0 where tanggal='$ptanggal' And karyawanid='$pkaryawanid' $filteredit";
+    $tampil=mysqli_query($cnmy, $query);
+    $ketemu=mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $boleh="Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
+    }else{
+        $query = "select tanggal from hrd.dkd_new1 where tanggal='$ptanggal' And karyawanid='$pkaryawanid' $filteredit";
+        $tampil=mysqli_query($cnmy, $query);
+        $ketemu=mysqli_num_rows($tampil);
+        if ((INT)$ketemu>0) {
+            $boleh="Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
+        }
+    }
+
+    mysqli_close($cnmy);
+
+    echo $boleh;
 }elseif ($pmodule=="cekdatasudahadareal") {
     include "../../config/koneksimysqli.php";
 

@@ -226,6 +226,8 @@ setInterval(function() {
                                                 $pikoenusernm=$row1['namakoentar'];
                                                 $pikoenuserjbt=$row1['namajabatan'];
                                                 
+                                                $pikoentgl = date('d F Y H:i:s', strtotime($pikoentgl));
+                                                
                                                 echo "<li>";
                                                     echo "<div class='block'>";
                                                         echo "<div class='block_content'>";

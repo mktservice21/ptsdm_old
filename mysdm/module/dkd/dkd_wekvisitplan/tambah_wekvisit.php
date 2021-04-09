@@ -10,6 +10,7 @@ $pidjbt=$_SESSION['JABATANID'];
 $pidgroup=$_SESSION['GROUP']; 
 $pnamalengkap=$_SESSION['NAMALENGKAP'];
 
+        
 $pcabangid="";
 
     $query ="SELECT a.karyawanid, b.nama nama_karyawan, a.spv, c.nama nama_spv, 
@@ -165,6 +166,8 @@ $pdate = date('Y-m-d', strtotime('+1 days', strtotime($hari_ini)));
 $pnewdate = strtotime ( 'monday 0 week' , strtotime ( $pdate ) ) ;
 $tgl_pertama = date ( 'd F Y' , $pnewdate );
 
+$ptgledit=$tgl_pertama;
+
 $ppketstatus="000";//blank
 $paktivitas="";
 $pcompl="";
@@ -179,24 +182,33 @@ if ($pidact=="editdata"){
     
     $pidinput_ec=$_GET['id'];
     $pidinput = decodeString($pidinput_ec);
-
-    $edit = mysqli_query($cnmy, "SELECT * FROM hrd.dkd_new0 WHERE idinput='$pidinput'");
-    $r    = mysqli_fetch_array($edit);
+    $pnewdate=$_GET['nid'];
+    $pidcard=$pidinput;
+    
+    $edit = mysqli_query($cnmy, "SELECT * FROM hrd.dkd_new0 WHERE karyawanid='$pidinput' AND tanggal='$pnewdate'");
     $jmlrw0=mysqli_num_rows($edit);
-
-    $pnewdate=$r['tanggal'];
-    $ppketstatus=$r['ketid'];
-    $paktivitas=$r['aktivitas'];
-    $pcompl=$r['compl'];
-    $pidjbt=$r['jabatanid'];
+    if ((INT)$jmlrw0>0) {
+        $r    = mysqli_fetch_array($edit);
+        $ppketstatus=$r['ketid'];
+        $paktivitas=$r['aktivitas'];
+        $pcompl=$r['compl'];
+        $pidjbt=$r['jabatanid'];
+        
+        $pjmlrecakv=$jmlrw0;
+    }else{
+        $jmlrw0=1;
+        
+        $edit = mysqli_query($cnmy, "SELECT distinct tanggal, karyawanid, jabatanid FROM hrd.dkd_new1 WHERE karyawanid='$pidinput' AND tanggal='$pnewdate'");
+        $r    = mysqli_fetch_array($edit);
+        $pidjbt=$r['jabatanid'];
+    }
 
     $tgl_pertama = date('d F Y', strtotime($pnewdate));
 
+    $ptgledit=$tgl_pertama;
+    $pkaryawanedit=$pidinput;
 
-    if ((INT)$jmlrw0<=0) $jmlrw0=1;
-    $pjmlrecakv=$jmlrw0;
-
-    $query = "select dokterid, jenis from hrd.dkd_new1 WHERE idinput='$pidinput'";
+    $query = "select karyawanid, tanggal, jabatanid, dokterid, jenis from hrd.dkd_new1 WHERE karyawanid='$pidinput' AND tanggal='$pnewdate'";
     $tampil1=mysqli_query($cnmy, $query);
     $jmlrw1=mysqli_num_rows($tampil1);
     if ((INT)$jmlrw1<=0) $jmlrw1=1;
@@ -252,9 +264,9 @@ $pnamajabatan=$nr['nama'];
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
                                     <div class='col-md-6'>
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput; ?>' Readonly>
-                                        <input type='text' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
                                         <input type='text' id='e_idjbt' name='e_idjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbt; ?>' Readonly>
+                                        <input type='text' id='e_idtgledit' name='e_idtgledit' class='form-control col-md-7 col-xs-12' value='<?PHP echo $ptgledit; ?>' Readonly>
                                     </div>
                                 </div>
 
@@ -295,6 +307,7 @@ $pnamajabatan=$nr['nama'];
                                         <div class='col-xs-4'>
                                             <select class='soflow' name='cb_ketid' id='cb_ketid' onchange="">
                                                 <?php
+                                                echo "<option value=''>--Pilih--</option>";
                                                 $query = "select ketId as ketid, nama as nama From hrd.ket WHERE IFNULL(aktif,'')<>'N' order by ketId, nama";
                                                 $tampilket= mysqli_query($cnmy, $query);
                                                 while ($du= mysqli_fetch_array($tampilket)) {
@@ -375,7 +388,7 @@ $pnamajabatan=$nr['nama'];
                                                     
                                                     $query = "SELECT a.*, b.nama as nama_ket FROM hrd.dkd_new0 as a
                                                         LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
-                                                         WHERE a.idinput='$pidinput'";
+                                                         WHERE a.karyawanid='$pidinput' AND a.tanggal='$pnewdate'";
                                                     $tampild=mysqli_query($cnmy, $query);
                                                     while ($nrd= mysqli_fetch_array($tampild)) {
                                                         $pnewdate=$nrd['tanggal'];
@@ -576,7 +589,7 @@ $pnamajabatan=$nr['nama'];
                                                     
                                                     $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis, b.icabangid FROM hrd.dkd_new1 as a
                                                         LEFT JOIN dr.masterdokter as b on a.dokterid=b.id 
-                                                         WHERE a.idinput='$pidinput' AND IFNULL(a.jenis,'') IN ('', 'JV')";
+                                                         WHERE a.karyawanid='$pidinput' AND a.tanggal='$pnewdate' AND IFNULL(a.jenis,'') IN ('', 'JV')";
                                                     $tampild=mysqli_query($cnmy, $query);
                                                     while ($nrd= mysqli_fetch_array($tampild)) {
                                                         $pjenis=$nrd['jenis'];
@@ -707,7 +720,12 @@ $pnamajabatan=$nr['nama'];
         if (skey==2) {
             element.classList.remove("disabledDiv");
         }else{
-            element.classList.add("disabledDiv");
+            var iket=document.getElementById("cb_ketid").value;
+            if (iket=="") {
+                
+            }else{
+                element.classList.add("disabledDiv");
+            }
         }
         
     }
@@ -750,7 +768,7 @@ $pnamajabatan=$nr['nama'];
             var i_nmket=y[x].text;
 
             if (i_ketid=="") {
-                alert("dokter belum dipilih...!!!");
+                //alert("dokter belum dipilih...!!!");
                 return false;
             }
 
@@ -919,15 +937,29 @@ $pnamajabatan=$nr['nama'];
 
 
     function disp_confirm(pText_,ket)  {
-        document.getElementById('btnakv').click();
+        
+        var ikeperluan = document.getElementById('cb_ketid').value;
+        if (ikeperluan=="") {
+            disp_confirm_ext(pText_,ket);
+        }else{
+            document.getElementById('btnakv').click();
+            
+            setTimeout(function () {
+                disp_confirm_ext(pText_,ket)
+            }, 200);
+        }
+    }
+    
+    function disp_confirm_ext(pText_,ket)  {
+        var ikeperluan = document.getElementById('cb_ketid').value;
         var iid = document.getElementById('e_id').value;
         var ijmldata = document.getElementById('e_idjmlrec').value;
         var itgl = document.getElementById('e_periode1').value;
+        var itgledit = document.getElementById('e_idtgledit').value;
         var ikaryawan = document.getElementById('e_idcarduser').value;
         var ijbtid = document.getElementById('e_idjbt').value;
-        var ikeperluan = document.getElementById('cb_ketid').value;
         
-        if (ikeperluan=="000") {
+        if (ikeperluan=="000" || ikeperluan=="") {
             if (ijmldata<=1) {
                 alert("Dokter belum dipilih...");
                 return false;
@@ -939,10 +971,16 @@ $pnamajabatan=$nr['nama'];
             return false;
         }
 
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var iact = urlku.searchParams.get("act");
+        //alert(iact);
         $.ajax({
             type:"post",
-            url:"module/dkd/viewdatadkd.php?module=cekdatasudahada",
-            data:"uid="+iid+"&utgl="+itgl+"&ukaryawan="+ikaryawan,
+            url:"module/dkd/viewdatadkd.php?module=cekdatasudahadabytgl",
+            data:"uact="+iact+"&uid="+iid+"&utgl="+itgl+"&ukaryawan="+ikaryawan+"&utgledit="+itgledit,
             success:function(data){
                 //var tjml = data.length;
                 //alert(data);
@@ -954,10 +992,6 @@ $pnamajabatan=$nr['nama'];
                     if (ok_) {
                         var r=confirm(pText_)
                         if (r==true) {
-                            var myurl = window.location;
-                            var urlku = new URL(myurl);
-                            var module = urlku.searchParams.get("module");
-                            var idmenu = urlku.searchParams.get("idmenu");
                             //document.write("You pressed OK!")
                             document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplan/aksi_wekvisitplan.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
                             document.getElementById("form_data1").submit();

@@ -191,9 +191,9 @@ if ($module=='mktformcutieth')
             
             mysqli_close($cnmy);
             if ($act=="update") {
-                //header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilupdate');
+                header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilupdate');
             }else{
-                //header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=tambahbaru');
+                header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilupdate');
             }
         
         }

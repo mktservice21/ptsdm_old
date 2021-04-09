@@ -168,9 +168,7 @@ $tgl_kedua = date('F Y', strtotime('+1 month', strtotime($hari_ini)));
 
 $pjeniscuti="01";//Tahunan
 $pkeperluan="";
-
-$pjmlrecakv=1;
-$pjmlrec=1;
+$ctglpilih="";
 
 $act="input";
 if ($pidact=="editdata"){
@@ -180,35 +178,35 @@ if ($pidact=="editdata"){
     
     $pidinput_ec=$_GET['id'];
     $pidinput = decodeString($pidinput_ec);
-    $pnewdate=$_GET['nid'];
-    $pidcard=$pidinput;
     
-    $edit = mysqli_query($cnmy, "SELECT * FROM hrd.dkd_new0 WHERE karyawanid='$pidinput' AND tanggal='$pnewdate'");
+    $edit = mysqli_query($cnmy, "SELECT * FROM hrd.t_cuti0 WHERE idcuti='$pidinput'");
     $jmlrw0=mysqli_num_rows($edit);
     if ((INT)$jmlrw0>0) {
         $r    = mysqli_fetch_array($edit);
-        $ppketstatus=$r['ketid'];
-        $pkeperluan=$r['aktivitas'];
-        $pcompl=$r['compl'];
-        $pidjbt=$r['jabatanid'];
+        $pjeniscuti=$r['id_jenis'];
+        $pkeperluan=$r['keperluan'];
+        $pbln1=$r['bulan1'];
+        $pbln2=$r['bulan2'];
         
-        $pjmlrecakv=$jmlrw0;
-    }else{
-        $jmlrw0=1;
+        $tgl_pertama = date('F Y', strtotime($pbln1));
+        $tgl_kedua = date('F Y', strtotime($pbln2));
         
-        $edit = mysqli_query($cnmy, "SELECT distinct tanggal, karyawanid, jabatanid FROM hrd.dkd_new1 WHERE karyawanid='$pidinput' AND tanggal='$pnewdate'");
-        $r    = mysqli_fetch_array($edit);
-        $pidjbt=$r['jabatanid'];
+        
+        $query = "select distinct tanggal from hrd.t_cuti1 WHERE idcuti='$pidinput' order by tanggal";
+        $tampil1=mysqli_query($cnmy, $query);
+        $ketemu1=mysqli_num_rows($tampil1);
+        if ((INT)$ketemu1>0) {
+            while ($row1=mysqli_fetch_array($tampil1)) {
+                $tgl_p=$row1['tanggal'];
+                if (!empty($tgl_p)) {
+                    $tgl_p = date('Y-m-d', strtotime($tgl_p));
+
+                    $ctglpilih .="'".$tgl_p."',";
+                }
+            }
+        }
     }
 
-    $tgl_pertama = date('F Y', strtotime($pnewdate));
-
-
-    $query = "select karyawanid, tanggal, jabatanid, dokterid, jenis from hrd.dkd_new1 WHERE karyawanid='$pidinput' AND tanggal='$pnewdate'";
-    $tampil1=mysqli_query($cnmy, $query);
-    $jmlrw1=mysqli_num_rows($tampil1);
-    if ((INT)$jmlrw1<=0) $jmlrw1=1;
-    $pjmlrec=$jmlrw1;
 
 
 }
@@ -342,13 +340,20 @@ $pnamajabatan=$nr['nama'];
                                             <?PHP
                                                 $p_tgl = date('d', strtotime($ptglpilih));
                                                 $p_akh = date('t', strtotime($ptglpilih));
-                                                echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih'> $p_tgl &nbsp; &nbsp; ";
+                                                
+                                                $pchkpilih="";
+                                                if (strpos($ctglpilih, $ptglpilih)==true) $pchkpilih="checked";
+                                                echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
 
                                                 $nom=2;
                                                 for ($ix=1;$ix<(INT)$p_akh;$ix++) {
                                                     $ptglpilih = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih)));
+                                                    
+                                                    $pchkpilih="";
+                                                    if (strpos($ctglpilih, $ptglpilih)==true) $pchkpilih="checked";
+                                                    
                                                     $p_tgl = date('d', strtotime($ptglpilih));
-                                                    echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih'> $p_tgl &nbsp; &nbsp; ";
+                                                    echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
                                                     if ($nom>5) {echo "<br/>"; $nom=0;}
                                                     $nom++;
                                                 }
@@ -378,13 +383,23 @@ $pnamajabatan=$nr['nama'];
                                             <?PHP
                                                 $p_tgl = date('d', strtotime($ptglpilih02));
                                                 $p_akh = date('t', strtotime($ptglpilih02));
-                                                echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02'> $p_tgl &nbsp; &nbsp; ";
+                                                
+                                                $p_b01 = date('Ym', strtotime($ptglpilih));
+                                                $p_b02 = date('Ym', strtotime($ptglpilih02));
+                                                
+                                                $pchkpilih="";
+                                                if (strpos($ctglpilih, $ptglpilih02)==true AND $p_b01<>$p_b02) $pchkpilih="checked";
+                                                echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
 
                                                 $nom=2;
                                                 for ($ix=1;$ix<(INT)$p_akh;$ix++) {
                                                     $ptglpilih02 = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih02)));
+                                                    
+                                                    $pchkpilih="";
+                                                    if (strpos($ctglpilih, $ptglpilih02)==true AND $p_b01<>$p_b02) $pchkpilih="checked";
+                                                    
                                                     $p_tgl = date('d', strtotime($ptglpilih02));
-                                                    echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02'> $p_tgl &nbsp; &nbsp; ";
+                                                    echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
                                                     if ($nom>5) {echo "<br/>"; $nom=0;}
                                                     $nom++;
                                                 }

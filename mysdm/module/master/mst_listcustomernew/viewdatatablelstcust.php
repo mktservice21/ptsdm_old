@@ -16,7 +16,7 @@
     $pidcardapv=$_SESSION['IDCARD'];
     $pidcabang=$_POST['ucabang'];
     $pidarea=$_POST['uarea'];
-    $pbulanawal="202102";
+    $pbulanawal="202103";
 
     $_SESSION['LSTCUSTNEWICAB']=$pidcabang;
     $_SESSION['LSTCUSTNEWIARE']=$pidarea;
@@ -41,11 +41,11 @@
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "alter table $tmp01 add column tvalue DECIMAL(20,2), add column isudah varchar(1)";
+    $query = "alter table $tmp01 add column tvalue DECIMAL(20,2), add column isudah varchar(1), add column tglinputlama datetime";
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "select distinct icabangid, areaid, icustid FROM mkt.new_icust WHERE 
+    $query = "select distinct icabangid, areaid, icustid, tgl_apv_dm FROM mkt.new_icust WHERE 
         icabangid='$pidcabang'";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnms, $query);
@@ -54,9 +54,13 @@
 
     $query = "UPDATE $tmp01 as a JOIN $tmp02 as b 
         on a.icabangid=b.icabangid and a.areaid=b.areaid and a.icustid=b.icustid SET 
-        isudah='Y'";
+        isudah='Y', a.tglinputlama=b.tgl_apv_dm";
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "DELETE FROM $tmp01 WHERE IFNULL(isudah,'')='Y' AND DATE_FORMAT(tglinputlama,'%Y%m')<='$pbulanawal'";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
     //mysqli_query($cnms, "DELETE FROM $tmp01 WHERE IFNULL(isudah,'')='Y'");

@@ -68,7 +68,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $sql = "select c.nourut, a.idinput, a.karyawanid, a.namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
-    c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, c.saran 
+    c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, '' as saran 
     FROM $tmp01 as a LEFT JOIN hrd.dkd_new1 as c on a.idinput=c.idinput JOIN dr.masterdokter as d on c.dokterid=d.id";
 $query = "create TEMPORARY table $tmp02 ($sql)"; 
 mysqli_query($cnmy, $query);

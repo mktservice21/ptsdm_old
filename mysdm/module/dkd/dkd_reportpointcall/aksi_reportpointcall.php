@@ -142,7 +142,7 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
 
 <HTML>
 <HEAD>
-  <TITLE>Report Point & Call</TITLE>
+  <TITLE>Monthly Report Point & Call</TITLE>
     <meta http-equiv="Expires" content="Mon, 01 Jan 2030 1:00:00 GMT">
     <meta http-equiv="Pragma" content="no-cache">
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>
@@ -155,7 +155,7 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
 <BODY onload="initVar()">
     <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
     <?PHP
-    echo "<b>Report Point & Call</b><br/>";
+    echo "<b>Monthly Report Point & Call</b><br/>";
     echo "<b>Periode : $pperiode</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
     echo "<b>Jabatan : $pnamajabatan</b><br/>";

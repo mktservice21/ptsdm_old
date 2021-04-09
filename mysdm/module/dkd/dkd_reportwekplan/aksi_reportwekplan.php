@@ -36,7 +36,7 @@ $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
 
-$sql = "select a.idinput, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket, a.real_user1, a.real_date1,
+$sql = "select a.idinput, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
     b.pointMR, b.pointSpv, b.pointDM 
     FROM hrd.dkd_new0 as a JOIN hrd.ket as b on a.ketid=b.ketId 
     WHERE a.karyawanid='$pkryid'";

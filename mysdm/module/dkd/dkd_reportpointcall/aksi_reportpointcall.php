@@ -125,6 +125,7 @@ if (!empty($lcfieldtambah)) {
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
 }
 
+/*
 for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
     $pnmfield="t_".$ix;
     $pntgl=$ix;
@@ -135,6 +136,8 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
             . " a.".$pnmfield."=CASE WHEN IFNULL(b.jenis,'')='' THEN 'VS' ELSE b.jenis END";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
 }
+ * 
+ */
 ?>
 
 <HTML>

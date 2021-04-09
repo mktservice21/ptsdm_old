@@ -630,6 +630,8 @@
         include 'module/dkd/dkd_reportmonplandokt/aksi_reportmonplandokt.php';
     }elseif ($_GET['module']=='dkdrptplanreal'){
         include 'module/dkd/dkd_reportpalnreal/aksi_reportpalnreal.php';
+    }elseif ($_GET['module']=='dkdrptpintcall'){
+        include 'module/dkd/dkd_reportpointcall/aksi_reportpointcall.php';
         
         
     }elseif ($_GET['module']=='eksekusifileelastik'){

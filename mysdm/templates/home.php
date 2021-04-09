@@ -879,6 +879,13 @@
         include 'module/dkd/dkd_reportmonplandokt/reportmonplandokt.php';
     }elseif ($_GET['module']=='dkdrptplanreal'){
         include 'module/dkd/dkd_reportpalnreal/reportpalnreal.php';
+    }elseif ($_GET['module']=='dkdrptpintcall'){
+        include 'module/dkd/dkd_reportpointcall/reportpointcall.php';
+        
+    }elseif ($_GET['module']=='lapkascab'){
+        include 'module/laporan/mod_lapkascab/lapkascab.php';
+    }elseif ($_GET['module']=='mktformcutieth'){
+        include 'module/marketing/mkt_formcutieth/formcutieth.php';
         
 
     }else{

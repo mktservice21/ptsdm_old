@@ -84,7 +84,10 @@
             <tbody>
             <?PHP
             $no=1;
-            $query = "select distinct idcuti, karyawanid, nama_karyawan, id_jenis, nama_jenis, keperluan, bulan1, bulan2 from $tmp01 order by nama_karyawan, idcuti, nama_jenis";
+            $query = "select distinct idcuti, karyawanid, nama_karyawan, jabatanid, id_jenis, nama_jenis, keperluan, bulan1, bulan2, "
+                    . " atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3,"
+                    . " atasan4, tgl_atasan4, atasan5, tgl_atasan5 from "
+                    . " $tmp01 order by nama_karyawan, idcuti, nama_jenis";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
                 $cidinput=$row0['idcuti'];
@@ -95,6 +98,34 @@
                 $nkeperluan=$row0['keperluan'];
                 $nbln1=$row0['bulan1'];
                 $nbln2=$row0['bulan2'];
+                
+                $njbt=$row0['jabatanid'];
+                $nats1=$row0['atasan1'];
+                $ntglats1=$row0['tgl_atasan1'];
+                $nats2=$row0['atasan2'];
+                $ntglats2=$row0['tgl_atasan2'];
+                $nats3=$row0['atasan3'];
+                $ntglats3=$row0['tgl_atasan3'];
+                $nats4=$row0['atasan4'];
+                $ntglats4=$row0['tgl_atasan5'];
+                $nats5=$row0['atasan5'];
+                $ntglats5=$row0['tgl_atasan5'];
+                
+                if ($ntglats1=="0000-00-00 00:00:00") $ntglats1="";
+                if ($ntglats2=="0000-00-00 00:00:00") $ntglats2="";
+                if ($ntglats3=="0000-00-00 00:00:00") $ntglats3="";
+                if ($ntglats4=="0000-00-00 00:00:00") $ntglats4="";
+                if ($ntglats5=="0000-00-00 00:00:00") $ntglats5="";
+                
+                $nsudahapprove=false;
+                
+                if ( ($njbt=="15" OR $njbt=="38") AND !empty($nats1) AND !empty($ntglats1)) $nsudahapprove=true;
+                if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18") AND !empty($nats2) AND !empty($ntglats2)) $nsudahapprove=true;
+                if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08") AND !empty($nats3) AND !empty($ntglats3)) $nsudahapprove=true;
+                if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08" OR $njbt=="20") AND !empty($nats4) AND !empty($ntglats4)) $nsudahapprove=true;
+                if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08" OR $njbt=="05") AND !empty($nats5) AND !empty($ntglats5)) $nsudahapprove=true;
+               
+                
                 
                 
                 $pidget=encodeString($cidinput);
@@ -148,6 +179,15 @@
                         $ntglpilih=$nbln1." s/d. ".$nbln2;
                 }else{
                     $ntglpilih=$ctglpl;
+                }
+                
+                
+                if ($bukanuser==false) {
+                    $pedit="";
+                }
+                
+                if ($nsudahapprove==true) {
+                    $pedit="";
                 }
                 
                 echo "<tr>";

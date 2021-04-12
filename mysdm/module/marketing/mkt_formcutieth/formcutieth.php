@@ -174,7 +174,7 @@
                     <div class='x_panel'>
 
                         <div class='x_title'>
-                            <h2><input class='btn btn-default' type=button value='Isi Pengajuan Cuti (+)'
+                            <h2><input class='btn btn-default' type=button value='Isi Pengajuan (+)'
                                 onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=tambahbaru"; ?>';">
                                 <small></small>
                             </h2>

@@ -421,15 +421,22 @@ $pnamajabatan=$nr['nama'];
                             
                             <div class='col-md-12 col-sm-12 col-xs-12'>
 
-
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                    <div class='col-md-4'>
-                                        <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
+                                <?PHP
+                                if ($pidact=="editdata" ) {
+                                ?>
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                        <div class='col-md-4'>
+                                            <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Update</button>
+                                        </div>
                                     </div>
-                                </div>
-
-                                
+                                <?PHP
+                                }else{
+                                    echo "<div class='col-sm-5'>";
+                                    include "module/marketing/mkt_formcutieth/ttd_formcuti.php";
+                                    echo "</div>";
+                                }
+                                ?>
 
                                 <br/>
                                 <div hidden id="div_atasan">

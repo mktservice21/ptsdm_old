@@ -415,6 +415,23 @@
                             echo "</td>";
                         }
                         
+                        if ($pjabatanid=="13") {
+                            echo "<td align='center' nowrap>";
+                            echo "Mengetahui, ";
+                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            echo "..........................................";
+                                
+
+                            echo "</td>";
+                            echo "<td align='center' nowrap>";
+                            echo "Menyetujui, ";
+                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            echo "..........................................";
+                                
+
+                            echo "</td>";
+                        }
+                        
                     echo "</tr>";
                 ?>
             </table>

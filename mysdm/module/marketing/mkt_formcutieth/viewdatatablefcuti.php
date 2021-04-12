@@ -123,7 +123,7 @@
                     while ($row1=mysqli_fetch_array($tampil1)) {
                         $tgl_p=$row1['tanggal'];
                         if (!empty($tgl_p)) {
-                            $tgl_p = date('d-m-Y', strtotime($tgl_p));
+                            $tgl_p = date('d F Y', strtotime($tgl_p));
 
                             $ctglpl .=$tgl_p.", ";
 

@@ -325,6 +325,13 @@ else $prbchkjenis1="checked";
                                 </div>
                                 
                                 
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><u>Atasan</u> <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        &nbsp;
+                                    </div>
+                                </div>
+                                
                                 <div id="div_atasan">
                                     
                                     <div class='form-group'>
@@ -361,7 +368,13 @@ else $prbchkjenis1="checked";
                                     
                                 </div>
 
-
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        *) Apabila atasan tidak sesuai, mohon untuk disesuaikan terlebih dahulu sebelum disimapn...!!!
+                                    </div>
+                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -416,50 +429,55 @@ else $prbchkjenis1="checked";
                                         </div>
                                     </div>
                                     <hr/>
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>s/d. Bulan <span class='required'></span></label>
-                                        <div class='col-md-6'>
-                                            <div class='input-group date' id='cbln02'>
-                                                <input type="text" class="form-control" id='e_bulan02' name='e_bulan02' autocomplete='off' required='required' placeholder='F Y' value='<?PHP echo $tgl_kedua; ?>' Readonly>
-                                                <span class='input-group-addon'>
-                                                    <span class='glyphicon glyphicon-calendar'></span>
-                                                </span>
+                                    
+                                    <div id="div_bulan2">
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>s/d. Bulan <span class='required'></span></label>
+                                            <div class='col-md-6'>
+                                                <div class='input-group date' id='cbln02X'>
+                                                    <input type="text" class="form-control" id='e_bulan02' name='e_bulan02' autocomplete='off' required='required' placeholder='F Y' value='<?PHP echo $tgl_kedua; ?>' Readonly>
+                                                    <span class='input-group-addon'>
+                                                        <span class='glyphicon glyphicon-calendar'></span>
+                                                    </span>
 
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
 
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
-                                        <div class='col-xs-9'>
-                                            <div id="div_tgl2">
-                                                <?PHP
-                                                    $p_tgl = date('d', strtotime($ptglpilih02));
-                                                    $p_akh = date('t', strtotime($ptglpilih02));
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                <div id="div_tgl2">
+                                                    <?PHP
+                                                        $p_tgl = date('d', strtotime($ptglpilih02));
+                                                        $p_akh = date('t', strtotime($ptglpilih02));
 
-                                                    $p_b01 = date('Ym', strtotime($ptglpilih));
-                                                    $p_b02 = date('Ym', strtotime($ptglpilih02));
-
-                                                    $pchkpilih="";
-                                                    if (strpos($ctglpilih, $ptglpilih02)==true AND $p_b01<>$p_b02) $pchkpilih="checked";
-                                                    echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
-
-                                                    $nom=2;
-                                                    for ($ix=1;$ix<(INT)$p_akh;$ix++) {
-                                                        $ptglpilih02 = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih02)));
+                                                        $p_b01 = date('Ym', strtotime($ptglpilih));
+                                                        $p_b02 = date('Ym', strtotime($ptglpilih02));
 
                                                         $pchkpilih="";
                                                         if (strpos($ctglpilih, $ptglpilih02)==true AND $p_b01<>$p_b02) $pchkpilih="checked";
-
-                                                        $p_tgl = date('d', strtotime($ptglpilih02));
                                                         echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
-                                                        if ($nom>5) {echo "<br/>"; $nom=0;}
-                                                        $nom++;
-                                                    }
-                                                ?>
+
+                                                        $nom=2;
+                                                        for ($ix=1;$ix<(INT)$p_akh;$ix++) {
+                                                            $ptglpilih02 = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih02)));
+
+                                                            $pchkpilih="";
+                                                            if (strpos($ctglpilih, $ptglpilih02)==true AND $p_b01<>$p_b02) $pchkpilih="checked";
+
+                                                            $p_tgl = date('d', strtotime($ptglpilih02));
+                                                            echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
+                                                            if ($nom>5) {echo "<br/>"; $nom=0;}
+                                                            $nom++;
+                                                        }
+                                                    ?>
+                                                </div>
                                             </div>
                                         </div>
+                                        
                                     </div>
                                     
                                 </div>
@@ -519,12 +537,31 @@ else $prbchkjenis1="checked";
     $(document).ready(function() {
         $('#cbln01').on('change dp.change', function(e){
             ShowTanggalPilih();
+            var ijenis = document.getElementById('cb_jeniscuti').value;
+            if (ijenis=="02") {
+            }else{
+                ShowBulan2();
+            }
         });
         
         $('#cbln02').on('change dp.change', function(e){
             ShowTanggalPilih2();
         });
     });
+    
+    function ShowBulan2() {
+        var etgl =document.getElementById('e_bulan01').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/marketing/viewdatamkt.php?module=viewdatabulan2",
+            data:"utgl="+etgl,
+            success:function(data){
+                $("#div_bulan2").html(data);
+            }
+        });
+    }
+    
     function ShowTanggalPilih() {
         var etgl =document.getElementById('e_bulan01').value;
         

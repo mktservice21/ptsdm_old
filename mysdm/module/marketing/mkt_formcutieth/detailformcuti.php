@@ -192,14 +192,17 @@
     
     $pthn1 = date('Y', strtotime($pbln1));
     $pbulan1 = $bulan_array[(INT)date('m', strtotime($pbln1))];
+    $phr1 = date('d', strtotime($pbln1));
     $pthn2 = date('Y', strtotime($pbln2));
     $pbulan2 = $bulan_array[(INT)date('m', strtotime($pbln2))];
+    $phr2 = date('d', strtotime($pbln2));
+    
     
     $pketterhitung="&nbsp;selama $pjmlhari <b>hari kerja</b>";
     $pterhitung="tanggal $ptglpilih";
     if ($pidjenis=="02") {
         $pketterhitung="";
-        $pterhitung="bulan $pbulan1 $pthn1 s/d. $pbulan2 $pthn2";
+        $pterhitung="$phr1 $pbulan1 $pthn1 s/d. $phr2 $pbulan2 $pthn2";
     }
 ?>
 

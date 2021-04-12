@@ -183,6 +183,11 @@
         $n_tanggal=$row2['tanggal'];
         $x_tgl= date('d/m/Y', strtotime($n_tanggal));
         
+        $xtgl= date('d', strtotime($n_tanggal));
+        $xbulan = $bulan_array[(INT)date('m', strtotime($n_tanggal))];
+        $xthn= date('Y', strtotime($n_tanggal));
+        $x_tgl=$xtgl." ".$xbulan." ".$xthn;
+    
         $ptglpilih .=$x_tgl.", ";
         
         

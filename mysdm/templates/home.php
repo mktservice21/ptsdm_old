@@ -886,6 +886,8 @@
         include 'module/laporan/mod_lapkascab/lapkascab.php';
     }elseif ($_GET['module']=='mktformcutieth'){
         include 'module/marketing/mkt_formcutieth/formcutieth.php';
+    }elseif ($_GET['module']=='mktapprovecutieth'){
+        include 'module/marketing/mkt_apvcutieth/apvcutieth.php';
         
 
     }else{

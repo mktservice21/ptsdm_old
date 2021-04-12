@@ -56,7 +56,10 @@
             . " LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
             . " JOIN hrd.karyawan as d on a.karyawanid=d.karyawanid "
             . " WHERE a.karyawanid='$pkryid'";
-    $sql .=" AND ( (DATE_FORMAT(b.tanggal,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') OR ( (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') ) )";
+    $sql .=" AND ( (DATE_FORMAT(b.tanggal,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') "
+            . " OR ( (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') ) "
+            . " OR (DATE_FORMAT(a.tglinput,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') "
+            . " )";
     $query = "create TEMPORARY table $tmp01 ($sql)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -95,8 +98,14 @@
                 
                 
                 $pidget=encodeString($cidinput);
-                $nbln1 = date('F Y', strtotime($nbln1));
-                $nbln2 = date('F Y', strtotime($nbln2));
+                
+                if ($nidjenis=="02") {
+                    $nbln1 = date('d F Y', strtotime($nbln1));
+                    $nbln2 = date('d F Y', strtotime($nbln2));
+                }else{
+                    $nbln1 = date('F Y', strtotime($nbln1));
+                    $nbln2 = date('F Y', strtotime($nbln2));
+                }
 
 
                 $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";

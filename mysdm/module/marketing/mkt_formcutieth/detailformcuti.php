@@ -49,11 +49,15 @@
     $pnamajenis=$row['nama_group'];
     $pnamajbt=$row['nama_jabatan'];
     $pkeperluan=$row['keperluan'];
+    $pjabatanid=$row['jabatanid'];
     $pbln1=$row['bulan1'];
     $pbln2=$row['bulan2'];
     $ptglinput=$row['tglinput'];
     $pnamaarea="";
     
+    if (empty($pjabatanid)) {
+        $pjabatanid=$_SESSION['JABATANID'];
+    }
     
     $pptglatasan1=$row['tgl_atasan1'];
     $pptglatasan2=$row['tgl_atasan2'];
@@ -302,7 +306,7 @@
             <table class='tjudul' width='100%'>
                 <?PHP
                     echo "<tr>";
-                        echo "<td align='center'>";
+                        echo "<td align='center' nowrap>";
                         echo "Yang Membuat :";
                         if (!empty($namapengaju)) {
                             echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
@@ -310,8 +314,106 @@
                             echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                         }
                         echo "<b><u>$pnamakry</u></b>";
-
+                        
                         echo "</td>";
+                        
+                        if ($pjabatanid=="15" OR $pjabatanid=="38") {
+                            
+                            if (!empty($nmatasan1)) {
+                                echo "<td align='center' nowrap>";
+                                
+                                if (empty($nmatasan2)) echo "Mengetahui :";
+                                else echo "Atasan :";
+                                
+                                if (!empty($namaspv)) {
+                                    echo "<br/><img src='images/tanda_tangan_base64/$namaspv' height='$gmrheight'><br/>";
+                                }else{
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                }
+                                if (!empty($nmatasan1)) echo "<b><u>$nmatasan1</u></b>";
+                                else echo "..........................................";
+
+                                echo "</td>";
+                            }
+                            
+                        }
+                        
+                        if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18") {
+                            
+                            if (!empty($nmatasan2)) {
+                                echo "<td align='center' nowrap>";
+                                
+                                if ( ($pjabatanid=="15" OR $pjabatanid=="38") ) echo "Mengetahui :";
+                                else echo "Atasan :";
+                                
+                                if (!empty($namadm)) {
+                                    echo "<br/><img src='images/tanda_tangan_base64/$namadm' height='$gmrheight'><br/>";
+                                }else{
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                }
+                                if (!empty($nmatasan2)) echo "<b><u>$nmatasan2</u></b>";
+                                else echo "..........................................";
+
+                                echo "</td>";
+                            }
+                            
+                        }
+                        
+                        if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08") {
+                            
+                            echo "<td align='center' nowrap>";
+                            
+                            if ($pjabatanid=="15" OR $pjabatanid=="38") {
+                                echo "Menyetujui :";
+                            }else{
+                                if ($pjabatanid=="10" OR $pjabatanid=="18") echo "Mengetahui :";
+                                elseif ($pjabatanid=="08") echo "Mengetahui :";
+                            }
+                            
+                            if (!empty($namasm)) {
+                                echo "<br/><img src='images/tanda_tangan_base64/$namasm' height='$gmrheight'><br/>";
+                            }else{
+                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            }
+                            if (!empty($nmatasan3)) echo "<b><u>$nmatasan3</u></b>";
+                            else echo "..........................................";
+                                
+
+                            echo "</td>";
+                            
+                        }
+                        
+                        if ($pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08" OR $pjabatanid=="20") {
+                            
+                            echo "<td align='center' nowrap>";
+                            echo "Menyetujui :";
+                            if (!empty($namagsm)) {
+                                echo "<br/><img src='images/tanda_tangan_base64/$namagsm' height='$gmrheight'><br/>";
+                            }else{
+                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            }
+                            if (!empty($nmatasan4)) echo "<b><u>$nmatasan4</u></b>";
+                            else echo "..........................................";
+                                
+
+                            echo "</td>";
+                            
+                        }
+                        
+                        if ($pjabatanid=="05") {
+                            echo "<td align='center' nowrap>";
+                            echo "Menyetujui :";
+                            if (!empty($namaceo)) {
+                                echo "<br/><img src='images/tanda_tangan_base64/$namaceo' height='$gmrheight'><br/>";
+                            }else{
+                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            }
+                            if (!empty($nmatasan5)) echo "<b><u>$nmatasan5</u></b>";
+                            else echo "..........................................";
+                                
+
+                            echo "</td>";
+                        }
                         
                     echo "</tr>";
                 ?>
@@ -323,7 +425,85 @@
     </div>
     
 </BODY>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 13px;
+            border: 0px solid #000;
+        }
+        table.example_2 {
+            color: #000;
+            font-family: Helvetica, Arial, sans-serif;
+            width: 100%;
+            border-collapse:
+            collapse; border-spacing: 0;
+            font-size: 11px;
+            border: 1px solid #000;
+        }
 
+        table.example_2 td, table.example_2 th {
+            border: 1px solid #000; /* No more visible border */
+            height: 28px;
+            transition: all 0.3s;  /* Simple transition for hover effect */
+            padding: 5px;
+        }
+
+        table.example_2 th {
+            background: #DFDFDF;  /* Darken header a bit */
+            font-weight: bold;
+        }
+
+        table.example_2 td {
+            background: #FAFAFA;
+        }
+
+        /* Cells in even rows (2,4,6...) are one color */
+        tr:nth-child(even) td { background: #F1F1F1; }
+
+        /* Cells in odd rows (1,3,5...) are another (excludes header cells)  */
+        tr:nth-child(odd) td { background: #FEFEFE; }
+
+        tr td:hover.biasa { background: #666; color: #FFF; }
+        tr td:hover.left { background: #ccccff; color: #000; }
+
+        tr td.center1, td.center2 { text-align: center; }
+
+        tr td:hover.center1 { background: #666; color: #FFF; text-align: center; }
+        tr td:hover.center2 { background: #ccccff; color: #000; text-align: center; }
+        /* Hover cell effect! */
+
+        table {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 11px;
+        }
+        table.tjudul {
+            font-size: 13px;
+            width: 97%;
+        }
+
+
+        #kotakjudul {
+            border: 0px solid #000;
+            width:100%;
+            height: 1.3cm;
+        }
+        #isikiri {
+            float   : left;
+            width   : 49%;
+            border-left: 0px solid #000;
+        }
+        #isikanan {
+            text-align: right;
+            float   : right;
+            width   : 49%;
+        }
+        h2 {
+            font-size: 15px;
+        }
+        h3 {
+            font-size: 20px;
+        }
+    </style>
 </HTML>
 
 <?PHP

@@ -53,7 +53,7 @@
     $pbln1=$row['bulan1'];
     $pbln2=$row['bulan2'];
     $ptglinput=$row['tglinput'];
-    $pnamaarea="";
+    $pnamacab="";
     
     if (empty($pjabatanid)) {
         $pjabatanid=$_SESSION['JABATANID'];
@@ -287,9 +287,11 @@
                 <tr>
                     <td nowrap>Jabatan</td><td> : </td><td nowrap><?PHP echo $pnamajbt; ?></td>
                 </tr>
+                <?PHP if (!empty($pnamacab)) { ?>
                 <tr>
-                    <td nowrap>Area</td><td> : </td><td nowrap><?PHP echo $pnamaarea; ?></td>
+                    <td nowrap>Cabang</td><td> : </td><td nowrap><?PHP echo $pnamacab; ?></td>
                 </tr>
+                <?PHP } ?>
                 <?PHP if ($pidjenis!="02") { ?>
                 <tr>
                     <td>Keperluan</td><td> : </td><td ><?PHP echo $pkeperluan; ?></td>

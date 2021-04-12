@@ -200,7 +200,20 @@ function ReloadTandaTangan(){
             
             var iid = document.getElementById('e_id').value;
             var ikeperluan = document.getElementById('e_keperluan').value;
+            
             var ijenis = document.getElementById('cb_jeniscuti').value;
+            /*
+            var radios = document.getElementsByName('rb_jenis');
+            var ijenis="01";
+            for (var i = 0, length = radios.length; i < length; i++) {
+                if (radios[i].checked) {
+                    ijenis=radios[i].value;
+                    break;
+                }
+            } 
+            */
+            //alert(ijenis); return false;
+            
             var ikry = document.getElementById('e_idcarduser').value;
             var ibln1 = document.getElementById('e_bulan01').value;
             var ibln2 = document.getElementById('e_bulan02').value;

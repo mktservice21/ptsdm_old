@@ -122,6 +122,16 @@ if ($module=='mktformcutieth')
 
                 $kodenya = mysqli_insert_id($cnmy);
                 
+                $query = "INSERT INTO dbttd.t_cuti_ttd (idcuti) VALUES ('$kodenya')";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                
+                if ($act=="input") {
+                    $pimgttd=$_POST['txtgambar'];
+                    $query = "update dbttd.t_cuti_ttd set gambar='$pimgttd' WHERE idcuti='$kodenya' LIMIT 1";
+                    mysqli_query($cnmy, $query);
+                    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+                }
+            
             }elseif ($act=="update") {
                 
                 $query = "UPDATE hrd.t_cuti0 SET karyawanid='$pkaryawanid', jabatanid='$pidjabatan', id_jenis='$pidjeniscuti', "

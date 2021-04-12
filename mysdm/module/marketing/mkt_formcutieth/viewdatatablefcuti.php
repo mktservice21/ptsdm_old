@@ -50,7 +50,7 @@
     $sql = "select a.idcuti, a.tglinput, a.karyawanid, d.nama as nama_karyawan, a.jabatanid, a.id_jenis, c.nama_jenis, "
             . " a.keperluan, a.bulan1, a.bulan2, "
             . " a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, a.atasan3, a.tgl_atasan3, "
-            . " a.atasan4, a.tgl_atasan4, a.atasan5, a.tgl_atasan5, "
+            . " a.atasan4, a.tgl_atasan4, a.atasan5, a.tgl_atasan5, a.stsnonaktif, "
             . " b.tanggal FROM hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
             . " on a.idcuti=b.idcuti "
             . " LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
@@ -86,7 +86,7 @@
             $no=1;
             $query = "select distinct idcuti, karyawanid, nama_karyawan, jabatanid, id_jenis, nama_jenis, keperluan, bulan1, bulan2, "
                     . " atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3,"
-                    . " atasan4, tgl_atasan4, atasan5, tgl_atasan5 from "
+                    . " atasan4, tgl_atasan4, atasan5, tgl_atasan5, stsnonaktif from "
                     . " $tmp01 order by nama_karyawan, idcuti, nama_jenis";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
@@ -98,6 +98,7 @@
                 $nkeperluan=$row0['keperluan'];
                 $nbln1=$row0['bulan1'];
                 $nbln2=$row0['bulan2'];
+                $nnonaktif=$row0['stsnonaktif'];
                 
                 $njbt=$row0['jabatanid'];
                 $nats1=$row0['atasan1'];
@@ -143,7 +144,7 @@
                 $print="<a title='detail' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
                     . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&iprint=detail',"
                     . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                    . "Detail</a>";
+                    . "Print</a>";
                 
                 $plewattgl=false; $ctglpl=""; $ctglpl1=""; $ctglpl2="";
                 $query = "select distinct tanggal from $tmp01 WHERE idcuti='$cidinput' order by tanggal";
@@ -188,6 +189,11 @@
                 
                 if ($nsudahapprove==true) {
                     $pedit="";
+                }
+                
+                if ($nnonaktif=="Y") {
+                    $pedit="reject";
+                    $print="";
                 }
                 
                 echo "<tr>";

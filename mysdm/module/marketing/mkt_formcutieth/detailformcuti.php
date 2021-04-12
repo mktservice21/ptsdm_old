@@ -29,9 +29,13 @@
     $namadm="";
     $namasm="";
     $namagsm="";
+    $namaceo="";
     $gmrheight = "80px";
     
     include "config/koneksimysqli.php";
+    include "config/fungsi_sql.php";
+    
+    
     $pid=$_GET['brid'];
     $query ="select a.*, b.nama as nama_karyawan, c.nama_group, d.nama as nama_jabatan from hrd.t_cuti0 as a "
             . " JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
@@ -49,6 +53,116 @@
     $pbln2=$row['bulan2'];
     $ptglinput=$row['tglinput'];
     $pnamaarea="";
+    
+    
+    $pptglatasan1=$row['tgl_atasan1'];
+    $pptglatasan2=$row['tgl_atasan2'];
+    $pptglatasan3=$row['tgl_atasan3'];
+    $pptglatasan4=$row['tgl_atasan4'];
+    $pptglatasan5=$row['tgl_atasan5'];
+    
+    if ($pptglatasan1=="0000-00-00 00:00:00") $pptglatasan1="";
+    if ($pptglatasan2=="0000-00-00 00:00:00") $pptglatasan2="";
+    if ($pptglatasan3=="0000-00-00 00:00:00") $pptglatasan3="";
+    if ($pptglatasan4=="0000-00-00 00:00:00") $pptglatasan4="";
+    if ($pptglatasan5=="0000-00-00 00:00:00") $pptglatasan5="";
+    
+    
+    
+    $patasan1=$row['atasan1'];
+    $nmatasan1 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan1'");
+    $patasan2=$row['atasan2'];
+    $nmatasan2 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan2'");
+    $patasan3=$row['atasan3'];
+    $nmatasan3 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan3'");
+    $patasan4=$row['atasan4'];
+    $nmatasan4 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan4'");
+    $patasan5=$row['atasan5'];
+    $nmatasan5 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan5'");
+    
+    $gambar=""; $gbr1=""; $gbr2=""; $gbr3=""; $gbr4=""; $gbr5="";
+    $query = "select * from dbttd.t_cuti_ttd where idcuti='$pid'";
+    $tampil1=mysqli_query($cnmy, $query);
+    $ketemu1= mysqli_num_rows($tampil1);
+    if ((INT)$ketemu1>0) {
+        $row1= mysqli_fetch_array($tampil1);
+
+        $gambar=$row1['gambar'];
+        $gbr1=$row1['gbr_atasan1'];
+        $gbr2=$row1['gbr_atasan2'];
+        $gbr3=$row1['gbr_atasan3'];
+        $gbr4=$row1['gbr_atasan4'];
+        $gbr5=$row1['gbr_atasan5'];
+    
+    }
+    
+    if (empty($pptglatasan1) OR empty($nmatasan1)) $gbr1="";
+    if (empty($pptglatasan2) OR empty($nmatasan2)) $gbr2="";
+    if (empty($pptglatasan3) OR empty($nmatasan3)) $gbr3="";
+    if (empty($pptglatasan4) OR empty($nmatasan4)) $gbr4="";
+    if (empty($pptglatasan5) OR empty($nmatasan5)) $gbr5="";
+    
+    
+    if (!empty($gambar)) {
+        $data="data:".$gambar;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namapengaju="img_".$pid."FCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namapengaju, $data);
+    }
+    
+    if (!empty($gbr1)) {
+        $data="data:".$gbr1;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namaspv="img_".$pid."SVPFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namaspv, $data);
+    }
+    
+    if (!empty($gbr2)) {
+        $data="data:".$gbr2;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namadm="img_".$pid."DMFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namadm, $data);
+    }
+    
+    if (!empty($gbr3)) {
+        $data="data:".$gbr3;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namasm="img_".$pid."SMFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namasm, $data);
+    }
+
+    if (!empty($gbr4)) {
+        $data="data:".$gbr4;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namagsm="img_".$pid."GSMFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namagsm, $data);
+    }
+    
+    if (!empty($gbr5)) {
+        $data="data:".$gbr5;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namaceo="img_".$pid."CEOFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namaceo, $data);
+    }
+    
     
     
     $xtgl= date('d', strtotime($ptglinput));

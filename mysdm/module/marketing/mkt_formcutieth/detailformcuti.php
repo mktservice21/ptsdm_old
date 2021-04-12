@@ -22,6 +22,15 @@
         echo "<center>Maaf, Anda Harus Login Ulang.<br>"; exit;
     }
     
+    $namapengaju="";
+    $nmatasan4="";
+    
+    $namaspv="";
+    $namadm="";
+    $namasm="";
+    $namagsm="";
+    $gmrheight = "80px";
+    
     include "config/koneksimysqli.php";
     $pid=$_GET['brid'];
     $query ="select a.*, b.nama as nama_karyawan, c.nama_group, d.nama as nama_jabatan from hrd.t_cuti0 as a "
@@ -31,7 +40,7 @@
             . " where a.idcuti='$pid'";
     $tampil=mysqli_query($cnmy, $query);
     $row= mysqli_fetch_array($tampil);
-    $pnamakaryawan=$row['nama_karyawan'];
+    $pnamakry=$row['nama_karyawan'];
     $pidjenis=$row['id_jenis'];
     $pnamajenis=$row['nama_group'];
     $pnamajbt=$row['nama_jabatan'];
@@ -147,7 +156,7 @@
             Yang bertanda tangan di bawah ini : <br/><br/>
             <table style="margin-left:15px;" >
                 <tr>
-                    <td nowrap>Nama</td><td> : </td><td nowrap><?PHP echo $pnamakaryawan; ?></td>
+                    <td nowrap>Nama</td><td> : </td><td nowrap><?PHP echo $pnamakry; ?></td>
                 </tr>
                 <tr>
                     <td nowrap>Jabatan</td><td> : </td><td nowrap><?PHP echo $pnamajbt; ?></td>
@@ -171,6 +180,31 @@
         <div>
             <?PHP echo "................................., ".$ptanggalinput; ?>
         </div>
+        
+        
+        <br/>&nbsp;<br/>&nbsp;
+
+        <center>
+            <table class='tjudul' width='100%'>
+                <?PHP
+                    echo "<tr>";
+                        echo "<td align='center'>";
+                        echo "Yang Membuat :";
+                        if (!empty($namapengaju)) {
+                            echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
+                        }else{
+                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                        }
+                        echo "<b><u>$pnamakry</u></b>";
+
+                        echo "</td>";
+                        
+                    echo "</tr>";
+                ?>
+            </table>
+        </center>
+        <br/><br/><br/>
+        
         
     </div>
     

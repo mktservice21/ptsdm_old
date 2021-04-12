@@ -17,7 +17,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                $judul="Cuti Marketing Ethical";
+                $judul="Cuti Ethical";
                 if ($pact=="tambahbaru")
                     echo "Isi Pengajuan $judul";
                 elseif ($pact=="editdata")

@@ -161,7 +161,7 @@ $pcabangid="";
 $pidinput="";
 
 
-$hari_ini = date("Y-m-01");
+$hari_ini = date("Y-m-d");
 $tgl_pertama = date('F Y', strtotime($hari_ini));
 $tgl_kedua = date('F Y', strtotime('+1 month', strtotime($hari_ini)));
 
@@ -219,6 +219,11 @@ $ntampil=mysqli_query($cnmy, $query);
 $nr=mysqli_fetch_array($ntampil);
 $pnamajabatan=$nr['nama'];
 
+$prbchkjenis1="";
+$prbchkjenis2="";
+
+if ($pjeniscuti=="02") $prbchkjenis2="checked";
+else $prbchkjenis1="checked";
 ?>
 <div class="">
 
@@ -280,15 +285,16 @@ $pnamajabatan=$nr['nama'];
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis <span class='required'></span></label>
                                     <div class='col-xs-4'>
-                                        <select class='soflow' name='cb_jeniscuti' id='cb_jeniscuti' onchange="">
+                                        <select class='soflow' name='cb_jeniscuti' id='cb_jeniscuti' onchange="ShowPeriode()">
                                             <?php
+                                            
                                             $query = "select id_jenis, nama_jenis From hrd.jenis_cuti order by id_jenis";
                                             $tampilket= mysqli_query($cnmy, $query);
                                             while ($du= mysqli_fetch_array($tampilket)) {
                                                 $nidjns=$du['id_jenis'];
                                                 $nnmjns=$du['nama_jenis'];
 
-                                                if ($nidjns==$pjeniscuti) 
+                                                if ($nidjns==$pjeniscuti)  
                                                     echo "<option value='$nidjns' selected>$nnmjns</option>";
                                                 else
                                                     echo "<option value='$nidjns'>$nnmjns</option>";
@@ -296,6 +302,14 @@ $pnamajabatan=$nr['nama'];
                                             }
                                             ?>
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div hidden class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis <span class='required'></span></label>
+                                    <div class='col-xs-4'>
+                                        <input type="radio" name="rb_jenis" id="rb_jenis1" value="01" <?PHP echo $prbchkjenis1; ?> onchange="ShowPeriode()"> Cuti Reguler <br/>
+                                        <input type="radio" name="rb_jenis" id="rb_jenis2" value="02" <?PHP echo $prbchkjenis2; ?> onchange="ShowPeriode()"> Cuti Melahirkan
                                     </div>
                                 </div>
 
@@ -309,6 +323,44 @@ $pnamajabatan=$nr['nama'];
                                     </div>
 
                                 </div>
+                                
+                                
+                                <div id="div_atasan">
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SPV / AM <span class='required'></span></label>
+                                        <div class='col-xs-9'>
+                                            <input type='hidden' id='e_kdspv' name='e_kdspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdspv; ?>' Readonly>
+                                            <input type='text' id='e_namaspv' name='e_namaspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamaspv; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DM <span class='required'></span></label>
+                                        <div class='col-xs-9'>
+                                            <input type='hidden' id='e_kddm' name='e_kddm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkddm; ?>' Readonly>
+                                            <input type='text' id='e_namadm' name='e_namadm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadm; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SM <span class='required'></span></label>
+                                        <div class='col-xs-9'>
+                                            <input type='hidden' id='e_kdsm' name='e_kdsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdsm; ?>' Readonly>
+                                            <input type='text' id='e_namasm' name='e_namasm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamasm; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>GSM <span class='required'></span></label>
+                                        <div class='col-xs-9'>
+                                            <input type='hidden' id='e_kdgsm' name='e_kdgsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdgsm; ?>' Readonly>
+                                            <input type='text' id='e_namagsm' name='e_namagsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamagsm; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
 
                             </div>
                         </div>
@@ -320,92 +372,96 @@ $pnamajabatan=$nr['nama'];
                         <div class='x_panel'>
                             <div class='x_content form-horizontal form-label-left'>
                                 
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bulan <span class='required'></span></label>
-                                    <div class='col-md-6'>
-                                        <div class='input-group date' id='cbln01'>
-                                            <input type="text" class="form-control" id='e_bulan01' name='e_bulan01' autocomplete='off' required='required' placeholder='F Y' value='<?PHP echo $tgl_pertama; ?>' Readonly>
-                                            <span class='input-group-addon'>
-                                                <span class='glyphicon glyphicon-calendar'></span>
-                                            </span>
+                                <div id="div_periode">
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bulan <span class='required'></span></label>
+                                        <div class='col-md-6'>
+                                            <div class='input-group date' id='cbln01'>
+                                                <input type="text" class="form-control" id='e_bulan01' name='e_bulan01' autocomplete='off' required='required' placeholder='F Y' value='<?PHP echo $tgl_pertama; ?>' Readonly>
+                                                <span class='input-group-addon'>
+                                                    <span class='glyphicon glyphicon-calendar'></span>
+                                                </span>
 
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
-                                    <div class='col-xs-9'>
-                                        <div id="div_tgl">
-                                            <?PHP
-                                                $p_tgl = date('d', strtotime($ptglpilih));
-                                                $p_akh = date('t', strtotime($ptglpilih));
-                                                
-                                                $pchkpilih="";
-                                                if (strpos($ctglpilih, $ptglpilih)==true) $pchkpilih="checked";
-                                                echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
-
-                                                $nom=2;
-                                                for ($ix=1;$ix<(INT)$p_akh;$ix++) {
-                                                    $ptglpilih = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih)));
-                                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
+                                        <div class='col-xs-9'>
+                                            <div id="div_tgl">
+                                                <?PHP
+                                                    $p_tgl = date('d', strtotime($ptglpilih));
+                                                    $p_akh = date('t', strtotime($ptglpilih));
+                                                    //echo "$ctglpilih dan $ptglpilih";
                                                     $pchkpilih="";
                                                     if (strpos($ctglpilih, $ptglpilih)==true) $pchkpilih="checked";
-                                                    
-                                                    $p_tgl = date('d', strtotime($ptglpilih));
                                                     echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
-                                                    if ($nom>5) {echo "<br/>"; $nom=0;}
-                                                    $nom++;
-                                                }
-                                            ?>
+
+                                                    $nom=2;
+                                                    for ($ix=1;$ix<(INT)$p_akh;$ix++) {
+                                                        $ptglpilih = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih)));
+
+                                                        $pchkpilih="";
+                                                        if (strpos($ctglpilih, $ptglpilih)==true) $pchkpilih="checked";
+
+                                                        $p_tgl = date('d', strtotime($ptglpilih));
+                                                        echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
+                                                        if ($nom>5) {echo "<br/>"; $nom=0;}
+                                                        $nom++;
+                                                    }
+                                                ?>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <hr/>
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>s/d. Bulan <span class='required'></span></label>
-                                    <div class='col-md-6'>
-                                        <div class='input-group date' id='cbln02'>
-                                            <input type="text" class="form-control" id='e_bulan02' name='e_bulan02' autocomplete='off' required='required' placeholder='F Y' value='<?PHP echo $tgl_kedua; ?>' Readonly>
-                                            <span class='input-group-addon'>
-                                                <span class='glyphicon glyphicon-calendar'></span>
-                                            </span>
+                                    <hr/>
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>s/d. Bulan <span class='required'></span></label>
+                                        <div class='col-md-6'>
+                                            <div class='input-group date' id='cbln02'>
+                                                <input type="text" class="form-control" id='e_bulan02' name='e_bulan02' autocomplete='off' required='required' placeholder='F Y' value='<?PHP echo $tgl_kedua; ?>' Readonly>
+                                                <span class='input-group-addon'>
+                                                    <span class='glyphicon glyphicon-calendar'></span>
+                                                </span>
 
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
-                                    <div class='col-xs-9'>
-                                        <div id="div_tgl2">
-                                            <?PHP
-                                                $p_tgl = date('d', strtotime($ptglpilih02));
-                                                $p_akh = date('t', strtotime($ptglpilih02));
-                                                
-                                                $p_b01 = date('Ym', strtotime($ptglpilih));
-                                                $p_b02 = date('Ym', strtotime($ptglpilih02));
-                                                
-                                                $pchkpilih="";
-                                                if (strpos($ctglpilih, $ptglpilih02)==true AND $p_b01<>$p_b02) $pchkpilih="checked";
-                                                echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
 
-                                                $nom=2;
-                                                for ($ix=1;$ix<(INT)$p_akh;$ix++) {
-                                                    $ptglpilih02 = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih02)));
-                                                    
+
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
+                                        <div class='col-xs-9'>
+                                            <div id="div_tgl2">
+                                                <?PHP
+                                                    $p_tgl = date('d', strtotime($ptglpilih02));
+                                                    $p_akh = date('t', strtotime($ptglpilih02));
+
+                                                    $p_b01 = date('Ym', strtotime($ptglpilih));
+                                                    $p_b02 = date('Ym', strtotime($ptglpilih02));
+
                                                     $pchkpilih="";
                                                     if (strpos($ctglpilih, $ptglpilih02)==true AND $p_b01<>$p_b02) $pchkpilih="checked";
-                                                    
-                                                    $p_tgl = date('d', strtotime($ptglpilih02));
                                                     echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
-                                                    if ($nom>5) {echo "<br/>"; $nom=0;}
-                                                    $nom++;
-                                                }
-                                            ?>
+
+                                                    $nom=2;
+                                                    for ($ix=1;$ix<(INT)$p_akh;$ix++) {
+                                                        $ptglpilih02 = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih02)));
+
+                                                        $pchkpilih="";
+                                                        if (strpos($ctglpilih, $ptglpilih02)==true AND $p_b01<>$p_b02) $pchkpilih="checked";
+
+                                                        $p_tgl = date('d', strtotime($ptglpilih02));
+                                                        echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih02' $pchkpilih> $p_tgl &nbsp; &nbsp; ";
+                                                        if ($nom>5) {echo "<br/>"; $nom=0;}
+                                                        $nom++;
+                                                    }
+                                                ?>
+                                            </div>
                                         </div>
                                     </div>
+                                    
                                 </div>
                                 
                                 
@@ -438,42 +494,6 @@ $pnamajabatan=$nr['nama'];
                                 }
                                 ?>
 
-                                <br/>
-                                <div hidden id="div_atasan">
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SPV / AM <span class='required'></span></label>
-                                        <div class='col-xs-3'>
-                                            <input type='hidden' id='e_kdspv' name='e_kdspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdspv; ?>'>
-                                            <input type='text' id='e_namaspv' name='e_namaspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamaspv; ?>'>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DM <span class='required'></span></label>
-                                        <div class='col-xs-3'>
-                                            <input type='hidden' id='e_kddm' name='e_kddm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkddm; ?>'>
-                                            <input type='text' id='e_namadm' name='e_namadm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadm; ?>'>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SM <span class='required'></span></label>
-                                        <div class='col-xs-3'>
-                                            <input type='hidden' id='e_kdsm' name='e_kdsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdsm; ?>'>
-                                            <input type='text' id='e_namasm' name='e_namasm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamasm; ?>'>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>GSM <span class='required'></span></label>
-                                        <div class='col-xs-3'>
-                                            <input type='hidden' id='e_kdgsm' name='e_kdgsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdgsm; ?>'>
-                                            <input type='text' id='e_namagsm' name='e_namagsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamagsm; ?>'>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
 
                             </div>
 
@@ -530,88 +550,85 @@ $pnamajabatan=$nr['nama'];
             }
         });
     }
+    
+    function ShowPeriode_ex()  {
+        $("#div_periode").html("");
+        setTimeout(function () {
+            ShowPeriode()
+        }, 200);
+        
+    }
+    
+    function ShowPeriode() {
+        var iid = document.getElementById('e_id').value;
+        
+        var ijenis = document.getElementById('cb_jeniscuti').value;
+        /*
+        var radios = document.getElementsByName('rb_jenis');
+        var ijenis="01";
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                ijenis=radios[i].value;
+                break;
+            }
+        }
+        */
+        
+        $.ajax({
+            type:"post",
+            url:"module/marketing/viewdatamkt.php?module=tampilperiodepilih",
+            data:"uid="+iid+"&ujenis="+ijenis,
+            success:function(data){
+                $("#div_periode").html(data);
+            }
+        });
+        
+    }
+    
 </script>
 
-
-
-<link href="css/inputselectbox.css" rel="stylesheet" type="text/css" />
-<link href="css/stylenew.css" rel="stylesheet" type="text/css" />
-
-<style>
-    .form-group, .input-group, .control-label {
-        margin-bottom:3px;
-    }
-    .control-label {
-        font-size:12px;
-    }
-    input[type=text] {
-        box-sizing: border-box;
-        color:#000;
-        font-size:12px;
-        height: 30px;
-    }
-    select.soflow {
-        font-size:12px;
-        height: 30px;
-    }
-    .disabledDiv {
-        pointer-events: none;
-        opacity: 0.4;
-    }
-    .btn-primary {
-        width:50px;
-        height:30px;
-        margin-right: 50px;
-    }
-    .disabledDiv {
-        pointer-events: none;
-        opacity: 0.4;
-    }
-</style>
-
-<style>
-    .divnone {
-        display: none;
-    }
-    #dtabel th {
-        font-size: 13px;
-    }
-    #dtabel td { 
-        font-size: 11px;
-    }
-</style>
-
-<style>
-
-table {
-    text-align: left;
-    position: relative;
-    border-collapse: collapse;
-    background-color:#FFFFFF;
-}
-
-th {
-    background: white;
-    position: sticky;
-    top: 0;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-}
-
-.th2 {
-    background: white;
-    position: sticky;
-    top: 23;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-    border-top: 1px solid #000;
-}
-</style>
-
-
 <script type="text/javascript">
+    $(document).ready(function() {
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var iact = urlku.searchParams.get("act");
+        var ijenis = document.getElementById('cb_jeniscuti').value;
+        /*
+        var radios = document.getElementsByName('rb_jenis');
+        var ijenis="01";
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                ijenis=radios[i].value;
+                break;
+            }
+        } 
+        */
+       if (iact=="editdata" && ijenis=="02") {
+            setTimeout(function () {
+                ShowPeriode()
+            }, 200);
+       }
+    } );
+                    
     function disp_confirm(pText_,ket)  {
         var iid = document.getElementById('e_id').value;
         var ikeperluan = document.getElementById('e_keperluan').value;
+        
         var ijenis = document.getElementById('cb_jeniscuti').value;
+        /*
+        var radios = document.getElementsByName('rb_jenis');
+        var ijenis="01";
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                ijenis=radios[i].value;
+                break;
+            }
+        } 
+        */
+        //alert(ijenis); return false;
+            
         var ikry = document.getElementById('e_idcarduser').value;
         var ibln1 = document.getElementById('e_bulan01').value;
         var ibln2 = document.getElementById('e_bulan02').value;
@@ -695,3 +712,75 @@ th {
         
     }
 </script>
+
+<link href="css/inputselectbox.css" rel="stylesheet" type="text/css" />
+<link href="css/stylenew.css" rel="stylesheet" type="text/css" />
+
+<style>
+    .form-group, .input-group, .control-label {
+        margin-bottom:3px;
+    }
+    .control-label {
+        font-size:12px;
+    }
+    input[type=text] {
+        box-sizing: border-box;
+        color:#000;
+        font-size:12px;
+        height: 30px;
+    }
+    select.soflow {
+        font-size:12px;
+        height: 30px;
+    }
+    .disabledDiv {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+    .btn-primary {
+        width:50px;
+        height:30px;
+        margin-right: 50px;
+    }
+    .disabledDiv {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+</style>
+
+<style>
+    .divnone {
+        display: none;
+    }
+    #dtabel th {
+        font-size: 13px;
+    }
+    #dtabel td { 
+        font-size: 11px;
+    }
+</style>
+
+<style>
+
+table {
+    text-align: left;
+    position: relative;
+    border-collapse: collapse;
+    background-color:#FFFFFF;
+}
+
+th {
+    background: white;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+.th2 {
+    background: white;
+    position: sticky;
+    top: 23;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+    border-top: 1px solid #000;
+}
+</style>

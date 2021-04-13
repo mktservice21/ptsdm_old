@@ -331,9 +331,11 @@
                             
                             if (!empty($nmatasan1)) {
                                 echo "<td align='center' nowrap>";
-                                
+                                /*
                                 if (empty($nmatasan2)) echo "Mengetahui :";
                                 else echo "Atasan :";
+                                */
+                                echo "Menyetujui :";
                                 
                                 if (!empty($namaspv)) {
                                     echo "<br/><img src='images/tanda_tangan_base64/$namaspv' height='$gmrheight'><br/>";
@@ -352,9 +354,11 @@
                             
                             if (!empty($nmatasan2)) {
                                 echo "<td align='center' nowrap>";
-                                
+                                /*
                                 if ( ($pjabatanid=="15" OR $pjabatanid=="38") ) echo "Mengetahui :";
                                 else echo "Atasan :";
+                                */
+                                echo "Menyetujui :";
                                 
                                 if (!empty($namadm)) {
                                     echo "<br/><img src='images/tanda_tangan_base64/$namadm' height='$gmrheight'><br/>";
@@ -372,13 +376,15 @@
                         if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08") {
                             
                             echo "<td align='center' nowrap>";
-                            
+                            /*
                             if ($pjabatanid=="15" OR $pjabatanid=="38") {
                                 echo "Menyetujui :";
                             }else{
                                 if ($pjabatanid=="10" OR $pjabatanid=="18") echo "Mengetahui :";
                                 elseif ($pjabatanid=="08") echo "Mengetahui :";
                             }
+                            */
+                            echo "Menyetujui :";
                             
                             if (!empty($namasm)) {
                                 echo "<br/><img src='images/tanda_tangan_base64/$namasm' height='$gmrheight'><br/>";
@@ -446,8 +452,20 @@
                 ?>
             </table>
         </center>
-        <br/><br/><br/>
         
+        <br/><br/>
+        <table width="100%">
+            <tr>
+            <td>Penting</td><td>:</td><td nowrap>** Surat pengajuan Cuti paling lambat diterima HO 2 (dua) minggu sebelumnya<br/></td>
+            </tr>
+            <tr>
+            <td>&nbsp;</td><td>&nbsp;</td><td nowrap>** HO berhak tidak memberikan izin / Cuti sesuai dengan pertimbangan tertentu.<br/></td>
+            </tr>
+        </table>
+        <br/>
+        <center>JL. PASEBAN 21, JAKARTA 10440</center>
+        
+        <br/><br/>
         
     </div>
     

@@ -153,6 +153,26 @@ $pcabangid="";
         $pnamadm="";
     }
 
+    if ($pidjbt=="20" || (DOUBLE)$pidjbt==20) {
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+    }
+
+    if ($pidjbt=="05" || (DOUBLE)$pidjbt==5) {
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+        $pkdgsm="";
+        $pnamagsm="";
+    }
+
 
 // END CABANG & ATASAN
 

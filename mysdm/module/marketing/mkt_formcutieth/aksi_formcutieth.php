@@ -198,7 +198,7 @@ if ($module=='mktformcutieth')
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             }
             
-            if ($pidjabatan=="05") {
+            if ($pidjabatan=="05" OR $pidjabatan=="22" OR $pidjabatan=="06") {
                 $query = "UPDATE hrd.t_cuti0 SET tgl_atasan1=NOW(), tgl_atasan2=NOW(), tgl_atasan3=NOW(), tgl_atasan4=NOW(), atasan5='$pidatasan5' WHERE idcuti='$kodenya' LIMIT 1";
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             }

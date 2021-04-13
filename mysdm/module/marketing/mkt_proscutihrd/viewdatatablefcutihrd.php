@@ -304,6 +304,7 @@ echo "</div>";
                     $pidjenis=$row1['id_jenis'];
                     $pnmjenis=$row1['nama_jenis'];
                     $pkeperluan=$row1['keperluan'];
+                    $pnjbt=$row1['jabatanid'];
 					
                     
                     $ptglatasan1=$row1['tgl_atasan1'];
@@ -343,20 +344,17 @@ echo "</div>";
                     }
                     
                     if ($ppilihsts=="APPROVE") {
-                        if ($papproveby=="apvdm") {
-                            if (empty($ptglatasan1)) $ceklisnya="";
-                        }elseif ($papproveby=="apvsm") {
-                            if (empty($ptglatasan2)) $ceklisnya="";
-                        }elseif ($papproveby=="apvgsm") {
-                            if (empty($ptglatasan3)) $ceklisnya="";
-                        }else{
-                            
+                        if ($pnjbt=="05" OR $pnjbt=="22" OR $pnjbt=="06") {
+                            if (empty($ptglatasan5) AND !empty($pidatasan5)) { $ceklisnya=""; $pstsapvoleh="Belum Approve COO"; }
                         }
-                        
-                        if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve $pketgsmhos"; }
-                        if (empty($ptglatasan3) AND !empty($pidatasan3)) { $pstsapvoleh="Belum Approve SM"; }
-                        if (empty($ptglatasan2) AND !empty($pidatasan2)) { $pstsapvoleh="Belum Approve DM"; }
-                        if (empty($ptglatasan1) AND !empty($pidatasan1)) { $pstsapvoleh="Belum Approve SPV/AM"; }
+                        if ($pnjbt<>"15" AND $pnjbt<>"38") {
+                            if (empty($ptglatasan4) AND !empty($pidatasan4)) { $ceklisnya=""; $pstsapvoleh="Belum Approve GSM"; }
+                        }
+                        if ($pnjbt<>"05" AND $pnjbt<>"22" AND $pnjbt<>"06") {
+                            if (empty($ptglatasan3) AND !empty($pidatasan3)) { $ceklisnya=""; $pstsapvoleh="Belum Approve SM"; }
+                            if (empty($ptglatasan2) AND !empty($pidatasan2)) { $ceklisnya=""; $pstsapvoleh="Belum Approve DM"; }
+                            if (empty($ptglatasan1) AND !empty($pidatasan1)) { $ceklisnya=""; $pstsapvoleh="Belum Approve SPV/AM"; }
+                        }
                         
                         if (!empty($pstsapvoleh)) {
                             $pstsapvoleh="<span style='color:red;'>$pstsapvoleh</span>";

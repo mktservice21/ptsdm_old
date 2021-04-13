@@ -486,10 +486,7 @@
         <br/><br/>
         <table width="100%">
             <tr>
-            <td>Penting</td><td>:</td><td nowrap>** Surat pengajuan Cuti paling lambat diterima HO 2 (dua) minggu sebelumnya<br/></td>
-            </tr>
-            <tr>
-            <td>&nbsp;</td><td>&nbsp;</td><td nowrap>** HO berhak tidak memberikan izin / Cuti sesuai dengan pertimbangan tertentu.<br/></td>
+            <td>Penting</td><td>:</td><td nowrap>** HO berhak tidak memberikan izin / Cuti sesuai dengan pertimbangan tertentu.</td>
             </tr>
         </table>
         <br/>

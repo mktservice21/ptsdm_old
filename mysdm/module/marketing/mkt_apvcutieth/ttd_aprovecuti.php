@@ -252,7 +252,7 @@ function ReloadTandaTangan(){
             
             $.ajax({
                 type:"post",
-                url:"module/mod_apv_kkcabang/aksi_aprovekkcab.php?module="+module+"&idmenu="+idmenu+"&act=simpan_ttdallam",
+                url:"module/marketing/mkt_apvcutieth/aksi_apvcutieth.php?module="+module+"&idmenu="+idmenu+"&act=simpan_ttdallam",
                 data:"ket=approve"+"&uttd="+uttd+"&unobr="+allnobr+"&ukaryawan="+ekaryawan+"&uketapv="+eketapv,
                 success:function(data){
                     if (data=="ttdkosong") {
@@ -274,5 +274,5 @@ $(document).ready(function() {
 </script>
 
 <br/>&nbsp;
-<input class='btn btn-default' type='button' name='buttonreload' value='Reload Tanda Tangan' onClick="ReloadTandaTangan()">
 <div style="color:red;">*) jika tanda tangan tidak muncul klik tombol <b>Reload Tanda Tangan</b></div>
+<input class='btn btn-default' type='button' name='buttonreload' value='Reload Tanda Tangan' onClick="ReloadTandaTangan()">

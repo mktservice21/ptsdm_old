@@ -217,14 +217,10 @@
                                                 $query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -') ";
                                                 $query .=" order by nama, icabangid";
                                             }else{
-                                                if ($pidjabatan=="20") {
-                                                    
-                                                }else{
-                                                    $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
-                                                        FROM mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
-                                                        WHERE a.karyawanid='$pidkaryawan'";
-                                                    $query .=" order by b.nama, a.icabangid";
-                                                }
+                                                $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                    FROM mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                    WHERE a.karyawanid='$pidkaryawan'";
+                                                $query .=" order by b.nama, a.icabangid";
                                             }
                                         }
                                         $tampilket= mysqli_query($cnmy, $query);
@@ -299,10 +295,15 @@
                                                     . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                                             $query_kry .=" ORDER BY nama";
                                         }else{
-                                            $query_kry = "select karyawanId as karyawanid, nama as nama 
-                                                FROM hrd.karyawan WHERE karyawanId IN $pfilterkaryawan ";
-                                                
-                                            $query_kry .=" ORDER BY nama";
+                                            if ($pidjabatan=="38") {
+                                                $query_kry = "select karyawanId as karyawanid, nama as nama 
+                                                    FROM hrd.karyawan WHERE karyawanId='$pidkaryawan' ";
+                                                $query_kry .=" ORDER BY nama";
+                                            }else{
+                                                $query_kry = "select karyawanId as karyawanid, nama as nama 
+                                                    FROM hrd.karyawan WHERE karyawanId IN $pfilterkaryawan ";
+                                                $query_kry .=" ORDER BY nama";
+                                            }
                                         }
 
                                         if (!empty($query_kry)) {

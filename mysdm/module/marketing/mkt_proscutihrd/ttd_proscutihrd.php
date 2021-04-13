@@ -176,7 +176,7 @@ function ReloadTandaTangan(){
             }
         }).appendTo($tools)
 
-        $('<input type="button" value="Approve" class="btn btn-warning">').bind('click', function(){
+        $('<input type="button" value="Proses" class="btn btn-warning">').bind('click', function(){
                 Tampilkan("image");
         }).appendTo($tools)
 

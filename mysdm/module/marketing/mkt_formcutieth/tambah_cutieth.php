@@ -138,6 +138,17 @@ $pcabangid="";
         $pnamagsm="";
     }
 
+    if ($pidgroup=="8" || (DOUBLE)$pidgroup==8) {
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+        $pkdgsm="";
+        $pnamagsm="";
+    }
+
 
 // END CABANG & ATASAN
 
@@ -218,6 +229,11 @@ $phiddenatasan2="hidden";
 if ($pidjbt=="05") {
     $phiddenatasan1="hidden";
     $phiddenatasan2="";
+}else{
+    if ($pidgroup=="8" OR (DOUBLE)$pidgroup==8) {
+        $phiddenatasan1="hidden";
+        $phiddenatasan2="";
+    }
 }
 ?>
 <div class="">

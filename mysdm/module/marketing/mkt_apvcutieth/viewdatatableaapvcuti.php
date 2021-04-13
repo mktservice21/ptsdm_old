@@ -62,6 +62,12 @@ session_start();
         $papproveby="apvgsm";
     }elseif ($pjabatanid=="01") {
         $papproveby="apvcoo";
+    }else{
+        if ($pidgroup=="46") {
+            $papproveby="apvcoo";
+        }elseif ($pidgroup=="8") {
+            $papproveby="apvgsm";
+        }
     }
     
     if (empty($pjabatanid) OR empty($papproveby) OR empty($pkaryawanid)) {

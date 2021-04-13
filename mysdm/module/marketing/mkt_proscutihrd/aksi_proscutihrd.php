@@ -43,8 +43,11 @@ if ($module=="mktproscutihrd") {
     if (!empty($noidbr) AND !empty($karyawanapv)) {
         
         if ($act=="simpan_ttdallam") {
-            mysqli_query($cnmy, "update hrd.t_cuti0 SET hrd_user='', hrd_date=NOW() WHERE "
-                    . " idcuti IN $noidbr AND (IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00')");
+            $gbrapv=$_POST['uttd'];
+            
+            mysqli_query($cnmy, "update hrd.t_cuti0 a JOIN dbttd.t_cuti_ttd b on a.idcuti=b.idcuti SET a.hrd_user='$karyawanapv', "
+                    . " a.hrd_date=NOW(), b.gbr_hrd='$gbrapv' WHERE "
+                    . " a.idcuti IN $noidbr AND (IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00')");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
 
             $noteapv = "data berhasil diproses...";
@@ -56,6 +59,12 @@ if ($module=="mktproscutihrd") {
                     . " idcuti IN $noidbr AND (IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00')");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
             
+                mysqli_query($cnmy, "update hrd.t_cuti0 a JOIN dbttd.t_cuti_ttd b on a.idcuti=b.idcuti SET a.hrd_user=NULL, "
+                        . " a.hrd_date=NULL, b.gbr_hrd=NULL WHERE "
+                        . " ( IFNULL(a.hrd_date,'')='' OR IFNULL(a.hrd_date,'0000-00-00 00:00:00')='0000-00-00 00:00:00' ) AND "
+                        . " a.idcuti IN $noidbr");
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+                
             $noteapv = "batal proses berhasil...";
             
             

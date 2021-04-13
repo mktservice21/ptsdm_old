@@ -1,9 +1,10 @@
 <?PHP
-    include "config/cek_akses_modul.php";
+    //include "config/cek_akses_modul.php";
     $aksi="module/marketing/mkt_apvcutieth/aksi_apvcutieth.php";
     $hari_ini = date("Y-m-d");
-    $tgl_pertama = date('F Y', strtotime('-2 month', strtotime($hari_ini)));
-    $tgl_akhir = date('F Y', strtotime($hari_ini));
+    $tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
+    $tgl_akhir = date('F Y', strtotime('+1 month', strtotime($hari_ini)));
+    //$tgl_akhir = date('F Y', strtotime($hari_ini));
     
     $pkaryawanid = trim($_SESSION['IDCARD']);
     $pnamauser = trim($_SESSION['NAMALENGKAP']);
@@ -11,10 +12,10 @@
     
     $apvpilih="approve";
     
-    if (!empty($_SESSION['MAPVKKCSTS'])) $apvpilih=$_SESSION['MAPVKKCSTS'];
-    if (!empty($_SESSION['MAPVKKCBLN1'])) $tgl_pertama=$_SESSION['MAPVKKCBLN1'];
-    if (!empty($_SESSION['MAPVKKCBLN2'])) $tgl_akhir=$_SESSION['MAPVKKCBLN2'];
-    //if (!empty($_SESSION['MAPVKKCAPVBY'])) $pkaryawanid=$_SESSION['MAPVKKCAPVBY'];
+    if (!empty($_SESSION['APVCUTISTS'])) $apvpilih=$_SESSION['APVCUTISTS'];
+    if (!empty($_SESSION['APVCUTIBLN1'])) $tgl_pertama=$_SESSION['APVCUTIBLN1'];
+    if (!empty($_SESSION['APVCUTIBLN2'])) $tgl_akhir=$_SESSION['APVCUTIBLN2'];
+    //if (!empty($_SESSION['APVCUTIAPVBY'])) $pkaryawanid=$_SESSION['APVCUTIAPVBY'];
     
 ?>
 
@@ -130,7 +131,7 @@
                                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                                     $query .= " AND nama NOT IN ('ACCOUNTING')";
                                     $query .= " AND karyawanid NOT IN ('0000002200', '0000002083')";
-                                    $query .= " AND jabatanId IN ('08', '10', '18', '20', '04', '05')";
+                                    $query .= " AND jabatanId IN ('08', '10', '18', '20', '04', '05', '01')";
                                 }else{
                                     $query .= " AND karyawanId ='$pkaryawanid' ";
                                 }
@@ -163,15 +164,16 @@
                         <thead>
                             <tr>
                                 <th width='7px'>No</th>
-                                <th width='20px'>
+                                <th width='10px'>
                                     <input type="checkbox" id="chkbtnbr" value="select" 
                                     onClick="SelAllCheckBox('chkbtnbr', 'chkbox_br[]')" />
                                 </th>
-                                <th width='60px'>ID</th>
-                                <th width='60px'>Tanggal</th>
-                                <th width='80px'>Grp. Produk</th>
-                                <th width='100px'>Yg. Mengajukan</th>
-                                <th width='50px'>Cabang</th>
+                                <th width='50px'>&nbsp;</th>
+                                <th width='50px'>Karyawan</th>
+                                <th width='50px'>Jenis</th>
+                                <th width='50px'>Keperluan</th>
+                                <th width='200px'>Periode</th>
+                                <th width='50px'>Satus Approve</th>
                             </tr>
                         </thead>
                         <tbody>

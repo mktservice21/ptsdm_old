@@ -44,6 +44,7 @@
             . " where a.idcuti='$pid'";
     $tampil=mysqli_query($cnmy, $query);
     $row= mysqli_fetch_array($tampil);
+    $pkaryawanid=$row['karyawanid'];
     $pnamakry=$row['nama_karyawan'];
     $pidjenis=$row['id_jenis'];
     $pnamajenis=$row['nama_group'];
@@ -53,7 +54,7 @@
     $pbln1=$row['bulan1'];
     $pbln2=$row['bulan2'];
     $ptglinput=$row['tglinput'];
-    $pnamacab="";
+    
     
     if (empty($pjabatanid)) {
         $pjabatanid=$_SESSION['JABATANID'];
@@ -209,6 +210,35 @@
         $pketterhitung="";
         $pterhitung="$phr1 $pbulan1 $pthn1 s/d. $phr2 $pbulan2 $pthn2";
     }
+    
+    $pnamacab="";
+    if ($pjabatanid=="15") {
+        $query = "select distinct a.icabangid, b.nama as nama_cabang "
+                . " from mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangId "
+                . " where a.karyawanid='$pkaryawanid' AND IFNULL(a.aktif,'')<>'N' AND IFNULL(b.aktif,'')<>'N'";
+        $tampila=mysqli_query($cnmy, $query);
+        while ($rowa=mysqli_fetch_array($tampila)) {
+            $pnamacab .=$rowa['nama_cabang'].", ";
+        }
+    }elseif ($pjabatanid=="10" OR $pjabatanid=="18") {
+        $query = "select distinct a.icabangid, b.nama as nama_cabang "
+                . " from mkt.ispv0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangId "
+                . " where a.karyawanid='$pkaryawanid' AND IFNULL(a.aktif,'')<>'N' AND IFNULL(b.aktif,'')<>'N'";
+        $tampila=mysqli_query($cnmy, $query);
+        while ($rowa=mysqli_fetch_array($tampila)) {
+            $pnamacab .=$rowa['nama_cabang'].", ";
+        }
+    }elseif ($pjabatanid=="08") {
+        $query = "select distinct a.icabangid, b.nama as nama_cabang "
+                . " from mkt.idm0 as a JOIN mkt.icabang as b on a.icabangid=b.icabangId "
+                . " where a.karyawanid='$pkaryawanid' AND IFNULL(a.aktif,'')<>'N' AND IFNULL(b.aktif,'')<>'N'";
+        $tampila=mysqli_query($cnmy, $query);
+        while ($rowa=mysqli_fetch_array($tampila)) {
+            $pnamacab .=$rowa['nama_cabang'].", ";
+        }
+    }
+    
+    if (!empty($pnamacab)) $pnamacab=substr($pnamacab, 0, -2);
 ?>
 
 <HTML>

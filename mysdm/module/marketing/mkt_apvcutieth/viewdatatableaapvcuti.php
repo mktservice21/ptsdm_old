@@ -8,15 +8,12 @@ session_start();
     }
     
     $pidgroup=$_SESSION['GROUP'];
-    $ppilihdivisi="ETH";
-    if ($pidgroup=="38" OR (DOUBLE)$pidgroup==38) $ppilihdivisi="OTC";
-    
     
     include "../../../config/koneksimysqli.php";
     
     //ini_set('display_errors', '0');
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
     $pmodule=$_GET['module'];
@@ -31,10 +28,10 @@ session_start();
     $pstsapv = $_POST['uketapv'];
     
     
-    $_SESSION['MAPVKKCSTS']=$ppilihsts;
-    $_SESSION['MAPVKKCBLN1']=$mytgl1;
-    $_SESSION['MAPVKKCBLN2']=$mytgl2;
-    $_SESSION['MAPVKKCAPVBY']=$pkaryawanid;
+    $_SESSION['APVCUTISTS']=$ppilihsts;
+    $_SESSION['APVCUTIBLN1']=$mytgl1;
+    $_SESSION['APVCUTIBLN2']=$mytgl2;
+    $_SESSION['APVCUTIAPVBY']=$pkaryawanid;
     
     $pbulan1= date("Y-m-01", strtotime($mytgl1));
     $pbulan2= date("Y-m-t", strtotime($mytgl2));
@@ -63,6 +60,8 @@ session_start();
         $papproveby="apvsm";
     }elseif ($pjabatanid=="04" OR $pjabatanid=="05" OR $pjabatanid=="36") {
         $papproveby="apvgsm";
+    }elseif ($pjabatanid=="01") {
+        $papproveby="apvcoo";
     }
     
     if (empty($pjabatanid) OR empty($papproveby) OR empty($pkaryawanid)) {
@@ -76,56 +75,69 @@ session_start();
     
     $userid=$_SESSION['USERID'];
     $now=date("mdYhis");
-    $tmp01 =" dbtemp.TMPKKCAPV01_".$userid."_$now ";
-    $tmp02 =" dbtemp.TMPKKCAPV02_".$userid."_$now ";
-    $tmp03 =" dbtemp.TMPKKCAPV03_".$userid."_$now ";
+    $tmp01 =" dbtemp.tmpapvcutiet01_".$userid."_$now ";
+    $tmp02 =" dbtemp.tmpapvcutiet02_".$userid."_$now ";
+    $tmp03 =" dbtemp.tmpapvcutiet03_".$userid."_$now ";
     
     
     
-    $query = "SELECT idkascab, tanggal, bulan, pengajuan, karyawanid, jabatanid, "
-            . " icabangid, icabangid_o, divisi, jumlah, keterangan,"
-            . " atasan1, atasan2, atasan3, atasan4,"
-            . " tgl_atasan1, tgl_atasan2, tgl_atasan3, tgl_atasan4, tgl_fin FROM dbmaster.t_kaskecilcabang "
-            . " WHERE ( (bulan BETWEEN '$pbulan1' AND '$pbulan2') OR (tglinput BETWEEN '$pbulan1' AND '$pbulan2') ) ";
-    if ($ppilihdivisi=="OTC") $query .= " AND IFNULL(pengajuan,'') IN ('OTC', 'CHC', 'OT') ";
+    $query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_karyawan, a.jabatanid, "
+            . " a.id_jenis, d.nama_jenis, a.keperluan, a.bulan1, a.bulan2, "
+            . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, atasan5, "
+            . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5 FROM hrd.t_cuti0 as a "
+            . " JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid"
+            . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis "
+            . " WHERE 1=1 ";
+    $query .=" AND ( (b.tanggal BETWEEN '$pbulan1' AND '$pbulan2') "
+            . " OR ( (a.bulan1 BETWEEN '$pbulan1' AND '$pbulan2') OR (a.bulan2 BETWEEN '$pbulan1' AND '$pbulan2') ) "
+            . " OR (a.tglinput BETWEEN '$pbulan1' AND '$pbulan2') "
+            . " )";
+    
     if ($papproveby=="apvdm") {
-        $query .= " AND atasan2='$pkaryawanid' ";
+        $query .= " AND a.atasan2='$pkaryawanid' ";
     }elseif ($papproveby=="apvsm") {
-        $query .= " AND atasan3='$pkaryawanid' ";
+        $query .= " AND a.atasan3='$pkaryawanid' ";
     }elseif ($papproveby=="apvgsm") {
-        $query .= " AND atasan4='$pkaryawanid' ";
+        $query .= " AND a.atasan4='$pkaryawanid' AND a.jabatanid NOT IN ('15', '38') ";
+    }elseif ($papproveby=="apvcoo") {
+        $query .= " AND a.atasan5='$pkaryawanid' AND a.jabatanid IN ('05') ";
     }else{
-        $query .= " AND atasan1='$pkaryawanid' ";
+        $query .= " AND a.atasan1='$pkaryawanid' ";
     }
     
     if ($ppilihsts=="REJECT") {
-        $query .=" AND IFNULL(stsnonaktif,'')='Y' ";
+        $query .=" AND IFNULL(a.stsnonaktif,'')='Y' ";
     }else{
         
-        $query .=" AND IFNULL(stsnonaktif,'')<>'Y' ";
+        $query .=" AND IFNULL(a.stsnonaktif,'')<>'Y' ";
         if ($ppilihsts=="ALLDATA") {
 
         }else{
             if ($ppilihsts=="APPROVE") {
                 if ($papproveby=="apvdm") {
-                    $query .= " AND (IFNULL(tgl_atasan2,'')='' OR IFNULL(tgl_atasan2,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan2,'')='' OR IFNULL(a.tgl_atasan2,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvsm") {
-                    $query .= " AND (IFNULL(tgl_atasan3,'')='' OR IFNULL(tgl_atasan3,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')='' OR IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvgsm") {
-                    $query .= " AND (IFNULL(tgl_atasan4,'')='' OR IFNULL(tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
-                    $query .= " AND (IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvcoo") {
+                    $query .= " AND (IFNULL(a.tgl_atasan5,'')='' OR IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }else{
-                    $query .= " AND (IFNULL(tgl_atasan1,'')='' OR IFNULL(tgl_atasan1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan1,'')='' OR IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                 }
             }elseif ($ppilihsts=="UNAPPROVE") {
                 if ($papproveby=="apvdm") {
-                    $query .= " AND (IFNULL(tgl_atasan2,'')<>'' AND IFNULL(tgl_atasan2,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan2,'')<>'' AND IFNULL(a.tgl_atasan2,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvsm") {
-                    $query .= " AND (IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvgsm") {
-                    $query .= " AND (IFNULL(tgl_atasan4,'')<>'' AND IFNULL(tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvcoo") {
+                    $query .= " AND (IFNULL(a.tgl_atasan5,'')<>'' AND IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }else{
-                    $query .= " AND (IFNULL(tgl_atasan1,'')<>'' AND IFNULL(tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan1,'')<>'' AND IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }
             }
         }
@@ -133,39 +145,32 @@ session_start();
     }
     
     
-
+    //echo $query."<br/>";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "ALTER TABLE $tmp01 ADD COLUMN SAPV1 VARCHAR(1), ADD COLUMN SAPV2 VARCHAR(1), ADD COLUMN SAPV3 VARCHAR(1), ADD COLUMN SAPV4 VARCHAR(1)"; 
+    
+    $query = "ALTER TABLE $tmp01 ADD COLUMN SAPV1 VARCHAR(1), ADD COLUMN SAPV2 VARCHAR(1), ADD COLUMN SAPV3 VARCHAR(1), ADD COLUMN SAPV4 VARCHAR(1), ADD COLUMN SAPV5 VARCHAR(1)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "UPDATE $tmp01 a JOIN dbttd.t_kaskecilcabang_ttd b on a.idkascab=b.idkascab SET a.SAPV1='Y' WHERE IFNULL(gbr_atasan1,'')<>''"; 
+    $query = "UPDATE $tmp01 a JOIN dbttd.t_cuti_ttd b on a.idcuti=b.idcuti SET a.SAPV1='Y' WHERE IFNULL(gbr_atasan1,'')<>''"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "UPDATE $tmp01 a JOIN dbttd.t_kaskecilcabang_ttd b on a.idkascab=b.idkascab SET a.SAPV2='Y' WHERE IFNULL(gbr_atasan2,'')<>''"; 
+    $query = "UPDATE $tmp01 a JOIN dbttd.t_cuti_ttd b on a.idcuti=b.idcuti SET a.SAPV2='Y' WHERE IFNULL(gbr_atasan2,'')<>''"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "UPDATE $tmp01 a JOIN dbttd.t_kaskecilcabang_ttd b on a.idkascab=b.idkascab SET a.SAPV3='Y' WHERE IFNULL(gbr_atasan3,'')<>''"; 
+    $query = "UPDATE $tmp01 a JOIN dbttd.t_cuti_ttd b on a.idcuti=b.idcuti SET a.SAPV3='Y' WHERE IFNULL(gbr_atasan3,'')<>''"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    $query = "UPDATE $tmp01 a JOIN dbttd.t_kaskecilcabang_ttd b on a.idkascab=b.idkascab SET a.SAPV4='Y' WHERE IFNULL(gbr_atasan4,'')<>''"; 
+    $query = "UPDATE $tmp01 a JOIN dbttd.t_cuti_ttd b on a.idcuti=b.idcuti SET a.SAPV4='Y' WHERE IFNULL(gbr_atasan4,'')<>''"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    $query = "UPDATE $tmp01 a JOIN dbttd.t_cuti_ttd b on a.idcuti=b.idcuti SET a.SAPV5='Y' WHERE IFNULL(gbr_atasan5,'')<>''"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    
-    $query = "SELECT a.*, b.nama as nama_karyawan, c.nama as nama_cabang, d.nama as nama_cabangotc FROM $tmp01 a LEFT JOIN "
-            . " hrd.karyawan b on a.karyawanid=b.karyawanid "
-            . " LEFT JOIN MKT.icabang c on a.icabangid=c.icabangid "
-            . " LEFT JOIN MKT. icabang_o d on a.icabangid_o=d.icabangid_o";
-    $query = "create TEMPORARY table $tmp02 ($query)"; 
+    $sql = "select a.idcuti, a.tanggal FROM hrd.t_cuti1 as a JOIN $tmp01 as b on a.idcuti=b.idcuti";
+    $query = "create TEMPORARY table $tmp02 ($sql)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    
-    $query = "UPDATE $tmp02 SET icabangid=icabangid_o, nama_cabang=nama_cabangotc WHERE IFNULL(pengajuan,'') IN ('OTC', 'OT', 'CHC')"; 
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
     
     
 ?>
@@ -226,7 +231,7 @@ session_start();
         
         $.ajax({
             type:"post",
-            url:"module/mod_apv_kkcabang/aksi_aprovekkcab.php?module="+module+"&idmenu="+idmenu+"&act="+ket,
+            url:"module/marketing/mkt_apvcutieth/aksi_apvcutieth.php?module="+module+"&idmenu="+idmenu+"&act="+ket,
             data:"ket=unapprove"+"&unobr="+allnobr+"&ukaryawan="+ekaryawan+"&ketrejpen="+txt,
             success:function(data){
                 pilihData('unapprove');
@@ -284,7 +289,7 @@ session_start();
         
         $.ajax({
             type:"post",
-            url:"module/mod_apv_kkcabang/aksi_aprovekkcab.php?module="+module+"&idmenu="+idmenu+"&act="+ket,
+            url:"module/marketing/mkt_apvcutieth/aksi_apvcutieth.php?module="+module+"&idmenu="+idmenu+"&act="+ket,
             data:"ket=unapprove"+"&unobr="+allnobr+"&ukaryawan="+ekaryawan+"&ketrejpen="+txt,
             success:function(data){
                 pilihData('approve');
@@ -298,7 +303,17 @@ session_start();
     
 </script>
 
-
+<?PHP
+echo "<div style='font-weight:bold; color:blue;'>";
+if ($ppilihsts=="APPROVE") {
+    echo "DATA YANG BELUM DIAPPROVE";
+}elseif ($ppilihsts=="UNAPPROVE") {
+    echo "DATA YANG SUDAH DIAPPROVE";
+}elseif ($ppilihsts=="REJECT") {
+    echo "DATA REJECT";
+}
+echo "</div>";
+?>
 <form method='POST' action='<?PHP echo "?module='$pmodule'&act=$pact&idmenu=$pidmenu"; ?>' id='d-form2' name='form2' data-parsley-validate class='form-horizontal form-label-left'>
 
     <div class='x_content'>
@@ -314,76 +329,61 @@ session_start();
                         <input type="checkbox" id="chkbtnbr" value="select" 
                         onClick="SelAllCheckBox('chkbtnbr', 'chkbox_br[]')" />
                     </th>
-                    <th width='40px'>ID</th>
-                    <th width='50px'>Bulan (Periode Kas Kecil)</th>
-                    <th width='50px'>Pengajuan</th>
-                    <th width='200px'>Yg. Mengajukan</th>
-                    <th width='50px'>Cabang</th>
-                    <th width='50px'>Jumlah</th>
-                    <th width='50px'>Keterangan</th>
+                    <th width='50px'>&nbsp;</th>
+                    <th width='50px'>Karyawan</th>
+                    <th width='50px'>Jenis</th>
+                    <th width='50px'>Keperluan</th>
+                    <th width='200px'>Periode</th>
                     <th width='50px'>Satus Approve</th>
                 </tr>
             </thead>
             <tbody>
                 <?PHP
                 $no=1;
-                $query = "select * from $tmp02 order by idkascab";
+                $query = "select * from $tmp01 order by idcuti";
                 $tampil1= mysqli_query($cnmy, $query);
                 while ($row1= mysqli_fetch_array($tampil1)) {
-                    $pidkkcab=$row1['idkascab'];
-                    $ptgl=$row1['tanggal'];
-					$pbln=$row1['bulan'];
+                    $pidcuti=$row1['idcuti'];
                     $pnmkaryawan=$row1['nama_karyawan'];
-                    $pidpengajuan=$row1['pengajuan'];
-                    $pnmcabang=$row1['nama_cabang'];
-                    $pketerangan=$row1['keterangan'];
-                    $prpjumlah=$row1['jumlah'];
+                    $pidjenis=$row1['id_jenis'];
+                    $pnmjenis=$row1['nama_jenis'];
+                    $pkeperluan=$row1['keperluan'];
 					
-					$pbln = date("F Y", strtotime($pbln));
                     
-                    $nama_pengajuan="ETHICAL";
-                    if ($pidpengajuan=="OTC" OR $pidpengajuan=="OT" OR$pidpengajuan=="CHC") $nama_pengajuan="CHC";
-                    
-                    $ptglfinance=$row1['tgl_fin'];
                     $ptglatasan1=$row1['tgl_atasan1'];
                     $ptglatasan2=$row1['tgl_atasan2'];
                     $ptglatasan3=$row1['tgl_atasan3'];
                     $ptglatasan4=$row1['tgl_atasan4'];
+                    $ptglatasan5=$row1['tgl_atasan5'];
                     
                     $pidatasan1=$row1['atasan1'];
                     $pidatasan2=$row1['atasan2'];
                     $pidatasan3=$row1['atasan3'];
                     $pidatasan4=$row1['atasan4'];
+                    $pidatasan5=$row1['atasan5'];
                     
-                    $prpjumlah=number_format($prpjumlah,0,",",",");
                     
-                    $ptgl= date("d/m/Y", strtotime($ptgl));
-                    
-                    if ($ptglfinance=="0000-00-00" OR $ptglfinance=="0000-00-00 00:00:00") $ptglfinance="";
                     if ($ptglatasan1=="0000-00-00" OR $ptglatasan1=="0000-00-00 00:00:00") $ptglatasan1="";
                     if ($ptglatasan2=="0000-00-00" OR $ptglatasan2=="0000-00-00 00:00:00") $ptglatasan2="";
                     if ($ptglatasan3=="0000-00-00" OR $ptglatasan3=="0000-00-00 00:00:00") $ptglatasan3="";
                     if ($ptglatasan4=="0000-00-00" OR $ptglatasan4=="0000-00-00 00:00:00") $ptglatasan4="";
+                    if ($ptglatasan5=="0000-00-00" OR $ptglatasan5=="0000-00-00 00:00:00") $ptglatasan5="";
                     
                     $pketgsmhos="GSM";
-                    $npmdl="bgtkaskecilcabang";
-                    if ($ppilihdivisi=="OTC") {
-                        $npmdl="bgtkaskecilcabangotc";
-                        $pketgsmhos="HOS";
-                    }
+                    $npmdl="mktformcutieth";
                     
-                    $print="<a title='Detail Barang / Print' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
-                        . "onClick=\"window.open('eksekusi3.php?module=$npmdl&brid=$pidkkcab&iprint=print',"
+                    $print="<a title='Detail / Print' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
+                        . "onClick=\"window.open('eksekusi3.php?module=$npmdl&brid=$pidcuti&iprint=detail',"
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                        . "$pidkkcab</a>";
+                        . "Print</a>";
                     
-                    $ceklisnya = "<input type='checkbox' value='$pidkkcab' name='chkbox_br[]' id='chkbox_br[$pidkkcab]' class='cekbr'>";
+                    $ceklisnya = "<input type='checkbox' value='$pidcuti' name='chkbox_br[]' id='chkbox_br[$pidcuti]' class='cekbr'>";
                     
                     
                     $pstsapvoleh="";
                     
                     if ($ppilihsts=="UNAPPROVE") {
-                        if (!empty($ptglfinance)) $ceklisnya="";
+                        
                     }
                     
                     if ($ppilihsts=="APPROVE") {
@@ -424,13 +424,8 @@ session_start();
                         if (!empty($ptglatasan2) AND !empty($pidatasan2)) $pstsapvoleh="Sudah Approve DM";
                         if (!empty($ptglatasan3) AND !empty($pidatasan3)) $pstsapvoleh="Sudah Approve SM";
                         if (!empty($ptglatasan4) AND !empty($pidatasan4)) $pstsapvoleh="Sudah Approve $pketgsmhos";
-                        if (!empty($ptglfinance)) $pstsapvoleh="Sudah Proses Finance";
                         
                     }
-                    
-                    if (!empty($ptglfinance)) $ceklisnya="";
-                    
-                    
                     
                     
                     if ($ppilihsts=="REJECT") {
@@ -439,17 +434,41 @@ session_start();
                         $pstsapvoleh="";
                     }
                     
+                    $plewattgl=false; $ctglpl=""; $ctglpl1=""; $ctglpl2="";
+                    $query = "select distinct tanggal from $tmp02 WHERE idcuti='$pidcuti' order by tanggal";
+                    $tampil0=mysqli_query($cnmy, $query);
+                    $ketemu0=mysqli_num_rows($tampil0);
+                    if ((INT)$ketemu0>0) {
+                        $pawal=false;
+                        while ($row0=mysqli_fetch_array($tampil0)) {
+                            $tgl_p=$row0['tanggal'];
+                            if (!empty($tgl_p)) {
+                                $tgl_p = date('d F Y', strtotime($tgl_p));
+
+                                $ctglpl .=$tgl_p.", ";
+
+                                if ($pawal==false) {
+                                    $ctglpl1=$tgl_p;
+                                    $pawal=true;
+                                }
+                                $ctglpl2=$tgl_p;
+
+                                $plewattgl=true;
+                            }
+                        }
+                    }
+
+                    if (!empty($ctglpl)) $ctglpl=substr($ctglpl, 0, -2);
+                    
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$ceklisnya</td>";
                     echo "<td nowrap>$print</td>";
-                    echo "<td nowrap>$pbln</td>";
-                    echo "<td nowrap>$nama_pengajuan</td>";
                     echo "<td nowrap>$pnmkaryawan</td>";
-                    echo "<td nowrap>$pnmcabang</td>";
-                    echo "<td nowrap align='right'>$prpjumlah</td>";
-                    echo "<td nowrap>$pketerangan</td>";
-                    echo "<td nowrap>$pstsapvoleh</td>";
+                    echo "<td nowrap>$pnmjenis</td>";
+                    echo "<td nowrap>$pkeperluan</td>";
+                    echo "<td >$ctglpl</td>";
+                    echo "<td nowrap>&nbsp;</td>";
                     echo "</tr>";
                     
                     
@@ -528,9 +547,9 @@ th {
 
 <?PHP
 hapusdata:
-    mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
-    mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
-    mysqli_query($cnmy, "drop TEMPORARY table $tmp03");
+    mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp01");
+    mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp02");
+    mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp03");
     
     mysqli_close($cnmy);
 ?>

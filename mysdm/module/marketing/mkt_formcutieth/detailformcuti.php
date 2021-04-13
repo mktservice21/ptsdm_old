@@ -303,7 +303,7 @@
         <center>
             <h3>
                 <?PHP
-                echo "SURAT PENGAJUAN IZIN/CUTI";
+                echo "SURAT PENGAJUAN IZIN/CUTI/UP COUNTRY";
                 ?>
             </h3>
         </center>

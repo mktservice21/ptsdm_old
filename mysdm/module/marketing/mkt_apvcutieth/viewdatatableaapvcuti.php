@@ -91,7 +91,7 @@ session_start();
             . " a.id_jenis, d.nama_jenis, a.keperluan, a.bulan1, a.bulan2, "
             . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, atasan5, "
             . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5 FROM hrd.t_cuti0 as a "
-            . " JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid"
+            . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid"
             . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis "
             . " WHERE 1=1 ";
     $query .=" AND ( (b.tanggal BETWEEN '$pbulan1' AND '$pbulan2') "

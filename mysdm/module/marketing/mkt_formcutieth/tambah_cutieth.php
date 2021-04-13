@@ -127,7 +127,7 @@ $pcabangid="";
         $pnamasm="";
     }
 
-    if ($pidjbt=="05" || (DOUBLE)$pidjbt==5) {
+    if ($pidjbt=="05" || (DOUBLE)$pidjbt==5 || $pidjbt=="22" || (DOUBLE)$pidjbt==22 || $pidjbt=="06" || (DOUBLE)$pidjbt==6) {
         $pkdspv="";
         $pnamaspv="";
         $pkddm="";
@@ -226,7 +226,7 @@ $pnamacoo="EVI KOSINA SANTOSO";
 
 $phiddenatasan1="";
 $phiddenatasan2="hidden";
-if ($pidjbt=="05") {
+if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
     $phiddenatasan1="hidden";
     $phiddenatasan2="";
 }else{

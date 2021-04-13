@@ -336,7 +336,7 @@
         
         <br/><br/>
         <div>
-            <?PHP echo "................................., ".$ptanggalinput; ?>
+            <?PHP echo "".$ptanggalinput; ?>
         </div>
         
         

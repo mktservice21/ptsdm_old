@@ -209,6 +209,16 @@ $prbchkjenis2="";
 
 if ($pjeniscuti=="02") $prbchkjenis2="checked";
 else $prbchkjenis1="checked";
+
+$pkdcoo="0000002403";
+$pnamacoo="EVI KOSINA SANTOSO";
+
+$phiddenatasan1="";
+$phiddenatasan2="hidden";
+if ($pidjbt=="05") {
+    $phiddenatasan1="hidden";
+    $phiddenatasan2="";
+}
 ?>
 <div class="">
 
@@ -317,7 +327,7 @@ else $prbchkjenis1="checked";
                                     </div>
                                 </div>
                                 
-                                <div id="div_atasan">
+                                <div id="div_atasan" <?PHP echo $phiddenatasan1; ?>>
                                     
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SPV / AM <span class='required'></span></label>
@@ -351,6 +361,16 @@ else $prbchkjenis1="checked";
                                         </div>
                                     </div>
                                     
+                                </div>
+                                
+                                <div id="div_atasan2" <?PHP echo $phiddenatasan2; ?>>
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                        <div class='col-xs-9'>
+                                            <input type='hidden' id='e_kdcoo' name='e_kdcoo' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdcoo; ?>' Readonly>
+                                            <input type='text' id='e_namacoo' name='e_namacoo' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamacoo; ?>' Readonly>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class='form-group'>

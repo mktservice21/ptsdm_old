@@ -17,7 +17,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                $judul="Cuti/Izin Ethical";
+                $judul="Cuti/Izin/Up Country Ethical";
                 if ($pact=="tambahbaru")
                     echo "Isi Pengajuan $judul";
                 elseif ($pact=="editdata")
@@ -217,10 +217,14 @@
                                                 $query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -') ";
                                                 $query .=" order by nama, icabangid";
                                             }else{
-                                                $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
-                                                    FROM mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
-                                                    WHERE a.karyawanid='$pidkaryawan'";
-                                                $query .=" order by b.nama, a.icabangid";
+                                                if ($pidjabatan=="20") {
+                                                    
+                                                }else{
+                                                    $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                        FROM mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                        WHERE a.karyawanid='$pidkaryawan'";
+                                                    $query .=" order by b.nama, a.icabangid";
+                                                }
                                             }
                                         }
                                         $tampilket= mysqli_query($cnmy, $query);

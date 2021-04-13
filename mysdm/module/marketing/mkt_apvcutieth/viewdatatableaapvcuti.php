@@ -495,7 +495,7 @@ echo "</div>";
                     echo "<td nowrap>$pnmjenis</td>";
                     echo "<td nowrap>$pkeperluan</td>";
                     echo "<td >$ntglpilih</td>";
-                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>$pstsapvoleh</td>";
                     echo "</tr>";
                     
                     

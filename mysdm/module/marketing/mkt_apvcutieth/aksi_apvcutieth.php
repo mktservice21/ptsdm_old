@@ -18,7 +18,7 @@ session_start();
     $act=$_GET['act'];
     
     $pnamalogin=$_SESSION['NAMALENGKAP'];
-    
+    $pidgroup=$_SESSION['GROUP'];
     
 if ($module=="mktapprovecutieth") {
         
@@ -56,6 +56,12 @@ if ($module=="mktapprovecutieth") {
         $papproveby="apvgsm";
     }elseif ($pjabatanid=="01") {
         $papproveby="apvcoo";
+    }else{
+        if ($pidgroup=="46") {
+            $papproveby="apvcoo";
+        }elseif ($pidgroup=="8") {
+            $papproveby="apvgsm";
+        }
     }
     
     if (empty($pjabatanid) OR empty($papproveby) OR empty($karyawanapv)) {

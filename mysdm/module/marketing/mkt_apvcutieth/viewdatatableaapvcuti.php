@@ -375,7 +375,7 @@ echo "</div>";
                     $print="<a title='Detail / Print' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
                         . "onClick=\"window.open('eksekusi3.php?module=$npmdl&brid=$pidcuti&iprint=detail',"
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                        . "Print</a>";
+                        . "View</a>";
                     
                     $ceklisnya = "<input type='checkbox' value='$pidcuti' name='chkbox_br[]' id='chkbox_br[$pidcuti]' class='cekbr'>";
                     

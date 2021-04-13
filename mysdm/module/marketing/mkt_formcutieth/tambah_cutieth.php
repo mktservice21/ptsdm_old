@@ -34,6 +34,7 @@ $pcabangid="";
     $pnamagsm=$nrs['nama_gsm'];
 
 
+
     $pcabangid=$nrs['icabangid'];
     $pareaid=$nrs['areaid'];
     $pjabatanid=$nrs['jabatanid'];
@@ -92,43 +93,7 @@ $pcabangid="";
     }
 
     $pidcabang=$pcabangid;
-
-
-    $query= "select DISTINCT a.karyawanid as karyawanid, b.nama as nama from MKT.idm0 a JOIN hrd.karyawan b on a.karyawanid=b.karyawanid "
-            . " WHERE a.icabangid='$pcabangid' AND IFNULL(a.karyawanid,'')<>'' "
-            . " AND (IFNULL(b.tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(b.tglkeluar,'')='')";
-    $tampil= mysqli_query($cnmy, $query);
-    $rowd= mysqli_fetch_array($tampil);
-    $pnnkrydm=$rowd['karyawanid'];
-    $pnnmkrydm=$rowd['nama'];
-    if (!empty($pnnkrydm)) {
-        $pkdspv=""; $pnamaspv="";
-        $pkddm=$pnnkrydm;
-        $pnamadm=$pnnmkrydm;
-    }
     
-    $query= "select DISTINCT a.karyawanid as karyawanid, b.nama as nama from MKT.ism0 a JOIN hrd.karyawan b on a.karyawanid=b.karyawanid "
-            . " WHERE a.icabangid='$pcabangid' AND IFNULL(a.karyawanid,'')<>'' "
-            . " AND (IFNULL(b.tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(b.tglkeluar,'')='')";
-    $tampil= mysqli_query($cnmy, $query);
-    $rowd2= mysqli_fetch_array($tampil);
-    $pnnkrydm=$rowd2['karyawanid'];
-    $pnnmkrydm=$rowd2['nama'];
-    if (!empty($pnnkrydm)) {
-        $pkdsm=$pnnkrydm;
-        $pnamasm=$pnnmkrydm;
-        $pkdgsm="";
-        $pnamagsm="";
-    }
-    
-    
-    
-    $query = "select a.gsm, b.nama as nama_gsm FROM dbmaster.t_karyawan_posisi a JOIN hrd.karyawan b on a.gsm=b.karyawanid WHERE a.karyawanid='$pkdsm'";
-    $ptampil2= mysqli_query($cnmy, $query);
-    $nrs2= mysqli_fetch_array($ptampil2);
-
-    $pkdgsm=$nrs2['gsm'];
-    $pnamagsm=$nrs2['nama_gsm'];
 
     if ($pcabangid=="0000000003") {
         $pkdspv="";

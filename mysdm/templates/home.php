@@ -888,6 +888,8 @@
         include 'module/marketing/mkt_formcutieth/formcutieth.php';
     }elseif ($_GET['module']=='mktapprovecutieth'){
         include 'module/marketing/mkt_apvcutieth/apvcutieth.php';
+    }elseif ($_GET['module']=='mktproscutihrd'){
+        include 'module/marketing/mkt_proscutihrd/proscutihrd.php';
         
 
     }else{

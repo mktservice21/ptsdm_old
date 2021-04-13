@@ -144,7 +144,7 @@
                 $print="<a title='detail' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
                     . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&iprint=detail',"
                     . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                    . "Print</a>";
+                    . "View</a>";
                 
                 $plewattgl=false; $ctglpl=""; $ctglpl1=""; $ctglpl2="";
                 $query = "select distinct tanggal from $tmp01 WHERE idcuti='$cidinput' order by tanggal";

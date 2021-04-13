@@ -91,8 +91,8 @@ session_start();
 
         }else{
             if ($ppilihsts=="APPROVE") {
-                $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
-                $query .= " AND (IFNULL(a.hrd_date,'')<>'' AND IFNULL(a.hrd_date,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                //$query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                $query .= " AND ( IFNULL(a.hrd_date,'')='' OR IFNULL(a.hrd_date,'0000-00-00 00:00:00')='0000-00-00 00:00:00' ) ";
             }elseif ($ppilihsts=="UNAPPROVE") {
                 $query .= " AND (IFNULL(a.hrd_date,'')<>'' AND IFNULL(a.hrd_date,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
             }
@@ -306,6 +306,8 @@ echo "</div>";
                     $pkeperluan=$row1['keperluan'];
                     $pnjbt=$row1['jabatanid'];
 					
+                    $nbln1=$row1['bulan1'];
+                    $nbln2=$row1['bulan2'];
                     
                     $ptglatasan1=$row1['tgl_atasan1'];
                     $ptglatasan2=$row1['tgl_atasan2'];
@@ -388,6 +390,14 @@ echo "</div>";
                         $pstsapvoleh="";
                     }
                     
+                    if ($pidjenis=="02") {
+                        $nbln1 = date('d F Y', strtotime($nbln1));
+                        $nbln2 = date('d F Y', strtotime($nbln2));
+                    }else{
+                        $nbln1 = date('F Y', strtotime($nbln1));
+                        $nbln2 = date('F Y', strtotime($nbln2));
+                    }
+                    
                     $plewattgl=false; $ctglpl=""; $ctglpl1=""; $ctglpl2="";
                     $query = "select distinct tanggal from $tmp02 WHERE idcuti='$pidcuti' order by tanggal";
                     $tampil0=mysqli_query($cnmy, $query);
@@ -414,6 +424,16 @@ echo "</div>";
 
                     if (!empty($ctglpl)) $ctglpl=substr($ctglpl, 0, -2);
                     
+                    $ntglpilih="";
+                    if ($pidjenis=="02") {
+                        if ($plewattgl==true)
+                            $ntglpilih=$nbln1." s/d. ".$nbln2." (".$ctglpl1." - ".$ctglpl2.")";
+                        else
+                            $ntglpilih=$nbln1." s/d. ".$nbln2;
+                    }else{
+                        $ntglpilih=$ctglpl;
+                    }
+                    
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$ceklisnya</td>";
@@ -421,8 +441,8 @@ echo "</div>";
                     echo "<td nowrap>$pnmkaryawan</td>";
                     echo "<td nowrap>$pnmjenis</td>";
                     echo "<td nowrap>$pkeperluan</td>";
-                    echo "<td >$ctglpl</td>";
-                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td >$ntglpilih</td>";
+                    echo "<td nowrap>$pstsapvoleh</td>";
                     echo "</tr>";
                     
                     

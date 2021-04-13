@@ -108,7 +108,7 @@
                 $nats3=$row0['atasan3'];
                 $ntglats3=$row0['tgl_atasan3'];
                 $nats4=$row0['atasan4'];
-                $ntglats4=$row0['tgl_atasan5'];
+                $ntglats4=$row0['tgl_atasan4'];
                 $nats5=$row0['atasan5'];
                 $ntglats5=$row0['tgl_atasan5'];
                 

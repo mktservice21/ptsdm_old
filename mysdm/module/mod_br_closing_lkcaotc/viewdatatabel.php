@@ -285,7 +285,7 @@
                         $nnodiv_br="";
                         $niddanabank="";
                         $query = "select idinput, nodivisi from dbmaster.t_suratdana_br WHERE IFNULL(stsnonaktif,'') <> 'Y' AND divisi ='OTC' 
-                            AND CONCAT(kodeid,subkode)='221' AND DATE_FORMAT(tglf,'%Y%m')='$bulan'";
+                            AND CONCAT(kodeid,subkode)='221' AND DATE_FORMAT(tglf,'%Y%m')='$bulan' AND IFNULL(jenis_rpt,'')<>'C'";
                         $tampil=mysqli_query($cnit, $query);
                         $ketemu= mysqli_num_rows($tampil);
                         if ($ketemu>0){

@@ -664,4 +664,11 @@
     $_SESSION['FCUTIKRY']="";
     $_SESSION['FCUTITGL01']="";
     $_SESSION['FCUTITGL02']="";
+    
+    
+    //APPROVE CUTI
+    $_SESSION['APVCUTISTS']="";
+    $_SESSION['APVCUTIBLN1']="";
+    $_SESSION['APVCUTIBLN2']="";
+    $_SESSION['APVCUTIAPVBY']="";
 ?>

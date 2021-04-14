@@ -35,16 +35,27 @@
     $myperiode1 = date("d/m/Y", strtotime($tgl01));
     $myperiode2 = date("d/m/Y", strtotime($tgl02));
 
+    $filterregion="";
+    if (!empty($_POST['chkbox_region'])){
+        $fregion=$_POST['chkbox_region'];
+        $filterregion=PilCekBox($fregion);
+    }
+    if (empty($filterregion)) $filterregion="('')";
+    
     $filtercab=('');
     if (!empty($_POST['chkbox_cabangdaerah'])){
         $filtercab=$_POST['chkbox_cabangdaerah'];
         $filtercab=PilCekBox($filtercab);
     }
+    $filtercab=" and IFNULL(idcabang,'') in $filtercab ";
+    /*
     $pilcabkososng = (int)strpos($filtercab, "tanpa_cabang");
     if ( (int)$pilcabkososng>0 )
         $filtercab=" and (idcabang in $filtercab OR ifnull(idcabang,'')='')";
     else
         $filtercab=" and idcabang in $filtercab ";
+     * 
+     */
     
     $filterkode=" ('700-01-04', '700-02-04', '700-04-04', '700-01-03', '700-02-03', '700-04-03') ";
     
@@ -61,6 +72,7 @@
     $tmp10 =" dbtemp.tmpbrrealdaerah10_".$puserid."_$now ";
     $tmp11 =" dbtemp.tmpbrrealdaerah11_".$puserid."_$now ";
     $tmp12 =" dbtemp.tmpbrrealdaerah12_".$puserid."_$now ";
+    $tmp13 =" dbtemp.tmpbrrealdaerah13_".$puserid."_$now ";
     
     
     $query = "select brId, noslip, icabangid, idcabang, tgl, tgltrans, divprodid, COA4, kode, realisasi1, "
@@ -76,7 +88,28 @@
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        
+    
+    //$query = "create TEMPORARY table $tmp13 (select * from $tmp01)"; 
+    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    //cari daerah kosong
+    $query = "INSERT INTO $tmp01 (brId, noslip, icabangid, idcabang, tgl, tgltrans, divprodid, COA4, kode, realisasi1, "
+            . " jumlah, jumlah1, jumlah_asli, jumlah1_asli, "
+            . " aktivitas1, aktivitas2, dokterId, dokter, karyawanId, ccyId, tgltrm, lampiran, ca, "
+            . " dpp, ppn_rp, pph_rp, tgl_fp, nobukti)"
+            . " select brId, noslip, icabangid, idcabang, tgl, tgltrans, divprodid, COA4, kode, realisasi1, "
+            . " jumlah, jumlah1, jumlah jumlah_asli, jumlah1 as jumlah1_asli, "
+            . " aktivitas1, aktivitas2, dokterId, dokter, karyawanId, ccyId, tgltrm, lampiran, ca, "
+            . " dpp, ppn_rp, pph_rp, tgl_fp, CAST('' as CHAR(20)) as nobukti "
+            . " from hrd.br0 WHERE IFNULL(batal,'')<>'Y' AND "
+            . " brId NOT IN (select DISTINCT IFNULL(brId,'') FROM hrd.br0_reject) AND "
+            . " tgltrans BETWEEN '$pperiode1' AND '$pperiode2' ";
+    $query .=" AND IFNULL(kode,'') IN $filterkode and IFNULL(idcabang,'')='' ";
+    $query .=" AND icabangid IN (select distinct ifnull(iCabangId,'') FROM mkt.icabang WHERE region in $filterregion) ";
+    if (!empty($pdivisipil)) $query .=" AND divprodid='$pdivisipil' ";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
     
         $query = "CREATE INDEX `norm1` ON $tmp01 (brId,dokterId)";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }        
@@ -93,9 +126,39 @@
                     . " a.tgltransfersby BETWEEN '$pperiode1' AND '$pperiode2' ";
             $query .=" AND IFNULL(kode,'') IN $filterkode ";
             if (!empty($pdivisipil)) $query .=" AND b.divprodid='$pdivisipil' ";
+            
             $query = "create TEMPORARY table $tmp02 ($query)"; 
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            
+            //cari daerah kosong via surabaya
+            $query = "INSERT INTO $tmp02 (brId, noslip, icabangid, idcabang, tgl, tgltrans, divprodid, "
+                    . " COA4, kode, realisasi1, jumlah, jumlah1, jumlah_asli, jumlah1_asli, "
+                    . " aktivitas1, aktivitas2, dokterId, dokter, karyawanId, ccyId, tgltrm, lampiran, ca, "
+                    . " dpp, ppn_rp, pph_rp, tgl_fp, "
+                    . " nobukti) "
+                    . " select a.bridinput brId, b.noslip, b.icabangid, b.idcabang, b.tgl, a.tgltransfersby tgltrans, b.divprodid, "
+                    . " b.COA4, b.kode, b.realisasi1, a.jumlah jumlah, a.jumlah jumlah1, a.jumlah jumlah_asli, a.jumlah as jumlah1_asli, "
+                    . " b.aktivitas1, b.aktivitas2, b.dokterId, b.dokter, b.karyawanId, b.ccyId, b.tgltrm, b.lampiran, b.ca, "
+                    . " b.dpp, b.ppn_rp, b.pph_rp, b.tgl_fp, "
+                    . " a.nobukti "
+                    . " from dbmaster.t_br0_via_sby a JOIN hrd.br0 b on a.bridinput=b.brId "
+                    . " WHERE IFNULL(b.batal,'')<>'Y' AND "
+                    . " a.bridinput NOT IN (select DISTINCT IFNULL(brId,'') FROM hrd.br0_reject) AND "
+                    . " a.tgltransfersby BETWEEN '$pperiode1' AND '$pperiode2' ";
+            $query .=" AND IFNULL(kode,'') IN $filterkode and IFNULL(idcabang,'')='' ";
+            $query .=" AND b.icabangid IN (select distinct ifnull(iCabangId,'') FROM mkt.icabang WHERE region in $filterregion) ";
+            if (!empty($pdivisipil)) $query .=" AND b.divprodid='$pdivisipil' ";
+            
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            
+            
+            
+            
+            
             
             $query = "CREATE INDEX `norm1` ON $tmp02 (brId,dokterId)";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }        
@@ -620,5 +683,6 @@ hapusdata:
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp10");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp11");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp12");
+    mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp13");
     mysqli_close($cnmy);
 ?>

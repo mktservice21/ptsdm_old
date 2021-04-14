@@ -80,7 +80,7 @@ session_start();
     $query .=" AND ( (b.tanggal BETWEEN '$pbulan1' AND '$pbulan2') "
             . " OR ( (a.bulan1 BETWEEN '$pbulan1' AND '$pbulan2') OR (a.bulan2 BETWEEN '$pbulan1' AND '$pbulan2') ) "
             . " OR (a.tglinput BETWEEN '$pbulan1' AND '$pbulan2') "
-            . " )";
+            . " ) AND IFNULL(d.hrd,'')<>'N' ";
     
     if ($ppilihsts=="REJECT") {
         $query .=" AND IFNULL(a.stsnonaktif,'')='Y' ";

@@ -395,7 +395,7 @@
                         $region="Barat";
                         $pnreg=$row2['region'];
                         if ($pnreg=="T") $region="Timur";
-                        if ($pnreg=="N") $region="Other";
+                        if ($pnreg=="N") $region="Other (inputan tidak pilih daerah)";
                         
                         echo "<tr style='font-weight: bold;'>";
                         echo "<td></td>";

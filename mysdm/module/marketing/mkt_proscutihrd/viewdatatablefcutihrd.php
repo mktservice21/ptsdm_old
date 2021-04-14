@@ -73,8 +73,8 @@ session_start();
     $query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_karyawan, a.jabatanid, "
             . " a.id_jenis, d.nama_jenis, a.keperluan, a.bulan1, a.bulan2, "
             . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, atasan5, "
-            . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5, a.hrd_user, a.hrd_date FROM hrd.t_cuti0 as a "
-            . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid"
+            . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5, a.hrd_user, a.hrd_date, a.keterangan FROM hrd.t_cuti0 as a "
+            . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid "
             . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis "
             . " WHERE 1=1 ";
     $query .=" AND ( (b.tanggal BETWEEN '$pbulan1' AND '$pbulan2') "
@@ -187,7 +187,7 @@ session_start();
         
         $.ajax({
             type:"post",
-            url:"module/marketing/mkt_apvcutieth/aksi_apvcutieth.php?module="+module+"&idmenu="+idmenu+"&act="+ket,
+            url:"module/marketing/mkt_proscutihrd/aksi_proscutihrd.php?module="+module+"&idmenu="+idmenu+"&act="+ket,
             data:"ket=unapprove"+"&unobr="+allnobr+"&ukaryawan="+ekaryawan+"&ketrejpen="+txt,
             success:function(data){
                 pilihData('unapprove');
@@ -245,7 +245,7 @@ session_start();
         
         $.ajax({
             type:"post",
-            url:"module/marketing/mkt_apvcutieth/aksi_apvcutieth.php?module="+module+"&idmenu="+idmenu+"&act="+ket,
+            url:"module/marketing/mkt_proscutihrd/aksi_proscutihrd.php?module="+module+"&idmenu="+idmenu+"&act="+ket,
             data:"ket=unapprove"+"&unobr="+allnobr+"&ukaryawan="+ekaryawan+"&ketrejpen="+txt,
             success:function(data){
                 pilihData('approve');
@@ -272,7 +272,7 @@ echo "</div>";
 ?>
 <form method='POST' action='<?PHP echo "?module='$pmodule'&act=$pact&idmenu=$pidmenu"; ?>' id='d-form2' name='form2' data-parsley-validate class='form-horizontal form-label-left'>
 
-    <div class='x_content'>
+    <div class='x_content' style="overflow-x:auto; max-height:500px">
         
         <?PHP
         $pchkall = "<input type='checkbox' id='chkbtnbr' name='chkbtnbr' value='deselect' onClick=\"SelAllCheckBox('chkbtnbr', 'chkbox_br[]')\" checked/>";
@@ -290,7 +290,12 @@ echo "</div>";
                     <th width='50px'>Jenis</th>
                     <th width='50px'>Keperluan</th>
                     <th width='200px'>Periode</th>
-                    <th width='50px'>Satus Approve</th>
+                    <?PHP if ($ppilihsts=="REJECT") { 
+                        echo "<th width='50px'>Keterangan</th>";
+                    }else{
+                        echo "<th width='50px'>Satus Approve</th>";
+                    }
+                    ?>
                 </tr>
             </thead>
             <tbody>
@@ -305,6 +310,7 @@ echo "</div>";
                     $pnmjenis=$row1['nama_jenis'];
                     $pkeperluan=$row1['keperluan'];
                     $pnjbt=$row1['jabatanid'];
+                    $pketerangan=$row1['keterangan'];
 					
                     $nbln1=$row1['bulan1'];
                     $nbln2=$row1['bulan2'];
@@ -387,7 +393,7 @@ echo "</div>";
                     if ($ppilihsts=="REJECT") {
                         $ceklisnya="";
                         $print="";
-                        $pstsapvoleh="";
+                        $pstsapvoleh=$pketerangan;
                     }
                     
                     if ($pidjenis=="02") {

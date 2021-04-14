@@ -315,61 +315,68 @@
                                                 <select class='form-control' name='cb_cabang' id='cb_cabang' onchange="ShowDataArea()">
                                                     <?PHP
 													
-													if ($_SESSION['IDCARD']=="0000000175") {
-														echo "<option value=''>--Pilih--</option>";
-													}else{
-														$query_cb = "select iCabangId, nama, aktif from sls.icabang where 1=1 ";
-														if(!empty($pfilterregionpilih)) $query_cb .=" AND region IN $pfilterregionpilih ";
-														
-                                                                                                                if ($pmygroupid=="24" or $pmygroupid=="1") {
-                                                                                                                }else{
-                                                                                                                    if (!empty($pfiltercabpilih)) {
-                                                                                                                            if ($pmyjabatanid=="15" OR $pmyjabatanid=="38" OR $pmyjabatanid=="39") $query_cb .=" AND iCabangId IN $pfiltercabpilih ";
-                                                                                                                    }
-														}
-														$query_aktif .=$query_cb." AND aktif='Y' ";
-														$query_aktif .=" order by aktif DESC, nama";
-														$tampil = mysqli_query($cnms, $query_aktif);
-														while ($rx= mysqli_fetch_array($tampil)) {
-															$nidcab=$rx['iCabangId'];
-															$nnmcab=$rx['nama'];
-															$nnmaktif=$rx['aktif'];
-															
-															$namaaktif="Aktif";
-															if ($nnmaktif!="Y") $namaaktif="Non Aktif";
-															
-															if ($pidcabangpil==$nidcab)
-																echo "<option value='$nidcab' selected>$nnmcab</option>";
-															else
-																echo "<option value='$nidcab'>$nnmcab</option>";
-														}
-														
-														
-														$query_non .=$query_cb." AND IFNULL(aktif,'')<>'Y' ";
-														$query_non .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
-														$query_non .=" order by aktif DESC, nama";
-														$tampil = mysqli_query($cnms, $query_non);
-														$ketemunon=mysqli_num_rows($tampil);
-														if ($ketemunon>0) {
-															echo "<option value='NONAKTIFPL'></option>";
-															echo "<option value='NONAKTIFPL'>-- Non Aktif --</option>";
-															while ($rx= mysqli_fetch_array($tampil)) {
-																$nidcab=$rx['iCabangId'];
-																$nnmcab=$rx['nama'];
-																$nnmaktif=$rx['aktif'];
+                                                    if ($_SESSION['IDCARD']=="0000000175") {
+                                                            echo "<option value=''>--Pilih--</option>";
+                                                    }else{
+                                                        $query_cb = "select iCabangId, nama, aktif from sls.icabang where 1=1 ";
+                                                        if ($pmyidcard=="0000000158" OR $pmyidcard=="0000002329" OR $pmyidcard=="0000000159" OR $pmyidcard=="0000002073") {
+                                                            if ($pmyidcard=="0000000158" OR $pmyidcard=="0000002329") $query_cb .=" AND region='B' ";
+                                                            elseif ($pmyidcard=="0000000159" OR $pmyidcard=="0000002073") $query_cb .=" AND region='T' ";
+                                                        }else{
+                                                            
+                                                            if(!empty($pfilterregionpilih)) $query_cb .=" AND region IN $pfilterregionpilih ";
 
-																$namaaktif="Aktif";
-																if ($nnmaktif!="Y") $namaaktif="Non Aktif";
+                                                            if ($pmygroupid=="24" or $pmygroupid=="1") {
+                                                            }else{
+                                                                if (!empty($pfiltercabpilih)) {
+                                                                    if ($pmyjabatanid=="15" OR $pmyjabatanid=="38" OR $pmyjabatanid=="39") $query_cb .=" AND iCabangId IN $pfiltercabpilih ";
+                                                                }
+                                                            }
+                                                            
+                                                        }
+                                                        $query_aktif .=$query_cb." AND aktif='Y' ";
+                                                        $query_aktif .=" order by aktif DESC, nama";
+                                                        $tampil = mysqli_query($cnms, $query_aktif);
+                                                        while ($rx= mysqli_fetch_array($tampil)) {
+                                                            $nidcab=$rx['iCabangId'];
+                                                            $nnmcab=$rx['nama'];
+                                                            $nnmaktif=$rx['aktif'];
 
-																if ($pidcabangpil==$nidcab)
-																	echo "<option value='$nidcab' selected>$nnmcab</option>";
-																else
-																	echo "<option value='$nidcab'>$nnmcab</option>";
-															}
-														}
-													
-													
-													}
+                                                            $namaaktif="Aktif";
+                                                            if ($nnmaktif!="Y") $namaaktif="Non Aktif";
+
+                                                            if ($pidcabangpil==$nidcab)
+                                                                echo "<option value='$nidcab' selected>$nnmcab</option>";
+                                                            else
+                                                                echo "<option value='$nidcab'>$nnmcab</option>";
+                                                        }
+
+
+                                                        $query_non .=$query_cb." AND IFNULL(aktif,'')<>'Y' ";
+                                                        $query_non .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
+                                                        $query_non .=" order by aktif DESC, nama";
+                                                        $tampil = mysqli_query($cnms, $query_non);
+                                                        $ketemunon=mysqli_num_rows($tampil);
+                                                        if ($ketemunon>0) {
+                                                            echo "<option value='NONAKTIFPL'></option>";
+                                                            echo "<option value='NONAKTIFPL'>-- Non Aktif --</option>";
+                                                            while ($rx= mysqli_fetch_array($tampil)) {
+                                                                $nidcab=$rx['iCabangId'];
+                                                                $nnmcab=$rx['nama'];
+                                                                $nnmaktif=$rx['aktif'];
+
+                                                                $namaaktif="Aktif";
+                                                                if ($nnmaktif!="Y") $namaaktif="Non Aktif";
+
+                                                                if ($pidcabangpil==$nidcab)
+                                                                    echo "<option value='$nidcab' selected>$nnmcab</option>";
+                                                                else
+                                                                    echo "<option value='$nidcab'>$nnmcab</option>";
+                                                            }
+                                                        }
+
+
+                                                    }
                                                     
                                                     /*
                                                     if ($pmyjabatanid!="15" AND $pmyjabatanid!="10" AND $pmyjabatanid!="18" AND $pmyjabatanid!="08")  echo "<option value=''>-- Pilih --</option>";
@@ -597,6 +604,10 @@
                 
                 
                 <script>
+                    $(document).ready(function() {
+                        ShowDataArea();
+                    } );
+                    
                     function ShowDataArea() {
                         var ecabid = document.getElementById("cb_cabang").value;
                         var txtcab = document.getElementById("txt_cabang").value;

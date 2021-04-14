@@ -54,6 +54,7 @@
     
     
     $picardid=$_SESSION['IDCARD'];
+    $fkaryawan=$_SESSION['IDCARD'];
     $puserid=$_SESSION['USERID'];
 
     $now=date("mdYhis");
@@ -80,7 +81,15 @@
                 . " brId NOT IN (select DISTINCT IFNULL(brId,'') FROM hrd.br0_reject) AND "
                 . " DATE_FORMAT(tgltrans,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' ";
         $query .=" AND IFNULL(kode,'') IN $filterkode ";
-
+        
+        if ($fkaryawan=="0000000158" OR $fkaryawan=="0000002329" OR $fkaryawan=="0000000159" OR $fkaryawan=="0000002073") {
+            if ($fkaryawan=="0000000158" OR $fkaryawan=="0000002329") {
+                $query .=" AND icabangid IN (select distinct ifnull(iCabangId,'') FROM mkt.icabang WHERE region='B') ";
+            }else{
+                $query .=" AND icabangid IN (select distinct ifnull(iCabangId,'') FROM mkt.icabang WHERE region='T') ";
+            }
+        }
+        
         $query = "create TEMPORARY table $tmp01 ($query)"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -100,6 +109,14 @@
                     . " DATE_FORMAT(a.tgltransfersby,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' ";
             $query .=" AND IFNULL(kode,'') IN $filterkode ";
             
+            if ($fkaryawan=="0000000158" OR $fkaryawan=="0000002329" OR $fkaryawan=="0000000159" OR $fkaryawan=="0000002073") {
+                if ($fkaryawan=="0000000158" OR $fkaryawan=="0000002329") {
+                    $query .=" AND b.icabangid IN (select distinct ifnull(iCabangId,'') FROM mkt.icabang WHERE region='B') ";
+                }else{
+                    $query .=" AND b.icabangid IN (select distinct ifnull(iCabangId,'') FROM mkt.icabang WHERE region='T') ";
+                }
+            }
+        
             $query = "create TEMPORARY table $tmp02 ($query)"; 
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

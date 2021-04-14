@@ -11,7 +11,7 @@ session_start();
     ini_set('max_execution_time', 0);
     
     
-    include "../../config/koneksimysqli.php";
+    include "../../../config/koneksimysqli.php";
     
     $module=$_GET['module'];
     $idmenu=$_GET['idmenu'];

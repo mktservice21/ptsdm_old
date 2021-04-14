@@ -122,7 +122,7 @@ if (!empty($pdivisipil)) $query .=" AND divprodid='$pdivisipil' ";
         
 
     
-        $query = "select a.*, e.nama nama_karyawan, b.nama nama_cabang, c.nama nama_kode, f.NAMA4, g.region, g.nama nama_daerah, "
+        $query = "select a.*, e.nama nama_karyawan, b.nama nama_cabang, c.nama nama_kode, f.NAMA4, b.region, g.nama nama_daerah, "
                 . " CAST('' as CHAR(50)) as nodivisi, CAST('' as CHAR(50)) as nodivisi1, CAST('' as CHAR(50)) as nodivisi2 "
                 . " from $tmp01 a LEFT JOIN mkt.icabang b on a.icabangid=b.icabangid "
                 . " LEFT JOIN hrd.br_kode c on a.kode=c.kodeid "

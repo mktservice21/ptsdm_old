@@ -102,8 +102,20 @@
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_pilihtipe'>Region <span class='required'></span></label>
                                             <div class='col-xs-9'>
                                                 <div id="kotak-multi11">
-                                                    <input type=checkbox value='B' id="B" name=chkbox_region[] onclick="selectRegionCekBox('B');" checked> B - Barat<br/>
-                                                    <input type=checkbox value='T' id="T" name=chkbox_region[] onclick="selectRegionCekBox('T');" checked> T - Timur
+                                                    <?PHP
+                                                    if ($fkaryawan=="0000000158" OR $fkaryawan=="0000002329" OR $fkaryawan=="0000000159" OR $fkaryawan=="0000002073") {
+                                                        if ($fkaryawan=="0000000158" OR $fkaryawan=="0000002329") {
+                                                            echo "<input type=checkbox value='B' id='B' name='chkbox_region[]' onclick=\"selectRegionCekBox('B');\" checked> B - Barat<br/>";
+                                                            echo "<span hidden><input type=checkbox value='T' id='T' name='chkbox_region[]' onclick=\"selectRegionCekBox('T');\"> T - Timur</span>";
+                                                        }elseif ($fkaryawan=="0000000159" OR $fkaryawan=="0000002073"){
+                                                            echo "<span hidden><input type=checkbox value='B' id='B' name='chkbox_region[]' onclick=\"selectRegionCekBox('B');\" > B - Barat</span>";
+                                                            echo "<input type=checkbox value='T' id='T' name='chkbox_region[]' onclick=\"selectRegionCekBox('T');\" checked> T - Timur";
+                                                        }
+                                                    }else{
+                                                        echo "<input type=checkbox value='B' id='B' name='chkbox_region[]' onclick=\"selectRegionCekBox('B');\" checked> B - Barat<br/>";
+                                                        echo "<input type=checkbox value='T' id='T' name='chkbox_region[]' onclick=\"selectRegionCekBox('T');\" checked> T - Timur";
+                                                    }
+                                                    ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -113,7 +125,7 @@
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Daerah &nbsp;<input type="checkbox" id="chkbtndaerah" value="deselect" onClick="SelAllCheckBox('chkbtndaerah', 'chkbox_cabangdaerah[]')" checked/><span class='required'></span></label>
                                             <div class='col-xs-9'>
                                                 <div id="kotak-multi2" class="jarak">
-                                                    <input type="checkbox" name="chkbox_cabangdaerah[]" id="chkbox_cabangdaerah[]" value="tanpa_cabang" checked>_blank <br/>
+                                                    <!--<input type="checkbox" name="chkbox_cabangdaerah[]" id="chkbox_cabangdaerah[]" value="tanpa_cabang" checked>_blank <br/>-->
                                                 <?PHP
                                                     cBoxIsiCabangDaerah();
                                                 ?>
@@ -136,6 +148,18 @@
                 
                 
                 <script>
+                    $(document).ready(function() {
+                        <?PHP
+                        if ($fkaryawan=="0000000158" OR $fkaryawan=="0000002329" OR $fkaryawan=="0000000159" OR $fkaryawan=="0000002073") {
+                            if ($fkaryawan=="0000000158" OR $fkaryawan=="0000002329") {
+                                ?> selectRegionCekBox('B'); <?PHP
+                            }else{
+                                ?> selectRegionCekBox('T'); <?PHP
+                            }
+                        }
+                        ?>
+                    } );
+                    
                     function SelAllCheckBox(nmbuton, data){
                         var checkboxes = document.getElementsByName(data);
                         var button = document.getElementById(nmbuton);

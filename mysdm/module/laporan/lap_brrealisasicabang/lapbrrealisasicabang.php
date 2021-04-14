@@ -1,6 +1,6 @@
 <div class="">
 
-    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Realisasi BR Ethical Per Cabang</h3></div></div><div class="clearfix"></div>
+    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Realisasi BR (DCC/DSS) Ethical Per Cabang</h3></div></div><div class="clearfix"></div>
     <!--row-->
     <div class="row">
         <?php
@@ -110,7 +110,7 @@
                                         
                                         
                                         <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Daerah &nbsp;<input type="checkbox" id="chkbtncabang" value="deselect" onClick="SelAllCheckBox('chkbtncabang', 'chkbox_cabang[]')" checked/><span class='required'></span></label>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang &nbsp;<input type="checkbox" id="chkbtncabang" value="deselect" onClick="SelAllCheckBox('chkbtncabang', 'chkbox_cabang[]')" checked/><span class='required'></span></label>
                                             <div class='col-xs-9'>
                                                 <div id="kotak-multi2" class="jarak">
                                                     <input type="checkbox" name="chkbox_cabang[]" id="chkbox_cabang[]" value="tanpa_cabang" checked>_blank <br/>

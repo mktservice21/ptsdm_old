@@ -286,6 +286,7 @@ echo "</div>";
                         onClick="SelAllCheckBox('chkbtnbr', 'chkbox_br[]')" />
                     </th>
                     <th width='50px'>&nbsp;</th>
+                    <th width='50px'>Tgl. Input</th>
                     <th width='50px'>Karyawan</th>
                     <th width='50px'>Jenis</th>
                     <th width='50px'>Keperluan</th>
@@ -305,13 +306,16 @@ echo "</div>";
                 $tampil1= mysqli_query($cnmy, $query);
                 while ($row1= mysqli_fetch_array($tampil1)) {
                     $pidcuti=$row1['idcuti'];
+                    $ptglinput=$row1['tglinput'];
                     $pnmkaryawan=$row1['nama_karyawan'];
                     $pidjenis=$row1['id_jenis'];
                     $pnmjenis=$row1['nama_jenis'];
                     $pkeperluan=$row1['keperluan'];
                     $pnjbt=$row1['jabatanid'];
                     $pketerangan=$row1['keterangan'];
-					
+		
+                    $ptglinput = date('d F Y H:i', strtotime($ptglinput));
+                    
                     $nbln1=$row1['bulan1'];
                     $nbln2=$row1['bulan2'];
                     
@@ -444,9 +448,10 @@ echo "</div>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$ceklisnya</td>";
                     echo "<td nowrap>$print</td>";
+                    echo "<td nowrap>$ptglinput</td>";
                     echo "<td nowrap>$pnmkaryawan</td>";
                     echo "<td nowrap>$pnmjenis</td>";
-                    echo "<td nowrap>$pkeperluan</td>";
+                    echo "<td >$pkeperluan</td>";
                     echo "<td >$ntglpilih</td>";
                     echo "<td nowrap>$pstsapvoleh</td>";
                     echo "</tr>";

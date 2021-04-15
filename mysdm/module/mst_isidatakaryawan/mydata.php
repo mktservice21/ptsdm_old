@@ -102,6 +102,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $pilihanjbtotc=false;
     if ($pnjabatanid=="06" OR $pnjabatanid=="07" OR $pnjabatanid=="09" OR $pnjabatanid=="11" OR $pnjabatanid=="12" OR $pnjabatanid=="13" OR $pnjabatanid=="14" OR $pnjabatanid=="16" OR $pnjabatanid=="17" OR $pnjabatanid=="37") {
+        if ($pnjabatanid=="06" AND $divisi=="OTC") $pilihanjbtotc=true;
     }else{
         if ($divisi=="OTC") {
             $pilihanjbtotc=true;

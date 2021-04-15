@@ -194,7 +194,7 @@ if ($pidact=="editdata"){
                                             echo "</select>";
                                         }else{
                                             echo "<input type='text' id='e_nmkaryawan' name='e_nmkaryawan' class='form-control col-md-7 col-xs-12' value='$pkaryawannm' Readonly>";
-                                            echo "<input type='hidden' id='e_idkaryawan' name='e_idkaryawan' class='form-control col-md-7 col-xs-12' value='$pkaryawanid;' Readonly>";
+                                            echo "<input type='hidden' id='e_idkaryawan' name='e_idkaryawan' class='form-control col-md-7 col-xs-12' value='$pkaryawanid' Readonly>";
                                         }
                                         ?>
                                     </div>

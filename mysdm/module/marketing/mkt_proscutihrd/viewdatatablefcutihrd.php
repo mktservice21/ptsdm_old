@@ -10,6 +10,7 @@ session_start();
     $pidgroup=$_SESSION['GROUP'];
     
     include "../../../config/koneksimysqli.php";
+    include "../../../config/fungsi_ubahget_id.php";
     
     //ini_set('display_errors', '0');
     date_default_timezone_set('Asia/Jakarta');
@@ -311,6 +312,7 @@ echo "</div>";
                 while ($row1= mysqli_fetch_array($tampil1)) {
                     $pidcuti=$row1['idcuti'];
                     $ptglinput=$row1['tglinput'];
+                    $pkryid=$row1['karyawanid'];
                     $pnmkaryawan=$row1['nama_karyawan'];
                     $pnmjbt=$row1['nama_jabatan'];
                     $pidjenis=$row1['id_jenis'];
@@ -351,13 +353,21 @@ echo "</div>";
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                         . "View</a>";
                     
+                    $pedit="";
+                    if ($pidjenis=="00") {
+                        if (empty($pnmkaryawan)) $pnmkaryawan=$pkryid;
+                        if ($pnmkaryawan=="ALLETH") $pnmkaryawan="All Ethical";
+                        $pidget=encodeString($pidcuti);
+                        $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
+                    }
+                    
                     $ceklisnya = "<input type='checkbox' value='$pidcuti' name='chkbox_br[]' id='chkbox_br[$pidcuti]' class='cekbr'>";
                     
                     
                     $pstsapvoleh="";
                     
                     if ($ppilihsts=="UNAPPROVE") {
-                        
+                        $pedit="";
                     }
                     
                     if ($ppilihsts=="APPROVE") {
@@ -400,6 +410,7 @@ echo "</div>";
                     
                     
                     if ($ppilihsts=="REJECT") {
+                        $pedit="";
                         $ceklisnya="";
                         $print="";
                         $pstsapvoleh=$pketerangan;
@@ -452,7 +463,7 @@ echo "</div>";
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$ceklisnya</td>";
-                    echo "<td nowrap>$print</td>";
+                    echo "<td nowrap>$print $pedit</td>";
                     echo "<td nowrap>$ptglinput</td>";
                     echo "<td nowrap>$pnmkaryawan</td>";
                     echo "<td nowrap>$pnmjbt</td>";

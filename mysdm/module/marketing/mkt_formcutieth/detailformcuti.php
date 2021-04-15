@@ -37,7 +37,7 @@
     
     
     $pid=$_GET['brid'];
-    $query ="select a.*, b.nama as nama_karyawan, c.nama_group, d.nama as nama_jabatan from hrd.t_cuti0 as a "
+    $query ="select a.*, b.nama as nama_karyawan, c.nama_jenis, c.nama_ket, d.nama as nama_jabatan from hrd.t_cuti0 as a "
             . " JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
             . " JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
             . " LEFT JOIN hrd.jabatan as d on a.jabatanid=d.jabatanId "
@@ -47,7 +47,8 @@
     $pkaryawanid=$row['karyawanid'];
     $pnamakry=$row['nama_karyawan'];
     $pidjenis=$row['id_jenis'];
-    $pnamajenis=$row['nama_group'];
+    $pnmjenis=$row['nama_jenis'];
+    $pnamajenis=$row['nama_ket'];
     $pnamajbt=$row['nama_jabatan'];
     $pkeperluan=$row['keperluan'];
     $pjabatanid=$row['jabatanid'];
@@ -55,6 +56,7 @@
     $pbln2=$row['bulan2'];
     $ptglinput=$row['tglinput'];
     
+    if (empty($pnamajenis)) $pnamajenis=$pnmjenis;
     
     if (empty($pjabatanid)) {
         $pjabatanid=$_SESSION['JABATANID'];

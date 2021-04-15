@@ -14,6 +14,9 @@
         exit;
     }
     
+    $hari_ini = date("Y-m-01");
+    $gblnini = date('Ym', strtotime($hari_ini));
+    
     $pidcard=$_SESSION['IDCARD'];
     $pidgroup=$_SESSION['GROUP'];
     
@@ -61,7 +64,7 @@
             . " jabatanid, tgl_atasan1, tgl_atasan2, tgl_atasan3, tgl_atasan4, validate, fin, tgl_fin, nama_karyawan ";
     $query .=" FROM dbmaster.t_brrutin0 WHERE IFNULL(stsnonaktif,'')<>'Y' AND "
             . " ( (tgl BETWEEN '$ptgl1' AND '$ptgl2') OR (bulan BETWEEN '$ptgl1' AND '$ptgl2') ) ";
-    $query .=" AND karyawanid='$pidcard' AND divisi='OTC' ";
+    $query .=" AND karyawanid='$pidcard' AND divisi='OTC' AND kode=1 ";
 
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -150,6 +153,8 @@
                     
                     $ptglinput= date("d/m/Y", strtotime($ptglinput));
                     $pperiode= date("M Y", strtotime($pperiode));
+                    $pmbln= date("Ym", strtotime($pperiode));
+                    
                     
                     $pper1= date("d/m/Y", strtotime($pper1));
                     $pper2= date("d/m/Y", strtotime($pper2));
@@ -196,6 +201,11 @@
                     }
                     
                     if (!empty($ptglfin)) {
+                        $pedit = "";
+                        $phapus = "";
+                    }
+                    
+                    if ($pmbln<$gblnini) {
                         $pedit = "";
                         $phapus = "";
                     }

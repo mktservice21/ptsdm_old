@@ -69,6 +69,7 @@
             if ($h_idmenu=="245") $h_nmmenu="Permintaan Dana Rutin";
             if ($h_idmenu=="254") $h_nmmenu="Outstanding LK/CA";
             if ($h_idmenu=="256") $h_nmmenu="Closing LK/CA";
+            if ($h_idmenu=="332") $h_nmmenu="Isi Biaya Rutin CHC";
             
             
             if ($h_idmenu=="203") $h_nmmenu="Permintaan Dana Inc.";

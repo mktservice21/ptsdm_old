@@ -70,12 +70,15 @@ session_start();
     
     
     
-    $query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_karyawan, a.jabatanid, "
+    $query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_karyawan, a.jabatanid, e.nama as nama_jabatan, "
             . " a.id_jenis, d.nama_jenis, a.keperluan, a.bulan1, a.bulan2, "
             . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, atasan5, "
-            . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5, a.hrd_user, a.hrd_date, a.keterangan FROM hrd.t_cuti0 as a "
-            . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid "
+            . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5, a.hrd_user, a.hrd_date, a.keterangan "
+            . " FROM hrd.t_cuti0 as a "
+            . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti "
+            . " LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid "
             . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis "
+            . " LEFT JOIN hrd.jabatan as e on a.jabatanid=e.jabatanId "
             . " WHERE 1=1 ";
     $query .=" AND ( (b.tanggal BETWEEN '$pbulan1' AND '$pbulan2') "
             . " OR ( (a.bulan1 BETWEEN '$pbulan1' AND '$pbulan2') OR (a.bulan2 BETWEEN '$pbulan1' AND '$pbulan2') ) "
@@ -288,6 +291,7 @@ echo "</div>";
                     <th width='50px'>&nbsp;</th>
                     <th width='50px'>Tgl. Input</th>
                     <th width='50px'>Karyawan</th>
+                    <th width='50px'>Jabatan</th>
                     <th width='50px'>Jenis</th>
                     <th width='50px'>Keperluan</th>
                     <th width='200px'>Periode</th>
@@ -302,12 +306,13 @@ echo "</div>";
             <tbody>
                 <?PHP
                 $no=1;
-                $query = "select * from $tmp01 order by idcuti";
+                $query = "select * from $tmp01 order by nama_karyawan, idcuti";
                 $tampil1= mysqli_query($cnmy, $query);
                 while ($row1= mysqli_fetch_array($tampil1)) {
                     $pidcuti=$row1['idcuti'];
                     $ptglinput=$row1['tglinput'];
                     $pnmkaryawan=$row1['nama_karyawan'];
+                    $pnmjbt=$row1['nama_jabatan'];
                     $pidjenis=$row1['id_jenis'];
                     $pnmjenis=$row1['nama_jenis'];
                     $pkeperluan=$row1['keperluan'];
@@ -450,6 +455,7 @@ echo "</div>";
                     echo "<td nowrap>$print</td>";
                     echo "<td nowrap>$ptglinput</td>";
                     echo "<td nowrap>$pnmkaryawan</td>";
+                    echo "<td nowrap>$pnmjbt</td>";
                     echo "<td nowrap>$pnmjenis</td>";
                     echo "<td >$pkeperluan</td>";
                     echo "<td >$ntglpilih</td>";

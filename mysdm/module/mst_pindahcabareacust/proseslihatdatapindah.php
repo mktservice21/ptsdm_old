@@ -122,7 +122,7 @@
     
     //cari nourut terakhir dari icust sesuai cabang
     $pnourut=0;
-    $query = "select max(icustid) as icustid from MKT.icust where icabangid='$pidcabang'";
+    $query = "select max(icustid) as icustid from MKT.icust";// where icabangid='$pidcabang'
     $tampil= mysqli_query($cnit, $query);
     $ketemu=mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {

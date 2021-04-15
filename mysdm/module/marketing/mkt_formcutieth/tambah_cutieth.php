@@ -299,7 +299,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                         <select class='soflow' name='cb_jeniscuti' id='cb_jeniscuti' onchange="ShowPeriode()">
                                             <?php
                                             
-                                            $query = "select id_jenis, nama_jenis From hrd.jenis_cuti order by id_jenis";
+                                            $query = "select id_jenis, nama_jenis From hrd.jenis_cuti WHERE IFNULL(aktif,'')='Y' AND IFNULL(publish,'')='Y' order by id_jenis";
                                             $tampilket= mysqli_query($cnmy, $query);
                                             while ($du= mysqli_fetch_array($tampilket)) {
                                                 $nidjns=$du['id_jenis'];

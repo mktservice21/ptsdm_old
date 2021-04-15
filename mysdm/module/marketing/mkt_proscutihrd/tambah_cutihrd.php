@@ -17,7 +17,7 @@ $hari_ini = date("Y-m-d");
 $tgl_pertama = date('F Y', strtotime($hari_ini));
 $tgl_kedua = date('F Y', strtotime('+1 month', strtotime($hari_ini)));
 
-
+$pidkaryawan="ALLETH";
 $pjeniscuti="01";//Tahunan
 $pkeperluan="";
 $ctglpilih="";
@@ -35,6 +35,7 @@ if ($pidact=="editdata"){
     $jmlrw0=mysqli_num_rows($edit);
     if ((INT)$jmlrw0>0) {
         $r    = mysqli_fetch_array($edit);
+        $pidkaryawan=$r['karyawanid'];
         $pjeniscuti=$r['id_jenis'];
         $pkeperluan=$r['keperluan'];
         $pbln1=$r['bulan1'];
@@ -142,6 +143,29 @@ $pnamajabatan=$nr['nama'];
                                         <select class='soflow' name='cb_karyawanid' id='cb_karyawanid' onchange="">
                                             <?php
                                             echo "<option value='ALLETH' selected>-- All Ethical --</option>";
+                                            /*
+                                            $query_kry = "select karyawanId as karyawanid, nama as nama From hrd.karyawan WHERE 1=1 ";
+                                            $query_kry .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
+                                            $query_kry .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                    . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                    . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                    . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                    . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                            $query_kry .=" ORDER BY nama";
+                                            
+                                            $tampilk= mysqli_query($cnmy, $query_kry);
+                                            while ($nrow= mysqli_fetch_array($tampilk)) {
+                                                $nidkry=$nrow['karyawanid'];
+                                                $nnmkry=$nrow['nama'];
+
+                                                if ($nidkry==$pidkaryawan)  
+                                                    echo "<option value='$nidkry' selected>$nnmkry</option>";
+                                                else
+                                                    echo "<option value='$nidkry'>$nnmkry</option>";
+
+                                            }
+                                             * 
+                                             */
                                             ?>
                                         </select>
                                     </div>
@@ -153,7 +177,8 @@ $pnamajabatan=$nr['nama'];
                                         <select class='soflow' name='cb_jeniscuti' id='cb_jeniscuti' onchange="ShowPeriode()">
                                             <?php
                                             
-                                            $query = "select id_jenis, nama_jenis From hrd.jenis_cuti WHERE IFNULL(aktif,'')='Y' AND IFNULL(publish,'')<>'Y' order by id_jenis";
+                                            $query = "select id_jenis, nama_jenis From hrd.jenis_cuti WHERE IFNULL(aktif,'')='Y' "
+                                                    . " AND IFNULL(publish,'')<>'Y' order by id_jenis";
                                             $tampilket= mysqli_query($cnmy, $query);
                                             while ($du= mysqli_fetch_array($tampilket)) {
                                                 $nidjns=$du['id_jenis'];

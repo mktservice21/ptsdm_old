@@ -65,10 +65,22 @@ if ($pmodule=="cekdatasudahada") {
     $bulan = "01-".str_replace('/', '-', $_POST['ubulan']);
     if ($_POST['ukode']==1) {
         $periode1= date("Y-m-d", strtotime($bulan));
-        $periode2= date("Y-m-t", strtotime($bulan));
+        $periode2= date("Y-m-15", strtotime($bulan));
     }elseif ($_POST['ukode']==2) {
-        $periode1= date("Y-m-01", strtotime($bulan));
-        $periode2= date("Y-m-t", strtotime($bulan));
+        include "../../config/koneksimysqli.php";
+        $pkry=$_POST['ukry'];
+        $pnbln= date("Ym", strtotime($bulan));
+        $query = "select idrutin from dbmaster.t_brrutin0 WHERE karyawanid='$pkry' AND DATE_FORMAT(bulan,'%Y%m')='$pnbln' AND kodeperiode='1'";
+        $tampil= mysqli_query($cnmy, $query);
+        $ketemu= mysqli_num_rows($tampil);
+        mysqli_close($cnmy);
+        if ((INT)$ketemu>0) {
+            $periode1= date("Y-m-16", strtotime($bulan));
+            $periode2= date("Y-m-t", strtotime($bulan));
+        }else{
+            $periode1= date("Y-m-01", strtotime($bulan));
+            $periode2= date("Y-m-t", strtotime($bulan));
+        }
     }
     $bln1=""; $bln2="";
     if (!empty($_POST['ukode'])) {

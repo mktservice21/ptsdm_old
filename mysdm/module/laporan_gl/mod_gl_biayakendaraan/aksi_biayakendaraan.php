@@ -52,6 +52,7 @@
 
 <body>
     <?PHP
+        $pidgroup=$_SESSION['GROUP'];
         include "config/koneksimysqli.php";
         include "config/fungsi_combo.php";
         $tgl01=$_POST['bulan1'];
@@ -124,7 +125,7 @@
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
             
-        $query = "select a.karyawanid, a.tglawal, a.nopol, b.merk, b.jenis, c.nama_jenis from dbmaster.t_kendaraan_pemakai a "
+        $query = "select a.karyawanid, a.tglawal, a.nopol, b.merk, b.jenis, c.nama_jenis, b.tahun from dbmaster.t_kendaraan_pemakai a "
                 . " LEFT JOIN dbmaster.t_kendaraan b on a.nopol=b.nopol "
                 . " LEFT JOIN dbmaster.t_kendaraan_jenis c on b.jenis=c.jenis";
         $query = "create TEMPORARY table $tmp07 ($query)";
@@ -149,6 +150,11 @@
                 . " IFNULL(b.stsnonaktif,'') <> 'Y' AND IFNULL(a.rptotal,'')<>0 AND "
                 . " a.nobrid IN ('01', '02', '03', '08', '', '09', '41', '21', '22', '23', '24') AND "
                 . " DATE_FORMAT(b.bulan,'%Y%m') BETWEEN '$periode1' AND '$periode2' ";
+        if ($pidgroup=="28") {
+            $query .=" AND IFNULL(b.divi,'') NOT IN ('OTC', 'CHC')";
+        }elseif ($pidgroup=="26") {
+            $query .=" AND IFNULL(b.divi,'') IN ('OTC', 'CHC')";
+        }
         $query = "create TEMPORARY table $tmp05 ($query)";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -163,10 +169,10 @@
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
-            $query = "ALTER table $tmp05 ADD COLUMN jenis VARCHAR(50), ADD COLUMN nama_merk VARCHAR(100)";
+            $query = "ALTER table $tmp05 ADD COLUMN jenis VARCHAR(50), ADD COLUMN nama_merk VARCHAR(100), ADD COLUMN tahun VARCHAR(10)";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-        $query = "select distinct karyawanid, DATE_FORMAT(tglawal,'%Y%m') bulan, nopol, nama_jenis, merk FROM $tmp07 order by 1,2";
+        $query = "select distinct karyawanid, DATE_FORMAT(tglawal,'%Y%m') bulan, nopol, nama_jenis, merk, tahun FROM $tmp07 order by 1,2";
         $tampil=mysqli_query($cnmy, $query);
         while ($nr= mysqli_fetch_array($tampil)) {
             $pikryid=$nr['karyawanid'];
@@ -174,9 +180,10 @@
             $pinopol=$nr['nopol'];
             $pidjenis=$nr['nama_jenis'];
             $pnmmerk=$nr['merk'];
+            $pntahun=$nr['tahun'];
             if (!empty($pinopol)) {
                 
-                $query = "UPDATE $tmp05 SET nopol='$pinopol', jenis='$pidjenis', nama_merk='$pnmmerk' WHERE DATE_FORMAT(bulan,'%Y%m')>='$pibln' AND karyawanid='$pikryid'";
+                $query = "UPDATE $tmp05 SET nopol='$pinopol', jenis='$pidjenis', nama_merk='$pnmmerk', tahun='$pntahun' WHERE DATE_FORMAT(bulan,'%Y%m')>='$pibln' AND karyawanid='$pikryid'";
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             }
         }
@@ -237,7 +244,7 @@
         // HAPUS SELAIN BENSIN PARKIT TOL SERVICE
         mysqli_query($cnmy, "DELETE FROM $tmp06 WHERE nobrid NOT IN ('01', '02', '03', '08')");
         
-        $query = "SELECT distinct karyawanid, nama_karyawan, nama_jabatan, IFNULL(nopol,'') as nopol, jenis, nama_merk FROM $tmp06";
+        $query = "SELECT distinct karyawanid, nama_karyawan, nama_jabatan, IFNULL(nopol,'') as nopol, jenis, nama_merk, tahun FROM $tmp06";
         $query = "create TEMPORARY table $tmp03 ($query)";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
@@ -433,6 +440,7 @@
             <th align="center">Cabang</th>
             <th align="center">No. POLISI</th>
             <th align="center">Jenis/Merk</th>
+            <th align="center">Tahun</th>
             <th align="center">%</th>
             <th align="center">BENSIN</th>
             <th align="center">%</th>
@@ -458,6 +466,7 @@
                 $pnmjabatan = $row['nama_jabatan'];
                 $pnopol = $row['nopol'];
                 $pnmjenis = $row['jenis'];
+                $pnthn = $row['tahun'];
                 $pnmmerk = $row['nama_merk'];
                 
                 $pbensin = $row['B2'];
@@ -494,6 +503,7 @@
                 echo "<td nowrap>$pnmcabang</td>";
                 echo "<td nowrap>$pnopol</td>";
                 echo "<td nowrap>$pnmjenis $pnmmerk</td>";
+                echo "<td nowrap>$pnthn</td>";
                 echo "<td nowrap align='right'>$ppersen1</td>";
                 echo "<td nowrap align='right'>$pbensin</td>";
                 echo "<td nowrap align='right'>$ppersen2</td>";
@@ -537,6 +547,7 @@
             }
             
             echo "<tr>";
+            echo "<td nowrap></td>";
             echo "<td nowrap></td>";
             echo "<td nowrap></td>";
             echo "<td nowrap></td>";

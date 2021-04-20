@@ -1,4 +1,7 @@
 <?PHP
+    //$target_dir="../../fileupload/202104/EP/eng_202104/";
+    //$pinsert=dbase_open($target_dir.'msbar.dbf',0);
+    
     $hari_ini = date("Y-m-d");
     $tgl_pertama = date('F Y', strtotime($hari_ini));
     if (!empty($_SESSION['MSTIMPPERTPIL'])) $tgl_pertama=$_SESSION['MSTIMPPERTPIL'];

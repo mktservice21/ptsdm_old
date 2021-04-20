@@ -167,6 +167,12 @@
 		}
         
         
+    }else{
+        $tgljakukannya=$_POST['bulan1'];
+        $tgljakukannya = date("Ym01", strtotime($tgljakukannya));
+        if ((double)$tgljakukannya>='20200701') {
+            $nnama_ss_mktdir=$nnama_ss_mktdir2;
+        }
     }
     
     

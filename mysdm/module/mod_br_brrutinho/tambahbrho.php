@@ -23,11 +23,6 @@ $tglhariini = getfield("select DATE_FORMAT(CURRENT_DATE(),'%d') as lcfields ");
 if ($tglhariini=="0") $tglhariini="";
 if (empty($tglhariini)) $tglhariini = date("d");
 
-//$ptgl1 = date('01/m/Y', strtotime($hari_ini));
-//$ptgl2 = date('t/m/Y', strtotime($hari_ini));
-$ptgl1 = date('01/m/Y', strtotime('-1 month', strtotime($hari_ini)));
-$ptgl2 = date('t/m/Y', strtotime('-1 month', strtotime($hari_ini)));
-
 $pidrutin="";
 $pkaryawanid=$_SESSION['IDCARD'];
 $pkaryawannm=$_SESSION['NAMALENGKAP'];
@@ -46,6 +41,18 @@ if (!empty($pfilterkrypilih)) $pfilterkrypilih="(".substr($pfilterkrypilih, 0, -
 else $pfilterkrypilih="('00XXX00')";
 
 
+//$ptgl1 = date('01/m/Y', strtotime($hari_ini));
+//$ptgl2 = date('t/m/Y', strtotime($hari_ini));
+$ptgl1 = date('01/m/Y', strtotime('-1 month', strtotime($hari_ini)));
+$ptgl2 = date('t/m/Y', strtotime('-1 month', strtotime($hari_ini)));
+
+$pnbln= date("Ym", strtotime($pbln));
+$query = "select idrutin from dbmaster.t_brrutin0 WHERE karyawanid='$pidcard' AND DATE_FORMAT(bulan,'%Y%m')='$pnbln' AND kodeperiode='1'";
+$tampilj= mysqli_query($cnmy, $query);
+$ketemuj= mysqli_num_rows($tampilj);
+if ((INT)$ketemuj>0) {
+    $ptgl1 = date('16/m/Y', strtotime('-1 month', strtotime($hari_ini)));
+}
 
 $pkdperiode="";
 $pselper0="";
@@ -178,7 +185,7 @@ if ($pidact=="editdata"){
                                         <?PHP
                                         if ($pidgroup=="50") {
                                             echo "<input type='hidden' id='e_nmkaryawan' name='e_nmkaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkaryawannm; ?>' Readonly>";
-                                            echo "<select class='form-control input-sm' id='e_idkaryawan' name='e_idkaryawan'>";
+                                            echo "<select class='form-control input-sm' id='e_idkaryawan' name='e_idkaryawan' onchange='GetKaryawanPilih()'>";
                                             $query = "select karyawanid as karyawanid, nama as nama FROM hrd.karyawan as a WHERE 1=1 "
                                                     . " AND ( karyawanid IN ('$pidcard', '$pkaryawanid') OR karyawanid IN $pfilterkrypilih )";
                                             $tampilk=mysqli_query($cnmy, $query);
@@ -510,7 +517,10 @@ if ($pidact=="editdata"){
         });
     });
 
-
+    function GetKaryawanPilih() {
+        showPeriode();
+    }
+    
     function showKodePeriode() {
         var ibulan = document.getElementById('e_bulan').value;
         $.ajax({
@@ -525,11 +535,12 @@ if ($pidact=="editdata"){
     function showPeriode() {
         var ikode = document.getElementById('e_periode').value;
         var ibulan = document.getElementById('e_bulan').value;
+        var ikry = document.getElementById('e_idkaryawan').value;
         
         $.ajax({
             type:"post",
             url:"module/mod_br_brrutinho/viewdatabrho.php?module=getperiode",
-            data:"ubulan="+ibulan+"&ukode="+ikode,
+            data:"ubulan="+ibulan+"&ukode="+ikode+"&ukry="+ikry,
             success:function(data){
                 var arr_date = data.split(",");
                 document.getElementById('e_periode01').value=arr_date[0];

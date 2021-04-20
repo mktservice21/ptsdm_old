@@ -169,6 +169,8 @@
         include 'module/lap_br_otcinputsby/otcinputsby.php';
     }elseif ($_GET['module']=='entrybrrutin'){
         include 'module/mod_br_brrutin/brrutin.php';
+    }elseif ($_GET['module']=='entrybrrutinethdiv'){
+        include 'module/mod_br_brrutindiveth/brrutindiveth.php';
         
     }elseif ($_GET['module']=='entrybrrutinotc'){
         include 'module/mod_br_brrutinotc/brrutinotc.php';
@@ -892,6 +894,8 @@
         include 'module/marketing/mkt_apvcutieth/apvcutieth.php';
     }elseif ($_GET['module']=='mktproscutihrd'){
         include 'module/marketing/mkt_proscutihrd/proscutihrd.php';
+    }elseif ($_GET['module']=='mktclosingcuti'){
+        include 'module/marketing/mkt_closingcutihrd/closingcutihrd.php';
         
 
     }else{

@@ -160,7 +160,7 @@
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
 
-	$query = "select * from $tmpbudgetreq01 order by tglrpsby,noslip";
+	$query = "select * from $tmpbudgetreq01 order by noslip, tglrpsby,tgltrans";
 	//$query = "select * from hrd.br_otc where brOtcId IN (select distinct ifnull(bridinput, '') bridinput FROM dbmaster.t_suratdana_br1 WHERE idinput='$pidspd') order by tglrpsby,noslip";//echo"$query";
         //echo $query;
 	$header_ = add_space('No Slip',20);

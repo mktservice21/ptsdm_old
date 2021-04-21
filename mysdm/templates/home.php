@@ -896,6 +896,8 @@
         include 'module/marketing/mkt_proscutihrd/proscutihrd.php';
     }elseif ($_GET['module']=='mktclosingcuti'){
         include 'module/marketing/mkt_closingcutihrd/closingcutihrd.php';
+    }elseif ($_GET['module']=='mktrptdatacuti'){
+        include 'module/marketing/mkt_rptdatacuti/rptdatacuti.php';
         
 
     }else{

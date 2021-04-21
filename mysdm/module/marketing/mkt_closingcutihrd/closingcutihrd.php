@@ -30,10 +30,58 @@
                         //pilihData(eapvpilih);
                     } );
 
+                    function ProsesClosingCuti(ket){
+                        var etahun=document.getElementById('e_tahun').value;
+
+                        document.getElementById('e_apvpilih').value=ket;
+
+                        var myurl = window.location;
+                        var urlku = new URL(myurl);
+                        var module = urlku.searchParams.get("module");
+                        var idmenu = urlku.searchParams.get("idmenu");
+                        var act = urlku.searchParams.get("act");
+                        
+                        //alert(ket);
+                        
+                        $.ajax({
+                            type:"post",
+                            url:"module/marketing/viewdatamkt.php?module=cekdataprosclssudahada",
+                            data:"eket="+ket+"&utahun="+etahun+"&uketapv="+ket,
+                            success:function(data){
+                                
+                                if (data=="sudahada") {
+                                    var cmt = confirm('Sudah Pernah Closing Data Cuti....\n\
+Apakah akan melakukan proses ulang...???');
+                                    if (cmt == false) {
+                                        return false;
+                                    }
+                                }else{
+                                    var cmt = confirm('Apakah akan melakukan proses...???');
+                                    if (cmt == false) {
+                                        return false;
+                                    }
+                                }
+                                
+                                //simpan data ke DB
+
+                                $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+                                $.ajax({
+                                    type:"post",
+                                    url:"module/marketing/mkt_closingcutihrd/aksi_closingcutihrd.php?module="+module+"&idmenu="+idmenu+"&act="+act,
+                                    data:"eket="+ket+"&utahun="+etahun+"&uketapv="+ket,
+                                    success:function(data){
+                                        $("#c-data").html(data);
+                                        $("#loading").html("");
+                                    }
+                                });
+                        
+                            }
+                        });
+                        
+                    }
+
                     function pilihData(ket){
-                        var etgl1=document.getElementById('tgl1').value;
-                        var etgl2=document.getElementById('tgl2').value;
-                        var ekaryawan=document.getElementById('cb_karyawan').value;
+                        var etahun=document.getElementById('e_tahun').value;
 
                         document.getElementById('e_apvpilih').value=ket;
 
@@ -50,19 +98,28 @@
                         $.ajax({
                             type:"post",
                             url:"module/marketing/mkt_closingcutihrd/viewdatatableclscuti.php?module="+module+"&idmenu="+idmenu+"&act="+act,
-                            data:"eket="+ket+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&ukaryawan="+ekaryawan+"&uketapv="+ket,
+                            data:"eket="+ket+"&utahun="+etahun+"&uketapv="+ket,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
                             }
                         });
                     }
-
+                    
                     function KosongkanData() {
                         $("#c-data").html("");
                     }
+                    
+                    
                 </script>
 
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        $('#thn01').on('change dp.change', function(e){
+                            KosongkanData();
+                        });
+                    });
+                </script>
 
                 <div class="">
 
@@ -130,7 +187,8 @@
                                      <div class='col-sm-3'>
                                         &nbsp;
                                         <div class="form-group">
-                                            <input onclick="pilihData('approve')" class='btn btn-warning btn-sm' type='button' name='buttonview1' value='Lihat Data'>
+                                            <input onclick="pilihData('lihatdata')" class='btn btn-warning btn-sm' type='button' name='buttonview1' value='Lihat Data'> &nbsp; &nbsp;
+                                            <input onclick="ProsesClosingCuti('prosesdatacuti')" class='btn btn-dark btn-sm' type='button' name='buttonview2' value='Proses Data'>
                                         </div>
                                     </div>
 
@@ -138,32 +196,37 @@
                                 </div>
                             </div>
 
+                            
 
                             <div id='loading'></div>
-                            <div id='c-data'>
-                                <div class='x_content'>
+                            <div class='col-md-12 col-sm-12 col-xs-12'>
+                                <div class='x_panel'>
+                                    
+                                    <div id='c-data'>
+                                        <div class='x_content'>
 
-                                    <table id='datatable' class='table table-striped table-bordered' width='100%'>
-                                        <thead>
-                                            <tr>
-                                                <th width='7px'>No</th>
-                                                <th width='10px'>
-                                                    <input type="checkbox" id="chkbtnbr" value="select" 
-                                                    onClick="SelAllCheckBox('chkbtnbr', 'chkbox_br[]')" />
-                                                </th>
-                                                <th width='50px'>&nbsp;</th>
-                                                <th width='50px'>Karyawan</th>
-                                                <th width='50px'>Jenis</th>
-                                                <th width='50px'>Keperluan</th>
-                                                <th width='200px'>Periode</th>
-                                                <th width='50px'>Satus Approve</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                                            <table id='datatable' class='table table-striped table-bordered' width='100%'>
+                                                <thead>
+                                                    <tr>
+                                                        <th width='5px'>No</th>
+                                                        <th width='50px'></th>
+                                                        <th width='20px'>Karyawan Id</th>
+                                                        <th width='30px'>Nama Karyawan</th>
+                                                        <th width='30px'>Jabatan</th>
+                                                        <th width='50px'>Tgl. Masuk</th>
+                                                        <th width='50px'>Jumlah</th>
+                                                        <th width='10px'>Cuti</th>
+                                                        <th width='30px'>Sisa Cuti</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
 
-                                        </tbody>
-                                    </table>
+                                                </tbody>
+                                            </table>
 
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
 

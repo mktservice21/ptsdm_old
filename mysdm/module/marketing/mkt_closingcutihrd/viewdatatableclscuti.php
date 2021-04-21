@@ -122,7 +122,7 @@ hapusdata:
                     <th width='30px'>Nama Karyawan</th>
                     <th width='30px'>Jabatan</th>
                     <th width='50px'>Tgl. Masuk</th>
-                    <th width='50px'>Masa Kerja (Tahun)</th>
+                    <th width='50px'>Masa Kerja</th>
                     <th width='50px'>Jenis Cuti</th>
                     <th width='50px'>Jumlah</th>
                     <th width='10px'>Cuti</th>

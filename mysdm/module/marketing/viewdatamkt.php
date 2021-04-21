@@ -352,7 +352,19 @@ if ($pmodule=="viewdatatanggal") {
     <?PHP
     }
     
+}elseif ($pmodule=="cekdataprosclssudahada") {
+    include "../../config/koneksimysqli.php";
+
+    $ptahun=$_POST['utahun'];
     
+    $query = "select karyawanid from hrd.karyawan_cuti_close WHERE tahun='$ptahun'";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        echo "sudahada"; mysqli_close($cnmy); exit;
+    }
+    
+    mysqli_close($cnmy);
 }
 
 ?>

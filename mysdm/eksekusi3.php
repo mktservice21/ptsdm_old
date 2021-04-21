@@ -637,6 +637,9 @@
 
     }elseif ($_GET['module']=='mktformcutieth'){
         include 'module/marketing/iviewdatadmkt.php';        
+    }elseif ($_GET['module']=='mktrptdatacuti'){
+        include 'module/marketing/mkt_rptdatacuti/aksi_rptdatacuti.php';
+
         
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';

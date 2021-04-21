@@ -573,6 +573,8 @@
         include 'module/ks_lihatks/aksi_lihatks.php';
     }elseif ($_GET['module']=='kslihatks'){
         include 'module/ks_lihatks/aksi_lihatks.php';
+    }elseif ($_GET['module']=='kslihatkslhtzz'){
+        include 'module/ks_lihatks/aksi_lihatks_br.php';
     }elseif ($_GET['module']=='ksmonitoringkiks'){
         include 'module/ks_monitorkiks/aksi_monitorkiks.php';
     }elseif ($_GET['module']=='ksmonitoringkikscab'){

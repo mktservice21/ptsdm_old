@@ -31,7 +31,7 @@ $ptahun=$_GET['utahun'];
 //FORMAT(realisasi1,2,'de_DE') as 
 // getting total number records without any search
 $sql = "select a.tahun, a.karyawanid, b.nama as nama_karyawan, a.id_jenis, c.nama_jenis, a.jabatanid, d.nama as nama_jabatan, a.skar, "
-        . " a.tglmasuk, a.tglkeluar, a.jml_thn, a.jumlah, a.jml_cuti, a.sisa_cuti FROM "
+        . " a.tglmasuk, a.tglkeluar, a.jml_thn, a.jml_bln, a.jumlah, a.jml_cuti, a.sisa_cuti FROM "
         . " hrd.karyawan_cuti_close as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid "
         . " LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
         . " LEFT JOIN hrd.jabatan as d on a.jabatanid=d.jabatanId "
@@ -69,6 +69,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $ptglmasuk=$row['tglmasuk'];
     $ptglkeluar=$row['tglkeluar'];
     $pthnmasakerja=$row['jml_thn'];
+    $pblnmasakerja=$row['jml_bln'];
     $pidjenis=$row['id_jenis'];
     $pnmjenis=$row['nama_jenis'];
     $njumlah=$row['jumlah'];
@@ -81,12 +82,18 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     if (!empty($ptglmasuk)) $ptglmasuk=date("d/m/Y", strtotime($ptglmasuk));
     if (!empty($ptglkeluar)) $ptglkeluar=date("d/m/Y", strtotime($ptglkeluar));
     
+    $pmasakerja="0";
+    if ((INT)$pthnmasakerja>0) $pmasakerja=$pthnmasakerja." tahun";
+    else{
+        if ((INT)$pblnmasakerja>0) $pmasakerja=$pblnmasakerja." bulan";
+    }
+    
     $nestedData[] = $no;
     $nestedData[] = $pkaryawanid;
     $nestedData[] = $pkaryawannm;
     $nestedData[] = $pjbtnm;
     $nestedData[] = $ptglmasuk;
-    $nestedData[] = $pthnmasakerja;
+    $nestedData[] = $pmasakerja;
     $nestedData[] = $pnmjenis;
     $nestedData[] = $njumlah;
     $nestedData[] = $njmlcuti;

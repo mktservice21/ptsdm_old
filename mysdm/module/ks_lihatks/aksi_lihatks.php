@@ -15,7 +15,10 @@ include("config/koneksimysqli.php");
 include "config/fungsi_combo.php";
 include "config/fungsi_sql.php";
 include("config/common.php");
+include "config/fungsi_ubahget_id.php";
 
+$pidgroup=$_SESSION['GROUP'];
+$pidjabatan=$_SESSION['JABATANID'];
 $puserid=$_SESSION['USERID'];
 $now=date("mdYhis");
 $tmp01 =" dbtemp.tmptariklhtks01_".$puserid."_$now ";
@@ -70,7 +73,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 
 
-$query = "select a.brid, a.tgl, DATE_FORMAT(tgl,'%Y-%m') as bulan, a.mrid, a.dokterid, a.jumlah, a.jumlah1 
+$query = "select a.brid, a.tgl, DATE_FORMAT(tgl,'%Y-%m') as bulan, a.mrid, a.dokterid, a.jumlah, a.jumlah1, a.aktivitas1, a.aktivitas2  
     from hrd.br0 as a JOIN hrd.br_kode as b on a.kode=b.kodeid 
     where a.mrid='$pkaryawanid' AND a.dokterid='$pdokterid' AND b.ks='Y' and IFNULL(a.batal,'')<>'Y' AND 
     IFNULL(a.retur,'')<>'Y' and a.brid not in (select distinct IFNULL(brid,'') from hrd.br0_reject)";
@@ -122,13 +125,33 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>
     <link rel="shortcut icon" href="images/icon.ico" />
     <style> .str{ mso-number-format:\@; } </style>
+    
+    <!-- Bootstrap -->
+    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    
+    <!-- Custom Theme Style -->
+    <link href="build/css/custom.min.css" rel="stylesheet">
+    
+    <style>
+    @media print
+    {    
+        .no-print, .no-print *
+        {
+            display: none !important;
+        }
+    }
+    </style>
 </HEAD>
 <script src="ks.js">
 </script>
 
-<BODY onload="initVar()">
-
-    <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+<BODY onload="initVar()" style="margin-left:10px; color:#000; background-color:#fff;">
+    
+    <div class='modal fade' id='myModal' role='dialog' class='no-print'></div>
+    <button onclick="topFunction()" id="myBtn" title="Go to top" class='no-print'>Top</button>
 
     <?PHP
 
@@ -406,11 +429,12 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 
                         //KI
-                        $query = "select tgl, sum(jumlah) as jumlahki from $tmp02 WHERE bulan='$nbulan' GROUP BY 1 order by 1";
+                        $query = "select tgl, brid, sum(jumlah) as jumlahki from $tmp02 WHERE bulan='$nbulan' GROUP BY 1,2 order by 1";
                         $tampil4=mysqli_query($cnmy, $query);
                         $ketemu4=mysqli_num_rows($tampil4);
                         if ((INT)$ketemu4>0) {
                             while ($row4=mysqli_fetch_array($tampil4)) {
+                                $pbridki=$row4['brid'];
                                 $ptglki=$row4['tgl'];
                                 $pjumlahki=$row4['jumlahki'];
 
@@ -422,11 +446,37 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
                                 //$pjumlahki = number_format($pjumlahki,0);
                                 $pjumlahki=number_format($pjumlahki,0,"","");
-
+                                
+                                $pidnoget=encodeString($pbridki);
+                                
+                                $pbolehlhtketbr=false;
+                                if ($pidgroup=="1" OR $pidgroup=="24") {
+                                    $pbolehlhtketbr=true;
+                                }else{
+                                    if ($pidjabatan=="08" OR $pidjabatan=="20" OR $pidjabatan=="05") {
+                                        $pbolehlhtketbr=true;
+                                    }else{
+                                        $pbolehlhtketbr=false;
+                                    }
+                                }
+                                
+                                $plihatket="KI";
+                                $pketdetail="";
+                                if ($pbolehlhtketbr==true) {
+                                    $plihatket="<a title='' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+                                        . "onClick=\"window.open('eksekusi3.php?module=kslihatkslhtzz&brid=$pidnoget&iprint=print',"
+                                        . "'Ratting','width=500,height=200,left=500,top=100,scrollbars=yes')\"> "
+                                        . "KI</a>";
+                                    
+                                    $pketdetail="<span id='spn_ki' class='no-print'><button type='button' class='btn btn-info btn-xs' data-toggle='modal' "
+                                            . " data-target='#myModal' onClick=\"LiatDetailBr('$pbridki')\">Detail</button></span>";
+                                }
+                                
+                    
                                 echo "<tr>";
                                 echo "<td><small>$ptglki</small></td>";  
                                 echo "<td><small><b>KI</b></small></td>";
-                                echo "<td><small>&nbsp;</small></td>";
+                                echo "<td><small>$pketdetail</small></td>";
                                 echo "<td><small>&nbsp;</small></td>";
                                 echo "<td align='right'><small>&nbsp;</small></td>";
                                 echo "<td align='right'><small>&nbsp;</small></td>";
@@ -500,6 +550,14 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 </BODY>
 
+    <!-- jQuery -->
+    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="build/js/custom.min.js"></script>
+    
     <style>
         #myBtn {
             display: none;
@@ -523,7 +581,32 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         }
 
     </style>
+    <style>
+        a {
+          color: #000;
+          text-decoration: none;
+        }
+    </style>
 
+    <style>
+        #tbltable {
+            border-collapse: collapse;
+        }
+        th {
+            font-size : 16px;
+            padding:5px;
+            background-color: #ccccff;
+        }
+        tr td {
+            font-size : 14px;
+        }
+        tr td {
+            padding : 3px;
+        }
+        tr:hover {background-color:#f5f5f5;}
+        thead tr:hover {background-color:#cccccc;}
+    </style>
+    
     <script>
         // SCROLL
         // When the user scrolls down 20px from the top of the document, show the button
@@ -543,7 +626,20 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         }
         // END SCROLL
     </script>
-
+    
+    
+    <script>
+        function LiatDetailBr(eid){
+            $.ajax({
+                type:"post",
+                url:"module/ks_lihatks/aksi_lihatks_br_mdl.php?module=viewbrdetail",
+                data:"uid="+eid,
+                success:function(data){
+                    $("#myModal").html(data);
+                }
+            });
+        }
+    </script>
 </HTML>
 
 <?PHP

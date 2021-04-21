@@ -50,15 +50,26 @@
                             success:function(data){
                                 
                                 if (data=="sudahada") {
-                                    var cmt = confirm('Sudah Pernah Closing Data Cuti....\n\
+                                    if (ket=="hapusprosescuti") {
+                                        var cmt = confirm('Apakah akan melakukan hapus data tahun '+etahun+' ...???');
+                                        if (cmt == false) {
+                                            return false;
+                                        }
+                                    }else{
+                                        var cmt = confirm('Tahun '+etahun+' Sudah Pernah Closing Data Cuti....\n\
 Apakah akan melakukan proses ulang...???');
-                                    if (cmt == false) {
-                                        return false;
+                                        if (cmt == false) {
+                                            return false;
+                                        }
                                     }
                                 }else{
-                                    var cmt = confirm('Apakah akan melakukan proses...???');
-                                    if (cmt == false) {
-                                        return false;
+                                    if (ket=="hapusprosescuti") {
+                                        alert('Tahun '+etahun+" Belum ada data yang diproses..."); return false;
+                                    }else{
+                                        var cmt = confirm('Apakah akan melakukan proses tahun '+etahun+' ...???');
+                                        if (cmt == false) {
+                                            return false;
+                                        }
                                     }
                                 }
                                 
@@ -184,11 +195,12 @@ Apakah akan melakukan proses ulang...???');
                                         </div>
                                     </div>
 
-                                     <div class='col-sm-3'>
+                                     <div class='col-sm-6'>
                                         &nbsp;
                                         <div class="form-group">
                                             <input onclick="pilihData('lihatdata')" class='btn btn-warning btn-sm' type='button' name='buttonview1' value='Lihat Data'> &nbsp; &nbsp;
-                                            <input onclick="ProsesClosingCuti('prosesdatacuti')" class='btn btn-dark btn-sm' type='button' name='buttonview2' value='Proses Data'>
+                                            <input onclick="ProsesClosingCuti('prosesdatacuti')" class='btn btn-dark btn-sm' type='button' name='buttonview2' value='Proses Data'> &nbsp; &nbsp;
+                                            <input onclick="ProsesClosingCuti('hapusprosescuti')" class='btn btn-danger btn-sm' type='button' name='buttonview2' value='Hapus Proses'> &nbsp; &nbsp;
                                         </div>
                                     </div>
 

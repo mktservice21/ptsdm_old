@@ -16,6 +16,7 @@
     $pkaryawanid=$_SESSION['IDCARD'];
     
     $ptahun=$_POST['utahun'];
+    $pketerangan=$_POST['uketapv'];
     
     $_SESSION['CLSCUTITHN']=$ptahun;
     
@@ -25,16 +26,29 @@
 
     include "../../../config/koneksimysqli.php";
     
-    $query = "CALL hrd.proses_cuti_tahunan('$ptahun')";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    if ($pketerangan=="hapusprosescuti") {
+        
+        $query = "DELETE FROM hrd.karyawan_cuti_close WHERE tahun='$ptahun'";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        echo "data berhasil dihapus"; goto berhasil;
+        
+    }elseif ($pketerangan=="prosesdatacuti") {
     
-    
-    $query = "UPDATE hrd.karyawan_cuti_close SET userid='$pkaryawanid' WHERE tahun='$ptahun'";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    echo "data berhasil diproses"; goto berhasil;
+        $query = "CALL hrd.proses_cuti_tahunan('$ptahun')";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+        $query = "UPDATE hrd.karyawan_cuti_close SET userid='$pkaryawanid' WHERE tahun='$ptahun'";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+        echo "data berhasil diproses"; goto berhasil;
+    }else{
+        echo "tidak ada aktivitas..."; goto berhasil;
+    }
 ?>
 
 

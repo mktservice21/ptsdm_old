@@ -20,7 +20,7 @@
             var module = urlku.searchParams.get("module");
             var idmenu = urlku.searchParams.get("idmenu");
             
-            document.getElementById("demo-form2").action = "module/mod_br_brrutinho/aksi_brrutinho.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
+            document.getElementById("demo-form2").action = "module/mod_br_brrutinhodivchc/aksi_brrutinhodivchc.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
             document.getElementById("demo-form2").submit();
             return 1;
         }

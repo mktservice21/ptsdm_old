@@ -16,7 +16,7 @@
     
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="title_left">
-            <h3>Approve Permintaan Dana Marketing Direktur</h3>
+            <h3>Approve Permintaan Dana By COO</h3>
         </div>
     </div>
     <div class="clearfix"></div>

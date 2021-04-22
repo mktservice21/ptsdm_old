@@ -266,6 +266,7 @@
                     $pnmuser = $row["nama_user"];
                     $pnodivisi = $row["nodivisi"];
                     $ppilpajak = $row["pajak"];
+                    $pbatal = $row["batal"];
                     
                     if ($ptgltrans=="0000-00-00") $ptgltrans="";
                     if ($ptgltrm=="0000-00-00") $ptgltrm="";
@@ -315,8 +316,15 @@
                     if ($pthnbr<2021) {
                         $phapus="";
                     }
+
+                    $pcolorbatal="";
+                    if ($pbatal=="Y") {
+                        $phapus="";
+                        $peditdata="";
+                        $pcolorbatal="style='color:red;'";
+                    }
                     
-                    echo "<tr>";
+                    echo "<tr $pcolorbatal>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$peditdata $ptpajak $phapus</td>";
                     echo "<td nowrap>$ntglbrpilih</td>";

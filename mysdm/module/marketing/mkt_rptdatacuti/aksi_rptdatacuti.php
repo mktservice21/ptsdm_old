@@ -28,11 +28,24 @@ $tmp06 =" dbtemp.tmprptcutikry06_".$puserid."_$now ";
 $tmp07 =" dbtemp.tmprptcutikry07_".$puserid."_$now ";
 
 
-$pkryid = $_POST['cb_karyawan']; 
-$nsjenisid = $_POST['cb_jenis']; 
+$pkryid = $_POST['cb_karyawan'];  
 $ptahun = $_POST['e_tahun'];
 $ptahunsebelum=(INT)$ptahun-1;
 $pnamajabatan="";
+
+$nsjenisid="";
+if (isset($_POST['chkbox_jenis'])) $nsjenisid = $_POST['chkbox_jenis'];
+
+$fjenisid="";
+if (!empty($nsjenisid)) {
+    foreach ($nsjenisid as $npidjns) {
+        //if (!empty($pbrandid)) {
+            $fjenisid .="'".$npidjns."',";
+        //}
+    }
+    if (!empty($fjenisid)) $fjenisid=" (".substr($fjenisid, 0, -1).") ";
+}
+
 
 //masa kerja
 $pthnsistem = date("Y");
@@ -62,7 +75,7 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 $query = "select distinct a.karyawanid, a.jabatanid, b.nama as nama_jabatan from hrd.karyawan_cuti_close as a "
         . " LEFT JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId WHERE a.tahun='$ptahunsebelum' ";
 if (!empty($pkryid)) $sql .=" AND a.karyawanid='$pkryid' ";
-if (!empty($nsjenisid)) $query .=" AND a.id_jenis='$nsjenisid' ";
+if (!empty($fjenisid)) $query .=" AND a.id_jenis IN $fjenisid ";
 $tampil= mysqli_query($cnmy, $query);
 $ketemu= mysqli_num_rows($tampil);
 if ((INT)$ketemu>0) {
@@ -75,7 +88,7 @@ if ((INT)$ketemu>0) {
 $query = "select DISTINCT a.*, c.potong_cuti FROM hrd.t_cuti0 as a "
         . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
         . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
-if (!empty($nsjenisid)) $query .=" AND a.id_jenis='$nsjenisid' ";
+if (!empty($fjenisid)) $query .=" AND a.id_jenis IN $fjenisid ";
 $query .=" AND ( (YEAR(b.tanggal) = '$ptahun') "
         . " OR (YEAR(a.bulan1) = '$ptahun') OR (YEAR(a.bulan2) = '$ptahun') "
         . " )";
@@ -149,7 +162,7 @@ $query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_kar
         . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid"
         . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis "
         . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' AND a.karyawanid='$pkryid' ";
-if (!empty($nsjenisid)) $query .=" AND a.id_jenis='$nsjenisid' ";
+if (!empty($fjenisid)) $query .=" AND a.id_jenis IN $fjenisid ";
 $query .=" AND ( (YEAR(b.tanggal) = '$ptahun') "
         . " OR (YEAR(a.bulan1) = '$ptahun') OR (YEAR(a.bulan2) = '$ptahun') "
         . " )";

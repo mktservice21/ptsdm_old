@@ -114,6 +114,25 @@ switch($pactpilih){
                 }
 
             }
+            
+            function SelAllCheckBox(nmbuton, data){
+                var checkboxes = document.getElementsByName(data);
+                var button = document.getElementById(nmbuton);
+
+                if(button.value == 'select'){
+                    for (var i in checkboxes){
+                        checkboxes[i].checked = 'FALSE';
+                    }
+                    button.value = 'deselect'
+                }else{
+                    for (var i in checkboxes){
+                        checkboxes[i].checked = '';
+                    }
+                    button.value = 'select';
+                }
+
+            }
+
         </script>
         
 
@@ -268,28 +287,26 @@ switch($pactpilih){
                                         <div class='form-group'>
                                             <div class='col-sm-12'>
                                                 <b>Jenis Cuti</b>
+                                                <input type="checkbox" id="chkbtnjenis" value="deselect" onClick="SelAllCheckBox('chkbtnjenis', 'chkbox_jenis[]')" checked/>
                                                 <div class="form-group">
-                                                    <select class='form-control' id="cb_jenis" name="cb_jenis" onchange="">
-                                                        <?PHP                                                  
-
-                                                            $nojm=1;
+                                                    <div id="kotak-multi3" class="jarak">
+                                                        <?PHP
                                                             $query_cb = "select id_jenis, nama_jenis "
                                                                     . " from hrd.jenis_cuti WHERE IFNULL(aktif,'')<>'N' ";
                                                             $query_cb .=" order by id_jenis, nama_jenis";
                                                             $tampil = mysqli_query($cnmy, $query_cb);
 
                                                             $ketemu= mysqli_num_rows($tampil);
-                                                            echo "<option value='' selected>-- Pilih --</option>";
                                                             $pketaktif=false;
                                                             while ($z= mysqli_fetch_array($tampil)) {
                                                                 $pidjenis=$z['id_jenis'];
                                                                 $pnmjenis=$z['nama_jenis'];
-
-                                                                echo "<option value='$pidjenis'>$pnmjenis</option>";
+                                                                
+                                                                echo "<input type=checkbox value='$pidjenis' name='chkbox_jenis[]' checked> $pnmjenis<br/>";
+                                                                
                                                             }
-
                                                         ?>
-                                                    </select>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

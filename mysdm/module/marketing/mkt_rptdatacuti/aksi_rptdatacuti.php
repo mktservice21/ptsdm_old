@@ -33,7 +33,15 @@ $nsjenisid = $_POST['cb_jenis'];
 $ptahun = $_POST['e_tahun'];
 $ptahunsebelum=(INT)$ptahun-1;
 $pnamajabatan="";
-    
+
+//masa kerja
+$pthnsistem = date("Y");
+$pmasakerja=date("Y-m-d");
+if ($ptahun!=$pthnsistem) {
+    $pmasakerja=$ptahun."-12-31";
+}
+
+
 $query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from hrd.karyawan as a 
     LEFT join hrd.jabatan as b on a.jabatanId=b.jabatanId 
     where a.karyawanid='$pkryid'";
@@ -43,13 +51,17 @@ $pnamakarywanpl=$rowk['nama'];
 $pnamajabatan=$rowk['nama_jabatan'];
 
 
-$sql = "select * from hrd.karyawan_cuti_close WHERE tahun='$ptahun' AND karyawanid='$pkryid'";
+$sql = "select a.*, b.potong_cuti from hrd.karyawan_cuti_close as a LEFT JOIN hrd.jenis_cuti as b "
+        . " on a.id_jenis=b.id_jenis WHERE a.tahun='$ptahunsebelum' ";
+if (!empty($pkryid)) $sql .=" AND a.karyawanid='$pkryid' ";
+
 $query = "create TEMPORARY table $tmp01 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "select distinct a.karyawanid, a.jabatanid, b.nama as nama_jabatan from hrd.karyawan_cuti_close as a "
-        . " JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId WHERE a.tahun='$ptahunsebelum' AND a.karyawanid='$pkryid' ";
+        . " LEFT JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId WHERE a.tahun='$ptahunsebelum' ";
+if (!empty($pkryid)) $sql .=" AND a.karyawanid='$pkryid' ";
 if (!empty($nsjenisid)) $query .=" AND a.id_jenis='$nsjenisid' ";
 $tampil= mysqli_query($cnmy, $query);
 $ketemu= mysqli_num_rows($tampil);
@@ -59,6 +71,76 @@ if ((INT)$ketemu>0) {
 }
 
 
+
+$query = "select DISTINCT a.*, c.potong_cuti FROM hrd.t_cuti0 as a "
+        . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
+        . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
+if (!empty($nsjenisid)) $query .=" AND a.id_jenis='$nsjenisid' ";
+$query .=" AND ( (YEAR(b.tanggal) = '$ptahun') "
+        . " OR (YEAR(a.bulan1) = '$ptahun') OR (YEAR(a.bulan2) = '$ptahun') "
+        . " )";
+if (!empty($pkryid)) $query .=" AND a.karyawanid='$pkryid' ";
+$query = "create TEMPORARY table $tmp02 ($query)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "select b.karyawanid, b.id_jenis, b.keperluan, b.potong_cuti, a.* from hrd.t_cuti1 as a JOIN $tmp02 as b on a.idcuti=b.idcuti ";
+$query = "create TEMPORARY table $tmp03 ($query)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "select distinct a.karyawanid, a.keperluan, a.id_jenis, b.tanggal from $tmp02 as a"
+        . " JOIN $tmp03 as b on a.idcuti=b.idcuti WHERE karyawanid='ALLETH'";
+$query = "create TEMPORARY table $tmp04 ($query)"; 
+mysqli_query($cnmy, $query);
+
+$query = "select a.*, b.nama as nama_karyawan, b.tglmasuk, b.tglkeluar, b.tglkeluar as tglmasakerja, "
+        . " c.nama as nama_jabatan, d.nama_jenis "
+        . " from $tmp02 as a"
+        . " LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
+        . " LEFT JOIN hrd.jabatan as c on a.jabatanid=c.jabatanId "
+        . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis ";
+$query = "create TEMPORARY table $tmp05 ($query)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "alter table $tmp05 add column jml_thn INT(4), add column jml_bln INT(4), add column jmlcutithn INT(4), add column jmlcutifree INT (4)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp05 SET tglmasakerja='$pmasakerja' WHERE IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00'";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp05 SET jml_thn=IFNULL(TIMESTAMPDIFF(YEAR, tglmasuk, tglmasakerja),0), jml_bln=IFNULL(TIMESTAMPDIFF(MONTH, tglmasuk, tglmasakerja),0)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp05 SET jmlcutithn='12' WHERE IFNULL(jml_thn,0)>=1";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp05 SET jmlcutithn=jml_bln WHERE IFNULL(jml_thn,0)=0 AND IFNULL(jml_bln,0)>1 AND IFNULL(jml_bln,0)<=12";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query ="SELECT id_jenis, dari, sampai, ifnull(free_cuti,0) as free_cuti FROM hrd.jenis_cuti_free_tambahan WHERE id_jenis='01' "
+        . " order by id_jenis, dari, sampai";
+$tampilk=mysqli_query($cnmy, $query);
+while ($rowk= mysqli_fetch_array($tampilk)) {
+    $lidjenis=$rowk['id_jenis'];
+    $ldari=$rowk['dari'];
+    $lsampai=$rowk['sampai'];
+    $lfreecuti=$rowk['free_cuti'];
+    
+    if ($lidjenis=="01") {
+        $query = "UPDATE $tmp05 SET jmlcutifree='$lfreecuti' WHERE "
+                . " ifnull(jml_thn,0)>='$ldari' AND ifnull(jml_thn,0)<='$lsampai'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    }
+}
+
+
+/*
+goto hapusdata;
+
 $query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_karyawan, a.jabatanid, "
         . " a.id_jenis, d.nama_jenis, a.keperluan, a.bulan1, a.bulan2, "
         . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, atasan5, "
@@ -66,7 +148,7 @@ $query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_kar
         . " FROM hrd.t_cuti0 as a "
         . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid"
         . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis "
-        . " WHERE a.karyawanid='$pkryid' ";
+        . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' AND a.karyawanid='$pkryid' ";
 if (!empty($nsjenisid)) $query .=" AND a.id_jenis='$nsjenisid' ";
 $query .=" AND ( (YEAR(b.tanggal) = '$ptahun') "
         . " OR (YEAR(a.bulan1) = '$ptahun') OR (YEAR(a.bulan2) = '$ptahun') "
@@ -74,7 +156,7 @@ $query .=" AND ( (YEAR(b.tanggal) = '$ptahun') "
 $query = "create TEMPORARY table $tmp02 ($query)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+*/    
     
 ?>
 
@@ -108,8 +190,8 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
     <?PHP
 
     echo "<b>Report Data Cuti/Izin/Up Country Ethical</b><br/>";
-    echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
-    echo "<b>Jabatan : $pnamajabatan</b><br/>";
+    //echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
+    //echo "<b>Jabatan : $pnamajabatan</b><br/>";
     echo "<b>Tahun : $ptahun</b><br/>";
     echo "<hr/>";
 
@@ -122,61 +204,209 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
         
         echo "<tr>";
             
-            echo "<th align='left'><small>Jenis</small></th>";
-            echo "<th align='left'><small>Keperluan</small></th>";
+            echo "<th align='left'><small>No</small></th>";
+            echo "<th align='left'><small>Nama Karyawan</small></th>";
+            echo "<th align='left'><small>Jabatan</small></th>";
+            echo "<th align='left'><small>Tgl. Masuk</small></th>";
+            echo "<th align='left'><small>Masa Kerja</small></th>";
+            echo "<th align='left'><small>Jenis Cuti</small></th>";
             echo "<th align='left'><small>Tanggal</small></th>";
+            echo "<th align='left'><small>Keperluan</small></th>";
             
         echo "</tr>";
         
-        $query = "select distinct idcuti, id_jenis, nama_jenis, keperluan, bulan1, bulan2 FROM $tmp02 ORDER BY tanggal, nama_jenis";
-        $tampil=mysqli_query($cnmy, $query);
-        while ($row= mysqli_fetch_array($tampil)) {
-            $pidcuti=$row['idcuti'];
-            $pidjenis=$row['id_jenis'];
-            $pnmjenis=$row['nama_jenis'];
-            $pkeperluan=$row['keperluan'];
-            $pbln1=$row['bulan1'];
-            $pbln2=$row['bulan2'];
+        $no=1;
+        $query = "select distinct karyawanid, nama_karyawan, jabatanid, nama_jabatan, tglmasuk, jml_thn, jml_bln, jmlcutithn, jml_thn, jmlcutifree FROM $tmp05 ORDER BY nama_karyawan";
+        $tampil0=mysqli_query($cnmy, $query);
+        while ($row0= mysqli_fetch_array($tampil0)) {
+            $pidkaryawan=$row0['karyawanid'];
+            $pnmkaryawan=$row0['nama_karyawan'];
+            $pnmjabatan=$row0['nama_jabatan'];
+            $ptglmasuk=$row0['tglmasuk'];
             
-            $pbln1= date("d F Y", strtotime($pbln1));
-            $pbln2= date("d F Y", strtotime($pbln2));
+            $pmskrjathn=$row0['jml_thn'];
+            $pmskrjabln=$row0['jml_bln'];
+            $pjmlcutiskr=$row0['jmlcutithn'];
+            $pjmlcutifree=$row0['jmlcutifree'];
             
-            echo "<tr>";
-            echo "<td nowrap>$pnmjenis</td>";
-            echo "<td nowrap>$pkeperluan</td>";
-
-            $plewat=false;
-            $query = "select tanggal FROM $tmp02 WHERE idcuti='$pidcuti' AND id_jenis<>'02' ORDER BY nama_jenis, tanggal";
-            $tampil1=mysqli_query($cnmy, $query);
-            $ketemu1= mysqli_num_rows($tampil1);
-            if ((INT)$ketemu1==0) {
-                echo "<td nowrap>$pbln1 s/d. $pbln2</td>";
-                echo "</tr>";
-            }else{
+            if (empty($pjmlcutiskr)) $pjmlcutiskr=0;
+            if (empty($pjmlcutifree)) $pjmlcutifree=0;
+            
+            $pmasakerja="0";
+            if ((INT)$pmskrjathn>0) $pmasakerja=$pmskrjathn." tahun";
+            else{
+                if ((INT)$pmskrjabln>0) $pmasakerja=$pmskrjabln." bulan";
+            }
+    
+            if ($ptglmasuk=="0000-00-00") $ptglmasuk="";
+            if (!empty($ptglmasuk)) $ptglmasuk=date("d/m/Y", strtotime($ptglmasuk));
+            
+            $nidkry=(INT)$pidkaryawan;
+            
+            echo "<tr class='fbreak'>";
+            echo "<td nowrap>$no</td>";
+            echo "<td nowrap>$pnmkaryawan ($nidkry)</td>";
+            echo "<td nowrap>$pnmjabatan</td>";
+            echo "<td nowrap>$ptglmasuk</td>";
+            echo "<td nowrap>$pmasakerja</td>";
+            
+            $plewat0=false;
+            $query = "select distinct id_jenis, nama_jenis FROM $tmp05 WHERE karyawanid='$pidkaryawan' ORDER BY nama_jenis";
+            $tampil=mysqli_query($cnmy, $query);
+            while ($row= mysqli_fetch_array($tampil)) {
+                $pidjenis_=$row['id_jenis'];
+                $pnmjenis_=$row['nama_jenis'];
+                
+                if ($plewat0==false) {
+                    echo "<td nowrap>$pnmjenis_</td>";
+                }else{
+                    echo "<tr>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>$pnmjenis_</td>";
+                }
+                $plewat0=true;
+                    
+                $plewat1=false;
+                $query = "select distinct idcuti, id_jenis, nama_jenis, keperluan, bulan1, bulan2 FROM $tmp05 WHERE karyawanid='$pidkaryawan' AND id_jenis='$pidjenis_' ORDER BY nama_jenis";
+                $tampil1=mysqli_query($cnmy, $query);
                 while ($row1= mysqli_fetch_array($tampil1)) {
-                    $ntgl=$row1['tanggal'];
+                    $pidcuti=$row1['idcuti'];
+                    $pidjenis=$row1['id_jenis'];
+                    $pnmjenis=$row1['nama_jenis'];
+                    $pkeperluan=$row1['keperluan'];
+                    $pbln1=$row1['bulan1'];
+                    $pbln2=$row1['bulan2'];
 
-                    $ntgl= date("d-m-Y", strtotime($ntgl));
-                    if ($plewat==false) {
-                        echo "<td nowrap>$ntgl</td>";
-                        echo "</tr>";
+                    $pbln1= date("d F Y", strtotime($pbln1));
+                    $pbln2= date("d F Y", strtotime($pbln2));
+
+                    
+                    if ($plewat1==false) {
+                        
                     }else{
                         echo "<tr>";
                         echo "<td nowrap>&nbsp;</td>";
                         echo "<td nowrap>&nbsp;</td>";
-                        echo "<td nowrap>$ntgl</td>";
-                        echo "</tr>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
                     }
-                    $plewat=true;
+                    $plewat1=true;
+
+                    $plewat2=false;
+                    $query = "select * FROM $tmp03 WHERE karyawanid='$pidkaryawan' AND id_jenis='$pidjenis' AND idcuti='$pidcuti' ORDER BY tanggal";
+                    $tampil2=mysqli_query($cnmy, $query);
+                    $ketemu2= mysqli_num_rows($tampil2);
+                    if ((INT)$ketemu2==0) {
+                        echo "<td nowrap>$pbln1 s/d. $pbln2</td>";
+                        echo "<td >$pkeperluan</td>";
+                        echo "</tr>";
+                    }else{
+
+
+                        while ($row2= mysqli_fetch_array($tampil2)) {
+                            $ntgl=$row2['tanggal'];
+                            $ntgl= date("d-m-Y", strtotime($ntgl));
+
+                            $pkeperluan=$row2['keperluan'];
+
+                            if ($plewat2==false) {
+                                echo "<td nowrap>$ntgl</td>";
+                                echo "<td >$pkeperluan</td>";
+                                echo "</tr>";
+                            }else{
+                                echo "<tr>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>$ntgl</td>";
+                                echo "<td >$pkeperluan</td>";
+                                echo "</tr>";
+                            }
+                            $plewat2=true;
+                        }
+
+                    }
 
                 }
+            
             }
+                
+            /*
+            
+            //Cuti Massal
+            
+            
+            //Cuti Tahun Lalu
+            $query = "select karyawanid, sum(sisa_cuti) as sisa_cuti from $tmp01 WHERE karyawanid='$pidkaryawan' AND "
+                    . " (id_jenis='01' OR IFNULL(sisa_cuti,0)<0) AND IFNULL(potong_cuti,'')='Y' "
+                    . " GROUP BY 1";
+            $tampil4=mysqli_query($cnmy, $query);
+            $row4= mysqli_fetch_array($tampil4);
+            
+            $pjmlsisa=$row4['sisa_cuti'];
+            if (empty($pjmlsisa)) $pjmlsisa=0;
+            
+            if ((INT)$pjmlsisa>0) $pjmlsisa=0;
+            
+            $pketcutithnlalu="Cuti Tahun $ptahunsebelum";
+
+            echo "<tr>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td >$pketcutithnlalu</td>";
+            echo "<td nowrap>$pjmlsisa</td>";
+            echo "<td >&nbsp;</td>";
+            echo "</tr>";
+            
+            //Jumlah Dapat Cuti Tahun Sekarang
+            $pketcutithnskr="Cuti Tahun $ptahun";
+            
+            echo "<tr>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td >$pketcutithnskr</td>";
+            echo "<td nowrap>$pjmlcutiskr</td>";
+            echo "<td >&nbsp;</td>";
+            echo "</tr>";
+            
+            //free cuti
+            if ((INT)$pjmlcutifree>0) {
+                $pketcutithnskr="Free Cuti $ptahun";
+
+                echo "<tr>";
+                echo "<td nowrap>&nbsp;</td>";
+                echo "<td nowrap>&nbsp;</td>";
+                echo "<td nowrap>&nbsp;</td>";
+                echo "<td nowrap>&nbsp;</td>";
+                echo "<td nowrap>&nbsp;</td>";
+                echo "<td >$pketcutithnskr</td>";
+                echo "<td nowrap>$pjmlcutifree</td>";
+                echo "<td >&nbsp;</td>";
+                echo "</tr>";
+            }
+            
+            */
+            
+            $no++;
             
         }
 
     echo "</table>";
-
-    
 
     echo "<br/><br/><br/><br/><br/>";
     
@@ -234,6 +464,9 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
         }
         tr:hover {background-color:#f5f5f5;}
         thead tr:hover {background-color:#cccccc;}
+        .fbreak {
+            background-color:#f5f5f5;
+        }
     </style>
 
     <script>

@@ -99,8 +99,8 @@ switch($pactpilih){
                 var eidkry =document.getElementById('cb_karyawan').value;
 
                 if (eidkry=="") {
-                    alert("karyawan harus diisi...!!!");
-                    return false;
+                    //alert("karyawan harus diisi...!!!");
+                    //return false;
                 }
 
                 if (pText == "excel") {
@@ -142,7 +142,7 @@ switch($pactpilih){
                                 <div class='x_panel'>
                                     <div class='x_content form-horizontal form-label-left'><br />
 
-                                        <div class='form-group'>
+                                        <div hidden class='form-group'>
                                             <div class='col-sm-12'>
                                                 <b>Cabang</b>
                                                 <div class="form-group">
@@ -203,9 +203,10 @@ switch($pactpilih){
                                                 <div class="form-group">
                                                     <select class='form-control' id="cb_karyawan" name="cb_karyawan">
                                                         <?PHP
+                                                            echo "<option value='' selected>-- ALL --</option>";
                                                             $query = "select karyawanId, nama From hrd.karyawan
                                                                 WHERE 1=1 ";
-                                                            if ($fgroupid=="24" or $fgroupid=="1") {
+                                                            if ($fgroupid=="24" or $fgroupid=="1" or $fgroupid=="29" or $fgroupid=="47") {
                                                                 $query .= " AND nama NOT IN ('ACCOUNTING') AND karyawanId NOT IN ('0000002200', '0000002083')";
                                                             }else{
                                                                 if (!empty($pfilterkaryawan)) {

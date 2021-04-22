@@ -94,7 +94,7 @@ $pcabangid="";
 
     $pidcabang=$pcabangid;
     
-
+    
     if ($pcabangid=="0000000003") {
         $pkdspv="";
         $pnamaspv="";
@@ -103,6 +103,15 @@ $pcabangid="";
     }
 
     if ($pcabangid=="00000000114") {
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+    }
+
+    if ($pidcard=="0000001164") {//DWI PRIMADARI
         $pkdspv="";
         $pnamaspv="";
         $pkddm="";

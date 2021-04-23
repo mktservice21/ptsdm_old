@@ -81,17 +81,66 @@ if ($module=='mktproscutihrd')
             $pbolehutksimapan=true;
         }
         
+        $pjbt_k="";
+        $patasanid1_k="";
+        $patasanid2_k="";
+        $pdivisiid_k="";
+        
         //echo "$pkaryawanid - $pidjabatan - $pidjeniscuti keperluan $pkeperluan, $ptglpiliha - $pbulan1 s/d. $pbulan2"; mysqli_close($cnmy); exit;
         
         
         if ($pbolehutksimapan == true) {
             
+            $query = "select karyawanId as karyawanid, nama, jabatanId as jabatanid, "
+                    . " atasanId as atasanid, atasanId2 as atasanid2, divisiId as divisiid "
+                    . " FROM hrd.karyawan WHERE karyawanid='$pkaryawanid'";
+            $tampilk=mysqli_query($cnmy, $query);
+            $ketemuk= mysqli_num_rows($tampilk);
+            if ((INT)$ketemuk>0) {
+                $rowk= mysqli_fetch_array($tampilk);
+                $pjbt_k=$rowk['jabatanid'];
+                $patasanid1_k=$rowk['atasanid'];
+                $patasanid2_k=$rowk['atasanid2'];
+                $pdivisiid_k=$rowk['divisiid'];
+            }
+            
+            if ($act=="input") {
+                
+                $pilihantgl=$ptglpiliha;
+                if (!empty($pilihantgl)) $pilihantgl="(".substr($pilihantgl, 0, -1).")";
+                else $pilihantgl="('')";
+                
+                if ($pidjeniscuti=="02") {
+                    $pbln1= date("Ym", strtotime($pbln01));
+                    $pbln2= date("Ym", strtotime($pbln02));
+                    if ($pbln1>$pbln2) {
+                        mysqli_close($cnmy); echo "Bulan tidak sesuai..."; exit;
+                    }
+
+                    $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
+                            . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$kodenya' AND "
+                            . " (b.tanggal in $pilihantgl OR (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') ) "
+                            . " AND a.karyawanid='$pkaryawanid'";
+                }else{
+                    $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
+                            . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$kodenya' AND b.tanggal in $pilihantgl AND a.karyawanid='$pkaryawanid'";
+                }
+
+                $tampilp=mysqli_query($cnmy, $query);
+                $ketemup=mysqli_num_rows($tampilp);
+                if ((INT)$ketemup>0) {
+                    echo "Salah satu tanggal yang dipilih sudah ada..., silakan pilih tanggal yang lain"; mysqli_close($cnmy); exit;
+                }
+                
+            }
+    
+            //echo "$pjbt_k, $patasanid1_k, $patasanid2_k, $pdivisiid_k"; exit;
             
             if ($act=="input") {
                 
                 $query = "INSERT INTO hrd.t_cuti0 (karyawanid, jabatanid, id_jenis, keperluan, bulan1, bulan2, userid)
                     VALUES
-                    ('$pkaryawanid', '', '$pidjeniscuti', '$pkeperluan', '$pbulan1', '$pbulan2', '$pidcard')";
+                    ('$pkaryawanid', '$pjbt_k', '$pidjeniscuti', '$pkeperluan', '$pbulan1', '$pbulan2', '$pidcard')";
                 mysqli_query($cnmy, $query); 
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 

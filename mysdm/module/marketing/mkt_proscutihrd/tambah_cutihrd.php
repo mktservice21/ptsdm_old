@@ -17,7 +17,7 @@ $hari_ini = date("Y-m-d");
 $tgl_pertama = date('F Y', strtotime($hari_ini));
 $tgl_kedua = date('F Y', strtotime('+1 month', strtotime($hari_ini)));
 
-$pidkaryawan="ALLETH";
+$pidkaryawan="";
 $pjeniscuti="01";//Tahunan
 $pkeperluan="";
 $ctglpilih="";
@@ -72,6 +72,38 @@ $ntampil=mysqli_query($cnmy, $query);
 $nr=mysqli_fetch_array($ntampil);
 $pnamajabatan=$nr['nama'];
 
+$ppilihallkry=false;
+$pselkry1="";
+$pselkry2="";
+$pselkry3="";
+$pselkry4="";
+if (empty($pidkaryawan)) {
+    $pselkry1="selected";
+    $pselkry2="";
+    $pselkry3="";
+    $pselkry4="";
+    $ppilihallkry=true;
+}else{
+    if ($pidkaryawan=="ALL") {
+        $pselkry1="";
+        $pselkry2="selected";
+        $pselkry3="";
+        $pselkry4="";
+        $ppilihallkry=true;
+    }elseif ($pidkaryawan=="ALLETH") {
+        $pselkry1="";
+        $pselkry2="";
+        $pselkry3="selected";
+        $pselkry4="";
+        $ppilihallkry=true;
+    }elseif ($pidkaryawan=="ALLHO") {
+        $pselkry1="";
+        $pselkry2="";
+        $pselkry3="";
+        $pselkry4="selected";
+        $ppilihallkry=true;
+    }
+}
 ?>
 <div class="">
 
@@ -142,8 +174,11 @@ $pnamajabatan=$nr['nama'];
                                     <div class='col-xs-4'>
                                         <select class='soflow' name='cb_karyawanid' id='cb_karyawanid' onchange="">
                                             <?php
-                                            echo "<option value='ALLETH' selected>-- All Ethical --</option>";
-                                            /*
+                                            echo "<option value='' $pselkry1></option>";
+                                            echo "<option value='ALL' $pselkry2>All</option>";
+                                            echo "<option value='ALLETH' $pselkry3>-- All Ethical --</option>";
+                                            echo "<option value='ALLHO' $pselkry4>-- All HO --</option>";
+                                            
                                             $query_kry = "select karyawanId as karyawanid, nama as nama From hrd.karyawan WHERE 1=1 ";
                                             $query_kry .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
                                             $query_kry .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
@@ -157,15 +192,18 @@ $pnamajabatan=$nr['nama'];
                                             while ($nrow= mysqli_fetch_array($tampilk)) {
                                                 $nidkry=$nrow['karyawanid'];
                                                 $nnmkry=$nrow['nama'];
-
-                                                if ($nidkry==$pidkaryawan)  
-                                                    echo "<option value='$nidkry' selected>$nnmkry</option>";
-                                                else
+                                                
+                                                if ($ppilihallkry==false) {
+                                                    if ($nidkry==$pidkaryawan)  
+                                                        echo "<option value='$nidkry' selected>$nnmkry</option>";
+                                                    else
+                                                        echo "<option value='$nidkry'>$nnmkry</option>";
+                                                }else{
                                                     echo "<option value='$nidkry'>$nnmkry</option>";
+                                                }
 
                                             }
-                                             * 
-                                             */
+                                             
                                             ?>
                                         </select>
                                     </div>
@@ -178,7 +216,7 @@ $pnamajabatan=$nr['nama'];
                                             <?php
                                             
                                             $query = "select id_jenis, nama_jenis From hrd.jenis_cuti WHERE IFNULL(aktif,'')='Y' "
-                                                    . " AND IFNULL(publish,'')<>'Y' order by id_jenis";
+                                                    . " order by id_jenis";
                                             $tampilket= mysqli_query($cnmy, $query);
                                             while ($du= mysqli_fetch_array($tampilket)) {
                                                 $nidjns=$du['id_jenis'];
@@ -471,6 +509,9 @@ $pnamajabatan=$nr['nama'];
         var ibln1 = document.getElementById('e_bulan01').value;
         var ibln2 = document.getElementById('e_bulan02').value;
         
+        if (ikry=="") {
+            alert("karyawan harus diisi...."); return false;
+        }
 
         var chk_arr =  document.getElementsByName("chktgl[]");
         var chklength = chk_arr.length;             

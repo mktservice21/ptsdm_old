@@ -46,15 +46,31 @@ if ($pmodule=="viewdatatanggal") {
     
     //echo "$boleh"; exit;
     
+    //CEK CUTI MASSAL
+    if ($pjenis=="02") {
+    }else{
+        $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
+                . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$pidinput' AND b.tanggal in $pilihantgl "
+                . " AND a.karyawanid IN ('ALL', 'ALLETH')";
+        $tampilm=mysqli_query($cnmy, $query);
+        $ketemum=mysqli_num_rows($tampilm);
+        if ((INT)$ketemum>0) {
+            $boleh="Ada cuti massal yang dipilih..., silakan pilih tanggal yang lain";
+            mysqli_close($cnmy);
+            echo $boleh; exit;
+        }
+    }
+    
+    
     if ($pjenis=="02") {
         if ($pbln1>$pbln2) {
             mysqli_close($cnmy); echo "Bulan tidak sesuai..."; exit;
         }
         
-        $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
+        $query = "select distinct a.bulan1 from hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
                 . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$pidinput' AND "
                 . " (b.tanggal in $pilihantgl OR (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') ) "
-                . " AND a.karyawanid='$pkaryawanid'";
+                . " AND a.karyawanid='$pkaryawanid' ";//AND a.id_jenis='$pjenis'
     }else{
         $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
                 . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$pidinput' AND b.tanggal in $pilihantgl AND a.karyawanid='$pkaryawanid'";
@@ -63,7 +79,7 @@ if ($pmodule=="viewdatatanggal") {
     $tampil=mysqli_query($cnmy, $query);
     $ketemu=mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {
-        $boleh="Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
+        $boleh="Salah satu tanggal yang dipilih sudah ada..., silakan pilih tanggal yang lain";
     }
 
     mysqli_close($cnmy);

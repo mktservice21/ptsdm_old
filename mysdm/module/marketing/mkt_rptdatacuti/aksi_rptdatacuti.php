@@ -63,7 +63,7 @@ $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
 $pnamajabatan=$rowk['nama_jabatan'];
 
-
+/*
 $sql = "select a.*, b.potong_cuti from hrd.karyawan_cuti_close as a LEFT JOIN hrd.jenis_cuti as b "
         . " on a.id_jenis=b.id_jenis WHERE a.tahun='$ptahunsebelum' ";
 if (!empty($pkryid)) $sql .=" AND a.karyawanid='$pkryid' ";
@@ -71,70 +71,113 @@ if (!empty($pkryid)) $sql .=" AND a.karyawanid='$pkryid' ";
 $query = "create TEMPORARY table $tmp01 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+*/
 
-$query = "select distinct a.karyawanid, a.jabatanid, b.nama as nama_jabatan from hrd.karyawan_cuti_close as a "
-        . " LEFT JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId WHERE a.tahun='$ptahunsebelum' ";
-if (!empty($pkryid)) $sql .=" AND a.karyawanid='$pkryid' ";
-if (!empty($fjenisid)) $query .=" AND a.id_jenis IN $fjenisid ";
-$tampil= mysqli_query($cnmy, $query);
-$ketemu= mysqli_num_rows($tampil);
-if ((INT)$ketemu>0) {
-    $nrow=mysqli_fetch_array($tampil);
-    $pnamajabatan=$nrow['nama_jabatan'];
+
+$query = "select a.karyawanId as karyawanid, a.nama as nama_karyawan, a.tglmasuk, a.tglkeluar, a.skar, "
+        . " a.jabatanId as jabatanid, b.nama as nama_jabatan, a.divisiId as divisiid "
+        . " FROM hrd.karyawan as a LEFT JOIN hrd.jabatan as b on a.jabatanId=b.jabatanId ";
+if (!empty($pkryid)) $query .=" AND a.karyawanid='$pkryid' ";
+else{
+    $query .= " AND (IFNULL(a.tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(a.tglkeluar,'')='') ";
+    $query .=" AND LEFT(a.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+        . " and LEFT(a.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+        . " and LEFT(a.nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+        . " AND LEFT(a.nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+        . " AND LEFT(a.nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
 }
+$query = "create TEMPORARY table $tmp01 ($query)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-
-
-$query = "select DISTINCT a.*, c.potong_cuti FROM hrd.t_cuti0 as a "
-        . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
+$query = "select DISTINCT a.*, c.potong_cuti, c.nama_jenis FROM hrd.t_cuti0 as a "
+        . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti "
+        . " LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
         . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
-if (!empty($fjenisid)) $query .=" AND a.id_jenis IN $fjenisid ";
+//if (!empty($fjenisid)) $query .=" AND a.id_jenis IN $fjenisid ";
 $query .=" AND ( (YEAR(b.tanggal) = '$ptahun') "
         . " OR (YEAR(a.bulan1) = '$ptahun') OR (YEAR(a.bulan2) = '$ptahun') "
         . " )";
-if (!empty($pkryid)) $query .=" AND a.karyawanid='$pkryid' ";
+if (!empty($pkryid)) $query .=" AND ( a.karyawanid='$pkryid' OR a.karyawanid IN ('ALL', 'ALLETH', 'ALLHO', 'ALLCHC') ) ";
 $query = "create TEMPORARY table $tmp02 ($query)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "select b.karyawanid, b.id_jenis, b.keperluan, b.potong_cuti, a.* from hrd.t_cuti1 as a JOIN $tmp02 as b on a.idcuti=b.idcuti ";
+$query = "select b.karyawanid, b.id_jenis, b.keperluan, b.potong_cuti, a.* "
+        . " from hrd.t_cuti1 as a JOIN $tmp02 as b on a.idcuti=b.idcuti ";
 $query = "create TEMPORARY table $tmp03 ($query)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "select distinct a.karyawanid, a.keperluan, a.id_jenis, b.tanggal from $tmp02 as a"
-        . " JOIN $tmp03 as b on a.idcuti=b.idcuti WHERE karyawanid='ALLETH'";
+
+//ada di tabel cuti tapi tidak ada di tabel tarikan karyawan, karena sudah nonaktif
+$query = "create TEMPORARY table $tmp04 (select distinct karyawanid from $tmp01)"; 
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "INSERT INTO $tmp01 (karyawanid, nama_karyawan, tglmasuk, tglkeluar, skar, jabatanid, nama_jabatan, divisiid)"
+        . " SELECT distinct a.karyawanId as karyawanid, b.nama, b.tglmasuk, b.tglkeluar, b.skar, "
+        . " b.jabatanId as jabatanid, c.nama as nama_jabatan, b.divisiId as divisiid "
+        . " FROM $tmp02 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
+        . " LEFT JOIN hrd.jabatan as c on b.jabatanId=c.jabatanId "
+        . " WHERE a.karyawanid NOT IN (select distinct karyawanid from $tmp04)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp04");
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+// END cek data karyawan
+
+//CUTI MASSAL
+$query = "select distinct a.karyawanid, a.keperluan, a.id_jenis, b.tanggal, a.nama_jenis from $tmp02 as a "
+        . " JOIN $tmp03 as b on a.idcuti=b.idcuti WHERE a.karyawanid IN ('ALL', 'ALLETH', 'ALLHO', 'ALLCHC')";
 $query = "create TEMPORARY table $tmp04 ($query)"; 
 mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "select a.*, b.nama as nama_karyawan, b.tglmasuk, b.tglkeluar, b.tglkeluar as tglmasakerja, "
-        . " c.nama as nama_jabatan, d.nama_jenis "
-        . " from $tmp02 as a"
-        . " LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
-        . " LEFT JOIN hrd.jabatan as c on a.jabatanid=c.jabatanId "
-        . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis ";
+$query = "DELETE $tmp02, $tmp03 FROM $tmp02 JOIN $tmp03 on $tmp02.idcuti=$tmp03.idcuti WHERE $tmp02.karyawanid IN ('ALL', 'ALLETH', 'ALLHO', 'ALLCHC')";
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+//END CUTI MASSAL
+
+
+$query = "select a.*, b.nama_karyawan, b.tglmasuk, b.tglkeluar, b.tglkeluar as tglmasakerja, b.nama_jabatan, b.divisiid "
+        . " from $tmp02 as a "
+        . " LEFT JOIN $tmp01 as b on a.karyawanid=b.karyawanid ";
 $query = "create TEMPORARY table $tmp05 ($query)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "alter table $tmp05 add column jml_thn INT(4), add column jml_bln INT(4), add column jmlcutithn INT(4), add column jmlcutifree INT (4)";
+
+$query = "SELECT karyawanid, divisiid, jabatanid, tglmasuk, tglkeluar, "
+        . " IFNULL(TIMESTAMPDIFF(YEAR, tglmasuk, '$pmasakerja'),0) AS jml_thn, "
+        . " IFNULL(TIMESTAMPDIFF(MONTH, tglmasuk, '$pmasakerja'),0) AS jml_bln "
+        . " FROM $tmp05";
+$query = "create TEMPORARY table $tmp06 ($query)";
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "update $tmp06 set tglkeluar='0000-00-00' WHERE YEAR(tglkeluar)>'$ptahun'";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "UPDATE $tmp05 SET tglmasakerja='$pmasakerja' WHERE IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00'";
+$query = "alter table $tmp06 add column jml_tambah INT (4)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "UPDATE $tmp05 SET jml_thn=IFNULL(TIMESTAMPDIFF(YEAR, tglmasuk, tglmasakerja),0), jml_bln=IFNULL(TIMESTAMPDIFF(MONTH, tglmasuk, tglmasakerja),0)";
+$query = "select distinct karyawanid, divisiid, jabatanid, tglmasuk, tglkeluar, jml_thn, jml_bln, id_jenis, nama_jenis, potong_cuti FROM $tmp06, hrd.jenis_cuti"; 
+$query = "create TEMPORARY table $tmp07 ($query)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "UPDATE $tmp05 SET jmlcutithn='12' WHERE IFNULL(jml_thn,0)>=1";
+$query = "alter table $tmp07 add column jumlah INT(4), add column jml_cuti INT (4), add column sisa_cuti INT (4)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "UPDATE $tmp05 SET jmlcutithn=jml_bln WHERE IFNULL(jml_thn,0)=0 AND IFNULL(jml_bln,0)>1 AND IFNULL(jml_bln,0)<=12";
+$query = "UPDATE $tmp07 SET jumlah='12' WHERE id_jenis='01' AND IFNULL(jml_thn,0)>=1";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp07 SET jumlah=jml_bln WHERE id_jenis='01' AND IFNULL(jml_thn,0)=0 AND IFNULL(jml_bln,0)>1 AND IFNULL(jml_bln,0)<=12";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query ="SELECT id_jenis, dari, sampai, ifnull(free_cuti,0) as free_cuti FROM hrd.jenis_cuti_free_tambahan WHERE id_jenis='01' "
+$query ="SELECT id_jenis, dari, sampai, ifnull(free_cuti,0) as free_cuti FROM hrd.jenis_cuti_free_tambahan WHERE 1=1 "
         . " order by id_jenis, dari, sampai";
 $tampilk=mysqli_query($cnmy, $query);
 while ($rowk= mysqli_fetch_array($tampilk)) {
@@ -143,34 +186,86 @@ while ($rowk= mysqli_fetch_array($tampilk)) {
     $lsampai=$rowk['sampai'];
     $lfreecuti=$rowk['free_cuti'];
     
+    if (empty($lfreecuti)) $lfreecuti=0;
+    
     if ($lidjenis=="01") {
-        $query = "UPDATE $tmp05 SET jmlcutifree='$lfreecuti' WHERE "
-                . " ifnull(jml_thn,0)>='$ldari' AND ifnull(jml_thn,0)<='$lsampai'";
+        $query = "UPDATE $tmp07 SET jumlah=12+'$lfreecuti' WHERE "
+                . " ifnull(jml_thn,0)>='$ldari' AND ifnull(jml_thn,0)<='$lsampai' AND id_jenis='$lidjenis'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    }else{
+        if ((INT)$ldari==0 AND (INT)$lsampai==0) {
+            $query ="UPDATE $tmp07 SET jumlah='$lfreecuti' WHERE  id_jenis='$lidjenis'";
+        }else{
+            $query ="UPDATE $tmp07 SET jumlah='$lfreecuti' WHERE "
+                    . " ifnull(jml_thn,0)>='$ldari' AND ifnull(jml_thn,0)<='$lsampai' AND id_jenis='$lidjenis'";
+        }
+        if ($lidjenis=="08") {
+            //echo "$query<br/>";
+        }
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     }
 }
 
 
-/*
-goto hapusdata;
+$query = "alter table $tmp02 add column jml_cuti INT(4)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_karyawan, a.jabatanid, "
-        . " a.id_jenis, d.nama_jenis, a.keperluan, a.bulan1, a.bulan2, "
-        . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, atasan5, "
-        . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5, b.tanggal "
-        . " FROM hrd.t_cuti0 as a "
-        . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid"
-        . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis "
-        . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' AND a.karyawanid='$pkryid' ";
-if (!empty($fjenisid)) $query .=" AND a.id_jenis IN $fjenisid ";
-$query .=" AND ( (YEAR(b.tanggal) = '$ptahun') "
-        . " OR (YEAR(a.bulan1) = '$ptahun') OR (YEAR(a.bulan2) = '$ptahun') "
-        . " )";
-$query = "create TEMPORARY table $tmp02 ($query)"; 
-mysqli_query($cnmy, $query);
-$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-*/    
-    
+$query = "UPDATE $tmp02 as a JOIN (select idcuti, count(distinct tanggal) as jml_cuti FROM $tmp03 GROUP BY 1) as b "
+        . " on a.idcuti=b.idcuti SET a.jml_cuti=b.jml_cuti";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp02 SET jml_cuti=1 WHERE id_jenis in ('02')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp07 as a JOIN $tmp02 as b on a.karyawanid=b.karyawanid AND a.id_jenis=b.id_jenis SET a.jml_cuti=b.jml_cuti";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+//cuti melahirkan
+$query = "UPDATE $tmp07 SET jumlah=1 WHERE id_jenis in ('02') AND IFNULL(jml_cuti,0)>0";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+//cuti massal , 'ALLHO', 'ALLCHC' untuk marketing dulu
+$query = "UPDATE $tmp07 as a JOIN 
+	(SELECT id_jenis, count(DISTINCT tanggal) as jml_cuti FROM $tmp04 WHERE karyawanid IN ('ALL', 'ALLETH') 
+	GROUP BY 1) as b on a.id_jenis=b.id_jenis SET a.jml_cuti=b.jml_cuti WHERE a.divisiid NOT IN ('HO', 'OTC', 'CHC')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp07 as a JOIN 
+	(SELECT id_jenis, count(DISTINCT tanggal) as jml_cuti FROM $tmp04 WHERE karyawanid IN ('ALL', 'ALLHO') 
+	GROUP BY 1) as b on a.id_jenis=b.id_jenis SET a.jml_cuti=b.jml_cuti WHERE a.divisiid IN ('HO')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp07 as a JOIN 
+	(SELECT id_jenis, count(DISTINCT tanggal) as jml_cuti FROM $tmp04 WHERE karyawanid IN ('ALL', 'ALLCHC') 
+	GROUP BY 1) as b on a.id_jenis=b.id_jenis SET a.jml_cuti=b.jml_cuti WHERE a.divisiid IN ('OTC', 'CHC')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+//jabatan mkt
+$query = "UPDATE $tmp07 as a JOIN 
+	(SELECT id_jenis, count(DISTINCT tanggal) as jml_cuti FROM $tmp04 WHERE karyawanid IN ('ALL', 'ALLETH') 
+	GROUP BY 1) as b on a.id_jenis=b.id_jenis SET a.jml_cuti=b.jml_cuti WHERE a.jabatanid IN ('15', '10', '18', '20', '05', '38')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+// END CUTI MASSAL
+
+$query = "UPDATE $tmp07 SET sisa_cuti=IFNULL(jumlah,0)-IFNULL(jml_cuti,0)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+
+$query = "alter table $tmp05 add column jml_thn INT(4), add column jml_bln INT(4), add column jmlcutithn INT(4), add column jmlcutifree INT (4)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp05 as a JOIN $tmp07 as b on a.karyawanid=b.karyawanid SET a.jml_thn=b.jml_thn, a.jml_bln=b.jml_bln";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+if (!empty($fjenisid)) {
+    $query = "DELETE FROM $tmp05 WHERE id_jenis NOT IN $fjenisid";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
+}
+
 ?>
 
 <HTML>
@@ -226,24 +321,24 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
             echo "<th align='left'><small>Tanggal</small></th>";
             echo "<th align='left'><small>Keperluan</small></th>";
             
+            echo "<th align='left'><small>Dapat Cuti</small></th>";
+            echo "<th align='left'><small>Jumlah Cuti</small></th>";
+            echo "<th align='left'><small>Sisa Cuti</small></th>";
+            
         echo "</tr>";
         
         $no=1;
-        $query = "select distinct karyawanid, nama_karyawan, jabatanid, nama_jabatan, tglmasuk, jml_thn, jml_bln, jmlcutithn, jml_thn, jmlcutifree FROM $tmp05 ORDER BY nama_karyawan";
+        $query = "select distinct karyawanid, nama_karyawan, divisiid, jabatanid, nama_jabatan, tglmasuk, jml_thn, jml_bln FROM $tmp05 ORDER BY nama_karyawan";
         $tampil0=mysqli_query($cnmy, $query);
         while ($row0= mysqli_fetch_array($tampil0)) {
             $pidkaryawan=$row0['karyawanid'];
             $pnmkaryawan=$row0['nama_karyawan'];
             $pnmjabatan=$row0['nama_jabatan'];
             $ptglmasuk=$row0['tglmasuk'];
+            $ndivisipilih=$row0['divisiid'];
             
             $pmskrjathn=$row0['jml_thn'];
             $pmskrjabln=$row0['jml_bln'];
-            $pjmlcutiskr=$row0['jmlcutithn'];
-            $pjmlcutifree=$row0['jmlcutifree'];
-            
-            if (empty($pjmlcutiskr)) $pjmlcutiskr=0;
-            if (empty($pjmlcutifree)) $pjmlcutifree=0;
             
             $pmasakerja="0";
             if ((INT)$pmskrjathn>0) $pmasakerja=$pmskrjathn." tahun";
@@ -318,6 +413,11 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
                     if ((INT)$ketemu2==0) {
                         echo "<td nowrap>$pbln1 s/d. $pbln2</td>";
                         echo "<td >$pkeperluan</td>";
+                        
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        
                         echo "</tr>";
                     }else{
 
@@ -331,6 +431,11 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
                             if ($plewat2==false) {
                                 echo "<td nowrap>$ntgl</td>";
                                 echo "<td >$pkeperluan</td>";
+                                
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                
                                 echo "</tr>";
                             }else{
                                 echo "<tr>";
@@ -342,6 +447,11 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
                                 echo "<td nowrap>&nbsp;</td>";
                                 echo "<td nowrap>$ntgl</td>";
                                 echo "<td >$pkeperluan</td>";
+                                
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                echo "<td nowrap>&nbsp;</td>";
+                                
                                 echo "</tr>";
                             }
                             $plewat2=true;
@@ -352,68 +462,161 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
                 }
             
             }
+             
+            
+            $pjmlcutiskr=0;
+            $pjmlcutifree=0;
+            
+            if (empty($pjmlcutiskr)) $pjmlcutiskr=0;
+            if (empty($pjmlcutifree)) $pjmlcutifree=0;
+            
+            
+            
+            
+            //Cuti Massal , 'ALLHO', 'ALLCHC'
+            if (strpos($fjenisid, "00")) {
                 
+                $query ="select distinct tanggal, keperluan FROM $tmp04 WHERE id_jenis in ('00') ";
+                if ($ndivisipilih=="HO") {
+                    $query .=" AND karyawanid IN ('ALL', 'ALLHO') ";
+                }elseif ($ndivisipilih=="OTC" OR $ndivisipilih=="CHC") {
+                    $query .=" AND karyawanid IN ('ALL', 'ALLCHC') ";
+                }else{
+                    $query .=" AND karyawanid IN ('ALL', 'ALLETH') ";
+                }
+                $query .=" order by tanggal";
+                $tampil_m=mysqli_query($cnmy, $query);
+                $ketemu_m= mysqli_num_rows($tampil_m);
+                if ((INT)$ketemu_m>0) {
+                    echo "<tr>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td >Cuti Massal</td>";
+
+                    $ilewat_m=false;
+                    while ($row_m= mysqli_fetch_array($tampil_m)) {
+
+                        $ntgl=$row_m['tanggal'];
+                        $ntgl= date("d-m-Y", strtotime($ntgl));
+
+                        $pkeperluan=$row_m['keperluan'];
+
+                        if ($ilewat_m==false) {
+                            echo "<td nowrap>$ntgl</td>";
+                            echo "<td >$pkeperluan</td>";
+
+                            echo "<td nowrap>&nbsp;</td>";
+                            echo "<td nowrap>&nbsp;</td>";
+                            echo "<td nowrap>&nbsp;</td>";
+
+                            echo "</tr>";
+
+                        }else{
+                            echo "<tr>";
+                            echo "<td nowrap>&nbsp;</td>";
+                            echo "<td nowrap>&nbsp;</td>";
+                            echo "<td nowrap>&nbsp;</td>";
+                            echo "<td nowrap>&nbsp;</td>";
+                            echo "<td nowrap>&nbsp;</td>";
+                            echo "<td ></td>";
+                            echo "<td nowrap>$ntgl</td>";
+                            echo "<td >$pkeperluan</td>";
+
+                            echo "<td nowrap>&nbsp;</td>";
+                            echo "<td nowrap>&nbsp;</td>";
+                            echo "<td nowrap>&nbsp;</td>";
+
+                            echo "</tr>";
+                        }
+                        $ilewat_m=true;
+
+                    }
+                }
+            
+            }
+            
+            
             /*
-            
-            //Cuti Massal
-            
-            
-            //Cuti Tahun Lalu
-            $query = "select karyawanid, sum(sisa_cuti) as sisa_cuti from $tmp01 WHERE karyawanid='$pidkaryawan' AND "
-                    . " (id_jenis='01' OR IFNULL(sisa_cuti,0)<0) AND IFNULL(potong_cuti,'')='Y' "
-                    . " GROUP BY 1";
-            $tampil4=mysqli_query($cnmy, $query);
-            $row4= mysqli_fetch_array($tampil4);
-            
-            $pjmlsisa=$row4['sisa_cuti'];
-            if (empty($pjmlsisa)) $pjmlsisa=0;
-            
-            if ((INT)$pjmlsisa>0) $pjmlsisa=0;
-            
-            $pketcutithnlalu="Cuti Tahun $ptahunsebelum";
+            //sisa cuti tahun sebelumnya
+            echo "<tr style='font-weight:bold;'>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td ></td>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td align='right'>Sisa Cuti Tahun $ptahunsebelum s/d. Maret $ptahun</td>";
 
-            echo "<tr>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td >$pketcutithnlalu</td>";
-            echo "<td nowrap>$pjmlsisa</td>";
-            echo "<td >&nbsp;</td>";
-            echo "</tr>";
-            
-            //Jumlah Dapat Cuti Tahun Sekarang
-            $pketcutithnskr="Cuti Tahun $ptahun";
-            
-            echo "<tr>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td >$pketcutithnskr</td>";
-            echo "<td nowrap>$pjmlcutiskr</td>";
-            echo "<td >&nbsp;</td>";
-            echo "</tr>";
-            
-            //free cuti
-            if ((INT)$pjmlcutifree>0) {
-                $pketcutithnskr="Free Cuti $ptahun";
+            echo "<td nowrap align='right'>&nbsp;</td>";
+            echo "<td nowrap align='right'>&nbsp;</td>";
+            echo "<td nowrap align='right'>$pjmlsisacuti</td>";
 
-                echo "<tr>";
+            echo "</tr>";
+            */
+            
+            
+            $pjmlsisacuti=0;
+            $query = "select * from $tmp07 WHERE IFNULL(potong_cuti,'')='Y' AND karyawanid='$pidkaryawan' order by id_jenis";
+            $tampil_k=mysqli_query($cnmy, $query);
+            $ketemu_k= mysqli_num_rows($tampil_k);
+            if ((INT)$ketemu_k>0) {
+                while ($row_k= mysqli_fetch_array($tampil_k)) {
+                    $pidjenis=$row_k['id_jenis'];
+                    $pnmjenis=$row_k['nama_jenis'];
+                    
+                    $pjmldptcuti=$row_k['jumlah'];
+                    $pjmlcuti=$row_k['jml_cuti'];
+                    $psisacuti=$row_k['sisa_cuti'];
+                    
+                    if ($pidjenis!="01" AND (INT)$pjmlcuti==0) continue;
+                    
+                    if ($pidjenis=="01") {
+                        $pjmlsisacuti=(DOUBLE)$pjmlsisacuti+$psisacuti;
+                    }else{
+                        $pjmlsisacuti=(DOUBLE)$pjmlsisacuti+(DOUBLE)$psisacuti;
+                    }
+                    
+                    if (strpos($fjenisid, $pidjenis)) {
+                        echo "<tr style='font-weight:bold;'>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td >&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td align='right'>$pnmjenis</td>";
+
+                        echo "<td nowrap align='right'>$pjmldptcuti</td>";
+                        echo "<td nowrap align='right'>$pjmlcuti</td>";
+                        echo "<td nowrap align='right'>$psisacuti</td>";
+
+                        echo "</tr>";
+                    }
+                        
+                }
+                //sisa cuti
+                echo "<tr style='font-weight:bold;'>";
                 echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap>&nbsp;</td>";
-                echo "<td >$pketcutithnskr</td>";
-                echo "<td nowrap>$pjmlcutifree</td>";
-                echo "<td >&nbsp;</td>";
+                echo "<td ></td>";
+                echo "<td nowrap>&nbsp;</td>";
+                echo "<td align='right'>Sisa Cuti Tahun $ptahun</td>";
+
+                echo "<td nowrap align='right'>&nbsp;</td>";
+                echo "<td nowrap align='right'>&nbsp;</td>";
+                echo "<td nowrap align='right'>$pjmlsisacuti</td>";
+
                 echo "</tr>";
             }
             
-            */
             
             $no++;
             

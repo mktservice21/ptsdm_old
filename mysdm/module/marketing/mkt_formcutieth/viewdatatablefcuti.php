@@ -54,8 +54,8 @@
             . " b.tanggal FROM hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
             . " on a.idcuti=b.idcuti "
             . " LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
-            . " JOIN hrd.karyawan as d on a.karyawanid=d.karyawanid "
-            . " WHERE a.karyawanid='$pkryid'";
+            . " LEFT JOIN hrd.karyawan as d on a.karyawanid=d.karyawanid "
+            . " WHERE ( a.karyawanid='$pkryid' OR a.karyawanid IN ('ALLETH', 'ALL') ) ";
     $sql .=" AND ( (DATE_FORMAT(b.tanggal,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') "
             . " OR ( (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') ) "
             . " OR (DATE_FORMAT(a.tglinput,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') "
@@ -195,6 +195,12 @@
                     $pedit="reject";
                     $print="";
                 }
+                
+                if ($cidkry=="ALLETH" OR $cidkry=="ALL") {
+                    $pedit="";
+                    $print="";
+                }
+                
                 
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";

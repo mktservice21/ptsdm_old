@@ -18,7 +18,7 @@ $tgl_pertama = date('F Y', strtotime($hari_ini));
 $tgl_kedua = date('F Y', strtotime('+1 month', strtotime($hari_ini)));
 
 $pidkaryawan="";
-$pjeniscuti="01";//Tahunan
+$pjeniscuti="";//Tahunan
 $pkeperluan="";
 $ctglpilih="";
 
@@ -77,11 +77,13 @@ $pselkry1="";
 $pselkry2="";
 $pselkry3="";
 $pselkry4="";
+$pselkry5="";
 if (empty($pidkaryawan)) {
     $pselkry1="selected";
     $pselkry2="";
     $pselkry3="";
     $pselkry4="";
+    $pselkry5="";
     $ppilihallkry=true;
 }else{
     if ($pidkaryawan=="ALL") {
@@ -89,18 +91,28 @@ if (empty($pidkaryawan)) {
         $pselkry2="selected";
         $pselkry3="";
         $pselkry4="";
+        $pselkry5="";
         $ppilihallkry=true;
     }elseif ($pidkaryawan=="ALLETH") {
         $pselkry1="";
         $pselkry2="";
         $pselkry3="selected";
         $pselkry4="";
+        $pselkry5="";
         $ppilihallkry=true;
     }elseif ($pidkaryawan=="ALLHO") {
         $pselkry1="";
         $pselkry2="";
         $pselkry3="";
         $pselkry4="selected";
+        $pselkry5="";
+        $ppilihallkry=true;
+    }elseif ($pidkaryawan=="ALLCHC") {
+        $pselkry1="";
+        $pselkry2="";
+        $pselkry3="";
+        $pselkry4="";
+        $pselkry5="selected";
         $ppilihallkry=true;
     }
 }
@@ -178,6 +190,7 @@ if (empty($pidkaryawan)) {
                                             echo "<option value='ALL' $pselkry2>All</option>";
                                             echo "<option value='ALLETH' $pselkry3>-- All Ethical --</option>";
                                             echo "<option value='ALLHO' $pselkry4>-- All HO --</option>";
+                                            echo "<option value='ALLCHC' $pselkry5>-- All CHC --</option>";
                                             
                                             $query_kry = "select karyawanId as karyawanid, nama as nama From hrd.karyawan WHERE 1=1 ";
                                             $query_kry .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
@@ -193,13 +206,14 @@ if (empty($pidkaryawan)) {
                                                 $nidkry=$nrow['karyawanid'];
                                                 $nnmkry=$nrow['nama'];
                                                 
+                                                $piidkary=(INT)$nidkry;
                                                 if ($ppilihallkry==false) {
                                                     if ($nidkry==$pidkaryawan)  
-                                                        echo "<option value='$nidkry' selected>$nnmkry</option>";
+                                                        echo "<option value='$nidkry' selected>$nnmkry ($piidkary)</option>";
                                                     else
-                                                        echo "<option value='$nidkry'>$nnmkry</option>";
+                                                        echo "<option value='$nidkry'>$nnmkry ($piidkary)</option>";
                                                 }else{
-                                                    echo "<option value='$nidkry'>$nnmkry</option>";
+                                                    echo "<option value='$nidkry'>$nnmkry ($piidkary)</option>";
                                                 }
 
                                             }
@@ -214,7 +228,7 @@ if (empty($pidkaryawan)) {
                                     <div class='col-xs-4'>
                                         <select class='soflow' name='cb_jeniscuti' id='cb_jeniscuti' onchange="ShowPeriode()">
                                             <?php
-                                            
+                                            echo "<option value='' selected>-- Pilih --</option>";
                                             $query = "select id_jenis, nama_jenis From hrd.jenis_cuti WHERE IFNULL(aktif,'')='Y' "
                                                     . " order by id_jenis";
                                             $tampilket= mysqli_query($cnmy, $query);
@@ -511,6 +525,10 @@ if (empty($pidkaryawan)) {
         
         if (ikry=="") {
             alert("karyawan harus diisi...."); return false;
+        }
+        
+        if (ijenis=="") {
+            alert("Jenis cuti harus dipilih...."); return false;
         }
 
         var chk_arr =  document.getElementsByName("chktgl[]");

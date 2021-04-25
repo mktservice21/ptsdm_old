@@ -114,6 +114,36 @@ if ($module=='mktformcutieth')
             
             if ($act=="input") {
                 
+                
+                $pilihantgl=$ptglpiliha;
+                if (!empty($pilihantgl)) $pilihantgl="(".substr($pilihantgl, 0, -1).")";
+                else $pilihantgl="('')";
+                
+                if ($pidjeniscuti=="02") {
+                    $pbln1= date("Ym", strtotime($pbln01));
+                    $pbln2= date("Ym", strtotime($pbln02));
+                    if ($pbln1>$pbln2) {
+                        mysqli_close($cnmy); echo "Bulan tidak sesuai..."; exit;
+                    }
+
+                    $query = "select distinct a.bulan1 from hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
+                            . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$kodenya' AND "
+                            . " (b.tanggal in $pilihantgl OR (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') ) "
+                            . " AND a.karyawanid='$pkaryawanid' ";//AND a.id_jenis='$pidjeniscuti'
+                    //echo "$query<br/>";
+                }else{
+                    $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
+                            . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$kodenya' AND b.tanggal in $pilihantgl AND a.karyawanid='$pkaryawanid'";
+                }
+
+                $tampilp=mysqli_query($cnmy, $query);
+                $ketemup=mysqli_num_rows($tampilp);
+                if ((INT)$ketemup>0) {
+                    echo "Salah satu tanggal yang dipilih sudah ada..., silakan pilih tanggal yang lain"; mysqli_close($cnmy); exit;
+                }
+                
+                //exit;
+                
                 $query = "INSERT INTO hrd.t_cuti0 (karyawanid, jabatanid, id_jenis, keperluan, bulan1, bulan2, userid)
                     VALUES
                     ('$pkaryawanid', '$pidjabatan', '$pidjeniscuti', '$pkeperluan', '$pbulan1', '$pbulan2', '$pidcard')";

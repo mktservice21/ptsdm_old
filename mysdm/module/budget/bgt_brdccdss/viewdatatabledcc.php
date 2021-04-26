@@ -209,6 +209,8 @@
                     $ppilpajak = $row["pajak"];
                     $pbatal = $row["batal"];
                     
+                    $pidget=encodeString($pbrid);
+                    
                     if ($ptgltrans=="0000-00-00") $ptgltrans="";
                     if ($ptgltrm=="0000-00-00") $ptgltrm="";
                     
@@ -236,7 +238,7 @@
                     
                     $pterima = "<a class='btn btn-info btn-xs' href='?module=$pmodule&act=editterima&idmenu=$pidmenu&nmun=$pidmenu&id=$pbrid'>Terima</a>";
                     $prealis = "<a class='btn btn-default btn-xs' href='?module=$pmodule&act=edittransfer&idmenu=$pidmenu&nmun=$pidmenu&id=$pbrid'>Realisasi</a>";
-                    $peditdata = "<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pbrid'>Edit</a>";
+                    $peditdata = "<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
                     $ptpajak = "<button type='button' class='btn btn-primary btn-xs' data-toggle='modal' data-target='#myModal' onClick=\"TambahDataInputPajak('$pbrid')\">Pajak</button>";
                     $phapus = "<input type='button' class='btn btn-danger btn-xs' value='Hapus' onClick=\"ProsesDataHapus('hapus', '$pbrid', '$pnodivisi')\">";
                     
@@ -366,6 +368,18 @@ Status pada SPD akan berubah menjadi BATAL (merah)...');
 
 
     }
+    
+    function TambahDataInputPajak(eidbr){
+        $.ajax({
+            type:"post",
+            url:"module/budget/bgt_brdccdss/tambah_pajakdcc.php?module=viewisipajak",
+            data:"uidbr="+eidbr,
+            success:function(data){
+                $("#myModal").html(data);
+            }
+        });
+    }
+    
 </script>
 
 <style>

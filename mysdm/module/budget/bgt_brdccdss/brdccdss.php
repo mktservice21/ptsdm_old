@@ -45,6 +45,7 @@
         switch($pact){
             default:
                 ?>
+                <div class='modal fade' id='myModal' role='dialog'></div>
 
                 <script>
                     function RefreshDataTabel() {

@@ -224,11 +224,12 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
             //out of range KI
             if (!empty($pmin_bulan)) {
-                $query = "select tgl, sum(jumlah) as jumlahki from $tmp02 WHERE bulan<'$pmin_bulan' GROUP BY 1 order by 1";
+                $query = "select brid, tgl, sum(jumlah) as jumlahki from $tmp02 WHERE bulan<'$pmin_bulan' GROUP BY 1 order by 1,2";
                 $tampil0=mysqli_query($cnmy, $query);
                 $ketemu0=mysqli_num_rows($tampil0);
                 if ((INT)$ketemu0>0) {
                     while ($row0=mysqli_fetch_array($tampil0)) {
+                        $pbridki=$row0['brid'];
                         $ptglki=$row0['tgl'];
                         $pjumlahki=$row0['jumlahki'];
 
@@ -241,10 +242,35 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         //$pjumlahki = number_format($pjumlahki,0);
                         $pjumlahki=number_format($pjumlahki,0,"","");
 
+                        $pidnoget=encodeString($pbridki);
+
+                        $pbolehlhtketbr=false;
+                        if ($pidgroup=="1" OR $pidgroup=="24") {
+                            $pbolehlhtketbr=true;
+                        }else{
+                            if ($pidjabatan=="08" OR $pidjabatan=="20" OR $pidjabatan=="05") {
+                                $pbolehlhtketbr=true;
+                            }else{
+                                $pbolehlhtketbr=false;
+                            }
+                        }
+
+                        $plihatket="KI";
+                        $pketdetail="";
+                        if ($pbolehlhtketbr==true) {
+                            $plihatket="<a title='' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+                                . "onClick=\"window.open('eksekusi3.php?module=kslihatkslhtzz&brid=$pidnoget&iprint=print',"
+                                . "'Ratting','width=500,height=200,left=500,top=100,scrollbars=yes')\"> "
+                                . "KI</a>";
+
+                            $pketdetail="<span id='spn_ki' class='no-print'><button type='button' class='btn btn-info btn-xs' data-toggle='modal' "
+                                    . " data-target='#myModal' onClick=\"LiatDetailBr('$pbridki')\">Detail</button></span>";
+                        }
+                                
                         echo "<tr>";
                         echo "<td><small>$ptglki</small></td>";  
                         echo "<td><small><b>KI</b></small></td>";
-                        echo "<td><small>&nbsp;</small></td>";
+                        echo "<td><small>$pketdetail</small></td>";
                         echo "<td><small>&nbsp;</small></td>";
                         echo "<td align='right'><small>&nbsp;</small></td>";
                         echo "<td align='right'><small>&nbsp;</small></td>";

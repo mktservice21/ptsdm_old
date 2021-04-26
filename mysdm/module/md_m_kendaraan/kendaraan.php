@@ -141,7 +141,8 @@
 
                                             <?PHP
                                             $no=1;
-                                            $query = "SELECT a.*, b.nama from dbmaster.t_kendaraan_pemakai as a LEFT JOIN hrd.karyawan b "
+                                            $query = "SELECT a.noid, a.nourut, a.nopol, b.nama, a.tglawal, a.tglakhir, a.stsnonaktif "
+                                                    . " from dbmaster.t_kendaraan_pemakai as a LEFT JOIN hrd.karyawan b "
                                                     . " ON a.karyawanid=b.karyawanId WHERE a.noid='$_GET[id]'";
                                             $tampil = mysqli_query($cnmy, $query);
                                             while ($r= mysqli_fetch_array($tampil)) {

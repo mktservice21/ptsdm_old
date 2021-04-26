@@ -10,7 +10,8 @@ include "config/cek_akses_modul.php";
         $aksi="eksekusi3.php";
         switch($_GET['act']){
             default:
-
+                $pidgroup=$_SESSION['GROUP'];
+                $pjabatanid=$_SESSION['JABATANID'];
                 $hari_ini = date("Y-m-d");
                 $tgl_pertama = date('01 F Y', strtotime($hari_ini));
                 $tgl_akhir = date('t F Y', strtotime($hari_ini));
@@ -57,8 +58,14 @@ include "config/cek_akses_modul.php";
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
 
                                                 <select class='form-control' name='e_pilrpt' id='e_pilrpt' onchange="">
-                                                    <option value='S' selected>Sales</option>
-                                                    <option value='R'>Retur</option>
+                                                    <?PHP
+                                                    if ($pjabatanid=="05") {
+                                                        echo "<option value='R' selected>Retur</option>";
+                                                    }else{
+                                                        echo "<option value='S' selected>Sales</option>";
+                                                        echo "<option value='R'>Retur</option>";
+                                                    }
+                                                    ?>
                                                 </select>
 
                                             </div>

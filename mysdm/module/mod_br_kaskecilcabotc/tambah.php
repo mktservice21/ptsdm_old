@@ -1230,7 +1230,13 @@ if ($pact=="editdata"){
 <script>
                                     
     $(document).ready(function() {
-        ShowDataJumlah();
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var act = urlku.searchParams.get("act");
+        
+        if (act=="tambahbaru") {
+            ShowDataJumlah();
+        }
 
         $('#e_bulan').datepicker({
             showButtonPanel: true,

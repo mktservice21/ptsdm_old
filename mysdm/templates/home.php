@@ -899,6 +899,9 @@
     }elseif ($_GET['module']=='mktrptdatacuti'){
         include 'module/marketing/mkt_rptdatacuti/rptdatacuti.php';
         
+    }elseif ($_GET['module']=='bgtinputbrdccdss'){
+        include 'module/budget/bgt_brdccdss/brdccdss.php';
+        
 
     }else{
         include 'del_session.php';

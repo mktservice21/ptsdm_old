@@ -126,6 +126,29 @@ function CariSudahClosingBRID2($nbrid, $nskode) {
     else return false;
 }
 
+function CariSudahClosingBRID3($nbrid, $nskode) {
+    include "../../../config/koneksimysqli.php";
+    $query = "select a.bridinput from dbmaster.t_suratdana_br1 a JOIN dbmaster.t_suratdana_br b on a.idinput=b.idinput 
+        JOIN dbmaster.t_suratdana_br_close c on a.idinput=c.idinput and b.idinput=c.idinput WHERE 
+        IFNULL(b.stsnonaktif,'')<>'Y' and a.bridinput='$nbrid' ";
+    if ($nskode=="A") $query .=" AND IFNULL(a.kodeinput,'') IN ('A', 'B', 'C') AND IFNULL(b.divisi,'')<>'OTC' ";
+    elseif ($nskode=="D") $query .=" AND IFNULL(a.kodeinput,'') IN ('D') AND IFNULL(b.divisi,'')='OTC' ";
+    elseif ($nskode=="E") $query .=" AND IFNULL(a.kodeinput,'') IN ('E') ";
+		
+		
+    $sql=mysqli_query($cnmy, $query);
+    $ketemu=mysqli_num_rows($sql);
+    $nnobridada="";
+    if ($ketemu > 0){
+        $z=mysqli_fetch_array($sql);
+        $nnobridada= $z['bridinput'];
+    }
+    mysqli_close($cnmy);
+    
+    if (!empty($nnobridada) AND $nnobridada==$nbrid) return true;
+    else return false;
+}
+
 function CariDataKaryawanByRsmAuthCNIT($ikryid, $ijbt, $iregion) {
     include("config/koneksimysqli.php");
     $cnit=$cnmy;

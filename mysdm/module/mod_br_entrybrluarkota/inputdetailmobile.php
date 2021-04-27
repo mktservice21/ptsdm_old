@@ -9,6 +9,7 @@ while ($uc=mysqli_fetch_array($tampil)){
     if (!empty($uc['jumlah'])) $tjml=$uc['jumlah'];
     $tgpid=$uc['groupid'];
     $namaakun=$uc['nama'];
+    $nomoridpl=$uc['nobrid'];
     
     for ($i=1; $i <=$tjml; $i++) {
         $nakunnya=$namaakun;
@@ -87,8 +88,8 @@ while ($uc=mysqli_fetch_array($tampil)){
                     echo "<tr><td nowrap>KM</td><td nowrap>$kmdetailisi</td></tr>";
                 }
                 
-        $inputqty = "<input type='text' size='5px' id='e_qty$no' name='e_qty$no' onblur=hit_total('$nmnilai','$nmqty','$nmtotal') class='input-sm inputmaskrp2' autocomplete='off' value='$uqyu'>";
-        $inputnilai = "<input type='$qtyhide' size='10px' id='$nmnilai' name='$nmnilai' onblur=hit_total('$nmnilai','$nmqty','$nmtotal') class='input-sm inputmaskrp2' autocomplete='off' value='$unilai'>";
+        $inputqty = "<input type='text' size='5px' id='e_qty$no' name='e_qty$no' onblur=\"hit_total('$nmnilai','$nmqty','$nmtotal', '$nomoridpl')\" class='input-sm inputmaskrp2' autocomplete='off' value='$uqyu'>";
+        $inputnilai = "<input type='$qtyhide' size='10px' id='$nmnilai' name='$nmnilai' onblur=\"hit_total('$nmnilai','$nmqty','$nmtotal', '$nomoridpl')\" class='input-sm inputmaskrp2' autocomplete='off' value='$unilai'>";
         if ($qtyhide!="hidden") {
             echo "<tr><td nowrap>Jumlah / Hari</td><td>$inputqty</td></tr>";
             echo "<tr><td nowrap>Nilai (Rp.)</td><td>$inputnilai</td></tr>";

@@ -222,7 +222,9 @@ switch($pactpilih){
                                                 <div class="form-group">
                                                     <select class='form-control' id="cb_karyawan" name="cb_karyawan">
                                                         <?PHP
-                                                            echo "<option value='' selected>-- ALL --</option>";
+                                                            if ($fgroupid=="24" or $fgroupid=="1" or $fgroupid=="29" or $fgroupid=="47") {
+                                                                echo "<option value='' selected>-- ALL --</option>";
+                                                            }
                                                             $query = "select karyawanId, nama From hrd.karyawan
                                                                 WHERE 1=1 ";
                                                             if ($fgroupid=="24" or $fgroupid=="1" or $fgroupid=="29" or $fgroupid=="47") {

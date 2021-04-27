@@ -35,6 +35,7 @@ $tgl1 = date('d F Y', strtotime($hari_ini));
 $tgl1 = date('01/m/Y', strtotime($hari_ini));
 $tgl2 = date('t/m/Y', strtotime($hari_ini));
 $tglberlku = date('F Y', strtotime($hari_ini));
+$blnpilihuc = date('Y-m', strtotime($hari_ini));
 $idajukan=$_SESSION['IDCARD']; 
 $nmajukan=$_SESSION['NAMALENGKAP'];
 $pjabatanid = getfield("select jabatanId as lcfields from dbmaster.t_karyawan_posisi where karyawanId='$idajukan'");
@@ -83,6 +84,7 @@ $pnmkrynone="";
 $pkd_krynone_="";
 $pnm_krynonelama_="";
 $pnm_krynonebaru_="";
+
 
 $act="input";
 
@@ -276,6 +278,41 @@ if ($_SESSION['GROUP']==15 OR $_SESSION['GROUP']==33) {
     
     $txtkendaraannone="class='form-group'";
     if ($pjabatanid=="15" OR $pjabatanid=="38") { $txtkendaraannone="hidden"; }
+    
+    
+$fdata_uc="";
+if ($act=="update") $fdata_uc=" AND a.idrutin <>'$idklaim'";
+//JUMLAH UC diambil dari akun 21 HOTEL
+$query = "select SUM(a.qty) as qty FROM dbmaster.t_brrutin1 as a "
+        . " JOIN dbmaster.t_brrutin0 as b on a.idrutin=b.idrutin "
+        . " WHERE b.kode='2' AND b.karyawanid='$idajukan' AND LEFT(b.bulan,7)='$blnpilihuc' AND "
+        . " a.nobrid IN ('21') AND IFNULL(b.stsnonaktif,'')<>'Y' AND IFNULL(a.rp,0)<>0 $fdata_uc";
+$tampil_s= mysqli_query($cnmy, $query);
+$rows= mysqli_fetch_array($tampil_s);
+$pjumlahhr_blinput=$rows['qty'];
+
+
+$query = "select SUM(a.qty) as qtyi FROM dbmaster.t_brrutin1 as a "
+        . " JOIN dbmaster.t_brrutin0 as b on a.idrutin=b.idrutin "
+        . " WHERE b.kode='2' AND b.karyawanid='$idajukan' AND LEFT(b.bulan,7)='$blnpilihuc' AND "
+        . " a.nobrid IN ('21') AND IFNULL(b.stsnonaktif,'')<>'Y' AND IFNULL(a.rp,0)<>0 AND a.idrutin ='$idklaim'";
+$tampil_i= mysqli_query($cnmy, $query);
+$rowi= mysqli_fetch_array($tampil_i);
+$pjumlahhr_bledit=$rowi['qtyi'];
+
+//cari data UC dari tabel cuti
+$sql = "select COUNT(distinct b.tanggal) as jmlhariuc FROM hrd.t_cuti0 as a "
+        . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti WHERE a.id_jenis IN ('05') AND "
+        . " a.karyawanid='$idajukan' AND LEFT(b.tanggal,7)='$blnpilihuc' AND IFNULL(a.stsnonaktif,'')<>'Y'";
+$tampil_u= mysqli_query($cnmy, $sql);
+$rowu= mysqli_fetch_array($tampil_u);
+$pjumlahhr_ucinput=$rowu['jmlhariuc'];
+
+if (empty($pjumlahhr_blinput)) $pjumlahhr_blinput=0;
+if (empty($pjumlahhr_bledit)) $pjumlahhr_bledit=0;
+if (empty($pjumlahhr_ucinput)) $pjumlahhr_ucinput=0;
+
+//echo "$pjumlahhr_blinput dan $pjumlahhr_ucinput<br/>";
     
     
 
@@ -902,7 +939,7 @@ if (isset($_GET['ca'])) {
                                         <input type='text' id='e_totalsemua' name='e_totalsemua' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $totalsemua; ?>' readonly>
                                     </div>
                                 </div>
-                                
+                                                                
                                 
                                 <div hidden>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
@@ -921,6 +958,26 @@ if (isset($_GET['ca'])) {
                                                onclick="window.open('<?PHP echo "eksekusi3.php?module=$_GET[module]&iprint=kunjungan"; ?>', 'winpopup', 
                                                     'toolbar=no,statusbar=no,menubar=no,resizable=yes,scrollbars=yes,width=800,height=400');" />
                                     </div>
+                                </div>
+                                
+                                <div id="divdata_uc">
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah UC <span class='required'></span></label>
+                                        <div class='col-md-4'>
+                                            <input type='text' id='e_uctotal' name='e_uctotal' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlahhr_ucinput; ?>' readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah Hotel yg sudah input<span class='required'></span></label>
+                                        <div class='col-md-4'>
+                                            <input type='hidden' id='e_ucinput_e' name='e_ucinput_e' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlahhr_blinput; ?>' readonly>
+                                            <input type='hidden' id='e_ucinput_i' name='e_ucinput_i' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlahhr_bledit; ?>' readonly>
+                                            <input type='text' id='e_ucinput' name='e_ucinput' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlahhr_blinput; ?>' readonly>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                                 
                                 
@@ -1316,7 +1373,44 @@ if (isset($_GET['ca'])) {
         });
     }
 
-    function disp_confirm(pText_, ket)  {
+    function disp_confirm(pText_,ket)  {
+        findHitungHariUC();
+        
+        setTimeout(function () {
+            disp_confirm_ext(pText_,ket)
+        }, 200);
+        
+    }
+    
+    function disp_confirm_ext(pText_, ket)  {
+        
+        var newchar = '';
+        var aq_sdh_input = document.getElementById('e_ucinput').value;
+        var adainputuc = document.getElementById('e_ucinput_i').value;
+        var aq_totuc = document.getElementById('e_uctotal').value;
+
+        aq_sdh_input = aq_sdh_input.split(',').join(newchar);
+        adainputuc = adainputuc.split(',').join(newchar);
+        aq_totuc = aq_totuc.split(',').join(newchar);
+
+        if (aq_sdh_input=="") aq_sdh_input="0";
+        if (adainputuc=="") adainputuc="0";
+        if (aq_totuc=="") aq_totuc="0";
+
+        if (adainputuc=="0") {
+        }else{
+            if (aq_totuc=="0") {
+                alert("Anda belum mengisi Form UC...\n\
+Untuk mengisi HOTEL form cuti harus diisi terlebih dahulu."); return false;
+            }else{
+                if (parseInt(aq_sdh_input)>parseInt(aq_totuc)) {
+                    alert("Jumlah hari (HOTEL), melebihi jumlah UC..."); return false;
+                }
+            }
+        }
+        
+        
+            
         var ekar =document.getElementById('e_idkaryawan').value;
         var eperi =document.getElementById('e_periode').value;
         var ediv =document.getElementById('cb_divisi').value;
@@ -1517,8 +1611,7 @@ if (isset($_GET['ca'])) {
         } );
     });
     
-    function hit_total(pNilai_,pQty_,pTotal_) {
-        
+    function hit_total(pNilai_,pQty_,pTotal_, pNid) {
         nilai = document.getElementById(pNilai_).value;  
         qty = document.getElementById(pQty_).value;
 
@@ -1532,7 +1625,47 @@ if (isset($_GET['ca'])) {
         document.getElementById(pTotal_).value = total_;
         findTotal();
         
+        if (pNid=="21") {
+            findHitungHariUC();
+        }
         
+    }
+    
+    function findHitungHariUC() {
+        //e_uctotal, e_ucinput_e, e_ucinput
+        //alert(pNilai_); return false;
+        var newchar = '';
+        var aq1 = document.getElementById('e_qty1').value;
+        var aq2 = document.getElementById('e_qty2').value;
+        var aq3 = document.getElementById('e_qty3').value;
+        var aq4 = document.getElementById('e_qty4').value;
+        
+        var aq_sdh_input = document.getElementById('e_ucinput_e').value;
+        var aq_totuc = document.getElementById('e_uctotal').value;
+        
+        aq1 = aq1.split(',').join(newchar);
+        aq2 = aq2.split(',').join(newchar);
+        aq3 = aq3.split(',').join(newchar);
+        aq4 = aq4.split(',').join(newchar);
+        aq_sdh_input = aq_sdh_input.split(',').join(newchar);
+        aq_totuc = aq_totuc.split(',').join(newchar);
+        
+        if (aq1 === "") aq1=0; if (aq2 === "") aq2=0;
+        if (aq3 === "") aq3=0; if (aq4 === "") aq4=0;
+        if (aq_sdh_input === "") aq_sdh_input=0;
+        if (aq_totuc === "") aq_totuc=0;
+        
+        if (parseInt(aq_sdh_input)>parseInt(aq_totuc)) {
+            //alert("Jumlah hari, melebihi jumlah UC..."); return false;
+        }
+        
+        var itotuc="0";
+        var itotuc_i="0";
+        
+        itotuc =parseInt(aq1)+parseInt(aq2)+parseInt(aq3)+parseInt(aq4)+parseInt(aq_sdh_input);
+        itotuc_i =parseInt(aq1)+parseInt(aq2)+parseInt(aq3)+parseInt(aq4);
+        document.getElementById('e_ucinput').value=itotuc;
+        document.getElementById('e_ucinput_i').value=itotuc_i;
     }
     
     function findTotal(){
@@ -1565,12 +1698,35 @@ if (isset($_GET['ca'])) {
         document.getElementById('e_totalsemua').value = tot;
     }
 
+    function ShowDataTotalUC() {
+        var eid =document.getElementById('e_id').value;
+        var ekar =document.getElementById('e_idkaryawan').value;
+        var eperi01 =document.getElementById('e_periode01').value;
+        var eperi02 =document.getElementById('e_periode02').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/mod_br_entrybrcash/viewdatams.php?module=viewdatajumlahuc",
+            data:"uid="+eid+"&ukar="+ekar+"&uperi01="+eperi01+"&uperi02="+eperi02,
+            success:function(data){
+                $("#divdata_uc").html(data);
+            }
+        });
+        
+    }
 </script>
 
 <script>
                                     
     $(document).ready(function() {
-
+        $('#mytgl01').on('change dp.change', function(e){
+            ShowDataTotalUC();
+        });
+        $('#mytgl02').on('change dp.change', function(e){
+            ShowDataTotalUC();
+        });
+        
+        
         $('#e_bulan').datepicker({
             showButtonPanel: true,
             changeMonth: true,

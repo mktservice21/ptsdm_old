@@ -23,7 +23,7 @@
     if (isset($_GET['ispd'])) {
         $pnmidspd=$_GET['ispd'];
         
-        $query = "select tglf from dbmaster.t_suratdana_br WHERE idinput='$pnmidspd'";
+        $query = "select tglf, keterangan from dbmaster.t_suratdana_br WHERE idinput='$pnmidspd'";
         $tampil= mysqli_query($cnmy, $query);
         $ketemu= mysqli_num_rows($tampil);
         if ($ketemu>0) {
@@ -31,6 +31,7 @@
             if (!empty($nr['tglf']) AND $nr['tglf']<>"0000-00-00") {
                 $date1=$nr['tglf'];
             }
+            $pincfrom=RTRIM($nr['keterangan']);
         }
         
     }else{

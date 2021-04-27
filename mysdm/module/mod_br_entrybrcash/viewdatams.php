@@ -228,6 +228,73 @@ if ($_GET['module']=="caridivisi"){
             echo "<option value='2'>Periode 2</option>";
         }
     }
+}elseif ($_GET['module']=="viewdatajumlahuc"){
+    
+    include "../../config/koneksimysqli.php";
+    $idklaim=$_POST['uid'];
+    $idajukan=$_POST['ukar'];
+    $pntgl01=$_POST['uperi01'];
+    $pntgl02=$_POST['uperi02'];
+    
+    $pntgl01 = str_replace('/', '-', $pntgl01);
+    $pntgl02 = str_replace('/', '-', $pntgl02);
+    
+    $blnpilihuc = date('Y-m', strtotime($pntgl01));
+    
+    
+    $fdata_uc="";
+    if (!empty($idklaim)) $fdata_uc=" AND a.idrutin <>'$idklaim'";
+    //JUMLAH UC diambil dari akun 21 HOTEL
+    $query = "select SUM(a.qty) as qty FROM dbmaster.t_brrutin1 as a "
+            . " JOIN dbmaster.t_brrutin0 as b on a.idrutin=b.idrutin "
+            . " WHERE b.kode='2' AND b.karyawanid='$idajukan' AND LEFT(b.bulan,7)='$blnpilihuc' AND "
+            . " a.nobrid IN ('21') AND IFNULL(b.stsnonaktif,'')<>'Y' AND IFNULL(a.rp,0)<>0 $fdata_uc";
+    $tampil_s= mysqli_query($cnmy, $query);
+    $rows= mysqli_fetch_array($tampil_s);
+    $pjumlahhr_blinput=$rows['qty'];
+
+
+    $query = "select SUM(a.qty) as qtyi FROM dbmaster.t_brrutin1 as a "
+            . " JOIN dbmaster.t_brrutin0 as b on a.idrutin=b.idrutin "
+            . " WHERE b.kode='2' AND b.karyawanid='$idajukan' AND LEFT(b.bulan,7)='$blnpilihuc' AND "
+            . " a.nobrid IN ('21') AND IFNULL(b.stsnonaktif,'')<>'Y' AND IFNULL(a.rp,0)<>0 AND a.idrutin ='$idklaim'";
+    $tampil_i= mysqli_query($cnmy, $query);
+    $rowi= mysqli_fetch_array($tampil_i);
+    $pjumlahhr_bledit=$rowi['qtyi'];
+
+    //cari data UC dari tabel cuti
+    $sql = "select COUNT(distinct b.tanggal) as jmlhariuc FROM hrd.t_cuti0 as a "
+            . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti WHERE a.id_jenis IN ('05') AND "
+            . " a.karyawanid='$idajukan' AND LEFT(b.tanggal,7)='$blnpilihuc' AND IFNULL(a.stsnonaktif,'')<>'Y'";
+    $tampil_u= mysqli_query($cnmy, $sql);
+    $rowu= mysqli_fetch_array($tampil_u);
+    $pjumlahhr_ucinput=$rowu['jmlhariuc'];
+
+    if (empty($pjumlahhr_blinput)) $pjumlahhr_blinput=0;
+    if (empty($pjumlahhr_bledit)) $pjumlahhr_bledit=0;
+    if (empty($pjumlahhr_ucinput)) $pjumlahhr_ucinput=0;
+
+
+    mysqli_close($cnmy);
+
+?>
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah UC <span class='required'></span></label>
+        <div class='col-md-4'>
+            <input type='text' id='e_uctotal' name='e_uctotal' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlahhr_ucinput; ?>' readonly>
+        </div>
+    </div>
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah Hotel yg sudah input<span class='required'></span></label>
+        <div class='col-md-4'>
+            <input type='hidden' id='e_ucinput_e' name='e_ucinput_e' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlahhr_blinput; ?>' readonly>
+            <input type='hidden' id='e_ucinput_i' name='e_ucinput_i' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlahhr_bledit; ?>' readonly>
+            <input type='text' id='e_ucinput' name='e_ucinput' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlahhr_blinput; ?>' readonly>
+        </div>
+    </div>
+<?PHP
+}elseif ($_GET['module']=="xxx"){
 }elseif ($_GET['module']=="xxx"){
     
 }

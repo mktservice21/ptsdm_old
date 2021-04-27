@@ -7,6 +7,14 @@
     if (isset($_SESSION['GROUP'])) $pnpidgroup_=$_SESSION['GROUP'];
     if (isset($_SESSION['IDCARD'])) $npicardid_=$_SESSION['IDCARD'];
     
+    if ($pnpidgroup_=="1") {
+    }else{
+        if ($pnpidmenu_=="115"){//khusus sedang dalam perbaikan
+            //echo "Anda Tidak Berhat Dengan Menu INI...";
+            //exit;
+        }
+    }
+    
     $padamodulekhususmenu=false;
     
     $query = "select distinct b.`id` as idmenu from dbmaster.t_karyawan_menu as a join dbmaster.t_karyawan_menu_d as b on a.igroup=b.igroup where a.karyawanid='$npicardid_' AND b.id='$pnpidmenu_'";

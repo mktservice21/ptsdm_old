@@ -18,6 +18,7 @@
             $tjml=1;
             if (!empty($uc['jumlah'])) $tjml=$uc['jumlah'];
             $tgpid=$uc['groupid'];
+            $nomoridpl=$uc['nobrid'];
 
             if ($_GET['act']=="editdata"){
                 $cari = mysqli_query($cnmy, "SELECT * FROM dbmaster.t_brrutin1 where idrutin='$_GET[id]' and nobrid='$uc[nobrid]'");
@@ -74,8 +75,8 @@
                     echo "<div hidden><input type='text' name='$nmidbl' id='$nmidbl' value='$uc[nobrid]'></div>";
                     echo "<tr scope='row'><td>$no</td>";
                     echo "<td>$uc[nama]<input type='hidden' id='$nmnama' name='$nmnama' class='input-sm' autocomplete='off' value='$uc[nama]'> $tglisi</td>";
-                    echo "<td><input type='$qtyhide' size='5px' id='$nmqty' name='$nmqty' onblur=hit_total('$nmnilai','$nmqty','$nmtotal') class='input-sm inputmaskrp2' autocomplete='off' value='$uqyu'></td>";
-                    echo "<td><input type='$qtyhide' size='10px' id='$nmnilai' name='$nmnilai' onblur=hit_total('$nmnilai','$nmqty','$nmtotal') class='input-sm inputmaskrp2' autocomplete='off' value='$unilai'></td>";
+                    echo "<td><input type='$qtyhide' size='5px' id='$nmqty' name='$nmqty' onblur=\"hit_total('$nmnilai','$nmqty','$nmtotal', '$nomoridpl')\" class='input-sm inputmaskrp2' autocomplete='off' value='$uqyu'></td>";
+                    echo "<td><input type='$qtyhide' size='10px' id='$nmnilai' name='$nmnilai' onblur=\"hit_total('$nmnilai','$nmqty','$nmtotal', '$nomoridpl')\" class='input-sm inputmaskrp2' autocomplete='off' value='$unilai'></td>";
                     echo "<td><input type='text' size='10px' id='$nmtotal' name='$nmtotal' onblur='findTotal()' class='input-sm inputmaskrp2' autocomplete='off' value='$total' $qtyreadony></td>";
                     echo "<td><input type='text' size='35px' id='$nmnote' name='$nmnote' class='input-sm' autocomplete='off' value='$unote'></td>";
                     $no++;
@@ -115,8 +116,8 @@
                 echo "<div hidden><input type='text' name='$nmidbl' id='$nmidbl' value='$uc[nobrid]'></div>";
                 echo "<tr scope='row'><td>$no</td>";
                 echo "<td>$uc[nama]<input type='hidden' id='$nmnama' name='$nmnama' class='input-sm' autocomplete='off' value='$uc[nama]'> $tglisi</td>";
-                echo "<td><input type='$qtyhide' size='5px' id='$nmqty' name='$nmqty' onblur=hit_total('$nmnilai','$nmqty','$nmtotal') class='input-sm inputmaskrp2' autocomplete='off' value='$uqyu'></td>";
-                echo "<td><input type='$qtyhide' size='10px' id='$nmnilai' name='$nmnilai' onblur=hit_total('$nmnilai','$nmqty','$nmtotal') class='input-sm inputmaskrp2' autocomplete='off' value='$unilai'></td>";
+                echo "<td><input type='$qtyhide' size='5px' id='$nmqty' name='$nmqty' onblur=\"hit_total('$nmnilai','$nmqty','$nmtotal', '$nomoridpl')\" class='input-sm inputmaskrp2' autocomplete='off' value='$uqyu'></td>";
+                echo "<td><input type='$qtyhide' size='10px' id='$nmnilai' name='$nmnilai' onblur=\"hit_total('$nmnilai','$nmqty','$nmtotal', '$nomoridpl')\" class='input-sm inputmaskrp2' autocomplete='off' value='$unilai'></td>";
                 echo "<td><input type='text' size='10px' id='$nmtotal' name='$nmtotal' onblur='findTotal()' class='input-sm inputmaskrp2' autocomplete='off' value='$total' $qtyreadony></td>";
                 echo "<td><input type='text' size='35px' id='$nmnote' name='$nmnote' class='input-sm' autocomplete='off' value='$unote'></td>";
                 $no++;

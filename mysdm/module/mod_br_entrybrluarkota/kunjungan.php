@@ -4,7 +4,8 @@ if ($_GET['module']=="getkunjungan"){
     include "../../config/fungsi_sql.php";
     include "../../config/library.php";
     
-    $date1=$_POST['ubulan'];
+    //$date1=$_POST['ubulan'];
+    $date1 = date("Y-m-d");
     $tgl1= date("Y-m-01", strtotime($date1));
     $tgl2= date("Y-m-t", strtotime($date1));
     $bulan= date("Ym", strtotime($date1));
@@ -41,23 +42,27 @@ if ($_GET['module']=="getkunjungan"){
                         if ($phari==0)
                             $stl="style='background:#FAEBD7;'";
                         
-                        $sql = "SELECT * FROM dbmaster.t_planuc_mkt WHERE karyawanid='$idkar' and DATE_FORMAT(tgl, '%Y%m%d') = '$mytgl' order by tgl";
+                        //$sql = "SELECT * FROM dbmaster.t_planuc_mkt WHERE karyawanid='$idkar' and DATE_FORMAT(tgl, '%Y%m%d') = '$mytgl' order by tgl";
+                        $sql = "select a.karyawanid, a.id_jenis, b.tanggal, a.keperluan FROM hrd.t_cuti0 as a "
+                                . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti WHERE a.id_jenis IN ('05') AND "
+                                . " a.karyawanid='$idkar' AND DATE_FORMAT(b.tanggal, '%Y%m%d') = '$mytgl' AND IFNULL(a.stsnonaktif,'')<>'Y' "
+                                . " ORDER BY b.tanggal";
                         $tampil = mysqli_query($cnmy, $sql);
                         $ketemu = mysqli_num_rows($tampil);
                         if ($ketemu>0) {
                             $t= mysqli_fetch_array($tampil);
-                            $nourut=$t['nourut'];
-                            $ket=$t['keterangan'];
+                            //$nourut=$t['nourut'];
+                            $ket=$t['keperluan'];
                             
-                            if (!empty($t['atasan1'])) $patasan1=$t['atasan1'];
-                            if (!empty($t['atasan2'])) $patasan2=$t['atasan2'];
-                            if (!empty($t['atasan3'])) $patasan3=$t['atasan3'];
+                            //if (!empty($t['atasan1'])) $patasan1=$t['atasan1'];
+                            //if (!empty($t['atasan2'])) $patasan2=$t['atasan2'];
+                            //if (!empty($t['atasan3'])) $patasan3=$t['atasan3'];
                             
                         }
                         
                         echo "<tr $stl>";
-                        echo "<td>$mhari</td>";
-                        echo "<td>$nmhari, $ptgl</td>";
+                        echo "<td nowrap>$mhari</td>";
+                        echo "<td nowrap>$nmhari, $ptgl</td>";
                         echo "<td><input type='hidden' name='txtket$no' id='txtket$no' size='80px' value='$ket'>$ket</td>";
                         echo "</tr>";
                         $no++;

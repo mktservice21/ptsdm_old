@@ -358,7 +358,7 @@ elseif ($module=='entrybrluarkota')
     if ($pidcabang=="0000000001")
         $pwilayah="01";
     else{
-        $reg=  getfieldcnmy("select distinct region as lcfields from dbmaster.icabang where iCabangId='$pidcabang'");
+        $reg=  getfieldcnmy("select distinct region as lcfields from mkt.icabang where iCabangId='$pidcabang'");
         if ($pdivprodid=="OTC") {
             if ($reg=="B")
                 $pwilayah="04";
@@ -580,6 +580,8 @@ elseif ($module=='entrybrluarkota')
             
             //!empty($blqty) AND !empty($blnilai) AND 
             if (!empty($bltotal)) {
+                if (empty($isikmdetail)) $isikmdetail=0;
+                
                 $coadet = getfieldcnmy("select COA4 as lcfields from dbmaster.posting_coa_rutin where divisi='$pdivprodid' AND nobrid='$blid'");
                 
                 $query = "insert into $dbname.t_brrutin1 (idrutin,nobrid,qty,rp,rptotal,notes, coa, tgl1, tgl2, km) "

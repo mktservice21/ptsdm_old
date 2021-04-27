@@ -285,6 +285,34 @@ $(document).ready(function() {
                 }
             }
             
+            findHitungHariUC();
+            
+            var newchar = '';
+            var aq_sdh_input = document.getElementById('e_ucinput').value;
+            var adainputuc = document.getElementById('e_ucinput_i').value;
+            var aq_totuc = document.getElementById('e_uctotal').value;
+            
+            aq_sdh_input = aq_sdh_input.split(',').join(newchar);
+            adainputuc = adainputuc.split(',').join(newchar);
+            aq_totuc = aq_totuc.split(',').join(newchar);
+        
+            if (aq_sdh_input=="") aq_sdh_input="0";
+            if (adainputuc=="") adainputuc="0";
+            if (aq_totuc=="") aq_totuc="0";
+            
+            if (adainputuc=="0") {
+            }else{
+                if (aq_totuc=="0") {
+                    alert("Anda belum mengisi Form UC...\n\
+Untuk mengisi HOTEL form cuti harus diisi terlebih dahulu."); return false;
+                }else{
+                    if (parseInt(aq_sdh_input)>parseInt(aq_totuc)) {
+                        alert("Jumlah hari (HOTEL), melebihi jumlah UC..."); return false;
+                    }
+                }
+            }
+            
+            
             
             //simpan data ke DB
             var cmt = confirm('pastikan tanda tangan terisi....!!! jika sudah terisi klik OK');

@@ -182,7 +182,7 @@
                         </div>
 
                         
-                        <div class='col-sm-2'>
+                        <div hidden class='col-sm-2'>
                             Cabang
                             <div class="form-group">
                                 <select class='form-control' id="cb_cabang" name="cb_cabang" onchange="ShowDataKaryawan()">

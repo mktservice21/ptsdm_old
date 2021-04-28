@@ -16,7 +16,7 @@ if ($pilihdarims==true) {
     $now=date("mdYhis");
     $tmp00 =" dbtemp.TMPYTDDAR00_".$karyawanid."_$now ";
     
-    $query = "select * from sls.ytd where bulan='$bulan' and region='$region'";
+    $query = "select * from sls.ytd where bulan='$bulan' and region='$region' AND iddaerah<>'026'";
     $results1 = DB::query("CREATE TEMPORARY TABLE $tmp00 ($query)");
     $query = "UPDATE $tmp00 SET divprodid='ZOTHER' WHERE kategori='OTHER'";
     $results1 = DB::query($query);

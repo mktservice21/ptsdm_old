@@ -165,12 +165,12 @@ if ((INT)$ketmeuk<=0) {
     mysqli_query($cnmy, $sql); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "SELECT karyawanid, divisiid, jabatanid, tglmasuk, tglkeluar, "
+    $query = "SELECT karyawanid, nama_karyawan, divisiid, jabatanid, tglmasuk, tglkeluar, "
             . " IFNULL(TIMESTAMPDIFF(YEAR, tglmasuk, '$pmasakerja'),0) AS jml_thn, "
             . " IFNULL(TIMESTAMPDIFF(MONTH, tglmasuk, '$pmasakerja'),0) AS jml_bln "
             . " FROM $tmp01";
 }else{
-    $query = "SELECT karyawanid, divisiid, jabatanid, tglmasuk, tglkeluar, "
+    $query = "SELECT karyawanid, nama_karyawan, divisiid, jabatanid, tglmasuk, tglkeluar, "
             . " IFNULL(TIMESTAMPDIFF(YEAR, tglmasuk, '$pmasakerja'),0) AS jml_thn, "
             . " IFNULL(TIMESTAMPDIFF(MONTH, tglmasuk, '$pmasakerja'),0) AS jml_bln "
             . " FROM $tmp05";
@@ -186,11 +186,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 $query = "alter table $tmp06 add column jml_tambah INT (4)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "select distinct karyawanid, divisiid, jabatanid, tglmasuk, tglkeluar, jml_thn, jml_bln, id_jenis, nama_jenis, potong_cuti FROM $tmp06, hrd.jenis_cuti"; 
+$query = "select distinct karyawanid, nama_karyawan, divisiid, jabatanid, tglmasuk, tglkeluar, jml_thn, jml_bln, id_jenis, nama_jenis, potong_cuti FROM $tmp06, hrd.jenis_cuti"; 
 $query = "create TEMPORARY table $tmp07 ($query)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "alter table $tmp07 add column jumlah INT(4), add column jml_cuti INT (4), add column sisa_cuti INT (4)";
+$query = "alter table $tmp07 add column jumlah INT(4), add column jml_tambah INT (4), add column jml_cuti INT (4), add column sisa_cuti INT (4)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "UPDATE $tmp07 SET jumlah='12' WHERE id_jenis='01' AND IFNULL(jml_thn,0)>=1";
@@ -211,8 +211,8 @@ while ($rowk= mysqli_fetch_array($tampilk)) {
     
     if (empty($lfreecuti)) $lfreecuti=0;
     
-    if ($lidjenis=="01") {
-        $query = "UPDATE $tmp07 SET jumlah=12+'$lfreecuti' WHERE "
+    if ($lidjenis=="11") {
+        $query = "UPDATE $tmp07 SET jumlah='$lfreecuti' WHERE "
                 . " ifnull(jml_thn,0)>='$ldari' AND ifnull(jml_thn,0)<='$lsampai' AND id_jenis='$lidjenis'";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     }else{
@@ -346,10 +346,6 @@ if (!empty($fjenisid)) {
             echo "<th align='left'><small>Tanggal</small></th>";
             echo "<th align='left'><small>Keperluan</small></th>";
             
-            echo "<th align='left'><small>Dapat Cuti</small></th>";
-            echo "<th align='left'><small>Jumlah Cuti</small></th>";
-            echo "<th align='left'><small>Sisa Cuti</small></th>";
-            
         echo "</tr>";
         
         $no=1;
@@ -442,10 +438,6 @@ if (!empty($fjenisid)) {
                         echo "<td nowrap>$pbln1 s/d. $pbln2</td>";
                         echo "<td >$pkeperluan</td>";
                         
-                        echo "<td nowrap>&nbsp;</td>";
-                        echo "<td nowrap>&nbsp;</td>";
-                        echo "<td nowrap>&nbsp;</td>";
-                        
                         echo "</tr>";
                     }else{
 
@@ -465,10 +457,6 @@ if (!empty($fjenisid)) {
                                 echo "<td nowrap>$ntgl</td>";
                                 echo "<td >$pkeperluan</td>";
                                 
-                                echo "<td nowrap>&nbsp;</td>";
-                                echo "<td nowrap>&nbsp;</td>";
-                                echo "<td nowrap>&nbsp;</td>";
-                                
                                 echo "</tr>";
                             }else{
                                 echo "<tr>";
@@ -480,10 +468,6 @@ if (!empty($fjenisid)) {
                                 echo "<td nowrap>&nbsp;</td>";
                                 echo "<td nowrap>$ntgl</td>";
                                 echo "<td >$pkeperluan</td>";
-                                
-                                echo "<td nowrap>&nbsp;</td>";
-                                echo "<td nowrap>&nbsp;</td>";
-                                echo "<td nowrap>&nbsp;</td>";
                                 
                                 echo "</tr>";
                             }
@@ -541,10 +525,6 @@ if (!empty($fjenisid)) {
                             echo "<td nowrap>$ntgl</td>";
                             echo "<td >$pkeperluan</td>";
 
-                            echo "<td nowrap>&nbsp;</td>";
-                            echo "<td nowrap>&nbsp;</td>";
-                            echo "<td nowrap>&nbsp;</td>";
-
                             echo "</tr>";
 
                         }else{
@@ -558,10 +538,6 @@ if (!empty($fjenisid)) {
                             echo "<td nowrap>$ntgl</td>";
                             echo "<td >$pkeperluan</td>";
 
-                            echo "<td nowrap>&nbsp;</td>";
-                            echo "<td nowrap>&nbsp;</td>";
-                            echo "<td nowrap>&nbsp;</td>";
-
                             echo "</tr>";
                         }
                         $ilewat_m=true;
@@ -571,210 +547,6 @@ if (!empty($fjenisid)) {
             
             }
             
-            $pjmlsisacuti_sbl=0;
-            $pjmlsisacuti_maret=0;
-            $pjmlsisacuti_april=0;
-            $pjmlcuti2021manual=0;
-            $pjmlcutimaret2021manual=0;
-            $pjmlcutiapril2021manual=0;
-            
-            if ((INT)$ptahun<=2021) {
-                $query = "select sisa_cuti_2020 FROM hrd.t_cuti_dari_it WHERE karyawanid='$pidkaryawan'";
-                $tampil_1=mysqli_query($cnmy, $query);
-                $ketemu_1= mysqli_num_rows($tampil_1);
-                if ((INT)$ketemu_1>0) {
-                    $row_1= mysqli_fetch_array($tampil_1);
-                    $pjmlsisacuti=$row_1['sisa_cuti_2020'];
-                }
-                
-                //sisa cuti tahun sebelumnya (2020) yang bisa dipakai maret
-                $query = "select sisa_cuti_sd_maret_2021 FROM hrd.t_cuti_dari_it WHERE karyawanid='$pidkaryawan'";
-                $tampil_2=mysqli_query($cnmy, $query);
-                $ketemu_2= mysqli_num_rows($tampil_2);
-                if ((INT)$ketemu_2>0) {
-                    $row_2= mysqli_fetch_array($tampil_2);
-                    $pjmlsisacuti_maret=$row_2['sisa_cuti_sd_maret_2021'];
-                }
-                
-                //sisa cuti tahun sebelumnya (2020) yang bisa dipakai april 
-                $query = "select sisa_cuti_per_april_2021 FROM hrd.t_cuti_dari_it WHERE karyawanid='$pidkaryawan'";
-                $tampil_3=mysqli_query($cnmy, $query);
-                $ketemu_3= mysqli_num_rows($tampil_3);
-                if ((INT)$ketemu_3>0) {
-                    $row_3= mysqli_fetch_array($tampil_3);
-                    $pjmlsisacuti_april=$row_3['sisa_cuti_per_april_2021'];
-                }
-                
-                //sisa cuti tahun 2021 MANUAL
-                $query = "select IFNULL(cuti_sd_maret_2021,0)+IFNULL(cuti_april_2021,0) as jmlcuti2021, cuti_sd_maret_2021, cuti_april_2021 FROM hrd.t_cuti_dari_it WHERE karyawanid='$pidkaryawan'";
-                $tampil_4=mysqli_query($cnmy, $query);
-                $ketemu_4= mysqli_num_rows($tampil_4);
-                if ((INT)$ketemu_4>0) {
-                    $row_4= mysqli_fetch_array($tampil_4);
-                    $pjmlcuti2021manual=$row_4['jmlcuti2021'];
-                    $pjmlcutimaret2021manual=$row_4['cuti_sd_maret_2021'];
-                    $pjmlcutiapril2021manual=$row_4['cuti_april_2021'];
-                }
-            }
-            
-            if (empty($pjmlsisacuti)) $pjmlsisacuti=0;
-            if (empty($pjmlsisacuti_maret)) $pjmlsisacuti_maret=0;
-            if (empty($pjmlsisacuti_april)) $pjmlsisacuti_april=0;
-            if (empty($pjmlcuti2021manual)) $pjmlcuti2021manual=0;
-            if (empty($pjmlcutimaret2021manual)) $pjmlcutimaret2021manual=0;
-            if (empty($pjmlcutiapril2021manual)) $pjmlcutiapril2021manual=0;
-            
-            //bisa dihapus
-            if ((INT)$ptahun==2021) {
-                $pjmlsisacuti_sbl=(INT)$pjmlsisacuti_april+(INT)$pjmlcutimaret2021manual;
-            }else{
-                $pjmlsisacuti_sbl=$pjmlsisacuti_april;
-            }
-            
-            
-            //sisa cuti tahun sebelumnya
-            echo "<tr style='font-weight:bold;'>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td ></td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td align='right'>Sisa Cuti Tahun $ptahunsebelum</td>";
-
-            echo "<td nowrap align='right'>$pjmlsisacuti_sbl</td>";
-            echo "<td nowrap align='right'>&nbsp;</td>";
-            echo "<td nowrap align='right'>&nbsp;</td>";
-
-            echo "</tr>";
-            
-            
-            
-            
-            if ((INT)$ptahun==2021 AND (INT)$pjmlcuti2021manual>0) {
-                $pjmlsisacuti_sbl=(INT)$pjmlsisacuti_sbl-(INT)$pjmlcutimaret2021manual;
-                //cuti tahun 2021 manual
-                echo "<tr style='font-weight:bold;'>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td ></td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td align='right'>Cuti Tahun $ptahun (Form Manual) s/d. April 2021</td>";
-
-                echo "<td nowrap align='right'>&nbsp;</td>";
-                echo "<td nowrap align='right'>&nbsp;</td>";
-                echo "<td nowrap align='right'>$pjmlcuti2021manual</td>";
-
-                echo "</tr>";
-            }
-            
-            /*
-            //sisa cuti tahun sebelumnya sampai maret
-            echo "<tr style='font-weight:bold;'>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td ></td>";
-            echo "<td nowrap>&nbsp;</td>";
-            echo "<td align='right'>Sisa Cuti Tahun $ptahunsebelum s/d. Maret $ptahun</td>";
-
-            echo "<td nowrap align='right'>&nbsp;</td>";
-            echo "<td nowrap align='right'>&nbsp;</td>";
-            echo "<td nowrap align='right'>$pjmlsisacuti_maret</td>";
-
-            echo "</tr>";
-            */
-            
-            
-            $pjmlsisacuti=0;
-            $query = "select * from $tmp07 WHERE IFNULL(potong_cuti,'')='Y' AND karyawanid='$pidkaryawan' order by id_jenis";
-            $tampil_k=mysqli_query($cnmy, $query);
-            $ketemu_k= mysqli_num_rows($tampil_k);
-            if ((INT)$ketemu_k>0) {
-                while ($row_k= mysqli_fetch_array($tampil_k)) {
-                    $pidjenis=$row_k['id_jenis'];
-                    $pnmjenis=$row_k['nama_jenis'];
-                    
-                    $pjmldptcuti=$row_k['jumlah'];
-                    $pjmlcuti=$row_k['jml_cuti'];
-                    $psisacuti=$row_k['sisa_cuti'];
-                    
-                    if ($pidjenis!="01" AND (INT)$pjmlcuti==0) continue;
-                    
-                    if ($pidjenis=="01") {
-                        $pjmlsisacuti=(DOUBLE)$pjmlsisacuti+$psisacuti;
-                    }else{
-                        $pjmlsisacuti=(DOUBLE)$pjmlsisacuti+(DOUBLE)$psisacuti;
-                    }
-                    
-                    if (strpos($fjenisid, $pidjenis)) {
-                        echo "<tr style='font-weight:bold;'>";
-                        echo "<td nowrap>&nbsp;</td>";
-                        echo "<td nowrap>&nbsp;</td>";
-                        echo "<td nowrap>&nbsp;</td>";
-                        echo "<td nowrap>&nbsp;</td>";
-                        echo "<td nowrap>&nbsp;</td>";
-                        echo "<td >&nbsp;</td>";
-                        echo "<td nowrap>&nbsp;</td>";
-                        echo "<td align='right'>$pnmjenis</td>";
-
-                        echo "<td nowrap align='right'>$pjmldptcuti</td>";
-                        echo "<td nowrap align='right'>$pjmlcuti</td>";
-                        echo "<td nowrap align='right'>$psisacuti</td>";
-
-                        echo "</tr>";
-                    }
-                        
-                }
-                
-                //sisa cuti tahun berjalan
-                echo "<tr style='font-weight:bold;'>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td ></td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td align='right'>Sisa Cuti Tahun $ptahun</td>";
-
-                echo "<td nowrap align='right'>&nbsp;</td>";
-                echo "<td nowrap align='right'>&nbsp;</td>";
-                echo "<td nowrap align='right'>$pjmlsisacuti</td>";
-
-                echo "</tr>";
-                
-                $pjmlsisacuti_sbl_sdh=0;
-                if ((INT)$ptahun==2021) {
-                    $pjmlsisacuti_sbl_sdh=(INT)$pjmlsisacuti+(INT)$pjmlsisacuti_sbl-(INT)$pjmlcutiapril2021manual;
-                }else{
-                    $pjmlsisacuti_sbl_sdh=(INT)$pjmlsisacuti+(INT)$pjmlsisacuti_sbl;
-                }
-                
-                //sisa cuti tahun sebelum dan sekrang di jumlah
-                echo "<tr style='font-weight:bold;'>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td ></td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td align='right'>Sisa Cuti </td>";
-
-                echo "<td nowrap align='right'>&nbsp;</td>";
-                echo "<td nowrap align='right'>&nbsp;</td>";
-                echo "<td nowrap align='right'>$pjmlsisacuti_sbl_sdh</td>";
-
-                echo "</tr>";
-            }
-            
             
             $no++;
             
@@ -782,6 +554,340 @@ if (!empty($fjenisid)) {
 
     echo "</table>";
 
+    
+    echo "<br/><br/>";
+    
+    
+    $free_reguler=0;
+    $free_masakerja=0;
+    $cuti_reguler=0;
+    $cuti_izin=0;
+    $cuti_massal=0;
+    $free_menikah=0;
+    $cuti_menikah=0;
+    $free_istlahiran=0;
+    $cuti_istlahiran=0;
+    $free_ortuwafat=0;
+    $cuti_ortuwafat=0;
+    
+    $sisa_cuti=0;
+    
+    
+    
+    if (!empty($pkryid)) {
+        $query = "select * from $tmp05";
+        $tampiln=mysqli_query($cnmy, $query);
+        $ketmeun= mysqli_num_rows($tampiln);
+        if ((INT)$ketmeun<=0) {
+            $sql = "INSERT INTO $tmp05 (karyawanid, divisiid, jabatanid, tglmasuk, nama_karyawan, jml_thn, jml_bln) "
+                    . " select distinct karyawanid, divisiid, jabatanid, tglmasuk, nama_karyawan, jml_thn, jml_bln FROM $tmp07";
+            mysqli_query($cnmy, $sql); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }
+    }
+    
+    echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
+    
+    $query = "select distinct karyawanid, nama_karyawan, tglmasuk, jml_thn, jml_bln FROM $tmp05 ORDER BY nama_karyawan, karyawanid";
+    $tampil_s= mysqli_query($cnmy, $query);
+    while ($row_s= mysqli_fetch_array($tampil_s)) {
+        $pidkaryawan=$row_s['karyawanid'];
+        $pnmkaryawan=$row_s['nama_karyawan'];
+        
+        $ptglmasuk=$row_s['tglmasuk'];
+        $pmskrjathn=$row_s['jml_thn'];
+        $pmskrjabln=$row_s['jml_bln'];
+
+        $pmasakerja="0";
+        if ((INT)$pmskrjathn>0) $pmasakerja=$pmskrjathn." tahun";
+        else{
+            if ((INT)$pmskrjabln>0) $pmasakerja=$pmskrjabln." bulan";
+        }
+
+        if ($ptglmasuk=="0000-00-00") $ptglmasuk="";
+        if (!empty($ptglmasuk)) $ptglmasuk=date("d/m/Y", strtotime($ptglmasuk));
+        
+        $pclsbreak ="class='fbreak'";
+        
+        $p2020_cuti20=0;
+        $p2020_cuti_janmrt21=0;
+        $p2020_cuti_apr21=0;
+        $p2020_cuti_janapr21=0;
+        $p2020_free_tbh=0;
+        $p2020_free_reg=0;
+        $p2020_free_masker=0;
+        $p2020_cuti_sisa=0;
+        $p2020_cuti_dari_it=0;
+        
+        if ((INT)$ptahun<=2021) {
+            
+            $query = "select cuti_2020, cuti_jan_maret_2021, cuti_april_2021,"
+                    . " free_tambahan, free_reguler, free_masakerja FROM hrd.t_cuti_it WHERE karyawanid='$pidkaryawan'";
+            $tampil_1=mysqli_query($cnmy, $query);
+            $ketemu_1= mysqli_num_rows($tampil_1);
+            if ((INT)$ketemu_1>0) {
+                $row_1= mysqli_fetch_array($tampil_1);
+                
+                $p2020_cuti20=$row_1['cuti_2020'];
+                $p2020_cuti_janmrt21=$row_1['cuti_jan_maret_2021'];
+                $p2020_cuti_apr21=$row_1['cuti_april_2021'];
+                
+                $p2020_free_tbh=$row_1['free_tambahan'];
+                $p2020_free_reg=$row_1['free_reguler'];
+                $p2020_free_masker=$row_1['free_masakerja'];
+                
+                if (empty($p2020_cuti20)) $p2020_cuti20=0;
+                if (empty($p2020_cuti_janmrt21)) $p2020_cuti_janmrt21=0;
+                if (empty($p2020_cuti_apr21)) $p2020_cuti_apr21=0;
+                if (empty($p2020_free_tbh)) $p2020_free_tbh=0;
+                if (empty($p2020_free_reg)) $p2020_free_reg=0;
+                if (empty($p2020_free_masker)) $p2020_free_masker=0;
+                
+                $p2020_free_reg=(INT)$p2020_free_reg+(INT)$p2020_free_tbh;
+                
+                
+                $p2020_cuti_sisa=(INT)$p2020_free_reg-(INT)$p2020_cuti20;
+                
+                $p2020_cuti_janapr21=(INT)$p2020_cuti_janmrt21+(INT)$p2020_cuti_apr21;
+                
+                if (empty($p2020_cuti_janapr21)) $p2020_cuti_janapr21=0;
+                
+                /*
+                $p2020_free_masker=0;
+                $p2020_cuti_sisa=10;
+                $p2020_cuti_janmrt21=11;
+                $p2020_cuti_janapr21=$p2020_cuti_janmrt21;
+                //*/
+                
+                if ((INT)$p2020_cuti_sisa>(INT)$p2020_cuti_janmrt21) {
+                    $p2020_cuti_sisa=$p2020_cuti_janmrt21;
+                }else{
+                    
+                }
+                
+                $p2020_cuti_sisa=(INT)$p2020_cuti_sisa+(INT)$p2020_free_masker;
+                
+            }
+            
+            
+            // cuti dibuat minus
+            
+            $p2020_cuti_janapr21=-1*(INT)$p2020_cuti_janapr21;
+             
+            //sisa cuti tahun sebelumnya
+            echo "<tr $pclsbreak>";
+            echo "<td nowrap>$pnmkaryawan</td>";
+            echo "<td>Sisa Cuti Tahun $ptahunsebelum</td>";
+
+            echo "<td nowrap align='right'>$p2020_cuti_sisa</td>";
+
+            echo "</tr>";
+            
+            $pnmkaryawan="";
+            $pclsbreak="";
+            
+            if ((INT)$ptahun==2021 AND (INT)$p2020_cuti_janapr21<>0) {
+                //cuti tahun 2021 manual
+                echo "<tr>";
+                echo "<td nowrap>$pnmkaryawan</td>";
+                echo "<td>Cuti Tahun $ptahun (Form Manual) s/d. April 2021</td>";
+
+                echo "<td nowrap align='right'>$p2020_cuti_janapr21</td>";
+
+                echo "</tr>";
+            }
+            
+            $p2020_cuti_dari_it=(INT)$p2020_cuti_sisa+(INT)$p2020_cuti_janapr21;
+        
+        }
+
+
+
+            
+        
+        $query = "select distinct id_jenis, jumlah, jml_cuti FROM $tmp07 WHERE karyawanid='$pidkaryawan'";
+        $tampil1= mysqli_query($cnmy, $query);
+        while ($row1= mysqli_fetch_array($tampil1)) {
+        
+            $pidjenis=$row1['id_jenis'];
+            $pjumlah=$row1['jumlah'];
+            $pjmlcuti=$row1['jml_cuti'];
+
+            if (empty($pjumlah)) $pjumlah=0;
+            if (empty($pjmlcuti)) $pjmlcuti=0;
+            
+            $pjmlcuti=-1*(INT)$pjmlcuti;
+            
+            if ($pidjenis=="01") {//reguler
+                $free_reguler=$pjumlah;
+                $cuti_reguler=$pjmlcuti;
+            }elseif ($pidjenis=="11") {//tambahan masa kerja
+                $free_masakerja=$pjumlah;
+            }elseif ($pidjenis=="03") {//izin
+                $cuti_izin=$pjmlcuti;
+            }elseif ($pidjenis=="00") {//massal
+                $cuti_massal=$pjmlcuti;
+            }elseif ($pidjenis=="07") {//cuti menikah
+                $free_menikah=$pjumlah;
+                $cuti_menikah=$pjmlcuti;
+            }elseif ($pidjenis=="08") {//cuti istri melahirkan
+                $free_istlahiran=$pjumlah;
+                $cuti_istlahiran=$pjmlcuti;
+            }elseif ($pidjenis=="09") {//cuti istri melahirkan
+                $free_ortuwafat=$pjumlah;
+                $cuti_ortuwafat=$pjmlcuti;
+            }
+            
+        
+        }
+        
+        //free reguler
+        echo "<tr $pclsbreak>";
+        echo "<td nowrap>$pnmkaryawan</td>";
+        echo "<td>Free Cuti Reguler $ptahun</td>";
+        echo "<td nowrap align='right'>$free_reguler</td>";
+        echo "</tr>";
+        
+        $pnmkaryawan="";
+        $pclsbreak="";
+        
+        //free tambahan masa kerja
+        if ((INT)$free_masakerja>0) {
+            echo "<tr>";
+            echo "<td nowrap></td>";
+            echo "<td>Free Cuti Masa Kerja $pmasakerja</td>";
+            echo "<td nowrap align='right'>$free_masakerja</td>";
+            echo "</tr>";
+        }else{
+            $free_masakerja=0;
+        }
+        
+        //cuti massal
+        if ((INT)$cuti_massal<>0) {
+            echo "<tr>";
+            echo "<td nowrap></td>";
+            echo "<td>Cuti Massal </td>";
+            echo "<td nowrap align='right'>$cuti_massal</td>";
+            echo "</tr>";
+        }
+        
+        //cuti reguler
+        echo "<tr>";
+        echo "<td nowrap></td>";
+        echo "<td>Cuti Reguler </td>";
+        echo "<td nowrap align='right'>$cuti_reguler</td>";
+        echo "</tr>";
+        
+        //cuti izin
+        if ((INT)$cuti_izin<>0) {
+            echo "<tr>";
+            echo "<td nowrap></td>";
+            echo "<td>Izin </td>";
+            echo "<td nowrap align='right'>$cuti_izin</td>";
+            echo "</tr>";
+        }
+        
+        //cuti menikah
+        if ((INT)$cuti_menikah<>0) {
+            echo "<tr>";
+            echo "<td nowrap></td>";
+            echo "<td>Free Cuti Menikah </td>";
+            echo "<td nowrap align='right'>$free_menikah</td>";
+            echo "</tr>";
+            
+            echo "<tr>";
+            echo "<td nowrap></td>";
+            echo "<td>Cuti Menikah </td>";
+            echo "<td nowrap align='right'>$cuti_menikah</td>";
+            echo "</tr>";
+            
+            $totsisa=(INT)$free_menikah+(INT)$cuti_menikah;
+            if ((INT)$totsisa<=(INT)$free_menikah) {
+                $free_menikah=0;
+                $cuti_menikah=0;
+            }
+        }else{
+            $free_menikah=0;
+        }
+        
+        //cuti istri melahirkan
+        if ((INT)$cuti_istlahiran<>0) {
+            echo "<tr>";
+            echo "<td nowrap></td>";
+            echo "<td>Free Cuti Istri Melahirkan </td>";
+            echo "<td nowrap align='right'>$free_istlahiran</td>";
+            echo "</tr>";
+            
+            echo "<tr>";
+            echo "<td nowrap></td>";
+            echo "<td>Cuti Istri Melahirkan </td>";
+            echo "<td nowrap align='right'>$cuti_istlahiran</td>";
+            echo "</tr>";
+            
+            $totsisa=(INT)$free_istlahiran+(INT)$cuti_istlahiran;
+            if ((INT)$totsisa<=(INT)$free_istlahiran) {
+                $free_istlahiran=0;
+                $cuti_istlahiran=0;
+            }
+        }else{
+            $free_istlahiran=0;
+        }
+        
+        //cuti orang tua meninggal
+        if ((INT)$cuti_ortuwafat<>0) {
+            echo "<tr>";
+            echo "<td nowrap></td>";
+            echo "<td>Free Orang tua meninggal </td>";
+            echo "<td nowrap align='right'>$free_ortuwafat</td>";
+            echo "</tr>";
+            
+            echo "<tr>";
+            echo "<td nowrap></td>";
+            echo "<td>Cuti Orang tua meninggal </td>";
+            echo "<td nowrap align='right'>$cuti_ortuwafat</td>";
+            echo "</tr>";
+            
+            $totsisa=(INT)$free_ortuwafat+(INT)$cuti_ortuwafat;
+            if ((INT)$totsisa<=(INT)$free_ortuwafat) {
+                $free_ortuwafat=0;
+                $cuti_ortuwafat=0;
+            }
+            
+        }else{
+            $free_ortuwafat=0;
+        }
+        
+    
+    
+        $sisa_cuti=0;
+    
+        $jml_cuti=(INT)$cuti_reguler+(INT)$cuti_izin+(INT)$cuti_massal+(INT)$cuti_menikah+(INT)$cuti_istlahiran+(INT)$cuti_ortuwafat;
+        $jml_free=(INT)$free_reguler+(INT)$free_masakerja+(INT)$free_menikah+(INT)$free_istlahiran+(INT)$free_ortuwafat;
+        
+        $sisa_cuti=(INT)$jml_free+(INT)$jml_cuti;//karena jml cuti minus jadi ditambah kecuali kalau plus jml cutinya
+        
+        
+        $pjmlsisacuti_sbl_sdh=(INT)$sisa_cuti+(INT)$p2020_cuti_dari_it;
+
+                
+        echo "<tr style='font-weight:bold;'>";
+        echo "<td nowrap>&nbsp;</td>";
+        echo "<td>Sisa Cuti Tahun $ptahun</td>";
+        echo "<td nowrap align='right'>$pjmlsisacuti_sbl_sdh</td>";
+        echo "</tr>";
+        
+        
+        //
+        echo "<tr>";
+        echo "<td nowrap>&nbsp;</td>";
+        echo "<td>&nbsp;</td>";
+        echo "<td nowrap align='right'>&nbsp;</td>";
+        echo "</tr>";
+            
+    }
+    
+    
+    echo "</table>";
+    
     echo "<br/><br/><br/><br/><br/>";
     
     ?>

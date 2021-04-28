@@ -295,6 +295,10 @@ switch($pactpilih){
                                                         <?PHP
                                                             $query_cb = "select id_jenis, nama_jenis "
                                                                     . " from hrd.jenis_cuti WHERE IFNULL(aktif,'')<>'N' ";
+                                                            if ($fgroupid=="24" or $fgroupid=="1" or $fgroupid=="29" or $fgroupid=="47") {
+                                                            }else{
+                                                                $query_cb .=" AND id_jenis NOT IN ('04', '05', '06')";
+                                                            }
                                                             $query_cb .=" order by id_jenis, nama_jenis";
                                                             $tampil = mysqli_query($cnmy, $query_cb);
 

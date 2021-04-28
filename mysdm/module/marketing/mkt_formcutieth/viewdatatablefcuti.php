@@ -145,6 +145,7 @@
                     . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&iprint=detail',"
                     . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                     . "View</a>";
+                $phapus = "<input type='button' class='btn btn-danger btn-xs' value='Hapus' onClick=\"ProsesDataHapus('hapus', '$cidinput')\">";
                 
                 $plewattgl=false; $ctglpl=""; $ctglpl1=""; $ctglpl2="";
                 $query = "select distinct tanggal from $tmp01 WHERE idcuti='$cidinput' order by tanggal";
@@ -185,20 +186,24 @@
                 
                 if ($bukanuser==false) {
                     $pedit="";
+                    $phapus="";
                 }
                 
                 if ($nsudahapprove==true) {
                     $pedit="";
+                    $phapus="";
                 }
                 
                 if ($nnonaktif=="Y") {
                     $pedit="reject";
                     $print="";
+                    $phapus="";
                 }
                 
                 if ($cidkry=="ALLETH" OR $cidkry=="ALL") {
                     $pedit="";
                     $print="";
+                    $phapus="";
                 }
                 
                 
@@ -207,7 +212,7 @@
                 echo "<td nowrap>$nnmjenis</td>";
                 echo "<td >$nkeperluan</td>";
                 echo "<td >$ntglpilih</td>";
-                echo "<td nowrap>$pedit &nbsp; &nbsp; $print</td>";
+                echo "<td nowrap>$pedit &nbsp; &nbsp; $print &nbsp; &nbsp; $phapus</td>";
                 echo "</tr>";
 
                 $no++;
@@ -300,6 +305,39 @@
 		
     </style>
 
+<script>
+    function ProsesDataHapus(ket, noid){
+
+        ok_ = 1;
+        if (ok_) {
+            var r = confirm('Apakah akan melakukan proses '+ket+' ...?');
+            
+            if (r==true) {
+
+                var txt;
+                if (ket=="reject" || ket=="hapus" || ket=="pending") {
+                    txt="";
+                }
+
+                var myurl = window.location;
+                var urlku = new URL(myurl);
+                var module = urlku.searchParams.get("module");
+                var idmenu = urlku.searchParams.get("idmenu");
+
+                //document.write("You pressed OK!")
+                document.getElementById("d-form2").action = "module/marketing/mkt_formcutieth/aksi_formcutieth.php?module="+module+"&act=hapus&idmenu="+idmenu+"&kethapus="+txt+"&ket="+ket+"&id="+noid;
+                document.getElementById("d-form2").submit();
+                return 1;
+            }
+        } else {
+            //document.write("You pressed Cancel!")
+            return 0;
+        }
+
+
+
+    }
+</script>
 <?PHP
 hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp01");

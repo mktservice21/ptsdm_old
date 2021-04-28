@@ -369,6 +369,7 @@ if ($pmodule=='entrybrdcc')
         $pchkki="";
         if (isset($_POST['chk_ki'])) $pchkki=$_POST['chk_ki'];
         $pjkwaktu=$_POST['e_jangkawaktu'];
+        $pjkwaktu_fin=$_POST['e_fin_jangkawaktu'];
         $pblnmulai=$_POST['e_blnmulai'];
         
         if (empty($pjkwaktu)) $pjkwaktu=0;
@@ -376,10 +377,12 @@ if ($pmodule=='entrybrdcc')
         if (!empty($pblnmulai)) $pblnmulai= date("Y-m-01", strtotime($pblnmulai));
         else $pblnmulai="0000-00-00";
         
+        if (empty($pjkwaktu_fin)) $pjkwaktu_fin=0;
+        $pjkwaktu_fin=str_replace(",","", $pjkwaktu_fin);
         
-        //echo "$pchkki, $pjkwaktu, $pblnmulai"; exit;
+        //echo "$pchkki, $pjkwaktu, $pjkwaktu_fin, $pblnmulai"; exit;
         
-        $query = "update hrd.br0 set stsbr='$pchkki', jangka_waktu='$pjkwaktu', bulan_mulai='$pblnmulai' WHERE brId='$kodenya' LIMIT 1";
+        $query = "update hrd.br0 set stsbr='$pchkki', jangka_waktu='$pjkwaktu', jangka_waktu_fin='$pjkwaktu_fin', bulan_mulai='$pblnmulai' WHERE brId='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         

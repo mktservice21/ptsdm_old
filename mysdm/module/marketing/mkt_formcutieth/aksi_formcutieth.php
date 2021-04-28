@@ -21,8 +21,18 @@ $idmenu=$_GET['idmenu'];
 if ($module=='mktformcutieth')
 {
     if ($act=="hapus") {
+        include "../../../config/koneksimysqli.php";
+        
+        $kodenya=$_GET['id'];
+        $pkethapus=$_GET['kethapus'];
+        if (!empty($pkethapus)) $pkethapus = str_replace("'", " ", $pkethapus);
 
-
+        mysqli_query($cnmy, "UPDATE hrd.t_cuti0 SET stsnonaktif='Y' WHERE idcuti='$kodenya' LIMIT 1");
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        mysqli_close($cnmy);
+        
+        header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilhapus');
         exit;
     }elseif ($act=="input" OR $act=="update") {
         $pkaryawanid=$_POST['e_idcarduser'];

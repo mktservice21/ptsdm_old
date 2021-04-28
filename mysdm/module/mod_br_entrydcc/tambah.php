@@ -158,6 +158,7 @@ $pchkatrika="";
 
 $pki_pilih="";
 $pjangkawaktu="";
+$pjangkawaktu_fin="";
         
         
 $pmodule=$_GET['module'];
@@ -270,6 +271,7 @@ if ($pact=="editdata") {
     $pbulanmulai=$r['bulan_mulai'];
     $pki_pilih=$r['stsbr'];
     $pjangkawaktu=$r['jangka_waktu'];
+    $pjangkawaktu_fin=$r['jangka_waktu_fin'];
     
     if ($pbulanmulai=="0000-00-00") $pbulanmulai="";
     if (!empty($pbulanmulai)) $pbulanmulai = date('F Y', strtotime($pbulanmulai));
@@ -727,6 +729,13 @@ $pjabatanid = $row['jabatanId'];
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jangka Waktu / Bulan <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                         <input type='number' id='e_jangkawaktu' name='e_jangkawaktu' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pjangkawaktu; ?>" >
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><span style="color:blue;">Jangka Waktu / Bulan (FINANCE)</span> <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <input type='number' id='e_fin_jangkawaktu' name='e_fin_jangkawaktu' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pjangkawaktu_fin; ?>" >
                                     </div>
                                 </div>
                                 

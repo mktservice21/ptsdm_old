@@ -78,6 +78,12 @@ switch($pactpilih){
         if (!empty($pfiltercabpilih)) {
             $pfiltercabpilih="(".substr($pfiltercabpilih, 0, -1).")";
         }
+        
+        $phiddenjenis="";
+        if ($fgroupid=="24" or $fgroupid=="1" or $fgroupid=="29" or $fgroupid=="47") {
+        }else{
+            $phiddenjenis="hidden";
+        }
 ?>
 
         <script>
@@ -286,7 +292,7 @@ switch($pactpilih){
                                         </div>
 
 
-                                        <div class='form-group'>
+                                        <div <?PHP echo $phiddenjenis; ?> class='form-group'>
                                             <div class='col-sm-12'>
                                                 <b>Jenis Cuti</b>
                                                 <input type="checkbox" id="chkbtnjenis" value="deselect" onClick="SelAllCheckBox('chkbtnjenis', 'chkbox_jenis[]')" checked/>

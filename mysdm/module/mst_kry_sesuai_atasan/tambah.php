@@ -206,8 +206,7 @@ if ($pilogin==true) {
                                     <div class='col-xs-5'>
                                         <select class='form-control input-sm' id='e_spv' name='e_spv' onchange="ShowDataDM()">
                                             <?PHP
-                                            $query ="select karyawanid, nama from hrd.karyawan where 1=1 "
-                                                    . " AND (aktif='Y' OR karyawanid='$atasanidspv') ";
+                                            $query ="select karyawanid, nama from hrd.karyawan where 1=1 ";//(aktif='Y' OR karyawanid='$atasanidspv')
                                             if ($_SESSION['DIVISI']=="OTC"){
                                                 $query .=" AND divisiid ='OTC' ";
                                                 $query .=" AND karyawanId Not In (select distinct karyawanId from dbmaster.t_karyawanadmin) ";
@@ -215,6 +214,7 @@ if ($pilogin==true) {
                                                 $query .=" AND jabatanid in ('10', '18')";
                                             }
                                             $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.')  and LEFT(nama,7) NOT IN ('NN DM - ')  and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-') AND LEFT(nama,5) NOT IN ('NN AM', 'NN DR') ";
+                                            $query .=" OR karyawanid='$atasanidspv' ";
                                             $query .=" ORDER BY nama";
                                             $sql=mysqli_query($icnit, $query);
                                             echo "<option value=''>-- Pilihan --</option>";
@@ -240,7 +240,7 @@ if ($pilogin==true) {
                                             //PilihKaryawanAktif("", "-- Pilihan --", $atasaniddm, "Y", $_SESSION['STSADMIN'], "", "", "Y", $_SESSION['IDCARD'], "", "", "", "", "");
                                             ?>
                                             <?PHP
-                                            $query ="select karyawanid, nama from hrd.karyawan where (aktif='Y' OR karyawanid='$atasaniddm') ";                                            
+                                            $query ="select karyawanid, nama from hrd.karyawan where 1=1 ";//(aktif='Y' OR karyawanid='$atasaniddm')
                                             if ($_SESSION['DIVISI']=="OTC"){
                                                 $query .=" AND divisiid ='OTC' ";
                                                 $query .=" AND karyawanId Not In (select distinct karyawanId from dbmaster.t_karyawanadmin) ";
@@ -248,6 +248,7 @@ if ($pilogin==true) {
                                                 $query .=" AND jabatanid in ('08')";
                                             }
                                             $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.')  and LEFT(nama,7) NOT IN ('NN DM - ')  and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-') AND LEFT(nama,5) NOT IN ('NN AM', 'NN DR') ";
+                                            $query .=" OR karyawanid='$atasaniddm' ";
                                             $query .=" ORDER BY nama";
                                             
                                             $sql=mysqli_query($icnit, $query);
@@ -274,7 +275,7 @@ if ($pilogin==true) {
                                             //PilihKaryawanAktif("", "-- Pilihan --", $atasanidsm, "Y", $_SESSION['STSADMIN'], "", "", "Y", $_SESSION['IDCARD'], "", "", "", "", "");
                                             ?>
                                             <?PHP
-                                            $query ="select karyawanid, nama from hrd.karyawan where (aktif='Y' OR karyawanid='$atasanidsm')";
+                                            $query ="select karyawanid, nama from hrd.karyawan where 1=1 ";//(aktif='Y' OR karyawanid='$atasanidsm')
                                             if ($_SESSION['DIVISI']=="OTC"){
                                                 $query .=" AND divisiid ='OTC' ";
                                                 $query .=" AND karyawanId Not In (select distinct karyawanId from dbmaster.t_karyawanadmin) ";
@@ -283,6 +284,7 @@ if ($pilogin==true) {
                                                 $query .=" AND jabatanid in ('20')";
                                             }
                                             $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.')  and LEFT(nama,7) NOT IN ('NN DM - ')  and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-') AND LEFT(nama,5) NOT IN ('NN AM', 'NN DR') ";
+                                            $query .=" OR karyawanid='$atasanidsm' ";
                                             $query .=" ORDER BY nama";
                                             
                                             $sql=mysqli_query($icnit, $query);

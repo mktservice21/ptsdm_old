@@ -31,6 +31,7 @@ $piddaerah="";
 
 $pki_pilih="";
 $pjangkawaktu="";
+$pjangkawaktu_fin="";
 
 $paktivitas1="";
 $paktivitas2="";
@@ -85,7 +86,7 @@ if ($pidact=="editdata"){
     $ncarisudahclosebrid=CariSudahClosingBRID1($pidbrid, "A");
     $query ="SELECT tgl, tgltrans, brId as brid, icabangid, karyawanId as karyawanid, mrid, "
             . " dokterId as dokterid, divprodid, COA4 as coa4, kode, "
-            . " idcabang, bulan_mulai, stsbr, jangka_waktu, "
+            . " idcabang, bulan_mulai, stsbr, jangka_waktu, jangka_waktu_fin, "
             . " aktivitas1, aktivitas2, ccyId as ccyid, "
             . " pajak, nama_pengusaha, noseri, tgl_fp, "
             . " dpp, ppn, pph_jns, ppn_rp, pph, pph_rp, pembulatan, materai_rp, jenis_dpp, jasa_rp, "
@@ -127,6 +128,7 @@ if ($pidact=="editdata"){
     $pbulanmulai=$row['bulan_mulai'];
     $pki_pilih=$row['stsbr'];
     $pjangkawaktu=$row['jangka_waktu'];
+    $pjangkawaktu_fin=$row['jangka_waktu_fin'];
     
     if ($pbulanmulai=="0000-00-00") $pbulanmulai="";
     if (!empty($pbulanmulai)) $pbulanmulai = date('F Y', strtotime($pbulanmulai));
@@ -633,6 +635,13 @@ $pjabatanid = $row['jabatanId'];
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jangka Waktu / Bulan <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                         <input type='number' id='e_jangkawaktu' name='e_jangkawaktu' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pjangkawaktu; ?>" >
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><span style="color:blue;">Jangka Waktu / Bulan (FINANCE)</span> <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <input type='number' id='e_fin_jangkawaktu' name='e_fin_jangkawaktu' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pjangkawaktu_fin; ?>" >
                                     </div>
                                 </div>
                                 

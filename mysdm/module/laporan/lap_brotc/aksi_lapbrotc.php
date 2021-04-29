@@ -88,7 +88,7 @@
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
             
-    $query = "select brOtcId, noslip, icabangid_o, tglbr, tgltrans, tglrpsby, tglreal, COA4, kodeid, subpost, real1, "
+    $query = "select brOtcId, noslip, icabangid_o, areaid, tglbr, tgltrans, tglrpsby, tglreal, COA4, kodeid, subpost, real1, "
             . " jumlah, realisasi, jumlah jumlah_asli, realisasi as realisasi_asli, "
             . " keterangan1, keterangan2, lampiran, ca, jenis, dpp, ppn_rp, pph_rp, tgl_fp, batal "
             . " from hrd.br_otc WHERE IFNULL(batal,'')<>'Y' AND "
@@ -104,7 +104,7 @@
     $query = "create TEMPORARY table $tmp01 ($query)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "ALTER table $tmp01 ADD COLUMN nobuktibbk VARCHAR(20), ADD COLUMN nmkodeid VARCHAR(100), ADD COLUMN nmsubpost VARCHAR(100)";
+    $query = "ALTER table $tmp01 ADD COLUMN nobuktibbk VARCHAR(20), ADD COLUMN nmkodeid VARCHAR(100), ADD COLUMN nmsubpost VARCHAR(100), ADD COLUMN nama_area VARCHAR(100)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "UPDATE $tmp01 a JOIN hrd.brkd_otc b on a.subpost=b.subpost SET a.nmkodeid=b.nmsubpost";
@@ -114,7 +114,16 @@
     $query = "UPDATE $tmp01 a JOIN hrd.brkd_otc b on a.kodeid=b.kodeid AND a.subpost=b.subpost SET a.nmsubpost=b.nama";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 a JOIN mkt.iarea_o b on a.icabangid_o=b.icabangid_o AND a.areaid=b.areaid_o SET a.nama_area=b.nama";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 a JOIN (select 'JKT_RETAIL' as icabangid_o, areaid_o, nama FROM mkt.iarea_o WHERE icabangid_o='0000000007') b on "
+            . " a.icabangid_o=b.icabangid_o AND a.areaid=b.areaid_o SET a.nama_area=b.nama WHERE IFNULL(a.icabangid_o,'')='JKT_RETAIL' AND "
+            . " IFNULL(a.nama_area,'')=''";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
+    
     $query = "select a.*, b.nama nama_cabang, c.NAMA4 "
             . " from $tmp01 a LEFT JOIN mkt.icabang_o b on a.icabangid_o=b.icabangid_o "
             . " LEFT JOIN dbmaster.coa_level4 c on a.COA4=c.COA4";
@@ -197,6 +206,7 @@
             <th align="center">Tanggal</th>
             <th align="center">Tgl. Trans</th>
             <th align="center">Cabang</th>
+            <th align="center">Area</th>
             <th align="center">Alokasi Budget</th>
             <th align="center">Alokasi Budget</th>
             <th align="center">Perkiraan</th>
@@ -245,6 +255,8 @@
                 $pnodivisi2=$row['nodivisi2'];
                 $pnobuktibbk=$row['nobuktibbk'];
                 
+                $pnmarea=$row['nama_area'];
+                
                 
                 
                 $pselisih=(double)$pjmlrp1-(double)$pjmlrp2;
@@ -282,6 +294,7 @@
                 echo "<td nowrap>$ptglbr</td>";
                 echo "<td nowrap>$ptgltrs</td>";
                 echo "<td nowrap>$ppnmcabang</td>";
+                echo "<td nowrap>$pnmarea</td>";
                 echo "<td nowrap>$pnmakun</td>";
                 echo "<td nowrap>$pnmsubakun</td>";
                 echo "<td nowrap>$pcoa $pnmcoa</td>";
@@ -308,7 +321,7 @@
             $pselisih=number_format($pselisih,0,",",",");
             
             echo "<tr style='font-weight:bold;'>";
-            echo "<td nowrap colspan='9' align='center'>T O T A L : </td>";
+            echo "<td nowrap colspan='10' align='center'>T O T A L : </td>";
             echo "<td nowrap align='right'>$pgrtotal1</td>";
             echo "<td nowrap align='right'>$pgrtotal2</td>";
             echo "<td nowrap align='right'>$pselisih</td>";

@@ -139,11 +139,11 @@ if ($module=='mktformcutieth')
                     $query = "select distinct a.bulan1 from hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
                             . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$kodenya' AND "
                             . " (b.tanggal in $pilihantgl OR (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') ) "
-                            . " AND a.karyawanid='$pkaryawanid' ";//AND a.id_jenis='$pidjeniscuti'
+                            . " AND a.karyawanid='$pkaryawanid' AND IFNULL(a.stsnonaktif,'')<>'Y' ";//AND a.id_jenis='$pidjeniscuti'
                     //echo "$query<br/>";
                 }else{
                     $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "
-                            . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$kodenya' AND b.tanggal in $pilihantgl AND a.karyawanid='$pkaryawanid'";
+                            . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$kodenya' AND b.tanggal in $pilihantgl AND a.karyawanid='$pkaryawanid' AND IFNULL(a.stsnonaktif,'')<>'Y'";
                 }
 
                 $tampilp=mysqli_query($cnmy, $query);

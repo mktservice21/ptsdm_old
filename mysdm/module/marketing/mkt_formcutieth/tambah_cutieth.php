@@ -95,7 +95,7 @@ $pcabangid="";
     $pidcabang=$pcabangid;
     
     
-    if ($pcabangid=="0000000003") {
+    if ($pcabangid=="0000000003x") {
         $pkdspv="";
         $pnamaspv="";
         $pkddm="";

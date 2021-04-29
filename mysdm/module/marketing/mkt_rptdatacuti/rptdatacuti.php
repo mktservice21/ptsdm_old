@@ -239,6 +239,7 @@ switch($pactpilih){
                                                                 if (!empty($pfilterkaryawan)) {
                                                                     $query .= " AND karyawanId IN $pfilterkaryawan ";
                                                                 }else{
+                                                                    $query .= " AND karyawanId='$fkaryawan' ";
                                                                     /*
                                                                     $query .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
                                                                     $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "

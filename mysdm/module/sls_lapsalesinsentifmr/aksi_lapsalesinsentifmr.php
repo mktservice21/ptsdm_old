@@ -22,7 +22,7 @@ if ($ppilihrpt=="excel") {
     // Fungsi header dengan mengirimkan raw data excel
     header("Content-type: application/vnd-ms-excel");
     // Mendefinisikan nama file ekspor "hasil-export.xls"
-    header("Content-Disposition: attachment; filename=PENCAPAIAN INSENTIF MR.xls");
+    header("Content-Disposition: attachment; filename=REPORT PREDIKSI INSENTIF MR.xls");
 }
 
 $module=$_GET['module'];
@@ -48,8 +48,11 @@ $tmp03 ="dbtemp.tmpmrinstf03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 
-$query = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a.icabangid, a.areaid, b.nama as nama_cabang, c.nama as nama_area from sls.imr0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
+$query = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a.icabangid, a.areaid, "
+        . " b.nama as nama_cabang, c.nama as nama_area, b.aktif as aktifcab, c.aktif as aktifarea "
+        . " from sls.imr0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
         . " sls.iarea as c on a.icabangid=c.icabangid AND a.areaid=c.areaid WHERE a.karyawanid='$pkaryawanid'";
+//echo $query;
 $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
@@ -60,7 +63,7 @@ $pnamakaryawan=$rowk['nama'];
 
 $pbolehproses=true;
 
-$query = "select distinct icabangid from $tmp03 WHERE ifnull(aktif,'')<>'N'";
+$query = "select distinct icabangid from $tmp03 WHERE ifnull(aktif,'')<>'N' AND ifnull(aktifcab,'')<>'N' AND ifnull(aktifarea,'')<>'N'";
 $tampil= mysqli_query($cnms, $query);
 $ketemu= mysqli_num_rows($tampil);
 if ((INT)$ketemu>1) $pbolehproses=false;
@@ -71,16 +74,18 @@ $pketdivisi="";
 $filtercab="";
 
 if ($pbolehproses==true) {
-    $query = "select distinct icabangid as icabangid, areaid as areaid, divisiid as divisiid, aktif from $tmp03 WHERE 1=1 ORDER BY divisiid";
+    $query = "select distinct icabangid as icabangid, areaid as areaid, divisiid as divisiid, aktif, aktifcab, aktifarea from $tmp03 WHERE 1=1 ORDER BY divisiid";
     $tampil= mysqli_query($cnms, $query);
     while ($row= mysqli_fetch_array($tampil)) {
         $pidivid=$row['divisiid'];
         $picabangid=$row['icabangid'];
         $pareaid=$row['areaid'];
         $paktif=$row['aktif'];
+        $paktifcab=$row['aktifcab'];
+        $paktifarea=$row['aktifarea'];
     
         if (strpos($pincketdivisi, $pidivid)==false) {
-            if ($paktif=="N") {   
+            if ($paktif=="N" OR $paktifcab=="N" OR $paktifarea=="N") {   
             }else{
                 $pincketdivisi .="'".$pidivid."',";
                 $pketdivisi .=$pidivid.",";
@@ -163,7 +168,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 
 <HTML>
 <HEAD>
-    <title>Pencapaian Insentif MR</title>
+    <title>Report Prediksi Insentif MR</title>
     <?PHP if ($ppilihrpt!="excel") { ?>
         <meta http-equiv="Expires" content="Mon, 01 Mei 2050 1:00:00 GMT">
         <meta http-equiv="Pragma" content="no-cache">
@@ -219,13 +224,13 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                 <?PHP
                 
                 if ($ppilihrpt=="excel") {
-                    echo "<tr><td colspan=5 width='150px'><b>Pencapaian Insentif MR</b></td></tr>";
+                    echo "<tr><td colspan=5 width='150px'><b>Report Prediksi Insentif MR</b></td></tr>";
                     echo "<tr><td colspan=5 width='150px'><b>Bulan : $pbulan</b></td></tr>";
                     echo "<tr><td colspan=5 width='150px'><b>MR : $pnamakaryawan</b></td></tr>";
                     
                     echo "<tr><td colspan=5 width='150px'>view date : $pviewdate</td></tr>";
                 }else{
-                    echo "<tr><td width='150px'><b><h3>Pencapaian Insentif MR</h3></b></td></tr>";
+                    echo "<tr><td width='150px'><b><h3>Report Prediksi Insentif MR</h3></b></td></tr>";
                     echo "<tr><td width='150px'><b>Bulan : $pbulan</b></td></tr>";
                     echo "<tr><td width='150px'><b>MR : $pnamakaryawan</b></td></tr>";
                     
@@ -254,7 +259,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
         <tbody>
             <?PHP
             $query = "select DISTINCT icabangid, nama_cabang, areaid, nama_area, divprodid FROM "
-                    . " $tmp03 ";
+                    . " $tmp03 WHERE IFNULL(aktifcab,'')<>'N' AND IFNULL(aktifarea,'')<>'N' ";
             $query .=" ORDER BY nama_cabang, nama_area, divprodid";
             $tampil= mysqli_query($cnms, $query);
             while ($row= mysqli_fetch_array($tampil)) {

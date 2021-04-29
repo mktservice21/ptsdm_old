@@ -194,7 +194,7 @@ if ($module=="mktapprovecutieth") {
             
             if (!empty($pnamalogin) AND !empty($karyawanapv)) {
                 mysqli_query($cnmy, "update hrd.t_cuti0 set stsnonaktif='Y', userid='$karyawanapv', "
-                        . " keterangan=CONCAT(IFNULL(keterangan,''),'Ket Reject : $pkethapus', ' user : $pnamalogin') WHERE "
+                        . " keterangan=CONCAT(IFNULL(keterangan,''),'Ket Reject : $pkethapus', ', user reject : $pnamalogin') WHERE "
                         . " idcuti in $noidbr AND "
                         . " ( IFNULL(hrd_date,'')='' OR IFNULL(hrd_date,'0000-00-00 00:00:00')='0000-00-00 00:00:00' )");
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }

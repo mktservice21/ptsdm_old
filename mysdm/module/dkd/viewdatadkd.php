@@ -49,23 +49,43 @@ if ($pmodule=="cekdatasudahada") {
         }
     }
     
+    $pbolehinputakv=true;
+    $pbolehinputcal=true;
+    
     $query = "select tanggal from hrd.dkd_new0 where tanggal='$ptanggal' And karyawanid='$pkaryawanid' $filteredit";
     $tampil=mysqli_query($cnmy, $query);
     $ketemu=mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {
+        $pbolehinputakv=false;
         $boleh="Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
-    }else{
-        $query = "select tanggal from hrd.dkd_new1 where tanggal='$ptanggal' And karyawanid='$pkaryawanid' $filteredit";
-        $tampil=mysqli_query($cnmy, $query);
-        $ketemu=mysqli_num_rows($tampil);
-        if ((INT)$ketemu>0) {
-            $boleh="Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
-        }
     }
+    
+    $query = "select tanggal from hrd.dkd_new1 where tanggal='$ptanggal' And karyawanid='$pkaryawanid' $filteredit";
+    $tampil1=mysqli_query($cnmy, $query);
+    $ketemu1=mysqli_num_rows($tampil1);
+    if ((INT)$ketemu1>0) {
+        $pbolehinputcal=false;
+        $boleh="Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain";
+    }
+    
 
     mysqli_close($cnmy);
-
-    echo $boleh;
+    
+    if ($pidinput=="editdata") {
+    }else{
+        
+        if ($pbolehinputakv == false AND $pbolehinputcal == false) {
+        }else{
+            if ($pbolehinputakv == true AND $pbolehinputcal == true) {
+            }else{
+                if ($pbolehinputakv == true) $boleh="aktivitas";
+                if ($pbolehinputcal == true) $boleh="call";
+            }
+        }
+        
+    }
+    
+    echo $boleh; exit;
 }elseif ($pmodule=="cekdatasudahadareal") {
     include "../../config/koneksimysqli.php";
 

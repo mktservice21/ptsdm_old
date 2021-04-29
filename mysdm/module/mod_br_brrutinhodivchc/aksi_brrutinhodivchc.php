@@ -382,7 +382,7 @@ elseif ($module=='entrybrrutinhodivchc' AND ($act=='input' OR $act=='update'))
                  . " divisi='$pdivisiid', "
                  . " KODEWILAYAH='$pwilgabungan', "
                  . " atasanid='$patasan', "
-                 . " idca='', "
+                 . " idca='HO', "
                  . " userid='$pcardid', "
                 . "  jumlah='$ptotalrp' WHERE "
                 . " idrutin='$kodenya' LIMIT 1"; 

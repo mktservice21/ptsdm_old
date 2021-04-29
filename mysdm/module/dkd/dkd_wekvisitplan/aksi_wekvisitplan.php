@@ -81,7 +81,35 @@ if ($module=='dkdweeklyvisit')
                 }
             }
         }
-
+        
+        
+        $pbolehinputakv=true;
+        $pbolehinputcal=true;
+        
+        $filteredit="";
+        if ($act=="input") {
+            
+            $query = "select tanggal from hrd.dkd_new0 where tanggal='$ptanggal' And karyawanid='$pkaryawanid' $filteredit";
+            $tampil=mysqli_query($cnmy, $query);
+            $ketemu=mysqli_num_rows($tampil);
+            if ((INT)$ketemu>0) {
+                $pbolehinputakv=false;
+                //echo "Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain"; mysqli_close($cnmy); exit;
+            }
+            
+            $query = "select tanggal from hrd.dkd_new1 where tanggal='$ptanggal' And karyawanid='$pkaryawanid' $filteredit";
+            $tampil1=mysqli_query($cnmy, $query);
+            $ketemu2=mysqli_num_rows($tampil1);
+            if ((INT)$ketemu2>0) {
+                $pbolehinputcal=false;
+                //echo "Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain"; mysqli_close($cnmy); exit;
+            }
+            
+            
+            if ($pbolehinputakv == false AND $pbolehinputcal == false) {
+                echo "Tanggal tersebut sudah ada..., silakan pilih tanggal yang lain"; mysqli_close($cnmy); exit;
+            }
+        }
         
         
         $query = "select * from hrd.dkd_new0 WHERE karyawanid='$pkaryawanid' AND tanggal='$ptanggal'";
@@ -92,7 +120,7 @@ if ($module=='dkdweeklyvisit')
         
         if ($act=="input" OR (INT)$ketemum<=0) {
             
-            if (!empty($pketid)) {
+            if ( (!empty($pketid) OR !empty($paktivitas)) AND $pbolehinputakv==true) {
                 $query = "INSERT INTO hrd.dkd_new0 (tanggal, karyawanid, ketid, compl, aktivitas, userid, jabatanid)
                     VALUES
                     ('$ptanggal', '$pkaryawanid', '$pketid', '$pcompl', '$paktivitas', '$pidcard', '$pidjabatan')";
@@ -101,6 +129,8 @@ if ($module=='dkdweeklyvisit')
 
                 $kodenya = mysqli_insert_id($cnmy);
             }
+            
+            $kodenya=0;
             
         }elseif ($act=="update") {
             
@@ -140,7 +170,7 @@ if ($module=='dkdweeklyvisit')
             }
         }
 
-        if ($psimpandata==true) {
+        if ($psimpandata==true AND $pbolehinputcal == true) {
 
             mysqli_query($cnmy, "DELETE FROM hrd.dkd_new1 WHERE karyawanid='$pkaryawanid' AND tanggal='$ptanggal'");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }

@@ -205,8 +205,8 @@
             <th align="center">ID</th>
             <th align="center">Tanggal</th>
             <th align="center">Tgl. Trans</th>
-            <th align="center">Cabang</th>
             <th align="center">Area</th>
+            <th align="center">Cabang</th>
             <th align="center">Alokasi Budget</th>
             <th align="center">Alokasi Budget</th>
             <th align="center">Perkiraan</th>
@@ -330,6 +330,7 @@
             ?>
         </tbody>
     </table>
+    <br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;
     
 </div>
     

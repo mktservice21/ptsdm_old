@@ -51,7 +51,7 @@
             . " a.keperluan, a.bulan1, a.bulan2, "
             . " a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, a.atasan3, a.tgl_atasan3, "
             . " a.atasan4, a.tgl_atasan4, a.atasan5, a.tgl_atasan5, a.stsnonaktif, "
-            . " b.tanggal FROM hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
+            . " b.tanggal, a.keterangan FROM hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
             . " on a.idcuti=b.idcuti "
             . " LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
             . " LEFT JOIN hrd.karyawan as d on a.karyawanid=d.karyawanid "
@@ -86,7 +86,7 @@
             $no=1;
             $query = "select distinct idcuti, karyawanid, nama_karyawan, jabatanid, id_jenis, nama_jenis, keperluan, bulan1, bulan2, "
                     . " atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3,"
-                    . " atasan4, tgl_atasan4, atasan5, tgl_atasan5, stsnonaktif from "
+                    . " atasan4, tgl_atasan4, atasan5, tgl_atasan5, stsnonaktif, keterangan from "
                     . " $tmp01 order by nama_karyawan, idcuti, nama_jenis";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
@@ -99,6 +99,7 @@
                 $nbln1=$row0['bulan1'];
                 $nbln2=$row0['bulan2'];
                 $nnonaktif=$row0['stsnonaktif'];
+                $nketreject=$row0['keterangan'];
                 
                 $njbt=$row0['jabatanid'];
                 $nats1=$row0['atasan1'];
@@ -195,7 +196,11 @@
                 }
                 
                 if ($nnonaktif=="Y") {
-                    $pedit="reject";
+                    if (!empty($nketreject)) {
+                        $pedit="$nketreject";
+                    }else{
+                        $pedit="hapus";
+                    }
                     $print="";
                     $phapus="";
                 }

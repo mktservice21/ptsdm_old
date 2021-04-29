@@ -766,10 +766,17 @@ $pnamajabatan=$nr['nama'];
             var y = document.getElementById("cb_ketid").options;
             var iiket=y[x].index;
             var i_nmket=y[x].text;
-
+            
+            if (i_nmket=="--Pilih--") {
+                i_nmket="";
+            }
+                
             if (i_ketid=="") {
-                //alert("dokter belum dipilih...!!!");
-                return false;
+                var iakv = document.getElementById('e_aktivitas').value;
+                if (iakv=="") {
+                    return false;
+                }else{
+                }
             }
 
             var arjmlrec = document.getElementsByName('m_idjmrecakv[]');
@@ -960,9 +967,18 @@ $pnamajabatan=$nr['nama'];
         var ijbtid = document.getElementById('e_idjbt').value;
         
         if (ikeperluan=="000" || ikeperluan=="") {
-            if (ijmldata<=1) {
-                alert("Dokter belum dipilih...");
-                return false;
+            if (ikeperluan=="" && ijmldata<=1) {
+                //e_aktivitas
+                var iakv = document.getElementById('e_aktivitas').value;
+                if (iakv=="") {
+                    alert("aktivitas harus diisi atau dokter harus dipilih (tambah visit)...");
+                    return false;
+                }
+            }else{
+                if (ijmldata<=1) {
+                    alert("Dokter belum dipilih (tambah visit)...");
+                    return false;
+                }
             }
         }
 
@@ -986,8 +1002,27 @@ $pnamajabatan=$nr['nama'];
                 //alert(data);
                 //return false;
 
-                if (data=="boleh") {
-
+                if (data=="boleh" || data=="aktivitas" || data=="call") {
+                    
+                    if (data=="aktivitas") {
+                        
+                        var iakv = document.getElementById('e_aktivitas').value;
+                        if (iakv=="") {
+                            pText_="yang disimpan hanya AKTIVITAS, silakan isi terlebih dahulu aktivitasnya, \n\
+untuk VISIT tanggal tersebut sudah ada inputan.";
+                            alert(pText_); return false;
+                        }else{
+                            pText_="yang disimpan hanya AKTIVITAS, \n\
+untuk VISIT tanggal tersebut sudah ada inputan.\n\
+Apakah akan melanjutkan...?";
+                        }
+                
+                    }else if (data=="call") {
+                        pText_="yang disimpan hanya VISIT, \n\
+untuk AKTIVITAS tanggal tersebut sudah ada inputan.\n\
+Apakah akan melanjutkan...?";
+                    }
+                    
                     ok_ = 1;
                     if (ok_) {
                         var r=confirm(pText_)

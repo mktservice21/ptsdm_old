@@ -284,6 +284,10 @@ session_start();
             } else {
                 txt = textket;
             }
+            if (txt=="") {
+                alert("alasan harus diisi...");
+                return false;
+            }
         }
         
         var ekaryawan=document.getElementById('cb_karyawan').value;

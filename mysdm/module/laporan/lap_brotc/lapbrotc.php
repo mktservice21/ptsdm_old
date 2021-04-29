@@ -91,7 +91,7 @@
                                         
                                         
                                         <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang <span class='required'></span></label>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Area <span class='required'></span></label>
                                             <div class='col-xs-9'>
                                                 <select class='form-control' name='cb_cabangid' id='cb_cabangid' style='width: 100%;' onchange="">
                                                     <option value='' selected>--All--</option>

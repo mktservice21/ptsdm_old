@@ -22,7 +22,7 @@ if ($ppilihrpt=="excel") {
     // Fungsi header dengan mengirimkan raw data excel
     header("Content-type: application/vnd-ms-excel");
     // Mendefinisikan nama file ekspor "hasil-export.xls"
-    header("Content-Disposition: attachment; filename=SALES INSENTIF DM.xls");
+    header("Content-Disposition: attachment; filename=REPORT PREDIKSI INSENTIF DM.xls");
 }
 
 $module=$_GET['module'];
@@ -100,7 +100,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 
 <HTML>
 <HEAD>
-    <title>Sales Insentif DM</title>
+    <title>Report Prediksi Insentif DM</title>
     <?PHP if ($ppilihrpt!="excel") { ?>
         <meta http-equiv="Expires" content="Mon, 01 Mei 2050 1:00:00 GMT">
         <meta http-equiv="Pragma" content="no-cache">
@@ -156,13 +156,13 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                 <?PHP
                 
                 if ($ppilihrpt=="excel") {
-                    echo "<tr><td colspan=5 width='150px'><b>Pencapaian Insentif DM</b></td></tr>";
+                    echo "<tr><td colspan=5 width='150px'><b>Report Prediksi Insentif DM</b></td></tr>";
                     echo "<tr><td colspan=5 width='150px'><b>Bulan : $pbulan</b></td></tr>";
                     echo "<tr><td colspan=5 width='150px'><b>DM : $pnamakaryawan</b></td></tr>";
                     
                     echo "<tr><td colspan=5 width='150px'>view date : $pviewdate</td></tr>";
                 }else{
-                    echo "<tr><td width='150px'><b><h3>Pencapaian Insentif DM</h3></b></td></tr>";
+                    echo "<tr><td width='150px'><b><h3>Report Prediksi Insentif DM</h3></b></td></tr>";
                     echo "<tr><td width='150px'><b>Bulan : $pbulan</b></td></tr>";
                     echo "<tr><td width='150px'><b>DM : $pnamakaryawan</b></td></tr>";
                     

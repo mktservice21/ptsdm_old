@@ -120,7 +120,8 @@ if ($module=='dkdweeklyvisit')
         
         if ($act=="input" OR (INT)$ketemum<=0) {
             
-            if ( (!empty($pketid) OR !empty($paktivitas)) AND $pbolehinputakv==true) {
+            //if ( (!empty($pketid) OR !empty($paktivitas)) AND $pbolehinputakv==true) {
+            if ( !empty($pketid) AND $pbolehinputakv==true) {
                 $query = "INSERT INTO hrd.dkd_new0 (tanggal, karyawanid, ketid, compl, aktivitas, userid, jabatanid)
                     VALUES
                     ('$ptanggal', '$pkaryawanid', '$pketid', '$pcompl', '$paktivitas', '$pidcard', '$pidjabatan')";

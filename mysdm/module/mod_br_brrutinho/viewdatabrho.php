@@ -8,16 +8,26 @@ if ($pmodule=="cekdatasudahada") {
     $pid=$_POST['uid'];
     $pidkar=$_POST['ukry'];
     $pbln=$_POST['ubln'];
+    $ptgl1=$_POST['up01'];
+    $ptgl2=$_POST['up02'];
     $pkdperiode=$_POST['ukdperiode'];
     
     $pbulan= date("Ym", strtotime($pbln));
+    
+    
+    $ptgl1 = str_replace('/', '-', $ptgl1);
+    $ptgl2 = str_replace('/', '-', $ptgl2);
+    $ptgl1= date("Y-m-d", strtotime($ptgl1));
+    $ptgl2= date("Y-m-d", strtotime($ptgl2));
+    
     
     $bolehinput="boleh";
     
     include "../../config/koneksimysqli.php";
     
     
-    $query = "select idrutin from dbmaster.t_brrutin0 WHERE DATE_FORMAT(bulan,'%Y%m')='$pbulan' AND "
+    $query = "select idrutin from dbmaster.t_brrutin0 WHERE ( (periode1 between '$ptgl1' AND '$ptgl2') OR (periode2 between '$ptgl1' AND '$ptgl2') ) "
+            . " AND "
             . " karyawanid='$pidkar' AND IFNULL(stsnonaktif,'')<>'Y' AND idrutin<>'$pid'";//AND kodeperiode='$pkdperiode' 
     
     $tampil= mysqli_query($cnmy, $query);
@@ -26,7 +36,7 @@ if ($pmodule=="cekdatasudahada") {
     if ($ketemu>0) {
         $row= mysqli_fetch_array($tampil);
         $nidrutin=$row['idrutin'];
-        if (!empty($nidrutin)) $bolehinput="Data Sudah Ada, dengan ID : $nidrutin";
+        if (!empty($nidrutin)) $bolehinput="GAGAL.... Periode yang dipilih Tidak bisa tersimpan. karena sudah ada inputan, dengan ID : $nidrutin";
     }
     
     mysqli_close($cnmy);

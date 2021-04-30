@@ -772,6 +772,8 @@ $pnamajabatan=$nr['nama'];
             }
                 
             if (i_ketid=="") {
+                return false;
+                
                 var iakv = document.getElementById('e_aktivitas').value;
                 if (iakv=="") {
                     return false;
@@ -968,7 +970,10 @@ $pnamajabatan=$nr['nama'];
         
         if (ikeperluan=="000" || ikeperluan=="") {
             if (ikeperluan=="" && ijmldata<=1) {
-                //e_aktivitas
+                
+                alert("keperluan harus diisi atau dokter harus dipilih (tambah visit)...");
+                return false;
+                
                 var iakv = document.getElementById('e_aktivitas').value;
                 if (iakv=="") {
                     alert("aktivitas harus diisi atau dokter harus dipilih (tambah visit)...");
@@ -1007,8 +1012,9 @@ $pnamajabatan=$nr['nama'];
                     if (data=="aktivitas") {
                         
                         var iakv = document.getElementById('e_aktivitas').value;
-                        if (iakv=="") {
-                            pText_="yang disimpan hanya AKTIVITAS, silakan isi terlebih dahulu aktivitasnya, \n\
+                        //if (iakv=="") {
+                        if (ikeperluan=="") {
+                            pText_="yang disimpan hanya AKTIVITAS, silakan isi terlebih dahulu keperluannya, \n\
 untuk VISIT tanggal tersebut sudah ada inputan.";
                             alert(pText_); return false;
                         }else{
@@ -1018,9 +1024,15 @@ Apakah akan melanjutkan...?";
                         }
                 
                     }else if (data=="call") {
-                        pText_="yang disimpan hanya VISIT, \n\
+                        if (ijmldata<=1) {
+                            pText_="yang disimpan hanya VISIT, silakan pilih dokter (tambah visit)... \n\
+untuk AKTIVITAS tanggal tersebut sudah ada inputan.";
+                            alert(pText_); return false;
+                        }else{
+                            pText_="yang disimpan hanya VISIT, \n\
 untuk AKTIVITAS tanggal tersebut sudah ada inputan.\n\
 Apakah akan melanjutkan...?";
+                        }
                     }
                     
                     ok_ = 1;

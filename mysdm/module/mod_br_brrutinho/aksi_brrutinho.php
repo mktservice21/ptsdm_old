@@ -327,7 +327,8 @@ elseif ($module=='entrybrrutinho' AND ($act=='input' OR $act=='update'))
         
         
         //cek jika sudah ada inputan
-        $query = "select idrutin from dbmaster.t_brrutin0 WHERE DATE_FORMAT(bulan,'%Y%m')='$pcari_bln' AND "
+        $query = "select idrutin from dbmaster.t_brrutin0 WHERE ( (periode1 between '$ptgl1' AND '$ptgl2') OR (periode2 between '$ptgl1' AND '$ptgl2') ) "
+                . " AND "
                 . " karyawanid='$pidkaryawan' AND IFNULL(stsnonaktif,'')<>'Y' AND idrutin<>'$kodenya'";//AND kodeperiode='$pkdperiode' 
         
         $tampil= mysqli_query($cnmy, $query);
@@ -337,7 +338,7 @@ elseif ($module=='entrybrrutinho' AND ($act=='input' OR $act=='update'))
             $row= mysqli_fetch_array($tampil);
             $nidrutin=$row['idrutin'];
             if (!empty($nidrutin)) {
-                echo "Data Sudah Ada, dengan ID : $nidrutin";
+                echo "GAGAL.... Periode yang dipilih Tidak bisa tersimpan. karena sudah ada inputan, dengan ID : $nidrutin";
                 mysqli_close($cnmy); exit;
             }
         }

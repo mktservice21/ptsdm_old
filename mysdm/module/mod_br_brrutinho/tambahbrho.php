@@ -561,7 +561,10 @@ if ($pidact=="editdata"){
         var iperiode01 = document.getElementById('e_periode01').value;
         var iatasan = document.getElementById('e_atasan').value;
         var etotsem =document.getElementById('e_totalsemua').value;
-
+        var ep01 =document.getElementById('e_periode01').value;
+        var ep02 =document.getElementById('e_periode02').value;
+        
+        alert(ep02);
 
         if (ikry=="") {
             alert("Pembuat masih kosong...");
@@ -596,7 +599,7 @@ if ($pidact=="editdata"){
         $.ajax({
             type:"post",
             url:"module/mod_br_brrutinho/viewdatabrho.php?module=cekdatasudahada",
-            data:"uid="+iid+"&ukry="+ikry+"&ubln="+ibln+"&ukdperiode="+ikdperiode,
+            data:"uid="+iid+"&ukry="+ikry+"&ubln="+ibln+"&ukdperiode="+ikdperiode+"&up01="+ep01+"&up02="+ep02,
             success:function(data){
                 //var tjml = data.length;
                 //alert(data);

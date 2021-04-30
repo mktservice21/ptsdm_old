@@ -92,8 +92,8 @@ if ($module=='dkdrealisasiplan')
         if ($pjenis=="JV") {
             
         }else{
-            $query = "select dokterid from hrd.dkd_new1 as a JOIN hrd.dkd_new0 as b on a.idinput=b.idinput WHERE "
-                    . " a.dokterid='$pdokterid' AND b.tanggal='$ptanggal'";
+            $query = "select dokterid from hrd.dkd_new1 as a WHERE "
+                    . " a.dokterid='$pdokterid' AND a.tanggal='$ptanggal'";
             $tampil=mysqli_query($cnmy, $query);
             $ketemu=mysqli_num_rows($tampil);
             if ((INT)$ketemu<=0) {
@@ -266,8 +266,8 @@ if ($module=='dkdrealisasiplan')
         $query = "alter table $tmp01 ADD COLUMN dokter_plan varchar(10), ADD COLUMN jenis2 varchar(5)";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
 
-        $query = "UPDATE $tmp01 as a JOIN (select distinct a.dokterid From hrd.dkd_new1 as a JOIN hrd.dkd_new0 as b on "
-                . " a.idinput=b.idinput WHERE b.tanggal='$ptanggal' AND b.karyawanid='$pkaryawanid') as b on a.dokterid=b.dokterid SET "
+        $query = "UPDATE $tmp01 as a JOIN (select distinct a.dokterid From hrd.dkd_new1 as a "
+                . " WHERE a.tanggal='$ptanggal' AND a.karyawanid='$pkaryawanid') as b on a.dokterid=b.dokterid SET "
                 . " a.dokter_plan=b.dokterid";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto igagal; exit; }
         

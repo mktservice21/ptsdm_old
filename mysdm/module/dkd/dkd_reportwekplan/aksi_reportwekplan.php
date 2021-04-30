@@ -36,18 +36,18 @@ $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
 
-$sql = "select a.idinput, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
+$sql = "select a.idinput, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket, a.aktivitas,
     b.pointMR, b.pointSpv, b.pointDM 
-    FROM hrd.dkd_new0 as a JOIN hrd.ket as b on a.ketid=b.ketId 
+    FROM hrd.dkd_new0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
     WHERE a.karyawanid='$pkryid'";
 $sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
 $query = "create TEMPORARY table $tmp01 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "select a.idinput, a.dokterid, c.namalengkap, a.jenis,
+$query = "select a.idinput, a.tanggal, a.dokterid, c.namalengkap, a.jenis,
     c.gelar, c.spesialis FROM 
-    hrd.dkd_new1 as a JOIN $tmp01 as b on a.idinput=b.idinput
+    hrd.dkd_new1 as a 
     LEFT JOIN dr.masterdokter as c on a.dokterid=c.id";
 $query = "create TEMPORARY table $tmp02 ($query)"; 
 mysqli_query($cnmy, $query);
@@ -83,26 +83,26 @@ if ($pjabatanid=="10" OR $pjabatanid=="18") {
 $query = "UPDATE $tmp01 SET totakv=1";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-    $tmp02 WHERE IFNULL(jenis,'')='' GROUP BY 1) as b on a.idinput=b.idinput SET a.totvisit=b.jml";
+$query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
+    $tmp02 WHERE IFNULL(jenis,'')='' GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totvisit=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-    $tmp02 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.idinput=b.idinput SET a.totec=b.jml";
-mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-$query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-    $tmp02 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.totjv=b.jml";
+$query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
+    $tmp02 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totec=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-    $tmp02 WHERE IFNULL(jenis,'') NOT IN ('', 'EC', 'JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.tototh=b.jml";
+$query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
+    $tmp02 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totjv=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-    $tmp02 WHERE IFNULL(jenis,'') NOT IN ('JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.totall=b.jml";
+
+$query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
+    $tmp02 WHERE IFNULL(jenis,'') NOT IN ('', 'EC', 'JV') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.tototh=b.jml";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
+    $tmp02 WHERE IFNULL(jenis,'') NOT IN ('JV') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totall=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 

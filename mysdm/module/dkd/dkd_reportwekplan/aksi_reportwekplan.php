@@ -20,6 +20,7 @@ $puserid=$_SESSION['USERID'];
 $now=date("mdYhis");
 $tmp01 =" dbtemp.tmprkpcallincw01_".$puserid."_$now ";
 $tmp02 =" dbtemp.tmprkpcallincw02_".$puserid."_$now ";
+$tmp03 =" dbtemp.tmprkpcallincw03_".$puserid."_$now ";
 
 
 $pkryid = $_POST['cb_karyawan']; 
@@ -53,6 +54,13 @@ $query = "create TEMPORARY table $tmp02 ($query)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+
+$query = "create TEMPORARY table $tmp03 (select distinct tanggal from $tmp01)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "INSERT INTO $tmp01 (idinput, tanggal) select distinct idinput, tanggal from $tmp02 WHERE tanggal not in "
+        . " (select distinct tanggal from $tmp03)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "select a.jabatanid as jabatanid, b.nama as nama_jabatan from $tmp01 as a 
     LEFT join hrd.jabatan as b on a.jabatanid=b.jabatanId ";
@@ -104,6 +112,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 $query = "UPDATE $tmp01 as a JOIN (select tanggal, count(distinct dokterid) as jml FROM 
     $tmp02 WHERE IFNULL(jenis,'') NOT IN ('JV') GROUP BY 1) as b on a.tanggal=b.tanggal SET a.totall=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 
 
 
@@ -280,7 +289,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             $pnamadoktall="";
 
             $query = "select distinct jenis, dokterid, namalengkap, gelar, spesialis from $tmp02 WHERE 
-                idinput='$cidinput' order by jenis, namalengkap";
+                tanggal='$ntgl' order by jenis, namalengkap";
             $tampil1=mysqli_query($cnmy, $query);
             while ($row1=mysqli_fetch_array($tampil1)) {
                 $njenis=TRIM($row1['jenis']);
@@ -452,5 +461,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp01");
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp02");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp03");
     mysqli_close($cnmy);
 ?>

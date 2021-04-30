@@ -96,7 +96,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 $query = "INSERT INTO $tmp02 (idinput, karyawanid, tanggal, "
         . " jenis, dokterid, namalengkap, gelar, spesialis, real_user)"
-        . " SELECT idinput, karyawanid, tanggal, "
+        . " SELECT '0' as idinput, karyawanid, tanggal, "
         . " jenis, dokterid, namalengkap, gelar, spesialis, karyawanid as real_user "
         . " FROM $tmp04 WHERE CONCAT(karyawanid,dokterid,tanggal) NOT IN "
         . " (select DISTINCT IFNULL(CONCAT(karyawanid,dokterid,tanggal),'') FROM $tmp05)";
@@ -107,7 +107,6 @@ $query = "UPDATE $tmp02 as a JOIN $tmp04 as b on a.karyawanid=b.karyawanid AND a
         . " a.real_user=a.karyawanid, a.jenis=b.jenis WHERE IFNULL(a.jenis,'') NOT IN ('EC')";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-//
 
 $query = "UPDATE $tmp02 SET jenis='VR' WHERE IFNULL(jenis,'')='' AND IFNULL(real_user,'')<>''";
 mysqli_query($cnmy, $query);

@@ -36,9 +36,9 @@ $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
 
-$sql = "select a.idinput, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
+$sql = "select a.karyawanid, a.idinput, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
     b.pointMR, b.pointSpv, b.pointDM 
-    FROM hrd.dkd_new0 as a JOIN hrd.ket as b on a.ketid=b.ketId 
+    FROM hrd.dkd_new0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
     WHERE a.karyawanid='$pkryid'";
 $sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
 $query = "create TEMPORARY table $tmp01 ($sql)"; 
@@ -75,17 +75,17 @@ if ($pjabatanid=="10" OR $pjabatanid=="18") {
 $query = "UPDATE $tmp01 SET totakv=1";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-    hrd.dkd_new1 WHERE IFNULL(jenis,'')='' GROUP BY 1) as b on a.idinput=b.idinput SET a.totvisit=b.jml";
+$query = "UPDATE $tmp01 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+    hrd.dkd_new1 WHERE IFNULL(jenis,'')='' GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totvisit=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-    hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1) as b on a.idinput=b.idinput SET a.totec=b.jml";
+$query = "UPDATE $tmp01 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+    hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totec=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "UPDATE $tmp01 as a JOIN (select idinput, count(distinct dokterid) as jml FROM 
-    hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1) as b on a.idinput=b.idinput SET a.totjv=b.jml";
+$query = "UPDATE $tmp01 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+    hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totjv=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 

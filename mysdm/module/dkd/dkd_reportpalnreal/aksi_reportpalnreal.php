@@ -67,9 +67,15 @@ $query = "create TEMPORARY table $tmp01 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$sql = "select c.nourut, a.idinput, a.karyawanid, a.namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
+$sql = "select c.nourut, c.idinput, c.karyawanid, e.nama as namakaryawan, e.jabatanid, c.tanggal, c.tglinput, 
     c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, '' as saran 
-    FROM $tmp01 as a LEFT JOIN hrd.dkd_new1 as c on a.idinput=c.idinput JOIN dr.masterdokter as d on c.dokterid=d.id";
+    FROM hrd.dkd_new1 as c JOIN dr.masterdokter as d on c.dokterid=d.id LEFT JOIN hrd.karyawan as e on c.karyawanid=e.karyawanId 
+    WHERE c.karyawanid='$pkryid' ";
+if (!empty($ftglfilter)) {
+    $sql .=" AND c.tanggal IN $ftglfilter ";
+}else{
+    $sql .=" AND c.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
+}
 $query = "create TEMPORARY table $tmp02 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -138,8 +144,8 @@ $query = "create TEMPORARY table $tmp07 ($query)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "INSERT INTO $tmp07 (tanggal, karyawanid, namakaryawan, dokterid) "
-        . " select distinct tanggal, karyawanid, namakaryawan, dokterid FROM $tmp04 WHERE "
+$query = "INSERT INTO $tmp07 (tanggal, karyawanid, namakaryawan, dokterid, namalengkap) "
+        . " select distinct tanggal, karyawanid, namakaryawan, dokterid, namalengkap FROM $tmp04 WHERE "
         . " CONCAT(tanggal,karyawanid) NOT IN (select IFNULL(CONCAT(tanggal,karyawanid),'') FROM $tmp02) ORDER BY karyawanid, tanggal"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

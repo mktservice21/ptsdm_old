@@ -23,6 +23,9 @@ $tmp02 =" dbtemp.tmprptpoincal02_".$puserid."_$now ";
 $tmp03 =" dbtemp.tmprptpoincal03_".$puserid."_$now ";
 $tmp04 =" dbtemp.tmprptpoincal04_".$puserid."_$now ";
 $tmp05 =" dbtemp.tmprptpoincal05_".$puserid."_$now ";
+$tmp06 =" dbtemp.tmprptpoincal06_".$puserid."_$now ";
+$tmp07 =" dbtemp.tmprptpoincal07_".$puserid."_$now ";
+$tmp08 =" dbtemp.tmprptpoincal08_".$puserid."_$now ";
 
 
 $pkryid = $_POST['cb_karyawan']; 
@@ -56,6 +59,23 @@ $sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
 $query = "create TEMPORARY table $tmp01 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "ALTER TABLE $tmp01 ADD jpoint INT(4)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query_point="";
+if ($pjabatanid=="10" OR $pjabatanid=="18") {
+    $query_point = "UPDATE $tmp01 SET jpoint=pointSpv";
+}elseif ($pjabatanid=="08") {
+    $query_point = "UPDATE $tmp01 SET jpoint=pointDM";
+}elseif ($pjabatanid=="15") {
+    $query_point = "UPDATE $tmp01 SET jpoint=pointMR";
+}
+
+if (!empty($query_point)) {
+    mysqli_query($cnmy, $query_point); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+}
+
 
 $sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, 
     a.jenis, a.dokterid, b.namalengkap, b.gelar, b.spesialis 
@@ -118,8 +138,8 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
     $pnmfield="t_".$ix;
     $pntgl=$ix;
     if (strlen($pntgl)<=1) $pntgl="0".$ix;
-    
-    $query = "UPDATE $tmp05 as a JOIN (select '1' as idket, count(distinct ketid) as jml from $tmp01 WHERE DATE_FORMAT(tanggal,'%d')='$pntgl' GROUP BY 1) as b on "
+    //jpoint as diganti jadi count(distinct ketid)
+    $query = "UPDATE $tmp05 as a JOIN (select '1' as idket, jpoint as jml from $tmp01 WHERE DATE_FORMAT(tanggal,'%d')='$pntgl' GROUP BY 1) as b on "
             . " IFNULL(a.idket,'')=IFNULL(b.idket,'') SET "
             . " a.".$pnmfield."=b.jml WHERE a.idket='1'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
@@ -131,6 +151,93 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
 }
 
+
+
+//summary persentase
+$sql = "select karyawanid, idinput, jabatanid, tanggal, ketid, nama_ket,
+    pointMR, pointSpv, pointDM, jpoint  
+    FROM $tmp01";
+$query = "create TEMPORARY table $tmp06 ($sql)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "create TEMPORARY table $tmp07 (select * from $tmp06)"; 
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "INSERT INTO $tmp06 (karyawanid, idinput, jabatanid, tanggal)"
+        . " SELECT DISTINCT karyawanid, idinput, jabatanid, tanggal FROM $tmp02 WHERE CONCAT(karyawanid, tanggal) NOT IN "
+        . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal),'') FROM $tmp07)"; 
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+//ADD COLUMN jpoint DECIMAL(20,2), 
+$query = "ALTER TABLE $tmp06 ADD totakv INT(4), ADD totvisit INT(4), ADD totjv INT(4), ADD totec INT(4), ADD sudahreal VARCHAR(1)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+/*
+if ($pjabatanid=="10" OR $pjabatanid=="18") {
+    $query = "UPDATE $tmp06 SET jpoint=pointSpv";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+}elseif ($pjabatanid=="08") {
+    $query = "UPDATE $tmp06 SET jpoint=pointDM";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+}elseif ($pjabatanid=="15") {
+    $query = "UPDATE $tmp06 SET jpoint=pointMR";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+}
+*/
+
+$query = "UPDATE $tmp06 SET totakv=1";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp06 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+    $tmp02 WHERE IFNULL(jenis,'')='' GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totvisit=b.jml";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp06 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+    $tmp02 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totec=b.jml";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "UPDATE $tmp06 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
+    $tmp02 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totjv=b.jml";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+//END summary persentase
+
+    $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
+        "Juni", "Juli", "Agustus", "September", 
+        "Oktober", "November", "Desember");
+
+    $hari_array = array(
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu'
+    );
+    
+    $query = "SELECT jumlah FROM hrd.hrkrj WHERE left(periode1,7)='$pbulan'";
+    $tampilk=mysqli_query($cnmy, $query);
+    $rowk=mysqli_fetch_array($tampilk);
+    $jml_hari_krj=$rowk['jumlah'];
+
+    if ($pjabatanid=='08') {
+        $jab = 4;
+    } else {
+        if (($pjabatanid=='10') or ($pjabatanid=='18')) {
+            $jab = 6;
+        } else {
+            if ($pjabatanid=='15') {
+                $jab = 10;
+            }
+        }
+    }
+    if (empty($jab)) $jab=0;
+    if (empty($jml_hari_krj)) $jml_hari_krj=0;
+
+    $jpoint = (DOUBLE)$jab * (DOUBLE)$jml_hari_krj;
+    
 ?>
 
 <HTML>
@@ -239,6 +346,7 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                 }elseif ($pjabatanid=="08") {
                     if ((INT)$pketjenis<4) $pwarnapoint=" style='color:red;' ";
                 }
+                if (empty($pketjenis)) $pwarnapoint="";
                 
                 echo "<td nowrap $pwarnapoint>$pketjenis</td>";
                 
@@ -252,6 +360,123 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
         echo "</tbody>";
     echo "</table>";
 
+    echo "<br/><br/>";
+    
+    
+    $totcall=0;
+    $totpoint1=0;
+    $totpoint2=0;
+    
+    //echo "<div><b>Persentasi</b></div>";
+    /*
+    echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
+        echo "<tr>";
+            $header_ = add_space('Tanggal',40);
+            echo "<th align='left'><small>$header_</small></th>";
+            $header_ = add_space('Keterangan',60);
+            echo "<th align='left'><small>$header_</small></th>";
+            $header_ = add_space('Call',40);
+            echo "<th align='left'><small>$header_</small></th>";
+            $header_ = add_space('Point',40);
+            echo "<th align='left'><small>$header_</small></th>";
+        echo "</tr>";
+        */
+        $no=1;
+        $query = "select distinct idinput, tanggal, jpoint, totakv, totvisit, totjv, totec, sudahreal, nama_ket from $tmp06 order by tanggal";
+        $tampil0=mysqli_query($cnmy, $query);
+        while ($row0=mysqli_fetch_array($tampil0)) {
+            $cidinput=$row0['idinput'];
+            $ntgl=$row0['tanggal'];
+            $ntotakv=$row0['totakv'];
+            $ntotvisit=$row0['totvisit'];
+            $ntotec=$row0['totec'];
+            $ntotjv=$row0['totjv'];
+            $nsudahreal=$row0['sudahreal'];
+            $nnamaket=$row0['nama_ket'];
+            $ntotpoint=$row0['jpoint'];
+
+            $totcall = (DOUBLE)$totcall + (DOUBLE)$ntotvisit;
+            if ((DOUBLE)$ntotpoint != 0) {
+                if ((DOUBLE)$ntotpoint >= 0) {
+                    $totpoint2 = (DOUBLE)$totpoint2 + (DOUBLE)$ntotpoint;
+                }else{
+                    $totpoint1 = (DOUBLE)$totpoint1 + abs((DOUBLE)$ntotpoint);
+                }
+            }
+
+            $ntotpoint=number_format($ntotpoint,0,"","");
+            $ntotvisit=number_format($ntotvisit,0,"","");
+
+            if (empty($ntotakv)) $ntotakv=1;
+            if (empty($ntotvisit)) $ntotvisit=0;
+            if (empty($ntotec)) $ntotec=0;
+
+            $ntanggal = date('l d F Y', strtotime($ntgl));
+
+            $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+            $xtgl= date('d', strtotime($ntgl));
+            $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
+            $xthn= date('Y', strtotime($ntgl));
+
+            $pkettotal="$ntotakv Activity, $ntotvisit Visit";
+            if ((INT)$ntotec>0) {
+                $pkettotal="$ntotakv Activity, $ntotvisit Visit, $ntotec Extra Call";
+            }
+            /*
+            echo "<tr>";
+            echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
+            echo "<td nowrap>$nnamaket</td>";
+            echo "<td nowrap align='right'>$ntotvisit</td>";
+            echo "<td nowrap align='right'>$ntotpoint</td>";
+            echo "</tr>";
+            */
+            $no++;
+        }
+
+        if ((DOUBLE)$jpoint-(DOUBLE)$totpoint1==0) {
+            $summary_=0;
+         }else{
+            $summary_ = (((DOUBLE)$totcall+(DOUBLE)$totpoint2) / ((DOUBLE)$jpoint-(DOUBLE)$totpoint1)) * 100;
+         }
+    /*
+        echo "<tr style='font-weight:bold;'>";
+        echo "<td nowrap></td>";
+        echo "<td nowrap>Summary : </td>";
+        echo "<td nowrap align='right'>".round($summary_,2)." %</td>";
+        echo "<td nowrap align='right'></td>";
+        echo "</tr>";
+
+    echo "</table>";
+    */
+         
+    echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
+        echo "<tr style='font-weight:bold;'>";
+        echo "<td nowrap>Summary : </td>";
+        echo "<td nowrap align='right'>".round($summary_,2)." %</td>";
+        echo "</tr>";
+    echo "</table>";
+    
+    echo "<br/><br/>";
+    
+    echo "<div style='font-size:14px;'>";
+    
+            $pjab_15="10";
+            $pjab_10="6";
+            $pjab_08="4";
+            
+            echo "<b><u>Point Sesuai Jabatan</u></b><br/>";
+            echo "MR : $pjab_15<br/>";
+            echo "AM : $pjab_10<br/>";
+            echo "DM : $pjab_08<br/><br/>";
+            
+            echo "HARI KERJA : $jml_hari_krj<br/>";
+            //echo "Rumus :  <br/>";
+            echo "POINT BULAN (POINT SESUAI JABATAN * JUMLAH HARI KERJA) = $jpoint<br/>";
+            echo "POINT AKTIVITAS MINUS (TOTAL POINT AKTIVITAS LEBIH KECIL 0) = $totpoint1<br/>";
+            echo "POINT AKTIVITAS PLUS (TOTAL POINT AKTIVITAS LEBIH BESAR 0) = $totpoint2<br/>";
+            echo "<b>SUMMARY = (TOTAL CALL + POINT AKTIVITAS PLUS) / (POINT BULAN - POINT AKTIVITAS MINUS) * 100</b><br/>";
+            echo "<b>".round($summary_,2)."% = ($totcall + $totpoint2) / ($jpoint - $totpoint1) * 100 "."</b><br/>";
+    echo "</div>";
     
     echo "<br/><br/><br/><br/><br/>";
     ?>
@@ -330,5 +555,8 @@ hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp03");
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp04");
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp05");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp06");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp07");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp08");
     mysqli_close($cnmy);
 ?>

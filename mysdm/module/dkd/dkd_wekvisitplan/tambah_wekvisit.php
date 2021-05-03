@@ -1167,10 +1167,10 @@ th {
                 changeMonth: true,
                 changeYear: true,
                 numberOfMonths: 1,
-                //firstDay: 1,
-                //minDate: "1W",
+                ////firstDay: 1,
+                ////minDate: "1W",
                 minDate: setMinDate, 
-                //maxDate: "+2W -3D",
+                ////maxDate: "+2W -3D",
                 dateFormat: 'dd MM yy',
                 onSelect: function(dateStr) {
                     

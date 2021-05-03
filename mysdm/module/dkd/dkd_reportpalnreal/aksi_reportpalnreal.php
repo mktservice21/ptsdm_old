@@ -95,7 +95,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$sql = "select a.nourut, a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput, 
+$sql = "select a.nourut, a.karyawanid, c.nama as namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
     a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran 
     FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
@@ -109,6 +109,22 @@ $query = "create TEMPORARY table $tmp04 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+
+
+$query = "create TEMPORARY table $tmp05 (select * from $tmp02)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "INSERT INTO $tmp02 (karyawanid, jabatanid, tanggal, 
+    jenis, dokterid, namalengkap, gelar, spesialis) SELECT"
+        . " karyawanid, jabatanid, tanggal, "
+        . " jenis, dokterid, namalengkap, gelar, spesialis FROM $tmp04 WHERE CONCAT(karyawanid, tanggal, dokterid) NOT IN "
+        . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal, dokterid),'') FROM $tmp05 WHERE IFNULL(jenis,'') NOT IN ('JV'))";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "DROP TEMPORARY TABLE $tmp05";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 //$query = "CREATE TEMPORARY TABLE $tmp05 (ino INT(10) AUTO_INCREMENT PRIMARY KEY)";
 //mysqli_query($cnmy, $query);
@@ -403,7 +419,7 @@ $pjabatanid=$rowk['jabatanid'];
                 $ketemu0=mysqli_num_rows($tampil0);
                 $pada=false;
                 if ((INT)$ketemu0<=0) {
-
+                    
                     $query = "select * from $tmp04 WHERE tanggal='$ftgl' AND karyawanid='$fkryid' AND dokterid='$pdokterid' order by tanggal, namalengkap";
                     $tampil0=mysqli_query($cnmy, $query);
                     $pada=true;
@@ -455,6 +471,10 @@ $pjabatanid=$rowk['jabatanid'];
                             . " data-target='#myModal' onClick=\"LiatKomentar('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
                     
                     if ($pada==false) {
+                        if ($njenis=="EC") {
+                            $pnmjenis="";
+                            $pnmdokt_="";
+                        }
                         echo "<tr>";
                         echo "<td nowrap>$ppilihtgl</td>";
                         echo "<td >$pnmjenis</td>";

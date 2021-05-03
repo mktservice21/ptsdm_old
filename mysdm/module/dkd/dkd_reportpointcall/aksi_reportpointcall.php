@@ -160,6 +160,9 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
     $pcolor4="style='background-color:#009999'";//extra call (EC)
     $pcolor5="style='background-color:#000066'";
     
+    for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
+        $pgrtotal[$ix]=0;
+    }
     
     echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
         echo "<thead>";
@@ -179,6 +182,7 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                     echo "<th align='center' $pcollibur><small>$pntgl</small></th>";
 
                 }
+                echo "<th align='center'><small>Jumlah</small></th>";
             echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
@@ -192,6 +196,8 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$pketnm</td>";
+                
+                $pjmlvisit=0;
                 for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                     $pntgl=$ix;
                     if (strlen($pntgl)<=1) $pntgl="0".$ix;
@@ -200,14 +206,39 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                     $pketjenis=$row0[$pfield];
                     
                     echo "<td nowrap >$pketjenis</td>";
-
+                    
+                    if (empty($pketjenis)) $pketjenis="0";
+                    $pjmlvisit=(INT)$pjmlvisit+(INT)$pketjenis;
+                    
+                    $pgrtotal[$ix]=(INT)$pgrtotal[$ix]+(INT)$pketjenis;
                 }
+                echo "<td nowrap align='right'>$pjmlvisit</td>";
                 echo "</tr>";
                 
                 $no++;
                 
             }
             
+            
+            echo "<tr style='font-weight:bold;'>";
+            echo "<td nowrap>&nbsp;</td>";
+            echo "<td nowrap>Total</td>";
+            
+            $pjmlvisit=0;
+            for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
+                $pntgl=$ix;
+                $pketjenis=$pgrtotal[$ix];
+                if ((INT)$pketjenis==0) $pketjenis="";
+                
+                echo "<td nowrap >$pketjenis</td>";
+                
+                if (empty($pketjenis)) $pketjenis="0";
+                $pjmlvisit=(INT)$pjmlvisit+(INT)$pketjenis;
+            }
+                
+            echo "<td nowrap align='right'>$pjmlvisit</td>";
+            echo "</tr>";
+                
         echo "</tbody>";
     echo "</table>";
 

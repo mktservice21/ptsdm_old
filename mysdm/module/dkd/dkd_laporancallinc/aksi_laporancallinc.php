@@ -21,6 +21,9 @@ $now=date("mdYhis");
 $tmp01 =" dbtemp.tmplapcallinc01_".$puserid."_$now ";
 $tmp02 =" dbtemp.tmplapcallinc02_".$puserid."_$now ";
 $tmp03 =" dbtemp.tmplapcallinc03_".$puserid."_$now ";
+$tmp04 =" dbtemp.tmplapcallinc04_".$puserid."_$now ";
+$tmp05 =" dbtemp.tmplapcallinc05_".$puserid."_$now ";
+$tmp06 =" dbtemp.tmplapcallinc06_".$puserid."_$now ";
 
 
 $pkryid = $_POST['cb_karyawan']; 
@@ -46,7 +49,10 @@ $query = "create TEMPORARY table $tmp01 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$sql = "select a.karyawanid, a.idinput, a.jabatanid, a.tanggal 
+
+
+
+$sql = "select a.karyawanid, a.idinput, a.jabatanid, a.tanggal, a.jenis, a.dokterid   
     FROM hrd.dkd_new1 as a 
     WHERE a.karyawanid='$pkryid'";
 $sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
@@ -54,12 +60,48 @@ $query = "create TEMPORARY table $tmp02 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "create TEMPORARY table $tmp03 (select * from $tmp01)"; 
+
+$sql = "select a.karyawanid, a.idinput, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
+    b.pointMR, b.pointSpv, b.pointDM 
+    FROM hrd.dkd_new_real0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
+    WHERE a.karyawanid='$pkryid'";
+$sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
+$query = "create TEMPORARY table $tmp03 ($sql)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$sql = "select a.karyawanid, a.idinput, a.jabatanid, a.tanggal, a.jenis, a.dokterid   
+    FROM hrd.dkd_new_real1 as a 
+    WHERE a.karyawanid='$pkryid'";
+$sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
+$query = "create TEMPORARY table $tmp04 ($sql)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "create TEMPORARY table $tmp05 (select * from $tmp02)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "INSERT INTO $tmp02 (karyawanid, idinput, jabatanid, tanggal, dokterid) SELECT"
+        . " karyawanid, idinput, jabatanid, tanggal, dokterid FROM $tmp04 WHERE CONCAT(karyawanid, tanggal, dokterid) NOT IN "
+        . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal, dokterid),'') FROM $tmp05 WHERE IFNULL(jenis,'') NOT IN ('JV'))";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "DROP TEMPORARY TABLE $tmp05";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+
+$query = "create TEMPORARY table $tmp05 (select * from $tmp01)"; 
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "INSERT INTO $tmp01 (karyawanid, idinput, jabatanid, tanggal)"
         . " SELECT DISTINCT karyawanid, idinput, jabatanid, tanggal FROM $tmp02 WHERE CONCAT(karyawanid, tanggal) NOT IN "
-        . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal),'') FROM $tmp03)"; 
+        . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal),'') FROM $tmp05)"; 
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
@@ -93,16 +135,16 @@ $query = "UPDATE $tmp01 SET totakv=1";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "UPDATE $tmp01 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
-    hrd.dkd_new1 WHERE IFNULL(jenis,'')='' GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totvisit=b.jml";
+    $tmp02 WHERE IFNULL(jenis,'') NOT IN ('JV') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totvisit=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "UPDATE $tmp01 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
-    hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totec=b.jml";
+    $tmp02 WHERE IFNULL(jenis,'') IN ('EC') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totec=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
 $query = "UPDATE $tmp01 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
-    hrd.dkd_new1 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totjv=b.jml";
+    $tmp02 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totjv=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
@@ -328,5 +370,8 @@ hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp01");
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp02");
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp03");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp04");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp05");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp06");
     mysqli_close($cnmy);
 ?>

@@ -120,15 +120,7 @@
                 if ($ntglats5=="0000-00-00 00:00:00") $ntglats5="";
                 
                 $nsudahapprove=false;
-                
-                if ( ($njbt=="15" OR $njbt=="38") AND !empty($nats1) AND !empty($ntglats1)) $nsudahapprove=true;
-                if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18") AND !empty($nats2) AND !empty($ntglats2)) $nsudahapprove=true;
-                if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08") AND !empty($nats3) AND !empty($ntglats3)) $nsudahapprove=true;
-                if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08" OR $njbt=="20") AND !empty($nats4) AND !empty($ntglats4)) $nsudahapprove=true;
-                if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08" OR $njbt=="05") AND !empty($nats5) AND !empty($ntglats5)) $nsudahapprove=true;
-               
-                
-                
+                if (!empty($ntglats4)) $nsudahapprove=true;
                 
                 $pidget=encodeString($cidinput);
                 

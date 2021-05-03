@@ -105,9 +105,9 @@ if ($module=='dkdrealisasiplan')
 
         if ($act=="dailyinput") {
 
-            $query = "INSERT INTO hrd.dkd_new_real1 (tanggal, karyawanid, jenis, dokterid, notes, saran)
+            $query = "INSERT INTO hrd.dkd_new_real1 (tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid)
                 VALUES
-                ('$ptanggal', '$pkaryawanid', '$pjenis', '$pdokterid', '$pketdokt', '$psaran')";
+                ('$ptanggal', '$pkaryawanid', '$pjenis', '$pdokterid', '$pketdokt', '$psaran', '$pidjabatan')";
             mysqli_query($cnmy, $query); 
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 

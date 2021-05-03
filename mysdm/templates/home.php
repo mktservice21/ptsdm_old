@@ -890,8 +890,12 @@
         include 'module/laporan/mod_lapkascab/lapkascab.php';
     }elseif ($_GET['module']=='mktformcutieth'){
         include 'module/marketing/mkt_formcutieth/formcutieth.php';
+    }elseif ($_GET['module']=='mktformcutiho'){
+        include 'module/marketing/mkt_formcutiho/formcutiho.php';
     }elseif ($_GET['module']=='mktapprovecutieth'){
         include 'module/marketing/mkt_apvcutieth/apvcutieth.php';
+    }elseif ($_GET['module']=='mktapprovecutiho'){
+        include 'module/marketing/mkt_apvcutiho/apvcutiho.php';
     }elseif ($_GET['module']=='mktproscutihrd'){
         include 'module/marketing/mkt_proscutihrd/proscutihrd.php';
     }elseif ($_GET['module']=='mktclosingcuti'){

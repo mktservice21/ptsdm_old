@@ -20,6 +20,7 @@ $puserid=$_SESSION['USERID'];
 $now=date("mdYhis");
 $tmp01 =" dbtemp.tmplapcallinc01_".$puserid."_$now ";
 $tmp02 =" dbtemp.tmplapcallinc02_".$puserid."_$now ";
+$tmp03 =" dbtemp.tmplapcallinc03_".$puserid."_$now ";
 
 
 $pkryid = $_POST['cb_karyawan']; 
@@ -44,6 +45,22 @@ $sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
 $query = "create TEMPORARY table $tmp01 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$sql = "select a.karyawanid, a.idinput, a.jabatanid, a.tanggal 
+    FROM hrd.dkd_new1 as a 
+    WHERE a.karyawanid='$pkryid'";
+$sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
+$query = "create TEMPORARY table $tmp02 ($sql)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "create TEMPORARY table $tmp03 (select * from $tmp01)"; 
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "INSERT INTO $tmp01 (karyawanid, idinput, jabatanid, tanggal)"
+        . " SELECT DISTINCT karyawanid, idinput, jabatanid, tanggal FROM $tmp02 WHERE CONCAT(karyawanid, tanggal) NOT IN "
+        . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal),'') FROM $tmp03)"; 
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
 $query = "select a.jabatanid as jabatanid, b.nama as nama_jabatan from $tmp01 as a 
@@ -111,15 +128,15 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
     if ($pjabatanid=='08') {
         $jab = 4;
-	} else {
-		if (($pjabatanid=='10') or ($pjabatanid=='18')) {
-		    $jab = 6;
-		} else {
-		    if ($pjabatanid=='15') {
-			    $jab = 10;
-			}
-		}
-	}
+    } else {
+        if (($pjabatanid=='10') or ($pjabatanid=='18')) {
+            $jab = 6;
+        } else {
+            if ($pjabatanid=='15') {
+                $jab = 10;
+            }
+        }
+    }
     if (empty($jab)) $jab=0;
     if (empty($jml_hari_krj)) $jml_hari_krj=0;
 
@@ -310,5 +327,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp01");
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp02");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp03");
     mysqli_close($cnmy);
 ?>

@@ -639,6 +639,8 @@
 
     }elseif ($_GET['module']=='mktformcutieth'){
         include 'module/marketing/iviewdatadmkt.php';        
+    }elseif ($_GET['module']=='mktformcutiho'){
+        include 'module/marketing/iviewdatadho.php';        
     }elseif ($_GET['module']=='mktrptdatacuti'){
         include 'module/marketing/mkt_rptdatacuti/aksi_rptdatacuti.php';
 

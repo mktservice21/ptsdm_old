@@ -43,6 +43,7 @@ $query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from h
 $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
+$pjabatanid=$rowk['jabatanid'];
 $pnamajabatan=$rowk['nama_jabatan'];
 
 
@@ -230,13 +231,22 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                 $pketjenis=$pgrtotal[$ix];
                 if ((INT)$pketjenis==0) $pketjenis="";
                 
-                echo "<td nowrap >$pketjenis</td>";
+                $pwarnapoint="";
+                if ($pjabatanid=="15") {
+                    if ((INT)$pketjenis<10) $pwarnapoint=" style='color:red;' ";
+                }elseif ($pjabatanid=="10" OR $pjabatanid=="18") {
+                    if ((INT)$pketjenis<6) $pwarnapoint=" style='color:red;' ";
+                }elseif ($pjabatanid=="08") {
+                    if ((INT)$pketjenis<4) $pwarnapoint=" style='color:red;' ";
+                }
+                
+                echo "<td nowrap $pwarnapoint>$pketjenis</td>";
                 
                 if (empty($pketjenis)) $pketjenis="0";
                 $pjmlvisit=(INT)$pjmlvisit+(INT)$pketjenis;
             }
                 
-            echo "<td nowrap align='right'>$pjmlvisit</td>";
+            echo "<td nowrap align='right'>&nbsp;</td>";
             echo "</tr>";
                 
         echo "</tbody>";

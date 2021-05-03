@@ -292,6 +292,7 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                     echo "<th align='center' $pcollibur><small>$pntgl</small></th>";
 
                 }
+                echo "<th align='center'><small>Jumlah</small></th>";
             echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
@@ -307,6 +308,8 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$pgelar $pdokternm $pspesialis</td>";
+                
+                $pjmlvisit=0;
                 for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                     $pntgl=$ix;
                     if (strlen($pntgl)<=1) $pntgl="0".$ix;
@@ -326,8 +329,9 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                         }
                     }
                     echo "<td nowrap $pbckcolor>&nbsp;</td>";
-
+                    if (!empty($pbckcolor)) $pjmlvisit++;
                 }
+                echo "<td nowrap align='right'>$pjmlvisit</td>";
                 echo "</tr>";
                 
                 $no++;

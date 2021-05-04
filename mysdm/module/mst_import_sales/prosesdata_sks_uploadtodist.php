@@ -311,7 +311,9 @@ if (empty($puser)) {
         $kota=mysqli_real_escape_string($cnmy, $data1['kota']);
 		
 		$enama_eth=mysqli_real_escape_string($cnmy, $data1['nama_eth_sks']);
-
+                
+                if (empty($enama)) $enama=$enama_eth;
+                
                 $ncabang_id = '';
 
                 if($ncabang=='SMG'){

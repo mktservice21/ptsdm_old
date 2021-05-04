@@ -905,6 +905,8 @@
         
     }elseif ($_GET['module']=='bgtinputbrdccdss'){
         include 'module/budget/bgt_brdccdss/brdccdss.php';
+    }elseif ($_GET['module']=='spdklaimdisc'){
+        include 'module/budget/mod_br_spdklaimdisc/spdklaimdisc.php';
         
 
     }else{

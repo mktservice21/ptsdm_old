@@ -4,8 +4,13 @@ if ($_GET['module']=="getkunjungan"){
     include "../../config/fungsi_sql.php";
     include "../../config/library.php";
     
-    //$date1=$_POST['ubulan'];
-    $date1 = date("Y-m-d");
+    
+    if (isset($_POST['uthnblnper1'])) {
+        $date1=$_POST['uthnblnper1'];
+    }else{
+        //$date1=$_POST['ubulan'];
+        $date1 = date("Y-m-d");
+    }
     $tgl1= date("Y-m-01", strtotime($date1));
     $tgl2= date("Y-m-t", strtotime($date1));
     $bulan= date("Ym", strtotime($date1));
@@ -104,11 +109,17 @@ if ($_GET['module']=="getkunjungan"){
         var icar = window.opener.document.getElementById('e_idkaryawan').value;
         var itgl = window.opener.document.getElementById('e_bulan').value;
         var ptgl = itgl.split("/");
-        var thnbln = ptgl[1]+"-"+ptgl[0]+"-01";
+        var thnbln = itgl;//ptgl[2]+"-"+ptgl[1]+"-01";
+        //alert(thnbln); return false;
+        
+        var itglp1 = window.opener.document.getElementById('e_periode01').value;
+        var itglper1 = itglp1.split("/");
+        var thnblnper1 = itglper1[2]+"-"+itglper1[1]+"-01";
+        
         $.ajax({
             type:"post",
             url:"module/mod_br_entrybrluarkota/kunjungan.php?module=getkunjungan",
-            data:"ubulan="+thnbln+"&umr="+icar,
+            data:"ubulan="+thnbln+"&umr="+icar+"&uthnblnper1="+thnblnper1,
             success:function(data){
                 $("#c-data").html(data);
             }

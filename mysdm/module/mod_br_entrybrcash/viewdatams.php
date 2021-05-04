@@ -240,7 +240,15 @@ if ($_GET['module']=="caridivisi"){
     $pntgl02 = str_replace('/', '-', $pntgl02);
     
     $blnpilihuc = date('Y-m', strtotime($pntgl01));
+    $blnpilihuc02 = date('Y-m', strtotime($pntgl02));
     
+    $ntgl01 = date('Y-m-d', strtotime($pntgl01));
+    $ntgl02 = date('Y-m-d', strtotime($pntgl02));
+    
+    $query = "select jabatanId as jabatanid FROM hrd.karyawan WHERE karyawanId='$idajukan'";
+    $tampilj= mysqli_query($cnmy, $query);
+    $jrow= mysqli_fetch_array($tampilj);
+    $pjabatanid=$jrow['jabatanid'];
     
     $fdata_uc="";
     if (!empty($idklaim)) $fdata_uc=" AND a.idrutin <>'$idklaim'";
@@ -265,7 +273,14 @@ if ($_GET['module']=="caridivisi"){
     //cari data UC dari tabel cuti
     $sql = "select COUNT(distinct b.tanggal) as jmlhariuc FROM hrd.t_cuti0 as a "
             . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti WHERE a.id_jenis IN ('05') AND "
-            . " a.karyawanid='$idajukan' AND LEFT(b.tanggal,7)='$blnpilihuc' AND IFNULL(a.stsnonaktif,'')<>'Y'";
+            . " a.karyawanid='$idajukan' AND LEFT(b.tanggal,7)='$blnpilihuc' AND IFNULL(a.stsnonaktif,'')<>'Y' ";
+    if ($pjabatanid=="15" OR $pjabatanid=="38") {
+        $sql .=" AND IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' ";
+    }elseif ($pjabatanid=="05") {
+        $sql .=" AND IFNULL(a.tgl_atasan5,'')<>'' AND IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' ";
+    }else{
+        $sql .=" AND IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' ";
+    }
     $tampil_u= mysqli_query($cnmy, $sql);
     $rowu= mysqli_fetch_array($tampil_u);
     $pjumlahhr_ucinput=$rowu['jmlhariuc'];
@@ -277,6 +292,11 @@ if ($_GET['module']=="caridivisi"){
 
     mysqli_close($cnmy);
 
+    if ($blnpilihuc==$blnpilihuc02) {
+    }else{
+        $pjumlahhr_ucinput=0;
+    }
+    
 ?>
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah UC <span class='required'></span></label>
@@ -294,7 +314,26 @@ if ($_GET['module']=="caridivisi"){
         </div>
     </div>
 <?PHP
-}elseif ($_GET['module']=="xxx"){
+}elseif ($_GET['module']=="caribulanyangbeda"){
+    $pntgl01=$_POST['uperi01'];
+    $pntgl02=$_POST['uperi02'];
+    
+    $pntgl01 = str_replace('/', '-', $pntgl01);
+    $pntgl02 = str_replace('/', '-', $pntgl02);
+    
+    $blnpilihuc = date('Y-m', strtotime($pntgl01));
+    $blnpilihuc02 = date('Y-m', strtotime($pntgl02));
+    
+    $ntgl01 = date('Ymd', strtotime($pntgl01));
+    $ntgl02 = date('Ymd', strtotime($pntgl02));
+    
+    if ($blnpilihuc==$blnpilihuc02) {
+        if ($ntgl01>$ntgl02) { echo "bedaperiode"; exit; }
+        else exit;
+    }else{
+        echo "bedaperiode"; exit;
+    }
+    
 }elseif ($_GET['module']=="xxx"){
     
 }

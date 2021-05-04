@@ -303,7 +303,14 @@ $pjumlahhr_bledit=$rowi['qtyi'];
 //cari data UC dari tabel cuti
 $sql = "select COUNT(distinct b.tanggal) as jmlhariuc FROM hrd.t_cuti0 as a "
         . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti WHERE a.id_jenis IN ('05') AND "
-        . " a.karyawanid='$idajukan' AND LEFT(b.tanggal,7)='$blnpilihuc' AND IFNULL(a.stsnonaktif,'')<>'Y'";
+        . " a.karyawanid='$idajukan' AND LEFT(b.tanggal,7)='$blnpilihuc' AND IFNULL(a.stsnonaktif,'')<>'Y' ";
+if ($pjabatanid=="15" OR $pjabatanid=="38") {
+    $sql .=" AND IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' ";
+}elseif ($pjabatanid=="05") {
+    $sql .=" AND IFNULL(a.tgl_atasan5,'')<>'' AND IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' ";
+}else{
+    $sql .=" AND IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' ";
+}
 $tampil_u= mysqli_query($cnmy, $sql);
 $rowu= mysqli_fetch_array($tampil_u);
 $pjumlahhr_ucinput=$rowu['jmlhariuc'];
@@ -1717,13 +1724,37 @@ Untuk mengisi HOTEL form cuti harus diisi terlebih dahulu."); return false;
 </script>
 
 <script>
-                                    
+    function show_caritanggal(skey)  {
+        var eperi01 =document.getElementById('e_periode01').value;
+        var eperi02 =document.getElementById('e_periode02').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/mod_br_entrybrcash/viewdatams.php?module=caribulanyangbeda",
+            data:"skey="+skey+"&uperi01="+eperi01+"&uperi02="+eperi02,
+            success:function(data){
+                if (data=="bedaperiode") {
+                    if (skey=="1") {
+                        document.getElementById('e_periode02').value=document.getElementById('e_periode01').value;
+                    }else{
+                        document.getElementById('e_periode01').value=document.getElementById('e_periode02').value;
+                    }
+                }
+            }
+        });
+        
+        setTimeout(function () {
+            ShowDataTotalUC();
+        }, 200);
+        
+    }
+    
     $(document).ready(function() {
         $('#mytgl01').on('change dp.change', function(e){
-            ShowDataTotalUC();
+            show_caritanggal('1');
         });
         $('#mytgl02').on('change dp.change', function(e){
-            ShowDataTotalUC();
+            show_caritanggal('2');
         });
         
         

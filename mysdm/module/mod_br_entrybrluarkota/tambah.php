@@ -964,6 +964,9 @@ if (isset($_GET['ca'])) {
                                         <input type="button" class='btn btn-success btn-xs' name="btn_viewuc" id="btn_viewuc" value="Lihat Data Kunjungan" 
                                                onclick="window.open('<?PHP echo "eksekusi3.php?module=$_GET[module]&iprint=kunjungan"; ?>', 'winpopup', 
                                                     'toolbar=no,statusbar=no,menubar=no,resizable=yes,scrollbars=yes,width=800,height=400');" />
+                                        <!--
+                                        <button class='btn btn-success btn-xs' type="submit" formtarget="_blank" onclick="ShowDataKunjungan()">Lihat Data Kunjungan</button>
+                                        -->
                                     </div>
                                 </div>
                                 
@@ -1720,6 +1723,17 @@ Untuk mengisi HOTEL form cuti harus diisi terlebih dahulu."); return false;
             }
         });
         
+    }
+    
+    function ShowDataKunjungan() {
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+
+        document.getElementById("demo-form2").action = "eksekusi3.php?module="+module+"&iprint=kunjungan";
+        document.getElementById("demo-form2").submit();
+        return 1;
     }
 </script>
 

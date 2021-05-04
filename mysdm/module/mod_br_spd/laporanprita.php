@@ -313,6 +313,7 @@
     if ($padvance=="C") $nmadvance="* Via Surabaya (Klaim Disc.)";
     if ($padvance=="W") $nmadvance="";
     
+    if ($padvance=="C" OR $padvance=="D") $pdivisi="EAGLE";
     
     $imatauangbanyak=false;
     $m_uang1=false;

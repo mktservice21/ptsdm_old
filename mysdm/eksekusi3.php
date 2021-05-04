@@ -643,6 +643,9 @@
         include 'module/marketing/iviewdatadho.php';        
     }elseif ($_GET['module']=='mktrptdatacuti'){
         include 'module/marketing/mkt_rptdatacuti/aksi_rptdatacuti.php';
+        
+    }elseif ($_GET['module']=='spdklaimdisc'){
+        include 'module/budget/mod_br_spdklaimdisc/aksi_rptspdpdkd.php';
 
         
     }elseif ($_GET['module']=='eksekusifileelastik'){

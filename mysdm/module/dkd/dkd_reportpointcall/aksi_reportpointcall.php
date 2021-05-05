@@ -358,11 +358,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 
                 $pwarnapoint="";
                 if ($pjabatanid=="15") {
-                    if ((INT)$pketjenis<10) $pwarnapoint=" style='color:red;' ";
+                    if ((INT)$pketjenis<10) $pwarnapoint=" style='color:red; font-size:15px;' ";
                 }elseif ($pjabatanid=="10" OR $pjabatanid=="18") {
-                    if ((INT)$pketjenis<6) $pwarnapoint=" style='color:red;' ";
+                    if ((INT)$pketjenis<6) $pwarnapoint=" style='color:red; font-size:15px;' ";
                 }elseif ($pjabatanid=="08") {
-                    if ((INT)$pketjenis<4) $pwarnapoint=" style='color:red;' ";
+                    if ((INT)$pketjenis<4) $pwarnapoint=" style='color:red; font-size:15px;' ";
                 }
                 if (empty($pketjenis)) $pwarnapoint="";
                 

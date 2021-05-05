@@ -1,5 +1,5 @@
 <?PHP
-//include "config/cek_akses_modul.php";
+include "config/cek_akses_modul.php";
 
 $pmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];
@@ -51,7 +51,7 @@ switch($pactpilih){
 
         $pfiltercabpilih="";
 
-        if ($fjbtid=="15" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="08" OR $fjbtid=="38" OR $fkaryawan=="0000000158" OR $fkaryawan=="0000000159") {
+        if ($fjbtid=="15" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="08" OR $fjbtid=="38" OR $fjbtid=="20" OR $fkaryawan=="0000000158" OR $fkaryawan=="0000000159") {
             if ($fkaryawan=="0000000158") {
                 $query_cab = "select distinct icabangid, '' as areaid, '' as divisiid FROM MKT.icabang WHERE region='B'";
             }elseif ($fkaryawan=="0000000159") {
@@ -63,6 +63,8 @@ switch($pactpilih){
                     $query_cab = "select distinct icabangid, areaid, divisiid FROM MKT.ispv0 WHERE karyawanid='$fkaryawan'";
                 }elseif ($fjbtid=="08") {
                     $query_cab = "select distinct icabangid, '' as areaid, '' as divisiid FROM MKT.idm0 WHERE karyawanid='$fkaryawan'";
+                }elseif ($fjbtid=="20") {
+                    $query_cab = "select distinct icabangid, '' as areaid, '' as divisiid FROM MKT.ism0 WHERE karyawanid='$fkaryawan'";
                 }elseif ($fjbtid=="38") {
                     $query_cab = "select distinct icabangid, '' as areaid, '' as divisiid FROM hrd.rsm_auth WHERE karyawanid='$fkaryawan'";
                 }

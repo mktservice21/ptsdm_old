@@ -49,7 +49,8 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 $query = "select a.idinput, a.tanggal, a.dokterid, c.namalengkap, a.jenis,
     c.gelar, c.spesialis FROM 
     hrd.dkd_new1 as a 
-    LEFT JOIN dr.masterdokter as c on a.dokterid=c.id";
+    LEFT JOIN dr.masterdokter as c on a.dokterid=c.id WHERE a.karyawanid='$pkryid'";
+$sql .=" AND a.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
 $query = "create TEMPORARY table $tmp02 ($query)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

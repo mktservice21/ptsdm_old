@@ -130,7 +130,7 @@ $pcabangid="";
     $pkdgsm=$nrs2['gsm'];
     $pnamagsm=$nrs2['nama_gsm'];
 
-    if ($pcabangid=="0000000003") {
+    if ($pcabangid=="0000000003X") {
         $pkdspv="";
         $pnamaspv="";
         $pkddm="";

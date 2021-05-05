@@ -68,7 +68,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $sql = "select c.nourut, c.idinput, c.karyawanid, e.nama as namakaryawan, e.jabatanid, c.tanggal, c.tglinput, 
-    c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes, '' as saran 
+    c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes 
     FROM hrd.dkd_new1 as c JOIN dr.masterdokter as d on c.dokterid=d.id LEFT JOIN hrd.karyawan as e on c.karyawanid=e.karyawanId 
     WHERE c.karyawanid='$pkryid' ";
 if (!empty($ftglfilter)) {
@@ -77,6 +77,11 @@ if (!empty($ftglfilter)) {
     $sql .=" AND c.tanggal BETWEEN '$ptgl1' AND '$ptgl2' ";
 }
 $query = "create TEMPORARY table $tmp02 ($sql)"; 
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "ALTER TABLE $tmp02 ADD COLUMN saran varchar(300)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 

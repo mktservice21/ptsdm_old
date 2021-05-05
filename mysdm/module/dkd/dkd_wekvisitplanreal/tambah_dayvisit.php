@@ -1,5 +1,19 @@
 <?PHP
+    $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
+        "Juni", "Juli", "Agustus", "September", 
+        "Oktober", "November", "Desember");
 
+    $hari_array = array(
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu'
+    );
+    
+    
 $pidmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];
 $pidact=$_GET['act'];
@@ -305,8 +319,16 @@ $pnamajabatan=$nr['nama'];
                                                         
                                                         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapusDokt('hapusdailydokt', '$pkaryawanid', '$ntgl', '$pdokterid')\">";
                                                         
+                                                        $njammenitdetik = date('H:i:s', strtotime($ntglinput));
+                                                        $ntanggal = date('l d F Y', strtotime($ntglinput));
+
+                                                        $xhari = $hari_array[(INT)date('w', strtotime($ntglinput))];
+                                                        $xtgl= date('d', strtotime($ntglinput));
+                                                        $xbulan = $bulan_array[(INT)date('m', strtotime($ntglinput))];
+                                                        $xthn= date('Y', strtotime($ntglinput));
+                
                                                         echo "<tr>";
-                                                        echo "<td nowrap>$ntglinput</td>";
+                                                        echo "<td nowrap>$xhari, $xtgl $xbulan $xthn $njammenitdetik</td>";
                                                         echo "<td nowrap>$pnmjenis</td>";
                                                         echo "<td nowrap>$pnmdokt_ - $pdokterid</td>";
                                                         echo "<td >$pnotes</td>";

@@ -519,7 +519,7 @@
                     }
                         
                     if ($purutanlebih == true) {
-                        echo "<tr>";
+                        echo "<tr style='font-weight:bold; font-size:11.5px; font-family:arial;'>";
                         echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
@@ -528,7 +528,7 @@
                         echo "<td></td>";
                         echo "<td></td>";
                         echo "<td></td>";
-                        echo "<td nowrap align='right'><b>$psubtotalaktif</b></td>";
+                        echo "<td nowrap align='right'>$psubtotalaktif</td>";
                         echo "<td></td>";
                         echo "</tr>";
                         
@@ -737,5 +737,12 @@
 
 <?PHP
 hapusdata:
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp01");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp02");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp03");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp04");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp05");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp06");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp07");
     mysqli_close($cnmy);
 ?>

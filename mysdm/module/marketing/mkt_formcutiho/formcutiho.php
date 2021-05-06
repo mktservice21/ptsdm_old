@@ -295,15 +295,9 @@
                                                     . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                                             $query_kry .=" ORDER BY nama";
                                         }else{
-                                            if ($pidjabatan=="38") {
-                                                $query_kry = "select karyawanId as karyawanid, nama as nama 
-                                                    FROM hrd.karyawan WHERE karyawanId='$pidkaryawan' ";
-                                                $query_kry .=" ORDER BY nama";
-                                            }else{
-                                                $query_kry = "select karyawanId as karyawanid, nama as nama 
-                                                    FROM hrd.karyawan WHERE karyawanId IN $pfilterkaryawan ";
-                                                $query_kry .=" ORDER BY nama";
-                                            }
+                                            $query_kry = "select karyawanId as karyawanid, nama as nama 
+                                                FROM hrd.karyawan WHERE karyawanId='$pidkaryawan' ";
+                                            $query_kry .=" ORDER BY nama";
                                         }
 
                                         if (!empty($query_kry)) {

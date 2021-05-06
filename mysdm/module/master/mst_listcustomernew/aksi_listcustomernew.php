@@ -26,7 +26,7 @@ if ($module=='mstlistcustbaru' AND $act=='simpandatalitcust')
 
     $puserapv=$_POST['e_idcard'];
     
-    $bulaninput="2021-03-01";
+    $bulaninput="2021-04-01";//jangan lupa di viewdatatablecust.php ganti $pbulanawal=
 
 
     unset($pinsert_data);//kosongkan array

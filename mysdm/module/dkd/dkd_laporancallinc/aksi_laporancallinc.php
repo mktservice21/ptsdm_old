@@ -39,6 +39,8 @@ $query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from h
 $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
+$pnmjbtkarywanpl=$rowk['nama_jabatan'];
+
 
 $sql = "select a.karyawanid, a.idinput, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
     b.pointMR, b.pointSpv, b.pointDM 
@@ -80,6 +82,24 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
+//cari jabatan yang diinput
+$query = "select a.jabatanid, b.nama as nama_jabatan FROM ("
+        . " select DISTINCT jabatanid FROM $tmp01 WHERE IFNULL(jabatanid,'')<>'' "
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp02 WHERE IFNULL(jabatanid,'')<>''"
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp03 WHERE IFNULL(jabatanid,'')<>''"
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp04 WHERE IFNULL(jabatanid,'')<>''"
+        . " ) as a JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId";
+$tampilk=mysqli_query($cnmy, $query);
+$rowk=mysqli_fetch_array($tampilk);
+$pnamajabatan=$rowk['nama_jabatan'];
+$pjabatanid=$rowk['jabatanid'];
+
+if (empty($pnamajabatan)) $pnamajabatan=$pnmjbtkarywanpl;
+
+
 $query = "create TEMPORARY table $tmp05 (select * from $tmp02)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
@@ -104,13 +124,6 @@ $query = "INSERT INTO $tmp01 (karyawanid, idinput, jabatanid, tanggal)"
         . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal),'') FROM $tmp05)"; 
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-
-$query = "select a.jabatanid as jabatanid, b.nama as nama_jabatan from $tmp01 as a 
-    LEFT join hrd.jabatan as b on a.jabatanid=b.jabatanId ";
-$tampilk=mysqli_query($cnmy, $query);
-$rowk=mysqli_fetch_array($tampilk);
-$pnamajabatan=$rowk['nama_jabatan'];
-$pjabatanid=$rowk['jabatanid'];
 
 $query = "ALTER TABLE $tmp01 ADD COLUMN jpoint DECIMAL(20,2), ADD totakv INT(4), ADD totvisit INT(4), ADD totjv INT(4), ADD totec INT(4), ADD sudahreal VARCHAR(1)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

@@ -158,12 +158,13 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    mysqli_query($cnmy, "UPDATE $tmp04 SET urutan=noslip where IFNULL(urutan,'0')='0'");
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    mysqli_query($cnmy, "UPDATE $tmp04 SET urutan=noslip where IFNULL(urutan,'0')='0'"); 
+    //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     mysqli_query($cnmy, "UPDATE $tmp04 SET urutan=realisasi1 where IFNULL(urutan,'')=''");
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     mysqli_query($cnmy, "UPDATE $tmp04 SET jumlah=amount");
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "select * from $tmp04 WHERE IFNULL(jml_adj,0)<>0";
     $query = "create TEMPORARY table $tmp05 ($query)"; 
@@ -635,12 +636,17 @@
     
     if ($psudahadaadj == true){
     }else{
+        $pjumlahtranferspd=number_format($pjumlahtranferspd,0,",",",");
+        $ptotalrincian=number_format($ptotalrincian,0,",",",");
+        
         if ((DOUBLE)$pjumlahtranferspd==(DOUBLE)$ptotalrincian){
         }else{
             echo "<center><span style='font-size:16px; font-weight:bold; color:red;'>ADA SELISIH JUMLAH, MOHON CEK KEMBALI...</span></center>";
             echo "<br/><br/>";
         }
     }
+    //echo "$pjumlahtranferspd dan $ptotalrincian";
+    
     $nposisi="left";
     if ($pjenisrpt!="B" AND $pjenisrpt!="W") $nposisi="center";
     

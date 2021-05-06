@@ -297,6 +297,99 @@ if ($pmodule=="viewdatakrybuat") {
     }
     
     mysqli_close($cnmy);
+}elseif ($pmodule=="viewnomordivisikd") {
+    
+    $pidcard="";
+    if (isset($_SESSION['IDCARD'])) $pidcard=$_SESSION['IDCARD'];
+
+    include "../../config/koneksimysqli.php";
+    $tgl01=$_POST['utgl'];
+    $tahuninput= date("Y", strtotime($tgl01));
+    
+    $bl= date("m", strtotime($tgl01));
+    $byear= date("y", strtotime($tgl01));
+    $bl=(int)$bl;
+    $blromawi="I";
+    if ($bl==1) $blromawi="I";
+    if ($bl==2) $blromawi="II";
+    if ($bl==3) $blromawi="III";
+    if ($bl==4) $blromawi="IV";
+    if ($bl==5) $blromawi="V";
+    if ($bl==6) $blromawi="VI";
+    if ($bl==7) $blromawi="VII";
+    if ($bl==8) $blromawi="VIII";
+    if ($bl==9) $blromawi="IX";
+    if ($bl==10) $blromawi="X";
+    if ($bl==11) $blromawi="XI";
+    if ($bl==12) $blromawi="XII";
+    
+    $pdivsi = trim($_POST['udivisi']);
+    $pkode = trim($_POST['ukode']);
+    $psubkode = trim($_POST['ukodesub']);
+    $padvance = trim($_POST['uadvance']);
+    
+    
+    $nobuktinya="";
+    $tno=0;
+    $awal=3;
+    
+    $query = "SELECT MAX(SUBSTRING_INDEX(nodivisi, '/', 1)) as nodivisi FROM dbmaster.t_suratdana_br "
+            . " WHERE stsnonaktif<>'Y' AND YEAR(tgl)='$tahuninput' AND "
+            . " karyawanid='$pidcard'";
+    //echo $query;
+    $showkan= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($showkan);
+    if ($ketemu>0){
+        $sh= mysqli_fetch_array($showkan);
+        $tno=(INT)$sh['nodivisi'];
+        if (empty($tno)) $tno="0";
+        
+        $tno++;
+    }
+    
+    $jml=  strlen($tno);
+    $awal=$awal-$jml;
+    if ($awal>=0)
+        $tno=str_repeat("0", $awal).$tno;
+    else
+        $tno=$tno;
+
+    
+    mysqli_close($cnmy);
+    
+    $noslipurut=$tno."/BR $pdivsi/".$blromawi."/".$tahuninput;
+    
+    echo $noslipurut; exit;
+    
+}elseif ($pmodule=="cekdatasudahadakdisc") {
+    
+    $pkaryawanid="";
+    if (isset($_SESSION['IDCARD'])) $pkaryawanid=$_SESSION['IDCARD'];
+    
+    include "../../config/koneksimysqli.php";
+    
+    $pidinput=$_POST['uid'];
+    $pidinput=$_POST['uact'];
+    $pnodivisi=$_POST['unodivisi'];
+    
+    $boleh="boleh";
+    
+    $query = "select nodivisi FROM dbmaster.t_suratdana_br WHERE IFNULL(stsnonaktif,'')<>'Y' AND nodivisi='$pnodivisi' AND karyawanid='$pkaryawanid'";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+
+        $boleh= "nodivisi tersebut sudah ada, silakan coba lagi...";
+
+    }
+        
+    mysqli_close($cnmy);
+    
+    echo $boleh; exit;
+    
+}elseif ($pmodule=="x") {
+}elseif ($pmodule=="x") {
+}elseif ($pmodule=="x") {
 }elseif ($pmodule=="x") {
     
 }

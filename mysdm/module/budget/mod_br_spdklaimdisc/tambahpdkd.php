@@ -32,7 +32,26 @@ if ($pact=="editdata") {
     $act="update";
     $pidbr=$_GET['id'];
     
+    $query = "select * from dbmaster.t_suratdana_br where idinput='$pidbr'";
+    $tampil= mysqli_query($cnmy, $query);
+    $row= mysqli_fetch_array($tampil);
     
+    $pdivisi=$row['divisi'];
+    $pjenis=$row['jenis_rpt'];
+    $pkodeid=$row['kodeid'];
+    $psubkode=$row['subkode'];
+    $pnodivisi=$row['nodivisi'];
+    $pperiodeby=$row['periodeby'];
+    $pjumlah=$row['jumlah'];;
+    $pketerangan=$row['keterangan'];
+    $ntgl1=$row['tgl'];
+    $ntgl2=$row['tglf'];
+    $ntgl3=$row['tglt'];
+    
+    $ptgl_pengajuan = date('d F Y', strtotime($ntgl1));
+    $eperiode1 = date('01 F Y', strtotime($ntgl2));
+    $eperiode2 = date('t F Y', strtotime($ntgl3));
+
 }
 
 $pjenis1="";
@@ -51,6 +70,14 @@ $ptupeper2="";
 $ptupeper3="";
 $ptupeper4="";
 $ptupeper5="selected";
+
+if ($pperiodeby=="K") {
+    $ptupeper1="";
+    $ptupeper2="";
+    $ptupeper3="";
+    $ptupeper4="";
+    $ptupeper5="selected";
+}
 
 
 ?>
@@ -112,7 +139,7 @@ $ptupeper5="selected";
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Divisi <span class='required'></span></label>
                                     <div class='col-xs-5'>
-                                        <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="">
+                                        <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="ShowDariDivisi()">
                                             <option value='' selected>-- Pilihan --</option>
                                             <?PHP
                                             $query = "select DivProdId from MKT.divprod WHERE br='Y' ";
@@ -143,7 +170,7 @@ $ptupeper5="selected";
                                     <div class='col-md-3'>
                                         <div class="form-group">
                                             
-                                            <select class='form-control input-sm' id="cb_jenispilih" name="cb_jenispilih" onchange="" data-live-search="true">
+                                            <select class='form-control input-sm' id="cb_jenispilih" name="cb_jenispilih" onchange="ShowDariJenis()" data-live-search="true">
                                                 <?PHP
                                                     echo "<option value='D' $pjenis1>Klaim Discount</option>";
                                                     echo "<option value='C' $pjenis2>Via Surabaya (Klaim Discount)</option>";
@@ -358,7 +385,7 @@ $ptupeper5="selected";
             firstDay: 1,
             dateFormat: 'dd MM yy',
             onSelect: function(dateStr) {
-                
+                ShowNoDivisiKD();
             } 
         });
         
@@ -391,6 +418,57 @@ $ptupeper5="selected";
 
 
 <script>
+    $(document).ready(function() {
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var iact = urlku.searchParams.get("act");
+        
+        if (iact=="tambahbaru") {
+            document.getElementById('e_jmlusulan').value="0";
+            ShowNoDivisiKD();
+        }else if (iact=="editdata") {
+            TampilkanDataKalimDisc();
+        }
+        
+    } );
+    
+    
+    function ShowDariDivisi() {
+        ShowNoDivisiKD();
+    }
+    
+    function ShowDariJenis() {
+        ShowNoDivisiKD();
+    }
+    
+    function ShowNoDivisiKD() {
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var iact = urlku.searchParams.get("act");
+        
+        var eidinput =document.getElementById('e_id').value;
+        var idiv = document.getElementById('cb_divisi').value;
+        var ikode = document.getElementById('cb_kode').value;
+        var ikodesub = document.getElementById('cb_kodesub').value;
+        var itgl = document.getElementById('e_tglberlaku').value;
+        var iadvance = document.getElementById('cb_jenispilih').value;
+        
+        if (iact=="editdata" || eidinput!="") {
+            return false;
+        }
+        
+        $.ajax({
+            type:"post",
+            url:"module/budget/viewdatabgt.php?module=viewnomordivisikd",
+            data:"udivisi="+idiv+"&ukode="+ikode+"&ukodesub="+ikodesub+"&utgl="+itgl+"&uadvance="+iadvance,
+            success:function(data){
+                document.getElementById('e_nomordiv').value=data;
+            }
+        });
+    }
+    
     
     function TampilkanDataKalimDisc() {
         var eidinput =document.getElementById('e_id').value;
@@ -424,6 +502,165 @@ $ptupeper5="selected";
     }
     
     
+    function disp_confirm(pText_,ket)  {
+        
+        HitungTotalDariCekBoxKD();
+        
+        setTimeout(function () {
+            disp_confirm_ext(pText_,ket)
+        }, 200);
+        
+    }
+    
+    
+    function disp_confirm_ext(pText_,ket)  {
+        
+        var ijml =document.getElementById('e_jmlusulan').value;
+        if(ijml==""){
+            ijml="0";
+        }
+        if (ijml=="0") {
+            alert("jumlah masih kosong...");
+            return false;
+        }
+        
+        var iid =document.getElementById('e_id').value;
+        var edivsi =document.getElementById('cb_divisi').value;
+        var ejenis =document.getElementById('cb_jenispilih').value;
+        var ekode =document.getElementById('cb_kode').value;
+        var ekodesub =document.getElementById('cb_kodesub').value;
+        var enodivisi =document.getElementById('e_nomordiv').value;
+        
+        if (edivsi==""){
+            alert("divisi masih kosong....");
+            return 0;
+        }
+        
+        if (ejenis==""){
+            alert("jenis masih kosong....");
+            return 0;
+        }
+
+        if (ekode==""){
+            alert("kode masih kosong....");
+            return 0;
+        }
+
+        if (ekodesub==""){
+            alert("sub kode masih kosong....");
+            return 0;
+        }
+
+        if (enodivisi==""){
+            alert("nodivisi masih kosong....");
+            return 0;
+        }
+        
+        var x_ = document.getElementById("cb_divisi").selectedIndex;
+        var y_ = document.getElementById("cb_divisi").options;
+        var ikddivisi=y_[x_].index;
+        var inmdivisi=y_[x_].text;
+        
+        var x_ = document.getElementById("cb_jenispilih").selectedIndex;
+        var y_ = document.getElementById("cb_jenispilih").options;
+        var inmjenis=y_[x_].text;
+
+        pText_="Divisi : "+inmdivisi+", \n\
+Jenis : "+inmjenis+", \n\
+Nomor Divisi : "+enodivisi+", \n\
+Total Pengajuan : Rp. "+ijml+" \n\
+________________________________________  \n\
+Apakah akan simpan data...?";
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var iact = urlku.searchParams.get("act");
+        
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var iact = urlku.searchParams.get("act");
+        //alert(iact);
+        $.ajax({
+            type:"post",
+            url:"module/budget/viewdatabgt.php?module=cekdatasudahadakdisc",
+            data:"uact="+iact+"&uid="+iid+"&unodivisi="+enodivisi,
+            success:function(data){
+                //var tjml = data.length;
+                //alert(data);
+                //return false;
+
+                if (data=="boleh") {
+            
+                    ok_ = 1;
+                    if (ok_) {
+                        var r=confirm(pText_)
+                        if (r==true) {
+                            //document.write("You pressed OK!")
+                            document.getElementById("d-form2").action = "module/budget/mod_br_spdklaimdisc/aksi_spdklaimdisc.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
+                            document.getElementById("d-form2").submit();
+                            return 1;
+                        }
+                    } else {
+                        //document.write("You pressed Cancel!")
+                        return 0;
+                    }
+                    
+
+                }else{
+                    alert(data);
+                }
+            }
+        });
+        
+        
+        
+    }
+    
     
     
 </script>
+
+<!--
+
+        $.ajax({
+            type:"post",
+            url:"module/budget/viewdatadkd.php?module=cekdatasudahadakdisc",
+            data:"uact="+iact+"&uid="+iid+"&unodivisi="+enodivisi,
+            success:function(data){
+                //var tjml = data.length;
+                //alert(data);
+                //return false;
+                if (data=="boleh") {
+        
+                    pText_="Divisi : "+inmdivisi+", \n\
+Jenis : "+inmjenis+", \n\
+Nomor Divisi : "+enodivisi+", \n\
+Total Pengajuan : Rp. "+ijml+" \n\
+________________________________________  \n\
+Apakah akan simpan data...?";
+
+                    ok_ = 1;
+                    if (ok_) {
+                        var r=confirm(pText_)
+                        if (r==true) {
+                            //document.write("You pressed OK!")
+                            document.getElementById("d-form2").action = "module/budget/mod_br_spdklaimdisc/aksi_spdklaimdisc.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
+                            document.getElementById("d-form2").submit();
+                            return 1;
+                        }
+                    } else {
+                        //document.write("You pressed Cancel!")
+                        return 0;
+                    }
+        
+                }else{
+                    alert(data);
+                }
+            }
+        });
+-->

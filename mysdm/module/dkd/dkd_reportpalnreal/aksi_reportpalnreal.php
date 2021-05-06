@@ -53,6 +53,8 @@ $query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from h
 $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
+$pnmjbtkarywanpl=$rowk['nama_jabatan'];
+
 
 $sql = "select a.idinput, a.karyawanid, c.nama as namakaryawan, a.jabatanid, a.tanggal, a.tglinput, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
     FROM hrd.dkd_new0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
@@ -86,7 +88,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$sql = "select a.idinput, a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
+$sql = "select a.idinput, a.karyawanid, c.nama as namakaryawan, a.jabatanid, a.tanggal, a.tglinput, a.ketid, b.nama as nama_ket, a.compl, a.aktivitas
     FROM hrd.dkd_new_real0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
     WHERE a.karyawanid='$pkryid' ";
@@ -114,6 +116,24 @@ $query = "create TEMPORARY table $tmp04 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+
+
+//cari jabatan yang diinput
+$query = "select a.jabatanid, b.nama as nama_jabatan FROM ("
+        . " select DISTINCT jabatanid FROM $tmp01 WHERE IFNULL(jabatanid,'')<>'' "
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp02 WHERE IFNULL(jabatanid,'')<>''"
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp03 WHERE IFNULL(jabatanid,'')<>''"
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp04 WHERE IFNULL(jabatanid,'')<>''"
+        . " ) as a JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId";
+$tampilk=mysqli_query($cnmy, $query);
+$rowk=mysqli_fetch_array($tampilk);
+$pnamajabatan=$rowk['nama_jabatan'];
+$pjabatanid=$rowk['jabatanid'];
+
+if (empty($pnamajabatan)) $pnamajabatan=$pnmjbtkarywanpl;
 
 
 $query = "create TEMPORARY table $tmp05 (select * from $tmp02)";
@@ -178,13 +198,6 @@ $query = "UPDATE $tmp07 as a JOIN $tmp04 as b on a.dokterid=b.dokterid AND a.kar
         . " a.tanggal=b.tanggal SET a.tglinput=b.tglinput";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-
-$query = "select a.jabatanid as jabatanid, b.nama as nama_jabatan from $tmp01 as a 
-    LEFT join hrd.jabatan as b on a.jabatanid=b.jabatanId ";
-$tampilk=mysqli_query($cnmy, $query);
-$rowk=mysqli_fetch_array($tampilk);
-$pnamajabatan=$rowk['nama_jabatan'];
-$pjabatanid=$rowk['jabatanid'];
 
     $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
         "Juni", "Juli", "Agustus", "September", 

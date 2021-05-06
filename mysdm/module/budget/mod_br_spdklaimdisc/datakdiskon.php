@@ -81,7 +81,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
     if ($ppertipe=="K") $ftypetgl = " a.bulan BETWEEN '$pbulan01' AND '$pbulan02' ";
     
     $query = "select a.DIVISI divisi, a.klaimId as klaimid, a.karyawanid, c.nama nama_karyawan,
-        a.distid, b.nama nama_dist, a.pengajuan, a.aktivitas1, a.jumlah, a.tgl, a.tgltrans, 
+        a.distid, b.nama nama_dist, a.pengajuan, a.aktivitas1, a.jumlah, a.tgl, a.bulan, a.tgltrans, 
         a.realisasi1, a.noslip, a.COA4, d.NAMA4, CAST('' as CHAR(1)) as sinput  
         from hrd.klaim a LEFT JOIN MKT.distrib0 b on a.distid=b.distid 
         LEFT JOIN hrd.karyawan c on a.karyawanid=c.karyawanId 
@@ -89,10 +89,12 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
         WHERE 1=1 ";
     //$query .=" AND a.karyawanid='$pkaryawanid' ";
     
-    $query .= " AND $ftypetgl ";
+    
     if ($pact=="editdata") {
+        $query .= " AND ($ftypetgl OR a.klaimId IN (select distinct IFNULL(bridinput,'') FROM $tmp00 WHERE IFNULL(sinput,'')='Y') ) ";
         $query .= " AND a.klaimId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp00 WHERE IFNULL(sinput,'')<>'Y') ";
     }else{
+        $query .= " AND $ftypetgl ";
         $query .= " AND a.klaimId NOT IN (select DISTINCT IFNULL(klaimId,'') FROM hrd.klaim_reject) ";
         $query .= " AND a.klaimId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp00)";
     }
@@ -107,7 +109,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
     
     if ($pact=="editdata") {
         $query = "UPDATE $tmp02 as a JOIN $tmp00 as b on a.klaimid=b.bridinput SET "
-                . " a.sinput=b.sinput, a.urutan=b.urutan, a.trans_ke=b.trans_ke, a.bridinput=b.bridinput WHERE "
+                . " a.sinput=b.sinput, a.urutan=b.urutan, a.trans_ke=b.trans_ke, a.bridinput=b.bridinput, a.amount=b.amount WHERE "
                 . " IFNULL(b.sinput,'')='Y'";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
@@ -138,16 +140,15 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                         <th width='10px'>Non BCA</th>
                         <th align="center" nowrap>No. Slip</th>
                         <th align="center">Tgl. Transfer</th>
-                        <th align="center" nowrap>Kode</th>
-                        <th align="center" nowrap>Perkiraan</th>
-                        <th align="center" nowrap>Supplier</th>
-                        <th align="center" nowrap>Nama Pembuat</th>
-                        <th align="center" nowrap>Keterangan</th>
                         <th align="center" nowrap>Jumlah</th>
                         <th align="center" nowrap <?PHP echo $tr_nhidden; ?>>Jml Input</th>
+                        <th align="center" nowrap>Supplier</th>
+                        <th align="center" nowrap>Keterangan</th>
+                        <th align="center" nowrap>Nama Pembuat</th>
                         <th align="center" nowrap>ID</th>
-                        <th align="center" nowrap>Tanggal</th>
                         <th align="center" nowrap>Divisi</th>
+                        <th align="center" nowrap>Tgl. Input</th>
+                        <th align="center" nowrap>Bulan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -158,11 +159,12 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                         }
                         
                         $no=1;
-                        $query = "select * from $tmp02 order by noslip, klaimid";
+                        $query = "select * from $tmp02 order by nama_karyawan, nama_dist, noslip, pengajuan, klaimid";
                         $tampil=mysqli_query($cnmy, $query);
                         while ($row= mysqli_fetch_array($tampil)) {
                             $pbrid = $row['klaimid'];
                             $ptglinput = $row['tgl'];
+                            $nbulan = $row['bulan'];
                             $pnoslip = $row['noslip'];
                             $pcoa = $row['COA4'];
                             $pnmcoa = $row['NAMA4'];
@@ -203,6 +205,17 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                                 if (!empty($ptrans_Ke)) $ncheck_trans="checked";
                             }
                             
+                            $pnamapengajuan=$ppengajuan;
+                            if ($ppengajuan=="CAN") $pnamapengajuan="CANARY";
+                            if ($ppengajuan=="PIGEO") $pnamapengajuan="PIGEON";
+                            if ($ppengajuan=="PEACO") $pnamapengajuan="PEACOCK";
+                            
+                            $ptglinput =date("d/m/Y", strtotime($ptglinput));
+                            $nbulan =date("F Y", strtotime($nbulan));
+                            
+                            $pjumlah=number_format($pjumlah,2,".",",");
+                            $pamount=number_format($pamount,2,".",",");
+                            
                             $pnmselecturut="<select id='cb_urut[$pbrid]' name='cb_urut[$pbrid]' onChange=\"cekBoxDataBR('cb_urut[$pbrid]', 'chk_jml1[$pbrid]')\">$purut_opt</select>";
                             $chkbox_bca = "<input type='checkbox' id='chk_transke[$pbrid]' name='chk_transke[$pbrid]' value='NB' $ncheck_trans>";//NB = NON BCA
                             $pinput_jumlah="<input type='hidden' id='txt_jml[$pbrid]' name='txt_jml[$pbrid]' value='$nnjumlahpilih' Readonly>";
@@ -216,16 +229,15 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                             echo "<td nowrap>$chkbox_bca</td>";
                             echo "<td nowrap>$pnoslip</td>";
                             echo "<td nowrap>$ptgltrans</td>";
-                            echo "<td nowrap>$pcoa</td>";
-                            echo "<td>$pnmcoa</td>";
-                            echo "<td>$pnmsup</td>";
-                            echo "<td>$pnamakaryawan</td>";
-                            echo "<td>$paktivitas1</td>";
                             echo "<td nowrap align='right'>$pjumlah</td>";
                             echo "<td nowrap align='right' $tr_nhidden>$pamount</td>";
+                            echo "<td>$pnmsup</td>";
+                            echo "<td>$paktivitas1</td>";
+                            echo "<td>$pnamakaryawan</td>";
                             echo "<td nowrap>$pbrid</td>";
+                            echo "<td nowrap>$pnamapengajuan</td>";
                             echo "<td nowrap>$ptglinput</td>";
-                            echo "<td nowrap>$ppengajuan</td>";
+                            echo "<td nowrap>$nbulan</td>";
                             echo "</tr>";
                             
                             $no++;
@@ -235,6 +247,63 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
             </table>
         
     </div>
+    
+        
+    <script type="text/javascript">
+        
+        function SelAllCheckBox(nmbuton, data){
+            var checkboxes = document.getElementsByName(data);
+            var button = document.getElementById(nmbuton);
+            if(button.value == 'select'){
+                for (var i in checkboxes){
+                    checkboxes[i].checked = 'FALSE';
+                }
+                button.value = 'deselect'
+            }else{
+                for (var i in checkboxes){
+                    checkboxes[i].checked = '';
+                }
+                button.value = 'select';
+            }
+            HitungTotalDariCekBoxKD();
+        }
+        
+        function HitungTotalDariCekBoxKD() {
+            var chk_arr1 =  document.getElementsByName('chk_jml1[]');
+            var chklength1 = chk_arr1.length;
+            var newchar = '';
+            
+            var nTotal_="0";
+            for(k=0;k< chklength1;k++)
+            {
+                if (chk_arr1[k].checked == true) {
+                    var kata = chk_arr1[k].value;
+                    var fields = kata.split('-');    
+                    var anm_jml="txt_jml["+fields[0]+"]";
+                    var ajml=document.getElementById(anm_jml).value;
+                    if (ajml=="") ajml="0";
+                    ajml = ajml.split(',').join(newchar);
+                    
+                    nTotal_ =parseFloat(nTotal_)+parseFloat(ajml);
+                }
+            }
+            
+            document.getElementById('e_jmlusulan').value=nTotal_;
+        }
+        
+        function cekBoxDataBR(nmcb, nmchk) {
+            var ecb_br=document.getElementById(nmcb).value;
+            if (ecb_br!=""){
+                document.getElementById(nmchk).checked = true;
+            }else{
+                document.getElementById(nmchk).checked = false;
+            }
+            HitungTotalDariCekBoxKD();
+            //alert(nmcb+", ada, "+nmchk);
+        }
+        
+    </script>
+    
     
     <style>
         .divnone {

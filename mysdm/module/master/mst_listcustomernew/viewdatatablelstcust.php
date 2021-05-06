@@ -71,7 +71,7 @@
         sum(a.qty*a.hna) as tvalue 
         from mkt.mr_sales2 as a 
         JOIN $tmp01 as b 
-        on a.icabangid=b.icabangid and a.areaid=b.areaid and a.icustid=b.icustid
+        on a.icabangid=b.icabangid and a.icustid=b.icustid
         group by 1,2,3,4";
     $query = "create TEMPORARY table $tmp03 ($query)"; 
     mysqli_query($cnms, $query);

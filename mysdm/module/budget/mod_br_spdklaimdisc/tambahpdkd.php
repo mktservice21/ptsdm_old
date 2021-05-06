@@ -24,7 +24,9 @@ $pkodeid="1";
 $psubkode="01";
 $pnodivisi="";
 $pperiodeby="";
-
+$pjumlah="";
+$pketerangan="";
+        
 $act="input";
 if ($pact=="editdata") {
     $act="update";
@@ -64,8 +66,16 @@ $ptupeper5="selected";
         <form method='POST' action='<?PHP echo "$aksi?module=$pmodule&act=$act&idmenu=$pidmenu"; ?>' 
               id='d-form2' name='form2' data-parsley-validate class='form-horizontal form-label-left'>
             
+            
             <div class='col-md-12 col-sm-12 col-xs-12'>
                 <div class='x_panel'>
+                    
+                    <div class='col-md-12 col-sm-12 col-xs-12'>
+                        <h2>
+                            <a class='btn btn-default' href="<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=$pidmenu"; ?>">Back</a>
+                        </h2>
+                        <div class='clearfix'></div>
+                    </div>
                   
                     <div class='x_panel'>
                         <div class='x_content'>
@@ -243,11 +253,58 @@ $ptupeper5="selected";
                                 </div>
                             
                             
+                                <div class='form-group'>
+                                    <div id='loading2'></div>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                                        
+                                        <div id="div_datajenis_jml2">
+                                            <button type='button' class='btn btn-info btn-xs' onclick='TampilkanDataKalimDisc()'>Tampilkan Data</button> <span class='required'></span>
+                                        </div>
+                                        
+                                    </label>
+                                    <div class='col-md-3'>
+                                        <input type='text' id='e_jmlusulan' name='e_jmlusulan' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo "$pjumlah"; ?>' Readonly>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
+                                    <div class='col-xs-3'>
+                                        <input type='text' id='e_keterangan' name='e_keterangan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pketerangan; ?>'>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <div class="checkbox">
+                                            <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                             
                             
                             </div>
                         </div>
                     </div>
+                    
+                </div>
+            </div>
+            
+            
+            <div class='col-md-12 col-sm-12 col-xs-12'>
+                <div class='x_panel'>
+                    
+                    
+                    <div id='loading3'></div>
+                    <div id="s_div">
+
+
+                    </div>
+                    
                     
                 </div>
             </div>
@@ -291,3 +348,82 @@ $ptupeper5="selected";
     }
 </style>
 
+<script type="text/javascript">
+    
+    $(function() {
+        $('#e_tglberlaku').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            numberOfMonths: 1,
+            firstDay: 1,
+            dateFormat: 'dd MM yy',
+            onSelect: function(dateStr) {
+                
+            } 
+        });
+        
+        $('#e_periode1').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            numberOfMonths: 1,
+            firstDay: 1,
+            dateFormat: 'dd MM yy',
+            onSelect: function(dateStr) {
+                
+            }
+        });
+        
+        $('#e_periode2').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            numberOfMonths: 1,
+            firstDay: 1,
+            dateFormat: 'dd MM yy',
+            onSelect: function(dateStr) {
+                
+            }
+        });
+        
+    });
+    
+    
+</script>
+
+
+<script>
+    
+    function TampilkanDataKalimDisc() {
+        var eidinput =document.getElementById('e_id').value;
+        var edivisi =document.getElementById('cb_divisi').value;
+        var ejenis = document.getElementById('cb_jenispilih').value;
+        var etgl=document.getElementById('e_tglberlaku').value;
+        var epertipe=document.getElementById('cb_pertipe').value;
+        var eper1=document.getElementById('e_periode1').value;
+        var eper2=document.getElementById('e_periode2').value;
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var iact = urlku.searchParams.get("act");
+        
+        $("#loading3").html("<center><img src='images/loading.gif' width='50px'/></center>");
+            
+        $.ajax({
+            type:"post",
+            url:"module/budget/mod_br_spdklaimdisc/datakdiskon.php?module="+module+"&ket=dataklaimdisc",
+            data:"uact="+iact+"&uidinput="+eidinput+"&udivisi="+edivisi+"&ujenis="+ejenis+"&utgl="+etgl+
+                    "&upertipe="+epertipe+"&uper1="+eper1+"&uper2="+eper2,
+            success:function(data){
+                $("#s_div").html(data);
+                $("#loading3").html("");
+            }
+        });
+            
+        
+        
+    }
+    
+    
+    
+    
+</script>

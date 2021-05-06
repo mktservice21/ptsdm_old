@@ -44,7 +44,7 @@ $query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from h
 $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
-$pnamajabatan=$rowk['nama_jabatan'];
+$pnmjbtkarywanpl=$rowk['nama_jabatan'];
 
 
 $sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
@@ -67,7 +67,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$sql = "select a.idinput, a.karyawanid, a.tanggal, a.ketid, b.nama as nama_ket,
+$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
     b.pointMR, b.pointSpv, b.pointDM 
     FROM hrd.dkd_new_real0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
     WHERE a.karyawanid='$pkryid'";
@@ -76,7 +76,7 @@ $query = "create TEMPORARY table $tmp03 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$sql = "select a.idinput, a.karyawanid, a.tanggal, 
+$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, 
     a.jenis, a.dokterid, b.namalengkap, b.gelar, b.spesialis 
     FROM hrd.dkd_new_real1 as a 
     LEFT JOIN dr.masterdokter as b on a.dokterid=b.id
@@ -85,6 +85,26 @@ $sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
 $query = "create TEMPORARY table $tmp04 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+//cari jabatan yang diinput
+$query = "select a.jabatanid, b.nama as nama_jabatan FROM ("
+        . " select DISTINCT jabatanid FROM $tmp01 WHERE IFNULL(jabatanid,'')<>'' "
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp02 WHERE IFNULL(jabatanid,'')<>''"
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp03 WHERE IFNULL(jabatanid,'')<>''"
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp04 WHERE IFNULL(jabatanid,'')<>''"
+        . " ) as a JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId";
+$tampilk=mysqli_query($cnmy, $query);
+$rowk=mysqli_fetch_array($tampilk);
+$pnamajabatan=$rowk['nama_jabatan'];
+$pjabatanid=$rowk['jabatanid'];
+
+if (empty($pnamajabatan)) $pnamajabatan=$pnmjbtkarywanpl;
+
+
 
 
 $query = "ALTER TABLE $tmp02 ADD COLUMN real_user VARCHAR(10)";

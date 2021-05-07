@@ -317,7 +317,7 @@
     
     //cari apakah ada urutan yang sama lebih dari 1 record
     $purutanlebih=false;
-    $query = "select urutan, count(*) as jmlurutan from $tmp02 GROUP BY 1 HAVING count(*)>1";
+    $query = "select urutan, count(*) as jmlurutan from $tmp02 where IFNULL(urutan,0) NOT IN ('0','') GROUP BY 1 HAVING count(*)>1";
     $tampilu= mysqli_query($cnmy, $query);
     $ketemuu= mysqli_num_rows($tampilu);
     if ($ketemuu>0) {
@@ -498,7 +498,9 @@
                         echo "</tr>";
                         
                         
-                        if ($pjenisrpt=="K") {
+                        if (empty($purutan)) $purutan="0";
+                        
+                        if ($pjenisrpt=="K" OR $purutan=="0") {
                             $no++;
                             $nmyno=$no;
                         }else{

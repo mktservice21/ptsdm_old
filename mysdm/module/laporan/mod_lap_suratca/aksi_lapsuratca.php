@@ -64,7 +64,9 @@
         $pilih_koneksi="config/koneksimysqli.php";
         $ptgl_pillih = $_POST['bulan1'];
         $stsreport = $_POST['sts_rpt'];
-        $pprosid_sts = $_POST['sts_sudahprosesid'];
+        
+        $pprosid_sts="";
+        if (isset($_POST['sts_sudahprosesid'])) $pprosid_sts = $_POST['sts_sudahprosesid'];
         $scaperiode1 = "";
         $scaperiode2 = "";
         $iproses_simpandata=false;
@@ -191,6 +193,15 @@
     mysqli_query($cnit, $query);
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    
+    
+    $userid=$_SESSION['USERID'];
+    $now=date("mdYhis");
+    $tmp01xxx =" dbtemp.tmpxxx01_".$userid."_$now ";
+    
+    //$query = "create  table $tmp01xxx (select * from $tmp01)"; 
+    //mysqli_query($cnit, $query);
+    //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     //goto hapusdata;
     

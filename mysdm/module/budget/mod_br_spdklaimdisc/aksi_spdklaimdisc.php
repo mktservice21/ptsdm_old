@@ -61,7 +61,7 @@ if ($module=='spdklaimdisc')
         $pperiode2=$_POST['e_periode2'];
         $pjumlah=$_POST['e_jmlusulan'];
         $pketerangan=$_POST['e_keterangan'];
-        
+        $plampiran="";
         
         
         $ptglinput= date("Y-m-d", strtotime($ptglinput));
@@ -76,7 +76,7 @@ if ($module=='spdklaimdisc')
         if (empty($pjumlah)) $pjumlah=0;
         
         
-        $query = "select nodivisi FROM dbmaster.t_suratdana_br WHERE IFNULL(stsnonaktif,'')<>'Y' AND nodivisi='$pnodivisi' AND karyawanid='$pkaryawanid'";
+        $query = "select nodivisi FROM dbmaster.t_suratdana_br WHERE IFNULL(stsnonaktif,'')<>'Y' AND idinput<>'$kodenya' AND nodivisi='$pnodivisi' AND karyawanid='$pkaryawanid'";
         $tampil= mysqli_query($cnmy, $query);
         $ketemu= mysqli_num_rows($tampil);
         if ((INT)$ketemu>0) {
@@ -127,7 +127,17 @@ if ($module=='spdklaimdisc')
             $query = "INSERT INTO dbmaster.t_suratdana_br (idinput, divisi, kodeid, subkode, tgl, nodivisi, jumlah, "
                     . " userid, coa4, lampiran, tglf, tglt, karyawanid, periodeby, jenis_rpt, keterangan)values"
                     . "('$kodenya', '$pdivisi', '$pkodeid', '$psubkode', '$ptglinput', '$pnodivisi', '$pjumlah', "
-                    . " '$pkaryawanid', '$pcoa', '$pjenis', '$pperiode1', '$pperiode2', '$pidcard', '$ptgltipe', '$pjenis', '$pketerangan')";
+                    . " '$pkaryawanid', '$pcoa', '$plampiran', '$pperiode1', '$pperiode2', '$pidcard', '$ptgltipe', '$pjenis', '$pketerangan')";
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        }else{
+            $query = "UPDATE dbmaster.t_suratdana_br SET "
+                    . " divisi='$pdivisi', kodeid='$pkodeid', subkode='$psubkode', "
+                    . " tgl='$ptglinput', nodivisi='$pnodivisi', jumlah='$pjumlah', "
+                    . " userid='$pkaryawanid', coa4='$pcoa', lampiran='$plampiran', "
+                    . " tglf='$pperiode1', tglt='$pperiode2', karyawanid='$pidcard', "
+                    . " periodeby='$ptgltipe', jenis_rpt='$pjenis', keterangan='$pketerangan' "
+                    . " WHERE idinput='$kodenya'";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         }
@@ -203,9 +213,9 @@ if ($module=='spdklaimdisc')
         
         mysqli_close($cnmy);
         if ($act=="update") {
-            //header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilupdate');
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilupdate');
         }else{
-            //header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilsimpan');
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasilsimpan');
         }
         
     }

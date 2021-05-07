@@ -411,6 +411,7 @@ echo "</div>";
                         }
                         
                     }elseif ($ppilihsts=="UNAPPROVE") {
+                        /*
                         if ($papproveby=="apvdm") {
                             if (!empty($ptglatasan4) AND !empty($pidatasan4)) $ceklisnya="";
                             if (!empty($ptglatasan3) AND !empty($pidatasan3)) $ceklisnya="";
@@ -429,7 +430,7 @@ echo "</div>";
                         if (!empty($ptglatasan3) AND !empty($pidatasan3)) $pstsapvoleh="Sudah Approve SM";
                         if (!empty($ptglatasan4) AND !empty($pidatasan4)) $pstsapvoleh="Sudah Approve $pketgsmhos";
                         
-                        
+                        */
                     }
                     
                     

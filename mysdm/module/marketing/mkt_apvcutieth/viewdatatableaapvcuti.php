@@ -90,7 +90,7 @@ session_start();
     $query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_karyawan, a.jabatanid, "
             . " a.id_jenis, d.nama_jenis, a.keperluan, a.bulan1, a.bulan2, "
             . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, atasan5, "
-            . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5 FROM hrd.t_cuti0 as a "
+            . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5, a.hrd_user, a.hrd_date FROM hrd.t_cuti0 as a "
             . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid"
             . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis "
             . " WHERE 1=1 ";
@@ -179,6 +179,27 @@ session_start();
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
+    $query = "ALTER table $tmp01 ADD sudahapprove varchar(1)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    if ($ppilihsts=="APPROVE") {
+        if ($papproveby=="apvspv") {
+            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE jabatanid in ('15', '38') AND IFNULL(tgl_atasan1,'')<>'' AND IFNULL(tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvdm") {
+            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE jabatanid in ('15', '10', '18', '38') AND IFNULL(tgl_atasan1,'')<>'' AND IFNULL(tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvsm") {
+            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE jabatanid in ('15', '10', '18', '08', '38') AND IFNULL(tgl_atasan2,'')<>'' AND IFNULL(tgl_atasan2,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvgsm") {
+            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE jabatanid in ('10', '18', '08', '20') AND IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvcoo") {
+            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE jabatanid in ('05') AND IFNULL(tgl_atasan5,'')<>'' AND IFNULL(tgl_atasan5,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }
+    }
 ?>
 
 
@@ -326,7 +347,7 @@ echo "</div>";
 ?>
 <form method='POST' action='<?PHP echo "?module='$pmodule'&act=$pact&idmenu=$pidmenu"; ?>' id='d-form2' name='form2' data-parsley-validate class='form-horizontal form-label-left'>
 
-    <div class='x_content'>
+    <div class='x_content' style="overflow-x:auto; max-height:500px">
         
         <?PHP
         $pchkall = "<input type='checkbox' id='chkbtnbr' name='chkbtnbr' value='deselect' onClick=\"SelAllCheckBox('chkbtnbr', 'chkbox_br[]')\" checked/>";
@@ -350,7 +371,7 @@ echo "</div>";
             <tbody>
                 <?PHP
                 $no=1;
-                $query = "select * from $tmp01 order by idcuti";
+                $query = "select * from $tmp01 order by IFNULL(sudahapprove,'ZZ'), idcuti";
                 $tampil1= mysqli_query($cnmy, $query);
                 while ($row1= mysqli_fetch_array($tampil1)) {
                     $pidcuti=$row1['idcuti'];
@@ -368,12 +389,14 @@ echo "</div>";
                     $ptglatasan3=$row1['tgl_atasan3'];
                     $ptglatasan4=$row1['tgl_atasan4'];
                     $ptglatasan5=$row1['tgl_atasan5'];
+                    $ptglhrd=$row1['hrd_date'];
                     
                     $pidatasan1=$row1['atasan1'];
                     $pidatasan2=$row1['atasan2'];
                     $pidatasan3=$row1['atasan3'];
                     $pidatasan4=$row1['atasan4'];
                     $pidatasan5=$row1['atasan5'];
+                    $puserhrd=$row1['hrd_user'];
                     
                     
                     if ($ptglatasan1=="0000-00-00" OR $ptglatasan1=="0000-00-00 00:00:00") $ptglatasan1="";
@@ -381,6 +404,7 @@ echo "</div>";
                     if ($ptglatasan3=="0000-00-00" OR $ptglatasan3=="0000-00-00 00:00:00") $ptglatasan3="";
                     if ($ptglatasan4=="0000-00-00" OR $ptglatasan4=="0000-00-00 00:00:00") $ptglatasan4="";
                     if ($ptglatasan5=="0000-00-00" OR $ptglatasan5=="0000-00-00 00:00:00") $ptglatasan5="";
+                    if ($ptglhrd=="0000-00-00" OR $ptglhrd=="0000-00-00 00:00:00") $ptglhrd="";
                     
                     $pketgsmhos="GSM";
                     $npmdl="mktformcutieth";
@@ -437,6 +461,11 @@ echo "</div>";
                         if (!empty($ptglatasan2) AND !empty($pidatasan2)) $pstsapvoleh="Sudah Approve DM";
                         if (!empty($ptglatasan3) AND !empty($pidatasan3)) $pstsapvoleh="Sudah Approve SM";
                         if (!empty($ptglatasan4) AND !empty($pidatasan4)) $pstsapvoleh="Sudah Approve $pketgsmhos";
+                        
+                        if (!empty($ptglhrd)) {
+                            $pstsapvoleh="<span style='color:blue;'>Sudah Proses HRD</span>";
+                            $ceklisnya="";
+                        }
                         
                     }
                     

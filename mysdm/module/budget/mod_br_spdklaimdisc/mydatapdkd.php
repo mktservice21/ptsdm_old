@@ -172,7 +172,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
         
     
-    $pbutton="$pedit &nbsp; &nbsp; $phapus ".$plihat;
+    $pbutton="$pedit &nbsp; $phapus &nbsp; ".$plihat;
     
     
     $nestedData[] = $no;

@@ -369,12 +369,12 @@ if ($pmodule=="viewdatakrybuat") {
     include "../../config/koneksimysqli.php";
     
     $pidinput=$_POST['uid'];
-    $pidinput=$_POST['uact'];
+    $pact=$_POST['uact'];
     $pnodivisi=$_POST['unodivisi'];
     
     $boleh="boleh";
     
-    $query = "select nodivisi FROM dbmaster.t_suratdana_br WHERE IFNULL(stsnonaktif,'')<>'Y' AND nodivisi='$pnodivisi' AND karyawanid='$pkaryawanid'";
+    $query = "select nodivisi FROM dbmaster.t_suratdana_br WHERE IFNULL(stsnonaktif,'')<>'Y' AND idinput<>'$pidinput' AND nodivisi='$pnodivisi' AND karyawanid='$pkaryawanid'";
     $tampil= mysqli_query($cnmy, $query);
     $ketemu= mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {

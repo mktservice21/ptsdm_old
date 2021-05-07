@@ -50,7 +50,7 @@
     $sql = "select a.idcuti, a.tglinput, a.karyawanid, d.nama as nama_karyawan, a.jabatanid, a.id_jenis, c.nama_jenis, "
             . " a.keperluan, a.bulan1, a.bulan2, "
             . " a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, a.atasan3, a.tgl_atasan3, "
-            . " a.atasan4, a.tgl_atasan4, a.atasan5, a.tgl_atasan5, a.stsnonaktif, "
+            . " a.atasan4, a.tgl_atasan4, a.atasan5, a.tgl_atasan5, a.hrd_user, a.hrd_date, a.stsnonaktif, "
             . " b.tanggal, a.keterangan FROM hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
             . " on a.idcuti=b.idcuti "
             . " LEFT JOIN hrd.jenis_cuti as c on a.id_jenis=c.id_jenis "
@@ -86,7 +86,7 @@
             $no=1;
             $query = "select distinct idcuti, karyawanid, nama_karyawan, jabatanid, id_jenis, nama_jenis, keperluan, bulan1, bulan2, "
                     . " atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3,"
-                    . " atasan4, tgl_atasan4, atasan5, tgl_atasan5, stsnonaktif, keterangan from "
+                    . " atasan4, tgl_atasan4, atasan5, tgl_atasan5, hrd_user, hrd_date, stsnonaktif, keterangan from "
                     . " $tmp01 order by nama_karyawan, idcuti, nama_jenis";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
@@ -112,12 +112,15 @@
                 $ntglats4=$row0['tgl_atasan4'];
                 $nats5=$row0['atasan5'];
                 $ntglats5=$row0['tgl_atasan5'];
+                $puserhrd=$row0['hrd_user'];
+                $ptglhrd=$row0['hrd_date'];
                 
                 if ($ntglats1=="0000-00-00 00:00:00") $ntglats1="";
                 if ($ntglats2=="0000-00-00 00:00:00") $ntglats2="";
                 if ($ntglats3=="0000-00-00 00:00:00") $ntglats3="";
                 if ($ntglats4=="0000-00-00 00:00:00") $ntglats4="";
                 if ($ntglats5=="0000-00-00 00:00:00") $ntglats5="";
+                if ($ptglhrd=="0000-00-00 00:00:00") $ptglhrd="";
                 
                 $nsudahapprove=false;
                 
@@ -127,8 +130,8 @@
                 if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08" OR $njbt=="20") AND !empty($nats4) AND !empty($ntglats4)) $nsudahapprove=true;
                 if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08" OR $njbt=="05") AND !empty($nats5) AND !empty($ntglats5)) $nsudahapprove=true;
                
-                
-                
+                $pstatushrd="";
+                if (!empty($ptglhrd)) $pstatushrd=" &nbsp; Sudah Proses HRD";
                 
                 $pidget=encodeString($cidinput);
                 
@@ -217,7 +220,7 @@
                 echo "<td nowrap>$nnmjenis</td>";
                 echo "<td >$nkeperluan</td>";
                 echo "<td >$ntglpilih</td>";
-                echo "<td nowrap>$pedit &nbsp; &nbsp; $print &nbsp; &nbsp; $phapus</td>";
+                echo "<td nowrap>$pedit &nbsp; &nbsp; $print &nbsp; &nbsp; $phapus $pstatushrd</td>";
                 echo "</tr>";
 
                 $no++;

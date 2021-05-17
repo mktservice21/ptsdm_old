@@ -29,8 +29,8 @@ if ($pmodule=="viewdatatanggal") {
     $pbln1=$_POST['ubln1'];
     $pbln2=$_POST['ubln2'];
     
-    $pbln1= date("Ym", strtotime($pbln1));
-    $pbln2= date("Ym", strtotime($pbln2));
+    $pbln1= date("Ymd", strtotime($pbln1));
+    $pbln2= date("Ymd", strtotime($pbln2));
     
     $itgl=explode(',',$ppilihtgl);
     $pilihantgl="";
@@ -69,7 +69,7 @@ if ($pmodule=="viewdatatanggal") {
         
         $query = "select distinct a.bulan1 from hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
                 . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$pidinput' AND "
-                . " (b.tanggal in $pilihantgl OR (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') ) "
+                . " (b.tanggal in $pilihantgl OR (DATE_FORMAT(a.bulan1,'%Y%m%d') BETWEEN '$pbln1' AND '$pbln2') OR (DATE_FORMAT(a.bulan2,'%Y%m%d') BETWEEN '$pbln1' AND '$pbln2') ) "
                 . " AND a.karyawanid='$pkaryawanid' AND IFNULL(a.stsnonaktif,'')<>'Y'";//AND a.id_jenis='$pjenis'
     }else{
         $query = "select distinct b.tanggal from hrd.t_cuti0 as a JOIN hrd.t_cuti1 as b "

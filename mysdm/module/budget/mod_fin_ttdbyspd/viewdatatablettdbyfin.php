@@ -254,7 +254,7 @@ session_start();
     $query ="UPDATE $tmp01 SET iurutan='ZZ' WHERE karyawanid<>'$pkaryawanid'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query ="UPDATE $tmp01 as a JOIN dbmaster.t_kode_spd_pengajuan as b on a.jenis_rpt=b.jenis_rpt AND a.subkode=b.subkode SET "
+    $query ="UPDATE $tmp01 as a JOIN dbmaster.t_kode_spd_pengajuan as b on IFNULL(a.jenis_rpt,'')=IFNULL(b.jenis_rpt,'') AND a.subkode=b.subkode SET "
             . " a.nama_pengajuan=b.nama_pengajuan, a.nama_report=b.nama_report, a.nama_ket=b.nama_ket, a.link_eth=b.link_eth, a.link_otc=b.link_otc";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -369,11 +369,12 @@ echo "</div>";
                     if ($ptgltrans=="0000-00-00" OR $ptgltrans=="0000-00-00 00:00:00") $ptgltrans="";
                     
                     $pnmdivisi="";
-                    if ($pdivisi=="EAGLE") $pdivisi="EAGLE";
-                    if ($pdivisi=="PEACO") $pdivisi="PEACOCK";
-                    if ($pdivisi=="PIGEO") $pdivisi="PIGEON";
-                    if ($pdivisi=="CAN") $pdivisi="CANARY";
-                    if ($pdivisi=="ETH") $pdivisi="ETHICAL/CAN";
+                    if ($pdivisi=="EAGLE") $pnmdivisi="EAGLE";
+                    if ($pdivisi=="PEACO") $pnmdivisi="PEACOCK";
+                    if ($pdivisi=="PIGEO") $pnmdivisi="PIGEON";
+                    if ($pdivisi=="CAN") $pnmdivisi="CANARY";
+                    if ($pdivisi=="ETH") $pnmdivisi="ETHICAL/CAN";
+                    if (empty($pnmdivisi)) $pnmdivisi="CANARY/ETHICAL";
                     
                     $pntglinput = date('d/m/Y', strtotime($pntglinput));
                     $pntgl = date('d/m/Y', strtotime($pntgl));
@@ -440,7 +441,7 @@ echo "</div>";
                     echo "<td nowrap>$pjumlah</td>";
                     echo "<td nowrap>$pjumlah2</td>";
                     echo "<td nowrap>$pjumlahtrans</td>";
-                    echo "<td nowrap>$pdivisi</td>";
+                    echo "<td nowrap>$pnmdivisi</td>";
                     echo "<td nowrap>$pntglinput</td>";
                     echo "<td nowrap>$pntgl</td>";
                     echo "<td nowrap>$pnmpengajuan_jenis</td>";

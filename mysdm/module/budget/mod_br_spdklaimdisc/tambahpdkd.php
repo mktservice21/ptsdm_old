@@ -251,9 +251,11 @@ if ($pperiodeby=="K") {
                                         <div class="form-group">
 
                                             <select class='form-control input-sm' id="cb_pertipe" name="cb_pertipe" onchange="" data-live-search="true">
-                                                <option value="T" <?PHP echo $ptupeper2; ?>>Transfer</option>
-                                                <option value="I" <?PHP echo $ptupeper3; ?>>Input</option>
-                                                <option value="S" <?PHP echo $ptupeper4; ?>>Rpt SBY</option>
+                                                <!--
+                                                <option value="T" <?PHP //echo $ptupeper2; ?>>Transfer</option>
+                                                <option value="I" <?PHP //echo $ptupeper3; ?>>Input</option>
+                                                <option value="S" <?PHP //echo $ptupeper4; ?>>Rpt SBY</option>
+                                                -->
                                                 <option value="K" <?PHP echo $ptupeper5; ?>>Klaim Dist.</option>
                                             </select>
 
@@ -378,7 +380,7 @@ if ($pperiodeby=="K") {
 <script type="text/javascript">
     
     $(function() {
-        $('#e_tglberlaku').datepicker({
+        $('#e_tglberlaku_').datepicker({
             changeMonth: true,
             changeYear: true,
             numberOfMonths: 1,
@@ -571,12 +573,6 @@ Nomor Divisi : "+enodivisi+", \n\
 Total Pengajuan : Rp. "+ijml+" \n\
 ________________________________________  \n\
 Apakah akan simpan data...?";
-        
-        var myurl = window.location;
-        var urlku = new URL(myurl);
-        var module = urlku.searchParams.get("module");
-        var idmenu = urlku.searchParams.get("idmenu");
-        var iact = urlku.searchParams.get("act");
         
         
         var myurl = window.location;

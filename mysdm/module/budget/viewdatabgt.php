@@ -387,7 +387,25 @@ if ($pmodule=="viewdatakrybuat") {
     
     echo $boleh; exit;
     
-}elseif ($pmodule=="x") {
+}elseif ($pmodule=="caridatanodivdari") {
+    include "../../config/koneksimysqli.php";
+    $ppilihan=$_POST['upilihan'];
+    
+    $nfilter="";
+    if ($ppilihan=="N") $nfilter=" and b.pilih='N' ";
+    
+    echo "<option value='' selected>-- Pilihan --</option>";
+    $query = "select DISTINCT a.idinputbank, a.divisi, a.nodivisi from dbmaster.t_suratdana_bank a 
+        JOIN dbmaster.t_suratdana_br b on a.nodivisi=b.nodivisi and a.idinput=b.idinput
+        where a.stsnonaktif<>'Y' 
+        and a.stsinput='K' AND a.subkode IN ('01', '02', '20') $nfilter order by 2,3";
+    $tampil = mysqli_query($cnmy, $query);
+    while ($z= mysqli_fetch_array($tampil)) {
+        $pnnodivbr=$z['nodivisi'];
+        $pidinputbankdari=$z['idinputbank'];
+        echo "<option value='$pidinputbankdari'>$pnnodivbr</option>";
+    }
+    mysqli_close($cnmy);
 }elseif ($pmodule=="x") {
 }elseif ($pmodule=="x") {
 }elseif ($pmodule=="x") {

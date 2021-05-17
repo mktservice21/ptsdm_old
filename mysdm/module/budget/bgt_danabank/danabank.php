@@ -69,7 +69,12 @@
                     }
 
                     $(document).ready(function() {
-                        KlikDataTabel();
+                        var etipe=document.getElementById('txt_tipe').value;
+                        if (etipe=="viewdatabankkeluar") {
+                            ViewDataBankKeluar('2');
+                        }else{
+                            KlikDataTabel();
+                        }
                     } );
 
                     function KlikDataTabel() {
@@ -138,7 +143,29 @@
 
 
                     }
-    
+                    
+                    
+                    function ViewDataBankKeluar(ntxt_ket) {
+                        var ket="";
+                        var etgl1=document.getElementById('tgl1').value;
+                        var etgl2=document.getElementById('tgl1').value;
+
+                        var myurl = window.location;
+                        var urlku = new URL(myurl);
+                        var module = urlku.searchParams.get("module");
+                        var idmenu = urlku.searchParams.get("idmenu");
+                        
+                        $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+                        $.ajax({
+                            type:"post",
+                            url:"module/budget/bgt_danabank/viewdatatabeldbankkeluar.php?module="+module+"&idmenu="+idmenu,
+                            data:"uketinput="+ntxt_ket+"&uperiode1="+etgl1+"&uperiode2="+etgl2,
+                            success:function(data){
+                                $("#c-data").html(data);
+                                $("#loading").html("");
+                            }
+                        });
+                    }
                 </script>
 
                     
@@ -146,8 +173,13 @@
                     <div class='x_panel'>
 
                         <div class='x_title'>
-                            <h2><input class='btn btn-default' type=button value='Tambah Baru (Debit/Kredit)'
-                                onclick="window.location.href='<?PHP echo "?module=$_GET[module]&idmenu=$_GET[idmenu]&act=tambahbaru"; ?>';">
+                            <h2>
+                                <input class='btn btn-default' type=button value='Tambah Baru (Debit/Kredit)'
+                                    onclick="window.location.href='<?PHP echo "?module=$_GET[module]&idmenu=$_GET[idmenu]&act=tambahbaru"; ?>';">
+                                
+                                &nbsp;<input type='button' class='btn btn-info' id="s-submit" value="Bank Keluar (Kredit)" onclick="ViewDataBankKeluar('2')">
+                                
+                                
                                 <small></small>
                             </h2>
                             <div class='clearfix'></div>

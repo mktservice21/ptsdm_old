@@ -41,7 +41,7 @@
     if ($_SESSION['GROUP']!=1) {
         $sql .=" AND divisi<>'OTC' AND karyawanid='$_SESSION[IDCARD]'";
     }else{
-        $sql .=" AND divisi<>'OTC' AND divisi IN ('EAGLE', 'PEACO', 'PIGEO')";
+        $sql .=" AND divisi<>'OTC' AND divisi IN ('EAGLE', 'PEACO', 'PIGEO', 'CAN')";
     }
     
     $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");

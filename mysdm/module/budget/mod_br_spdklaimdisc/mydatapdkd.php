@@ -39,12 +39,12 @@ $ptgl2= date("Y-m-t", strtotime($ptgl2));
 $sql = "select a.idinput, a.tgl, a.divisi, "
         . " a.kodeid, b.nama as namakode, a.subkode, b.subnama, "
         . " a.jumlah, a.jumlah2, IFNULL(a.jumlah,0)+IFNULL(a.jumlah2,0) as jumlah_trans, "
-        . " a.nomor, a.nodivisi, a.pilih, a.karyawanid, a.jenis_rpt, c.nama_pengajuan, "
+        . " a.nomor, a.nodivisi, a.pilih, a.karyawanid, a.jenis_rpt, c.nama_pengajuan, c.link_eth, c.link_otc, "
         . " a.userproses, a.tgl_proses, a.tgl_dir, a.tgl_apv2 "
         . " from dbmaster.t_suratdana_br as a "
         . " LEFT JOIN dbmaster.t_kode_spd as b on "
         . " a.kodeid=b.kodeid AND a.subkode=b.subkode "
-        . " LEFT JOIN dbmaster.t_kode_spd_pengajuan as c on a.jenis_rpt=c.jenis_rpt ";
+        . " LEFT JOIN dbmaster.t_kode_spd_pengajuan as c on a.jenis_rpt=c.jenis_rpt AND a.subkode=b.subkode ";
 $sql .=" WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
 $sql.=" AND ( (Date_format(a.tglinput, '%Y-%m') between '$ptgl1' and '$ptgl2') OR (Date_format(a.tgl, '%Y-%m') between '$ptgl1' and '$ptgl2') ) ";
 $sql.=" AND a.subkode IN ('01') ";
@@ -109,6 +109,9 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $ptglfin2=$row["tgl_apv2"];
     $ptgldir1=$row["tgl_dir"];
     
+    $plinketh=$row["link_eth"];
+    $plinkotc=$row["link_otc"];
+                    
     $pidget=$row['idinput'];
     
     $pnamajenis="";
@@ -132,16 +135,20 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pjumlah2=number_format($pjumlah2,0,",",",");
     $pjumlahtrans=number_format($pjumlahtrans,0,",",",");
     
-    $pmystsyginput="";
-    if ($pjenisrpt=="D" OR $pjenisrpt=="C") {
-        $plihatview = "<a class='btn btn-info btn-xs' href='eksekusi3.php?module=$pmodule&act=viewbrklaim&idmenu=$pidmenu&ket=bukan&ispd=$pidget&iid=$pmystsyginput' target='_blank'>View</a>";
-        $plihatexcel = "<a class='btn btn-info btn-xs' href='eksekusi3.php?module=$pmodule&act=viewbrklaim&idmenu=$pidmenu&ket=excel&ispd=$pidget&iid=$pmystsyginput' target='_blank'>Excel</a>";
-    }else{
-        $plihatview = "<a class='btn btn-info btn-xs' href='eksekusi3.php?module=$pmodule&act=viewbr&idmenu=$pidmenu&ket=bukan&ispd=$pidget&iid=$pmystsyginput' target='_blank'>View</a>";
-        $plihatexcel = "<a class='btn btn-info btn-xs' href='eksekusi3.php?module=$pmodule&act=viewbr&idmenu=$pidmenu&ket=excel&ispd=$pidget&iid=$pmystsyginput' target='_blank'>Excel</a>";
-    }
     
-    $plihat="$plihatview &nbsp; &nbsp; $plihatexcel";
+    $plink=$plinketh;
+    if ($pdivisi=="OTC" OR $pdivisi=="CHC") $plink=$plinkotc;
+    
+    $plihatview="";
+    $plihatexcel="";
+    $plihat="";
+    $pmystsyginput="";
+    if (!empty($plink)) {
+        $plihatview = "<a class='btn btn-info btn-xs' href='eksekusi3.php?$plink&ket=bukan&ispd=$pidget&iid=$pmystsyginput' target='_blank'>View</a>";
+        $plihatexcel = "<a class='btn btn-info btn-xs' href='eksekusi3.php?$plink&idmenu=$pidmenu&ket=excel&ispd=$pidget&iid=$pmystsyginput' target='_blank'>Excel</a>";
+        
+        $plihat="$plihatview &nbsp; &nbsp; $plihatexcel";
+    }
     
     $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
     $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$pidget')\">";

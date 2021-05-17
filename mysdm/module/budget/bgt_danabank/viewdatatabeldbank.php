@@ -9,6 +9,7 @@
     $_SESSION['BNKDANATIPE']="viewdatabank";
     
     $ptipe=$_POST['utipe'];
+    $pkryid=$_POST['ukryid'];
     $date1=$_POST['uperiode1'];
     $date2=$_POST['uperiode1'];
     
@@ -18,6 +19,7 @@
     $paksi=$_POST['uaksi'];
     
     echo "<input type='hidden' name='txt_tipe' id='txt_tipe' value='$ptipe'>";
+    echo "<input type='hidden' name='cb_karyawan' id='cb_karyawan' value='$pkryid'>";
     echo "<input type='hidden' name='e_tgl1' id='e_tgl1' value='$tgl1'>";
     echo "<input type='hidden' name='e_tgl2' id='e_tgl2' value='$tgl2'>";
     echo "<input type='hidden' name='e_aksi' id='e_aksi' value='$paksi'>";
@@ -39,6 +41,7 @@
         var idmenu = urlku.searchParams.get("idmenu");
         var nmun = urlku.searchParams.get("nmun");
         var etipe=document.getElementById('txt_tipe').value;
+        var ekryid=document.getElementById('cb_karyawan').value;
         var etgl1 = document.getElementById("e_tgl1").value;
         var etgl2 = document.getElementById("e_tgl2").value;
         var eaksi = document.getElementById("e_aksi").value;
@@ -66,7 +69,7 @@
             "scrollX": true,
 
             "ajax":{
-                url :"module/budget/bgt_danabank/mydatadbank.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+eaksi+"&uperiode1="+etgl1+"&utipe="+etipe+"&uperiode2="+etgl2, // json datasource
+                url :"module/budget/bgt_danabank/mydatadbank.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+eaksi+"&ukryid="+ekryid+"&uperiode1="+etgl1+"&utipe="+etipe+"&uperiode2="+etgl2, // json datasource
                 type: "post",  // method  , by default get
                 error: function(){  // error handling
                     $(".data-grid-error").html("");

@@ -20,6 +20,10 @@ if ($pmodule=="viewcoadivisichk"){
         if (empty($mydivisi)) $fil = " ";
     }
     
+    if ($mydivisi=="ETH") {
+        $fil = " AND c.DIVISI2 NOT IN ('CHC', 'OTC')";
+    }
+    
     $query = "select a.COA4, a.NAMA4 from dbmaster.coa_level4 a 
         LEFT JOIN dbmaster.coa_level3 b on a.COA3=b.COA3
         LEFT JOIN dbmaster.coa_level2 c on b.COA2=c.COA2

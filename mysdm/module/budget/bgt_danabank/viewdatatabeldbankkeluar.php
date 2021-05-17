@@ -13,6 +13,7 @@
     $pact="bankkeluar";
 
     $pket_input=$_POST['uketinput'];
+    $pkaryawanid=$_POST['ukryid'];
     $ptgl01=$_POST['uperiode1'];
     $ptgl02=$_POST['uperiode2'];
 
@@ -36,64 +37,81 @@
     $tmp07 =" dbtemp.tmprkpbnkkeluar07_".$_SESSION['USERID']."_$now ";
     $tmp08 =" dbtemp.tmprkpbnkkeluar08_".$_SESSION['USERID']."_$now ";
 
-
-    $n_filterkaryawan="";
-
-    if ($pses_grpuser=="1" OR $pses_grpuser=="24" OR $pses_grpuser=="25") {
-        if ($pket_input=="2" AND $pses_grpuser=="25") {
-            $n_filterkaryawan=" AND divisi<>'OTC' AND ( karyawanid='$pses_idcard' OR subkode='25' ) ";
-        } 
-    }else{
-        if ($pses_divisi=="OTC") {
-            $n_filterkaryawan=" AND divisi='OTC' ";
-        }else{
-            $n_filterkaryawan=" AND divisi<>'OTC' AND karyawanid='$pses_idcard' ";
-        }
-    }
-
     $fil_keluar_ = "(
-        (tglspd between '$periode1' AND '$periode2')
+        (a.tglspd between '$periode1' AND '$periode2')
             OR
             (
-            (tgl between '$periode1' AND '$periode2') 
-            AND ( subkode IN ('22', '23', '36') OR pilih='N')
+            (a.tgl between '$periode1' AND '$periode2') 
+            AND ( a.subkode IN ('22', '23', '36') OR a.pilih='N')
             )
         )";
-        
-
-
-    $query = "select karyawanid, userid, pilih, idinput, tgl, 
-        CASE WHEN IFNULL(tglspd,'0000-00-00')='0000-00-00' THEN tgl ELSE tglspd END as tglspd, 
-        divisi, kodeid, subkode, 
-        nodivisi, CASE WHEN IFNULL(nodivisi,'')='' THEN idinput ELSE nodivisi END as nodivisi2, 
-        nomor, jumlah, jumlah2, jumlah3 from dbmaster.t_suratdana_br 
-        WHERE IFNULL(stsnonaktif,'')<>'Y' $n_filterkaryawan AND 
-        $fil_keluar_ ";
-    $query = "create TEMPORARY table $tmp01 ($query)";
+    
+    $sql_data = "select a.idinput, a.tgl, a.tglspd, a.divisi, "
+            . " a.kodeid, b.nama as namakode, a.subkode, b.subnama, b.ibank, b.igroup, b.inama, "
+            . " a.jumlah, a.jumlah2, a.jumlah3, IFNULL(a.jumlah,0)+IFNULL(a.jumlah2,0) as jumlah_trans, "
+            . " a.nomor, a.nodivisi, a.pilih, a.karyawanid, a.jenis_rpt, "
+            . " a.userproses, a.tgl_proses, a.tgl_dir, a.tgl_dir2, a.tgl_apv2 "
+            . " from dbmaster.t_suratdana_br as a "
+            . " LEFT JOIN dbmaster.t_kode_spd as b on "
+            . " a.kodeid=b.kodeid AND a.subkode=b.subkode "
+            . " LEFT JOIN dbmaster.t_kode_spd_pengajuan as c on IFNULL(a.jenis_rpt,'')=IFNULL(c.jenis_rpt,'') AND a.subkode=c.subkode WHERE "
+            . " IFNULL(a.stsnonaktif,'')<>'Y' AND "
+            . " ( (a.tglspd between '$periode1' AND '$periode2') OR (a.tgl between '$periode1' AND '$periode2') ) ";
+    $sql_data .=" AND a.subkode NOT IN ('29') ";
+    $sql =$sql_data." AND karyawanid='$pkaryawanid' ";
+    
+    $query = "create TEMPORARY table $tmp01 ($sql)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-    $query = "select a.*, b.nama, b.subnama, b.ibank, b.igroup, b.inama  
-        from $tmp01 as a LEFT JOIN
-        dbmaster.t_kode_spd as b on a.subkode=b.subkode";
-    $query = "create TEMPORARY table $tmp02 ($query)";
+    
+    
+    $sql =$sql_data." AND a.idinput not in (select distinct idinput from $tmp01)";
+    $sql .=" AND a.subkode in (select distinct subkode from dbmaster.t_kode_spd_exp WHERE karyawanid='$pkaryawanid')";
+    $query = "create TEMPORARY table $tmp02 ($sql)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-    $query = "DELETE FROM $tmp02 WHERE ( IFNULL(nomor,'')='' AND IFNULL(igroup,'') IN ('1') ) OR ( subkode IN ('29') )";//IFNULL(igroup,'')='3' AND IFNULL(ibank,'')='Y'
+    
+    $query = "INSERT INTO $tmp01 SELECT * FROM $tmp02";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "ALTER TABLE $tmp01 ADD COLUMN sdh varchar(1)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-    $query = "ALTER TABLE $tmp02 ADD COLUMN sdh varchar(1)";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-    $query = "UPDATE $tmp02 as a JOIN 
+    $query = "UPDATE $tmp01 as a JOIN 
         ( select distinct idinput from dbmaster.t_suratdana_bank WHERE IFNULL(stsnonaktif,'')<>'Y' AND  IFNULL(stsinput,'')='K' ) as b 
         on a.idinput=b.idinput SET a.sdh='1'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-    $query = "update $tmp02 set igroup='99', inama='PC-M' WHERE pilih='N' AND IFNULL(nomor,'')=''";
+    $query = "update $tmp01 set igroup='99', inama='PC-M' WHERE pilih='N' AND IFNULL(nomor,'')=''";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    
+    $query ="ALTER TABLE $tmp01 ADD COLUMN nama_pengajuan VARCHAR(100), ADD COLUMN nama_report VARCHAR(100), ADD COLUMN nama_ket VARCHAR(100), "
+            . " ADD COLUMN link_eth VARCHAR(100), ADD COLUMN link_otc VARCHAR(100), "
+            . " ADD COLUMN iapprove VARCHAR(100), ADD COLUMN approve_eth VARCHAR(100), ADD COLUMN approve_otc VARCHAR(100), "
+            . " ADD COLUMN minta_dana VARCHAR(5), ADD COLUMN bank_keluar VARCHAR(100)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query ="UPDATE $tmp01 as a JOIN dbmaster.t_kode_spd_pengajuan as b on IFNULL(a.jenis_rpt,'')=IFNULL(b.jenis_rpt,'') AND a.subkode=b.subkode SET "
+            . " a.nama_pengajuan=b.nama_pengajuan, a.nama_report=b.nama_report, a.nama_ket=b.nama_ket, a.link_eth=b.link_eth, a.link_otc=b.link_otc, "
+            . " a.approve_eth=b.approve_eth, a.approve_otc=b.approve_otc, a.minta_dana=b.minta_dana, a.bank_keluar=b.bank_keluar";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 as a JOIN (select DISTINCT jenis_rpt, subkode, approve_eth, approve_otc, minta_dana, bank_keluar from dbmaster.t_kode_spd_pengajuan WHERE IFNULL(jenis_rpt,'')='') as b on "
+            . " a.subkode=b.subkode SET "
+            . " a.approve_eth=b.approve_eth, a.approve_otc=b.approve_otc, a.minta_dana=b.minta_dana, a.bank_keluar=b.bank_keluar WHERE "
+            . " ( IFNULL(a.approve_eth,'')='' OR IFNULL(a.approve_otc,'')='' OR IFNULL(a.bank_keluar,'')='' )";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 SET iapprove=approve_eth WHERE IFNULL(divisi,'') NOT IN ('OTC', 'CHC')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 SET iapprove=approve_otc WHERE IFNULL(divisi,'') IN ('OTC', 'CHC')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
 
 ?>
 
@@ -113,11 +131,13 @@
                     <th width='40px' align='center'>No Divisi</th>
                     <th width='40px' align='center'>Tanggal</th>
                     <th width='50px' align='center'>Jumlah</th>
+                    <th width='50px' align='center'>Approve COO</th>
+                    <th width='50px' align='center'>Approve DIR</th>
                 </tr>
             </thead>
             <tbody>
                 <?PHP
-                $query = "select distinct igroup, inama from $tmp02 order by igroup";
+                $query = "select distinct igroup, inama from $tmp01 order by igroup";
                 $tampil0=mysqli_query($cnmy, $query);
                 while ($row0=mysqli_fetch_array($tampil0)) {
                     $pigroup=$row0['igroup'];
@@ -129,9 +149,11 @@
                     echo "<td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
                     echo "</tr>";
 
-                    $query = "select * from $tmp02 WHERE igroup='$pigroup' order by igroup, tglspd, divisi";
+                    $query = "select * from $tmp01 WHERE igroup='$pigroup' order by igroup, tglspd, divisi";
                     $tampil1=mysqli_query($cnmy, $query);
                     while ($row1=mysqli_fetch_array($tampil1)) {
                         $pidinput=$row1['idinput'];
@@ -142,10 +164,17 @@
                         $psubnama=$row1['subnama'];
                         $pnospd=$row1['nomor'];
                         $pnodivisi=$row1['nodivisi'];
+                        $ptglpd=$row1['tgl'];
                         $ptglspd=$row1['tglspd'];
+                        $pnmpengajuan=$row1['nama_pengajuan'];
+                        $papprove=$row1['iapprove'];
+                        $pbankkeluar=$row1['bank_keluar'];
                         $pjumlah1=$row1['jumlah'];
                         $pjumlah2=$row1['jumlah2'];
                         $pjumlah3=$row1['jumlah3'];
+                        $ptgldir1=$row1["tgl_dir"];
+                        $ptgldir2=$row1["tgl_dir2"];
+                        $ppilih=$row1["pilih"];
 
                         $psdh=$row1['sdh'];
 
@@ -158,12 +187,24 @@
                         if ($pkodeid=="2" AND $pnsubdiv=="22") $n_div="KAS";
                         if ($pkodeid=="2" AND $pnsubdiv=="23") $n_div="KASCOR";
                         if ($pdivisi=="OTC") $n_div=$pdivisi;
-
+                        
+                        if ($pdivisi=="CAN") $pnmdivisi="CANARY/ETHICAL";
+                        if ($pdivisi=="PIGEO") $pnmdivisi="PIGEON";
+                        if ($pdivisi=="PEACO") $pnmdivisi="PEACOCK";
+                        if (empty($pnmdivisi)) $pnmdivisi="CANARY/ETHICAL";
+                        
+                        if ($ptglspd=="0000-00-00" OR $ptglspd=="0000-00-00 00:00:00") $ptglspd="";
+                        if (empty($ptglspd)) $ptglspd=$ptglpd;
                         $ptglspd= date('d F Y', strtotime($ptglspd));
 
-
                         $pjumlah=number_format($pjumlah,0,",",",");
-
+                        
+                        $ppengajuannm=$pnmpengajuan;
+                        if (empty($ppengajuannm)) $ppengajuannm=$psubnama;
+                        
+                        if ($ptgldir1=="0000-00-00" OR $ptgldir1=="0000-00-00 00:00:00") $ptgldir1="";
+                        if ($ptgldir2=="0000-00-00" OR $ptgldir2=="0000-00-00 00:00:00") $ptgldir2="";
+                    
                         $pnmbtn="btn btn-default btn-xs";
                         if ($psdh=="1") $pnmbtn="btn btn-info btn-xs";
 
@@ -181,13 +222,34 @@
                         if (empty($pnodivisi)) {
                             //$pbtninputjumlah=$pjumlah;
                         }
+                        
+                        if (empty($papprove)) {
+                            $pbtninputjumlah=$pjumlah;
+                        }else{
+                            if ($papprove=="DIR1" AND empty($ptgldir1)) {
+                                $pbtninputjumlah=$pjumlah;
+                            }elseif ($papprove=="DIR2" AND empty($ptgldir2)) {
+                                $pbtninputjumlah=$pjumlah;
+                            }
+                        }
+                        
+                        if ($ppilih=="Y" AND empty($pnospd)) {
+                            $pbtninputjumlah=$pjumlah;
+                        }
+                        
+                        if ($pbankkeluar=="Y") {
+                        }else{
+                            $pbtninputjumlah=$pjumlah;
+                        }
 
                         echo "<tr>";
-                        echo "<td nowrap>$psubnama - $pnmdivisi</td>";
+                        echo "<td nowrap>$ppengajuannm - $pnmdivisi</td>";
                         echo "<td nowrap>$pnospd</td>";
                         echo "<td nowrap>$pbtnnodivisi</td>";
                         echo "<td nowrap>$ptglspd</td>";
                         echo "<td nowrap align='right'>$pbtninputjumlah</td>";
+                        echo "<td nowrap>$ptgldir1</td>";
+                        echo "<td nowrap>$ptgldir2</td>";
                         echo "</tr>";
                     }
 
@@ -204,7 +266,7 @@
         function InputBankKeluar(didinput, dnospd, dnodiv, djumlah){
             $.ajax({
                 type:"post",
-                url:"module/mod_br_danabank/input_bank_keluar.php?module=viewdatabankkeluar",
+                url:"module/budget/bgt_danabank/input_bank_keluar.php?module=viewdatabankkeluar",
                 data:"uidinput="+didinput+"&unospd="+dnospd+"&unodiv="+dnodiv+"&ujumlah="+djumlah,
                 success:function(data){
                     $("#myModal").html(data);

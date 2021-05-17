@@ -356,10 +356,20 @@
     $_SESSION['DBKENTRY2']="";
     
     
+    //dana bank by finance
+    $_SESSION['BNKDANATIPE']="";
+    $_SESSION['BNKDANATGL01']="";
+    
+    
     //fin ttd spd
     $_SESSION['FINSPDAPVTGL1']="";
     $_SESSION['FINSPDAPVTGL2']="";
     $_SESSION['FINSPDAPVKET']="";
+    
+    //FIN ttd by fin
+    $_SESSION['FINTTDBSSTS']="";
+    $_SESSION['FINTTDBSBLN1']="";
+    $_SESSION['FINTTDBSBLN2']="";
     
     
     //pros data insentif

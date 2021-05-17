@@ -114,6 +114,9 @@
                                                     else
                                                         echo "<option value='$z[DivProdId]'>$pdivisi</option>";
                                                 }
+                                                if ($fgroupid=="1" OR $fgroupid=="24") {
+                                                    echo "<option value='ETH'>ETHICAL</option>";
+                                                }
                                                 ?>
                                             </select>
                                         </div>

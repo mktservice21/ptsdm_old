@@ -110,6 +110,15 @@
         
     }else{
         
+        /*
+        $query = "select a.divprodid, a.brId, DATE_FORMAT(a.tgl,'%Y-%m-%d') as tgl, a.noslip, DATE_FORMAT(a.tgltrans,'%Y-%m-%d') as tgltrans, DATE_FORMAT(a.tglrpsby,'%Y-%m-%d') as tglrpsby, a.karyawanId, a.dokterId, a.dokter, 
+            a.aktivitas1, a.aktivitas2, a.realisasi1, a.jumlah, a.jumlah1, a.realisasi2, a.iCabangId, a.COA4, a.batal, a.ccyId from hrd.br0 a 
+            WHERE a.brId IN (select DISTINCT IFNULL(bridinput,'') bridinput FROM $tmp01)";
+        $query = "create TEMPORARY table $tmp04 ($query)"; 
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        */
+        
         $query = "select a.divprodid, a.brId, a.tgl, a.noslip, a.tgltrans, a.tglrpsby, a.karyawanId, a.dokterId, a.dokter, 
             a.aktivitas1, a.aktivitas2, a.realisasi1, a.jumlah, a.jumlah1, a.realisasi2, a.iCabangId, a.COA4, a.batal, a.ccyId from hrd.br0 a 
             WHERE a.brId IN (select DISTINCT IFNULL(bridinput,'') bridinput FROM $tmp01)";
@@ -313,7 +322,7 @@
     if ($padvance=="C") $nmadvance="* Via Surabaya (Klaim Disc.)";
     if ($padvance=="W") $nmadvance="";
     
-    if ($padvance=="C" OR $padvance=="D") $pdivisi="EAGLE";
+	if ($padvance=="C" OR $padvance=="D") $pdivisi="EAGLE";
     
     $imatauangbanyak=false;
     $m_uang1=false;

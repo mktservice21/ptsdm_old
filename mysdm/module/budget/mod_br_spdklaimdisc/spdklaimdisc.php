@@ -87,6 +87,50 @@
                         });
                     }
 
+                    function ProsesDataHapus(ket, noid){
+                        
+                        
+                        ok_ = 1;
+                        if (ok_) {
+                            var r = confirm('Apakah akan melakukan proses '+ket+' ...?');
+
+                            if (r==true) {
+
+                                var txt;
+                                var textket = prompt("Masukan alasan "+ket+" : ", "");
+                                if (textket == null || textket == "") {
+                                    txt = textket;
+                                } else {
+                                    txt = textket;
+                                }
+
+
+                                if (txt=="") {
+                                    alert("alasan harus diisi...");
+                                    return false;
+                                }else if (txt==null) {
+                                    return false;
+                                }
+
+                                var myurl = window.location;
+                                var urlku = new URL(myurl);
+                                var module = urlku.searchParams.get("module");
+                                var idmenu = urlku.searchParams.get("idmenu");
+
+                                //document.write("You pressed OK!")
+                                document.getElementById("d-form2").action = "module/budget/mod_br_spdklaimdisc/aksi_spdklaimdisc.php?module="+module+"&act=hapus&idmenu="+idmenu+"&kethapus="+txt+"&ket="+ket+"&id="+noid;
+                                document.getElementById("d-form2").submit();
+                                return 1;
+                            }
+                        } else {
+                            //document.write("You pressed Cancel!")
+                            return 0;
+                        }
+
+
+
+                    }
+    
                 </script>
 
                     

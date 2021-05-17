@@ -31,6 +31,7 @@ $columns = array(
     11=> 'b.nama'
 );
 
+$nkaryawanid=$_GET['ukryid'];
 $ntgl1=$_GET['uperiode1'];
 $ntgl2=$_GET['uperiode2'];
 
@@ -55,11 +56,7 @@ $sql = "select a.idinputbank, a.tglinput, a.tanggal, a.divisi, a.coa4, c.NAMA4,
     DATE_FORMAT(a.tanggal,'%Y%m')=g.bulan_cls ";
 $sql .=" WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
 $sql.=" AND a.tanggal between '$ptgl1' and '$ptgl2'";
-if ($pgroupid=="1" OR $pgroupid=="24") {
-    
-}else{
-    $sql.=" AND (IFNULL(a.userid,'')='$usrkaryawanid' OR IFNULL(e.karyawanid,'')='$usrkaryawanid') ";
-}
+$sql.=" AND (IFNULL(a.userid,'')='$nkaryawanid' OR IFNULL(e.karyawanid,'')='$nkaryawanid') ";
 
 
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");

@@ -212,7 +212,7 @@ $pnamajabatan=$nr['nama'];
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Dokter <span class='required'></span></label>
                                     <div class='col-xs-4'>
-                                        <select class='soflow' name='cb_doktid' id='cb_doktid' onchange="">
+                                        <select class='soflow form-control s2' name='cb_doktid' id='cb_doktid' onchange="">
                                             <?php
                                             echo "<option value='' selected>-- Pilih --</option>";
                                             //$ipcabid="0000000094";
@@ -549,3 +549,12 @@ th {
     border-top: 1px solid #000;
 }
 </style>
+
+<script src="vendors/jquery/dist/jquery.min.js"></script>
+<link href="module/dkd/select2.min.css" rel="stylesheet" type="text/css" />
+<script src="module/dkd/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+        $('.s2').select2();
+    });
+</script>

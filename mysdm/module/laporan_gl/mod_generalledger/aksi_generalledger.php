@@ -216,7 +216,11 @@
             . " tgltarikan, nkodeid, nkodeid_nama "
             . " FROM dbmaster.t_proses_data_bm WHERE IFNULL(hapus_nodiv_kosong,'') <>'Y' AND DATE_FORMAT(tgltarikan,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' AND "
             . " kodeinput IN $pfilterselpil ";
-        if (!empty($pdivisi)) $query .=" AND divisi='$pdivisi' ";
+        if ($pdivisi=="ETH") {
+            $query .=" AND divisi NOT IN ('OTC', 'CHC') ";
+        }else{
+            if (!empty($pdivisi)) $query .=" AND divisi='$pdivisi' ";
+        }
         if (!empty($filtercoa)) $query .=" AND IFNULL(coa_edit,'') IN $filtercoa ";
         
         $query .=" AND IFNULL(ishare,'')<>'Y' "; //pilih salah satu divisi <> 'HO' atau IFNULL(ishare,'')<>'Y'

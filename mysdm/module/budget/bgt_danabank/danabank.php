@@ -26,6 +26,7 @@
     $fstsadmin=$_SESSION['STSADMIN'];
     $flvlposisi=$_SESSION['LVLPOSISI'];
     $fdivisi=$_SESSION['DIVISI'];
+    $pidgroup=$_SESSION['GROUP'];
     
     $pmodule="";
     $pidmenu="";
@@ -84,6 +85,7 @@
                         var idmenu = urlku.searchParams.get("idmenu");
                         
                         var eaksi = "module/budget/bgt_danabank/aksi_danabank.php";
+                        var ekryid=document.getElementById('cb_karyawan').value;
                         var etgl1=document.getElementById('tgl1').value;
                         var etgl2=document.getElementById('tgl1').value;
                         var etipe=document.getElementById('txt_tipe').value;
@@ -92,7 +94,7 @@
                         $.ajax({
                             type:"post",
                             url:"module/budget/bgt_danabank/viewdatatabeldbank.php?module="+module+"&idmenu="+idmenu,
-                            data:"uperiode1="+etgl1+"&uperiode2="+etgl2+"&utipe="+etipe+"&uaksi="+eaksi,
+                            data:"ukryid="+ekryid+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&utipe="+etipe+"&uaksi="+eaksi,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
@@ -146,7 +148,7 @@
                     
                     
                     function ViewDataBankKeluar(ntxt_ket) {
-                        var ket="";
+                        var ekryid=document.getElementById('cb_karyawan').value;
                         var etgl1=document.getElementById('tgl1').value;
                         var etgl2=document.getElementById('tgl1').value;
 
@@ -159,7 +161,7 @@
                         $.ajax({
                             type:"post",
                             url:"module/budget/bgt_danabank/viewdatatabeldbankkeluar.php?module="+module+"&idmenu="+idmenu,
-                            data:"uketinput="+ntxt_ket+"&uperiode1="+etgl1+"&uperiode2="+etgl2,
+                            data:"uketinput="+ntxt_ket+"&ukryid="+ekryid+"&uperiode1="+etgl1+"&uperiode2="+etgl2,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
@@ -188,6 +190,41 @@
                         <form method='POST' action='<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]"; ?>' 
                               id='d-form1' name='form1' data-parsley-validate class='form-horizontal form-label-left' target="_blank">
                             <input type="hidden" id="txt_tipe" name="txt_tipe" value="<?PHP echo $ptipepilih; ?>" Readonly>
+                            
+                            
+                            <div class='col-sm-3'>
+                                Yang membuat
+                                <div class="form-group">
+                                    <select class='form-control' id="cb_karyawan" name="cb_karyawan" onchange="">
+                                        <?PHP
+                                            if ($pidgroup=="1" OR $pidgroup=="24") {
+                                                $query = "select karyawanId as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE 1=1 ";
+                                                $query .=" AND jabatanid NOT IN ('15', '10', '18', '08', '20', '05')";
+                                            }else{
+                                                $query = "select karyawanId as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE karyawanId='$fkaryawan' ";
+                                            }
+                                            $query .= " Order by karyawanId";
+                                            $tampilket= mysqli_query($cnmy, $query);
+                                            $ketemu=mysqli_num_rows($tampilket);
+                                            //if ((INT)$ketemu<=0) 
+                                            echo "<option value='' selected>-- Pilih --</option>";
+
+                                            while ($du= mysqli_fetch_array($tampilket)) {
+                                                $nidkry=$du['karyawanid'];
+                                                $nnmkry=$du['nama_karyawan'];
+                                                $nidkry_=(INT)$nidkry;
+                                                if ($nidkry==$fkaryawan)
+                                                    echo "<option value='$nidkry' selected>$nnmkry ($nidkry_)</option>";
+                                                else
+                                                    echo "<option value='$nidkry'>$nnmkry ($nidkry_)</option>";
+
+                                            }
+
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            
                             <div class='col-sm-2'>
                                 Periode 
                                 <div class="form-group">

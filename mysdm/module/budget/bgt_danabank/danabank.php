@@ -203,7 +203,7 @@
                                             }else{
                                                 $query = "select karyawanId as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE karyawanId='$fkaryawan' ";
                                             }
-                                            $query .= " Order by karyawanId";
+                                            $query .= " Order by nama, karyawanId";
                                             $tampilket= mysqli_query($cnmy, $query);
                                             $ketemu=mysqli_num_rows($tampilket);
                                             //if ((INT)$ketemu<=0) 

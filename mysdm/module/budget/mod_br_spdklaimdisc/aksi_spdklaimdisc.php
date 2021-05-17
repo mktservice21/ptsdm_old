@@ -7,9 +7,11 @@ ini_set('max_execution_time', 0);
 
 $puserid="";
 $pidcard="";
+$pnmlengkapuser="";
 $pidgroup="";
 if (isset($_SESSION['USERID'])) $puserid=$_SESSION['USERID'];
 if (isset($_SESSION['IDCARD'])) $pidcard=$_SESSION['IDCARD'];
+if (isset($_SESSION['NAMALENGKAP'])) $pnmlengkapuser=$_SESSION['NAMALENGKAP'];
 if (isset($_SESSION['GROUP'])) $pidgroup=$_SESSION['GROUP'];
 
 
@@ -20,13 +22,18 @@ $idmenu=$_GET['idmenu'];
 if ($module=='spdklaimdisc')
 {
     if ($act=="hapus") {
+        if (empty($pidcard)) {
+            echo "ANDA HARUS LOGIN ULANG...";
+            exit;
+        }
+        
         include "../../../config/koneksimysqli.php";
         
         $kodenya=$_GET['id'];
         $pkethapus=$_GET['kethapus'];
         if (!empty($pkethapus)) $pkethapus = str_replace("'", " ", $pkethapus);
 
-        mysqli_query($cnmy, "UPDATE dbmaster.t_suratdana_br SET stsnonaktif='Y', keterangan=CONCAT(IFNULL(keterangan,''), ' $pkethapus') WHERE idinput='$kodenya' LIMIT 1");
+        mysqli_query($cnmy, "UPDATE dbmaster.t_suratdana_br SET stsnonaktif='Y', keterangan=CONCAT(IFNULL(keterangan,''), ' $pkethapus', USER HAPUS : $pnmlengkapuser') WHERE idinput='$kodenya' LIMIT 1");
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
         mysqli_close($cnmy);

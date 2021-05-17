@@ -372,6 +372,8 @@
         
     }elseif ($_GET['module']=='ttdspdfin'){
         include 'module/mod_fin_ttdspd/ttdspd.php';
+    }elseif ($_GET['module']=='ttdspdbyfin'){
+        include 'module/budget/mod_fin_ttdbyspd/ttdbyspd.php';
         
         
     }elseif ($_GET['module']=='lapbiayarutinotc'){
@@ -907,6 +909,8 @@
         include 'module/budget/bgt_brdccdss/brdccdss.php';
     }elseif ($_GET['module']=='spdklaimdisc'){
         include 'module/budget/mod_br_spdklaimdisc/spdklaimdisc.php';
+    }elseif ($_GET['module']=='brdanabankbyfin'){
+        include 'module/budget/bgt_danabank/danabank.php';
         
 
     }else{

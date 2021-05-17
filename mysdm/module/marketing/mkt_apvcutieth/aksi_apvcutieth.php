@@ -73,7 +73,7 @@ if ($module=="mktapprovecutieth") {
     
     
     $noteapv = "tidak ada data yang diapprove";
-    $noteapv="$noidbr, $karyawanapv";
+    //$noteapv="$noidbr, $karyawanapv";
     if (!empty($noidbr) AND !empty($karyawanapv)) {
         
         if ($act=="simpan_ttdallam") {

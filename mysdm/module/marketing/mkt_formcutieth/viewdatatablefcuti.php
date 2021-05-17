@@ -60,6 +60,7 @@
             . " OR ( (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') ) "
             . " OR (DATE_FORMAT(a.tglinput,'%Y%m') BETWEEN '$ptgl1' AND '$ptgl2') "
             . " )";
+    $sql .= " AND IFNULL(stsnonaktif,'')<>'Y' ";
     $query = "create TEMPORARY table $tmp01 ($sql)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

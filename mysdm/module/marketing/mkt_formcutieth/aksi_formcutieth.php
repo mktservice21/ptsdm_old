@@ -130,15 +130,15 @@ if ($module=='mktformcutieth')
                 else $pilihantgl="('')";
                 
                 if ($pidjeniscuti=="02") {
-                    $pbln1= date("Ym", strtotime($pbln01));
-                    $pbln2= date("Ym", strtotime($pbln02));
+                    $pbln1= date("Ymd", strtotime($pbln01));
+                    $pbln2= date("Ymd", strtotime($pbln02));
                     if ($pbln1>$pbln2) {
                         mysqli_close($cnmy); echo "Bulan tidak sesuai..."; exit;
                     }
 
                     $query = "select distinct a.bulan1 from hrd.t_cuti0 as a LEFT JOIN hrd.t_cuti1 as b "
                             . " on a.idcuti=b.idcuti WHERE a.idcuti<>'$kodenya' AND "
-                            . " (b.tanggal in $pilihantgl OR (DATE_FORMAT(a.bulan1,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') OR (DATE_FORMAT(a.bulan2,'%Y%m') BETWEEN '$pbln1' AND '$pbln2') ) "
+                            . " (b.tanggal in $pilihantgl OR (DATE_FORMAT(a.bulan1,'%Y%m%d') BETWEEN '$pbln1' AND '$pbln2') OR (DATE_FORMAT(a.bulan2,'%Y%m%d') BETWEEN '$pbln1' AND '$pbln2') ) "
                             . " AND a.karyawanid='$pkaryawanid' AND IFNULL(a.stsnonaktif,'')<>'Y' ";//AND a.id_jenis='$pidjeniscuti'
                     //echo "$query<br/>";
                 }else{

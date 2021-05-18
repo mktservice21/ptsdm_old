@@ -136,6 +136,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
     $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$pidget')\">";
+    $phapus="";//hilangkan dulu, harusnya tidak ada hapus karena bisa merubah nobbk
     
     if ($pstsinput=="K") {
         $pjumlah1="";

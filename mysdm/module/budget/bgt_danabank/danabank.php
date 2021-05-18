@@ -12,21 +12,25 @@
     $tgl_pertama = date('F Y', strtotime($hari_ini));
     $tgl_akhir = date('F Y', strtotime($hari_ini));
     
-    $ptipepilih="";
-    $ptglpilih01="";
-    $ptglpilih02="";
-    if (isset($_SESSION['BNKDANATIPE'])) $ptipepilih=$_SESSION['BNKDANATIPE'];
-    if (isset($_SESSION['BNKDANATGL01'])) $ptglpilih01=$_SESSION['BNKDANATGL01'];
-    
-    if (!empty($ptglpilih01)) $tgl_pertama = $ptglpilih01;
-    if (!empty($ptglpilih02)) $tgl_akhir = $ptglpilih02;
-    if (empty($ptipepilih)) $ptipepilih = "viewdatabank";
-    
     $fkaryawan=$_SESSION['IDCARD'];
     $fstsadmin=$_SESSION['STSADMIN'];
     $flvlposisi=$_SESSION['LVLPOSISI'];
     $fdivisi=$_SESSION['DIVISI'];
     $pidgroup=$_SESSION['GROUP'];
+    
+    
+    $ptipepilih="";
+    $pkryidpilih="";
+    $ptglpilih01="";
+    $ptglpilih02="";
+    if (isset($_SESSION['BNKDANATIPE'])) $ptipepilih=$_SESSION['BNKDANATIPE'];
+    if (isset($_SESSION['BNKDANAKARY'])) $pkryidpilih=$_SESSION['BNKDANAKARY'];
+    if (isset($_SESSION['BNKDANATGL01'])) $ptglpilih01=$_SESSION['BNKDANATGL01'];
+    
+    if (!empty($ptglpilih01)) $tgl_pertama = $ptglpilih01;
+    if (!empty($ptglpilih02)) $tgl_akhir = $ptglpilih02;
+    if (empty($ptipepilih)) $ptipepilih = "viewdatabank";
+    if (!empty($pkryidpilih)) $fkaryawan = $pkryidpilih;
     
     $pmodule="";
     $pidmenu="";
@@ -34,6 +38,8 @@
     if (isset($_GET['module'])) $pmodule=$_GET['module'];
     if (isset($_GET['idmenu'])) $pidmenu=$_GET['idmenu'];
     if (isset($_GET['act'])) $pact=$_GET['act'];
+    
+    $aksi="eksekusi3.php";
 ?>
 
 
@@ -170,7 +176,25 @@
                     }
                 </script>
 
-                    
+                <script>
+                    function disp_confirm_print(pText)  {
+                        
+                        //KlikDataTabel();
+                        
+                        if (pText == "excel") {
+                            document.getElementById("d-form1").action = "<?PHP echo "$aksi?module=brdanabank&act=input&idmenu=$pidmenu&ket=excel"; ?>";
+                            document.getElementById("d-form1").submit();
+                            return 1;
+                        }else{
+                            document.getElementById("d-form1").action = "<?PHP echo "$aksi?module=brdanabank&act=input&idmenu=$pidmenu&ket=bukan"; ?>";
+                            document.getElementById("d-form1").submit();
+                            return 1;
+                        }
+                        
+                        
+                    }
+                </script>
+                
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                     <div class='x_panel'>
 
@@ -187,7 +211,7 @@
                             <div class='clearfix'></div>
                         </div>
 
-                        <form method='POST' action='<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]"; ?>' 
+                        <form method='POST' action='<?PHP echo "$aksi?module=$pmodule&act=input&idmenu=$pidmenu"; ?>' 
                               id='d-form1' name='form1' data-parsley-validate class='form-horizontal form-label-left' target="_blank">
                             <input type="hidden" id="txt_tipe" name="txt_tipe" value="<?PHP echo $ptipepilih; ?>" Readonly>
                             
@@ -230,6 +254,7 @@
                                 <div class="form-group">
                                     <div class='input-group date' id='cbln01'>
                                         <input type='text' id='tgl1' name='e_periode01' required='required' class='form-control input-sm' placeholder='tgl awal' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
+                                        <input type='hidden' id='tgl2' name='e_periode02' required='required' class='form-control input-sm' placeholder='tgl awal' value='<?PHP echo $tgl_pertama; ?>' placeholder='dd mmm yyyy' Readonly>
                                         <span class="input-group-addon">
                                            <span class="glyphicon glyphicon-calendar"></span>
                                         </span>
@@ -241,6 +266,7 @@
                                 <small>&nbsp;</small>
                                <div class="form-group">
                                    <input type='button' class='btn btn-success btn-xs' id="s-submit" value="View Data Bank" onclick="RefreshDataTabel()">&nbsp;
+                                   <input type='button' class='btn btn-default btn-xs' id="s-print" value="Preview Data Bank" onclick="disp_confirm_print('bukan')">&nbsp;
                                </div>
                            </div>
                        </form>

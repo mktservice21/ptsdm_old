@@ -18,13 +18,19 @@
 
     $hari_ini = date("Y-m-d");
     $tgl1 = date('d/m/Y', strtotime($hari_ini));
-
+    
     $pidinput_spd=$_POST['uidinput'];
     $pnospd=$_POST['unospd'];
     $pnodiv=$_POST['unodiv'];
     $pjmlminta=str_replace(",","", $_POST['ujumlah']);
     if (empty($pjmlminta)) $pjmlminta=0;
 
+    $pkodeid=$_POST['ukode'];
+    $psubkode=$_POST['usubkode'];
+    $pdivisi=$_POST['udivisi'];
+    $pcoabkeluar=$_POST['ucoa'];
+        
+        
     $pjumlah=0;
     $pjmlsudah=0;
     $pketerangan="";
@@ -82,6 +88,11 @@
                                                 <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput_spd; ?>' Readonly>
                                                 <input type='text' id='e_cardid' name='e_cardid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
                                                 <input type='text' id='e_stssimpan' name='e_stssimpan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pact; ?>' Readonly>
+                                                
+                                                <input type='text' id='e_kodeid' name='e_kodeid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkodeid; ?>' Readonly>
+                                                <input type='text' id='e_subkode' name='e_subkode' class='form-control col-md-7 col-xs-12' value='<?PHP echo $psubkode; ?>' Readonly>
+                                                <input type='text' id='e_divisi' name='e_divisi' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pdivisi; ?>' Readonly>
+                                                <input type='text' id='e_coa' name='e_coa' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pcoabkeluar; ?>' Readonly>
                                             </div>
                                         </div>
                                         
@@ -179,32 +190,32 @@
                                         </div>
 
 
-                                        <div id="div_nodivisi1">
+                                        <div hidden id="div_nodivisi1">
                                                 
-                                                <div class='form-group'>
-                                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><span style="color:red;">Dari No BR/Divisi 
-                                                            <input type="checkbox" id="chk_drnod" name="chk_drnod" onclick="BukaDivNoBRDari()">
-                                                        </span><span class='required'></span></label>
-                                                    <div class='col-md-4'>
-                                                        <div id="div_brdari" style="display: none;">
-                                                            <select class='form-control input-sm' id='cb_nodivisi_dr' name='cb_nodivisi_dr'>
-                                                                <option value='' selected>-- Pilihan --</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            
-                                            </div>
-                                            
-                                            
                                             <div class='form-group'>
-                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
-                                                <div class='col-xs-9'>
-                                                    <div class="checkbox">
-                                                        <button type='button' class='btn btn-success' id='btnsimpan' onclick='disp_confirm_keluar()'>Save</button>
+                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><span style="color:red;">Dari No BR/Divisi 
+                                                        <input type="checkbox" id="chk_drnod" name="chk_drnod" onclick="BukaDivNoBRDari()">
+                                                    </span><span class='required'></span></label>
+                                                <div class='col-md-4'>
+                                                    <div id="div_brdari" style="display: none;">
+                                                        <select class='form-control input-sm' id='cb_nodivisi_dr' name='cb_nodivisi_dr'>
+                                                            <option value='' selected>-- Pilihan --</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                        </div>
+                                            
+                                            
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                <div class="checkbox">
+                                                    <button type='button' class='btn btn-success' id='btnsimpan' onclick='disp_confirm_keluar()'>Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
 
 
 
@@ -421,6 +432,13 @@
         var inobukti=document.getElementById('e_nobukti').value;
         var ijumlah=document.getElementById('e_jml').value;
         var iket=document.getElementById('e_ket').value;
+        
+        var dkode=document.getElementById('e_kodeid').value;
+        var dsubkode=document.getElementById('e_subkode').value;
+        var ddivisi=document.getElementById('e_divisi').value;
+        var dcoa=document.getElementById('e_coa').value;
+        
+        //e_kodeid, e_subkode, e_divisi, e_coa
         var inodiv_dari="";
         
         //e_id, e_cardid, e_stssimpan, e_bankid, e_stsclsbank, e_nospd, e_nodivsi, e_tglkeluar, 
@@ -513,11 +531,12 @@ Apakah akan melakukan update data...?";
                     $.ajax({
                         type:"post",
                         url:"module/budget/bgt_danabank/simpan_bank_spd_keluar_new.php?module="+module+"&act="+ists+"&idmenu="+idmenu,
-                        data:"uid="+iid+"&uidcard="+iidcard+"&usts="+ists+
+                        data:"uid="+iid+"&unospd="+inospd+"&uidcard="+iidcard+"&usts="+ists+
                             "&ubnkid="+ibnkid+"&usdhcls="+isdhcls+"&unodivisi="+inodivisi+
                             "&utglkeluar="+itglkeluar+"&unobukti="+inobukti+
                             "&ujumlah="+ijumlah+"&uket="+iket+
-                            "&unodiv_dari="+inodiv_dari,
+                            "&unodiv_dari="+inodiv_dari+
+                            "&ukode="+dkode+"&usubkode="+dsubkode+"&udivisi="+ddivisi+"&ucoa="+dcoa,
                         success:function(data){
                             if (data.length > 2) {
                                 alert(data);

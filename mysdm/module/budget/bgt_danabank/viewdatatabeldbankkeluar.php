@@ -6,19 +6,19 @@
     session_start();
     include("../../../config/koneksimysqli.php");
     
+    $_SESSION['BNKDANAKARY']=$_POST['ukryid'];
+    $_SESSION['BNKDANATGL01']=$_POST['uperiode1'];
     $_SESSION['BNKDANATIPE']="viewdatabankkeluar";
     
     $pmodule=$_GET['module'];
     $pidmenu=$_GET['idmenu'];
     $pact="bankkeluar";
-
+    
+    $pcoabkeluar="000-0";
     $pket_input=$_POST['uketinput'];
     $pkaryawanid=$_POST['ukryid'];
     $ptgl01=$_POST['uperiode1'];
     $ptgl02=$_POST['uperiode2'];
-
-    $_SESSION['DBKENTRY1']=$ptgl01;
-    $_SESSION['DBKENTRY2']=$ptgl02;
 
     $periode1= date("Y-m-d", strtotime($ptgl01));
     $periode2= date("Y-m-t", strtotime($ptgl02));
@@ -179,7 +179,8 @@
                         $psdh=$row1['sdh'];
 
                         $pjumlah=$pjumlah1;
-
+                        if ($pnsubdiv=="21") $pjumlah=$pjumlah3;
+                        
                         $pnmdivisi=$pdivisi;
                         $n_div=$pdivisi;
                         if ($pkodeid=="2" AND $pnsubdiv=="21") $n_div="LK";
@@ -217,7 +218,7 @@
                         
                         $pbtninputjumlah="<button type='button' class='$pnmbtn' title='' data-toggle='modal' "
                                 . " data-target='#myModal' "
-                                . " onClick=\"InputBankKeluar('$pidinput', '$pidnomor', '$pnodivisi', '$pjumlah')\">$pjumlah</button>";
+                                . " onClick=\"InputBankKeluar('$pidinput', '$pidnomor', '$pnodivisi', '$pjumlah', '$pkodeid', '$pnsubdiv', '$pdivisi', '$pcoabkeluar')\">$pjumlah</button>";
                                 
                         if (empty($pnodivisi)) {
                             //$pbtninputjumlah=$pjumlah;
@@ -263,11 +264,12 @@
     </div>
 </form>
     <script>
-        function InputBankKeluar(didinput, dnospd, dnodiv, djumlah){
+        function InputBankKeluar(didinput, dnospd, dnodiv, djumlah, dkode, dsubkode, ddivisi, dcoa){
             $.ajax({
                 type:"post",
                 url:"module/budget/bgt_danabank/input_bank_keluar.php?module=viewdatabankkeluar",
-                data:"uidinput="+didinput+"&unospd="+dnospd+"&unodiv="+dnodiv+"&ujumlah="+djumlah,
+                data:"uidinput="+didinput+"&unospd="+dnospd+"&unodiv="+dnodiv+"&ujumlah="+djumlah+
+                        "&ukode="+dkode+"&usubkode="+dsubkode+"&udivisi="+ddivisi+"&ucoa="+dcoa,
                 success:function(data){
                     $("#myModal").html(data);
                 }

@@ -11,6 +11,7 @@
     }
 
     include("../../../config/koneksimysqli.php");
+    include "../../../config/fungsi_combo.php";
 
     $berhasil="Tidak ada data yang disimpan...";
 
@@ -24,18 +25,27 @@
 
     if ($pmodule=="brdanabankbyfin" AND ($pact=="updatedibank" OR $pact=="simpandatabankkeluar") ) {
 
-
-        $pidinput=$_POST['uid'];
+        $pno_asli_bukti=1500;
+        $pstatus="1";
         $pidcard=$_POST['uidcard'];
         $psts=$_POST['usts'];
-        $pbankid=$_POST['ubnkid'];
+        $kodenya=$_POST['ubnkid'];
         $psdhcls=$_POST['usdhcls'];
-        $pnodivisi=$_POST['unodivisi'];
         $ptgl=$_POST['utglkeluar'];
         $pnobukti=$_POST['unobukti'];
-        $pjumlah=$_POST['ujumlah'];
         $pket=$_POST['uket'];
         $pdivdari=$_POST['unodiv_dari'];
+        
+        $pidinputspd=$_POST['uid'];
+        $pspdnomor=$_POST['unospd'];
+        $pnodivisi=$_POST['unodivisi'];
+        $pjumlah=$_POST['ujumlah'];
+        $pkodeid=$_POST['ukode'];
+        $psubkode=$_POST['usubkode'];
+        $pdivisi=$_POST['udivisi'];
+        $pcoabkeluar=$_POST['ucoa'];
+        
+        //echo "$pidinputspd, $pspdnomor, $pnodivisi, $pjumlah, $pkodeid, $psubkode, $pdivisi, COA : $pcoabkeluar"; exit;
         
         if (empty($pidcard)) {
             if (!empty($piduser)) $pidcard=$piduser;
@@ -45,7 +55,7 @@
             echo "Anda harus login ulang..."; mysqli_close($cnmy); exit;
         }
 
-        //$berhasil="id : $pidinput, idcard : $pidcard, sts input : $psts, id bank : $pbankid, 
+        //$berhasil="id : $pidinputspd, idcard : $pidcard, sts input : $psts, id bank : $kodenya, 
         //    sts cls : $psdhcls, Nodivisi : $pnodivisi, tgl : $ptgl, Nobukti : $pnobukti, 
         //    Jml : $pjumlah, Ket : $pket, Div Dari : $pdivdari";
         //$berhasil = "module : $pmodule, menu : $pidmenu, act : $pact";
@@ -53,6 +63,11 @@
         $ptgl01 = str_replace('/', '-', $ptgl);
         $ptglkeluar= date("Y-m-d", strtotime($ptgl01));
         $pbulan= date("Ym", strtotime($ptgl01));
+        
+        $pblnini = date('m', strtotime($ptgl01));
+        $pthnini = date('Y', strtotime($ptgl01));
+        $pthnini_bln = date('Ym', strtotime($ptgl01));
+    
         $pjumlah=str_replace(",","", $pjumlah);
 
         $query = "select bulan from dbmaster.t_bank_saldo WHERE DATE_FORMAT(bulan,'%Y%m')='$pbulan'";
@@ -66,30 +81,87 @@
 
         
         if ($pact=="simpandatabankkeluar") {
-
-            $query = "";
+            $query = "SELECT nobbk FROM dbmaster.t_setup_bukti WHERE bulantahun='$pbulan'";
+            $showkan= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($showkan);
+            if ((INT)$ketemu==0){
+                
+                mysqli_query($cnmy, "INSERT INTO dbmaster.t_setup_bukti (bulantahun, nobbk)VALUES('$pbulan', '$pno_asli_bukti')");
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysql_close($cnmy); exit; }
+                
+            }else{
+                $nox= mysqli_fetch_array($showkan);
+                $pno_asli_bukti=$nox['nobbk'];
+                
+                if (empty($pno_asli_bukti) OR (INT)$pno_asli_bukti==0) $pno_asli_bukti=1500;
+            }
+            $pno_asli_bukti++;
+            $mbulan=CariBulanHuruf($pblnini);
+            $pnobukti = "BBK".$pno_asli_bukti."/".$mbulan."/".$pthnini;
+            
+            $query=  mysqli_query($cnmy, "select idinputbank from dbmaster.t_suratdana_bank WHERE nobukti='$pnobukti' AND IFNULL(stsnonaktif,'')<>'Y'");
+            $ketemub=  mysqli_num_rows($query);
+            if ((INT)$ketemub>0){
+                echo "No Bukti sudah ada...";
+                mysqli_close($cnmy);
+                exit;
+            }
+            
+            
+            if (!empty($pnobukti)) {
+                mysqli_query($cnmy, "UPDATE dbmaster.t_setup_bukti SET nobbk='$pno_asli_bukti' WHERE bulantahun='$pbulan'");
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
+            
+            //echo "$pnobukti"; exit;
 
             if (empty($pnobukti)) {
                 $berhasil="No Bukti / BBK Kosong, tidak ada data yang diupdate...";
             }else{
-
-                $query = "INSERT INTO dbmaster.t_suratdana_bank
-                    ()VALUES
-                    ()";
-
-                $berhasil="Simpan berhasil...";
+                
+        
+                $sql=  mysqli_query($cnmy, "select MAX(RIGHT(idinputbank,8)) as NOURUT from dbmaster.t_suratdana_bank");
+                $ketemu=  mysqli_num_rows($sql);
+                $awal=8; $urut=1; $kodenya=""; $periode=date('Ymd');
+                if ($ketemu>0){
+                    $o=  mysqli_fetch_array($sql);
+                    if (empty($o['NOURUT'])) $o['NOURUT']=0;
+                    $urut=$o['NOURUT']+1;
+                    $jml=  strlen($urut);
+                    $awal=$awal-$jml;
+                    $kodenya="BN".str_repeat("0", $awal).$urut;
+                }else{
+                    $kodenya="BN00000001";
+                }
+        
+                if (!empty($kodenya)) {
+                    
+                    $query = "INSERT INTO dbmaster.t_suratdana_bank (stsinput, idinputbank, tanggal, coa4, kodeid, subkode, idinput, nomor, nodivisi, "
+                            . " nobukti, divisi, sts, jumlah, keterangan, userid)values"
+                            . "('K', '$kodenya', '$ptglkeluar', '$pcoabkeluar', '$pkodeid', '$psubkode', '$pidinputspd', '$pspdnomor', '$pnodivisi', "
+                            . " '$pnobukti', '$pdivisi', '$pstatus', '$pjumlah', '$pket', '$pidcard')";
+                    mysqli_query($cnmy, $query);
+                    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                    
+                    $berhasil="Simpan berhasil...";
+                    
+                }
+                
             }
         }elseif ($pact=="updatedibank") {
 
-            if (empty($pbankid)) {
+            if (empty($kodenya)) {
                 $berhasil="Id Bank Kosong, tidak ada data yang diupdate...";
             }else{
 
                 $query = "Update dbmaster.t_suratdana_bank SET tanggal='$ptglkeluar', 
                     jumlah='$pjumlah', keterangan='$pket' WHERE 
-                    idinputbank='$pbankid' AND idinput='$pidinput' AND userid='$pidcard' LIMIT 1";
-
+                    idinputbank='$kodenya' AND idinput='$pidinputspd' LIMIT 1";
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysql_close($cnmy); exit; }
+                
                 $berhasil="Update berhasil...";
+                
             }
 
         }

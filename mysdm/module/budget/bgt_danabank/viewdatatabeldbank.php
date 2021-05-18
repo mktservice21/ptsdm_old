@@ -5,6 +5,7 @@
     
     session_start();
     
+    $_SESSION['BNKDANAKARY']=$_POST['ukryid'];
     $_SESSION['BNKDANATGL01']=$_POST['uperiode1'];
     $_SESSION['BNKDANATIPE']="viewdatabank";
     

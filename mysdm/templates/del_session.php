@@ -358,6 +358,7 @@
     
     //dana bank by finance
     $_SESSION['BNKDANATIPE']="";
+    $_SESSION['BNKDANAKARY']="";
     $_SESSION['BNKDANATGL01']="";
     
     

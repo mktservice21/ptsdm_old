@@ -297,6 +297,11 @@ if ($_GET['module']=="caridivisi"){
         $pjumlahhr_ucinput=0;
     }
     
+if ($_SESSION['IDCARD']=="0000000329" OR $_SESSION['IDCARD']=="0000000962") {
+    $pjumlahhr_ucinput=100;
+    $pjumlahhr_blinput=0;
+}
+
 ?>
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah UC <span class='required'></span></label>

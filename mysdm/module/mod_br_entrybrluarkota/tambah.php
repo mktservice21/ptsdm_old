@@ -320,8 +320,11 @@ if (empty($pjumlahhr_bledit)) $pjumlahhr_bledit=0;
 if (empty($pjumlahhr_ucinput)) $pjumlahhr_ucinput=0;
 
 //echo "$pjumlahhr_blinput dan $pjumlahhr_ucinput<br/>";
-    
-    
+
+if ($_SESSION['IDCARD']=="0000000329" OR $_SESSION['IDCARD']=="0000000962") {
+    $pjumlahhr_ucinput=100;
+    $pjumlahhr_blinput=0;
+}
 
 if (isset($_GET['ca'])) {
 ?>

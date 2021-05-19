@@ -6,19 +6,21 @@
     //$tgl_pertama = date('F Y', strtotime($hari_ini2));
     $tgl_akhir = date('F Y', strtotime($hari_ini));
     
+    $fkaryawan=$_SESSION['IDCARD'];
+    $fstsadmin=$_SESSION['STSADMIN'];
+    $flvlposisi=$_SESSION['LVLPOSISI'];
+    $fdivisi=$_SESSION['DIVISI'];
     
+    $pkryidpilih="";
     $ptglpilih01="";
     $ptglpilih02="";
+    if (isset($_SESSION['SPDKDKARYA'])) $pkryidpilih=$_SESSION['SPDKDKARYA'];
     if (isset($_SESSION['SPDKDTGL01'])) $ptglpilih01=$_SESSION['SPDKDTGL01'];
     if (isset($_SESSION['SPDKDTGL02'])) $ptglpilih02=$_SESSION['SPDKDTGL02'];
     
     if (!empty($ptglpilih01)) $tgl_pertama = $ptglpilih01;
     if (!empty($ptglpilih02)) $tgl_akhir = $ptglpilih02;
-    
-    $fkaryawan=$_SESSION['IDCARD'];
-    $fstsadmin=$_SESSION['STSADMIN'];
-    $flvlposisi=$_SESSION['LVLPOSISI'];
-    $fdivisi=$_SESSION['DIVISI'];
+    if (!empty($pkryidpilih)) $fkaryawan = $pkryidpilih;
     
     $pmodule="";
     $pidmenu="";
@@ -72,6 +74,7 @@
                         var idmenu = urlku.searchParams.get("idmenu");
                         
                         var eaksi = "module/budget/mod_br_spdklaimdisc/aksi_spdklaimdisc.php";
+                        var ekryid=document.getElementById('cb_karyawan').value;
                         var etgl1=document.getElementById('tgl1').value;
                         var etgl2=document.getElementById('tgl2').value;
 
@@ -79,7 +82,7 @@
                         $.ajax({
                             type:"post",
                             url:"module/budget/mod_br_spdklaimdisc/viewdatatabelpdkd.php?module="+module+"&idmenu="+idmenu,
-                            data:"uperiode1="+etgl1+"&uperiode2="+etgl2+"&uaksi="+eaksi,
+                            data:"ukryid="+ekryid+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&uaksi="+eaksi,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
@@ -148,6 +151,39 @@
                         <form method='POST' action='<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]"; ?>' 
                               id='d-form1' name='form1' data-parsley-validate class='form-horizontal form-label-left' target="_blank">
 
+                            <div class='col-sm-3'>
+                                Yang membuat
+                                <div class="form-group">
+                                    <select class='form-control' id="cb_karyawan" name="cb_karyawan" onchange="">
+                                        <?PHP
+                                            //if ($pidgroup=="1" OR $pidgroup=="24") {
+                                                $query = "select karyawanId as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE 1=1 ";
+                                                $query .=" AND jabatanid NOT IN ('15', '10', '18', '08', '20', '05')";
+                                            //}else{
+                                            //    $query = "select karyawanId as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE karyawanId='$fkaryawan' ";
+                                            //}
+                                            $query .= " Order by nama, karyawanId";
+                                            $tampilket= mysqli_query($cnmy, $query);
+                                            $ketemu=mysqli_num_rows($tampilket);
+                                            //if ((INT)$ketemu<=0) 
+                                            echo "<option value='' selected>-- Pilih --</option>";
+
+                                            while ($du= mysqli_fetch_array($tampilket)) {
+                                                $nidkry=$du['karyawanid'];
+                                                $nnmkry=$du['nama_karyawan'];
+                                                $nidkry_=(INT)$nidkry;
+                                                if ($nidkry==$fkaryawan)
+                                                    echo "<option value='$nidkry' selected>$nnmkry ($nidkry_)</option>";
+                                                else
+                                                    echo "<option value='$nidkry'>$nnmkry ($nidkry_)</option>";
+
+                                            }
+
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            
                             <div class='col-sm-2'>
                                 Periode Permintaan
                                 <div class="form-group">

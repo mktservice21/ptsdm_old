@@ -911,6 +911,8 @@
         include 'module/budget/mod_br_spdklaimdisc/spdklaimdisc.php';
     }elseif ($_GET['module']=='brdanabankbyfin'){
         include 'module/budget/bgt_danabank/danabank.php';
+    }elseif ($_GET['module']=='spdbrethical'){
+        include 'module/budget/bgt_spdbrethical/spdbrethical.php';
         
 
     }else{

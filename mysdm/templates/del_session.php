@@ -689,6 +689,7 @@
     
     
     //PERMINTAAN DANA KLAIM DISCOUNT
+    $_SESSION['SPDKDKARYA']="";
     $_SESSION['SPDKDTGL01']="";
     $_SESSION['SPDKDTGL02']="";
 ?>

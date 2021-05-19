@@ -29,6 +29,7 @@ $columns = array(
     9=> 'IFNULL(jumlah,0)+IFNULL(jumlah2,0)'
 );
 
+$nkaryawanid=$_GET['ukryid'];
 $ptgl1=$_GET['uperiode1'];
 $ptgl2=$_GET['uperiode2'];
 
@@ -46,14 +47,18 @@ $sql = "select a.idinput, a.tgl, a.divisi, "
         . " a.kodeid=b.kodeid AND a.subkode=b.subkode "
         . " LEFT JOIN dbmaster.t_kode_spd_pengajuan as c on IFNULL(a.jenis_rpt,'')=IFNULL(c.jenis_rpt,'') AND a.subkode=c.subkode ";
 $sql .=" WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
-$sql.=" AND ( (Date_format(a.tglinput, '%Y-%m') between '$ptgl1' and '$ptgl2') OR (Date_format(a.tgl, '%Y-%m') between '$ptgl1' and '$ptgl2') ) ";
+$sql.=" AND ( (a.tglinput between '$ptgl1' and '$ptgl2') OR (a.tgl between '$ptgl1' and '$ptgl2') ) ";
 $sql.=" AND a.subkode IN ('01') ";
 $sql.=" AND IFNULL(a.jenis_rpt,'') IN ('C', 'D') ";
+$sql.=" AND IFNULL(a.karyawanid,'') = '$nkaryawanid' ";
+/*
 if ($pgroupid=="1" OR $pgroupid=="24") {
     
 }else{
     $sql.=" AND IFNULL(a.karyawanid,'') IN ('$usrkaryawanid', '0000001043') ";
 }
+ * 
+ */
 
 
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");

@@ -1,9 +1,3 @@
-<?php
-    //$_SESSION['BNKDANATIPE']="";
-    //$_SESSION['BNKDANATGL01']="";
-?>
-
-
 <?PHP
     include "config/cek_akses_modul.php";
     $hari_ini = date("Y-m-d");

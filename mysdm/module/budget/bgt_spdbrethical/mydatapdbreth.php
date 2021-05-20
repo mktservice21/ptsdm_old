@@ -48,18 +48,8 @@ $sql = "select a.idinput, a.tgl, a.divisi, "
         . " LEFT JOIN dbmaster.t_kode_spd_pengajuan as c on IFNULL(a.jenis_rpt,'')=IFNULL(c.jenis_rpt,'') AND a.subkode=c.subkode ";
 $sql .=" WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
 $sql.=" AND ( (a.tglinput between '$ptgl1' and '$ptgl2') OR (a.tgl between '$ptgl1' and '$ptgl2') ) ";
-$sql.=" AND a.subkode IN ('01', '20', '50', '80', '90') ";
-$sql.=" AND CONCAT(IFNULL(a.jenis_rpt,''), a.subkode) NOT IN ('01C', '01D') ";
-$sql.=" AND IFNULL(a.jenis_rpt,'') NOT IN ('W') ";
+$sql.=" AND IFNULL(c.igroup,'') IN ('1', 'ALL') ";
 $sql.=" AND IFNULL(a.karyawanid,'') = '$nkaryawanid' ";
-/*
-if ($pgroupid=="1" OR $pgroupid=="24") {
-    
-}else{
-    $sql.=" AND IFNULL(a.karyawanid,'') IN ('$usrkaryawanid', '0000001043') ";
-}
- * 
- */
 
 
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");

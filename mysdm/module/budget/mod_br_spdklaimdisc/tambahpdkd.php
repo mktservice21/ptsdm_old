@@ -19,7 +19,7 @@ $eperiode2 = date('t F Y', strtotime($hari_ini));
 
 $pidbr="";
 $pdivisi="CAN";
-$pjenis="";
+$pjenis="D";
 $pkodeid="1";
 $psubkode="01";
 $pnodivisi="";
@@ -142,22 +142,23 @@ if ($pperiodeby=="K") {
                                         <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="ShowDariDivisi()">
                                             <option value='' selected>-- Pilihan --</option>
                                             <?PHP
-                                            $query = "select DivProdId from MKT.divprod WHERE br='Y' ";
-                                            $query .=" AND DivProdId IN ('CAN') ";
-                                            $query .=" order by DivProdId";
+                                            $query ="select distinct jenis_rpt, nama_pengajuan FROM dbmaster.t_kode_spd_pengajuan WHERE IFNULL(igroup,'')='2' ";
+                                            $query .=" AND jenis_rpt NOT IN ('J') ";
+                                            $query .=" ORDER BY nama_pengajuan";
                                             $tampil = mysqli_query($cnmy, $query);
+                                            $ketemujns= mysqli_num_rows($tampil);
                                             while ($z= mysqli_fetch_array($tampil)) {
-                                                $ndivisi=$z['DivProdId'];
+                                                $nidjenisrpt=$z['jenis_rpt'];
+                                                $nnmjenisrpt=$z['nama_pengajuan'];
                                                 
-                                                $nnmdivisi="";
-                                                if ($ndivisi=="CAN") $nnmdivisi="CANARY";
-                                                
-                                                if (empty($nnmdivisi)) $nnmdivisi="ETHICAL";
-                                                
-                                                if ($ndivisi==$pdivisi)
-                                                    echo "<option value='$ndivisi' selected>$nnmdivisi</option>";
-                                                else
-                                                    echo "<option value='$ndivisi'>$nnmdivisi</option>";
+                                                if ((INT)$ketemujns==1) {
+                                                    echo "<option value='$nidjenisrpt' selected>$nnmjenisrpt</option>";
+                                                }else{
+                                                    if ($nidjenisrpt==$pjenis)
+                                                        echo "<option value='$nidjenisrpt' selected>$nnmjenisrpt</option>";
+                                                    else
+                                                        echo "<option value='$nidjenisrpt'>$nnmjenisrpt</option>";
+                                                }
                                             }
                                             ?>
                                         </select>

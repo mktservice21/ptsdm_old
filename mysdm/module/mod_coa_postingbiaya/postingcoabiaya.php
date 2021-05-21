@@ -76,13 +76,12 @@
                                 <div class="form-group">
                                     <?PHP
                                     $pilih=$_SESSION['COABIAYADIV'];
-                                    include "config/koneksimysqli_it.php";
                                     $query="SELECT DivProdId, nama FROM MKT.divprod where br='Y' ";
                                     if ($_SESSION['ADMINKHUSUS']=="Y") {
                                         //if (!empty($_SESSION['KHUSUSSEL'])) $query .=" AND DivProdId in $_SESSION[KHUSUSSEL]";
                                     }
                                     $query .=" order by nama";
-                                    $sql=mysqli_query($cnit, $query);
+                                    $sql=mysqli_query($cnmy, $query);
                                     echo "<select class='form-control input-sm' id='cb_divisi' name='cb_divisi'>";
                                     echo "<option value=''>-- Pilihan --</option>";
                                     while ($Xt=mysqli_fetch_array($sql)){

@@ -19,14 +19,21 @@ $eperiode2 = date('t F Y', strtotime($hari_ini));
 
 $pidbr="";
 $pdivisi="";
+$pjnslampiran="Y";
 $pjenis="A";
 $pkodeid="1";
 $psubkode="01";
 $pnodivisi="";
 $pperiodeby="";
 $pjumlah="";
+$pjmladj="";
+$pjm_total="";
 $pketerangan="";
         
+$pots_rppcm=0;
+$pots_jml=0;
+$pots_sisarp=0;
+
 $act="input";
 if ($pact=="editdata") {
     $act="update";
@@ -37,12 +44,15 @@ if ($pact=="editdata") {
     $row= mysqli_fetch_array($tampil);
     
     $pdivisi=$row['divisi'];
+    $pjnslampiran = $r['lampiran'];
     $pjenis=$row['jenis_rpt'];
     $pkodeid=$row['kodeid'];
     $psubkode=$row['subkode'];
     $pnodivisi=$row['nodivisi'];
     $pperiodeby=$row['periodeby'];
-    $pjumlah=$row['jumlah'];;
+    $pjumlah=$row['jumlah'];
+    $pjmladj=$r['jumlah2'];
+    $pjm_total=(double)$pjumlah+(double)$pjmladj;
     $pketerangan=$row['keterangan'];
     $ntgl1=$row['tgl'];
     $ntgl2=$row['tglf'];
@@ -52,6 +62,20 @@ if ($pact=="editdata") {
     $eperiode1 = date('01 F Y', strtotime($ntgl2));
     $eperiode2 = date('t F Y', strtotime($ntgl3));
 
+}
+
+$plmp1="selected";
+$plmp2="";
+$plmp3="";
+
+if ($pjnslampiran=="Y") {
+    $plmp1="";
+    $plmp2="selected";
+    $plmp3="";
+}elseif ($pjnslampiran=="N") {
+    $plmp1="";
+    $plmp2="";
+    $plmp3="selected";
 }
 
 $pjenis1="";
@@ -67,9 +91,9 @@ if ($pjenis=="C") {
 
 $ptupeper1="";
 $ptupeper2="";
-$ptupeper3="";
+$ptupeper3="selected";
 $ptupeper4="";
-$ptupeper5="selected";
+$ptupeper5="";
 
 if ($pperiodeby=="K") {
     $ptupeper1="";
@@ -209,7 +233,7 @@ if ($pperiodeby=="K") {
                                 </div>
                                 
                                 
-                                <div hidden id="jenis_kode">
+                                <div id="jenis_kode">
 
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Kode <span class='required'></span></label>
@@ -263,58 +287,89 @@ if ($pperiodeby=="K") {
 
                                 </div>
                                 
-                                
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No. Divisi / No. BR <span class='required'></span></label>
-                                    <div class='col-xs-3'>
-                                        <input type='text' id='e_nomordiv' name='e_nomordiv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnodivisi; ?>'>
-                                    </div>
+                                <!-- untuk adjustment -->
+                                <div id='loading'></div>
+                                <div id="div_datajenis1">
+                                    
                                 </div>
                                 
                                 
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">Periode By <span class='required'></span></label>
-                                    <div class='col-md-3'>
-                                        <div class="form-group">
-
-                                            <select class='form-control input-sm' id="cb_pertipe" name="cb_pertipe" onchange="" data-live-search="true">
-                                                <!--
-                                                <option value="T" <?PHP //echo $ptupeper2; ?>>Transfer</option>
-                                                <option value="I" <?PHP //echo $ptupeper3; ?>>Input</option>
-                                                <option value="S" <?PHP //echo $ptupeper4; ?>>Rpt SBY</option>
-                                                -->
-                                                <option value="K" <?PHP echo $ptupeper5; ?>>Klaim Dist.</option>
-                                            </select>
-
+                                <div id="div_datajenis2">
+                                    
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No. Divisi / No. BR <span class='required'></span></label>
+                                        <div class='col-xs-3'>
+                                            <input type='text' id='e_nomordiv' name='e_nomordiv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnodivisi; ?>'>
                                         </div>
                                     </div>
-                                </div>
-                            
-                                
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">&nbsp; <span class='required'></span></label>
-                                    <div class='col-md-5'>
-                                        <div class='input-group date' id=''>
-                                            <input type="text" class="form-control" id='e_periode1' name='e_periode1' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $eperiode1; ?>' Readonly>
-                                            <span class='input-group-addon'>
-                                                <span class='glyphicon glyphicon-calendar'></span>
-                                            </span>
 
-                                            <input type="text" class="form-control" id='e_periode2' name='e_periode2' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $eperiode2; ?>' Readonly>
-                                            <span class='input-group-addon'>
-                                                <span class='glyphicon glyphicon-calendar'></span>
-                                            </span>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">Lampiran <span class='required'></span></label>
+                                        <div class='col-md-3'>
+                                            <div class="form-group">
+
+                                                    <select class='form-control input-sm' id="cb_jenis" name="cb_jenis" onchange="" data-live-search="true">
+                                                        <option value="" <?PHP echo $plmp1; ?>>--All--</option>
+                                                        <option value="Y" <?PHP echo $plmp2; ?>>Ya</option>
+                                                        <option value="N" <?PHP echo $plmp3; ?>>Tidak</option>
+                                                    </select>
+
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">Periode By <span class='required'></span></label>
+                                        <div class='col-md-3'>
+                                            <div class="form-group">
+
+                                                <select class='form-control input-sm' id="cb_pertipe" name="cb_pertipe" onchange="" data-live-search="true">
+                                                    <!--<option value="" <?PHP echo $ptupeper1; ?>>--All--</option>-->
+                                                    <option value="T" <?PHP echo $ptupeper2; ?>>Transfer</option>
+                                                    <option value="I" <?PHP echo $ptupeper3; ?>>Input</option>
+                                                    <option value="S" <?PHP echo $ptupeper4; ?>>Rpt SBY</option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">&nbsp; <span class='required'></span></label>
+                                        <div class='col-md-5'>
+                                            <div class='input-group date' id=''>
+                                                <input type="text" class="form-control" id='e_periode1' name='e_periode1' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $eperiode1; ?>' Readonly>
+                                                <span class='input-group-addon'>
+                                                    <span class='glyphicon glyphicon-calendar'></span>
+                                                </span>
+
+                                                <input type="text" class="form-control" id='e_periode2' name='e_periode2' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $eperiode2; ?>' Readonly>
+                                                <span class='input-group-addon'>
+                                                    <span class='glyphicon glyphicon-calendar'></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div><!-- end div_datajenis2 -->
                             
-                            
+                                
+                                
                                 <div class='form-group'>
                                     <div id='loading2'></div>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
                                         
+                                        <div id="div_datajenis_jml1">
+                                            Jumlah
+                                        </div>
+                                        
                                         <div id="div_datajenis_jml2">
-                                            <button type='button' class='btn btn-info btn-xs' onclick='TampilkanDataKalimDisc()'>Tampilkan Data</button> <span class='required'></span>
+                                            <button type='button' class='btn btn-info btn-xs' onclick='TampilkanDataBRInput()'>Tampilkan Data</button> <span class='required'></span>
                                         </div>
                                         
                                     </label>
@@ -322,6 +377,50 @@ if ($pperiodeby=="K") {
                                         <input type='text' id='e_jmlusulan' name='e_jmlusulan' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo "$pjumlah"; ?>' Readonly>
                                     </div>
                                 </div>
+                                
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Adjustment <span class='required'></span></label>
+                                    <div class='col-xs-3'>
+                                        <input type='text' id='e_jmladj' name='e_jmladj' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo "$pjmladj"; ?>' Readonly>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Total <span class='required'></span></label>
+                                    <div class='col-xs-3'>
+                                        <input type='text' id='e_jmltotal' name='e_jmltotal' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo "$pjm_total"; ?>' Readonly>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div hidden id="div_ots">
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>PCM Rp. <span class='required'></span></label>
+                                        <div class='col-xs-3'>
+                                            <input type='text' id='e_otspcmrp' name='e_otspcmrp' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo "$pots_rppcm"; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                                            <button type='button' class='btn btn-dark btn-xs' onclick='RptOutstandingShow()'>Outstanding Rp.</button> <span class='required'></span>
+                                        </label>
+                                        <div class='col-xs-3'>
+                                            <input type='text' id='e_otsjmlrp' name='e_otsjmlrp' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo "$pots_jml"; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Sisa PCM Rp. <span class='required'></span></label>
+                                        <div class='col-xs-3'>
+                                            <input type='text' id='e_otssisarp' name='e_otssisarp' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo "$pots_sisarp"; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
                                 
                                 
                                 <div class='form-group'>
@@ -336,7 +435,7 @@ if ($pperiodeby=="K") {
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                         <div class="checkbox">
-                                            <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
+                                            <button type='button' class='btn btn-success' id="btn_simpan" onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
                                         </div>
                                     </div>
                                 </div>
@@ -442,6 +541,146 @@ if ($pperiodeby=="K") {
         
     });
     
+    
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var nact = urlku.searchParams.get("act");
+        var ijeniskode = document.getElementById('cb_jenispilih').value;
+        
+        if (nact=="tambahbaru") {
+            
+            if (ijeniskode!="J") {
+                ShowDivJenisBukaTutup();
+            }
+        }
+                
+    } );
+    
+    function ShowDivJenisBukaTutup(){
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var nact = urlku.searchParams.get("act");
+        
+        var ijeniskode = document.getElementById('cb_jenispilih').value;
+        
+        if (ijeniskode=="J"){
+            div_datajenis1.style.display = 'block';
+            div_datajenis2.style.display = 'none';
+            s_div.style.display = 'none';
+            
+            div_datajenis_jml1.style.display = 'block';
+            div_datajenis_jml2.style.display = 'none';
+            
+            document.getElementById("e_jmlusulan").disabled = false;
+        }else{
+            
+            
+            div_datajenis1.style.display = 'none';
+            div_datajenis2.style.display = 'block';
+            
+            s_div.style.display = 'block';
+            
+            div_datajenis_jml1.style.display = 'none';
+            div_datajenis_jml2.style.display = 'block';
+            
+            document.getElementById("e_jmlusulan").disabled = false;
+        }
+    }
+    
+    function ShowDariJenis() {
+        document.getElementById("e_jmlusulan").disabled = true;
+        
+        ShowDivJenisBukaTutup();
+        ShowDivRpPCM('1');
+        ShowKodeidDanSubkode();
+        //ShowNoDivisiKD();
+        
+        document.getElementById("e_jmlusulan").disabled = false;
+    }
+    
+    function ShowDariDivisi() {
+        document.getElementById("e_jmlusulan").disabled = true;
+        
+        ShowDivJenisBukaTutup();
+        ShowDivRpPCM('1');
+        //ShowNoDivisiKD();
+        
+        document.getElementById("e_jmlusulan").disabled = false;
+    }
+    
+    function ShowDivRpPCM(sno) {
+        var ijeniskode = document.getElementById('cb_jenispilih').value;
+        var idivisid = document.getElementById('cb_divisi').value;
+        var itgl = document.getElementById('e_tglberlaku').value;
+        document.getElementById('e_otspcmrp').value=0;
+        document.getElementById('e_otsjmlrp').value=0;
+        document.getElementById('e_otssisarp').value=0;
+        if (ijeniskode=="B") {
+            div_ots.style.display = 'block';
+            if (sno=="2") {
+            }else{
+                if (idivisid!="") {
+                    
+                    $.ajax({
+                        type:"post",
+                        url:"module/budget/viewdatabgt.php?module=viewdatapcmrp",
+                        data:"udivisid="+idivisid+"&utgl="+itgl,
+                        beforeSend: function () {
+                            document.getElementById("btn_simpan").disabled = true;
+                            document.getElementById('e_otspcmrp').value="0";
+                            document.getElementById('e_otsjmlrp').value="0";
+                            document.getElementById('e_otssisarp').value="0";
+                        },
+                        success:function(data){
+                            var idata=data.split("|");
+                            document.getElementById('e_otspcmrp').value=idata[0];
+                            document.getElementById('e_otsjmlrp').value=idata[1];
+                            document.getElementById('e_otssisarp').value=idata[2];
+                        },
+                        complete: function () {
+                            document.getElementById("btn_simpan").disabled = false;
+                        },
+                        error: function () {
+                            alert('Something wrong. Try Again!')                
+                        }
+                    });
+                    
+                }
+            }
+            
+        }else{
+            div_ots.style.display = 'none';
+        }
+        
+    }
+    
+    function ShowKodeidDanSubkode() {
+        var ijeniskode = document.getElementById('cb_jenispilih').value;
+        $.ajax({
+            type:"post",
+            url:"module/budget/viewdatabgt.php?module=viewkodeiddanjenis",
+            data:"ujeniskode="+ijeniskode,
+            beforeSend: function () {
+                document.getElementById("btn_simpan").disabled = true;
+            },
+            success:function(data){
+                $("#jenis_kode").html(data);
+            },
+            complete: function () {
+                document.getElementById("btn_simpan").disabled = false;
+            },
+            error: function () {
+                alert('Something wrong. Try Again!')                
+            }
+        });
+        
+    }
     
 </script>
 

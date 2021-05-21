@@ -19,7 +19,7 @@ $eperiode2 = date('t F Y', strtotime($hari_ini));
 
 $pidbr="";
 $pdivisi="CAN";
-$pjenis="D";
+$pjenis="";
 $pkodeid="1";
 $psubkode="01";
 $pnodivisi="";
@@ -77,6 +77,12 @@ if ($pperiodeby=="K") {
     $ptupeper3="";
     $ptupeper4="";
     $ptupeper5="selected";
+}elseif ($pperiodeby=="I") {
+    $ptupeper1="";
+    $ptupeper2="";
+    $ptupeper3="selected";
+    $ptupeper4="";
+    $ptupeper5="";
 }
 
 
@@ -142,23 +148,22 @@ if ($pperiodeby=="K") {
                                         <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="ShowDariDivisi()">
                                             <option value='' selected>-- Pilihan --</option>
                                             <?PHP
-                                            $query ="select distinct jenis_rpt, nama_pengajuan FROM dbmaster.t_kode_spd_pengajuan WHERE IFNULL(igroup,'')='2' ";
-                                            $query .=" AND jenis_rpt NOT IN ('J') ";
-                                            $query .=" ORDER BY nama_pengajuan";
+                                            $query = "select DivProdId from MKT.divprod WHERE br='Y' ";
+                                            $query .=" AND DivProdId IN ('CAN') ";
+                                            $query .=" order by DivProdId";
                                             $tampil = mysqli_query($cnmy, $query);
-                                            $ketemujns= mysqli_num_rows($tampil);
                                             while ($z= mysqli_fetch_array($tampil)) {
-                                                $nidjenisrpt=$z['jenis_rpt'];
-                                                $nnmjenisrpt=$z['nama_pengajuan'];
+                                                $ndivisi=$z['DivProdId'];
                                                 
-                                                if ((INT)$ketemujns==1) {
-                                                    echo "<option value='$nidjenisrpt' selected>$nnmjenisrpt</option>";
-                                                }else{
-                                                    if ($nidjenisrpt==$pjenis)
-                                                        echo "<option value='$nidjenisrpt' selected>$nnmjenisrpt</option>";
-                                                    else
-                                                        echo "<option value='$nidjenisrpt'>$nnmjenisrpt</option>";
-                                                }
+                                                $nnmdivisi=$ndivisi;
+                                                if ($ndivisi=="CAN") $nnmdivisi="CANARY/ETHICAL";
+                                                
+                                                if (empty($ndivisi)) $nnmdivisi="ETHICAL";
+                                                
+                                                if ($ndivisi==$pdivisi)
+                                                    echo "<option value='$ndivisi' selected>$nnmdivisi</option>";
+                                                else
+                                                    echo "<option value='$ndivisi'>$nnmdivisi</option>";
                                             }
                                             ?>
                                         </select>
@@ -173,8 +178,24 @@ if ($pperiodeby=="K") {
                                             
                                             <select class='form-control input-sm' id="cb_jenispilih" name="cb_jenispilih" onchange="ShowDariJenis()" data-live-search="true">
                                                 <?PHP
-                                                    echo "<option value='D' $pjenis1>Klaim Discount</option>";
-                                                    echo "<option value='C' $pjenis2>Via Surabaya (Klaim Discount)</option>";
+                                                $query ="select distinct jenis_rpt, nama_pengajuan FROM dbmaster.t_kode_spd_pengajuan WHERE IFNULL(igroup,'')='2' ";
+                                                $query .=" AND jenis_rpt NOT IN ('J') ";
+                                                $query .=" ORDER BY nama_pengajuan";
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                $ketemujns= mysqli_num_rows($tampil);
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $nidjenisrpt=$z['jenis_rpt'];
+                                                    $nnmjenisrpt=$z['nama_pengajuan'];
+
+                                                    if ((INT)$ketemujns==1) {
+                                                        echo "<option value='$nidjenisrpt' selected>$nnmjenisrpt</option>";
+                                                    }else{
+                                                        if ($nidjenisrpt==$pjenis)
+                                                            echo "<option value='$nidjenisrpt' selected>$nnmjenisrpt</option>";
+                                                        else
+                                                            echo "<option value='$nidjenisrpt'>$nnmjenisrpt</option>";
+                                                    }
+                                                }
                                                 ?>
                                             </select>
                                             
@@ -257,6 +278,7 @@ if ($pperiodeby=="K") {
                                                 <option value="I" <?PHP //echo $ptupeper3; ?>>Input</option>
                                                 <option value="S" <?PHP //echo $ptupeper4; ?>>Rpt SBY</option>
                                                 -->
+                                                <option value="I" <?PHP echo $ptupeper3; ?>>Input</option>
                                                 <option value="K" <?PHP echo $ptupeper5; ?>>Klaim Dist.</option>
                                             </select>
 

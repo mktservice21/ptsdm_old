@@ -3,7 +3,7 @@
     ini_set('max_execution_time', 0);
     
     session_start();
-    include "../../config/koneksimysqli_it.php";
+    include "../../config/koneksimysqli.php";
     include "../../config/fungsi_sql.php";
     $_SESSION['COABIAYADIV']=$_POST['udivisi'];
     $divisi=$_POST['udivisi'];
@@ -38,7 +38,7 @@
                     $awal = 1;
                     $lewat = 0;
                     $sql = "SELECT kode, nobrid, nama FROM dbmaster.t_brid WHERE aktif='Y' order by kode, nobrid asc";
-                    $tampil = mysqli_query($cnit, $sql);
+                    $tampil = mysqli_query($cnmy, $sql);
                     while ($t= mysqli_fetch_array($tampil)) {
                         $nobrid=$t['nobrid'];
                         $nmakun=$t['nama'];
@@ -52,7 +52,7 @@
                         //$link="<a class='btn btn-default btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_POST[idmenu]&nmun=$_POST[idmenu]&id=$nobrid&divisi=$divisi'>Edit</a>";
                         $link="<input type='checkbox' value='$nobrid' name='chkbox_id[]' id='chkbox_id[]' class='cekbr'>";
                         $query = "select COA4, NAMA4 from dbmaster.v_posting_coa_rutin where nobrid='$nobrid' and divisi='$divisi'";
-                        $tampilcoa= mysqli_query($cnit, $query);
+                        $tampilcoa= mysqli_query($cnmy, $query);
                         $c= mysqli_fetch_array($tampilcoa);
                         $coa=$c['COA4'];
                         $coanama=$c['NAMA4'];
@@ -90,7 +90,7 @@
                         if (!empty($divisi)) $fildiv=" AND DIVISI='$divisi' ";
                         $query = "select * from dbmaster.v_coa_all where 1=1 $fildiv ";
 
-                        $tampil = mysqli_query($cnit, $query);
+                        $tampil = mysqli_query($cnmy, $query);
                         while ($ir=  mysqli_fetch_array($tampil)) {
                             if ($ir['kodeid']==$_POST['kodeid'])
                                 echo "<option value='$ir[COA4]' selected>$ir[NAMA4]</option>";

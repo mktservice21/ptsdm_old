@@ -389,10 +389,11 @@ echo "</div>";
                     $plink=$plinketh;
                     if ($pdivisi=="OTC" OR $pdivisi=="CHC") $plink=$plinkotc;
                     
+                    $pbulanrpt=$pntgl;
                     $plinknodivisi=$pnodivis;
                     if (!empty($plink)) {
                         $plinknodivisi = "<a class='btn btn-info btn-xs' "
-                                . " href='eksekusi3.php?$plink&ket=bukan&ispd=$pidget&iid=$pmystsyginput' "
+                                . " href='eksekusi3.php?$plink&ket=bukan&ispd=$pidget&iid=$pmystsyginput&bln=$pbulanrpt' "
                                 . " target='_blank'>$pnodivis</a>";
                     }
                     

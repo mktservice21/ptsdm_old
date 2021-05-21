@@ -406,8 +406,96 @@ if ($pmodule=="viewdatakrybuat") {
         echo "<option value='$pidinputbankdari'>$pnnodivbr</option>";
     }
     mysqli_close($cnmy);
-}elseif ($pmodule=="x") {
-}elseif ($pmodule=="x") {
+}elseif ($pmodule=="viewdatapcmrp") {
+    
+    include "../../config/koneksimysqli.php";
+    $pdivisi = $_POST['udivisid'];
+    $ptgl = $_POST['utgl'];
+    $ptahun= date("Y", strtotime($ptgl));
+    
+    $query="select jumlah from dbmaster.t_uangmuka where divisi='$pdivisi'";
+    $tampil=mysqli_query($cnmy, $query);
+    $a=mysqli_fetch_array($tampil);
+    $pjmlpc=$a['jumlah'];
+    
+    $query="select jml_ots from dbmaster.t_outstanding_br where divisi='$pdivisi' AND tahun='$ptahun'";
+    $tampil=mysqli_query($cnmy, $query);
+    $a=mysqli_fetch_array($tampil);
+    $pjmlots=$a['jml_ots'];
+    
+    $psisarp=(DOUBLE)$pjmlpc-(DOUBLE)$pjmlots;
+    
+    if (empty($pjmlpc)) $pjmlpc=0;
+    if (empty($pjmlots)) $pjmlots=0;
+    if (empty($psisarp)) $psisarp=0;
+    
+    mysqli_close($cnmy);
+    echo "$pjmlpc|$pjmlots|$psisarp"; exit;
+    
+}elseif ($pmodule=="viewkodeiddanjenis") {
+    include "../../config/koneksimysqli.php";
+    $pjenis = $_POST['ujeniskode'];
+    $pkodeid="";
+    $psubkode="";
+    
+    $query_data = "dbmaster.t_kode_spd_pengajuan as a "
+            . " JOIN dbmaster.t_kode_spd as b on a.subkode=b.subkode "
+            . " WHERE a.jenis_rpt='$pjenis' AND IFNULL(a.igroup,'')='1'";
+    
+?>
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Kode <span class='required'></span></label>
+        <div class='col-xs-5'>
+              <select class='form-control input-sm' id='cb_kode' name='cb_kode' onchange="" data-live-search="true">
+                  <!--<option value='' selected>-- Pilihan --</option>-->
+                  <?PHP
+                    $query_1 = "select distinct a.jenis_rpt, b.kodeid, b.nama from ".$query_data;
+                    $query_1 .=" ORDER BY b.nama, b.kodeid";
+                    $tampil = mysqli_query($cnmy, $query_1);
+                    while ($z= mysqli_fetch_array($tampil)) {
+                        $nkodeid=$z['kodeid'];
+                        $nkodenm=$z['nama'];
+
+                        if ($nkodeid==$pkodeid)
+                            echo "<option value='$nkodeid' selected>$nkodeid - $nkodenm</option>";
+                        else
+                            echo "<option value='$nkodeid'>$nkodeid - $nkodenm</option>";
+                    }
+                  ?>
+              </select>
+        </div>
+    </div>
+
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Sub Kode <span class='required'></span></label>
+        <div class='col-xs-5'>
+              <select class='form-control input-sm' id='cb_kodesub' name='cb_kodesub' data-live-search="true" onchange="">
+                  <!--<option value='' selected>-- Pilihan --</option>-->
+                  <?PHP
+                    
+                    $query_2 = "select distinct a.jenis_rpt, b.kodeid, b.nama, a.subkode, b.subnama from ".$query_data;
+                    $query_2 .=" ORDER BY b.subnama, a.subkode, b.nama, b.kodeid";
+
+                    $tampil2 = mysqli_query($cnmy, $query_2);
+                    while ($z= mysqli_fetch_array($tampil2)) {
+                        $nsubid=$z['subkode'];
+                        $nsubnm=$z['subnama'];
+
+                        if ($nsubid==$psubkode)
+                            echo "<option value='$nsubid' selected>$nsubid - $nsubnm</option>";
+                        else
+                            echo "<option value='$nsubid'>$nsubid - $nsubnm</option>";
+                    }
+                    
+                  ?>
+              </select>
+        </div>
+    </div>
+
+<?PHP
+    mysqli_close($cnmy);
 }elseif ($pmodule=="x") {
     
 }

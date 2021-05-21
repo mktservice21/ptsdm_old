@@ -52,6 +52,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
     }
     
     $pkaryawanid=$_SESSION['IDCARD'];
+    $pgroupid=$_SESSION['GROUP'];
     
     $query = "select distinct a.urutan, a.trans_ke, a.jml_adj, a.aktivitas1 ketadj1, a.idinput, IFNULL(a.bridinput,'') bridinput, a.amount, "
             . " CAST('' as CHAR(1)) as sinput FROM dbmaster.t_suratdana_br1 a JOIN "
@@ -79,6 +80,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
     
     $ftypetgl = " a.bulan BETWEEN '$pbulan01' AND '$pbulan02' ";
     if ($ppertipe=="K") $ftypetgl = " a.bulan BETWEEN '$pbulan01' AND '$pbulan02' ";
+    if ($ppertipe=="I") $ftypetgl = " a.tgl BETWEEN '$pbulan01' AND '$pbulan02' ";
     
     $query = "select a.DIVISI divisi, a.klaimId as klaimid, a.karyawanid, c.nama nama_karyawan,
         a.distid, b.nama nama_dist, a.pengajuan, a.aktivitas1, a.jumlah, a.tgl, a.bulan, a.tgltrans, 
@@ -87,7 +89,10 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
         LEFT JOIN hrd.karyawan c on a.karyawanid=c.karyawanId 
         LEFT JOIN dbmaster.coa_level4 d on a.COA4=d.COA4
         WHERE 1=1 ";
-    //$query .=" AND a.karyawanid='$pkaryawanid' ";
+    if ($pgroupid=="1" OR $pgroupid=="24") {
+    }else{
+        $query .=" AND a.karyawanid='$pkaryawanid' ";
+    }
     
     
     if ($pact=="editdata") {

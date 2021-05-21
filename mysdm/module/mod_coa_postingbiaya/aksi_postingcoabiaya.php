@@ -1,9 +1,8 @@
 <?php
 
 session_start();
-include "../../config/koneksimysqli_it.php";
+include "../../config/koneksimysqli.php";
 include "../../config/fungsi_combo.php";
-$cnmy=$cnit;
 $dbname = "dbmaster";
 
 $module=$_POST['u_module'];
@@ -39,6 +38,6 @@ if ($module=='postingcoabiaya' AND $act=='input') {
         
     }
 }
-$datasavems=SaveDataMS("dbmaster", "posting_coa_rutin");
+//$datasavems=SaveDataMS("dbmaster", "posting_coa_rutin");
 header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complit');
 ?>

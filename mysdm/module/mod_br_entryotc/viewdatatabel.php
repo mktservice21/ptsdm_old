@@ -5,8 +5,9 @@
     $_SESSION['OTCTGLTIPE']=$_POST['utgltipe'];
     $_SESSION['OTCPERENTY1']=$_POST['uperiode1'];
     $_SESSION['OTCPERENTY2']=$_POST['uperiode2'];
+    $_SESSION['OTCKARYAWAN']=$_POST['ukryid'];
     
-    
+    $pkryid=$_POST['ukryid'];
     $tgltipe=$_POST['utgltipe'];
     $date1=$_POST['uperiode1'];
     $date2=$_POST['uperiode2'];
@@ -25,6 +26,7 @@
         if ($isitipe=="B") $inputslip = "hidden";
     }
     
+    echo "<input type='hidden' name='cb_karyawan' id='cb_karyawan' value='$pkryid'>";
     echo "<input type='hidden' name='cb_tgltipe' id='cb_tgltipe' value='$tgltipe'>";
     echo "<input type='hidden' name='xtgl1' id='xtgl1' value='$tgl1'>";
     echo "<input type='hidden' name='xtgl2' id='xtgl2' value='$tgl2'>";
@@ -42,6 +44,7 @@
         var module = urlku.searchParams.get("module");
         var idmenu = urlku.searchParams.get("idmenu");
         var nmun = urlku.searchParams.get("nmun");
+        var ekryid=document.getElementById('cb_karyawan').value;
         var etgltipe=document.getElementById('cb_tgltipe').value;
         var etgl1 = document.getElementById("xtgl1").value;
         var etgl2 = document.getElementById("xtgl2").value;
@@ -74,7 +77,7 @@
             "scrollY": 400,
             "scrollX": true,
             "ajax":{
-                url :"module/mod_br_entryotc/mydata.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&utgltipe="+etgltipe+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&udivisi="+edivisi+"&uisi="+eisi, // json datasource
+                url :"module/mod_br_entryotc/mydata.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&utgltipe="+etgltipe+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&udivisi="+edivisi+"&uisi="+eisi+"&ukryid="+ekryid, // json datasource
                 type: "post",  // method  , by default get
                 data:"uperiode1="+etgl1+"&uperiode2="+etgl2,
                 error: function(){  // error handling

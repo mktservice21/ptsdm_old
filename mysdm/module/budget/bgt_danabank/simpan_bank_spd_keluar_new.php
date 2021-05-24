@@ -31,6 +31,7 @@
         $psts=$_POST['usts'];
         $kodenya=$_POST['ubnkid'];
         $psdhcls=$_POST['usdhcls'];
+        $pasltgl=$_POST['utglaslkeluar'];
         $ptgl=$_POST['utglkeluar'];
         $pnobukti=$_POST['unobukti'];
         $pket=$_POST['uket'];
@@ -67,7 +68,13 @@
         $pblnini = date('m', strtotime($ptgl01));
         $pthnini = date('Y', strtotime($ptgl01));
         $pthnini_bln = date('Ym', strtotime($ptgl01));
-    
+        
+        $paslbulan="";
+        if (!empty($pasltgl)) {
+            $pasltgl01 = str_replace('/', '-', $pasltgl);
+            $paslbulan= date("Ym", strtotime($pasltgl01));
+        }
+        
         $pjumlah=str_replace(",","", $pjumlah);
 
         $query = "select bulan from dbmaster.t_bank_saldo WHERE DATE_FORMAT(bulan,'%Y%m')='$pbulan'";
@@ -79,8 +86,19 @@
             exit;
         }
 
+        //echo "$pbulan & $paslbulan"; exit;
         
+        $bolehpilihnobukti=false;
         if ($pact=="simpandatabankkeluar") {
+            $bolehpilihnobukti=true;
+        }else{
+            if ($pbulan<>$paslbulan) $bolehpilihnobukti=true;
+        }
+        
+        
+        
+        if ($bolehpilihnobukti==true) {
+
             $query = "SELECT nobbk FROM dbmaster.t_setup_bukti WHERE bulantahun='$pbulan'";
             $showkan= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($showkan);
@@ -112,6 +130,14 @@
                 mysqli_query($cnmy, "UPDATE dbmaster.t_setup_bukti SET nobbk='$pno_asli_bukti' WHERE bulantahun='$pbulan'");
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             }
+            
+        }
+        
+        
+        //echo "$pbulan & $paslbulan, ($bolehpilihnobukti) nobukti : $pnobukti"; exit;
+        
+        if ($pact=="simpandatabankkeluar") {
+
             
             //echo "$pnobukti"; exit;
 
@@ -160,6 +186,11 @@
                 mysqli_query($cnmy, $query);
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysql_close($cnmy); exit; }
                 
+                if ($bolehpilihnobukti==true AND !empty($pnobukti)) {
+                    $query = "UPDATE dbmaster.t_suratdana_bank SET nobukti='$pnobukti' WHERE idinputbank='$kodenya' AND idinput='$pidinputspd' LIMIT 1";
+                    mysqli_query($cnmy, $query);
+                    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysql_close($cnmy); exit; }
+                }
                 $berhasil="Update berhasil...";
                 
             }

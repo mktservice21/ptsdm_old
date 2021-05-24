@@ -9,6 +9,7 @@
     $_SESSION['OTCTGLTIPE']="";
     $_SESSION['OTCPERENTY1']="";
     $_SESSION['OTCPERENTY2']="";
+    $_SESSION['OTCKARYAWAN']="";
     
     
     

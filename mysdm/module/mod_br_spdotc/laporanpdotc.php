@@ -32,7 +32,7 @@
         a.gbr_apv1, a.gbr_apv2, a.gbr_apv3, a.gbr_dir, a.gbr_dir2,
         b.tanggal as tglkeluar, b.nobukti,
         c.bridinput, c.amount, c.jml_adj, c.ketadj1, c.ketadj2, a.keterangan, c.urutan, 
-        c.trans_ke, a.tgl_apv1, a.tgl_apv2, a.tgl_dir, a.tgl_dir2  
+        c.trans_ke, a.tgl_apv1, a.tgl_apv2, a.tgl_dir, a.tgl_dir2, a.karyawanid, a.apv1, a.apv2  
         from dbmaster.t_suratdana_br a 
             LEFT JOIN 
         (select DISTINCT idinput, IFNULL(bridinput,'') as bridinput, amount, jml_adj, aktivitas1 as ketadj1, aktivitas2 as ketadj2, urutan, trans_ke from dbmaster.t_suratdana_br1 WHERE idinput='$idinputspd') as c 
@@ -166,9 +166,13 @@
     
     
     $query = "select DISTINCT tgl, idinput, nodivisi, jenis_rpt, lampiran, tglf, "
-            . " dir, gbr_apv1, gbr_apv2, gbr_apv3, gbr_dir, gbr_dir2 from $tmp01";
+            . " dir, gbr_apv1, gbr_apv2, gbr_apv3, gbr_dir, gbr_dir2, karyawanid, apv1, apv2 from $tmp01";
     $tampilkan=mysqli_query($cnmy, $query);
     $ra= mysqli_fetch_array($tampilkan);
+    
+    $nkaryawanid=$ra['karyawanid'];
+    $nkryapv1=$ra['apv1'];
+    $nkryapv2=$ra['apv2'];
     
     $noslipurut=$ra['nodivisi'];
     $pjenis_rpt=$ra['jenis_rpt'];
@@ -274,6 +278,31 @@
 
     }
             
+    
+    $query = "select nama as nama_karyawan from hrd.karyawan WHERE karyawanid='$nkaryawanid'";
+    $tmapiln= mysqli_query($cnmy, $query);
+    $irow= mysqli_fetch_array($tmapiln);
+    $pnmkaryawan=$irow['nama_karyawan'];
+    
+    $query = "select nama as nama_apv1 from hrd.karyawan WHERE karyawanid='$nkryapv1'";
+    $tmapiln= mysqli_query($cnmy, $query);
+    $irow= mysqli_fetch_array($tmapiln);
+    $pnmapv1=$irow['nama_apv1'];
+    
+    $query = "select nama as nama_apv2 from hrd.karyawan WHERE karyawanid='$nkryapv2'";
+    $tmapiln= mysqli_query($cnmy, $query);
+    $irow= mysqli_fetch_array($tmapiln);
+    $pnmapv2=$irow['nama_apv2'];
+    
+    $pnamapembuat="DESI RATNA DEWI";
+    $pnamaapprove="SAIFUL RAHMAT";
+    
+    //if ((double)$tgljakukannya>='20210523') {
+        $pnamapembuat=$pnmapv1;//"SAIFUL RAHMAT";
+        $pnamaapprove=$pnmapv2;//"MARIANNE PRASANTI";
+    //}
+    
+    
     
     
     $snamarpt_judul="Sudah Ada Bukti";
@@ -575,7 +604,7 @@
                             echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd_fin1' height='$gmrheight'><br/>";
                         else
                             echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                        echo "<b>DESI RATNA DEWI</b></td>";
+                        echo "<b>$pnamapembuat</b></td>";
 
                         if ($noslipurut!="172/BR-OTC/IX/19") {
 
@@ -587,7 +616,7 @@
                                     echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd_fin2' height='$gmrheight'><br/>";
                                 else
                                     echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                echo "<b>SAIFUL RAHMAT</b></td>";
+                                echo "<b>$pnamaapprove</b></td>";
 
                                 echo "<td align='center'>";
                                 echo "Menyetujui,";
@@ -614,7 +643,7 @@
                                     echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd_fin2' height='$gmrheight'><br/>";
                                 else
                                     echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                echo "<b>SAIFUL RAHMAT</b></td>";
+                                echo "<b>$pnamaapprove</b></td>";
 
 
                                 echo "<td align='center'>";
@@ -642,7 +671,7 @@
                                 echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd_fin2' height='$gmrheight'><br/>";
                             else
                                 echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                            echo "<b>SAIFUL RAHMAT</b></td>";
+                            echo "<b>$pnamaapprove</b></td>";
 
 
                         }
@@ -674,7 +703,7 @@
                             echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd_fin1' height='$gmrheight'><br/>";
                         else
                             echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                        echo "<b>DESI RATNA DEWI</b></td>";
+                        echo "<b>$pnamapembuat</b></td>";
 
 
                             echo "<td align='center'>";
@@ -683,7 +712,7 @@
                                 echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd_fin2' height='$gmrheight'><br/>";
                             else
                                 echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                            echo "<b>SAIFUL RAHMAT</b></td>";
+                            echo "<b>$pnamaapprove</b></td>";
 
                             echo "<td align='center'>";
                             echo "";
@@ -720,7 +749,7 @@
                     echo "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 
                     echo "<tr align='center'>";
-                    echo "<td>DESI RATNA DEWI</td><td>SAIFUL RAHMAT</td><td>$nnama_ss_mktdir</td><td>IRA BUDISUSETYO</td>";
+                    echo "<td>$pnamapembuat</td><td>$pnamaapprove</td><td>$nnama_ss_mktdir</td><td>IRA BUDISUSETYO</td>";
                     echo "</tr>";
                 }else{
                     echo "<table width='100%' border='0px' style='border : 0px solid #fff; font-size: 11px; font-weight: bold;'>";
@@ -734,7 +763,7 @@
                     echo "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 
                     echo "<tr align='center'>";
-                    echo "<td>DESI RATNA DEWI</td><td>SAIFUL RAHMAT</td><td>$nnama_ss_mktdir</td>";
+                    echo "<td>$pnamapembuat</td><td>$pnamaapprove</td><td>$nnama_ss_mktdir</td>";
                     echo "</tr>";
                 }
                                     */

@@ -120,8 +120,11 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     }
     
+    $query = "ALTER TABLE $tmp02 ADD tgl_atasan5 datetime";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
-    
+    $query = "UPDATE $tmp02 as a JOIN dbttd.klaim_ttd as b on a.klaimId=b.klaimId SET a.tgl_atasan5=b.tgl_atasan5";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     $tr_nhidden=" class='divnone' ";
     if ($pact=="editdata") {
@@ -164,7 +167,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                         }
                         
                         $no=1;
-                        $query = "select * from $tmp02 order by nama_karyawan, nama_dist, noslip, pengajuan, klaimid";
+                        $query = "select * from $tmp02 order by IFNULL(tgl_atasan5,'9999-99-99'), nama_karyawan, nama_dist, noslip, pengajuan, klaimid";
                         $tampil=mysqli_query($cnmy, $query);
                         while ($row= mysqli_fetch_array($tampil)) {
                             $pbrid = $row['klaimid'];
@@ -181,7 +184,10 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                             $pamount = $row['amount'];
                             $psinputsudah = $row['sinput'];
                             $ptgltrans = $row['tgltrans'];
+                            $ptglapvatasan5 = $row['tgl_atasan5'];
+                            
                             if ($ptgltrans=="0000-00-00") $ptgltrans = "";
+                            if ($ptglapvatasan5=="0000-00-00" OR $ptglapvatasan5=="0000-00-00 00:00:00") $ptglapvatasan5 = "";
                             
                             $nnjumlahpilih=$pjumlah;
                             
@@ -221,11 +227,24 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                             $pjumlah=number_format($pjumlah,2,".",",");
                             $pamount=number_format($pamount,2,".",",");
                             
+                            $pprint="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+                                . "onClick=\"window.open('eksekusi3.php?module=bgtadmentrybrklaim&brid=$pbrid&iprint=print',"
+                                . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                                . "$pbrid</a>";
+                    
                             $pnmselecturut="<select id='cb_urut[$pbrid]' name='cb_urut[$pbrid]' onChange=\"cekBoxDataBR('cb_urut[$pbrid]', 'chk_jml1[$pbrid]')\">$purut_opt</select>";
                             $chkbox_bca = "<input type='checkbox' id='chk_transke[$pbrid]' name='chk_transke[$pbrid]' value='NB' $ncheck_trans>";//NB = NON BCA
                             $pinput_jumlah="<input type='hidden' id='txt_jml[$pbrid]' name='txt_jml[$pbrid]' value='$nnjumlahpilih' Readonly>";
                             $chkbox = "<input type='checkbox' id='chk_jml1[$pbrid]' name='chk_jml1[]' onclick='HitungTotalDariCekBoxKD()' value='$pbrid' $ncheck_sudah>";
                             
+                            if ($pact=="editdata") {
+                            }else{
+                                if (empty($ptglapvatasan5)) {
+                                    $chkbox="";
+                                    $pnmselecturut="";
+                                    $chkbox_bca="";
+                                }
+                            }
                             
                             echo "<tr>";
                             echo "<td nowrap>$chkbox $pinput_jumlah<t/d>";
@@ -239,7 +258,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                             echo "<td>$pnmsup</td>";
                             echo "<td>$paktivitas1</td>";
                             echo "<td>$pnamakaryawan</td>";
-                            echo "<td nowrap>$pbrid</td>";
+                            echo "<td nowrap>$pprint</td>";
                             echo "<td nowrap>$pnamapengajuan</td>";
                             echo "<td nowrap>$ptglinput</td>";
                             echo "<td nowrap>$nbulan</td>";

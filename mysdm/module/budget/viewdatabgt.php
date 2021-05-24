@@ -328,6 +328,11 @@ if ($pmodule=="viewdatakrybuat") {
     $psubkode = trim($_POST['ukodesub']);
     $padvance = trim($_POST['uadvance']);
     
+    $query = "select nodivisi from dbmaster.t_kode_spd_nodivisi WHERE karyawanid='$pidcard' AND jenis_rpt='$padvance' AND subkode='$psubkode'";
+    $tampilk= mysqli_query($cnmy, $query);
+    $nrow= mysqli_fetch_array($tampilk);
+    $ppilnodiv=$nrow['nodivisi'];
+    if (empty($ppilnodiv)) $ppilnodiv="BR-KD/$pdivsi";
     
     $nobuktinya="";
     $tno=0;
@@ -357,7 +362,7 @@ if ($pmodule=="viewdatakrybuat") {
     
     mysqli_close($cnmy);
     
-    $noslipurut=$tno."/BR $pdivsi/".$blromawi."/".$tahuninput;
+    $noslipurut=$tno."/$ppilnodiv/".$blromawi."/".$tahuninput;
     
     echo $noslipurut; exit;
     

@@ -56,9 +56,7 @@ if ($module=='brdanabankbyfin')
 
         include "../../../config/koneksimysqli.php";
         
-        $pnobukti="";
-        
-        
+        $pnobukti=$_POST['e_nobukti'];
         $pnobrid=$_POST['e_idnobr'];
         $pnoslipbr=$_POST['e_noslipbr'];
         $prealisasibr=$_POST['e_realisasibr'];
@@ -70,17 +68,19 @@ if ($module=='brdanabankbyfin')
         $pnospd="";
         
         $kodenya=$_POST['e_id'];
-        $ptglinput=$_POST['e_tglberlaku'];
+        $ptglaslinput=$_POST['e_asltglberlaku'];
+        $ptglinputpl=$_POST['e_tglberlaku'];
         $pkodeid="";
         $psubkode=$_POST['cb_kodesub'];
         $pcoa=$_POST['cb_coa'];
         $pdivisi=$_POST['cb_divisi'];
         $pstatus=$_POST['cb_sts'];
+        $pstsaslinput=$_POST['cb_asldebitkredit'];
         $pstsinput=$_POST['cb_debitkredit'];
         $pjumlah=$_POST['e_jml'];
         $pketerangan=$_POST['e_ket'];
         
-        $ptglinput= date("Y-m-d", strtotime($ptglinput));
+        $ptglinput= date("Y-m-d", strtotime($ptglinputpl));
         if (!empty($pketerangan)) $pketerangan = str_replace("'", " ", $pketerangan);
         $pjumlah=str_replace(",","", $pjumlah);
         if (empty($pjumlah)) $pjumlah=0;
@@ -112,7 +112,11 @@ if ($module=='brdanabankbyfin')
         if (empty($pkodeid)) $pkodeid="5"; //bank
         if (empty($pidinputspd)) $pidinputspd="0"; //bank
         
+        $bolehpilihnobukti=false;
+        
         if ($act=="input") {
+            
+            $bolehpilihnobukti=true;
             
             $sql=  mysqli_query($cnmy, "select MAX(RIGHT(idinputbank,8)) as NOURUT from dbmaster.t_suratdana_bank");
             $ketemu=  mysqli_num_rows($sql);
@@ -128,6 +132,21 @@ if ($module=='brdanabankbyfin')
                 $kodenya="BN00000001";
             }
             
+        }else{
+            
+            $pblninput= date("Ym", strtotime($ptglinputpl));
+            if (!empty($ptglaslinput)) $ptglaslinput= date("Ym", strtotime($ptglaslinput));
+
+            //echo "$pblninput - $ptglaslinput, $pstsinput - $pstsaslinput";
+
+            if ($pblninput<>$ptglaslinput) $bolehpilihnobukti=true;
+            if ($pstsinput<>$pstsaslinput) $bolehpilihnobukti=true;
+            
+        }
+        
+        //echo $bolehpilihnobukti; exit;
+        
+        if ($bolehpilihnobukti==true) {
             
             if ($pstsinput=="D" OR $pstsinput=="K") {
                 
@@ -177,7 +196,6 @@ if ($module=='brdanabankbyfin')
         
             }
             
-            
         }
         
         
@@ -198,8 +216,6 @@ if ($module=='brdanabankbyfin')
             
         }else{
             
-            $pnobukti=$_POST['e_nobukti'];
-            
             $query = "UPDATE dbmaster.t_suratdana_bank SET tanggal='$ptglinput', "
                     . " coa4='$pcoa', kodeid='$pkodeid', subkode='$psubkode', idinput='$pidinputspd', nomor='$pnospd', nodivisi='$pnodivisi', "
                     . " divisi='$pdivisi', sts='$pstatus', jumlah='$pjumlah', "
@@ -208,6 +224,13 @@ if ($module=='brdanabankbyfin')
                     . " idinputbank='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+            
+            if ($bolehpilihnobukti==true) {
+                $query = "UPDATE dbmaster.t_suratdana_bank SET nobukti='$pnobukti' WHERE idinputbank='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+            }
+            
             
         }
         

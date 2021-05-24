@@ -164,14 +164,16 @@
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
-
+        $pidcard="";
+        if (isset($_SESSION['IDCARD'])) $pidcard=$_SESSION['IDCARD'];
+        
                 //insert ke br_otc
         $query = "INSERT INTO hrd.br_otc (brOtcId, icabangid_o, subpost, kodeid, tglbr, 
             keterangan1, jumlah, COA4, user1, lampiran, ca, via, lampiran2, ca2, via2,
-            ccyId, bralid, MODIFDATE)"
+            ccyId, bralid, MODIFDATE, karyawanid)"
             . " SELECT brOtcId, icabangid_o, subpost, kodeid, tglbr, 
             keterangan1, jumlah, COA4, user1, lampiran, ca, via, lampiran2, ca2, via2,
-            ccyId, bralid, MODIFDATE FROM dbmaster.tmp_spg_trans_to_brotc";
+            ccyId, bralid, MODIFDATE, '$pidcard' as karyawanid FROM dbmaster.tmp_spg_trans_to_brotc";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         

@@ -675,7 +675,7 @@ if ($_GET['act']=="editdata"){
                         <div class='x_panel'>
                             <div class='x_content form-horizontal form-label-left'>
                                 
-                                <div  class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                     <div class='col-md-4'>
                                         <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $idajukan; ?>' Readonly>

@@ -133,6 +133,7 @@ if ($pact=="editdata") {
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tgl. Transaksi</label>
                                     <div class='col-md-3'>
                                         <div class='input-group date' id=''>
+                                            <input type="hidden" class="form-control" id='e_asltglberlaku' name='e_asltglberlaku' value='<?PHP echo $ptgl_pengajuan; ?>' Readonly>
                                             <input type="text" class="form-control" id='e_tglberlaku' name='e_tglberlaku' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $ptgl_pengajuan; ?>' Readonly>
                                             <span class='input-group-addon'>
                                                 <span class='glyphicon glyphicon-calendar'></span>
@@ -302,6 +303,7 @@ if ($pact=="editdata") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Debit/Kredit <span class='required'></span></label>
                                     <div class='col-xs-5'>
+                                        <input type="hidden" class="form-control" id='cb_asldebitkredit' name='cb_asldebitkredit' value='<?PHP echo $pd_spd_debker; ?>' Readonly>
                                         <select class='form-control input-sm' id='cb_debitkredit' name='cb_debitkredit' onchange="ShowCoaPilihJenis()">
                                             <?PHP
                                             $pdebker_sel1="selected";

@@ -27,6 +27,8 @@
                     echo "Edit Klaim Discount By Admin";
                 }elseif ($pnmactid=="editdataperiode") {
                     echo "Edit Periode Klaim Discount By Admin";
+                }elseif ($pnmactid=="dataeditpilih") {
+                    echo "Edit Data Klaim Discount By Admin";
                 }else{
                     echo "Data Klaim Discount By Admin";
                 }
@@ -238,6 +240,10 @@
 
             case "editdataperiode":
                 include "editperiode.php";
+            break;
+
+            case "dataeditpilih":
+                include "pilihdataedit.php";
             break;
 
         }

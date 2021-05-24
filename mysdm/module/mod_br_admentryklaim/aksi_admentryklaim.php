@@ -91,6 +91,59 @@ elseif ($module=='bgtadmentrybrklaim' AND $act=='updateperiode')
     header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
     exit;
 }
+elseif ($module=='bgtadmentrybrklaim' AND $act=='pilihdataeditklaim')
+{
+    
+    $pjnspajak="Y";
+    $kodenya=$_POST['e_id'];
+    $puserinput=$_POST['e_idinputuser'];
+    $pkaryawaninput=$_POST['e_idcarduser'];
+    $pnmpengusaha=$_POST['e_kenapajak'];
+    $pnoseri=$_POST['e_noserifp'];
+    $ptglfp=$_POST['e_tglpajak'];
+    $pnoslip=$_POST['e_noslip'];
+    $ptgltrans=$_POST['e_tgltrans'];
+    
+    
+    if (!empty($pnmpengusaha)) $pnmpengusaha = str_replace("'", " ", $pnmpengusaha);
+    if (!empty($pnoseri)) $pnoseri = str_replace("'", " ", $pnoseri);
+    if (!empty($pnoslip)) $pnoslip = str_replace("'", " ", $pnoslip);
+    
+    
+    if (!empty($kodenya)) {
+        $query = "update $dbname.klaim set pajak='$pjnspajak', nama_pengusaha='$pnmpengusaha', noseri='$pnoseri', "
+                . " noslip='$pnoslip' WHERE klaimId='$kodenya' LIMIT 1";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        
+        if (!empty($ptglfp)) {
+            $ptglfp_01 = str_replace('/', '-', $ptglfp);
+            $ptglfp_01= date("Y-m-d", strtotime($ptglfp_01));
+            
+            $query_fp = "update $dbname.klaim set tgl_fp='$ptglfp_01' WHERE klaimId='$kodenya' LIMIT 1";
+        }else{
+            $query_fp = "update $dbname.klaim set tgl_fp=NULL WHERE klaimId='$kodenya' LIMIT 1";
+        }
+        mysqli_query($cnmy, $query_fp); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        
+        
+        if (!empty($ptgltrans)) {
+            $ptgltrs_01 = str_replace('/', '-', $ptgltrans);
+            $ptgltrs_01= date("Y-m-d", strtotime($ptgltrs_01));
+            
+            $query_trs = "update $dbname.klaim set tgltrans='$ptgltrs_01' WHERE klaimId='$kodenya' LIMIT 1";
+        }else{
+            $query_trs = "update $dbname.klaim set tgltrans='0000-00-00' WHERE klaimId='$kodenya' LIMIT 1";
+        }
+        mysqli_query($cnmy, $query_trs); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        
+        
+    }
+    
+    
+    mysqli_close($cnmy);
+    header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
+    exit;
+}
 elseif ($module=='bgtadmentrybrklaim')
 {
     $puserid=$_POST['e_idinputuser'];

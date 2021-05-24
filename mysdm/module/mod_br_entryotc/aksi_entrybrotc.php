@@ -37,7 +37,7 @@ if (isset($_GET['ket'])) {
             if (!empty($kethapus)) $kethapus=$kethapus.", ";
             $kethapus=$kethapus."".$puserbatal;
             
-            mysqli_query($cnmy, "UPDATE $dbname.br_otc SET batal='Y', alasan_batal='$kethapus' WHERE brOtcId='$kodenya' AND IFNULL(batal,'N')='N'");
+            mysqli_query($cnmy, "UPDATE $dbname.br_otc SET batal='Y', alasan_batal='$kethapus' WHERE brOtcId='$kodenya' AND IFNULL(batal,'N')='N' LIMIT 1");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
             
             
@@ -69,7 +69,7 @@ if (isset($_GET['ket'])) {
 // Hapus entry
 if ($module=='entrybrotc' AND $act=='hapus')
 {
-    //mysqli_query($cnmy, "update $dbname.br_otc set NONAKTIF='Y' WHERE brOtcId='$_GET[id]'");
+    //mysqli_query($cnmy, "update $dbname.br_otc set NONAKTIF='Y' WHERE brOtcId='$_GET[id]' LIMIT 1");
     //header('location:../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=complt');
 }
 elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR $act=='input' OR $act=='update'))
@@ -104,7 +104,7 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
         
         //update modif terima
         $query = "update $dbname.br_otc_ttd SET MODIFTERIMAID='$_SESSION[IDCARD]', "
-                . " MODIFTERIMADATE=NOW() WHERE brOtcId='$kodenya'";
+                . " MODIFTERIMADATE=NOW() WHERE brOtcId='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
         
 		mysqli_close($cnmy);
@@ -130,14 +130,14 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
         
         $query = "update $dbname.br_otc set noslip='$pnoslip', "
                 . "  tgltrans='$ptgl', "
-                . "  realisasi='$prprealisasi' where brOtcId='$kodenya'";
+                . "  realisasi='$prprealisasi' where brOtcId='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
         
         //update modif transfer
         $query = "update $dbname.br_otc_ttd SET MODIFTRANSID='$_SESSION[IDCARD]', "
-                . " MODIFTRANSDATE=NOW() WHERE brOtcId='$kodenya'";
+                . " MODIFTRANSDATE=NOW() WHERE brOtcId='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
         
 		mysqli_close($cnmy);
@@ -146,8 +146,17 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
         exit;
     }
     
+    $pidcard="";
+    if (isset($_SESSION['IDCARD'])) $pidcard=$_SESSION['IDCARD'];
     
-    
+    $pkaryawanid=$_POST['e_idcarduser'];
+    if (empty($pkaryawanid)) $pkaryawanid=$pidcard;
+
+    if (empty($pkaryawanid)) {
+        echo "ANDA HARUS LOGIN ULANG...";
+        exit;
+    }
+    $piduser=$_SESSION['USERID'];
     
     
     if ($act=='input') {
@@ -283,8 +292,8 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
         $query = "insert into $dbname.br_otc_ttd (brOtcId, TTDPROS_ID, TTDPROS_DATE)values('$kodenya', '$_SESSION[IDCARD]', NOW())";
         mysqli_query($cnmy, $query);
         
-        $query="insert into $dbname.br_otc (brOtcId, tglbr, icabangid_o, subpost, kodeid)values"
-                . "('$kodenya', '$ptglinput', '$pidcabang', '$psubkode', '$pkode')";
+        $query="insert into $dbname.br_otc (brOtcId, tglbr, icabangid_o, subpost, kodeid, karyawanid, user1)values"
+                . "('$kodenya', '$ptglinput', '$pidcabang', '$psubkode', '$pkode', '$pkaryawanid', '$piduser')";
         mysqli_query($cnmy, $query);
         
         
@@ -319,30 +328,30 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
              ca2='N',
              via2='N',
              idkontak='$prprealisasikd',
-             user1='$_SESSION[USERID]' WHERE "
-            . " brOtcId='$kodenya'";
+             user1='$piduser' WHERE "
+            . " brOtcId='$kodenya' LIMIT 1";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     
     
         
-    if (!empty($_POST['cx_lapir'])) mysqli_query($cnmy, "update $dbname.br_otc set lampiran='Y', lampiran2='Y' WHERE brOtcId='$kodenya'");
-    if (!empty($_POST['cx_ca'])) mysqli_query($cnmy, "update $dbname.br_otc set ca='Y', ca2='Y' WHERE brOtcId='$kodenya'");
-    if (!empty($_POST['cx_via'])) mysqli_query($cnmy, "update $dbname.br_otc set via='Y', via2='Y' WHERE brOtcId='$kodenya'");
+    if (!empty($_POST['cx_lapir'])) mysqli_query($cnmy, "update $dbname.br_otc set lampiran='Y', lampiran2='Y' WHERE brOtcId='$kodenya' LIMIT 1");
+    if (!empty($_POST['cx_ca'])) mysqli_query($cnmy, "update $dbname.br_otc set ca='Y', ca2='Y' WHERE brOtcId='$kodenya' LIMIT 1");
+    if (!empty($_POST['cx_via'])) mysqli_query($cnmy, "update $dbname.br_otc set via='Y', via2='Y' WHERE brOtcId='$kodenya' LIMIT 1");
     
     
     
     
     $query = "update $dbname.br_otc set "
             . "  COA4='$pcoa' WHERE "
-            . "  brOtcId='$kodenya'";
+            . "  brOtcId='$kodenya' LIMIT 1";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     $query = "update $dbname.br_otc set "
             . "  KODEWILAYAH='$pwilgabungan' WHERE "
-            . "  brOtcId='$kodenya'";
+            . "  brOtcId='$kodenya' LIMIT 1";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
@@ -394,7 +403,7 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
         
         $query = "update $dbname.br_otc set tgltrans='$ptgl', realisasi='$prprealisasirpjml', "
                 . "  tglrpsby='$ptglsby', jenis='', noslip='$pnoslip' WHERE "
-                . "  brOtcId='$kodenya'";
+                . "  brOtcId='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
         
         $erropesan = mysqli_error($cnmy);
@@ -403,9 +412,9 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
             exit;
         }
     
-        if (!empty($_POST['cx_adv'])) mysqli_query($cnmy, "update $dbname.br_otc set jenis='A' WHERE brOtcId='$kodenya'");
-        if (!empty($_POST['cx_klaim'])) mysqli_query($cnmy, "update $dbname.br_otc set jenis='K' WHERE brOtcId='$kodenya'");
-        if (!empty($_POST['cx_sudah'])) mysqli_query($cnmy, "update $dbname.br_otc set jenis='S' WHERE brOtcId='$kodenya'");
+        if (!empty($_POST['cx_adv'])) mysqli_query($cnmy, "update $dbname.br_otc set jenis='A' WHERE brOtcId='$kodenya' LIMIT 1");
+        if (!empty($_POST['cx_klaim'])) mysqli_query($cnmy, "update $dbname.br_otc set jenis='K' WHERE brOtcId='$kodenya' LIMIT 1");
+        if (!empty($_POST['cx_sudah'])) mysqli_query($cnmy, "update $dbname.br_otc set jenis='S' WHERE brOtcId='$kodenya' LIMIT 1");
         
         
     }
@@ -479,13 +488,13 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
     
     $query = "update $dbname.br_otc set pajak='$pjnspajak', nama_pengusaha='$pnmpengusaha', noseri='$pnoseri',"
             . " tgl_fp='$ptglfp', dpp='$prpdpp', ppn='$pppn', ppn_rp='$prpppn', "
-            . " pph_jns='$pjnspph', pph='$ppph', pph_rp='$prppph', pembulatan='$ppembulatan', materai_rp='$prpmaterai' $fieldjasa WHERE brOtcId='$kodenya' ";
+            . " pph_jns='$pjnspph', pph='$ppph', pph_rp='$prppph', pembulatan='$ppembulatan', materai_rp='$prpmaterai' $fieldjasa WHERE brOtcId='$kodenya'  LIMIT 1";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     
     
-    $query = "update $dbname.br_otc set MODIFDATE=NOW() WHERE brOtcId='$kodenya' ";
+    $query = "update $dbname.br_otc set MODIFDATE=NOW() WHERE brOtcId='$kodenya'  LIMIT 1";
     mysqli_query($cnmy, $query);
     
     

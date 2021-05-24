@@ -41,6 +41,9 @@
 	$sqlresult = mysqli_query($cnmy, $query);
 	$rx = mysqli_fetch_array($sqlresult);
         
+        $nkaryawanid=$rx['karyawanid'];
+        $nkryapv1=$rx['apv1'];
+        $nkryapv2=$rx['apv2'];
 		
 			$tgljakukannya=$rx['tgl'];
 			if ($tgljakukannya=="0000-00-00") $tgljakukannya="";
@@ -116,6 +119,30 @@
             }
             
             
+            
+        $query = "select nama as nama_karyawan from hrd.karyawan WHERE karyawanid='$nkaryawanid'";
+        $tmapiln= mysqli_query($cnmy, $query);
+        $irow= mysqli_fetch_array($tmapiln);
+        $pnmkaryawan=$irow['nama_karyawan'];
+
+        $query = "select nama as nama_apv1 from hrd.karyawan WHERE karyawanid='$nkryapv1'";
+        $tmapiln= mysqli_query($cnmy, $query);
+        $irow= mysqli_fetch_array($tmapiln);
+        $pnmapv1=$irow['nama_apv1'];
+
+        $query = "select nama as nama_apv2 from hrd.karyawan WHERE karyawanid='$nkryapv2'";
+        $tmapiln= mysqli_query($cnmy, $query);
+        $irow= mysqli_fetch_array($tmapiln);
+        $pnmapv2=$irow['nama_apv2'];
+        
+        
+        $pnamapembuat="DESI RATNA DEWI";
+        $pnamaapprove="SAIFUL RAHMAT";
+
+        //if ((double)$tgljakukannya>='20210523') {
+            $pnamapembuat=$pnmapv1;//"SAIFUL RAHMAT";
+            $pnamaapprove=$pnmapv2;//"MARIANNE PRASANTI";
+        //}
             
 	echo "<big>To : Sdri. Vanda/Lina (Accounting)<br>";
 	echo "PT. SDM - Surabaya</big><br><br>";
@@ -289,7 +316,7 @@
                     echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd_fin1' height='$gmrheight'><br/>";
                 else
                     echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                echo "<b>DESI RATNA DEWI</b></td>";
+                echo "<b>$pnamapembuat</b></td>";
 
                 //if ($pperiodeby=="S") {
                                 echo "<td align='right'>";
@@ -298,7 +325,7 @@
                                     echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd_fin2' height='$gmrheight'><br/>";
                                 else
                                     echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                echo "<b>SAIFUL RAHMAT</b></td>";
+                                echo "<b>$pnamaapprove</b></td>";
 
                                 echo "<td align='center'>";
                                 echo "Mengetahui,";

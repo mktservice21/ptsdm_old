@@ -8,6 +8,7 @@
     $_SESSION['SPDPERENTYOTC1']=$_POST['uperiode1'];
     $_SESSION['SPDPERENTYOTC2']=$_POST['uperiode2'];
     
+    $pkryid=$_POST['ukryid'];
     $date1=$_POST['uperiode1'];
     $date2=$_POST['uperiode2'];
     $tgl1= date("Y-m-d", strtotime($date1));
@@ -15,6 +16,7 @@
     
     $paksi=$_POST['uaksi'];
     
+    echo "<input type='hidden' name='cb_karyawan' id='cb_karyawan' value='$pkryid'>";
     echo "<input type='hidden' name='e_tgl1' id='e_tgl1' value='$tgl1'>";
     echo "<input type='hidden' name='e_tgl2' id='e_tgl2' value='$tgl2'>";
     echo "<input type='hidden' name='e_aksi' id='e_aksi' value='$paksi'>";
@@ -28,6 +30,7 @@
         var module = urlku.searchParams.get("module");
         var idmenu = urlku.searchParams.get("idmenu");
         var nmun = urlku.searchParams.get("nmun");
+        var ekryid=document.getElementById('cb_karyawan').value;
         var etgl1 = document.getElementById("e_tgl1").value;
         var etgl2 = document.getElementById("e_tgl2").value;
         var eaksi = document.getElementById("e_aksi").value;
@@ -55,7 +58,7 @@
             "scrollX": true,
 
             "ajax":{
-                url :"module/mod_br_spdotc/mydata.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+eaksi+"&uperiode1="+etgl1+"&uperiode2="+etgl2, // json datasource
+                url :"module/mod_br_spdotc/mydata.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+eaksi+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&ukryid="+ekryid, // json datasource
                 type: "post",  // method  , by default get
                 data:"uperiode1="+etgl1+"&uperiode2="+etgl2,
                 error: function(){  // error handling

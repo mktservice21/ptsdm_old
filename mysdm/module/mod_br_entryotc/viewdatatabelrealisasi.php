@@ -22,8 +22,9 @@
     $_SESSION['OTCTGLTIPE']=$_POST['utgltipe'];
     $_SESSION['OTCPERENTY1']=$_POST['uperiode1'];
     $_SESSION['OTCPERENTY2']=$_POST['uperiode2'];
+    $_SESSION['OTCKARYAWAN']=$_POST['ukryid'];
     
-    
+    $pkaryawanid=$_POST['ukryid'];
     $tgltipe=$_POST['utgltipe'];
     $date1=$_POST['uperiode1'];
     $date2=$_POST['uperiode2'];
@@ -33,6 +34,15 @@
     $isitipe=$_POST['uisi'];
     
     
+    $ffilterkaryawan="";
+    if (!empty($pkaryawanid)) {
+        $pkaryawanuserid=(INT)$pkaryawanid;
+        if (empty($pkaryawanuserid)) $pkaryawanuserid=0;
+
+        $ffilterkaryawan=" AND ( karyawanid='$pkaryawanid' OR user1=$pkaryawanuserid ) ";
+
+    }
+
     $userid=$_SESSION['USERID'];
     
     $now=date("mdYhis");
@@ -42,7 +52,7 @@
 
     $sql = "SELECT brotcid, icabangid_o, subpost, kodeid, tglbr, keterangan1, keterangan2, 
         jumlah, realisasi, tglreal, tgltrans, noslip, real1, lampiran, ca, via, tglrpsby, sby, batal  
-        from hrd.br_otc where IFNULL(batal,'')<>'Y' AND ( IFNULL(tglreal,'')='' OR IFNULL(tglreal,'0000-00-00')='0000-00-00' ) ";
+        from hrd.br_otc where IFNULL(batal,'')<>'Y' AND ( IFNULL(tglreal,'')='' OR IFNULL(tglreal,'0000-00-00')='0000-00-00' ) $ffilterkaryawan ";
     
     $filtipe="Date_format(tglbr, '%Y-%m-%d')";
     if ($tgltipe=="2") $filtipe="Date_format(tgltrans, '%Y-%m-%d')";

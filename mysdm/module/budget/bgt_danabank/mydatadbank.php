@@ -45,7 +45,7 @@ $sql = "select a.idinputbank, a.tglinput, a.tanggal, a.divisi, a.coa4, c.NAMA4,
     a.idinput, a.nomor, a.nodivisi, f.nama_pengajuan,
     a.nobukti, a.stsinput, a.jumlah, a.keterangan, 
     a.brid, a.noslip, a.customer, a.aktivitas1, 
-    a.userid, b.nama as nama_user, a.sudahklaim, g.bulan_cls, a.sts  
+    a.userid, b.nama as nama_user, a.sudahklaim, g.bulan_cls, a.sts, a.parentidbank  
     from dbmaster.t_suratdana_bank as a 
     LEFT JOIN hrd.karyawan as b on a.userid=b.karyawanId 
     left join dbmaster.coa_level4 as c on a.coa4=c.COA4
@@ -111,6 +111,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pnmpengajuan=$row['nama_pengajuan'];
     $pbulanclosing=$row['bulan_cls'];
     $pstsinput=$row['stsinput'];
+    $nparentidb= $row["parentidbank"];
     
 
                     
@@ -138,6 +139,12 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$pidget')\">";
     $phapus="";//hilangkan dulu, harusnya tidak ada hapus karena bisa merubah nobbk
     
+    $nbtntrans="<button type='button' class='btn btn-info btn-xs' title='Transfer Ualng' data-toggle='modal' "
+            . " data-target='#myModal' "
+            . " onClick=\"getInputDataTU('$pidno')\">Transfer</button>";
+    if (!empty($nparentidb)) $nbtntrans="";
+    if ($pstsinput=="K" OR $pstsinput=="M" OR $pstsinput=="N") $nbtntrans="";
+    
     if ($pstsinput=="K") {
         $pjumlah1="";
     }else{
@@ -160,7 +167,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
         $phapus="";
     }
     
-    $pbutton="$pedit &nbsp; $phapus";
+    $pbutton="$pedit &nbsp; $phapus &nbsp; $nbtntrans";
     
     
     $nestedData[] = $no;

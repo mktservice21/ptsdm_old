@@ -21,7 +21,8 @@ $ntglclose="";
 $pidbr="";
 $pdivisi="";
 $psubkode="";
-$pcoa="105-02";
+//$pcoa="105-02";
+$pcoa="000-0";
 $pstatus="";
 $pd_spd_debker="";
 $p_bnkjumlah="";
@@ -527,15 +528,28 @@ Silakan isi Tgl. Transaksi lain...!!!");
         var iket =document.getElementById('e_ket').value;
         
         
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var iact = urlku.searchParams.get("act");
         
-        
-        if(ijml==""){
-            ijml="0";
-        }
-        if (ijml=="0") {
-            alert("jumlah masih kosong...");
+        if (ikddivisi=="") {
+            alert("divisi belum dipilih...");
             return false;
         }
+        
+        if (iact=="tambahbaru") {
+            if(ijml==""){
+                ijml="0";
+            }
+            if (ijml=="0") {
+                alert("jumlah masih kosong...");
+                return false;
+            }
+        }
+        
+        
         if (iket=="") {
             alert("keterangan harus diisi...");
             return false;
@@ -549,11 +563,6 @@ Total Jumlah "+inmdebker+" : Rp. "+ijml+" \n\
 ________________________________________  \n\
 Apakah akan simpan data...?";
         
-        var myurl = window.location;
-        var urlku = new URL(myurl);
-        var module = urlku.searchParams.get("module");
-        var idmenu = urlku.searchParams.get("idmenu");
-        var iact = urlku.searchParams.get("act");
         //alert(iact);
         
         

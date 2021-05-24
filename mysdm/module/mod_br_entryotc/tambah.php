@@ -443,7 +443,6 @@ function HideDataFormSearch(val) {
 </script>
 
 
-
 <?PHP
 //include "config/koneksimysqli_it.php";
 
@@ -454,6 +453,7 @@ $tglinput = date('d/m/Y', strtotime($hari_ini));
 $tgltrans="";//$tglinput;
 $idajukan=$_SESSION['IDCARD']; 
 $nmajukan=$_SESSION['NAMALENGKAP'];
+$piduser=$_SESSION['USERID']; 
 $idcabang="";
 $bral="";
 $subposting="";
@@ -674,6 +674,14 @@ if ($_GET['act']=="editdata"){
                     <div class='col-md-6 col-xs-12'>
                         <div class='x_panel'>
                             <div class='x_content form-horizontal form-label-left'>
+                                
+                                <div  class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                    <div class='col-md-4'>
+                                        <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $idajukan; ?>' Readonly>
+                                        <input type='text' id='e_iduser' name='e_iduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
+                                    </div>
+                                </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>

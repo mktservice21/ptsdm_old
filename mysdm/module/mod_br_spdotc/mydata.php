@@ -3,6 +3,10 @@
     session_start();
     include "../../config/koneksimysqli.php";
     
+    $fkaryawan=$_SESSION['IDCARD'];
+    $fuserid=$_SESSION['USERID'];
+    $fgroupid=$_SESSION['GROUP'];
+
     /// storing  request (ie, get/post) global array to a variable  
     $requestData= $_REQUEST;
 
@@ -28,7 +32,17 @@
     $tgl1= date("Y-m", strtotime($tgl1));
     $tgl2= date("Y-m", strtotime($tgl2));
     
-    
+
+    $pkaryawanid=$_GET['ukryid'];
+    $ffilterkaryawan="";
+    if (!empty($pkaryawanid)) {
+        $pkaryawanuserid=(INT)$pkaryawanid;
+        if (empty($pkaryawanuserid)) $pkaryawanuserid=0;
+
+        $ffilterkaryawan=" AND ( karyawanid='$pkaryawanid' ) ";
+
+    }
+
     //FORMAT(realisasi1,2,'de_DE') as 
     // getting total number records without any search
     $sql = "SELECT idinput, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, DATE_FORMAT(tglinput,'%Y%m') tglinput, "
@@ -37,7 +51,7 @@
             . " nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, DATE_FORMAT(tgl_proses,'%d/%m/%Y') tgl_proses, jenis_rpt, periodeby, "
             . " tgl_apv1, tgl_apv2, tgl_dir, tgl_dir2 ";
     $sql.=" FROM dbmaster.v_suratdana_br ";
-    $sql.=" WHERE stsnonaktif <> 'Y' AND CONCAT(kodeid,subkode,divisi) NOT IN ('103OTC', '221OTC', '236OTC', '229OTC', '239OTC') ";
+    $sql.=" WHERE stsnonaktif <> 'Y' AND CONCAT(kodeid,subkode,divisi) NOT IN ('103OTC', '221OTC', '236OTC', '229OTC', '239OTC') $ffilterkaryawan ";
     $sql.=" AND Date_format(tglinput, '%Y-%m') between '$tgl1' and '$tgl2' ";
     $sql .=" AND divisi='OTC'";
     
@@ -155,6 +169,16 @@
         if (!empty($ptgldir1)) {
             $pedit="";
             $phapus="";
+        }
+        
+        
+        if ($fgroupid=="1" OR $fgroupid=="24") {
+        }else{
+            if ((INT)$fkaryawan==(INT)$pkaryawanid) {
+            }else{
+                $pedit="";
+                $phapus="";
+            }
         }
         
         $nestedData[] = $no;

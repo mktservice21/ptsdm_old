@@ -133,6 +133,7 @@
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tgl. Keluar </label>
                                             <div class='col-md-3'>
+                                                <input type="text" class="form-control" id='e_asltglberlaku' name='e_asltglberlaku' value='<?PHP echo $tgl1; ?>' Readonly>
                                                 <div class='input-group date' id='mytgl01'>
                                                     <input type="text" class="form-control" id='e_tglkeluar' name='e_tglkeluar' autocomplete='off' required='required' placeholder='dd/MM/yyyy' data-inputmask="'mask': '99/99/9999'" value='<?PHP echo $tgl1; ?>'>
                                                     <span class='input-group-addon'>
@@ -393,6 +394,7 @@
         document.getElementById('e_stssimpan').value = 'updatedibank';
         document.getElementById('e_bankid').value = sidbank;
         document.getElementById('e_stsclsbank').value = sclssts;
+        document.getElementById('e_asltglberlaku').value = stgl;
         document.getElementById('e_tglkeluar').value = stgl;
         document.getElementById('e_nobukti').value = snobukti;
         document.getElementById('e_jml').value = sjml;
@@ -428,6 +430,7 @@
         var isdhcls=document.getElementById('e_stsclsbank').value;
         var inospd=document.getElementById('e_nospd').value;
         var inodivisi=document.getElementById('e_nodivsi').value;
+        var itglaslkeluar=document.getElementById('e_asltglberlaku').value;
         var itglkeluar=document.getElementById('e_tglkeluar').value;
         var inobukti=document.getElementById('e_nobukti').value;
         var ijumlah=document.getElementById('e_jml').value;
@@ -533,7 +536,7 @@ Apakah akan melakukan update data...?";
                         url:"module/budget/bgt_danabank/simpan_bank_spd_keluar_new.php?module="+module+"&act="+ists+"&idmenu="+idmenu,
                         data:"uid="+iid+"&unospd="+inospd+"&uidcard="+iidcard+"&usts="+ists+
                             "&ubnkid="+ibnkid+"&usdhcls="+isdhcls+"&unodivisi="+inodivisi+
-                            "&utglkeluar="+itglkeluar+"&unobukti="+inobukti+
+                            "&utglkeluar="+itglkeluar+"&utglaslkeluar="+itglaslkeluar+"&unobukti="+inobukti+
                             "&ujumlah="+ijumlah+"&uket="+iket+
                             "&unodiv_dari="+inodiv_dari+
                             "&ukode="+dkode+"&usubkode="+dsubkode+"&udivisi="+ddivisi+"&ucoa="+dcoa,

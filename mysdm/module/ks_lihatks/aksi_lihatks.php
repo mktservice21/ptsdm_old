@@ -25,6 +25,7 @@ $tmp01 =" dbtemp.tmptariklhtks01_".$puserid."_$now ";
 $tmp02 =" dbtemp.tmptariklhtks02_".$puserid."_$now ";
 $tmp03 =" dbtemp.tmptariklhtks03_".$puserid."_$now ";
 $tmp04 =" dbtemp.tmptariklhtks04_".$puserid."_$now ";
+$tmp05 =" dbtemp.tmptariklhtks05_".$puserid."_$now ";
 $pmodule=$_GET['module'];
 
 $pkaryawanid="";
@@ -82,6 +83,20 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 $query = "UPDATE $tmp02 set jumlah=jumlah1 WHERE IFNULL(jumlah1,0)<>0";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+//BR EXCLUDE
+$query = "select a.brid, a.notes FROM hrd.br0_exclude as a JOIN $tmp02 as b on a.brid=b.brId";
+$query = "CREATE TEMPORARY TABLE $tmp05 ($query)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "ALTER TABLE $tmp02 ADD COLUMN br_ex varchar(1), ADD jumlah_ex DECIMAL(20,2), ADD COLUMN notes varchar(500)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+//$query = "DELETE FROM $tmp02 WHERE brid IN (select distinct IFNULL(brid,'') FROM $tmp05)";
+$query = "UPDATE $tmp02 as a JOIN $tmp05 as b on a.brid=b.brid SET a.jumlah=0, a.jumlah1=0, a.jumlah_ex=a.jumlah, a.br_ex='Y', a.notes=b.notes";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 
 
 $query = "select a.*, b.nama as nama_produk, c.nama as nama_apotik 
@@ -224,7 +239,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
             //out of range KI
             if (!empty($pmin_bulan)) {
-                $query = "select brid, tgl, sum(jumlah) as jumlahki from $tmp02 WHERE bulan<'$pmin_bulan' GROUP BY 1 order by 1,2";
+                //$query = "select brid, tgl, sum(jumlah) as jumlahki from $tmp02 WHERE bulan<'$pmin_bulan' GROUP BY 1,2 order by 1,2";
+                $query = "select brid, tgl, br_ex, notes, sum(jumlah) as jumlahki, sum(jumlah_ex) as jumlahki_ex from $tmp02 WHERE bulan<'$pmin_bulan' GROUP BY 1,2,3,4 order by 1,2,3";
                 $tampil0=mysqli_query($cnmy, $query);
                 $ketemu0=mysqli_num_rows($tampil0);
                 if ((INT)$ketemu0>0) {
@@ -232,15 +248,22 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         $pbridki=$row0['brid'];
                         $ptglki=$row0['tgl'];
                         $pjumlahki=$row0['jumlahki'];
+                        
+                        $pex_br=$row0['br_ex'];
+                        $pex_notes=$row0['notes'];
+                        $pex_jumlah=$row0['jumlahki_ex'];
 
                         $ptglki = date('Y-m', strtotime($ptglki));
 
                         if (empty($pjumlahki)) $pjumlahki=0;
+                        if (empty($pex_jumlah)) $pex_jumlah=0;
 
                         $p_isaldo=(DOUBLE)$p_isaldo+(DOUBLE)$pjumlahki;
 
                         $pjumlahki = number_format($pjumlahki,0);
+                        $pex_jumlah = number_format($pex_jumlah,0);
                         //$pjumlahki=number_format($pjumlahki,0,"","");
+                        //$pex_jumlah=number_format($pex_jumlah,0,"","");
 
                         $pidnoget=encodeString($pbridki);
 
@@ -266,16 +289,24 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                             $pketdetail="<span id='spn_ki' class='no-print'><button type='button' class='btn btn-info btn-xs' data-toggle='modal' "
                                     . " data-target='#myModal' onClick=\"LiatDetailBr('$pbridki')\">Detail</button></span>";
                         }
+                        
+                        $pwarnaex="";
+                        $ppilihnotes="";
+                        if ($pex_br=="Y") {
+                            $pjumlahki=$pex_jumlah;
+                            $ppilihnotes=$pex_notes;
+                            $pwarnaex="style='color:#C0C0C0;'";
+                        }
                                 
                         echo "<tr>";
                         echo "<td><small>$ptglki</small></td>";  
                         echo "<td><small><b>KI</b></small></td>";
                         echo "<td><small>$pketdetail</small></td>";
-                        echo "<td><small>&nbsp;</small></td>";
+                        echo "<td><small>$ppilihnotes</small></td>";
                         echo "<td align='right'><small>&nbsp;</small></td>";
                         echo "<td align='right'><small>&nbsp;</small></td>";
                         echo "<td align='right'><small><b>&nbsp;</b></small></td>";
-                        echo "<td align='right'><small><b>$pjumlahki</b></small></td>";
+                        echo "<td align='right' $pwarnaex><small><b>$pjumlahki</b></small></td>";
                         echo "<td align='right'><small><b>&nbsp;</b></small></td>";
                         echo "</tr>";
 
@@ -455,7 +486,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 
                         //KI
-                        $query = "select tgl, brid, sum(jumlah) as jumlahki from $tmp02 WHERE bulan='$nbulan' GROUP BY 1,2 order by 1";
+                        //$query = "select tgl, brid, sum(jumlah) as jumlahki from $tmp02 WHERE bulan='$nbulan' GROUP BY 1,2 order by 1";
+                        $query = "select brid, tgl, br_ex, notes, sum(jumlah) as jumlahki, sum(jumlah_ex) as jumlahki_ex from $tmp02 WHERE bulan='$nbulan' GROUP BY 1,2,3,4 order by 1,2,3";
                         $tampil4=mysqli_query($cnmy, $query);
                         $ketemu4=mysqli_num_rows($tampil4);
                         if ((INT)$ketemu4>0) {
@@ -463,15 +495,22 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 $pbridki=$row4['brid'];
                                 $ptglki=$row4['tgl'];
                                 $pjumlahki=$row4['jumlahki'];
+                                
+                                $pex_br=$row4['br_ex'];
+                                $pex_notes=$row4['notes'];
+                                $pex_jumlah=$row4['jumlahki_ex'];
 
                                 $ptglki = date('Y-m', strtotime($ptglki));
 
                                 if (empty($pjumlahki)) $pjumlahki=0;
+                                if (empty($pex_jumlah)) $pex_jumlah=0;
 
                                 $p_isaldo=(DOUBLE)$p_isaldo+(DOUBLE)$pjumlahki;
 
                                 $pjumlahki = number_format($pjumlahki,0);
+                                $pex_jumlah = number_format($pex_jumlah,0);
                                 //$pjumlahki=number_format($pjumlahki,0,"","");
+                                //$pex_jumlah=number_format($pex_jumlah,0,"","");
                                 
                                 $pidnoget=encodeString($pbridki);
                                 
@@ -498,16 +537,23 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                             . " data-target='#myModal' onClick=\"LiatDetailBr('$pbridki')\">Detail</button></span>";
                                 }
                                 
+                                $pwarnaex="";
+                                $ppilihnotes="";
+                                if ($pex_br=="Y") {
+                                    $pjumlahki=$pex_jumlah;
+                                    $ppilihnotes=$pex_notes;
+                                    $pwarnaex="style='color:#C0C0C0;'";
+                                }
                     
                                 echo "<tr>";
                                 echo "<td><small>$ptglki</small></td>";  
                                 echo "<td><small><b>KI</b></small></td>";
                                 echo "<td><small>$pketdetail</small></td>";
-                                echo "<td><small>&nbsp;</small></td>";
+                                echo "<td><small>$ppilihnotes</small></td>";
                                 echo "<td align='right'><small>&nbsp;</small></td>";
                                 echo "<td align='right'><small>&nbsp;</small></td>";
                                 echo "<td align='right'><small><b>&nbsp;</b></small></td>";
-                                echo "<td align='right'><small><b>$pjumlahki</b></small></td>";
+                                echo "<td align='right' $pwarnaex><small><b>$pjumlahki</b></small></td>";
                                 echo "<td align='right'><small><b>&nbsp;</b></small></td>";
                                 echo "</tr>";
 
@@ -674,5 +720,6 @@ hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
     mysqli_query($cnmy, "drop TEMPORARY table $tmp03");
     mysqli_query($cnmy, "drop TEMPORARY table $tmp04");
+    mysqli_query($cnmy, "drop TEMPORARY table $tmp05");
     mysqli_close($cnmy);
 ?>

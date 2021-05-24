@@ -3,7 +3,7 @@
     session_start(); 
     
     //ini_set('display_errors', '0');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
 
     $puserid="";
@@ -106,7 +106,7 @@
 	coa.NAMA4,
 	k.KODEWILAYAH,
 	wil.nama nama_wilayah,
-	k.pengajuan,
+	k.pengajuan, k.nama_pengusaha, k.noseri, k.tgl_fp, 
     k.jenisklaim 
         FROM
 	$tmp01 k
@@ -175,7 +175,10 @@
                     <th width='30px'>User</th>
                     <th width='50px'>Realisasi</th>
                     <th width='50px'>No Slip</th>
-                    <th>Lampiran</th>
+                    <th width='50px'>Tgl. Trans</th>
+                    <th width='50px'>Nama Pengusaha</th>
+                    <th width='50px'>Noseri</th>
+                    <th width='50px'>Tgl FP</th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
@@ -205,6 +208,10 @@
                     $ppengajuan = $row["pengajuan"];
                     $psudhapv= $row["sudhapv"];
                     $pjenisklaim= $row["jenisklaim"];
+                    //nama_pengusaha, k.noseri, k.tgl_fp
+                    $pnmpengusaha= $row["nama_pengusaha"];
+                    $pnoseri= $row["noseri"];
+                    $ptglfp= $row["tgl_fp"];
                     
                     $puserid1= $row["user1"];
                     
@@ -216,12 +223,14 @@
                     if ($pbln=="0000-00-00") $pbln="";
                     if ($pper1=="0000-00-00") $pper1="";
                     if ($pper2=="0000-00-00") $pper2="";
+                    if ($ptglfp=="0000-00-00") $ptglfp="";
                     
                     
                     if (!empty($ptlgtrans)) $ptlgtrans =date("d/m/Y", strtotime($ptlgtrans));
                     if (!empty($pbln)) $pbln =date("F Y", strtotime($pbln));
                     if (!empty($pper1)) $pper1 =date("d/m/Y", strtotime($pper1));
                     if (!empty($pper2)) $pper2 =date("d/m/Y", strtotime($pper2));
+                    if (!empty($ptglfp)) $ptglfp =date("d/m/Y", strtotime($ptglfp));
                     
                     $pperiode="";
                     if (!empty($pper1)) $pperiode="$pper1 s/d. $pper2";
@@ -231,6 +240,7 @@
                     $pjumlah=number_format($pjumlah,0,",",",");
                     
                     
+                    $pdataedit="<a class='btn btn-warning btn-xs' href='?module=$pmodule&act=dataeditpilih&idmenu=$pidmenu&nmun=$pidmenu&id=$pklaimid'>Edit Data</a>";
                     
                     $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pklaimid'>Edit</a>";
                     $peditttdpl="<a class='btn btn-warning btn-xs' href='?module=$pmodule&act=editdatattd&idmenu=$pidmenu&nmun=$pidmenu&id=$pklaimid'>Edit TTD</a>";
@@ -267,6 +277,7 @@
                         }else{
                             $pedit="";
                         }
+                        $pedit="";//
                         $phapus="";
                     }
                     
@@ -284,7 +295,7 @@
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$pchkbox</td>";
-                    echo "<td nowrap>$pedit $pprint $ppajak $phapus</td>";
+                    echo "<td nowrap>$pedit $pprint $ppajak $pdataedit $phapus</td>";
                     echo "<td nowrap>$pklaimid</td>";
                     echo "<td nowrap>$ptlg</td>";
                     echo "<td nowrap>$pbln</td>";
@@ -299,7 +310,10 @@
                     echo "<td nowrap>$pnmuser</td>";
                     echo "<td nowrap>$pnmrealisasi</td>";
                     echo "<td nowrap>$pnoslip</td>";
-                    echo "<td nowrap>$plampiran</td>";
+                    echo "<td nowrap>$ptlgtrans</td>";
+                    echo "<td nowrap>$pnmpengusaha</td>";
+                    echo "<td nowrap>$pnoseri</td>";
+                    echo "<td nowrap>$ptglfp</td>";
                     echo "<td nowrap>$peditttdpl</td>";
                     echo "</tr>";
                     

@@ -258,6 +258,11 @@ session_start();
             . " a.nama_pengajuan=b.nama_pengajuan, a.nama_report=b.nama_report, a.nama_ket=b.nama_ket, a.link_eth=b.link_eth, a.link_otc=b.link_otc";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query ="UPDATE $tmp01 as a JOIN (select * from dbmaster.t_kode_spd_pengajuan WHERE IFNULL(jenis_rpt,'')='') as b on a.subkode=b.subkode SET "
+            . " a.nama_pengajuan=b.nama_pengajuan, a.nama_report=b.nama_report, a.nama_ket=b.nama_ket, a.link_eth=b.link_eth, a.link_otc=b.link_otc WHERE "
+            . " ( IFNULL(a.nama_pengajuan,'')='' OR IFNULL(a.link_eth,'')='' OR IFNULL(a.link_otc,'')='' ) ";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
     $query = "UPDATE $tmp01 as a JOIN (select idinput, tanggal, nobukti "
             . " from dbmaster.t_suratdana_bank WHERE stsinput='K' "
             . " AND IFNULL(stsnonaktif,'')<>'Y' and subkode NOT IN ('29') LIMIT 1) as b on a.idinput=b.idinput SET "

@@ -8,6 +8,10 @@ if ($_GET['module']=="viewdataotc"){
     <script src="js/inputmask.js"></script>
     <?PHP
     
+    $fkaryawan=$_SESSION['IDCARD'];
+    $fuserid=$_SESSION['USERID'];
+    $fgroupid=$_SESSION['GROUP'];
+    
     include "../../config/koneksimysqli.php";
     $totalinput=0;
     $pket=$_GET['ket'];
@@ -94,8 +98,13 @@ if ($_GET['module']=="viewdataotc"){
             $query .= " AND ( ($ftypetgl $filterlampiran AND a.brOtcId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp03 WHERE IFNULL(sinput,'')<>'Y')) OR "
                     . "  a.brOtcId IN (select distinct IFNULL(bridinput,'') FROM $tmp02 WHERE IFNULL(sinput,'')='Y') )";
         }else{
-			$query .= " AND IFNULL(a.batal,'')<>'Y' AND a.brOtcId NOT IN (select DISTINCT IFNULL(brOtcId,'') FROM hrd.br_otc_reject)";
+            $query .= " AND IFNULL(a.batal,'')<>'Y' AND a.brOtcId NOT IN (select DISTINCT IFNULL(brOtcId,'') FROM hrd.br_otc_reject)";
             $query .= " AND $ftypetgl $filterlampiran AND a.brOtcId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp03 WHERE IFNULL(sinput,'')<>'Y')";
+        }
+        
+        if ($fgroupid=="1" OR $fgroupid=="24") {
+        }else{
+            $query .= " AND a.karyawanid='$fkaryawan' ";
         }
         
         $query = "create TEMPORARY table $tmp01 ($query)"; 

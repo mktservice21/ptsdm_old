@@ -4,6 +4,11 @@
 //include "../../config/koneksimysqli_it.php";
 include "../../config/koneksimysqli.php";
 
+session_start();
+$fkaryawan=$_SESSION['IDCARD'];
+$fuserid=$_SESSION['USERID'];
+$fgroupid=$_SESSION['GROUP'];
+
 /// storing  request (ie, get/post) global array to a variable  
 $requestData= $_REQUEST;
 
@@ -35,15 +40,25 @@ $tgl2="";
 if (isset($_GET['uperiode2'])) {
     $tgl2=$_GET['uperiode2'];
 }
+$pkaryawanid=$_GET['ukryid'];
+$ffilterkaryawan="";
+if (!empty($pkaryawanid)) {
+    $pkaryawanuserid=(INT)$pkaryawanid;
+    if (empty($pkaryawanuserid)) $pkaryawanuserid=0;
+    
+    $ffilterkaryawan=" AND ( karyawanid='$pkaryawanid' OR user1=$pkaryawanuserid ) ";
+    
+}
+
 
 //FORMAT(realisasi1,2,'de_DE') as 
 // getting total number records without any search
-$sql = "select brOtcId, DATE_FORMAT(tglbr,'%d %M %Y') tglbr, DATE_FORMAT(tgltrans,'%d %M %Y') tgltrans, noslip, subpost, nmsubpost, kodeid, "
+$sql = "select brOtcId, karyawanid, DATE_FORMAT(tglbr,'%d %M %Y') tglbr, DATE_FORMAT(tgltrans,'%d %M %Y') tgltrans, noslip, subpost, nmsubpost, kodeid, "
         . "nama_kode, icabangid_o, nama_cabang, keterangan1, keterangan2, FORMAT(jumlah,2,'de_DE') jumlah, real1, DATE_FORMAT(tglreal,'%d %M %Y') tglreal, "
         . "FORMAT(realisasi,2,'de_DE') realisasi, FORMAT(ifnull(jumlah,0)-ifnull(realisasi,0),2,'de_DE') as selisih, "
-        . "DATE_FORMAT(tglrpsby,'%d %M %Y') tglrpsby, jenis, batal, alasan_batal ";
+        . "DATE_FORMAT(tglrpsby,'%d %M %Y') tglrpsby, jenis, batal, alasan_batal, user1 ";
 $sql.=" FROM dbmaster.v_br_otc ";
-$sql.=" WHERE 1=1 ";
+$sql.=" WHERE 1=1 $ffilterkaryawan ";
 
 $sql.=" and brOtcId not in (select distinct ifnull(brOtcId,'') from hrd.br_otc_reject) ";
 
@@ -92,6 +107,8 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
             . "Cetak</a> "
  */
     
+    $nkaryawaninput=$row['karyawanid'];
+    $puserinput=$row['user1'];
     $pbatal=$row['batal'];
     $palasanbatal=$row['alasan_batal'];
     if (!empty($palasanbatal)) $palasanbatal ="ALASAN : ".$palasanbatal;
@@ -108,12 +125,29 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
         $kettipeisi = "<input type='checkbox' value='$row[brOtcId]' name='chkbox_id[]' id='chkbox_id[]' class='cekbr'>";
     }
     $nestedData[] = $kettipeisi;
+    
+    $pbtnedit="<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$row[brOtcId]'>Edit</a>";
+    $pbtnhapus="<input type='button' class='btn btn-danger btn-xs' value='Hapus' onClick=\"ProsesData('hapus', '$row[brOtcId]')\">";
+    
+    if ($fgroupid=="1" OR $fgroupid=="24") {
+        
+    }else{
+        if (!empty($puserinput)) {
+            if ((INT)$nkaryawaninput==(INT)$fkaryawan) {
+            }else{
+                $pbtnedit="";
+                $pbtnhapus="";
+                $btnbatal="";
+            }
+        }
+    }
+    
     $nestedData[] = ""
-            . "<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$row[brOtcId]'>Edit</a> "
+            . "$pbtnedit "
             . "<a class='btn btn-info btn-xs' href='?module=$_GET[module]&act=editterima&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$row[brOtcId]'>Realisasi</a>"
             . "<a class='btn btn-default btn-xs' href='?module=$_GET[module]&act=edittransfer&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$row[brOtcId]'>Transfer</a>"
             . "<button type='button' class='btn btn-primary btn-xs' data-toggle='modal' data-target='#myModal' onClick=\"TambahDataInputPajak('$row[brOtcId]')\">Pajak</button>"
-            . "<input type='button' class='btn btn-danger btn-xs' value='Hapus' onClick=\"ProsesData('hapus', '$row[brOtcId]')\">"
+            . "$pbtnhapus "
             . "$btnbatal"
             ;
     

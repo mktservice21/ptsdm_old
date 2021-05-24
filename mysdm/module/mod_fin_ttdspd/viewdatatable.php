@@ -47,16 +47,21 @@
     $tgl2= date("Y-m", strtotime($mytgl2));
     
     
-    $sql = "SELECT tgl as tglinput, idinput, DATE_FORMAT(tgl,'%M %Y') bulan, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, DATE_FORMAT(tglf,'%M %Y') as tglf,
+    $sql_data = "SELECT tgl as tglinput, idinput, DATE_FORMAT(tgl,'%M %Y') bulan, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, DATE_FORMAT(tglf,'%M %Y') as tglf,
         divisi, kodeid, nama, subkode, subnama, FORMAT(jumlah,0,'de_DE') as jumlah, FORMAT(jumlah2,0,'de_DE') as jumlah2,
 			FORMAT(ifnull(jumlah,0)+ifnull(jumlah2,0),0,'de_DE') as jmltcatrans, 
         nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, ifnull(tgl_proses,'0000-00-00') tgl_proses, ifnull(tgl_dir,'0000-00-00') tgl_dir
         , ifnull(tgl_dir2,'0000-00-00') tgl_dir2, ifnull(tgl_apv1,'0000-00-00') tgl_apv1, ifnull(tgl_apv2,'0000-00-00') tgl_apv2, ifnull(tgl_apv3,'0000-00-00') tgl_apv3, keterangan";
-    $sql.=" FROM dbmaster.v_suratdana_br ";
+    $sql_data.=" FROM dbmaster.v_suratdana_br ";
+    
+    $sql =$sql_data."";
+    
     $sql.=" WHERE 1=1 AND IFNULL(kodeid,'')<>'3' ";
     $sql.=" AND ( (Date_format(tgl, '%Y-%m') between '$tgl1' and '$tgl2') OR (Date_format(tglspd, '%Y-%m') between '$tgl1' and '$tgl2') ) $n_filterkaryawan";
     
     if (strtoupper($cket)!= "REJECT") $sql.=" AND IFNULL(stsnonaktif,'') <> 'Y' ";
+    
+    
     
     //$sql .= " AND ifnull(tgl_proses,'')='' ";// sudah ada spd
     
@@ -66,12 +71,12 @@
         if ($iketpiliapv=="BPJSSPD") {//BPJS
             $sql.=" AND IFNULL(subkode,'')='25' AND karyawanid='$pses_idcard' ";//BPJS
         }else{
-			if ($pses_divisi=="OTC") {
-				$sql.=" AND IFNULL(tgl_apv2,'')<>'' AND divisi='OTC' ";
-			}else{
-				$sql.=" AND IFNULL(tgl_apv2,'')<>'' AND karyawanid='$pses_idcard' ";//AND IFNULL(tgl_dir,'')=''
-			}
-		}
+            if ($pses_divisi=="OTC") {
+                $sql.=" AND IFNULL(tgl_apv2,'')<>'' AND divisi='OTC' ";
+            }else{
+                $sql.=" AND IFNULL(tgl_apv2,'')<>'' AND karyawanid='$pses_idcard' ";//AND IFNULL(tgl_dir,'')=''
+            }
+        }
     }else{
         
         if ($pses_divisi=="OTC") {
@@ -129,6 +134,48 @@
     
     if (strtoupper($cket)== "SUDAHFIN") $sql .= " AND ifnull(tgl_proses,'')<>'' "; //sudah fin
     //echo $sql;
+    
+    $userid=$_SESSION['USERID'];
+    $now=date("mdYhis");
+    $tmp01 =" dbtemp.tmpttdbyfin01_".$userid."_$now ";
+    $tmp02 =" dbtemp.tmpttdbyfin02_".$userid."_$now ";
+    
+    $query = "create TEMPORARY table $tmp01 ($sql)"; 
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    
+    
+        $sql_ex=$sql_data." WHERE 1=1 ";
+        if (strtoupper($cket)!= "REJECT") $sql_ex.=" AND IFNULL(stsnonaktif,'') <> 'Y' ";
+        $sql_ex.=" AND ( (Date_format(tgl, '%Y-%m') between '$tgl1' and '$tgl2') OR (Date_format(tglspd, '%Y-%m') between '$tgl1' and '$tgl2') ) ";
+
+        $sql_ex .=" AND IFNULL(CONCAT(IFNULL(subkode,''), IFNULL(jenis_rpt,''), IFNULL(karyawanid,'')),'') IN "
+                . " (select IFNULL(CONCAT(IFNULL(subkode,''), IFNULL(jenis_rpt,''), IFNULL(karyawaninput,'')),'') "
+                . " FROM dbmaster.t_kode_spd_exp WHERE karyawanid='$pses_idcard') ";
+
+        if (strtoupper($cket)=="APPROVE") {
+            $sql_ex.=" AND IFNULL(tgl_apv1,'')<>'' AND IFNULL(tgl_apv1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' ";
+            $sql_ex.=" AND ( IFNULL(tgl_apv2,'')='' OR IFNULL(tgl_apv2,'0000-00-00 00:00:00')='0000-00-00 00:00:00' ) ";
+        }elseif (strtoupper($cket)=="UNAPPROVE") {
+            $sql_ex.=" AND IFNULL(tgl_apv2,'')<>'' AND IFNULL(tgl_apv2,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' ";
+        }elseif (strtoupper($cket)=="REJECT") {
+            $sql_ex.=" AND IFNULL(stsnonaktif,'') = 'Y' ";
+        }
+    
+    if (strtoupper($cket)=="APPROVE" OR strtoupper($cket)=="UNAPPROVE" OR strtoupper($cket)=="REJECT") {
+        
+        //echo "<br/>$sql_ex<br/>";
+        
+        $query = "create TEMPORARY table $tmp02 ($sql_ex)"; 
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query ="INSERT INTO $tmp01 SELECT * FROM $tmp02";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    }
 ?>
 
 <form method='POST' action='' id='d-form2' name='form2' data-parsley-validate class='form-horizontal form-label-left'>
@@ -179,7 +226,8 @@
             </thead>
             <tbody>
             <?PHP
-                $sql.=" order by idinput DESC";
+                //$sql.=" order by idinput DESC";
+                $sql="select * from $tmp01 order by idinput DESC";
                 //echo $sql;
                 $no=1;
                 $tampil = mysqli_query($cnmy, $sql);
@@ -646,3 +694,10 @@
     }
 </style>
 
+<?PHP
+hapusdata:
+    mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp01");
+    mysqli_query($cnmy, "drop TEMPORARY table IF EXISTS $tmp02");
+    
+    mysqli_close($cnmy);
+?>

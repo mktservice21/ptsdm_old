@@ -10,6 +10,9 @@
     $fstsadmin=$_SESSION['STSADMIN'];
     $flvlposisi=$_SESSION['LVLPOSISI'];
     $fdivisi=$_SESSION['DIVISI'];
+    
+    //if (!empty($_SESSION['OTCKARYAWAN'])) 
+        $fkaryawan = $_SESSION['OTCKARYAWAN'];
 ?>
 <div class="">
 
@@ -51,6 +54,7 @@
 
                     function KlikDataTabel() {
                         var ket="";
+                        var ekryid=document.getElementById('cb_karyawan').value;
                         var etgltipe=document.getElementById('cb_tgltipe').value;
                         var etgl1=document.getElementById('tgl1').value;
                         var etgl2=document.getElementById('tgl2').value;
@@ -64,7 +68,7 @@
                             $.ajax({
                                 type:"post",
                                 url:"module/mod_br_entryotc/viewdatatabelrealisasi.php?module="+ket,
-                                data:"eket="+ket+"&utgltipe="+etgltipe+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&udivisi="+edivisi+"&uisi="+eisi,
+                                data:"eket="+ket+"&utgltipe="+etgltipe+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&udivisi="+edivisi+"&uisi="+eisi+"&ukryid="+ekryid,
                                 success:function(data){
                                     $("#c-data").html(data);
                                     $("#loading").html("");
@@ -77,7 +81,7 @@
                             $.ajax({
                                 type:"post",
                                 url:"module/mod_br_entryotc/viewdatatabel.php?module="+ket,
-                                data:"eket="+ket+"&utgltipe="+etgltipe+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&udivisi="+edivisi+"&uisi="+eisi,
+                                data:"eket="+ket+"&utgltipe="+etgltipe+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&udivisi="+edivisi+"&uisi="+eisi+"&ukryid="+ekryid,
                                 success:function(data){
                                     $("#c-data").html(data);
                                     $("#loading").html("");
@@ -111,6 +115,41 @@
                             </h2>
                             <div class='clearfix'></div>
                         </div>
+                        
+                        
+                        <div class='col-sm-3'>
+                            Yang membuat
+                            <div class="form-group">
+                                <select class='form-control' id="cb_karyawan" name="cb_karyawan" onchange="">
+                                    <?PHP
+                                        //if ($pidgroup=="1" OR $pidgroup=="24") {
+                                            $query = "select karyawanId as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE 1=1 ";
+                                            $query .=" AND jabatanid NOT IN ('15', '10', '18', '08', '20', '05')";
+                                        //}else{
+                                        //    $query = "select karyawanId as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE karyawanId='$fkaryawan' ";
+                                        //}
+                                        $query .= " Order by nama, karyawanId";
+                                        $tampilket= mysqli_query($cnmy, $query);
+                                        $ketemu=mysqli_num_rows($tampilket);
+                                        //if ((INT)$ketemu<=0) 
+                                        echo "<option value='' selected>-- Pilih --</option>";
+
+                                        while ($du= mysqli_fetch_array($tampilket)) {
+                                            $nidkry=$du['karyawanid'];
+                                            $nnmkry=$du['nama_karyawan'];
+                                            $nidkry_=(INT)$nidkry;
+                                            if ($nidkry==$fkaryawan)
+                                                echo "<option value='$nidkry' selected>$nnmkry ($nidkry_)</option>";
+                                            else
+                                                echo "<option value='$nidkry'>$nnmkry ($nidkry_)</option>";
+
+                                        }
+
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        
                         
 
                         <div class='col-sm-2'>
@@ -186,13 +225,15 @@
                             </div>
                         </div>
                         -->
-                        <div class='col-sm-3'>
-                            <small>&nbsp;</small>
-                           <div class="form-group">
-                               <input type='button' class='btn btn-success  btn-xs' id="s-submit" value="Refresh" onclick="RefreshDataTabel()">
-                           </div>
-                       </div>
                         
+                        <div class='x_panel'>
+                            <div class='col-sm-2'>
+                                <small>&nbsp;</small>
+                                <div class="form-group">
+                                    <input type='button' class='btn btn-success  btn-xs' id="s-submit" value="Refresh" onclick="RefreshDataTabel()">
+                                </div>
+                            </div>
+                        </div>
                         
                         <div id='loading'></div>
                         <div id='c-data'>

@@ -133,7 +133,7 @@
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tgl. Keluar </label>
                                             <div class='col-md-3'>
-                                                <input type="text" class="form-control" id='e_asltglberlaku' name='e_asltglberlaku' value='<?PHP echo $tgl1; ?>' Readonly>
+                                                <input type="hidden" class="form-control" id='e_asltglberlaku' name='e_asltglberlaku' value='<?PHP echo $tgl1; ?>' Readonly>
                                                 <div class='input-group date' id='mytgl01'>
                                                     <input type="text" class="form-control" id='e_tglkeluar' name='e_tglkeluar' autocomplete='off' required='required' placeholder='dd/MM/yyyy' data-inputmask="'mask': '99/99/9999'" value='<?PHP echo $tgl1; ?>'>
                                                     <span class='input-group-addon'>

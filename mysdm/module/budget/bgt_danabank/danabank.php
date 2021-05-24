@@ -1,5 +1,5 @@
 <?PHP
-    include "config/cek_akses_modul.php";
+    //include "config/cek_akses_modul.php";
     $hari_ini = date("Y-m-d");
     $hari_ini2 = date("Y-01-d");
     //$tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
@@ -168,6 +168,17 @@
                             }
                         });
                     }
+                    
+                    function getInputDataTU(didinput){
+                        $.ajax({
+                            type:"post",
+                            url:"module/budget/bgt_danabank/tambah_bank_tu.php?module=transferulang",
+                            data:"uidinput="+didinput,
+                            success:function(data){
+                                $("#myModal").html(data);
+                            }
+                        });
+                    }
                 </script>
 
                 <script>
@@ -188,6 +199,9 @@
                         
                     }
                 </script>
+                
+                <!-- Modal -->
+                <div class='modal fade' id='myModal' role='dialog'></div>
                 
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                     <div class='x_panel'>

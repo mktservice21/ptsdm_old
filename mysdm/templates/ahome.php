@@ -29,9 +29,9 @@
     if (($np_idgroup_h=="3" OR $np_idgroup_h=="25" OR $np_idgroup_h=="1" OR $np_idgroup_h=="23" OR $np_idgroup_h=="26")) {// OR $np_idgroup_h=="28"
         
         if ($np_divisi_h=="OTC") {
-            $jn_idmenu="'87', '226', '258', '224', '259'";
+            $jn_idmenu="'87', '226', '258', '224', '259', '505', '504'";
             if ($np_idgroup_h=="26") {//23=mba dsi, 26= otc spv, bang ipul
-                $jn_idmenu="'122', '115', '332', '155', '256', '245', '254', '258', '224', '259'";
+                $jn_idmenu="'122', '115', '332', '155', '256', '245', '254', '258', '224', '259', '505', '504'";
             }
         }else{
             $jn_idmenu="'88', '89', '204', '258', '259', '224'";
@@ -63,8 +63,9 @@
             $h_nmmenu=$trw['JUDUL'];
             $h_nmmenu_asli=$trw['JUDUL'];
             $h_link=$trw['URL'];
-            if ($h_idmenu=="259") $h_nmmenu="Tanda Tangan SPD";
+            if ($h_idmenu=="259" OR $h_idmenu=="504") $h_nmmenu="Tanda Tangan SPD";
             if ($h_idmenu=="224") $h_nmmenu="Report SPD";
+            if ($h_idmenu=="505") $h_nmmenu="Input Dana Bank";
             
             if ($h_idmenu=="245") $h_nmmenu="Permintaan Dana Rutin";
             if ($h_idmenu=="254") $h_nmmenu="Outstanding LK/CA";

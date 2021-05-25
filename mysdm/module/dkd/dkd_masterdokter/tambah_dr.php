@@ -17,6 +17,7 @@ $pnamadokt="";
 $pgelar="";
 $pnohp="";
 $pidspesial="";
+$pprofesi="Lain-Lain";
 
 $act="input";
 if ($pidact=="editdata"){
@@ -33,7 +34,8 @@ if ($pidact=="editdata"){
     
     $pidcabang=$r['icabangid'];
     $pnamadokt=$r['namalengkap'];
-    $pgelar=$r['gelar'];
+    $pprofesi=$r['profesi'];
+    //$pgelar=$r['gelar'];
     $pnohp=$r['nohp'];
     $pidspesial=$r['spesialis'];
     
@@ -135,12 +137,34 @@ if ($pidact=="editdata"){
                                     </div>
                                 </div>
 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Gelar <span class='required'></span></label>
                                     <div class='col-xs-4'>
                                           <select class='form-control input-sm' id='cb_gelar' name='cb_gelar' onchange="" data-live-search="true">
                                             <?PHP 
-                                                echo "<option value='dr' selected>dr</option>";
+                                                //echo "<option value='dr' selected>dr</option>";
+                                                echo "<option value='' selected></option>";
+                                            ?>
+                                          </select>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Profesi <span class='required'></span></label>
+                                    <div class='col-xs-4'>
+                                          <select class='form-control input-sm' id='cb_profesi' name='cb_profesi' onchange="ShowDataSpesial()" data-live-search="true">
+                                            <?PHP
+                                            
+                                            $query = "select `id`, `profesi` from dr.profesi_dokter WHERE IFNULL(aktif,'')<>'N' Order By profesi";
+                                            $tampil=mysqli_query($cnms, $query);
+                                            while ($row=mysqli_fetch_array($tampil)) {
+                                                $pnidprof=$row['id'];
+                                                $pnnmprof=$row['profesi'];
+                                                if ($pnnmprof==$pprofesi)
+                                                    echo "<option value='$pnnmprof' selected>$pnnmprof</option>";
+                                                else
+                                                    echo "<option value='$pnnmprof' >$pnnmprof</option>";
+                                            }
                                             ?>
                                           </select>
                                     </div>
@@ -158,16 +182,20 @@ if ($pidact=="editdata"){
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Spesialis <span class='required'></span></label>
                                     <div class='col-xs-4'>
                                           <select class='form-control input-sm' id='cb_spesial' name='cb_spesial' onchange="" data-live-search="true">
-                                            <?PHP 
-                                            $query = "select `id`, `nama` from ms2.`lookup` WHERE `type`='spesialis' Order By nama";
-                                            $tampil=mysqli_query($cnms, $query);
-                                            while ($row=mysqli_fetch_array($tampil)) {
-                                                $pnidsp=$row['id'];
-                                                $pnnmsp=$row['nama'];
-                                                if ($pnnmsp==$pidspesial)
-                                                    echo "<option value='$pnnmsp' selected>$pnnmsp</option>";
-                                                else
-                                                    echo "<option value='$pnnmsp' >$pnnmsp</option>";
+                                            <?PHP
+                                            echo "<option value='' selected></option>";
+                                            if ($pprofesi == "Dokter" OR $pprofesi == "Profesor") {
+                                                
+                                                $query = "select `id`, `spesialis` from dr.`spesialis_dokter` WHERE IFNULL(aktif,'')<>'N' Order By spesialis";
+                                                $tampil=mysqli_query($cnms, $query);
+                                                while ($row=mysqli_fetch_array($tampil)) {
+                                                    $pnidsp=$row['id'];
+                                                    $pnnmsp=$row['spesialis'];
+                                                    if ($pnnmsp==$pidspesial)
+                                                        echo "<option value='$pnnmsp' selected>$pnnmsp</option>";
+                                                    else
+                                                        echo "<option value='$pnnmsp' >$pnnmsp</option>";
+                                                }
                                             }
                                             ?>
                                           </select>
@@ -215,6 +243,19 @@ if ($pidact=="editdata"){
 <link href="css/stylenew.css" rel="stylesheet" type="text/css" />
 
 <script>
+function ShowDataSpesial() {
+    var iprofesi = document.getElementById('cb_profesi').value;
+    $.ajax({
+        type:"post",
+        url:"module/dkd/viewdatadkd.php?module=viewdataspesial",
+        data:"uprofesi="+iprofesi,
+        success:function(data){
+            $("#cb_spesial").html(data);
+        }
+    });
+    
+}
+
 function disp_confirm(pText_,ket)  {
     //ShowDataAtasan();
     //ShowDataJumlah();

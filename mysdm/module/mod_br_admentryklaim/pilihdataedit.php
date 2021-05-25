@@ -16,6 +16,7 @@ $pigroup=$_SESSION['GROUP'];
 $hari_ini = date("Y-m-d");
 $tglinput = date('d F Y', strtotime($hari_ini));
 $tglinput = date('d/m/Y', strtotime($hari_ini));
+$ptahunini = date('Y', strtotime($hari_ini));
 
 
 $pidklaim=$_GET['id'];
@@ -52,6 +53,16 @@ if (empty($pkenapajak) AND !empty($pnmrealisasi)) {
     $pkenapajak=$pnmrealisasi;
     $pstyleinput=" style='color:red;' ";
 }
+
+$ptampilsql = mysqli_query($cnmy, "SELECT noslip FROM hrd.klaim "
+        . " WHERE karyawanid='$pidcard' AND noslip NOT IN ('', 'via Surabaya', 'VIA', 'via', 'Via', 'SBY', 'Via SBY', 'via Srby PotTag', 'via SBY Pot Tag', 'SBY PotTagihan') "
+        . " and left(noslip,3) NOT IN ('via', 'Via', 'VIA') "
+        . " and year(tgl)='$ptahunini' "
+        . " ORDER BY noslip desc LIMIT 1");
+$row2    = mysqli_fetch_array($ptampilsql);
+$pnoslipakhir=$row2['noslip'];
+if (empty($pnoslipakhir)) $pnoslipakhir="0000";
+
 ?>
 
 <!-- Modal -->
@@ -140,6 +151,13 @@ if (empty($pkenapajak) AND !empty($pnmrealisasi)) {
                     <div class='col-md-6 col-xs-12'>
                         <div class='x_panel'>
                             <div class='x_content form-horizontal form-label-left'>
+                                
+                                <div  class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' >Noslip Terakhir <span class='required'></span></label>
+                                    <div class='col-md-6 col-sm-6 col-xs-12'>
+                                        <input type='text' id='e_lstnoslip' name='e_lstnoslip' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnoslipakhir; ?>' Readonly>
+                                    </div>
+                                </div>
                                 
                                 <div  class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' >Noslip <span class='required'></span></label>

@@ -33,7 +33,7 @@ if ($module=='spdklaimdisc')
         $pkethapus=$_GET['kethapus'];
         if (!empty($pkethapus)) $pkethapus = str_replace("'", " ", $pkethapus);
 
-        mysqli_query($cnmy, "UPDATE dbmaster.t_suratdana_br SET stsnonaktif='Y', keterangan=CONCAT(IFNULL(keterangan,''), ' $pkethapus', USER HAPUS : $pnmlengkapuser') WHERE idinput='$kodenya' LIMIT 1");
+        mysqli_query($cnmy, "UPDATE dbmaster.t_suratdana_br SET stsnonaktif='Y', keterangan=CONCAT(IFNULL(keterangan,''), ' $pkethapus', ' USER HAPUS : $pnmlengkapuser') WHERE idinput='$kodenya' LIMIT 1");
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
         mysqli_close($cnmy);

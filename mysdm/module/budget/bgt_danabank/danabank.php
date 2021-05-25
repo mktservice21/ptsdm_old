@@ -1,5 +1,5 @@
 <?PHP
-    //include "config/cek_akses_modul.php";
+    include "config/cek_akses_modul.php";
     $hari_ini = date("Y-m-d");
     $hari_ini2 = date("Y-01-d");
     //$tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
@@ -272,10 +272,16 @@
 
                             <div class='col-sm-3'>
                                 <small>&nbsp;</small>
-                               <div class="form-group">
-                                   <input type='button' class='btn btn-success btn-xs' id="s-submit" value="View Data Bank" onclick="RefreshDataTabel()">&nbsp;
-                                   <input type='button' class='btn btn-default btn-xs' id="s-print" value="Preview Data Bank" onclick="disp_confirm_print('bukan')">&nbsp;
-                               </div>
+                                <div class="form-group">
+                                    <input type='button' class='btn btn-success btn-xs' id="s-submit" value="View Data Bank" onclick="RefreshDataTabel()">&nbsp;
+                                    <?PHP
+                                    if ($pidgroup=="1" OR $pidgroup=="24" OR $pidgroup=="25") {
+                                    ?>
+                                        <input type='button' class='btn btn-default btn-xs' id="s-print" value="Preview Data Bank" onclick="disp_confirm_print('bukan')">&nbsp;
+                                    <?PHP
+                                    }
+                                    ?>
+                                </div>
                            </div>
                        </form>
 

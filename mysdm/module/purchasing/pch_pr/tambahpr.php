@@ -150,7 +150,7 @@ $pcabangid="";
     $pkdgsm=$nrs2['gsm'];
     $pnamagsm=$nrs2['nama_gsm'];
 
-    if ($pcabangid=="0000000003") {
+    if ($pcabangid=="0000000003X") {
         $pkdspv="";
         $pnamaspv="";
         $pkddm="";
@@ -755,7 +755,7 @@ if ($pact=="editdata"){
                 if (empty($sudahapv)) {
                     if ($pmyact=="editdata") {
                         ?>
-                        <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Update</button>
+                        <button type='button' id="btn_simpan" class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Update</button>
                         <?PHP
                     }else{
                         echo "<div class='col-sm-5'>";
@@ -884,9 +884,18 @@ th {
             type:"post",
             url:"module/purchasing/pch_pr/viewdatapr.php?module=caricabang",
             data:"ukry="+ikry,
+            beforeSend: function () {
+                document.getElementById("btn_simpan").disabled = true;
+            },
             success:function(data){
                 $("#cb_cabang").html(data);
                 ShowDataJumlah();
+            },
+            complete: function () {
+                document.getElementById("btn_simpan").disabled = false;
+            },
+            error: function () {
+                alert('Something wrong. Try Again!')                
             }
         });
     }
@@ -899,8 +908,17 @@ th {
             type:"post",
             url:"module/purchasing/pch_pr/dataatasanpr.php?module=caridataatasan",
             data:"ukry="+ikry+"&ucab="+icab,
+            beforeSend: function () {
+                document.getElementById("btn_simpan").disabled = true;
+            },
             success:function(data){
                 $("#div_atasan").html(data);
+            },
+            complete: function () {
+                document.getElementById("btn_simpan").disabled = false;
+            },
+            error: function () {
+                alert('Something wrong. Try Again!')                
             }
         });
     }    
@@ -934,10 +952,18 @@ th {
         document.getElementById("e_jmlqty").focus();
     }
     
+    
     function disp_confirm(pText_,ket)  {
         
-        
         ShowDataAtasan();
+        
+        setTimeout(function () {
+            disp_confirm_ext(pText_,ket)
+        }, 200);
+        
+    }
+    
+    function disp_confirm_ext(pText_,ket)  {
 
         var iid = document.getElementById('e_id').value;
         var itipe = document.getElementById('cb_tipeaju').value;

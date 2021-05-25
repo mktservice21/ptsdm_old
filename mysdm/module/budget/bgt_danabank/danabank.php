@@ -1,5 +1,5 @@
 <?PHP
-    include "config/cek_akses_modul.php";
+    //include "config/cek_akses_modul.php";
     $hari_ini = date("Y-m-d");
     $hari_ini2 = date("Y-01-d");
     //$tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
@@ -73,6 +73,8 @@
                         var etipe=document.getElementById('txt_tipe').value;
                         if (etipe=="viewdatabankkeluar") {
                             ViewDataBankKeluar('2');
+                        }else if (etipe=="viewdatatransferul") {
+                            BuatLapTransferUlang('');
                         }else{
                             KlikDataTabel();
                         }
@@ -179,6 +181,22 @@
                             }
                         });
                     }
+                    
+                    function BuatLapTransferUlang(ntxt_ket){
+                        var eperiode=document.getElementById('tgl1').value;
+                        
+                        $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+                        $.ajax({
+                            type:"post",
+                            url:"module/budget/bgt_danabank/transferulang.php?module="+ntxt_ket,
+                            data:"uperiode="+eperiode,
+                            success:function(data){
+                                $("#c-data").html(data);
+                                $("#loading").html("");
+                            }
+                        });
+                    }
+                    
                 </script>
 
                 <script>
@@ -274,6 +292,7 @@
                                 <small>&nbsp;</small>
                                 <div class="form-group">
                                     <input type='button' class='btn btn-success btn-xs' id="s-submit" value="View Data Bank" onclick="RefreshDataTabel()">&nbsp;
+                                    <input type='button' class='btn btn-dark btn-xs' id="s-submit" value="Buat Lap. Trnsf" onclick="BuatLapTransferUlang('')">&nbsp;
                                     <?PHP
                                     if ($pidgroup=="1" OR $pidgroup=="24" OR $pidgroup=="25") {
                                     ?>

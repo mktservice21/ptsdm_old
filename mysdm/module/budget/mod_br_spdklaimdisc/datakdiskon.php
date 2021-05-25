@@ -76,6 +76,10 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
     $query = "select * FROM $tmp00 WHERE IFNULL(sinput,'')='Y'";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "select * FROM $tmp00";
+    $query = "create TEMPORARY table $tmp03 ($query)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
     
     $ftypetgl = " a.bulan BETWEEN '$pbulan01' AND '$pbulan02' ";
@@ -97,7 +101,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
     
     if ($pact=="editdata") {
         $query .= " AND ($ftypetgl OR a.klaimId IN (select distinct IFNULL(bridinput,'') FROM $tmp00 WHERE IFNULL(sinput,'')='Y') ) ";
-        $query .= " AND a.klaimId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp00 WHERE IFNULL(sinput,'')<>'Y') ";
+        $query .= " AND a.klaimId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp03 WHERE IFNULL(sinput,'')<>'Y') ";
     }else{
         $query .= " AND $ftypetgl ";
         $query .= " AND a.klaimId NOT IN (select DISTINCT IFNULL(klaimId,'') FROM hrd.klaim_reject) ";
@@ -189,6 +193,10 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                             if ($ptgltrans=="0000-00-00") $ptgltrans = "";
                             if ($ptglapvatasan5=="0000-00-00" OR $ptglapvatasan5=="0000-00-00 00:00:00") $ptglapvatasan5 = "";
                             
+                            
+                            $pjumlah=number_format($pjumlah,0,",",",");
+                            $pamount=number_format($pamount,0,",",",");
+                            
                             $nnjumlahpilih=$pjumlah;
                             
                             $ncheck_trans="";
@@ -224,8 +232,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                             $ptglinput =date("d/m/Y", strtotime($ptglinput));
                             $nbulan =date("F Y", strtotime($nbulan));
                             
-                            $pjumlah=number_format($pjumlah,2,".",",");
-                            $pamount=number_format($pamount,2,".",",");
+
                             
                             $pprint="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
                                 . "onClick=\"window.open('eksekusi3.php?module=bgtadmentrybrklaim&brid=$pbrid&iprint=print',"

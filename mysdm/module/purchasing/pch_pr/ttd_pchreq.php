@@ -162,11 +162,11 @@ function ReloadTandaTangan(){
             }
         }).appendTo($tools)
 
-        $('<input type="button" value="Simpan" class="btn btn-success">').bind('click', function(){
+        $('<input type="button" id="btn_simpan" value="Simpan" class="btn btn-success">').bind('click', function(){
                 Tampilkan("image");
         }).appendTo($tools)
 
-        $('<input type="button" value="Reset" class="btn btn-default">').bind('click', function(e){
+        $('<input type="button" id="btn_reset" value="Reset" class="btn btn-default">').bind('click', function(e){
                 $sigdiv.jSignature('reset')
         }).appendTo($tools)
         

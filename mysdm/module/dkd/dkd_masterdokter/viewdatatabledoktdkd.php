@@ -89,7 +89,7 @@
                     <th width='5px'>No</th>
                     <th width='50px'></th>
                     <th width='20px'>ID</th>
-                    <th width='30px'>Gelar</th>
+                    <th width='30px'>Profesi</th>
                     <th width='30px'>Nama Lengkap</th>
                     <th width='50px'>Spesialis</th>
                     <th width='50px'>No Hp</th>

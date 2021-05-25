@@ -514,5 +514,25 @@ if ($pmodule=="cekdatasudahada") {
     }
 
     mysqli_close($cnmy);
+}elseif ($pmodule=="viewdataspesial") {
+    include "../../config/koneksimysqli_ms.php";
+    $pprofesi=$_POST['uprofesi'];
+    $pidspesial="";
+    echo "<option value='' selected></option>";
+    if ($pprofesi == "Dokter" OR $pprofesi == "Profesor") {
+
+        $query = "select `id`, `spesialis` from dr.`spesialis_dokter` WHERE IFNULL(aktif,'')<>'N' Order By spesialis";
+        $tampil=mysqli_query($cnms, $query);
+        while ($row=mysqli_fetch_array($tampil)) {
+            $pnidsp=$row['id'];
+            $pnnmsp=$row['spesialis'];
+            if ($pnnmsp==$pidspesial)
+                echo "<option value='$pnnmsp' selected>$pnnmsp</option>";
+            else
+                echo "<option value='$pnnmsp' >$pnnmsp</option>";
+        }
+    }
+    
+    mysqli_close($cnms);
 }
 ?>

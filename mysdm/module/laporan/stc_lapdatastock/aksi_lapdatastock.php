@@ -94,7 +94,7 @@
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { goto hapusdata; }
     
-    $query = "select a.*, b.nmproduk, b.iprodid, c.nama nama_produk, b.divprodid from $tmp01 a LEFT JOIN sls.imaping_produk b on a.kdproduk=b.kdproduk "
+    $query = "select a.*, b.nmproduk, b.iprodid, c.nama nama_produk, c.divprodid from $tmp01 a LEFT JOIN sls.imaping_produk b on a.kdproduk=b.kdproduk "
             . " LEFT JOIN sls.iproduk c on b.iprodid=c.iprodid";
     $query = "CREATE TEMPORARY TABLE $tmp02($query)";
     mysqli_query($cnms, $query);

@@ -42,6 +42,7 @@ if ($module=='dkdmasterdokt')
         $kodenya=$_POST['e_id'];
         $pcabid=$_POST['cb_cabang'];
         $pgelar=$_POST['cb_gelar'];
+        $pprofesi=$_POST['cb_profesi'];
         $pnamadokt=$_POST['e_namadokt'];
         $pspesialis=$_POST['cb_spesial'];
         $pnohp=$_POST['e_nohp'];
@@ -54,17 +55,17 @@ if ($module=='dkdmasterdokt')
 
         if ($act=="input") {
 
-            $query = "INSERT INTO dr.masterdokter (icabangid, gelar, namalengkap, spesialis, nohp)
+            $query = "INSERT INTO dr.masterdokter (icabangid, profesi, namalengkap, spesialis, nohp)
                 VALUES
-                ('$pcabid', '$pgelar', '$pnamadokt', '$pspesialis', '$pnohp')";
+                ('$pcabid', '$pprofesi', '$pnamadokt', '$pspesialis', '$pnohp')";
             mysqli_query($cnms, $query); 
             $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnms); exit; }
 
         }elseif ($act=="update") {
             if (!empty($kodenya)) {
                 $query = "UPDATE dr.masterdokter SET
-                    icabangid='$pcabid', gelar='$pgelar', 
-                    namalengkap='$pnamadokt', spesialis='$pspesialis', nohp='$pnohp' WHERE
+                    icabangid='$pcabid', 
+                    namalengkap='$pnamadokt', spesialis='$pspesialis', nohp='$pnohp', profesi='$pprofesi' WHERE
                     id='$kodenya' LIMIT 1";
                 mysqli_query($cnms, $query); 
                 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnms); exit; }

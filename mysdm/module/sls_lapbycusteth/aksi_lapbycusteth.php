@@ -236,9 +236,15 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                 if ($nregion=="T") $dnmregion="TIMUR";
                 elseif ($nregion=="A") $dnmregion="NONE";
                 
-                $phna=number_format($phna,0,",",",");
-                $pqty=number_format($pqty,0,",",",");
-                $ptvalue=number_format($ptvalue,0,",",",");
+                if ($ppilihrpt=="excel") {
+                    $phna=number_format($phna,0,"","");
+                    $pqty=number_format($pqty,0,"","");
+                    $ptvalue=number_format($ptvalue,0,"","");
+                }else{
+                    $phna=number_format($phna,0,",",",");
+                    $pqty=number_format($pqty,0,",",",");
+                    $ptvalue=number_format($ptvalue,0,",",",");
+                }
                 
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";

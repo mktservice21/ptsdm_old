@@ -183,13 +183,14 @@
                     }
                     
                     function BuatLapTransferUlang(ntxt_ket){
+                        var ekryid=document.getElementById('cb_karyawan').value;
                         var eperiode=document.getElementById('tgl1').value;
                         
                         $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                         $.ajax({
                             type:"post",
                             url:"module/budget/bgt_danabank/transferulang.php?module="+ntxt_ket,
-                            data:"uperiode="+eperiode,
+                            data:"uperiode="+eperiode+"&ukryid="+ekryid,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");

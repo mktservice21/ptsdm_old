@@ -14,7 +14,8 @@ if (empty($puser)) {
     $target_dir = "../../fileupload/";
     $pdist=$_POST['cb_distid'];
     $ptgl=$_POST['e_periode01'];
-    $pdbkonekpilih=$_POST['cb_pildb'];
+    $pdbkonekpilih="";
+    if (isset($_POST['cb_pildb'])) $pdbkonekpilih=$_POST['cb_pildb'];
     
     
     
@@ -34,6 +35,15 @@ if (($_FILES['fileToUpload']['name']!="")){
         exit;
     }
     
+    $temp_file = explode(".", $pfile);
+    $pname_file = RTRIM($temp_file[0]);
+    //$newfilename = $pname_file."_".round(microtime(true)) . '.' . end($temp_file);
+    $newfilename = $pname_file."_".round(microtime(true));
+    
+    //echo "$pfile - $pname_file dan $newfilename"; exit;
+    
+    
+    
     $pname_foder_dist=CekNamaDist($pdist);
     
     $pbulan =  date("Ym", strtotime($ptgl));
@@ -52,12 +62,12 @@ if (($_FILES['fileToUpload']['name']!="")){
     //echo $target_dir; exit;
     
     $path = pathinfo($pfile);
-    $filename = $path['filename'];
+    $filename = $newfilename;//$path['filename'];
     $ext = $path['extension'];
     $temp_name = $_FILES['fileToUpload']['tmp_name'];
     $path_filename_ext = $target_dir.$filename.".".$ext;
     
-    
+    //exit;
     // Check if file already exists
     /*
     if (file_exists($path_filename_ext)) {

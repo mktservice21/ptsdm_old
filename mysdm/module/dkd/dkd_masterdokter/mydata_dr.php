@@ -18,7 +18,7 @@ $columns = array(
     0 =>'a.id',
     1 =>'a.id',
     2 => 'a.id',
-    3=> 'a.gelar',
+    3=> 'a.profesi',
     4=> 'a.namalengkap',
     5=> 'a.spesialis',
     6=> 'a.nohp'
@@ -32,7 +32,7 @@ if (isset($_GET['ucabid'])) {
 //FORMAT(realisasi1,2,'de_DE') as 
 // getting total number records without any search
 $sql = "select a.id, a.icabangid as icabangid, b.nama as nama_cabang, 
-    a.namalengkap, a.spesialis, a.nohp, a.gelar ";
+    a.namalengkap, a.spesialis, a.nohp, a.profesi ";
 $sql.=" FROM dr.masterdokter as a JOIN mkt.icabang as b on a.icabangid=b.icabangId ";
 $sql.=" WHERE 1=1 ";
 $sql.=" AND a.icabangId='$pcabangid' ";
@@ -48,7 +48,6 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
     $sql.=" OR a.icabangid LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.namalengkap LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.spesialis LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR a.gelar LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.nohp LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR b.nama LIKE '%".$requestData['search']['value']."%' )";
 }
@@ -66,7 +65,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $picabid=$row['icabangid'];
     $pnmcabang=$row['nama_cabang'];
-    $pgelar=$row['gelar'];
+    $pprofesi=$row['profesi'];
     $pnamadr=$row['namalengkap'];
     $pspesial=$row['spesialis'];
     $pnohp=$row['nohp'];
@@ -92,7 +91,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $no;
     $nestedData[] = $ppilihan;
     $nestedData[] = $idno;
-    $nestedData[] = $pgelar;
+    $nestedData[] = $pprofesi;
     $nestedData[] = $pnamadr;
     $nestedData[] = $pspesial;
     $nestedData[] = $pnohp;

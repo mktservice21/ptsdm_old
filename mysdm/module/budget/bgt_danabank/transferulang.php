@@ -13,7 +13,11 @@
     $tmp01 =" dbtemp.tmpbtulang01_".$puserid."_$now ";
     $tmp02 =" dbtemp.tmpbtulang02_".$puserid."_$now ";
     
+    $_SESSION['BNKDANAKARY']=$_POST['ukryid'];
+    $_SESSION['BNKDANATGL01']=$_POST['uperiode'];
+    
     include("../../../config/koneksimysqli.php");
+    $pkaryawanid=$_POST['ukryid'];
     $date1=$_POST['uperiode'];
     $periode1= date("Ym", strtotime($date1));
     
@@ -29,7 +33,7 @@
             . " customer, aktivitas1, keterangan, jumlah, userid, CAST('' as CHAR(1)) as stssudah, "
             . " CAST('' as CHAR(1)) as jenis_rpt, CAST(NULL as DECIMAL(20)) as idinput2 "
             . " from dbmaster.t_suratdana_bank where IFNULL(idinput,'')<>'' AND IFNULL(brid,'')<>'' AND stsnonaktif<>'Y' and stsinput='T' AND "
-            . " DATE_FORMAT(tanggal, '%Y%m')='$periode1' $filter_d";
+            . " DATE_FORMAT(tanggal, '%Y%m')='$periode1' $filter_d AND IFNULL(userid,'')='$pkaryawanid' ";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -263,7 +267,7 @@
             "ordering": false,
             bFilter: false, bInfo: false, "bLengthChange": false, "bLengthChange": false,
             "bPaginate": false,
-            "scrollY": 440,
+            "scrollY": 240,
             "scrollX": true /*,
             fixedColumns:   {
                 leftColumns: 1

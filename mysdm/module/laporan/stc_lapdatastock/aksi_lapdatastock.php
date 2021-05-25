@@ -231,9 +231,17 @@
                         if (empty($nfile10)) $nfile10=0;
 
                         $totalqty=(double)$totalqty+(double)$nfile4;
-                        if ($ppilihrpt!="excel") $nfile4=number_format($nfile4,0,",",",");
-                        if ($ppilihrpt!="excel") $nfile10=number_format($nfile10,0,",",",");
-
+                        if ($ppilihrpt=="excel") {
+                            $nfile4=number_format($nfile4,0,"","");
+                            $nfile10=number_format($nfile10,0,"","");
+                        }else{
+                            $nfile4=number_format($nfile4,0,",",",");
+                            $nfile10=number_format($nfile10,0,",",",");
+                        }
+                        
+                        //if ($ppilihrpt!="excel") $nfile4=number_format($nfile4,0,",",",");
+                        //if ($ppilihrpt!="excel") $nfile10=number_format($nfile10,0,",",",");
+                        
 
                         echo "<tr >";
                         if ($ppilihrpt=="excel") { echo "<td nowrap>$no</td>"; }

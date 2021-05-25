@@ -373,7 +373,7 @@ echo "</div>";
                     if ($ptglproses=="0000-00-00" OR $ptglproses=="0000-00-00 00:00:00") $ptglproses="";
                     if ($ptgltrans=="0000-00-00" OR $ptgltrans=="0000-00-00 00:00:00") $ptgltrans="";
                     
-                    $pnmdivisi="";
+                    $pnmdivisi=$pdivisi;
                     if ($pdivisi=="EAGLE") $pnmdivisi="EAGLE";
                     if ($pdivisi=="PEACO") $pnmdivisi="PEACOCK";
                     if ($pdivisi=="PIGEO") $pnmdivisi="PIGEON";

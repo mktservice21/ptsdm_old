@@ -57,6 +57,10 @@ if ($module=='pchpurchasereq')
         $ptipeaju=$_POST['cb_tipeaju'];
         $pkaryawanid=$_POST['cb_karyawan'];
         $pidcabang=$_POST['cb_cabang'];
+        $pidarea=$_POST['cb_area'];
+        $pjabatanid=$_POST['e_jabatanid'];
+        $pdivisiid=$_POST['cb_divisi'];
+        $pdpartmen=$_POST['cb_dept'];
         $pnotes=$_POST['e_notes'];
         
         
@@ -273,15 +277,17 @@ if ($module=='pchpurchasereq')
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
             
             
-            $query = "INSERT INTO dbpurchasing.t_pr_transaksi (pilihpo, idpr, tanggal, pengajuan, idtipe, karyawanid, icabangid, jabatanid, aktivitas, userid)values"
-                    . "('Y', '$kodenya', '$ptanggal', '$ppengajuan', '$ptipeaju', '$pkaryawanid', '$pidcabang', '$pjabatanid', '$pnotes', '$pcardidlog')";
+            $query = "INSERT INTO dbpurchasing.t_pr_transaksi (pilihpo, idpr, tanggal, pengajuan, idtipe, karyawanid, icabangid, areaid, divisi, iddep,  jabatanid, aktivitas, userid)values"
+                    . "('Y', '$kodenya', '$ptanggal', '$ppengajuan', '$ptipeaju', '$pkaryawanid', '$pidcabang', '$pidarea', '$pdivisiid', '$pdpartmen', '$pjabatanid', '$pnotes', '$pcardidlog')";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
             
         }
         
         $query = "UPDATE dbpurchasing.t_pr_transaksi SET tanggal='$ptanggal', idtipe='$ptipeaju', "
-                . " karyawanid='$pkaryawanid', icabangid='$pidcabang', jabatanid='$pjabatanid', "
+                . " karyawanid='$pkaryawanid', icabangid='$pidcabang', "
+                . " areaid='$pidarea', divisi='$pdivisiid', iddep='$pdpartmen', "
+                . " jabatanid='$pjabatanid', "
                 . " aktivitas='$pnotes', userid='$pcardidlog', pilihpo='Y' WHERE "
                 . " idpr='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);

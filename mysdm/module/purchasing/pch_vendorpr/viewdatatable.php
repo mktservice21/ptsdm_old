@@ -77,7 +77,9 @@ session_start();
         b.atasan2, b.tgl_atasan2, 
         b.atasan3, b.tgl_atasan3,
         b.atasan4, b.tgl_atasan4,
-        b.atasan5, b.tgl_atasan5 
+        b.atasan5, b.tgl_atasan5, 
+        b.validate1, b.tgl_validate1, 
+        b.validate2, b.tgl_validate2 
         from dbpurchasing.t_pr_transaksi_d as a JOIN dbpurchasing.t_pr_transaksi as b on a.idpr=b.idpr 
         JOIN hrd.karyawan c on b.karyawanid=c.karyawanid
         LEFT JOIN MKT.icabang as d on b.icabangid=d.iCabangId
@@ -89,8 +91,9 @@ session_start();
         $query .=" AND a.idpr_d IN (select distinct IFNULL(idpr_d,'') from dbpurchasing.t_pr_transaksi_po WHERE IFNULL(aktif,'')='Y') ";
     }
     if (!empty($filidtipe)) {
-        $query .=" AND b.idtipe IN $filidtipe ";
+        //$query .=" AND b.idtipe IN $filidtipe ";
     }
+    $query .= " AND (IFNULL(b.tgl_atasan4,'')<>'' AND IFNULL(b.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
     $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
@@ -114,6 +117,15 @@ session_start();
             . " on IFNULL(a.idpr,'')=IFNULL(b.idpr,'') AND IFNULL(a.idpr_d,'')=IFNULL(b.idpr_d,'') SET a.ssudahpo='Y'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
+    
+    $query = "ALTER table $tmp01 ADD sudahapprove varchar(1)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    if ($ppilihsts=="APPROVE") {
+        $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE IFNULL(tgl_validate1,'')<>'' AND IFNULL(tgl_validate1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    }
+    
 ?>
 
 
@@ -123,6 +135,7 @@ session_start();
         
         <?PHP
         $pchkall = "<input type='checkbox' id='chkbtnbr' name='chkbtnbr' value='deselect' onClick=\"SelAllCheckBox('chkbtnbr', 'chkbox_br[]')\" checked/>";
+        $chk="<input type='checkbox' id='chkbtnbr' value='select' onClick=\"SelAllCheckBox('chkbtnbr', 'chkbox_br[]')\" />";
         ?>
         
         <table id='dttblisivendor' class='table table-striped table-bordered' width='100%'>
@@ -130,8 +143,7 @@ session_start();
                 <tr>
                     <th width='7px'>No</th>
                     <th width='20px'>
-                        <input type="checkbox" id="chkbtnbr" value="select" 
-                        onClick="SelAllCheckBox('chkbtnbr', 'chkbox_br[]')" />
+                        
                     </th>
                     <th width='20px'>ID</th>
                     <th width='20px'>Tipe</th>
@@ -142,14 +154,13 @@ session_start();
                     <th width='50px'>Keterangan</th>
                     <th width='50px'>Jumlah</th>
                     <th width='50px'>Harga</th>
-                    <th width='50px'>Status</th>
                     <th width='50px'>User Input</th>
                 </tr>
             </thead>
             <tbody>
                 <?PHP
                 $no=1;
-                $query = "select distinct idpr from $tmp01 order by idpr asc";
+                $query = "select distinct idpr from $tmp01 order by IFNULL(sudahapprove,'ZZ'), idtipe, idpr asc";
                 $tampil= mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     $pidpr=$row['idpr'];
@@ -170,9 +181,35 @@ session_start();
                         $puserinput=$row1['nama_user'];
                         $psudahisi=$row1['ssudah'];
                         $pposudah=$row1['ssudahpo'];
+                        $ptipeminta=$row1['idtipe'];
                         
                         $pjml=$row1['jml'];
                         $pharga=$row1['rp_pr'];
+                        
+                        $ptglatasan1=$row1['tgl_atasan1'];
+                        $ptglatasan2=$row1['tgl_atasan2'];
+                        $ptglatasan3=$row1['tgl_atasan3'];
+                        $ptglatasan4=$row1['tgl_atasan4'];
+                        $ptglatasan5=$row1['tgl_atasan5'];
+                        $ptglval1=$row1['tgl_validate1'];
+                        $ptglval2=$row1['tgl_validate2'];
+
+                        $pidatasan1=$row1['atasan1'];
+                        $pidatasan2=$row1['atasan2'];
+                        $pidatasan3=$row1['atasan3'];
+                        $pidatasan4=$row1['atasan4'];
+                        $pidatasan5=$row1['atasan5'];
+                        $puserval1=$row1['validate1'];
+                        $puserval2=$row1['validate2'];
+                    
+                        if ($ptglatasan1=="0000-00-00" OR $ptglatasan1=="0000-00-00 00:00:00") $ptglatasan1="";
+                        if ($ptglatasan2=="0000-00-00" OR $ptglatasan2=="0000-00-00 00:00:00") $ptglatasan2="";
+                        if ($ptglatasan3=="0000-00-00" OR $ptglatasan3=="0000-00-00 00:00:00") $ptglatasan3="";
+                        if ($ptglatasan4=="0000-00-00" OR $ptglatasan4=="0000-00-00 00:00:00") $ptglatasan4="";
+                        if ($ptglatasan5=="0000-00-00" OR $ptglatasan5=="0000-00-00 00:00:00") $ptglatasan5="";
+                        if ($ptglval1=="0000-00-00" OR $ptglval1=="0000-00-00 00:00:00") $ptglval1="";
+                        if ($ptglval2=="0000-00-00" OR $ptglval2=="0000-00-00 00:00:00") $ptglval2="";
+                        
                         
                         $ptgl= date("d/m/Y", strtotime($ptgl));
                         $pjml=number_format($pjml,0,",",",");
@@ -180,7 +217,7 @@ session_start();
                         
                         
                         $pwarnafld1="btn btn-default btn-xs";
-                        $pwarnafld2="btn btn-default btn-xs";
+                        $pwarnafld2="btn btn-info btn-xs";
                         if ($psudahisi=="Y") {
                             $pwarnafld1="btn btn-warning btn-xs";
                             $pwarnafld2="btn btn-dark btn-xs";
@@ -199,19 +236,48 @@ session_start();
                         
                         $ppilihan="$pisivendor";
                         
+                        
+                        $pketgsmhos="GSM";
+                    
+                        $pstsapvoleh="";
+                        
+                        if ($ptipeminta=="102") {
+                            if (empty($ptglval1)) {
+                                $pstsapvoleh="Belum Proses IT";
+                            }
+                        }
+                        
+                        if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve $pketgsmhos"; }
+                        if (empty($ptglatasan3) AND !empty($pidatasan3)) { $pstsapvoleh="Belum Approve SM"; }
+                        if (empty($ptglatasan2) AND !empty($pidatasan2)) { $pstsapvoleh="Belum Approve DM"; }
+                        if (empty($ptglatasan1) AND !empty($pidatasan1)) { $pstsapvoleh="Belum Approve SPV/AM"; }
+                        
+                        if (!empty($pstsapvoleh)) {
+                            $ppilihan="<span style='color:red;'>$pstsapvoleh</span>";
+                        }
+                        
                         if ($pposudah=="Y") {
                             $ppilihan="SUDAH PO";
                         }
                         
+                        
+                        $npmdl="pchpurchasereq";
+
+                        $pprint="<a title='Detail / Print' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
+                            . "onClick=\"window.open('eksekusi3.php?module=$npmdl&brid=$pidpr&iprint=print',"
+                            . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                            . "$pkrynm</a>";
+                    
+                        
                         echo "<tr>";
                         
-                            echo "<td nowrap>$no</td>";
-                            echo "<td nowrap class='divnone'>$pidpr $pnmtipe $pkrynm $puserinput $ptgl </td>";
-                            echo "<td nowrap>$ppilihan</td>";
-                            echo "<td nowrap>$plihatvendor</td>";
-                            echo "<td nowrap>$pnmtipe</td>";
-                            echo "<td nowrap>$ptgl</td>";
-                            echo "<td nowrap>$pkrynm</td>";
+                        echo "<td nowrap>$no</td>";
+                        echo "<td nowrap class='divnone'>$pidpr $pnmtipe $pkrynm $puserinput $ptgl </td>";
+                        echo "<td nowrap>$ppilihan</td>";
+                        echo "<td nowrap>$plihatvendor</td>";
+                        echo "<td nowrap>$pnmtipe</td>";
+                        echo "<td nowrap>$ptgl</td>";
+                        echo "<td nowrap>$pkrynm</td>";
                         
                         echo "<td nowrap>$pnmbarang</td>";
                         echo "<td >$pspesifikasi</td>";
@@ -219,9 +285,7 @@ session_start();
                         echo "<td nowrap align='right'>$pjml</td>";
                         echo "<td nowrap align='right'>$pharga</td>";
                         
-                        
-                            echo "<td >&nbsp;</td>";
-                            echo "<td >$puserinput</td>";
+                        echo "<td >$puserinput</td>";
                         
                         echo "</tr>";
                         

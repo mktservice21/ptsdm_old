@@ -51,6 +51,27 @@ if ($module=='pchisivendorpr')
         
         $kodenya=$_POST['e_id'];
         $pdidpr=$_POST['e_idpr'];
+        
+        $query = "select idpr, idtipe, tgl_validate1 FROM dbpurchasing.t_pr_transaksi WHERE idpr='$pdidpr'";
+        $tampil= mysqli_query($cnmy, $query);
+        $ketemu= mysqli_num_rows($tampil);
+        if ((INT)$ketemu>0) {
+            $row    = mysqli_fetch_array($tampil);
+            $ptipeminta=$row['idtipe'];
+            $ptglval1=$row['tgl_validate1'];
+            
+            if ($ptglval1=="0000-00-00" OR $ptglval1=="0000-00-00 00:00:00") $ptglval1="";
+            
+            if ($ptipeminta=="102") {
+                if (empty($ptglval1)) {
+                    echo "Belum diproses IT..."; mysqli_close($cnmy); exit;
+                }
+            }
+            
+        }
+        
+        
+        
         $pdidpr_d=$_POST['e_idpr_d'];
         $pidvendor_d=$_POST['e_idvendor'];
         $pidbrg=$_POST['e_idbrg'];
@@ -137,7 +158,7 @@ if ($module=='pchisivendorpr')
         
         
         if ($pidbrg_d!=$pidbrg) {
-            echo "ada"; exit;
+            //echo "ada"; exit;
             $query = "UPDATE dbpurchasing.t_pr_transaksi_d SET idbarang='$pidbrg', namabarang='$pnmbrg' WHERE idbarang='$pidbrg_d' AND idpr='$pdidpr' AND idpr_d='$pdidpr_d' LIMIT 1";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
@@ -153,6 +174,8 @@ if ($module=='pchisivendorpr')
                     . "VALUES('$pdidpr', '$pdidpr_d', '$pidvendor_d', '$pidbrg', '$pnmbrg', '$pidbrg2', '$pspesbrg', '$pjml', '$pharga', '$psatuan', '$pketdetail', '$ptotalhrga', '$ppilihsts', '$pcardidlog')";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
+            $query = "UPDATE dbpurchasing.t_pr_transaksi_po SET idbarang_d=NULL WHERE idpr_po='$kodenya' LIMIT 1";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         }elseif ($act=="updatevendor") {
             if (!empty($kodenya)) {
                 $query = "UPDATE dbpurchasing.t_pr_transaksi_po SET "
@@ -163,8 +186,6 @@ if ($module=='pchisivendorpr')
             }
         }
         
-        $query = "UPDATE dbpurchasing.t_pr_transaksi_po SET idbarang_d=NULL WHERE idpr_po='$kodenya' LIMIT 1";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
         
         mysqli_close($cnmy);

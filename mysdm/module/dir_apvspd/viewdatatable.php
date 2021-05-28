@@ -159,6 +159,13 @@
                             $pmymodule="module=bgtpdkaskecilcabang&act=input&idmenu=350&ket=bukan&ispd=$idno&bln=$tglbuat";
                             $pmymodule2="module=bgtpdkaskecilcabang&act=input&idmenu=350&ket=excel&ispd=$idno&bln=$tglbuat";
                         }
+                        
+                    if ($pjenisrpt=="D" OR $pjenisrpt=="C") {
+                        if ($pkaryawanid=="0000000266" OR $pkaryawanid=="0000000144") {
+                            //$pmymodule="module=saldosuratdana&act=viewbrklaim&idmenu=192&ket=bukan&ispd=$idno&iid=$pmystsyginput";
+                            $pmymodule="module=previewmintadana&act=viewrptklaimdist&idmenu=504ket=bukan&ispd=$idno&iid=$pmystsyginput";
+                        }
+                    }
 						
                     //if ($pstsp=="BPJS") {
                     if ($psubkode=="25" AND (double)$ptglinput>='202005' ) {

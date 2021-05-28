@@ -88,6 +88,15 @@
         $query = "create TEMPORARY table $tmp02 ($query)"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+        //echo $query;
+        $query = "INSERT INTO $tmp02 (idinputbank, tglinput, blnpengajuan, tgl, divisi, kodeid, subkode, jmlrp, jumlah)"
+                . "select idinputbank, tglinput, DATE_FORMAT(tanggal,'%Y%m') as blnpengajuan, DATE_FORMAT(tanggal,'%d/%m/%Y') as tgl, "
+                . " divisi, kodeid, subkode, jumlah, FORMAT(jumlah,0,'de_DE') as jumlah "
+                . " from dbmaster.t_suratdana_bank WHERE idinputbank='BN00004147' "; 
+        //mysqli_query($cnmy, $query);
+        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 		
 		
         //bunga diganti jadi minus

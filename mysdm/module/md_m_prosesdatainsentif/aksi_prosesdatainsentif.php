@@ -23,8 +23,8 @@ if ($module=='mstprosesinsentif' AND $act=='hapus')
     if ($pdivprod=="blank") $fildivisi=" AND IFNULL(divisi,'')=''";
 
     $pincfrom=$_POST['uincfm'];
-    $pfilterincfrom=" AND IFNULL(i.jenis2,'')='$pincfrom' ";
-    if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(i.jenis2,'') NOT IN ('GSM', '') ";
+    $pfilterincfrom=" AND IFNULL(jenis2,'')='$pincfrom' ";
+    if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(jenis2,'') NOT IN ('GSM', '') ";
 
     
     $query="DELETE FROM ms.incentiveperdivisi WHERE bulan='$ptgl1' $fildivisi $pfilterincfrom";

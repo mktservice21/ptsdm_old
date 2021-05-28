@@ -3,7 +3,7 @@
     session_start(); 
     
     //ini_set('display_errors', '0');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
 
     $puserid="";
@@ -27,6 +27,7 @@
     
     
     include "../../../config/koneksimysqli.php";
+    include "../../../config/fungsi_ubahget_id.php";
     
     
     $date1=$_POST['uperiode1'];
@@ -100,6 +101,7 @@
                 $tampil= mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     $pidpr=$row['idpr'];
+                    $pidnoget=encodeString($pidpr);
                     $pbelumlewat=false;
                     
                     $query = "select * from $tmp01 WHERE idpr='$pidpr' order by idpr DESC";
@@ -124,7 +126,7 @@
                         $pjml=number_format($pjml,0,",",",");
                         $pharga=number_format($pharga,0,",",",");
                         
-                        $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidpr'>Edit</a>";
+                        $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidnoget'>Edit</a>";
                         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$pidpr')\">";
                         
                         $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "

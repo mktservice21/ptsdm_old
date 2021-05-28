@@ -57,7 +57,9 @@ session_start();
         b.atasan2, b.tgl_atasan2, 
         b.atasan3, b.tgl_atasan3,
         b.atasan4, b.tgl_atasan4,
-        b.atasan5, b.tgl_atasan5 
+        b.atasan5, b.tgl_atasan5, 
+        b.validate1, b.tgl_validate1, 
+        b.validate2, b.tgl_validate2 
         from dbpurchasing.t_pr_transaksi_d as a JOIN dbpurchasing.t_pr_transaksi as b on a.idpr=b.idpr 
         JOIN hrd.karyawan c on b.karyawanid=c.karyawanid
         LEFT JOIN MKT.icabang as d on b.icabangid=d.iCabangId
@@ -66,17 +68,29 @@ session_start();
         LEFT JOIN dbpurchasing.t_pr_tipe as g on b.idtipe=g.idtipe WHERE 1=1 AND IFNULL(pilihpo,'') IN ('Y') ";
     $query .=" AND IFNULL(stsnonaktif,'')<>'Y' AND b.tanggal BETWEEN '$pbulan1' AND '$pbulan2' ";
     if ($ppilihsts=="UNAPPROVE") {
-        $query .=" AND IFNULL(b.validate1,'') <> '' ";
-
-        $query .=" AND a.idpr_d IN (select distinct IFNULL(idpr_d,'') from dbpurchasing.t_pr_transaksi_po WHERE IFNULL(aktif,'')='Y') ";
+        $query .= " AND (IFNULL(b.tgl_validate1,'')<>'' AND IFNULL(b.tgl_validate1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+        //$query .=" AND a.idpr_d IN (select distinct IFNULL(idpr_d,'') from dbpurchasing.t_pr_transaksi_po WHERE IFNULL(aktif,'')='Y') ";
     }else{
-        $query .=" AND IFNULL(b.validate1,'') = '' ";
+        $query .= " AND (IFNULL(b.tgl_validate1,'')='' OR IFNULL(b.tgl_validate1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
     }
     $query .=" AND b.idtipe = '102' ";
     $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
+    
+    
+    $query = "ALTER table $tmp01 ADD COLUMN sudahapprove varchar(1), ADD COLUMN sudahisivendor varchar(1)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    if ($ppilihsts=="APPROVE") {
+        $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE IFNULL(tgl_atasan4,'')<>'' AND IFNULL(tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    }
+    
+    $query = "UPDATE $tmp01 as a JOIN dbpurchasing.t_pr_transaksi_po as b on a.idpr=b.idpr SET a.sudahisivendor='Y' WHERE IFNULL(b.aktif,'')='Y'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
 ?>
 
 <form method='POST' action='<?PHP echo "?module='$pmodule'&act=$pact&idmenu=$pidmenu"; ?>' 
@@ -97,6 +111,7 @@ session_start();
                         onClick="SelAllCheckBox('chkbtnbr', 'chkbox_br[]')" />
                     </th>
                     <th width='20px'>&nbsp;</th>
+                    <th width='20px'>&nbsp;</th>
                     <th width='20px'>ID</th>
                     <th width='30px'>Tanggal</th>
                     <th width='30px'>Yg Mengajukan</th>
@@ -106,18 +121,28 @@ session_start();
                     <th width='50px'>Jumlah</th>
                     <th width='50px'>Harga</th>
                     <th width='20px'>Tipe</th>
+                    <th width='20px'>Status</th>
                 </tr>
             </thead>
             <tbody>
                 <?PHP
                 $no=1;
-                $query = "select distinct idpr from $tmp01 order by idpr asc";
+                $query = "select distinct idpr from $tmp01 order by IFNULL(sudahapprove,'ZZ'), idpr asc";
                 $tampil= mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     $pidpr=$row['idpr'];
                     $pbelumlewat=false;
                     
-                    $query = "select * from $tmp01 WHERE idpr='$pidpr' order by idpr asc";
+                    $npmdl="pchpurchasereq";
+
+                    $pprint="<a title='Detail / Print' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
+                        . "onClick=\"window.open('eksekusi3.php?module=$npmdl&brid=$pidpr&iprint=print',"
+                        . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                        . "$pidpr</a>";
+                        
+                    $ceklisnya = "<input type='checkbox' value='$pidpr' name='chkbox_br[]' id='chkbox_br[$pidpr]' class='cekbr'>";
+                    
+                    $query = "select * from $tmp01 WHERE idpr='$pidpr' order by idpr asc, idpr_d";
                     $tampil1= mysqli_query($cnmy, $query);
                     while ($row1= mysqli_fetch_array($tampil1)) {
                         $pidpr_d=$row1['idpr_d'];
@@ -130,6 +155,32 @@ session_start();
                         $pketerangan=$row1['keterangan'];
                         $pnotes=$row1['aktivitas'];
                         $puserinput=$row1['nama_user'];
+                        $psudahisivendor=$row1['sudahisivendor'];
+                        
+                        $ptglatasan1=$row1['tgl_atasan1'];
+                        $ptglatasan2=$row1['tgl_atasan2'];
+                        $ptglatasan3=$row1['tgl_atasan3'];
+                        $ptglatasan4=$row1['tgl_atasan4'];
+                        $ptglatasan5=$row1['tgl_atasan5'];
+                        $ptglval1=$row1['tgl_validate1'];
+                        $ptglval2=$row1['tgl_validate2'];
+
+                        $pidatasan1=$row1['atasan1'];
+                        $pidatasan2=$row1['atasan2'];
+                        $pidatasan3=$row1['atasan3'];
+                        $pidatasan4=$row1['atasan4'];
+                        $pidatasan5=$row1['atasan5'];
+                        $puserval1=$row1['validate1'];
+                        $puserval2=$row1['validate2'];
+                    
+                        if ($ptglatasan1=="0000-00-00" OR $ptglatasan1=="0000-00-00 00:00:00") $ptglatasan1="";
+                        if ($ptglatasan2=="0000-00-00" OR $ptglatasan2=="0000-00-00 00:00:00") $ptglatasan2="";
+                        if ($ptglatasan3=="0000-00-00" OR $ptglatasan3=="0000-00-00 00:00:00") $ptglatasan3="";
+                        if ($ptglatasan4=="0000-00-00" OR $ptglatasan4=="0000-00-00 00:00:00") $ptglatasan4="";
+                        if ($ptglatasan5=="0000-00-00" OR $ptglatasan5=="0000-00-00 00:00:00") $ptglatasan5="";
+                        if ($ptglval1=="0000-00-00" OR $ptglval1=="0000-00-00 00:00:00") $ptglval1="";
+                        if ($ptglval2=="0000-00-00" OR $ptglval2=="0000-00-00 00:00:00") $ptglval2="";
+                        
                         
                         $pjml=$row1['jml'];
                         $pharga=$row1['rp_pr'];
@@ -142,21 +193,43 @@ session_start();
                         $pwarnafld1="btn btn-default btn-xs";
                         $pwarnafld2="btn btn-default btn-xs";
                         
-                        
-                        
                         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$pidpr')\">";
                         $pedit="<a class='btn btn-warning btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&xd=$pidpr_d&id=$pidpr'>Edit</a>";
-
-                        $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
-                            . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$pidpr&iprint=print',"
-                            . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                            . "Print</a>";
+                        
+                        $pketgsmhos="GSM";
+                    
+                        $pstsapvoleh="";
+                        
+                        if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve $pketgsmhos"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                        if (empty($ptglatasan3) AND !empty($pidatasan3)) { $pstsapvoleh="Belum Approve SM"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                        if (empty($ptglatasan2) AND !empty($pidatasan2)) { $pstsapvoleh="Belum Approve DM"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                        if (empty($ptglatasan1) AND !empty($pidatasan1)) { $pstsapvoleh="Belum Approve SPV/AM"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                        
+                        if (!empty($pstsapvoleh)) {
+                            $pstsapvoleh="<span style='color:red;'>$pstsapvoleh</span>";
+                        }
+                        
+                        
+                        if (!empty($puserval2)) {
+                            $pstsapvoleh="<span style='color:blue;'>Sudah Proses Purchasing</span>";
+                            $ceklisnya="";
+                        }
+                        
+                        if ($ppilihsts=="UNAPPROVE") {
+                            $pedit=""; $phapus="";
+                        }
+                        
+                        if ($psudahisivendor=="Y") {
+                            $ceklisnya="";
+                            $pedit=""; $phapus="";
+                        }
                         
                         echo "<tr>";
                         
                         echo "<td nowrap>$no</td>";
                         echo "<td nowrap class='divnone'>$pidpr $pnmtipe $pkrynm $puserinput $ptgl </td>";
-                        echo "<td nowrap></td>";
+                        echo "<td nowrap>$ceklisnya</td>";
+                        echo "<td nowrap>$pprint</td>";
                         echo "<td nowrap>$pedit</td>";
                         echo "<td nowrap>$pidpr_d</td>";
                         echo "<td nowrap>$ptgl</td>";
@@ -168,11 +241,14 @@ session_start();
                         echo "<td nowrap align='right'>$pjml</td>";
                         echo "<td nowrap align='right'>$pharga</td>";
                         echo "<td nowrap>$pnmtipe</td>";
+                        echo "<td nowrap>$pstsapvoleh</td>";
                         
                         echo "</tr>";
                         
                         $pbelumlewat=true;
                         $no++;
+                        $ceklisnya="";
+                        $pprint="";
                     }
                     
                     
@@ -183,6 +259,27 @@ session_start();
         
     </div>
 
+    <?PHP
+    if ($ppilihsts=="UNAPPROVE") {
+    ?>
+        <div class='clearfix'></div>
+        <div class="well" style="margin-top: -5px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 6px;"><!--overflow: auto; -->
+            <input class='btn btn-success' type='button' name='buttonapv' value='UnProses' 
+               onClick="ProsesDataUnProses('unproses', 'chkbox_br[]')">
+        </div>
+    <?PHP
+    }
+    ?>
+    
+    <!-- tanda tangan -->
+    <?PHP
+        if ($ppilihsts=="APPROVE") {
+            echo "<div class='col-sm-5'>";
+            include "ttd_prosit.php";
+            echo "</div>";
+        }
+    ?>
+    
 </form>
 
 
@@ -202,6 +299,56 @@ session_start();
             button.value = 'select';
         }
     }
+    
+    
+    function ProsesDataUnProses(ket, cekbr){
+        //alert(ket+", "+cekbr);
+        var cmt = confirm('Apakah akan melakukan unproses...?');
+        if (cmt == false) {
+            return false;
+        }
+        var allnobr = "";
+        
+        var chk_arr =  document.getElementsByName(cekbr);
+        var chklength = chk_arr.length;
+        var allnobr="";
+        for(k=0;k< chklength;k++)
+        {
+            if (chk_arr[k].checked == true) {
+                allnobr =allnobr + "'"+chk_arr[k].value+"',";
+            }
+        }
+        if (allnobr.length > 0) {
+            var lastIndex = allnobr.lastIndexOf(",");
+            allnobr = "("+allnobr.substring(0, lastIndex)+")";
+        }else{
+            alert("Tidak ada data yang diproses...!!!");
+            return false;
+        }
+        
+        
+        
+        var txt;
+        var ekaryawan=document.getElementById('cb_karyawan').value;
+            
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        
+        $.ajax({
+            type:"post",
+            url:"module/purchasing/pch_prosesprit/simpan_prosesit.php?module="+module+"&idmenu="+idmenu+"&act="+ket,
+            data:"ket=unapprove"+"&unobr="+allnobr+"&ukaryawan="+ekaryawan+"&ketrejpen="+txt,
+            success:function(data){
+                pilihData('unapprove');
+                alert(data);
+            }
+        });
+        
+        
+    }
+    
 </script>
 
 <style>

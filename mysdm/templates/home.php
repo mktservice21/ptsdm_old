@@ -770,6 +770,8 @@
         include 'module/purchasing/pch_barang/pchbarang.php';
     }elseif ($_GET['module']=='pchprosesprit'){
         include 'module/purchasing/pch_prosesprit/prosesprit.php';
+    }elseif ($_GET['module']=='pchapvprbymkt'){
+        include 'module/purchasing/pch_apvpreth/apvpcheth.php';
         
     }elseif ($_GET['module']=='mapsalescust'){
         include 'module/sls_mapsalescust/mapsalescust.php';

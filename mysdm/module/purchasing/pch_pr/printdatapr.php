@@ -36,10 +36,10 @@
     $tmp00 =" dbtemp.tmpinptpodt00_".$puserid."_$now ";
     $tmp01 =" dbtemp.tmpinptpodt01_".$puserid."_$now ";
     
-    $query = "select idpr, pilihpo, pengajuan, idtipe, tglinput, tanggal, karyawanid, jabatanid, divisi, 
+    $query = "select idpr, pilihpo, pengajuan, idtipe, tglinput, tanggal, karyawanid, jabatanid, divisi, iddep, 
             icabangid, areaid, icabangid_o, areaid_o, aktivitas, aktivitas2, jumlah,
-            atasan1, atasan2, atasan3, atasan4,
-            tgl_atasan1, tgl_atasan2, tgl_atasan4,
+            atasan1, atasan2, atasan3, atasan4, atasan5, 
+            tgl_atasan1, tgl_atasan2, tgl_atasan3, tgl_atasan4, tgl_atasan5,
             validate1, validate2, validate3, 
             tgl_validate1, tgl_validate2, tgl_validate3
             from dbpurchasing.t_pr_transaksi WHERE "
@@ -53,21 +53,69 @@
     $pket1=$row['aktivitas'];
     $pket2=$row['aktivitas2'];
     $pidkryid=$row['karyawanid'];
+    $pjabatanid=$row['jabatanid'];
+    $pdivisiid=$row['divisi'];
+    $pdepid=$row['iddep'];
+    $ppengajuan=$row['pengajuan'];
+    
+    $pptglatasan1=$row['tgl_atasan1'];
+    $pptglatasan2=$row['tgl_atasan2'];
+    $pptglatasan3=$row['tgl_atasan3'];
+    $pptglatasan4=$row['tgl_atasan4'];
+    $pptglatasan5=$row['tgl_atasan5'];
+    
+    if ($pptglatasan1=="0000-00-00 00:00:00") $pptglatasan1="";
+    if ($pptglatasan2=="0000-00-00 00:00:00") $pptglatasan2="";
+    if ($pptglatasan3=="0000-00-00 00:00:00") $pptglatasan3="";
+    if ($pptglatasan4=="0000-00-00 00:00:00") $pptglatasan4="";
+    if ($pptglatasan5=="0000-00-00 00:00:00") $pptglatasan5="";
+    
     
     $query = "select karyawanid as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE karyawanid='$pidkryid'";
     $tampilk= mysqli_query($cnmy, $query);
     $krow= mysqli_fetch_array($tampilk);
     $pnamakry=$krow['nama_karyawan'];
     
+    $query = "select iddep, nama_dep from dbmaster.t_department WHERE iddep='$pdepid'";
+    $tampild= mysqli_query($cnmy, $query);
+    $drow= mysqli_fetch_array($tampild);
+    $pnamadep=$drow['nama_dep'];
     
     
+    $patasan1=$row['atasan1'];
+    $nmatasan1 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan1'");
+    $patasan2=$row['atasan2'];
+    $nmatasan2 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan2'");
+    $patasan3=$row['atasan3'];
+    $nmatasan3 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan3'");
+    $patasan4=$row['atasan4'];
+    $nmatasan4 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan4'");
+    $patasan5=$row['atasan5'];
+    $nmatasan5 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan5'");
     
-    $query = "select idpr, gambar, gbr_atasan1, gbr_atasan2, gbr_atasan3, gbr_atasan4, gbr_atasan5 from dbttd.t_pr_transaksi_ttd WHERE idpr='$pidpr'";
-    $tampilg= mysqli_query($cnmy, $query);
-    $grow= mysqli_fetch_array($tampilg);
     
-    $namapengaju="";
-    $gambar=$grow['gambar'];
+    $gambar=""; $gbr1=""; $gbr2=""; $gbr3=""; $gbr4=""; $gbr5="";
+    $query = "select * from dbttd.t_pr_transaksi_ttd where idpr='$pidpr'";
+    $tampil1=mysqli_query($cnmy, $query);
+    $ketemu1= mysqli_num_rows($tampil1);
+    if ((INT)$ketemu1>0) {
+        $row1= mysqli_fetch_array($tampil1);
+
+        $gambar=$row1['gambar'];
+        $gbr1=$row1['gbr_atasan1'];
+        $gbr2=$row1['gbr_atasan2'];
+        $gbr3=$row1['gbr_atasan3'];
+        $gbr4=$row1['gbr_atasan4'];
+        $gbr5=$row1['gbr_atasan5'];
+    
+    }
+    
+    if (empty($pptglatasan1) OR empty($nmatasan1)) $gbr1="";
+    if (empty($pptglatasan2) OR empty($nmatasan2)) $gbr2="";
+    if (empty($pptglatasan3) OR empty($nmatasan3)) $gbr3="";
+    if (empty($pptglatasan4) OR empty($nmatasan4)) $gbr4="";
+    if (empty($pptglatasan5) OR empty($nmatasan5)) $gbr5="";
+    
     
     if (!empty($gambar)) {
         $data="data:".$gambar;
@@ -75,12 +123,61 @@
         list($type, $data) = explode(';', $data);
         list(, $data)      = explode(',', $data);
         $data = base64_decode($data);
-        $namapengaju="img_".$pidpr."PENGAJUPR_.png";
+        $namapengaju="img_".$pidpr."FCUT_.png";
         file_put_contents('images/tanda_tangan_base64/'.$namapengaju, $data);
     }
     
+    if (!empty($gbr1)) {
+        $data="data:".$gbr1;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namaspv="img_".$pidpr."SVPFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namaspv, $data);
+    }
     
-    $namaatasan=""; $nmatasan=""; 
+    if (!empty($gbr2)) {
+        $data="data:".$gbr2;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namadm="img_".$pidpr."DMFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namadm, $data);
+    }
+    
+    if (!empty($gbr3)) {
+        $data="data:".$gbr3;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namasm="img_".$pidpr."SMFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namasm, $data);
+    }
+
+    if (!empty($gbr4)) {
+        $data="data:".$gbr4;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namagsm="img_".$pidpr."GSMFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namagsm, $data);
+    }
+    
+    if (!empty($gbr5)) {
+        $data="data:".$gbr5;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namaceo="img_".$pidpr."CEOFCUT_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namaceo, $data);
+    }
+    
+    
     
 ?>
 
@@ -340,23 +437,12 @@
         ?>
         <br/><br/>
         
+        
         <center>
             <table class='tjudul' width='100%'>
                 <?PHP
                     echo "<tr>";
-                    
-                        echo "<td align='center'>";
-                        echo "Atasan :";
-                        if (!empty($namaatasan)) {
-                            echo "<br/><img src='images/tanda_tangan_base64/$namaatasan' height='$gmrheight'><br/>";
-                        }else{
-                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                        }
-                        echo "<b><u>$nmatasan</u></b>";
-
-                        echo "</td>";
-                    
-                        echo "<td align='center'>";
+                        echo "<td align='center' nowrap>";
                         echo "Yang Membuat :";
                         if (!empty($namapengaju)) {
                             echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
@@ -364,13 +450,136 @@
                             echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                         }
                         echo "<b><u>$pnamakry</u></b>";
-
+                        
                         echo "</td>";
+                        
+                        if ($pjabatanid=="15" OR $pjabatanid=="38") {
+                            
+                            if (!empty($nmatasan1)) {
+                                echo "<td align='center' nowrap>";
+                                /*
+                                if (empty($nmatasan2)) echo "Mengetahui :";
+                                else echo "Atasan :";
+                                */
+                                echo "Menyetujui :";
+                                
+                                if (!empty($namaspv)) {
+                                    echo "<br/><img src='images/tanda_tangan_base64/$namaspv' height='$gmrheight'><br/>";
+                                }else{
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                }
+                                if (!empty($nmatasan1)) echo "<b><u>$nmatasan1</u></b>";
+                                else echo "..........................................";
+
+                                echo "</td>";
+                            }
+                            
+                        }
+                        
+                        if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18") {
+                            
+                            if (!empty($nmatasan2)) {
+                                echo "<td align='center' nowrap>";
+                                /*
+                                if ( ($pjabatanid=="15" OR $pjabatanid=="38") ) echo "Mengetahui :";
+                                else echo "Atasan :";
+                                */
+                                echo "Menyetujui :";
+                                
+                                if (!empty($namadm)) {
+                                    echo "<br/><img src='images/tanda_tangan_base64/$namadm' height='$gmrheight'><br/>";
+                                }else{
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                }
+                                if (!empty($nmatasan2)) echo "<b><u>$nmatasan2</u></b>";
+                                else echo "..........................................";
+
+                                echo "</td>";
+                            }
+                            
+                        }
+                        
+                        if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08") {
+                            
+                            echo "<td align='center' nowrap>";
+                            /*
+                            if ($pjabatanid=="15" OR $pjabatanid=="38") {
+                                echo "Menyetujui :";
+                            }else{
+                                if ($pjabatanid=="10" OR $pjabatanid=="18") echo "Mengetahui :";
+                                elseif ($pjabatanid=="08") echo "Mengetahui :";
+                            }
+                            */
+                            echo "Menyetujui :";
+                            
+                            if (!empty($namasm)) {
+                                echo "<br/><img src='images/tanda_tangan_base64/$namasm' height='$gmrheight'><br/>";
+                            }else{
+                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            }
+                            if (!empty($nmatasan3)) echo "<b><u>$nmatasan3</u></b>";
+                            else echo "..........................................";
+                                
+
+                            echo "</td>";
+                            
+                        }
+                        
+                        if ($pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08" OR $pjabatanid=="20") {
+                            
+                            echo "<td align='center' nowrap>";
+                            echo "Menyetujui :";
+                            if (!empty($namagsm)) {
+                                echo "<br/><img src='images/tanda_tangan_base64/$namagsm' height='$gmrheight'><br/>";
+                            }else{
+                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            }
+                            if (!empty($nmatasan4)) echo "<b><u>$nmatasan4</u></b>";
+                            else echo "..........................................";
+                                
+
+                            echo "</td>";
+                            
+                        }
+                        
+                        if ($pjabatanid=="05" OR $pjabatanid=="22" OR $pjabatanid=="06") {
+                            echo "<td align='center' nowrap>";
+                            echo "Menyetujui :";
+                            if (!empty($namaceo)) {
+                                echo "<br/><img src='images/tanda_tangan_base64/$namaceo' height='$gmrheight'><br/>";
+                            }else{
+                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            }
+                            if (!empty($nmatasan5)) echo "<b><u>$nmatasan5</u></b>";
+                            else echo "..........................................";
+                                
+
+                            echo "</td>";
+                        }
+                        
+                        if ($pjabatanid=="13") {
+                            echo "<td align='center' nowrap>";
+                            echo "Mengetahui, ";
+                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            echo "..........................................";
+                                
+
+                            echo "</td>";
+                            echo "<td align='center' nowrap>";
+                            echo "Menyetujui, ";
+                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            echo "..........................................";
+                                
+
+                            echo "</td>";
+                        }
                         
                     echo "</tr>";
                 ?>
             </table>
         </center>
+        
+        
         <br/>
         
     </div>

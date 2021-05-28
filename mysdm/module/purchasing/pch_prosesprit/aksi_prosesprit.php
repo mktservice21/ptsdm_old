@@ -96,25 +96,37 @@ if ($module=='pchprosesprit' AND $act=="update")
     }
 
     include "../../../config/koneksimysqli.php";
+    
+    $query = "select idpr_d FROM dbpurchasing.t_pr_transaksi_d2 WHERE idpr_d='$detailkode' AND idpr='$kodenya'";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ((INT)$ketemu<=0) {
+        $query = "insert into dbpurchasing.t_pr_transaksi_d2 
+            (idpr_d, idpr, idbarang, namabarang, idbarang_d, spesifikasi1, spesifikasi2, uraian, 
+            keterangan, jumlah, satuan, harga, userid) select 
+            idpr_d, idpr, idbarang, namabarang, idbarang_d, spesifikasi1, spesifikasi2, uraian, 
+            keterangan, jumlah, satuan, harga, '$pcardidlog' as userid FROM dbpurchasing.t_pr_transaksi_d WHERE 
+            idpr_d='$detailkode' AND idpr='$kodenya'";
 
+        mysqli_query($cnmy, $query);  $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
-    $query = "insert into dbpurchasing.t_pr_transaksi_d2 
-        (idpr_d, idpr, idbarang, namabarang, idbarang_d, spesifikasi1, spesifikasi2, uraian, 
-        keterangan, jumlah, satuan, harga, userid) select 
-        idpr_d, idpr, idbarang, namabarang, idbarang_d, spesifikasi1, spesifikasi2, uraian, 
-        keterangan, jumlah, satuan, harga, userid FROM dbpurchasing.t_pr_transaksi_d WHERE 
-        idpr_d='$detailkode' AND idpr='$kodenya'";
+    }
 
-    mysqli_query($cnmy, $query);  $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-
-
-    $query_detail="INSERT INTO dbpurchasing.t_pr_transaksi_d (idpr, idbarang, namabarang, spesifikasi1, jumlah, keterangan, harga, satuan, userid) 
+    $query_detail="INSERT INTO dbpurchasing.t_pr_transaksi_d (idpr, idbarang, namabarang, spesifikasi1, jumlah, harga, keterangan, satuan, userid) 
         VALUES ".implode(', ', $pinsert_data_detail);
     mysqli_query($cnmy, $query_detail);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+    
+    
+    $query = "DELETE FROM dbpurchasing.t_pr_transaksi_d WHERE idpr_d='$detailkode' AND idpr='$kodenya' LIMIT 1";
+    mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
 
     mysqli_close($cnmy);
+    
+    header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
+    exit;
 
 }
 

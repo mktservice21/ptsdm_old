@@ -78,14 +78,27 @@ if (!empty($pnmareapilih)) {
     $pnmareapilih=substr($pnmareapilih, 0, -2);
 }
 
+$pprodukpm="";
+$query = "select divprodid as divprodid from ms.penempatan_pm WHERE karyawanid='$pmyidcard'";
+$tampilp= mysqli_query($cnms, $query);
+$ketemup= mysqli_num_rows($tampilp);
+if ((INT)$ketemup>0) {
+    $nrow= mysqli_fetch_array($tampilp);
+    $pprodukpm=$nrow['divprodid'];
+}
+
 $query = "select divprodid, iprodid, DATE_FORMAT(tgljual,'%m') bulan, sum(qty) as qty, sum(hna*qty) as tvalue 
     from sls.mr_sales2 WHERE year(tgljual)='$pperiode1' 
     and icustid='$pcboutlet' ";
 if ($pmyjabatanid=="15") {
     $query .=" AND CONCAT(IFNULL(icabangid,''),IFNULL(areaid,'')) IN 
       (SELECT DISTINCT CONCAT(IFNULL(icabangid,''),IFNULL(areaid,'')) FROM sls.imr0 WHERE karyawanid='$pmrpilih') ";
+}else{
+    if (!empty($pprodukpm)) {
+        $query .=" AND divprodid='$pprodukpm' ";
+    }
 }
-
+//echo "<br/>$query<br/>";
 $query .=" GROUP BY 1,2,3";
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
 mysqli_query($cnms, $query);

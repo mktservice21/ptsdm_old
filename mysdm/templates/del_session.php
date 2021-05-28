@@ -699,4 +699,13 @@
     $_SESSION['SPDBRETKARYA']="";
     $_SESSION['SPDBRETTGL01']="";
     $_SESSION['SPDBRETTGL02']="";
+    
+    
+    //APPROVE PR ETHICAL
+    $_SESSION['APVPCHPRSTS']="";
+    $_SESSION['APVPCHPRBLN1']="";
+    $_SESSION['APVPCHPRBLN2']="";
+    $_SESSION['APVPCHPRAPVBY']="";
+    
+    
 ?>

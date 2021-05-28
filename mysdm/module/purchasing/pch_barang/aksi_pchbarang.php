@@ -60,11 +60,11 @@ elseif ($module=='pchdatabarang')
     
     $pidtipebrg=$_POST['cb_tipebrg'];
     $pidgrpbrg="";
-    $pidbrand="";
+    $pidbrand=0;
     $pkategoriid=$_POST['cb_kategori'];
     $pnmbarang=$_POST['e_nmbarang'];
     if (!empty($pnmbarang)) $pnmbarang = str_replace("'", '', $pnmbarang);
-    
+    if (empty($psatuanid)) $psatuanid=0;
     $pspesifik=$_POST['e_spesif'];
     $pketer=$_POST['e_keterangan'];
     $psupplierid="";

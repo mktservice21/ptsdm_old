@@ -158,7 +158,7 @@
                     <th width='30px'>Kode</th>
                     <th width='250px'>Sub</th>
                     <th width='30px'>Checker</th>
-                    <th width='30px'>Apv MKT Dir</th>
+                    <th width='30px'>Apv COO</th>
                     <th width='30px'>Apv Dir</th>
                 </tr>
             </thead>

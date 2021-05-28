@@ -414,10 +414,10 @@ echo "</div>";
                     $pketgsmhos="GSM";
                     $npmdl="pchpurchasereq";
                     
-                    $print="<a title='Detail / Print' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
+                    $pprint="<a title='Detail / Print' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
                         . "onClick=\"window.open('eksekusi3.php?module=$npmdl&brid=$pidpr&iprint=print',"
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                        . "View</a>";
+                        . "Detail</a>";
                     
                     $ceklisnya = "<input type='checkbox' value='$pidpr' name='chkbox_br[]' id='chkbox_br[$pidpr]' class='cekbr'>";
                     
@@ -477,7 +477,7 @@ echo "</div>";
                     
                     if ($ppilihsts=="REJECT") {
                         $ceklisnya="";
-                        $print="";
+                        $pprint="";
                         $pstsapvoleh="";
                     }
                     
@@ -514,7 +514,7 @@ echo "</div>";
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$ceklisnya</td>";
-                    echo "<td nowrap>$print</td>";
+                    echo "<td nowrap>$pprint</td>";
                     echo "<td nowrap>$pnmkaryawan</td>";
                     echo "<td nowrap>$pnmcabang</td>";
                     echo "<td nowrap>$pkeperluan</td>";

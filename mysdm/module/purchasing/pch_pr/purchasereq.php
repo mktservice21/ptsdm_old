@@ -1,5 +1,5 @@
 <?PHP
-    include "config/cek_akses_modul.php";
+    //include "config/cek_akses_modul.php";
     $hari_ini2 = date("Y-m-d");
     $hari_ini = date("Y-m-01");
     $tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));

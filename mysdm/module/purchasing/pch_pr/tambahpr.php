@@ -22,7 +22,7 @@ $pbulanpilih = date('F Y', strtotime($hari_ini));
 $pidgroup=$_SESSION['GROUP'];
 $pidjbtpl=$_SESSION['JABATANID'];
 $pidcardpl=$_SESSION['IDCARD'];
-$idajukan=$_SESSION['IDCARD']; 
+$idajukan=$_SESSION['IDCARD'];
 $nmajukan=$_SESSION['NAMALENGKAP']; 
 
 $pkaryawaninpilih=false;
@@ -31,12 +31,13 @@ if ($pidgroup=="40" OR $pidgroup=="23" OR $pidgroup=="26" OR $pidgroup=="1") {
 }
 
 
-$pcabangid="";
+//ATASAN
 
     $query ="SELECT a.karyawanid, b.nama nama_karyawan, a.spv, c.nama nama_spv, 
         a.dm, d.nama nama_dm, a.sm, e.nama nama_sm, a.gsm, f.nama nama_gsm, 
-        a.icabangid as icabangid, a.areaid as areaid, a.jabatanid as jabatanid 
+        g.icabangid as icabangid, g.areaid as areaid, g.jabatanid as jabatanid 
         FROM dbmaster.t_karyawan_posisi a 
+        LEFT JOIN hrd.karyawan as g on a.karyawanId=g.karyawanId 
         LEFT JOIN hrd.karyawan b on a.karyawanId=b.karyawanId 
         LEFT JOIN hrd.karyawan c on a.spv=c.karyawanId 
         LEFT JOIN hrd.karyawan d on a.dm=d.karyawanId 
@@ -53,129 +54,111 @@ $pcabangid="";
     $pkdgsm=$nrs['gsm'];
     $pnamagsm=$nrs['nama_gsm'];
 
-
-    $pcabangid=$nrs['icabangid'];
-    $pareaid=$nrs['areaid'];
-    $pjabatanid=$nrs['jabatanid'];
+// END ATASAN
 
 
-    $query = "select icabangid as icabangid, areaid as areaid, jabatanid as jabatanid from hrd.karyawan where karyawanid='$idajukan'";
-    $tampil= mysqli_query($cnmy, $query);
-    $rowx= mysqli_fetch_array($tampil);
-    if (empty($pcabangid)) $pcabangid=$rowx['icabangid'];
-    if (empty($pareaid)) $pareaid=$rowx['areaid'];
-    if (empty($pjabatanid)) $pjabatanid=$rowx['jabatanid'];
+//CABANG    
+$pcabangid="";
+$pfilcabang="";
+$query_cabang="";
+if ($pidjbtpl=="15") {
+    $query_cabang = "select distinct icabangid as icabangid, aktif as aktif FROM mkt.imr0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
+}elseif ($pidjbtpl=="10" OR $pidjbtpl=="18") {
+    $query_cabang = "select distinct icabangid as icabangid, aktif as aktif FROM mkt.ispv0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
+}elseif ($pidjbtpl=="08") {
+    $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.idm0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
+}elseif ($pidjbtpl=="20") {
+    $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.ism0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
+}elseif ($pidjbtpl=="05") {
+    if ($idajukan=="0000000158") {
+        $pcabangid="0000000001";
+        $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.icabang WHERE region='B' AND IFNULL(icabangid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+    }elseif ($idajukan=="0000000159") {
+        $pcabangid="0000000114";
+        $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.icabang WHERE region='T' AND IFNULL(icabangid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+    }
+}elseif ($pidjbtpl=="38") {
+    $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif from hrd.rsm_auth where karyawanid='$idajukan'";
+}
 
-    $picabidfil="";
-    if ($pidjbtpl=="38" || (DOUBLE)$pidjbtpl==38) {
-        $pcabangid="";
-        $query = "select distinct karyawanid as karyawanid, icabangid as icabangid from hrd.rsm_auth where karyawanid='$idajukan'";
-        $tampil= mysqli_query($cnmy, $query);
-        while ($nro= mysqli_fetch_array($tampil)) {
-            $pncab=$nro['icabangid'];
-            if ($pncab=="0000000003" OR $pncab=="0000000114") {
-                $pcabangid=$pncab;
-            }else{
-                if (empty($pcabangid)) $pcabangid=$pncab;
-            }
-
-
-            $picabidfil .="'".$pncab."',";
-        }
-        if (!empty($picabidfil)) {
-            $picabidfil="(".substr($picabidfil, 0, -1).")";
+if (!empty($query_cabang)) {
+    $ptampilc= mysqli_query($cnmy, $query_cabang);
+    $ketemuc= mysqli_num_rows($ptampilc);
+    while ($nrc= mysqli_fetch_array($ptampilc)) {
+        $cidcab=$nrc['icabangid'];
+        $caktif=$nrc['aktif'];
+        
+        if ((INT)$ketemuc==1) {
+            $pcabangid=$cidcab;
+            $pfilcabang .="'".$cidcab."',";
         }else{
-            $picabidfil="('nnzznnnn')";
-        }
-
-    }elseif ($pidjbtpl=="08" || (DOUBLE)$pidjbtpl==8) {
-        $pcabangid="";
-        $query = "select distinct karyawanid as karyawanid, icabangid as icabangid from MKT.idm0 where karyawanid='$idajukan'";
-        $tampil= mysqli_query($cnmy, $query);
-        while ($nro= mysqli_fetch_array($tampil)) {
-            $pncab=$nro['icabangid'];
-            if ($pncab=="0000000003" OR $pncab=="0000000114") {
-                $pcabangid=$pncab;
+            if ($caktif=="N") {
             }else{
-                if (empty($pcabangid)) $pcabangid=$pncab;
+                $pfilcabang .="'".$cidcab."',";
             }
-
-
-            $picabidfil .="'".$pncab."',";
         }
-        if (!empty($picabidfil)) {
-            $picabidfil="(".substr($picabidfil, 0, -1).")";
+    }
+    if (!empty($pfilcabang)) $pfilcabang="(".substr($pfilcabang, 0, -1).")";
+    
+}
+//END CABANG
+
+//CARI DIVISI
+$pdivisiid="";
+$pfildivisi="";
+$query_divisi="";
+if ($pidjbtpl=="15") {
+    $query_divisi = "select distinct divisiid as divisiid FROM mkt.imr0 WHERE karyawanid='$idajukan' AND IFNULL(divisiid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+}elseif ($pidjbtpl=="10" OR $pidjbtpl=="18") {
+    $query_divisi = "select distinct divisiid as divisiid FROM mkt.ispv0 WHERE karyawanid='$idajukan' AND IFNULL(divisiid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+}
+
+if (!empty($query_divisi)) {
+    $ptampild= mysqli_query($cnmy, $query_divisi);
+    $ketemud= mysqli_num_rows($ptampild);
+    while ($nrd= mysqli_fetch_array($ptampild)) {
+        $diddiv=$nrd['divisiid'];
+        
+        $pfildivisi .="'".$diddiv."',";
+        
+        if ((INT)$ketemud==1) {
+            $pdivisiid=$diddiv;
         }else{
-            $picabidfil="('nnzznnnn')";
+            if ($pidjbtpl=="15") {
+                $pdivisiid="CAN";
+                $pfildivisi .="'CAN',";
+            }
         }
-
     }
-
-    $pidcabang=$pcabangid;
-
-
-    $query= "select DISTINCT a.karyawanid as karyawanid, b.nama as nama from MKT.idm0 a JOIN hrd.karyawan b on a.karyawanid=b.karyawanid "
-            . " WHERE a.icabangid='$pcabangid' AND IFNULL(a.karyawanid,'')<>'' "
-            . " AND (IFNULL(b.tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(b.tglkeluar,'')='')";
-    $tampil= mysqli_query($cnmy, $query);
-    $rowd= mysqli_fetch_array($tampil);
-    $pnnkrydm=$rowd['karyawanid'];
-    $pnnmkrydm=$rowd['nama'];
-    if (!empty($pnnkrydm)) {
-        $pkdspv=""; $pnamaspv="";
-        $pkddm=$pnnkrydm;
-        $pnamadm=$pnnmkrydm;
-    }
+    if (!empty($pfildivisi)) $pfildivisi="(".substr($pfildivisi, 0, -1).")";
     
-    $query= "select DISTINCT a.karyawanid as karyawanid, b.nama as nama from MKT.ism0 a JOIN hrd.karyawan b on a.karyawanid=b.karyawanid "
-            . " WHERE a.icabangid='$pcabangid' AND IFNULL(a.karyawanid,'')<>'' "
-            . " AND (IFNULL(b.tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(b.tglkeluar,'')='')";
-    $tampil= mysqli_query($cnmy, $query);
-    $rowd2= mysqli_fetch_array($tampil);
-    $pnnkrydm=$rowd2['karyawanid'];
-    $pnnmkrydm=$rowd2['nama'];
-    if (!empty($pnnkrydm)) {
-        $pkdsm=$pnnkrydm;
-        $pnamasm=$pnnmkrydm;
-        $pkdgsm="";
-        $pnamagsm="";
+}
+
+if ($pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05") {
+    $pdivisiid="CAN";
+}else{
+    if ($pidjbtpl=="38") $pdivisiid="HO";//ADMIN CABANG
+    else{
+        if ($pidjbtpl<>"15") {
+            $pdivisiid=$_SESSION['DIVISI'];
+            if (empty($pfilcabang) AND empty($pcabangid)) $pcabangid="0000000001";
+        }
     }
+}
+//END CARI DIVISI
+
+//CARI DEPARTEMEN
+$pdepartmen="";
+if ($pidgroup<>"24" AND ($pidjbtpl=="15" OR $pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05" OR $pidjbtpl=="38") ) {
+    $pdepartmen="MKT";
+}else{
     
-    
-    
-    $query = "select a.gsm, b.nama as nama_gsm FROM dbmaster.t_karyawan_posisi a JOIN hrd.karyawan b on a.gsm=b.karyawanid WHERE a.karyawanid='$pkdsm'";
-    $ptampil2= mysqli_query($cnmy, $query);
-    $nrs2= mysqli_fetch_array($ptampil2);
+}
 
-    $pkdgsm=$nrs2['gsm'];
-    $pnamagsm=$nrs2['nama_gsm'];
+//END CARI DEPARTEMEN
 
-    if ($pcabangid=="0000000003X") {
-        $pkdspv="";
-        $pnamaspv="";
-        $pkddm="";
-        $pnamadm="";
-    }
+$pareaid="";
 
-    if ($pcabangid=="00000000114") {
-        $pkdspv="";
-        $pnamaspv="";
-        $pkddm="";
-        $pnamadm="";
-        $pkdsm="";
-        $pnamasm="";
-    }
-
-    if ($pidjbtpl=="08" || (DOUBLE)$pidjbtpl==8) {
-        $pkdspv="";
-        $pnamaspv="";
-        $pkddm="";
-        $pnamadm="";
-    }
-
-
-// END CABANG & ATASAN
-    
 $pidtipe="101";
 $untukpil1="selected";
 $untukpil2="";
@@ -195,8 +178,11 @@ $pact=$_GET['act'];
 
 $act="input";
 if ($pact=="editdata"){
+    include "config/fungsi_ubahget_id.php";
+    
     $act="update";
-    $pidbr=$_GET['id'];
+    $pidbr_ec=$_GET['id'];
+    $pidbr = decodeString($pidbr_ec);
     
     $edit = mysqli_query($cnmy, "SELECT * FROM dbpurchasing.t_pr_transaksi WHERE idpr='$pidbr'");
     $r    = mysqli_fetch_array($edit);
@@ -204,7 +190,11 @@ if ($pact=="editdata"){
     $pidtipe=$r['idtipe'];
     $idajukan=$r['karyawanid'];
     $pcabangid=$r['icabangid'];
+    $pareaid=$r['areaid'];
     $pketerangan=$r['aktivitas'];
+    $pdivisiid=$r['divisi'];
+    $pidjbtpl=$r['jabatanid'];
+    $pdepartmen=$r['iddep'];
     
     
     $patasan1=$r['atasan1'];
@@ -240,7 +230,8 @@ if ($pact=="editdata"){
     }
     
     
-    $query ="SELECT cb.idpr, cb.karyawanid, b.nama nama_karyawan, cb.atasan1 spv, c.nama nama_spv, cb.atasan2 as dm, d.nama nama_dm, cb.atasan3 as sm, e.nama nama_sm, cb.atasan4 as gsm, f.nama nama_gsm 
+    $query ="SELECT cb.idpr, cb.karyawanid, b.nama nama_karyawan, cb.atasan1 spv, c.nama nama_spv, cb.atasan2 as dm, d.nama nama_dm, 
+        cb.atasan3 as sm, e.nama nama_sm, cb.atasan4 as gsm, f.nama nama_gsm 
         FROM dbpurchasing.t_pr_transaksi cb
         LEFT JOIN dbmaster.t_karyawan_posisi a on cb.karyawanid=a.karyawanid
         LEFT JOIN hrd.karyawan b on cb.karyawanId=b.karyawanId 
@@ -274,6 +265,44 @@ if ($pact=="editdata"){
     $ptotjml="1";
     
 }
+
+
+//CARI AREA
+$pfilarea="";
+$query_area="";
+if (!empty($pcabangid)) {
+    if ($pidjbtpl=="15") {
+        $query_area = "select distinct areaid as areaid, aktif FROM mkt.imr0 WHERE karyawanid='$idajukan' and icabangid='$pcabangid' AND IFNULL(areaid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+    }elseif ($pidjbtpl=="10" OR $pidjbtpl=="18") {
+        $query_area = "select distinct areaid as areaid, aktif FROM mkt.ispv0 WHERE karyawanid='$idajukan' and icabangid='$pcabangid' AND IFNULL(areaid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+    }else{
+        $query_area = "select distinct areaid as areaid, aktif FROM mkt.iarea WHERE icabangid='$pcabangid' AND IFNULL(areaid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+    }
+    
+    if (!empty($query_area)) {
+        $ptampila= mysqli_query($cnmy, $query_area);
+        $ketemua= mysqli_num_rows($ptampila);
+        while ($nra= mysqli_fetch_array($ptampila)) {
+            $aidarea=$nra['areaid'];
+            $aaktif=$nra['aktif'];
+
+            if ((INT)$ketemua==1 AND $pact<>"editdata") {
+                $pareaid=$aidarea;
+                $pfilarea .="'".$aidarea."',";
+            }else{
+                if ($aaktif=="N") {
+                }else{
+                    $pfilarea .="'".$aidarea."',";
+                }
+            }
+        }
+        if (!empty($pfilarea)) $pfilarea="(".substr($pfilarea, 0, -1).")";
+
+    }
+    
+}
+
+//END CARI AREA
 
 
 ?>
@@ -327,7 +356,7 @@ if ($pact=="editdata"){
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal </label>
                                     <div class='col-md-3'>
-                                        <div class='input-group date' id='mytgl01'>
+                                        <div class='input-group date' id='mytgl01_'>
                                             <input type="text" class="form-control" id='e_tglberlaku' name='e_tglberlaku' autocomplete='off' required='required' placeholder='dd/MM/yyyy' data-inputmask="'mask': '99/99/9999'" value='<?PHP echo $ptglajukan; ?>' Readonly>
                                             <span class='input-group-addon'>
                                                 <span class='glyphicon glyphicon-calendar'></span>
@@ -382,39 +411,41 @@ if ($pact=="editdata"){
                                               <?PHP 
                                                 if ($pkaryawaninpilih==true) {
                                                     echo "<option value='' selected>-- Pilihan --</option>";
-                                                }else{
                                                     
-                                                }
-                                                    $query = "select karyawanId, nama From hrd.karyawan
-                                                        WHERE 1=1 ";
-                                                    if ($pkaryawaninpilih==true) {
-                                                        
-                                                        $query .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
-                                                        $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
-                                                                . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
-                                                                . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
-                                                                . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
-                                                                . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
-                                                        $query .= " AND nama NOT IN ('ACCOUNTING')";
-                                                        $query .= " AND karyawanid NOT IN ('0000002200', '0000002083')";
-                                                    }else{
-                                                        $query .= " AND karyawanid ='$pidcardpl' ";
-                                                    }
+                                                    $query = "select karyawanId as karyawanid, nama as nama_karyawan From hrd.karyawan WHERE 1=1 ";
+                                                    $query .= " AND ( ";
+                                                        $query .= " ( ";
+                                                            $query .= " (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
+                                                            $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                                    . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                                    . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                                    . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                                    . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                                            $query .= " AND nama NOT IN ('ACCOUNTING')";
+                                                            $query .= " AND karyawanid NOT IN ('0000002200', '0000002083') ";
+                                                            $query .= " AND divisiId NOT IN ('OTC', 'CHC') ";
+                                                        $query .= " ) ";
+                                                    $query .= " OR karyawanId='$idajukan' ) ";
                                                     $query .= " ORDER BY nama";
-                                                    $tampil = mysqli_query($cnmy, $query);
-                                                    $ketemu= mysqli_num_rows($tampil);
-                                                    
-                                                    if ((DOUBLE)$ketemu<=0 AND $pkaryawaninpilih==false) echo "<option value='' selected>-- Pilihan --</option>";
-                                                    
-                                                    while ($z= mysqli_fetch_array($tampil)) {
-                                                        $pkaryid=$z['karyawanId'];
-                                                        $pkarynm=$z['nama'];
-                                                        $pkryid=(INT)$pkaryid;
-                                                        if ($pkaryid==$idajukan)
-                                                            echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
-                                                        else
-                                                            echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
-                                                    }
+                                                }else{
+                                                    $query = "select karyawanId as karyawanid, nama as nama_karyawan From hrd.karyawan WHERE 1=1 ";
+                                                    $query .= " AND (karyawanid ='$pidcardpl' OR karyawanid ='$idajukan') ";
+                                                }
+                                                
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                $ketemu= mysqli_num_rows($tampil);
+
+                                                if ((DOUBLE)$ketemu<=0 AND $pkaryawaninpilih==false) echo "<option value='' selected>-- Pilihan --</option>";
+
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $pkaryid=$z['karyawanid'];
+                                                    $pkarynm=$z['nama_karyawan'];
+                                                    $pkryid=(INT)$pkaryid;
+                                                    if ($pkaryid==$idajukan)
+                                                        echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                    else
+                                                        echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                                }
                                                 
                                               ?>
                                           </select>
@@ -422,88 +453,147 @@ if ($pact=="editdata"){
                                 </div>
                                 
                                 
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang <span class='required'></span></label>
-                                    <div class='col-xs-5'>
-                                        <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="ShowDataPengajuan()">
-                                            <option value='' selected>-- Pilihan --</option>
-                                            <?PHP
-                                            if ($pact=="editdata"){
-                                                
-                                                if ($pjabatanid=="38") {
-                                                    $query = "SELECT distinct a.karyawanid, a.iCabangId, b.nama, '' as icabangkaryawan "
-                                                            . " FROM hrd.rsm_auth a JOIN MKT.icabang b on a.icabangid=b.icabangid WHERE a.karyawanid='$idajukan' order by b.nama";//b.aktif='Y'
-                                                    $result = mysqli_query($cnmy, $query); 
-                                                    $record = mysqli_num_rows($result);
-                                                }elseif ($pjabatanid=="08") {
-                                                    $query = "SELECT distinct a.karyawanid, a.iCabangId, b.nama, '' as icabangkaryawan "
-                                                            . " FROM MKT.idm0 a JOIN MKT.icabang b on a.icabangid=b.icabangid WHERE a.karyawanid='$idajukan' order by b.nama";//b.aktif='Y'
-                                                    $result = mysqli_query($cnmy, $query); 
-                                                    $record = mysqli_num_rows($result);
-                                                }else{
-
-                                                    //$pnmtablekry = "karyawan";
-                                                    $pnmtablekry = "tempkaryawandccdss_inp";
-
-                                                    $belumklik=false;
-                                                    $query = "select DISTINCT karyawan.iCabangId, cabang.nama, '' as icabangkaryawan from hrd.$pnmtablekry as karyawan join dbmaster.icabang as cabang on "
-                                                            . " karyawan.icabangid=cabang.icabangid where karyawanId='$idajukan' order by cabang.nama"; 
-                                                    
-                                                    
-                                                    $query = "select distinct iCabangId, nama from MKT.icabang WHERE aktif='Y' ";
-                                                    $result = mysqli_query($cnmy, $query); 
-                                                    $record = mysqli_num_rows($result);
-
-                                                }
-                                                
-                                                if ($record==0) {
-                                                    $query = "select distinct iCabangId, nama, '' as icabangkaryawan FROM MKT.icabang WHERE AKTIF='Y' order by nama";
-                                                    $result = mysqli_query($cnmy, $query); 
-                                                    $record = mysqli_num_rows($result);
-                                                    $belumklik=true;
-                                                }
-                                                
-                                            }else{
-                                                
-                                                if ($pidjbtpl=="38" || (DOUBLE)$pidjbtpl==38) {
-                                                    $query = "select distinct iCabangId, nama from MKT.icabang WHERE aktif='Y' ";
-                                                    if (!empty($picabidfil)) {
-                                                        $query .=" AND iCabangId IN $picabidfil ";
-                                                    }else{
-                                                        $query .=" AND iCabangId ='XXnnn' ";
-                                                    }
-                                                }elseif ($pidjbtpl=="08" || (DOUBLE)$pidjbtpl==8) {
-                                                    $query = "select distinct a.iCabangId, a.nama from MKT.icabang as a JOIN MKT.idm0 as b "
-                                                            . " on a.icabangid=b.icabangid "
-                                                            . " WHERE a.aktif='Y' AND b.karyawanid='$idajukan' ";
-                                                    if (!empty($picabidfil)) {
-                                                        $query .=" AND a.iCabangId IN $picabidfil ";
-                                                    }else{
-                                                        $query .=" AND a.iCabangId ='XXnnn' ";
-                                                    }
-                                                }else{
-                                                    $query = "select distinct iCabangId, nama from MKT.icabang WHERE aktif='Y' ";
-                                                }
-                                                
-                                                $query .=" order by nama";
-                                                
-                                            }
-                                            
-                                            $tampil = mysqli_query($cnmy, $query);
-                                            while ($z= mysqli_fetch_array($tampil)) {
-                                                $pidcab=$z['iCabangId'];
-                                                $pnmcab=$z['nama'];
-                                                if ($pidcab==$pcabangid)
-                                                    echo "<option value='$pidcab' selected>$pnmcab</option>";
-                                                else
-                                                    echo "<option value='$pidcab'>$pnmcab</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                        
+                                <div id="div_datakaryawan">
+                                    
+                                    
+                                    <div hidden class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                        <div class='col-md-4'>
+                                            <input type='text' id='e_jabatanid' name='e_jabatanid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbtpl; ?>' Readonly>
+                                        </div>
                                     </div>
+                                    
+                                    <div  class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Divisi <span class='required'></span></label>
+                                        <div class='col-xs-5'>
+                                            <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="">
+                                                <?PHP
+                                                
+                                                if (!empty($pfildivisi) OR !empty($pdivisiid) AND ($pidjbtpl=="15")) {
+                                                    if (empty($pfildivisi)) $pfildivisi="('')";
+                                                    
+                                                    $query = "select DivProdId as divprodid from mkt.divprod where ( IFNULL(aktif,'')='Y' AND IFNULL(br,'')='Y' "
+                                                            . " AND DivProdId In $pfildivisi ) OR ( DivProdId='$pdivisiid' AND IFNULL(DivProdId,'')<>'' ) ";
+                                                    $query .=" Order by DivProdId";
+                                                }else{
+                                                    $query = "select DivProdId as divprodid from mkt.divprod WHERE 1=1 ";
+                                                    if ($pidgroup<>"24" AND $pidgroup<>"1" AND ($pidjbtpl=="10" OR $pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05") ) {
+                                                        $query .=" AND DivProdId IN ('CAN', 'EAGLE', 'PEACO', 'PIGEO')";
+                                                    }else{
+                                                        $query .=" AND ( IFNULL(aktif,'')='Y' AND IFNULL(br,'')='Y' ) OR ( DivProdId='$pdivisiid' AND IFNULL(DivProdId,'')<>'' )";
+                                                        $query .=" AND DivProdId IN ('OTHER', 'OTHERS')";
+                                                    }
+                                                    $query .=" Order by DivProdId";
+                                                }
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $piddiv=$z['divprodid'];
+                                                    $pnmdiv=$piddiv;
+                                                    if ($piddiv=="CAN") $pnmdiv="CANARY";
+                                                    elseif ($piddiv=="PEACO") $pnmdiv="PEACOCK";
+                                                    elseif ($piddiv=="PIGEO") $pnmdiv="PIGEON";
+                                                    
+                                                    if ($piddiv==$pdivisiid)
+                                                        echo "<option value='$piddiv' selected>$pnmdiv</option>";
+                                                    else
+                                                        echo "<option value='$piddiv'>$pnmdiv</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang <span class='required'></span></label>
+                                        <div class='col-xs-5'>
+                                            <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="ShowDataArea()">
+                                                <option value='' selected>-- Pilihan --</option>
+                                                <?PHP
+                                                if (!empty($pfilcabang) OR !empty($pcabangid) AND ($pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05")) {
+                                                    if (empty($pfilcabang)) $pfilcabang="('')";
+                                                    
+                                                    $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE 1=1 "
+                                                            . " AND ( iCabangId In $pfilcabang AND IFNULL(aktif,'')<>'N' ) OR iCabangId='$pcabangid' ";
+                                                    $query .=" Order by nama";
+                                                }else{
+                                                    $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE 1=1 "
+                                                            . " AND IFNULL(aktif,'')<>'N' OR iCabangId='$pcabangid' ";
+                                                    $query .=" Order by nama";
+                                                }
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $pidcab=$z['icabangid'];
+                                                    $pnmcab=$z['nama_cabang'];
+                                                    if ($pidcab==$pcabangid)
+                                                        echo "<option value='$pidcab' selected>$pnmcab</option>";
+                                                    else
+                                                        echo "<option value='$pidcab'>$pnmcab</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                    <div hidden class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Area <span class='required'></span></label>
+                                        <div class='col-xs-5'>
+                                            <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="">
+                                                <option value='' selected>-- Pilihan --</option>
+                                                <?PHP
+                                                if ( (!empty($pcabangid) OR !empty($pfilarea)) ) {
+                                                    if (empty($pfilarea)) $pfilarea="('$pareaid')";
+                                                    $query = "select areaid as areaid, nama as nama_area FROM mkt.iarea WHERE icabangid='$pcabangid' "
+                                                            . " AND IFNULL(areaid,'') IN $pfilarea AND IFNULL(aktif,'')<>'N' ";
+                                                    $query .=" ORDER BY nama, areaid";
+                                                    $tampil = mysqli_query($cnmy, $query);
+                                                    while ($z= mysqli_fetch_array($tampil)) {
+                                                        $pidarea=$z['areaid'];
+                                                        $pnmarea=$z['nama_area'];
+                                                        if ($pidarea==$pareaid)
+                                                            echo "<option value='$pidarea' selected>$pnmarea</option>";
+                                                        else
+                                                            echo "<option value='$pidarea'>$pnmarea</option>";
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+                                            <?PHP //echo $pfilarea; ?>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Departemen <span class='required'></span></label>
+                                        <div class='col-xs-5'>
+                                            <select class='form-control input-sm' id='cb_dept' name='cb_dept' onchange="">
+                                                <?PHP
+                                                if (!empty($pdepartmen)) {
+                                                    $query = "select iddep as iddep, nama_dep as nama_dep from dbmaster.t_department WHERE 1=1 "
+                                                            . " AND ( iddep='$pdepartmen' AND IFNULL(aktif,'')<>'N' ) OR iddep='$pdepartmen' ";
+                                                    $query .=" Order by nama_dep";
+                                                }else{
+                                                    echo "<option value='' selected>-- Pilihan --</option>";
+                                                    $query = "select iddep as iddep, nama_dep as nama_dep from dbmaster.t_department WHERE 1=1 "
+                                                            . " AND IFNULL(aktif,'')<>'N' OR iddep='$pdepartmen' ";
+                                                    $query .=" Order by nama_dep";
+                                                }
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $piddep=$z['iddep'];
+                                                    $pnmdep=$z['nama_dep'];
+                                                    if ($piddep==$pdepartmen)
+                                                        echo "<option value='$piddep' selected>$pnmdep</option>";
+                                                    else
+                                                        echo "<option value='$piddep'>$pnmdep</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
+                                    
                                 </div>
-                                
                                 
                                 
                                 <div class='form-group'>
@@ -868,28 +958,18 @@ th {
 
 
     function ShowDataKaryawan() {
-        ShowDataCabang();
         ShowDataAtasan();
-    }
-
-    function ShowDataPengajuan() {
-        ShowDataAtasan();
-        ShowDataJumlah();
-    }
-
-
-    function ShowDataCabang() {
+        
         var ikry = document.getElementById('cb_karyawan').value;
         $.ajax({
             type:"post",
-            url:"module/purchasing/pch_pr/viewdatapr.php?module=caricabang",
+            url:"module/purchasing/viewdatapch.php?module=caridatakaryawan",
             data:"ukry="+ikry,
             beforeSend: function () {
                 document.getElementById("btn_simpan").disabled = true;
             },
             success:function(data){
-                $("#cb_cabang").html(data);
-                ShowDataJumlah();
+                $("#div_datakaryawan").html(data);
             },
             complete: function () {
                 document.getElementById("btn_simpan").disabled = false;
@@ -898,6 +978,12 @@ th {
                 alert('Something wrong. Try Again!')                
             }
         });
+        
+    }
+
+    function ShowDataPengajuan() {
+        ShowDataAtasan();
+        ShowDataJumlah();
     }
 
 
@@ -906,7 +992,7 @@ th {
         var icab = document.getElementById('cb_cabang').value;
         $.ajax({
             type:"post",
-            url:"module/purchasing/pch_pr/dataatasanpr.php?module=caridataatasan",
+            url:"module/purchasing/viewdatapch.php?module=caridataatasan",
             data:"ukry="+ikry+"&ucab="+icab,
             beforeSend: function () {
                 document.getElementById("btn_simpan").disabled = true;
@@ -922,6 +1008,29 @@ th {
             }
         });
     }    
+    
+    function ShowDataArea() {
+        var ikry = document.getElementById('cb_karyawan').value;
+        var ijbt = document.getElementById('e_jabatanid').value;
+        var icab = document.getElementById('cb_cabang').value;
+        $.ajax({
+            type:"post",
+            url:"module/purchasing/viewdatapch.php?module=caridataarea",
+            data:"ukry="+ikry+"&ujbt="+ijbt+"&ucab="+icab,
+            beforeSend: function () {
+                document.getElementById("btn_simpan").disabled = true;
+            },
+            success:function(data){
+                $("#cb_area").html(data);
+            },
+            complete: function () {
+                document.getElementById("btn_simpan").disabled = false;
+            },
+            error: function () {
+                alert('Something wrong. Try Again!')                
+            }
+        });
+    }
     
     function ShowDataTipe() {
         $(".inputdata").html("");

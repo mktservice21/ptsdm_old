@@ -14,11 +14,11 @@ $_SESSION['PCHSSIVIDPD']=$pidbr_d;
 
 
 
-$query = "select a.idpr, a.idpr_d, 
+$query = "select b.idtipe, a.idpr, a.idpr_d, 
     a.idbarang, a.namabarang, 
     a.idbarang_d, a.spesifikasi1, a.spesifikasi2, 
     a.uraian, a.keterangan, 
-    a.jumlah as jml, a.harga as rp_pr, a.satuan, b.idtipe 
+    a.jumlah as jml, a.harga as rp_pr, a.satuan, b.idtipe, tgl_validate1  
     from dbpurchasing.t_pr_transaksi_d as a JOIN dbpurchasing.t_pr_transaksi as b on a.idpr=b.idpr WHERE 
     a.idpr_d='$pidbr_d' ";
 $tampil= mysqli_query($cnmy, $query);
@@ -31,10 +31,24 @@ $pidbrg2=$nrw['idbarang_d'];
 $pspesifikasi=$nrw['spesifikasi1'];
 $psatuan=$nrw['satuan'];
 $pketerangan=$nrw['keterangan'];
+$ptipeminta=$nrw['idtipe'];
+$ptglval1=$nrw['tgl_validate1'];
 
 $pjumlah=$nrw['jml'];
 $pharga=$nrw['rp_pr'];
 
+if ($ptglval1=="0000-00-00" OR $ptglval1=="0000-00-00 00:00:00") $ptglval1="";
+
+$pstsapvoleh="";
+$pbolehsimpan=true;
+if ($ptipeminta=="102") {
+    if (empty($ptglval1)) {
+        $pstsapvoleh="Belum Proses IT";
+        $pbolehsimpan=false;
+    }
+}
+                        
+                        
 $ppilih1="selected";
 $ppilih2="";
 
@@ -314,11 +328,18 @@ if ($pact=="editisivendor") {
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                         <div class="checkbox">
-                                            <?PHP if ($pact=="editisivendor") { ?>
-                                                <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Update</button>
-                                            <?PHP }else{ ?>
-                                                <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
-                                            <?PHP } ?>
+                                            
+                                            <?PHP if ($pbolehsimpan==true) { ?>
+                                                <?PHP if ($pact=="editisivendor") { ?>
+                                                    <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Update</button>
+                                                <?PHP }else{ ?>
+                                                    <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
+                                                <?PHP } ?>
+                                            <?PHP 
+                                                }else{
+                                                    echo "$pstsapvoleh";
+                                                }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>

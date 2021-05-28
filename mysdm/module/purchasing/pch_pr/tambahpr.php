@@ -26,7 +26,7 @@ $idajukan=$_SESSION['IDCARD'];
 $nmajukan=$_SESSION['NAMALENGKAP']; 
 
 $pkaryawaninpilih=false;
-if ($pidgroup=="40" OR $pidgroup=="23" OR $pidgroup=="26" OR $pidgroup=="1") {
+if ($pidgroup=="40" OR $pidgroup=="23" OR $pidgroup=="26" OR $pidgroup=="1" OR $pidgroup=="24") {
     $pkaryawaninpilih=true;
 }
 

@@ -1,6 +1,6 @@
 <?PHP
     include "config/cek_akses_modul.php";
-    $aksi="module/purchasing/pch_apvpreth/aksi_apvpcheth..php";
+    $aksi="module/purchasing/pch_apvpreth/aksi_apvpcheth.php";
     $hari_ini = date("Y-m-d");
     $tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
     $tgl_akhir = date('F Y', strtotime('+1 month', strtotime($hari_ini)));
@@ -17,6 +17,8 @@
     if (!empty($_SESSION['APVPCHPRBLN2'])) $tgl_akhir=$_SESSION['APVPCHPRBLN2'];
     //if (!empty($_SESSION['APVPCHPRAPVBY'])) $pkaryawanid=$_SESSION['APVPCHPRAPVBY'];
     
+    
+    $pmodule=$_GET['module'];
 ?>
 
 <script>
@@ -64,7 +66,18 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="title_left">
             <h3>
-                Approve PR Ethical
+                <?PHP
+                if ($pmodule=="pchapvprbychc") {
+                    echo "Approve PR Marketing CHC";
+                }elseif ($pmodule=="pchapvprbyho") {
+                    echo "Approve PR HO";
+                }elseif ($pmodule=="pchapvprbycoo") {
+                    echo "Approve PR By COO";
+                }else{
+                    echo "Approve PR Marketing Ethical";
+                }
+                ?>
+                
             </h3>
         </div></div><div class="clearfix">
     </div>
@@ -131,7 +144,7 @@
                                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                                     $query .= " AND nama NOT IN ('ACCOUNTING')";
                                     $query .= " AND karyawanid NOT IN ('0000002200', '0000002083')";
-                                    $query .= " AND jabatanId IN ('08', '10', '18', '20', '04', '05', '01')";
+                                    //$query .= " AND jabatanId IN ('08', '10', '18', '20', '04', '05', '01')";
                                 }else{
                                     $query .= " AND karyawanId ='$pkaryawanid' ";
                                 }

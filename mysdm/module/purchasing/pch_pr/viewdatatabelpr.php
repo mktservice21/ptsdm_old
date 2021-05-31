@@ -30,6 +30,7 @@
     include "../../../config/fungsi_ubahget_id.php";
     
     
+    $pkaryawanid=$_POST['ukryid'];
     $date1=$_POST['uperiode1'];
     $date2=$_POST['uperiode2'];
     $tgl1= date("Y-m-01", strtotime($date1));
@@ -45,18 +46,25 @@
         b.aktivitas, b.userid, f.nama as nama_user,  
         a.idpr_d, a.idbarang, a.namabarang, a.idbarang_d, a.spesifikasi1, 
         a.spesifikasi2, a.uraian, a.keterangan, a.jumlah as jml, a.harga as rp_pr, a.satuan,
+        b.iddep, h.nama_dep, 
         b.atasan1, b.tgl_atasan1, 
         b.atasan2, b.tgl_atasan2, 
         b.atasan3, b.tgl_atasan3,
         b.atasan4, b.tgl_atasan4,
-        b.atasan5, b.tgl_atasan5 
+        b.atasan5, b.tgl_atasan5, 
+        b.validate1, b.tgl_validate1,
+        b.validate2, b.tgl_validate2 
         from dbpurchasing.t_pr_transaksi_d as a JOIN dbpurchasing.t_pr_transaksi as b on a.idpr=b.idpr 
         JOIN hrd.karyawan c on b.karyawanid=c.karyawanid
         LEFT JOIN MKT.icabang as d on b.icabangid=d.iCabangId
         LEFT JOIN MKT.iarea as e on b.icabangid=e.iCabangId and b.areaid=e.areaid 
         LEFT JOIN hrd.karyawan as f on b.userid=f.karyawanId 
-        LEFT JOIN dbpurchasing.t_pr_tipe as g on b.idtipe=g.idtipe WHERE 1=1 AND IFNULL(pilihpo,'') IN ('Y') ";
-    $query .=" AND IFNULL(stsnonaktif,'')<>'Y' AND b.tanggal BETWEEN '$tgl1' AND '$tgl2' ";
+        LEFT JOIN dbpurchasing.t_pr_tipe as g on b.idtipe=g.idtipe 
+        LEFT JOIN dbmaster.t_department as h on b.iddep=h.iddep WHERE 1=1 AND IFNULL(pilihpo,'') IN ('Y') ";
+    $query .=" AND IFNULL(b.stsnonaktif,'')<>'Y' AND b.tanggal BETWEEN '$tgl1' AND '$tgl2' ";
+    if (!empty($pkaryawanid)) {
+        $query .=" AND b.karyawanid='$pkaryawanid' ";
+    }
     $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
@@ -90,6 +98,7 @@
                     <th width='50px'>Jumlah</th>
                     <th width='20px'>Satuan</th>
                     <th width='20px'>Harga</th>
+                    <th width='50px'>Departemen</th>
                     <th width='50px'>Status</th>
                     <th width='50px'>User Input</th>
                 </tr>
@@ -117,10 +126,59 @@
                         $pnotes=$row1['aktivitas'];
                         $puserinput=$row1['nama_user'];
                         $psatuan=$row1['satuan'];
+                        $pnmdept=$row1['nama_dep'];
+                        $pdivid=$row1['divisi'];
                         $psudah=$row1['ssudah'];
                         
                         $pjml=$row1['jml'];
                         $pharga=$row1['rp_pr'];
+                        
+                        
+                        $npengajuan=$row1['pengajuan'];
+                        $njbt=$row1['jabatanid'];
+                        $nats1=$row1['atasan1'];
+                        $ntglats1=$row1['tgl_atasan1'];
+                        $nats2=$row1['atasan2'];
+                        $ntglats2=$row1['tgl_atasan2'];
+                        $nats3=$row1['atasan3'];
+                        $ntglats3=$row1['tgl_atasan3'];
+                        $nats4=$row1['atasan4'];
+                        $ntglats4=$row1['tgl_atasan4'];
+                        $nats5=$row1['atasan5'];
+                        $ntglats5=$row1['tgl_atasan5'];
+                        $puserval1=$row1['validate1'];
+                        $ptglval1=$row1['tgl_validate1'];
+                        $puserval2=$row1['validate2'];
+                        $ptglval2=$row1['tgl_validate2'];
+
+                        if ($ntglats1=="0000-00-00 00:00:00") $ntglats1="";
+                        if ($ntglats2=="0000-00-00 00:00:00") $ntglats2="";
+                        if ($ntglats3=="0000-00-00 00:00:00") $ntglats3="";
+                        if ($ntglats4=="0000-00-00 00:00:00") $ntglats4="";
+                        if ($ntglats5=="0000-00-00 00:00:00") $ntglats5="";
+                        if ($ptglval1=="0000-00-00 00:00:00") $ptglval1="";
+                        if ($ptglval2=="0000-00-00 00:00:00") $ptglval2="";
+                
+                        
+                        $nsudahapprove=false;
+                        
+                        if ($npengajuan=="HO" OR $npengajuan=="OTC" OR $npengajuan=="CHC") {
+                            if ( !empty($ntglats4) ) $nsudahapprove=true;
+                        }else{
+                            if ( ($njbt=="15" OR $njbt=="38") AND !empty($nats1) AND !empty($ntglats1)) $nsudahapprove=true;
+                            if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18") AND !empty($nats2) AND !empty($ntglats2)) $nsudahapprove=true;
+                            if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08") AND !empty($nats3) AND !empty($ntglats3)) $nsudahapprove=true;
+                            if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08" OR $njbt=="20") AND !empty($nats4) AND !empty($ntglats4)) $nsudahapprove=true;
+                            if ( ($njbt=="15" OR $njbt=="38" OR $njbt=="10" OR $njbt=="18" OR $njbt=="08" OR $njbt=="05") AND !empty($nats5) AND !empty($ntglats5)) $nsudahapprove=true;
+                        }
+                        $pstatuspch="";
+                        if (!empty($ptglval2)) $pstatuspch="Sudah Purchasing";
+                
+                        
+                        $pnmdivisi=$pdivid;
+                        if ($pdivid=="CAN") $pnmdivisi="CANARY/ETHICAL";
+                        elseif ($pdivid=="PEACO") $pnmdivisi="PEACOCK";
+                        elseif ($pdivid=="PIGEO") $pnmdivisi="PIGEON";
                         
                         $ptgl= date("d/m/Y", strtotime($ptgl));
                         $pjml=number_format($pjml,0,",",",");
@@ -136,9 +194,14 @@
     
                         //$print="<a title='Print / Cetak' href='eksekusi3.php?module=$pmodule&brid=$pidpr&iprint=print' class='btn btn-info btn-xs' data-toggle='modal' target='_blank'>Print</a>";
                         
+                        if ($nsudahapprove==true) {
+                            $pedit="";
+                            $phapus="";
+                        }
                         
                         $ppilihan="$pedit $phapus $print";
                         
+                
                         if ($psudah=="Y") {
                             $ppilihan="$print";
                         }
@@ -167,13 +230,14 @@
                         echo "<td nowrap align='right'>$pjml</td>";
                         echo "<td nowrap>$psatuan</td>";
                         echo "<td nowrap align='right'>$pharga</td>";
+                        echo "<td nowrap>$pnmdept ($pnmdivisi)</td>";
+                        
+                        echo "<td nowrap>$pstatuspch</td>";
                         
                         if ($pbelumlewat==false) {
-                            echo "<td >&nbsp;</td>";
-                            echo "<td >$puserinput</td>";
+                            echo "<td nowrap>$puserinput</td>";
                         }else{
-                            echo "<td >&nbsp;</td>";
-                            echo "<td >&nbsp;</td>";
+                            echo "<td nowrap>&nbsp;</td>";
                         }
                         echo "</tr>";
                         

@@ -50,7 +50,11 @@
                 <script>
                     $(document).ready(function() {
                         var eapvpilih=document.getElementById('e_apvpilih').value;
-                        pilihData(eapvpilih);
+                        if (eapvpilih=="listrfq") {
+                            pilihDataRFQ(eapvpilih);
+                        }else{
+                            pilihData(eapvpilih);
+                        }
                     } );
 
                     function pilihData(ket){
@@ -80,7 +84,38 @@
                             }
                         });
                     }
+                    
+                    function pilihDataRFQ(ket) {
+                        KosongkanData();
+                        
+                        var etgl1=document.getElementById('tgl1').value;
+                        var etgl2=document.getElementById('tgl2').value;
+                        var ekaryawan=document.getElementById('cb_karyawan').value;
 
+                        document.getElementById('e_apvpilih').value=ket;
+
+                        var myurl = window.location;
+                        var urlku = new URL(myurl);
+                        var module = urlku.searchParams.get("module");
+                        var idmenu = urlku.searchParams.get("idmenu");
+                        var act = urlku.searchParams.get("act");
+
+
+                        //alert(ket);
+
+                        $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+                        $.ajax({
+                            type:"post",
+                            url:"module/purchasing/pch_vendorpr/viewdatatablerfq.php?module="+module+"&idmenu="+idmenu+"&act="+act,
+                            data:"eket="+ket+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&ukaryawan="+ekaryawan+"&uketapv="+ket,
+                            success:function(data){
+                                $("#c-data").html(data);
+                                $("#loading").html("");
+                            }
+                        });
+                        
+                    }
+                    
                     function KosongkanData() {
                         $("#c-data").html("");
                     }
@@ -96,6 +131,7 @@
                             <div class="well" style="overflow: auto; margin-top: -5px; margin-bottom: 5px; padding-top: 10px; padding-bottom: 6px;">
                                 <input onclick="pilihData('approve')" class='btn btn-success btn-sm' type='button' name='buttonview1' value='Tampilkan Data'>
                                 <input onclick="pilihData('unapprove')" class='btn btn-warning btn-sm' type='button' name='buttonview2' value='Hanya Yang Sudah Isi Vendor'>
+                                <input onclick="pilihDataRFQ('listrfq')" class='btn btn-info btn-sm' type='button' name='buttonview3' value='List Data RFQ'>
                                 <!--<input onclick="pilihData('reject')" class='btn btn-danger btn-sm' type='button' name='buttonview2' value='Lihat Data Reject'>-->
                             </div>
 

@@ -52,7 +52,13 @@ if ($module=="pchprosesprit") {
             }
             
         }elseif ($act=="unproses") {
-
+            $query = "select idpr from dbpurchasing.t_pr_transaksi_po WHERE idpr IN $noidbr AND IFNULL(aktif,'')='Y'";
+            $tampilc= mysqli_query($cnmy, $query);
+            $ketemuc= mysqli_num_rows($tampilc);
+            if ((INT)$ketemuc>0) {
+                mysqli_close($cnmy); echo "Salah satu ID PR sudah diisi vendor..., tidak bisa diproses"; exit;
+            }
+            
             $fielduntukttd=" a.tgl_validate1=NULL, b.gbr_validate1=NULL ";
             $fieldtglapprovenya= " (IFNULL(a.tgl_validate2,'')='' OR IFNULL(a.tgl_validate2,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_validate1,'')<>'' AND IFNULL(a.tgl_validate1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
 

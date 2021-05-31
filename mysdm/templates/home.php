@@ -772,6 +772,14 @@
         include 'module/purchasing/pch_prosesprit/prosesprit.php';
     }elseif ($_GET['module']=='pchapvprbymkt'){
         include 'module/purchasing/pch_apvpreth/apvpcheth.php';
+    }elseif ($_GET['module']=='pchapvprbychc'){
+        include 'module/purchasing/pch_apvpreth/apvpcheth.php';
+    }elseif ($_GET['module']=='pchapvprbyho'){
+        include 'module/purchasing/pch_apvpreth/apvpcheth.php';
+    }elseif ($_GET['module']=='pchapvprbycoo'){
+        include 'module/purchasing/pch_apvpreth/apvpcheth.php';
+    }elseif ($_GET['module']=='pchapvpobycoo'){
+        include 'module/purchasing/pch_apvpoeth/apvpchpoeth.php';
         
     }elseif ($_GET['module']=='mapsalescust'){
         include 'module/sls_mapsalescust/mapsalescust.php';

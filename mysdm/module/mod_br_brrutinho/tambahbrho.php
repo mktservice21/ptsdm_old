@@ -564,7 +564,7 @@ if ($pidact=="editdata"){
         var ep01 =document.getElementById('e_periode01').value;
         var ep02 =document.getElementById('e_periode02').value;
         
-        alert(ep02);
+        //alert(ep02);
 
         if (ikry=="") {
             alert("Pembuat masih kosong...");

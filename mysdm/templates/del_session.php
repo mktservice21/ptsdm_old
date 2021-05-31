@@ -531,6 +531,7 @@
     $_SESSION['DOKUPIDCAB']="";
     
     //PR 
+    $_SESSION['PCHSESIKARYA']="";
     $_SESSION['PCHSESITGL01']="";
     $_SESSION['PCHSESITGL02']="";
     
@@ -706,6 +707,12 @@
     $_SESSION['APVPCHPRBLN1']="";
     $_SESSION['APVPCHPRBLN2']="";
     $_SESSION['APVPCHPRAPVBY']="";
+    
+    //APPROVE PO ETHICAL
+    $_SESSION['APVPCHPOSTS']="";
+    $_SESSION['APVPCHPOBLN1']="";
+    $_SESSION['APVPCHPOBLN2']="";
+    $_SESSION['APVPCHPOAPVBY']="";
     
     
 ?>

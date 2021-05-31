@@ -126,7 +126,7 @@ if ($pact=="editdata"){
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal PO</label>
                                     <div class='col-md-3'>
                                         <div class='input-group date' id=''>
-                                            <input type="text" class="form-control" id='e_tglberlaku' name='e_tglberlaku' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $ptglpo; ?>'>
+                                            <input type="text" class="form-control" id='e_tglberlaku' name='e_tglberlaku' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $ptglpo; ?>' Readonly>
                                             <span class='input-group-addon'>
                                                 <span class='glyphicon glyphicon-calendar'></span>
                                             </span>
@@ -138,7 +138,7 @@ if ($pact=="editdata"){
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Vendor <span class='required'></span></label>
                                     <div class='col-xs-3'>
-                                          <select class='form-control input-sm' id='cb_supplier' name='cb_supplier' onchange="" data-live-search="true">
+                                          <select class='form-control input-sm' id='cb_supplier' name='cb_supplier' onchange="ShowDataVendor()" data-live-search="true">
                                               <?PHP
                                               if ($pact=="tambahbaru") {
                                                 $query = "select DISTINCT a.kdsupp, a.kdsupp as kdsupp, c.NAMA_SUP as nama_supp 
@@ -162,9 +162,9 @@ if ($pact=="editdata"){
                                                     $pnnmsup=$z['nama_supp'];
                                                     
                                                     if ($pnidsup==$pidsup)
-                                                        echo "<option value='$pnidsup' selected>$pnnmsup</option>";
+                                                        echo "<option value='$pnidsup' selected>$pnnmsup ($pnidsup)</option>";
                                                     else
-                                                        echo "<option value='$pnidsup'>$pnnmsup</option>";
+                                                        echo "<option value='$pnidsup'>$pnnmsup ($pnidsup)</option>";
                                                 }
                                               ?>
                                           </select>
@@ -383,7 +383,7 @@ if ($pact=="editdata"){
 
 <script type="text/javascript">
     $(function() {
-        $('#e_tglberlaku, #e_tglkirim').datepicker({
+        $('#e_tglberlaku_, #e_tglkirim').datepicker({
             changeMonth: true,
             changeYear: true,
             numberOfMonths: 1,
@@ -530,5 +530,10 @@ if ($pact=="editdata"){
             //document.write("You pressed Cancel!")
             return 0;
         }
+    }
+    
+    function ShowDataVendor() {
+        $("#s_div").html("");
+        $("#loading3").html("");
     }
 </script>

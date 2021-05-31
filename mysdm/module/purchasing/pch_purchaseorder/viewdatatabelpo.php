@@ -43,17 +43,21 @@
         a.idbayar, a.tglkirim, a.note_kirim, a.ppn as ppn_h, a.ppnrp as ppnrp_h, 
         a.disc as disc_h, a.discrp as discrp_h, a.pembulatan as pembulatan, a.totalrp as jumlahrp,
         c.idpr, b.idpo_d, b.idpr_po,
-        d.karyawanid, e.nama as nama_karyawan,
+        a.karyawanid, h.nama as nama_karyawan,
+        d.karyawanid as karyawanid_pr, e.nama as nama_karyawan_pr,
         c.idbarang, c.namabarang, c.idbarang_d, c.spesifikasi1, 
         c.spesifikasi2, c.uraian, c.keterangan,
+        a.dir1, a.tgl_dir1, a.dir2, a.tgl_dir2, 
         c.jumlah, c.satuan, c.harga, c.ppn, c.ppnrp, c.disc, c.discrp, c.pembulatan as pembulatanpr, c.totalrp
         from dbpurchasing.t_po_transaksi as a 
         join dbpurchasing.t_po_transaksi_d as b on a.idpo=b.idpo 
-        JOIN dbpurchasing.t_pr_transaksi_po as c on b.idpr_po=c.idpr_po 
+        JOIN dbpurchasing.t_pr_transaksi_po as c on b.idpr_po=c.idpr_po AND a.kdsupp=c.kdsupp  
         join dbpurchasing.t_pr_transaksi as d on c.idpr=d.idpr
         left join hrd.karyawan as e on d.karyawanid=e.karyawanId
         left join hrd.karyawan as f on a.userid=f.karyawanId 
-        LEFT JOIN dbpurchasing.t_pr_tipe as g on d.idtipe=g.idtipe WHERE 1=1 ";//AND IFNULL(d.pilihpo,'') IN ('Y') 
+        LEFT JOIN dbpurchasing.t_pr_tipe as g on d.idtipe=g.idtipe 
+        left join hrd.karyawan as h on a.karyawanid=h.karyawanId 
+        WHERE 1=1 ";//AND IFNULL(d.pilihpo,'') IN ('Y') 
     $query .=" AND IFNULL(a.stsnonaktif,'')<>'Y' AND a.tanggal BETWEEN '$tgl1' AND '$tgl2' ";
     $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
     mysqli_query($cnmy, $query);
@@ -74,7 +78,7 @@
                     <th width='20px'>Tipe</th>
                     <th width='20px'>ID</th>
                     <th width='30px'>Tanggal</th>
-                    <th width='30px'>Yg Mengajukan</th>
+                    <th width='30px'>Yg Membuat PR</th>
                     <th width='30px'>Nama Barang</th>
                     <th width='50px'>Spesifikasi</th>
                     <th width='50px'>Keterangan</th>
@@ -85,6 +89,7 @@
                     <th width='50px'>Disc.</th>
                     <th width='50px'>Total</th>
                     <th width='50px'>User Input</th>
+                    <th width='50px'>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -103,6 +108,7 @@
                         $pnmtipe=$row1['nama_tipe'];
                         $pkryid=$row1['karyawanid'];
                         $pkrynm=$row1['nama_karyawan'];
+                        $pprkrynm=$row1['nama_karyawan_pr'];
                         $pnmbarang=$row1['namabarang'];
                         $pspesifikasi=$row1['spesifikasi1'];
                         $pketerangan=$row1['keterangan'];
@@ -116,6 +122,15 @@
                         $pdisc=$row1['disc'];
                         $ptotalrp=$row1['totalrp'];
                         
+                        
+                        $ntgldir1=$row1['tgl_dir1'];
+                        $ndir1=$row1['dir1'];
+                        $ntgldir2=$row1['tgl_dir2'];
+                        $ndir2=$row1['dir2'];
+                        
+                        if ($ntgldir1=="0000-00-00 00:00:00") $ntgldir1="";
+                        if ($ntgldir2=="0000-00-00 00:00:00") $ntgldir2="";
+                        
                         $ptgl= date("d/m/Y", strtotime($ptgl));
                         $pjml=number_format($pjml,0,",",",");
                         $pharga=number_format($pharga,0,",",",");
@@ -127,28 +142,35 @@
                         $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidpo'>Edit</a>";
                         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$pidpo')\">";
                         
-                        $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+                        $print="<a title='Print / Cetak' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
                             . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$pidpo&iprint=print',"
                             . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                            . "Print</a>";
+                            . "Detail</a>";
                         
                         //$print="<a title='Print / Cetak' href='eksekusi3.php?module=$pmodule&brid=$pidpo&iprint=print' class='btn btn-info btn-xs' data-toggle='modal' target='_blank'>Print</a>";
-    
-    
+                        
+                        $pketapprove="";
+                        if (!empty($ntgldir1)) {
+                            $pedit="";
+                            $phapus="";
+                            
+                            $pketapprove="Sudah Approve COO";
+                        }
+                        
                         $ppilihan="$pedit $phapus $print";
                         
                         echo "<tr>";
                         if ($pbelumlewat==false) {
                             echo "<td nowrap>$no</td>";
-                            echo "<td nowrap class='divnone'>$pidpo $pnmtipe $pkrynm $puserinput $ptgl </td>";
+                            echo "<td nowrap class='divnone'>$pidpo $pnmtipe $pkrynm $pprkrynm $puserinput $ptgl </td>";
                             echo "<td nowrap>$ppilihan</td>";
                             echo "<td nowrap>$pnmtipe</td>";
                             echo "<td nowrap>$pidpo</td>";
                             echo "<td nowrap>$ptgl</td>";
-                            echo "<td nowrap>$pkrynm</td>";
+                            echo "<td nowrap>$pprkrynm</td>";
                         }else{
                             echo "<td nowrap>&nbsp;</td>";
-                            echo "<td nowrap class='divnone'>$pidpo $pnmtipe $pkrynm $puserinput $ptgl </td>";
+                            echo "<td nowrap class='divnone'>$pidpo $pnmtipe $pkrynm $pprkrynm $puserinput $ptgl </td>";
                             echo "<td nowrap>&nbsp;</td>";
                             echo "<td nowrap>&nbsp;</td>";
                             echo "<td nowrap>&nbsp;</td>";
@@ -168,7 +190,9 @@
                         
                         if ($pbelumlewat==false) {
                             echo "<td >$puserinput</td>";
+                            echo "<td nowrap>$pketapprove</td>";
                         }else{
+                            echo "<td >&nbsp;</td>";
                             echo "<td >&nbsp;</td>";
                         }
                         echo "</tr>";

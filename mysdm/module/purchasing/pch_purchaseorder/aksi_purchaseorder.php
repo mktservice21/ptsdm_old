@@ -30,7 +30,7 @@ if ($module=='pchpotransaksi')
         include "../../../config/koneksimysqli.php";
         $pkodenya=$_GET['id'];
         
-        $query = "UPDATE dbpurchasing.t_po_transaksi SET stsnonaktif='Y' WHERE idpo='$pkodenya' LIMIT 1";
+        $query = "UPDATE dbpurchasing.t_po_transaksi SET stsnonaktif='Y' WHERE idpo='$pkodenya' AND (IFNULL(tgl_dir1,'')='' OR IFNULL(tgl_dir1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') LIMIT 1";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             
@@ -51,6 +51,16 @@ if ($module=='pchpotransaksi')
         include "../../../config/koneksimysqli.php";
         
         $kodenya=$_POST['e_id'];
+        
+        if ($act=="update") {
+            $query = "select idpo from dbpurchasing.t_po_transaksi WHERE idpo='$kodenya' AND (IFNULL(tgl_dir1,'')<>'' AND IFNULL(tgl_dir1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00')";
+            $tampilc= mysqli_query($cnmy, $query);
+            $ketemuc= mysqli_num_rows($tampilc);
+            if ((INT)$ketemuc>0) {
+                mysqli_close($cnmy); echo "sudah approve COO..., tidak bisa diupdate"; exit;
+            }
+        }
+        
         $ptgl=$_POST['e_tglberlaku'];
         $ptglkr=$_POST['e_tglkirim'];
         
@@ -87,8 +97,13 @@ if ($module=='pchpotransaksi')
         $pbulat_h=str_replace(",","", $pbulat_h);
         $ptotbayar_h=str_replace(",","", $ptotbayar_h);
         
+        
         $ppph_h=str_replace(",","", $ppph_h);
         $ppph_hrp=str_replace(",","", $ppph_hrp);
+        
+        if (empty($pbulat_h)) $pbulat_h=0;
+        if (empty($pdisc_h)) $pdisc_h=0;
+        if (empty($pdisc_hrp)) $pdisc_hrp=0;
         
         $pidkdsup="";
         $pidprpdhanya="";
@@ -116,6 +131,9 @@ if ($module=='pchpotransaksi')
                 $pddisc=str_replace(",","", $pddisc);
                 $pddiscrp=str_replace(",","", $pddiscrp);
                 $pdtotrp=str_replace(",","", $pdtotrp);
+                
+                if (empty($pddisc)) $pddisc=0;
+                if (empty($pddiscrp)) $pddiscrp=0;
                 
                 $pidkdsup .="'".$pidprpo."".$pkdsupp."',";
                 $pidprpdhanya .="'".$pidprd."',";

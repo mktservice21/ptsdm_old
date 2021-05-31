@@ -200,18 +200,52 @@ function ReloadTandaTangan(){
             
             var iid = document.getElementById('e_id').value;
             var itipe = document.getElementById('cb_tipeaju').value;
+            var iuntuk = document.getElementById('cb_untuk').value;
             var ikry = document.getElementById('cb_karyawan').value;
+            var idivid = document.getElementById('cb_divisi').value;
             var icabid = document.getElementById('cb_cabang').value;
+            var idepid = document.getElementById('cb_dept').value;
             var esudahada=document.getElementById('e_sdhtmpl').value;
+            
+            if (itipe=="") {
+                alert("tipe harus dipilih...");
+                return false;
+            }
+
+            if (iuntuk=="") {
+                alert("Pengajuan untuk, belum dipilih...");
+                return false;
+            }
             
             if (ikry=="") {
                 alert("Pembuat masih kosong...");
+                return false;
+            }
+            
+            if (idivid=="") {
+                alert("divisi masih kosong...");
                 return false;
             }
             if (icabid=="") {
                 alert("Cabang harus diisi...");
                 return false;
             }
+            
+            if (idepid=="") {
+                alert("Departemen harus dipilih...");
+                return false;
+            }
+            
+            var espvkd=document.getElementById('e_kdspv').value;
+            var edmkd=document.getElementById('e_kddm').value;
+            var esmkd=document.getElementById('e_kdsm').value;
+            var egsmkd=document.getElementById('e_kdgsm').value;
+            
+            if (espvkd=="" && edmkd=="" && esmkd=="" && egsmkd=="") {
+                alert("atasan kosong...");
+                return false;
+            }
+            
             
         if (esudahada=="" || esudahada=="0") {
             alert("barang masih kosong...");

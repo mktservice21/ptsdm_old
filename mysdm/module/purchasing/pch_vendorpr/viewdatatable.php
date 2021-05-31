@@ -124,6 +124,17 @@ session_start();
     if ($ppilihsts=="APPROVE") {
         $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE IFNULL(tgl_validate1,'')<>'' AND IFNULL(tgl_validate1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+        $query = "delete $tmp01 from $tmp01 "
+                . " JOIN dbpurchasing.t_pr_transaksi_po as b "
+                . " on $tmp01.idpr=b.idpr AND $tmp01.idpr_d=b.idpr_d "
+                . " join dbpurchasing.t_po_transaksi_d as c "
+                . " on b.idpr_po=c.idpr_po "
+                . " join dbpurchasing.t_po_transaksi as d on c.idpo=d.idpo "
+                . " WHERE IFNULL(d.stsnonaktif,'')<>'Y'";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     }
     
 ?>

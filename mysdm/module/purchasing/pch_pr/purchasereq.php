@@ -9,10 +9,52 @@
     if (!empty($_SESSION['PCHSESITGL01'])) $tgl_pertama = $_SESSION['PCHSESITGL01'];
     if (!empty($_SESSION['PCHSESITGL02'])) $tgl_akhir = $_SESSION['PCHSESITGL02'];
     
-    $fkaryawan=$_SESSION['IDCARD'];
+    $pidkaryawan=$_SESSION['IDCARD'];
     $fstsadmin=$_SESSION['STSADMIN'];
     $flvlposisi=$_SESSION['LVLPOSISI'];
     $fdivisi=$_SESSION['DIVISI'];
+    $pidgroup=$_SESSION['GROUP'];
+    $pidjabatan=$_SESSION['JABATANID'];
+    
+    
+    $pfilterkaryawan="";
+    $pfilterkaryawan2="";
+    $pfilterkry="";
+    //$pidjabatan=="38" OR $pidjabatan=="33" OR 
+    if ($pidjabatan=="38" OR $pidjabatan=="33" OR $pidjabatan=="05" OR $pidjabatan=="20" OR $pidjabatan=="08" OR $pidjabatan=="10" OR $pidjabatan=="18" OR $pidjabatan=="15") {
+
+        $pnregion="";
+        if ($pidkaryawan=="0000000159") $pnregion="T";
+        elseif ($pidkaryawan=="0000000158") $pnregion="B";
+        $pfilterkry=CariDataKaryawanByCabJbt($pidkaryawan, $pidjabatan, $pnregion);
+
+        if (!empty($pfilterkry)) {
+            $parry_kry= explode(" | ", $pfilterkry);
+            if (isset($parry_kry[0])) $pfilterkaryawan=TRIM($parry_kry[0]);
+            if (isset($parry_kry[1])) $pfilterkaryawan2=TRIM($parry_kry[1]);
+        }
+
+    }
+        
+    $pbolehpilihkaryawan=false;
+    $pkryid_pl="";
+    if ($pidgroup=="1" OR $pidgroup=="24") {
+        $pkryid_pl="";
+        $pbolehpilihkaryawan=true;
+    }else{
+        $pkryid_pl=$pidkaryawan;
+    }
+    
+    $query = "select karyawanid from dbpurchasing.t_pr_admin WHERE karyawanid='$pidkaryawan'";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $pkryid_pl="";
+        $pbolehpilihkaryawan=true;
+    }
+    
+    
+    
     
 ?>
 
@@ -53,6 +95,7 @@
 
                     function KlikDataTabel() {
                         var ket="";
+                        var ekryid=document.getElementById('cb_karyawan').value;
                         var etgl1=document.getElementById('tgl1').value;
                         var etgl2=document.getElementById('tgl2').value;
                         var eidc=<?PHP echo $_SESSION['USERID']; ?> ;
@@ -67,7 +110,7 @@
                         $.ajax({
                             type:"post",
                             url:"module/purchasing/pch_pr/viewdatatabelpr.php?module="+module+"&act="+act+"&idmenu="+idmenu+"&nmun="+idmenu,
-                            data:"eket="+ket+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&uidc="+eidc+"&ucabang=",
+                            data:"eket="+ket+"&uperiode1="+etgl1+"&uperiode2="+etgl2+"&uidc="+eidc+"&ucabang="+"&ukryid="+ekryid,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
@@ -107,6 +150,67 @@
                         <form method='POST' action='<?PHP echo "$aksi?module=$_GET[module]&act=input&idmenu=$_GET[idmenu]"; ?>' 
                               id='demo-form2' name='form1' data-parsley-validate class='form-horizontal form-label-left' target="_blank">
 
+                            <div class='col-sm-3'>
+                                Yg. Mengajukan
+                                <div class="form-group">
+                                    <select class='form-control' id="cb_karyawan" name="cb_karyawan">
+                                        
+                                        <?PHP
+                                            if ($pbolehpilihkaryawan==true) {
+                                                echo "<option value='' selected>-- Pilih --</option>";
+                                                $query_kry = "select karyawanId as karyawanid, nama as nama 
+                                                    FROM hrd.karyawan WHERE 1=1 ";
+                                                $query_kry .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
+                                                $query_kry .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                        . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                        . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                        . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                        . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                                $query_kry .=" ORDER BY nama";
+                                            }else{
+                                                if ($pidjabatan=="38" OR empty($pfilterkaryawan)) {
+                                                    $query_kry = "select karyawanId as karyawanid, nama as nama 
+                                                        FROM hrd.karyawan WHERE karyawanId='$pidkaryawan' ";
+                                                    $query_kry .=" ORDER BY nama";
+                                                }else{
+                                                    $query_kry = "select karyawanId as karyawanid, nama as nama 
+                                                        FROM hrd.karyawan WHERE karyawanId IN $pfilterkaryawan ";
+                                                    $query_kry .=" ORDER BY nama";
+                                                }
+                                            }
+
+                                            if (!empty($query_kry)) {
+                                                $tampil = mysqli_query($cnmy, $query_kry);
+                                                $ketemu= mysqli_num_rows($tampil);
+                                                if ((INT)$ketemu<=0) echo "<option value='' selected>-- Pilih --</option>";
+
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $pkaryid=$z['karyawanid'];
+                                                    $pkarynm=$z['nama'];
+                                                    $pkryid=(INT)$pkaryid;
+                                                    
+                                                    if (empty($pkryid_pl)) {
+                                                        echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                                    }else{
+                                                        if ($pkaryid==$pkryid_pl) {
+                                                            echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                            $pidkaryawan=$pkryid_pl;
+                                                        }else{
+                                                            if ($pkaryid==$pidkaryawan)
+                                                                echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                            else
+                                                                echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                                        }
+                                                    }
+                                                }
+                                            }else{
+                                                echo "<option value='' selected>-- Pilih --</option>";
+                                            }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            
                             <div class='col-sm-2'>
                                 Tgl. Transaksi 
                                 <div class="form-group">

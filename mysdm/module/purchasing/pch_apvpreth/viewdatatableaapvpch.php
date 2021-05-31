@@ -70,6 +70,14 @@ session_start();
         }
     }
     
+    if ($pmodule=="pchapvprbychc") {
+        $papproveby="apvmgrchc";
+    }elseif ($pmodule=="pchapvprbyho") {
+        $papproveby="apvatasanho";
+    }elseif ($pmodule=="pchapvprbycoo") {
+        $papproveby="apvcoo";
+    }
+    
     if (empty($pjabatanid) OR empty($papproveby) OR empty($pkaryawanid)) {
         echo "Anda tidak berhak proses...";
         mysqli_close($cnmy); exit;
@@ -87,7 +95,7 @@ session_start();
     
     
     
-    $query = "SELECT distinct a.idpr, a.tglinput, a.tanggal, a.karyawanid, b.nama as nama_karyawan, a.jabatanid, "
+    $query = "SELECT distinct a.pengajuan, a.idpr, a.idtipe, a.tglinput, a.tanggal, a.karyawanid, b.nama as nama_karyawan, a.jabatanid, "
             . " a.icabangid, c.nama as nama_cabang, a.areaid, a.divisi, a.iddep, d.nama_dep, "
             . " a.aktivitas, a.jumlah, "
             . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, atasan5, "
@@ -102,6 +110,14 @@ session_start();
             . " OR (a.tglinput BETWEEN '$pbulan1' AND '$pbulan2') "
             . " )";
     
+    if ($pmodule=="pchapvprbychc") {
+        $query .= " AND a.pengajuan IN ('OTC', 'CHC') ";
+    }elseif ($pmodule=="pchapvprbyho") {
+        $query .= " AND a.pengajuan IN ('HO') ";
+    }else{
+        $query .= " AND a.pengajuan NOT IN ('OTC', 'CHC', 'HO') ";
+    }
+    
     if ($papproveby=="apvdm") {
         $query .= " AND a.atasan2='$pkaryawanid' ";
     }elseif ($papproveby=="apvsm") {
@@ -109,7 +125,11 @@ session_start();
     }elseif ($papproveby=="apvgsm") {
         $query .= " AND a.atasan4='$pkaryawanid' ";//AND a.jabatanid NOT IN ('15', '38')
     }elseif ($papproveby=="apvcoo") {
-        $query .= " AND a.atasan5='$pkaryawanid' AND a.jabatanid IN ('05') ";
+        $query .= " AND a.atasan5='$pkaryawanid' AND a.jabatanid IN ('05', '36') ";
+    }elseif ($papproveby=="apvmgrchc") {
+        $query .= " AND a.atasan4='$pkaryawanid' ";
+    }elseif ($papproveby=="apvatasanho") {//, 
+        $query .= " AND a.atasan4='$pkaryawanid' ";
     }else{
         $query .= " AND a.atasan1='$pkaryawanid' ";
     }
@@ -133,6 +153,12 @@ session_start();
                 }elseif ($papproveby=="apvcoo") {
                     $query .= " AND (IFNULL(a.tgl_atasan5,'')='' OR IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                     $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvmgrchc") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvatasanho") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }else{
                     $query .= " AND (IFNULL(a.tgl_atasan1,'')='' OR IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                 }
@@ -145,6 +171,10 @@ session_start();
                     $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvcoo") {
                     $query .= " AND (IFNULL(a.tgl_atasan5,'')<>'' AND IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvmgrchc") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvatasanho") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }else{
                     $query .= " AND (IFNULL(a.tgl_atasan1,'')<>'' AND IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }
@@ -183,7 +213,7 @@ session_start();
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "ALTER table $tmp01 ADD sudahapprove varchar(1)"; 
+    $query = "ALTER table $tmp01 ADD sudahapprove varchar(1), ADD COLUMN sudahisivendor varchar(1)"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     if ($ppilihsts=="APPROVE") {
@@ -202,8 +232,20 @@ session_start();
         }elseif ($papproveby=="apvcoo") {
             $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE jabatanid in ('05') AND IFNULL(tgl_atasan5,'')<>'' AND IFNULL(tgl_atasan5,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvmgrchc") {
+            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE pengajuan in ('OTC', 'CHC') AND IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvatasanho") {
+            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE pengajuan in ('HO') AND IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
         }
+        //
     }
+    
+    
+    $query = "UPDATE $tmp01 as a JOIN dbpurchasing.t_pr_transaksi_po as b on a.idpr=b.idpr SET a.sudahisivendor='Y' WHERE IFNULL(b.aktif,'')='Y'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 ?>
 
 
@@ -383,6 +425,9 @@ echo "</div>";
                     $pidcabang=$row1['icabangid'];
                     $pnmcabang=$row1['nama_cabang'];
                     $pkeperluan=$row1['aktivitas'];
+                    $ntipe=$row1['idtipe'];
+                    $npengajuan=$row1['pengajuan'];
+                    $psudahisivendor=$row1['sudahisivendor'];
                     
 					
                     
@@ -411,13 +456,17 @@ echo "</div>";
                     if ($ptglval1=="0000-00-00" OR $ptglval1=="0000-00-00 00:00:00") $ptglval1="";
                     if ($ptglval2=="0000-00-00" OR $ptglval2=="0000-00-00 00:00:00") $ptglval2="";
                     
+                    
                     $pketgsmhos="GSM";
+                    if ($papproveby=="apvmgrchc") $pketgsmhos="HOS";
+                    elseif ($papproveby=="apvatasanho") $pketgsmhos="Atasan";
+                    
                     $npmdl="pchpurchasereq";
                     
                     $pprint="<a title='Detail / Print' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
                         . "onClick=\"window.open('eksekusi3.php?module=$npmdl&brid=$pidpr&iprint=print',"
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
-                        . "Detail</a>";
+                        . "$pidpr</a>";
                     
                     $ceklisnya = "<input type='checkbox' value='$pidpr' name='chkbox_br[]' id='chkbox_br[$pidpr]' class='cekbr'>";
                     
@@ -429,46 +478,68 @@ echo "</div>";
                     }
                     
                     if ($ppilihsts=="APPROVE") {
-                        if ($papproveby=="apvdm") {
-                            if (empty($ptglatasan1)) $ceklisnya="";
-                        }elseif ($papproveby=="apvsm") {
-                            if (empty($ptglatasan2)) $ceklisnya="";
-                        }elseif ($papproveby=="apvgsm") {
-                            if (empty($ptglatasan3)) $ceklisnya="";
+                        if ($npengajuan=="HO" OR $npengajuan=="OTC" OR $npengajuan=="CHC") {
+                            if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh=""; }
                         }else{
-                            
+                        
+                            if ($papproveby=="apvdm") {
+                                if (empty($ptglatasan1)) $ceklisnya="";
+                            }elseif ($papproveby=="apvsm") {
+                                if (empty($ptglatasan2)) $ceklisnya="";
+                            }elseif ($papproveby=="apvgsm") {
+                                if (empty($ptglatasan3)) $ceklisnya="";
+                            }else{
+
+                            }
+
+                            if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve $pketgsmhos"; }
+                            if (empty($ptglatasan3) AND !empty($pidatasan3)) { $pstsapvoleh="Belum Approve SM"; }
+                            if (empty($ptglatasan2) AND !empty($pidatasan2)) { $pstsapvoleh="Belum Approve DM"; }
+                            if (empty($ptglatasan1) AND !empty($pidatasan1)) { $pstsapvoleh="Belum Approve SPV/AM"; }
+                        
                         }
-                        
-                        if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve $pketgsmhos"; }
-                        if (empty($ptglatasan3) AND !empty($pidatasan3)) { $pstsapvoleh="Belum Approve SM"; }
-                        if (empty($ptglatasan2) AND !empty($pidatasan2)) { $pstsapvoleh="Belum Approve DM"; }
-                        if (empty($ptglatasan1) AND !empty($pidatasan1)) { $pstsapvoleh="Belum Approve SPV/AM"; }
-                        
                         if (!empty($pstsapvoleh)) {
                             $pstsapvoleh="<span style='color:red;'>$pstsapvoleh</span>";
                         }
                         
                     }elseif ($ppilihsts=="UNAPPROVE") {
-                        if ($papproveby=="apvdm") {
-                            if (!empty($ptglatasan4) AND !empty($pidatasan4)) $ceklisnya="";
-                            if (!empty($ptglatasan3) AND !empty($pidatasan3)) $ceklisnya="";
-                        }elseif ($papproveby=="apvsm") {
-                            if (!empty($ptglatasan4) AND !empty($pidatasan4)) $ceklisnya="";
-                        }elseif ($papproveby=="apvgsm") {
+                        
+                        if ($npengajuan=="HO" OR $npengajuan=="OTC" OR $npengajuan=="CHC") {
                             
                         }else{
-                            if (!empty($ptglatasan4) AND !empty($pidatasan4)) $ceklisnya="";
-                            if (!empty($ptglatasan3) AND !empty($pidatasan3)) $ceklisnya="";
-                            if (!empty($ptglatasan2) AND !empty($pidatasan2)) $ceklisnya="";
+                            
+                            if ($papproveby=="apvdm") {
+                                if (!empty($ptglatasan4) AND !empty($pidatasan4)) $ceklisnya="";
+                                if (!empty($ptglatasan3) AND !empty($pidatasan3)) $ceklisnya="";
+                            }elseif ($papproveby=="apvsm") {
+                                if (!empty($ptglatasan4) AND !empty($pidatasan4)) $ceklisnya="";
+                            }elseif ($papproveby=="apvgsm") {
+
+                            }else{
+                                if (!empty($ptglatasan4) AND !empty($pidatasan4)) $ceklisnya="";
+                                if (!empty($ptglatasan3) AND !empty($pidatasan3)) $ceklisnya="";
+                                if (!empty($ptglatasan2) AND !empty($pidatasan2)) $ceklisnya="";
+                            }
+
+                            if (!empty($ptglatasan1) AND !empty($pidatasan1)) $pstsapvoleh="Sudah Approve SPV/AM";
+                            if (!empty($ptglatasan2) AND !empty($pidatasan2)) $pstsapvoleh="Sudah Approve DM";
+                            if (!empty($ptglatasan3) AND !empty($pidatasan3)) $pstsapvoleh="Sudah Approve SM";
+                            if (!empty($ptglatasan4) AND !empty($pidatasan4)) $pstsapvoleh="Sudah Approve $pketgsmhos";
+                        
                         }
                         
-                        if (!empty($ptglatasan1) AND !empty($pidatasan1)) $pstsapvoleh="Sudah Approve SPV/AM";
-                        if (!empty($ptglatasan2) AND !empty($pidatasan2)) $pstsapvoleh="Sudah Approve DM";
-                        if (!empty($ptglatasan3) AND !empty($pidatasan3)) $pstsapvoleh="Sudah Approve SM";
-                        if (!empty($ptglatasan4) AND !empty($pidatasan4)) $pstsapvoleh="Sudah Approve $pketgsmhos";
-                        
                         if (!empty($ptglval1)) {
-                            $pstsapvoleh="<span style='color:blue;'>Sudah Proses HRD</span>";
+                            if ($ntipe=="102") {
+                                $pstsapvoleh="<span style='color:blue;'>Sudah Proses IT</span>";
+                                $ceklisnya="";
+                            }else{
+                                $pstsapvoleh="<span style='color:blue;'>Sudah Proses Purchasing</span>";
+                                $ceklisnya="";
+                            }
+                        }
+                        
+                        if (!empty($ptglval2)) {
+                            $pstsapvoleh="<span style='color:blue;'>Sudah Proses Purchasing</span>";
                             $ceklisnya="";
                         }
                         
@@ -511,6 +582,10 @@ echo "</div>";
 
                     if (!empty($cnmbrg)) $cnmbrg=substr($cnmbrg, 0, -2);
                 
+                    if ($psudahisivendor=="Y") {
+                        $ceklisnya="";
+                    }
+                        
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$ceklisnya</td>";

@@ -24,20 +24,47 @@ $pidjbtpl=$_SESSION['JABATANID'];
 $pidcardpl=$_SESSION['IDCARD'];
 $idajukan=$_SESSION['IDCARD'];
 $nmajukan=$_SESSION['NAMALENGKAP']; 
+$pdivisilogin=$_SESSION['DIVISI']; 
 
 $pkaryawaninpilih=false;
 if ($pidgroup=="40" OR $pidgroup=="23" OR $pidgroup=="26" OR $pidgroup=="1" OR $pidgroup=="24") {
     $pkaryawaninpilih=true;
 }
 
+$pstatuslogin="HO";
+if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
+    $pstatuslogin="OTC";
+    $pkaryawaninpilih=false;
+}else{
+    if ($pidgroup<>"24" AND $pidgroup<>"1" AND ($pidjbtpl=="15" OR $pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05" OR $pidjbtpl=="38") ) {
+        $pstatuslogin="ETH";
+        $pkaryawaninpilih=false;
+    }
+}
+
+$pkdspv="";
+$pnamaspv="";
+$pkddm="";
+$pnamadm="";
+$pkdsm="";
+$pnamasm="";
+$pkdgsm="";
+$pnamagsm="";
+
+$pcabangid="";
+$pfilcabang="";
+$query_cabang="";
+
+$pdivisiid="";
+$pfildivisi="";
+$query_divisi="";
 
 //ATASAN
 
     $query ="SELECT a.karyawanid, b.nama nama_karyawan, a.spv, c.nama nama_spv, 
         a.dm, d.nama nama_dm, a.sm, e.nama nama_sm, a.gsm, f.nama nama_gsm, 
-        g.icabangid as icabangid, g.areaid as areaid, g.jabatanid as jabatanid 
+        b.icabangid as icabangid, b.areaid as areaid, b.jabatanid as jabatanid, a.icabangid as icabangid_posisi 
         FROM dbmaster.t_karyawan_posisi a 
-        LEFT JOIN hrd.karyawan as g on a.karyawanId=g.karyawanId 
         LEFT JOIN hrd.karyawan b on a.karyawanId=b.karyawanId 
         LEFT JOIN hrd.karyawan c on a.spv=c.karyawanId 
         LEFT JOIN hrd.karyawan d on a.dm=d.karyawanId 
@@ -53,106 +80,116 @@ if ($pidgroup=="40" OR $pidgroup=="23" OR $pidgroup=="26" OR $pidgroup=="1" OR $
     $pnamasm=$nrs['nama_sm'];
     $pkdgsm=$nrs['gsm'];
     $pnamagsm=$nrs['nama_gsm'];
+    $pcabidpilihposisi=$nrs['icabangid_posisi'];
+    $pcabidpilihposisi2=$nrs['icabangid'];
 
 // END ATASAN
 
 
-//CABANG    
-$pcabangid="";
-$pfilcabang="";
-$query_cabang="";
-if ($pidjbtpl=="15") {
-    $query_cabang = "select distinct icabangid as icabangid, aktif as aktif FROM mkt.imr0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
-}elseif ($pidjbtpl=="10" OR $pidjbtpl=="18") {
-    $query_cabang = "select distinct icabangid as icabangid, aktif as aktif FROM mkt.ispv0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
-}elseif ($pidjbtpl=="08") {
-    $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.idm0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
-}elseif ($pidjbtpl=="20") {
-    $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.ism0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
-}elseif ($pidjbtpl=="05") {
-    if ($idajukan=="0000000158") {
-        $pcabangid="0000000001";
-        $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.icabang WHERE region='B' AND IFNULL(icabangid,'')<>'' AND IFNULL(aktif,'')<>'N'";
-    }elseif ($idajukan=="0000000159") {
-        $pcabangid="0000000114";
-        $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.icabang WHERE region='T' AND IFNULL(icabangid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
+    $pcabangid=$pcabidpilihposisi;
+    if (empty($pcabangid)) {
+        $pcabangid=$pcabidpilihposisi2;
     }
-}elseif ($pidjbtpl=="38") {
-    $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif from hrd.rsm_auth where karyawanid='$idajukan'";
-}
+    $pdivisiid="OTC";
+}else{
 
-if (!empty($query_cabang)) {
-    $ptampilc= mysqli_query($cnmy, $query_cabang);
-    $ketemuc= mysqli_num_rows($ptampilc);
-    while ($nrc= mysqli_fetch_array($ptampilc)) {
-        $cidcab=$nrc['icabangid'];
-        $caktif=$nrc['aktif'];
-        
-        if ((INT)$ketemuc==1) {
-            $pcabangid=$cidcab;
-            $pfilcabang .="'".$cidcab."',";
-        }else{
-            if ($caktif=="N") {
-            }else{
+    //CABANG    
+    $pcabangid="";
+    $pfilcabang="";
+    $query_cabang="";
+    if ($pidjbtpl=="15") {
+        $query_cabang = "select distinct icabangid as icabangid, aktif as aktif FROM mkt.imr0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
+    }elseif ($pidjbtpl=="10" OR $pidjbtpl=="18") {
+        $query_cabang = "select distinct icabangid as icabangid, aktif as aktif FROM mkt.ispv0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
+    }elseif ($pidjbtpl=="08") {
+        $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.idm0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
+    }elseif ($pidjbtpl=="20") {
+        $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.ism0 WHERE karyawanid='$idajukan' AND IFNULL(icabangid,'')<>''";
+    }elseif ($pidjbtpl=="05") {
+        if ($idajukan=="0000000158") {
+            $pcabangid="0000000001";
+            $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.icabang WHERE region='B' AND IFNULL(icabangid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+        }elseif ($idajukan=="0000000159") {
+            $pcabangid="0000000114";
+            $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif FROM mkt.icabang WHERE region='T' AND IFNULL(icabangid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+        }
+    }elseif ($pidjbtpl=="38") {
+        $query_cabang = "select distinct icabangid as icabangid, 'Y' as aktif from hrd.rsm_auth where karyawanid='$idajukan'";
+    }
+
+    if (!empty($query_cabang)) {
+        $ptampilc= mysqli_query($cnmy, $query_cabang);
+        $ketemuc= mysqli_num_rows($ptampilc);
+        while ($nrc= mysqli_fetch_array($ptampilc)) {
+            $cidcab=$nrc['icabangid'];
+            $caktif=$nrc['aktif'];
+
+            if ((INT)$ketemuc==1) {
+                $pcabangid=$cidcab;
                 $pfilcabang .="'".$cidcab."',";
+            }else{
+                if ($caktif=="N") {
+                }else{
+                    $pfilcabang .="'".$cidcab."',";
+                }
+            }
+        }
+        if (!empty($pfilcabang)) $pfilcabang="(".substr($pfilcabang, 0, -1).")";
+
+    }
+    //END CABANG
+
+    //CARI DIVISI
+    $pdivisiid="";
+    $pfildivisi="";
+    $query_divisi="";
+    if ($pidjbtpl=="15") {
+        $query_divisi = "select distinct divisiid as divisiid FROM mkt.imr0 WHERE karyawanid='$idajukan' AND IFNULL(divisiid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+    }elseif ($pidjbtpl=="10" OR $pidjbtpl=="18") {
+        $query_divisi = "select distinct divisiid as divisiid FROM mkt.ispv0 WHERE karyawanid='$idajukan' AND IFNULL(divisiid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+    }
+
+    if (!empty($query_divisi)) {
+        $ptampild= mysqli_query($cnmy, $query_divisi);
+        $ketemud= mysqli_num_rows($ptampild);
+        while ($nrd= mysqli_fetch_array($ptampild)) {
+            $diddiv=$nrd['divisiid'];
+
+            $pfildivisi .="'".$diddiv."',";
+
+            if ((INT)$ketemud==1) {
+                $pdivisiid=$diddiv;
+            }else{
+                if ($pidjbtpl=="15") {
+                    $pdivisiid="CAN";
+                    $pfildivisi .="'CAN',";
+                }
+            }
+        }
+        if (!empty($pfildivisi)) $pfildivisi="(".substr($pfildivisi, 0, -1).")";
+
+    }
+
+    if ($pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05") {
+        $pdivisiid="CAN";
+    }else{
+        if ($pidjbtpl=="38") $pdivisiid="HO";//ADMIN CABANG
+        else{
+            if ($pidjbtpl<>"15") {
+                $pdivisiid=$_SESSION['DIVISI'];
+                if (empty($pfilcabang) AND empty($pcabangid)) $pcabangid="0000000001";
             }
         }
     }
-    if (!empty($pfilcabang)) $pfilcabang="(".substr($pfilcabang, 0, -1).")";
-    
-}
-//END CABANG
+    //END CARI DIVISI
 
-//CARI DIVISI
-$pdivisiid="";
-$pfildivisi="";
-$query_divisi="";
-if ($pidjbtpl=="15") {
-    $query_divisi = "select distinct divisiid as divisiid FROM mkt.imr0 WHERE karyawanid='$idajukan' AND IFNULL(divisiid,'')<>'' AND IFNULL(aktif,'')<>'N'";
-}elseif ($pidjbtpl=="10" OR $pidjbtpl=="18") {
-    $query_divisi = "select distinct divisiid as divisiid FROM mkt.ispv0 WHERE karyawanid='$idajukan' AND IFNULL(divisiid,'')<>'' AND IFNULL(aktif,'')<>'N'";
-}
+}//END STATUS LOGIN
 
-if (!empty($query_divisi)) {
-    $ptampild= mysqli_query($cnmy, $query_divisi);
-    $ketemud= mysqli_num_rows($ptampild);
-    while ($nrd= mysqli_fetch_array($ptampild)) {
-        $diddiv=$nrd['divisiid'];
-        
-        $pfildivisi .="'".$diddiv."',";
-        
-        if ((INT)$ketemud==1) {
-            $pdivisiid=$diddiv;
-        }else{
-            if ($pidjbtpl=="15") {
-                $pdivisiid="CAN";
-                $pfildivisi .="'CAN',";
-            }
-        }
-    }
-    if (!empty($pfildivisi)) $pfildivisi="(".substr($pfildivisi, 0, -1).")";
-    
-}
-
-if ($pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05") {
-    $pdivisiid="CAN";
-}else{
-    if ($pidjbtpl=="38") $pdivisiid="HO";//ADMIN CABANG
-    else{
-        if ($pidjbtpl<>"15") {
-            $pdivisiid=$_SESSION['DIVISI'];
-            if (empty($pfilcabang) AND empty($pcabangid)) $pcabangid="0000000001";
-        }
-    }
-}
-//END CARI DIVISI
-
-//CARI DEPARTEMEN
+//CARI DEPARTEMEN dan PENGAJUAN
 $pdepartmen="";
-if ($pidgroup<>"24" AND ($pidjbtpl=="15" OR $pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05" OR $pidjbtpl=="38") ) {
+if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC" OR $pstatuslogin=="ETH") {
     $pdepartmen="MKT";
-}else{
-    
 }
 
 //END CARI DEPARTEMEN
@@ -160,8 +197,21 @@ if ($pidgroup<>"24" AND ($pidjbtpl=="15" OR $pidjbtpl=="10" OR $pidjbtpl=="18" O
 $pareaid="";
 
 $pidtipe="101";
-$untukpil1="selected";
+
+$untukpil0="";
+$untukpil1="";
 $untukpil2="";
+$untukpil3="";
+
+if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC") {
+    $untukpil2="selected";
+}else{
+    if ($pstatuslogin=="ETH") {
+        $untukpil1="selected";
+    }else{
+        $untukpil0="selected";
+    }
+}
 
 $pketerangan="";
 $psudahtampil="";
@@ -195,7 +245,27 @@ if ($pact=="editdata"){
     $pdivisiid=$r['divisi'];
     $pidjbtpl=$r['jabatanid'];
     $pdepartmen=$r['iddep'];
+    $ppengajuanid=$r['pengajuan'];
     
+    
+    if ($pstatuslogin=="HO") {
+        if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
+            $untukpil0="";
+            $untukpil1="";
+            $untukpil2="selected";
+            $untukpil3="";
+        }elseif ($ppengajuanid=="ETH") {
+            $untukpil0="";
+            $untukpil1="selected";
+            $untukpil2="";
+            $untukpil3="";
+        }elseif ($ppengajuanid=="HO") {
+            $untukpil0="";
+            $untukpil1="";
+            $untukpil2="";
+            $untukpil3="selected";
+        }
+    }
     
     $patasan1=$r['atasan1'];
     $patasan2=$r['atasan2'];
@@ -229,27 +299,37 @@ if ($pact=="editdata"){
         if (!empty($patasan2) AND !empty($ptglatasan2)) $philangkanhapus=true;
     }
     
-    
-    $query ="SELECT cb.idpr, cb.karyawanid, b.nama nama_karyawan, cb.atasan1 spv, c.nama nama_spv, cb.atasan2 as dm, d.nama nama_dm, 
-        cb.atasan3 as sm, e.nama nama_sm, cb.atasan4 as gsm, f.nama nama_gsm 
-        FROM dbpurchasing.t_pr_transaksi cb
-        LEFT JOIN dbmaster.t_karyawan_posisi a on cb.karyawanid=a.karyawanid
-        LEFT JOIN hrd.karyawan b on cb.karyawanId=b.karyawanId 
-        LEFT JOIN hrd.karyawan c on cb.atasan1=c.karyawanId 
-        LEFT JOIN hrd.karyawan d on cb.atasan2=d.karyawanId 
-        LEFT JOIN hrd.karyawan e on cb.atasan3=e.karyawanId 
-        LEFT JOIN hrd.karyawan f on cb.atasan4=f.karyawanId WHERE cb.idpr='$pidbr'";
-    $ptampil= mysqli_query($cnmy, $query);
-    $nrs= mysqli_fetch_array($ptampil);
-    $pkdspv=$nrs['spv'];
-    $pnamaspv=$nrs['nama_spv'];
-    $pkddm=$nrs['dm'];
-    $pnamadm=$nrs['nama_dm'];
-    $pkdsm=$nrs['sm'];
-    $pnamasm=$nrs['nama_sm'];
-    $pkdgsm=$nrs['gsm'];
-    $pnamagsm=$nrs['nama_gsm'];
-    
+    if ($ppengajuanid=="HO") {
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+        
+        $pkdgsm=$patasan4;
+        $pnamagsm = getfield("select nama as lcfields from hrd.karyawan WHERE karyawanid='$patasan4'");
+    }else{
+        $query ="SELECT cb.idpr, cb.karyawanid, b.nama nama_karyawan, cb.atasan1 spv, c.nama nama_spv, cb.atasan2 as dm, d.nama nama_dm, 
+            cb.atasan3 as sm, e.nama nama_sm, cb.atasan4 as gsm, f.nama nama_gsm 
+            FROM dbpurchasing.t_pr_transaksi cb
+            LEFT JOIN dbmaster.t_karyawan_posisi a on cb.karyawanid=a.karyawanid
+            LEFT JOIN hrd.karyawan b on cb.karyawanId=b.karyawanId 
+            LEFT JOIN hrd.karyawan c on cb.atasan1=c.karyawanId 
+            LEFT JOIN hrd.karyawan d on cb.atasan2=d.karyawanId 
+            LEFT JOIN hrd.karyawan e on cb.atasan3=e.karyawanId 
+            LEFT JOIN hrd.karyawan f on cb.atasan4=f.karyawanId WHERE cb.idpr='$pidbr'";
+        $ptampil= mysqli_query($cnmy, $query);
+        $nrs= mysqli_fetch_array($ptampil);
+        $pkdspv=$nrs['spv'];
+        $pnamaspv=$nrs['nama_spv'];
+        $pkddm=$nrs['dm'];
+        $pnamadm=$nrs['nama_dm'];
+        $pkdsm=$nrs['sm'];
+        $pnamasm=$nrs['nama_sm'];
+        $pkdgsm=$nrs['gsm'];
+        $pnamagsm=$nrs['nama_gsm'];
+    }
     
     //ADMIN BR
     if ($pidgroup=="40" OR $pidgroup=="23" OR $pidgroup=="26") {
@@ -266,37 +346,52 @@ if ($pact=="editdata"){
     
 }
 
+$pbukaarea="hidden";
+$pnamagsmhos="GSM";
+if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
+    $pnamagsmhos="HOS";
+    $pbukaarea="";
+}elseif ($pdivisilogin=="HO") {
+    $pnamagsmhos="Atasan";
+}
 
 //CARI AREA
 $pfilarea="";
 $query_area="";
-if (!empty($pcabangid)) {
-    if ($pidjbtpl=="15") {
-        $query_area = "select distinct areaid as areaid, aktif FROM mkt.imr0 WHERE karyawanid='$idajukan' and icabangid='$pcabangid' AND IFNULL(areaid,'')<>'' AND IFNULL(aktif,'')<>'N'";
-    }elseif ($pidjbtpl=="10" OR $pidjbtpl=="18") {
-        $query_area = "select distinct areaid as areaid, aktif FROM mkt.ispv0 WHERE karyawanid='$idajukan' and icabangid='$pcabangid' AND IFNULL(areaid,'')<>'' AND IFNULL(aktif,'')<>'N'";
-    }else{
-        $query_area = "select distinct areaid as areaid, aktif FROM mkt.iarea WHERE icabangid='$pcabangid' AND IFNULL(areaid,'')<>'' AND IFNULL(aktif,'')<>'N'";
-    }
-    
-    if (!empty($query_area)) {
-        $ptampila= mysqli_query($cnmy, $query_area);
-        $ketemua= mysqli_num_rows($ptampila);
-        while ($nra= mysqli_fetch_array($ptampila)) {
-            $aidarea=$nra['areaid'];
-            $aaktif=$nra['aktif'];
 
-            if ((INT)$ketemua==1 AND $pact<>"editdata") {
-                $pareaid=$aidarea;
-                $pfilarea .="'".$aidarea."',";
-            }else{
-                if ($aaktif=="N") {
-                }else{
+if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
+    
+}else{
+    
+    if (!empty($pcabangid)) {
+        if ($pidjbtpl=="15") {
+            $query_area = "select distinct areaid as areaid, aktif FROM mkt.imr0 WHERE karyawanid='$idajukan' and icabangid='$pcabangid' AND IFNULL(areaid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+        }elseif ($pidjbtpl=="10" OR $pidjbtpl=="18") {
+            $query_area = "select distinct areaid as areaid, aktif FROM mkt.ispv0 WHERE karyawanid='$idajukan' and icabangid='$pcabangid' AND IFNULL(areaid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+        }else{
+            $query_area = "select distinct areaid as areaid, aktif FROM mkt.iarea WHERE icabangid='$pcabangid' AND IFNULL(areaid,'')<>'' AND IFNULL(aktif,'')<>'N'";
+        }
+
+        if (!empty($query_area)) {
+            $ptampila= mysqli_query($cnmy, $query_area);
+            $ketemua= mysqli_num_rows($ptampila);
+            while ($nra= mysqli_fetch_array($ptampila)) {
+                $aidarea=$nra['areaid'];
+                $aaktif=$nra['aktif'];
+
+                if ((INT)$ketemua==1 AND $pact<>"editdata") {
+                    $pareaid=$aidarea;
                     $pfilarea .="'".$aidarea."',";
+                }else{
+                    if ($aaktif=="N") {
+                    }else{
+                        $pfilarea .="'".$aidarea."',";
+                    }
                 }
             }
+            if (!empty($pfilarea)) $pfilarea="(".substr($pfilarea, 0, -1).")";
+
         }
-        if (!empty($pfilarea)) $pfilarea="(".substr($pfilarea, 0, -1).")";
 
     }
     
@@ -366,17 +461,6 @@ if (!empty($pcabangid)) {
                                 </div>
                                 
                                 
-                                <div hidden class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pengajuan <span class='required'></span></label>
-                                    <div class='col-xs-5'>
-                                        <select class='form-control input-sm' id='cb_untuk' name='cb_untuk' onchange="" data-live-search="true">
-                                            <?PHP
-                                                echo "<option value='ETH' $untukpil1>Ethical</option>";
-                                                //echo "<option value='OTC' $untukpil2>CHC</option>";
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
                                 
                                 
                                 <div class='form-group'>
@@ -403,6 +487,30 @@ if (!empty($pcabangid)) {
                                 
                                 
                                 
+                                <div  class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pengajuan <span class='required'></span></label>
+                                    <div class='col-xs-5'>
+                                        <select class='form-control input-sm' id='cb_untuk' name='cb_untuk' onchange="ShowPengajuanUntuk()" data-live-search="true">
+                                            <?PHP
+                                            if ($pstatuslogin=="HO") {
+                                                echo "<option value='' $untukpil0>--Pilihan--</option>";
+                                                echo "<option value='ETH' $untukpil1>MKT. ETHICAL</option>";
+                                                echo "<option value='OTC' $untukpil2>MKT. CHC</option>";
+                                                echo "<option value='HO' $untukpil3>HO</option>";
+                                            }else{
+                                                if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC") {
+                                                    if (empty($untukpil2)) echo "<option value='' selected>--Pilihan--</option>";
+                                                    echo "<option value='OTC' $untukpil2>MKT. CHC</option>";
+                                                }else{
+                                                    if (empty($untukpil1)) echo "<option value='' selected>--Pilihan--</option>";
+                                                    echo "<option value='ETH' $untukpil1>MKT. ETHICAL</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pembuat <span class='required'></span></label>
                                     <div class='col-xs-5'>
@@ -423,7 +531,7 @@ if (!empty($pcabangid)) {
                                                                     . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                                                             $query .= " AND nama NOT IN ('ACCOUNTING')";
                                                             $query .= " AND karyawanid NOT IN ('0000002200', '0000002083') ";
-                                                            $query .= " AND divisiId NOT IN ('OTC', 'CHC') ";
+                                                            //$query .= " AND divisiId NOT IN ('OTC', 'CHC') ";
                                                         $query .= " ) ";
                                                     $query .= " OR karyawanId='$idajukan' ) ";
                                                     $query .= " ORDER BY nama";
@@ -468,28 +576,32 @@ if (!empty($pcabangid)) {
                                         <div class='col-xs-5'>
                                             <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="">
                                                 <?PHP
-                                                
-                                                if (!empty($pfildivisi) OR !empty($pdivisiid) AND ($pidjbtpl=="15")) {
-                                                    if (empty($pfildivisi)) $pfildivisi="('')";
-                                                    
-                                                    $query = "select DivProdId as divprodid from mkt.divprod where ( IFNULL(aktif,'')='Y' AND IFNULL(br,'')='Y' "
-                                                            . " AND DivProdId In $pfildivisi ) OR ( DivProdId='$pdivisiid' AND IFNULL(DivProdId,'')<>'' ) ";
+                                                if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
+                                                    $query = "select DivProdId as divprodid from mkt.divprod where DivProdId='OTC' ";
                                                     $query .=" Order by DivProdId";
                                                 }else{
-                                                    $query = "select DivProdId as divprodid from mkt.divprod WHERE 1=1 ";
-                                                    if ($pidgroup<>"24" AND $pidgroup<>"1" AND ($pidjbtpl=="10" OR $pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05") ) {
-                                                        $query .=" AND DivProdId IN ('CAN', 'EAGLE', 'PEACO', 'PIGEO')";
+                                                    if (!empty($pfildivisi) OR !empty($pdivisiid) AND ($pidjbtpl=="15")) {
+                                                        if (empty($pfildivisi)) $pfildivisi="('')";
+
+                                                        $query = "select DivProdId as divprodid from mkt.divprod where ( IFNULL(aktif,'')='Y' AND IFNULL(br,'')='Y' "
+                                                                . " AND DivProdId In $pfildivisi ) OR ( DivProdId='$pdivisiid' AND IFNULL(DivProdId,'')<>'' ) ";
+                                                        $query .=" Order by DivProdId";
                                                     }else{
-                                                        $query .=" AND ( IFNULL(aktif,'')='Y' AND IFNULL(br,'')='Y' ) OR ( DivProdId='$pdivisiid' AND IFNULL(DivProdId,'')<>'' )";
-                                                        $query .=" AND DivProdId IN ('OTHER', 'OTHERS')";
+                                                        $query = "select DivProdId as divprodid from mkt.divprod WHERE 1=1 ";
+                                                        if ($pidgroup<>"24" AND $pidgroup<>"1" AND ($pidjbtpl=="10" OR $pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05") ) {
+                                                            $query .=" AND DivProdId IN ('CAN', 'EAGLE', 'PEACO', 'PIGEO')";
+                                                        }else{
+                                                            $query .=" AND ( IFNULL(aktif,'')='Y' AND IFNULL(br,'')='Y' ) OR ( DivProdId='$pdivisiid' AND IFNULL(DivProdId,'')<>'' )";
+                                                            $query .=" AND DivProdId IN ('OTHER', 'OTHERS')";
+                                                        }
+                                                        $query .=" Order by DivProdId";
                                                     }
-                                                    $query .=" Order by DivProdId";
                                                 }
                                                 $tampil = mysqli_query($cnmy, $query);
                                                 while ($z= mysqli_fetch_array($tampil)) {
                                                     $piddiv=$z['divprodid'];
                                                     $pnmdiv=$piddiv;
-                                                    if ($piddiv=="CAN") $pnmdiv="CANARY";
+                                                    if ($piddiv=="CAN") $pnmdiv="CANARY/ETHICAL";
                                                     elseif ($piddiv=="PEACO") $pnmdiv="PEACOCK";
                                                     elseif ($piddiv=="PIGEO") $pnmdiv="PIGEON";
                                                     
@@ -510,16 +622,24 @@ if (!empty($pcabangid)) {
                                             <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="ShowDataArea()">
                                                 <option value='' selected>-- Pilihan --</option>
                                                 <?PHP
-                                                if (!empty($pfilcabang) OR !empty($pcabangid) AND ($pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05")) {
-                                                    if (empty($pfilcabang)) $pfilcabang="('')";
-                                                    
-                                                    $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE 1=1 "
-                                                            . " AND ( iCabangId In $pfilcabang AND IFNULL(aktif,'')<>'N' ) OR iCabangId='$pcabangid' ";
+                                                if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
+                                                    $query = "select icabangid_o as icabangid, nama as nama_cabang from mkt.icabang_o WHERE 1=1 ";
+                                                    if (!empty($pcabangid)) {
+                                                        $query .= " AND icabangid_o='$pcabangid' ";
+                                                    }
                                                     $query .=" Order by nama";
                                                 }else{
-                                                    $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE 1=1 "
-                                                            . " AND IFNULL(aktif,'')<>'N' OR iCabangId='$pcabangid' ";
-                                                    $query .=" Order by nama";
+                                                    if (!empty($pfilcabang) OR !empty($pcabangid) AND ($pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05")) {
+                                                        if (empty($pfilcabang)) $pfilcabang="('')";
+
+                                                        $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE 1=1 "
+                                                                . " AND ( iCabangId In $pfilcabang AND IFNULL(aktif,'')<>'N' ) OR iCabangId='$pcabangid' ";
+                                                        $query .=" Order by nama";
+                                                    }else{
+                                                        $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE 1=1 "
+                                                                . " AND IFNULL(aktif,'')<>'N' OR iCabangId='$pcabangid' ";
+                                                        $query .=" Order by nama";
+                                                    }
                                                 }
                                                 $tampil = mysqli_query($cnmy, $query);
                                                 while ($z= mysqli_fetch_array($tampil)) {
@@ -536,18 +656,30 @@ if (!empty($pcabangid)) {
                                         </div>
                                     </div>
                                     
-                                    <div hidden class='form-group'>
+                                    <div <?PHP echo $pbukaarea; ?> class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Area <span class='required'></span></label>
                                         <div class='col-xs-5'>
                                             <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="">
                                                 <option value='' selected>-- Pilihan --</option>
                                                 <?PHP
-                                                if ( (!empty($pcabangid) OR !empty($pfilarea)) ) {
-                                                    if (empty($pfilarea)) $pfilarea="('$pareaid')";
-                                                    $query = "select areaid as areaid, nama as nama_area FROM mkt.iarea WHERE icabangid='$pcabangid' "
-                                                            . " AND IFNULL(areaid,'') IN $pfilarea AND IFNULL(aktif,'')<>'N' ";
-                                                    $query .=" ORDER BY nama, areaid";
-                                                    $tampil = mysqli_query($cnmy, $query);
+                                                $query_ara="";
+                                                if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
+                                                    if (!empty($pcabangid)) {
+                                                        $query_ara = "select icabangid_o as icabangid, areaid_o as areaid, nama as nama_area from mkt.iarea_o "
+                                                                . " WHERE icabangid_o='$pcabangid' AND IFNULL(aktif,'')<>'N' ";
+                                                        $query_ara .=" ORDER BY nama, areaid_o";
+                                                    }
+                                                }else{
+                                                    if ( (!empty($pcabangid) OR !empty($pfilarea)) ) {
+                                                        if (empty($pfilarea)) $pfilarea="('$pareaid')";
+                                                        $query_ara = "select areaid as areaid, nama as nama_area FROM mkt.iarea WHERE icabangid='$pcabangid' "
+                                                                . " AND IFNULL(areaid,'') IN $pfilarea AND IFNULL(aktif,'')<>'N' ";
+                                                        $query_ara .=" ORDER BY nama, areaid";
+                                                    }
+                                                }
+                                                
+                                                if (!empty($query_ara)) {
+                                                    $tampil = mysqli_query($cnmy, $query_ara);
                                                     while ($z= mysqli_fetch_array($tampil)) {
                                                         $pidarea=$z['areaid'];
                                                         $pnmarea=$z['nama_area'];
@@ -568,7 +700,7 @@ if (!empty($pcabangid)) {
                                         <div class='col-xs-5'>
                                             <select class='form-control input-sm' id='cb_dept' name='cb_dept' onchange="">
                                                 <?PHP
-                                                if (!empty($pdepartmen)) {
+                                                if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC" OR $pstatuslogin=="ETH") {
                                                     $query = "select iddep as iddep, nama_dep as nama_dep from dbmaster.t_department WHERE 1=1 "
                                                             . " AND ( iddep='$pdepartmen' AND IFNULL(aktif,'')<>'N' ) OR iddep='$pdepartmen' ";
                                                     $query .=" Order by nama_dep";
@@ -640,7 +772,7 @@ if (!empty($pcabangid)) {
                                     </div>
                                     
                                     <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>GSM <span class='required'></span></label>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><?PHP echo $pnamagsmhos; ?> <span class='required'></span></label>
                                         <div class='col-xs-3'>
                                             <input type='hidden' id='e_kdgsm' name='e_kdgsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdgsm; ?>'>
                                             <input type='text' id='e_namagsm' name='e_namagsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamagsm; ?>'>
@@ -649,6 +781,12 @@ if (!empty($pcabangid)) {
                                     
                                 </div>
                                 
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        *) apabila atasan tidak sesuai, mohon untuk disesuaikan terlebih dahulu sebelum tekan tombol Simpan...
+                                    </div>
+                                </div>
                                 
                                 <div hidden class='form-group'>
                                     <div id='loading2'></div>
@@ -752,6 +890,13 @@ if (!empty($pcabangid)) {
                                     </div>
                                 </div>
 
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        *) setelah isi nama barang, spesifikasi, jumlah, satuan, keterangan klik tombol tambah.
+                                    </div>
+                                </div>
+                                
                             </div>
                         </div>
 
@@ -960,11 +1105,12 @@ th {
     function ShowDataKaryawan() {
         ShowDataAtasan();
         
+        var iuntuk = document.getElementById('cb_untuk').value;
         var ikry = document.getElementById('cb_karyawan').value;
         $.ajax({
             type:"post",
             url:"module/purchasing/viewdatapch.php?module=caridatakaryawan",
-            data:"ukry="+ikry,
+            data:"ukry="+ikry+"&uuntuk="+iuntuk,
             beforeSend: function () {
                 document.getElementById("btn_simpan").disabled = true;
             },
@@ -981,19 +1127,52 @@ th {
         
     }
 
-    function ShowDataPengajuan() {
-        ShowDataAtasan();
-        ShowDataJumlah();
+    function ShowPengajuanUntuk() {
+        document.getElementById("btn_simpan").disabled = true;
+        $("#cb_karyawan").html("");
+        $("#cb_divisi").html("");
+        $("#cb_cabang").html("");
+        $("#cb_area").html("");
+        document.getElementById('e_jabatanid').value="";
+        
+        document.getElementById("btn_simpan").disabled = false;
+        
+        ShowKaryawan();
+    }
+    
+    function ShowKaryawan(){
+        var iuntuk = document.getElementById('cb_untuk').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/purchasing/viewdatapch.php?module=carikaryawanid",
+            data:"uuntuk="+iuntuk,
+            beforeSend: function () {
+                document.getElementById("btn_simpan").disabled = true;
+            },
+            success:function(data){
+                $("#cb_karyawan").html(data);
+            },
+            complete: function () {
+                document.getElementById("btn_simpan").disabled = false;
+            },
+            error: function () {
+                alert('Something wrong. Try Again!')                
+            }
+        });
+        
     }
 
 
     function ShowDataAtasan() {
+        var iuntuk = document.getElementById('cb_untuk').value;
         var ikry = document.getElementById('cb_karyawan').value;
         var icab = document.getElementById('cb_cabang').value;
+        
         $.ajax({
             type:"post",
             url:"module/purchasing/viewdatapch.php?module=caridataatasan",
-            data:"ukry="+ikry+"&ucab="+icab,
+            data:"ukry="+ikry+"&ucab="+icab+"&uuntuk="+iuntuk,
             beforeSend: function () {
                 document.getElementById("btn_simpan").disabled = true;
             },
@@ -1075,20 +1254,54 @@ th {
     function disp_confirm_ext(pText_,ket)  {
 
         var iid = document.getElementById('e_id').value;
+        var iuntuk = document.getElementById('cb_untuk').value;
         var itipe = document.getElementById('cb_tipeaju').value;
         var ikry = document.getElementById('cb_karyawan').value;
+        var idivid = document.getElementById('cb_divisi').value;
         var icabid = document.getElementById('cb_cabang').value;
+        var idepid = document.getElementById('cb_dept').value;
         var esudahada=document.getElementById('e_sdhtmpl').value;
+
+        if (itipe=="") {
+            alert("tipe harus dipilih...");
+            return false;
+        }
+
+        if (iuntuk=="") {
+            alert("Pengajuan untuk, belum dipilih...");
+            return false;
+        }
 
         if (ikry=="") {
             alert("Pembuat masih kosong...");
             return false;
         }
+        
+        if (idivid=="") {
+            alert("divisi masih kosong...");
+            return false;
+        }
+        
         if (icabid=="") {
             alert("Cabang harus diisi...");
             return false;
         }
+        
+        if (idepid=="") {
+            alert("Departemen harus dipilih...");
+            return false;
+        }
 
+        var espvkd=document.getElementById('e_kdspv').value;
+        var edmkd=document.getElementById('e_kddm').value;
+        var esmkd=document.getElementById('e_kdsm').value;
+        var egsmkd=document.getElementById('e_kdgsm').value;
+
+        if (espvkd=="" && edmkd=="" && esmkd=="" && egsmkd=="") {
+            alert("atasan kosong...");
+            return false;
+        }
+            
         if (esudahada=="" || esudahada=="0") {
             alert("barang masih kosong...");
             return false;

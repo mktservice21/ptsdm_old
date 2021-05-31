@@ -453,79 +453,7 @@
                         
                         echo "</td>";
                         
-                        if ($pjabatanid=="15" OR $pjabatanid=="38") {
-                            
-                            if (!empty($nmatasan1)) {
-                                echo "<td align='center' nowrap>";
-                                /*
-                                if (empty($nmatasan2)) echo "Mengetahui :";
-                                else echo "Atasan :";
-                                */
-                                echo "Menyetujui :";
-                                
-                                if (!empty($namaspv)) {
-                                    echo "<br/><img src='images/tanda_tangan_base64/$namaspv' height='$gmrheight'><br/>";
-                                }else{
-                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                }
-                                if (!empty($nmatasan1)) echo "<b><u>$nmatasan1</u></b>";
-                                else echo "..........................................";
-
-                                echo "</td>";
-                            }
-                            
-                        }
-                        
-                        if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18") {
-                            
-                            if (!empty($nmatasan2)) {
-                                echo "<td align='center' nowrap>";
-                                /*
-                                if ( ($pjabatanid=="15" OR $pjabatanid=="38") ) echo "Mengetahui :";
-                                else echo "Atasan :";
-                                */
-                                echo "Menyetujui :";
-                                
-                                if (!empty($namadm)) {
-                                    echo "<br/><img src='images/tanda_tangan_base64/$namadm' height='$gmrheight'><br/>";
-                                }else{
-                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                }
-                                if (!empty($nmatasan2)) echo "<b><u>$nmatasan2</u></b>";
-                                else echo "..........................................";
-
-                                echo "</td>";
-                            }
-                            
-                        }
-                        
-                        if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08") {
-                            
-                            echo "<td align='center' nowrap>";
-                            /*
-                            if ($pjabatanid=="15" OR $pjabatanid=="38") {
-                                echo "Menyetujui :";
-                            }else{
-                                if ($pjabatanid=="10" OR $pjabatanid=="18") echo "Mengetahui :";
-                                elseif ($pjabatanid=="08") echo "Mengetahui :";
-                            }
-                            */
-                            echo "Menyetujui :";
-                            
-                            if (!empty($namasm)) {
-                                echo "<br/><img src='images/tanda_tangan_base64/$namasm' height='$gmrheight'><br/>";
-                            }else{
-                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                            }
-                            if (!empty($nmatasan3)) echo "<b><u>$nmatasan3</u></b>";
-                            else echo "..........................................";
-                                
-
-                            echo "</td>";
-                            
-                        }
-                        
-                        if ($pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08" OR $pjabatanid=="20") {
+                        if ($ppengajuan=="HO" OR $ppengajuan=="OTC" OR $ppengajuan=="CHC") {
                             
                             echo "<td align='center' nowrap>";
                             echo "Menyetujui :";
@@ -536,42 +464,133 @@
                             }
                             if (!empty($nmatasan4)) echo "<b><u>$nmatasan4</u></b>";
                             else echo "..........................................";
-                                
+
 
                             echo "</td>";
                             
-                        }
+                        }else{
                         
-                        if ($pjabatanid=="05" OR $pjabatanid=="22" OR $pjabatanid=="06") {
-                            echo "<td align='center' nowrap>";
-                            echo "Menyetujui :";
-                            if (!empty($namaceo)) {
-                                echo "<br/><img src='images/tanda_tangan_base64/$namaceo' height='$gmrheight'><br/>";
-                            }else{
-                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            if ($pjabatanid=="15" OR $pjabatanid=="38") {
+
+                                if (!empty($nmatasan1)) {
+                                    echo "<td align='center' nowrap>";
+                                    /*
+                                    if (empty($nmatasan2)) echo "Mengetahui :";
+                                    else echo "Atasan :";
+                                    */
+                                    echo "Menyetujui :";
+
+                                    if (!empty($namaspv)) {
+                                        echo "<br/><img src='images/tanda_tangan_base64/$namaspv' height='$gmrheight'><br/>";
+                                    }else{
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    }
+                                    if (!empty($nmatasan1)) echo "<b><u>$nmatasan1</u></b>";
+                                    else echo "..........................................";
+
+                                    echo "</td>";
+                                }
+
                             }
-                            if (!empty($nmatasan5)) echo "<b><u>$nmatasan5</u></b>";
-                            else echo "..........................................";
-                                
 
-                            echo "</td>";
-                        }
+                            if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18") {
+
+                                if (!empty($nmatasan2)) {
+                                    echo "<td align='center' nowrap>";
+                                    /*
+                                    if ( ($pjabatanid=="15" OR $pjabatanid=="38") ) echo "Mengetahui :";
+                                    else echo "Atasan :";
+                                    */
+                                    echo "Menyetujui :";
+
+                                    if (!empty($namadm)) {
+                                        echo "<br/><img src='images/tanda_tangan_base64/$namadm' height='$gmrheight'><br/>";
+                                    }else{
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    }
+                                    if (!empty($nmatasan2)) echo "<b><u>$nmatasan2</u></b>";
+                                    else echo "..........................................";
+
+                                    echo "</td>";
+                                }
+
+                            }
+
+                            if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08") {
+
+                                echo "<td align='center' nowrap>";
+                                /*
+                                if ($pjabatanid=="15" OR $pjabatanid=="38") {
+                                    echo "Menyetujui :";
+                                }else{
+                                    if ($pjabatanid=="10" OR $pjabatanid=="18") echo "Mengetahui :";
+                                    elseif ($pjabatanid=="08") echo "Mengetahui :";
+                                }
+                                */
+                                echo "Menyetujui :";
+
+                                if (!empty($namasm)) {
+                                    echo "<br/><img src='images/tanda_tangan_base64/$namasm' height='$gmrheight'><br/>";
+                                }else{
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                }
+                                if (!empty($nmatasan3)) echo "<b><u>$nmatasan3</u></b>";
+                                else echo "..........................................";
+
+
+                                echo "</td>";
+
+                            }
+
+                            if ($pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08" OR $pjabatanid=="20") {
+
+                                echo "<td align='center' nowrap>";
+                                echo "Menyetujui :";
+                                if (!empty($namagsm)) {
+                                    echo "<br/><img src='images/tanda_tangan_base64/$namagsm' height='$gmrheight'><br/>";
+                                }else{
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                }
+                                if (!empty($nmatasan4)) echo "<b><u>$nmatasan4</u></b>";
+                                else echo "..........................................";
+
+
+                                echo "</td>";
+
+                            }
+
+                            if ($pjabatanid=="05" OR $pjabatanid=="22" OR $pjabatanid=="06") {
+                                echo "<td align='center' nowrap>";
+                                echo "Menyetujui :";
+                                if (!empty($namaceo)) {
+                                    echo "<br/><img src='images/tanda_tangan_base64/$namaceo' height='$gmrheight'><br/>";
+                                }else{
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                }
+                                if (!empty($nmatasan5)) echo "<b><u>$nmatasan5</u></b>";
+                                else echo "..........................................";
+
+
+                                echo "</td>";
+                            }
+
+                            if ($pjabatanid=="13") {
+                                echo "<td align='center' nowrap>";
+                                echo "Mengetahui, ";
+                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                echo "..........................................";
+
+
+                                echo "</td>";
+                                echo "<td align='center' nowrap>";
+                                echo "Menyetujui, ";
+                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                echo "..........................................";
+
+
+                                echo "</td>";
+                            }
                         
-                        if ($pjabatanid=="13") {
-                            echo "<td align='center' nowrap>";
-                            echo "Mengetahui, ";
-                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                            echo "..........................................";
-                                
-
-                            echo "</td>";
-                            echo "<td align='center' nowrap>";
-                            echo "Menyetujui, ";
-                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                            echo "..........................................";
-                                
-
-                            echo "</td>";
                         }
                         
                     echo "</tr>";

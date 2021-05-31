@@ -288,7 +288,7 @@ if ($module=='pchpurchasereq')
                 . " karyawanid='$pkaryawanid', icabangid='$pidcabang', "
                 . " areaid='$pidarea', divisi='$pdivisiid', iddep='$pdpartmen', "
                 . " jabatanid='$pjabatanid', "
-                . " aktivitas='$pnotes', userid='$pcardidlog', pilihpo='Y' WHERE "
+                . " aktivitas='$pnotes', userid='$pcardidlog', pilihpo='Y', pengajuan='$ppengajuan' WHERE "
                 . " idpr='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
@@ -299,30 +299,38 @@ if ($module=='pchpurchasereq')
             $query = "update dbttd.t_pr_transaksi_ttd set gambar='$pimgttd' WHERE idpr='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         }
-    
         
-        $query = "UPDATE dbpurchasing.t_pr_transaksi SET atasan1='$pkdspv', atasan2='$pkddm', atasan3='$pkdsm', atasan4='$pkdgsm' WHERE idpr='$kodenya' LIMIT 1";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-    
+        if ($ppengajuan=="HO") {
+            
+            $query = "UPDATE dbpurchasing.t_pr_transaksi SET atasan1='', atasan2='', atasan3='', atasan4='$pkdgsm', tgl_atasan1=NOW(), tgl_atasan2=NOW(), tgl_atasan3=NOW() WHERE idpr='$kodenya' LIMIT 1";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            
+        }else{
         
-        if ($pisitglspv==true) {
-            $query = "UPDATE dbpurchasing.t_pr_transaksi SET tgl_atasan1=NOW() WHERE idpr='$kodenya' LIMIT 1";
+            $query = "UPDATE dbpurchasing.t_pr_transaksi SET atasan1='$pkdspv', atasan2='$pkddm', atasan3='$pkdsm', atasan4='$pkdgsm' WHERE idpr='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-        }
 
-        if ($pisitgldm==true) {
-            $query = "UPDATE dbpurchasing.t_pr_transaksi SET tgl_atasan2=NOW() WHERE idpr='$kodenya' LIMIT 1";
-            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-        }
 
-        if ($pisitglsm==true) {
-            $query = "UPDATE dbpurchasing.t_pr_transaksi SET tgl_atasan3=NOW() WHERE idpr='$kodenya' LIMIT 1";
-            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-        }
+            if ($pisitglspv==true) {
+                $query = "UPDATE dbpurchasing.t_pr_transaksi SET tgl_atasan1=NOW() WHERE idpr='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
 
-        if ($pisitglgsm==true) {
-            $query = "UPDATE dbpurchasing.t_pr_transaksi SET tgl_atasan4=NOW() WHERE idpr='$kodenya' LIMIT 1";
-            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            if ($pisitgldm==true) {
+                $query = "UPDATE dbpurchasing.t_pr_transaksi SET tgl_atasan2=NOW() WHERE idpr='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
+
+            if ($pisitglsm==true) {
+                $query = "UPDATE dbpurchasing.t_pr_transaksi SET tgl_atasan3=NOW() WHERE idpr='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
+
+            if ($pisitglgsm==true) {
+                $query = "UPDATE dbpurchasing.t_pr_transaksi SET tgl_atasan4=NOW() WHERE idpr='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
+        
         }
     
     
@@ -338,6 +346,8 @@ if ($module=='pchpurchasereq')
 
 
         }
+        
+        
         
         $query = "DELETE from dbpurchasing.t_pr_transaksi_d WHERE idpr='$kodenya'";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }

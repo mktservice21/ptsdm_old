@@ -121,7 +121,7 @@
                     <tbody class='gridview-error'>
                         <?PHP
                         $no=1;
-                        $query = "select * from $tmp03 order by NAMA_KATEGORI, NAMABARANG";
+                        $query = "select distinct * from $tmp03 order by NAMA_KATEGORI, NAMABARANG";
                         $tampil= mysqli_query($cnmy, $query);
                         while ($row= mysqli_fetch_array($tampil)) {
                             

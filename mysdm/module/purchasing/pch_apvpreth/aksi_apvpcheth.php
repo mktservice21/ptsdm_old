@@ -20,7 +20,7 @@ session_start();
     $pnamalogin=$_SESSION['NAMALENGKAP'];
     $pidgroup=$_SESSION['GROUP'];
     
-if ($module=="pchapvprbymkt") {
+if ($module=="pchapvprbymkt" OR $module=="pchapvprbychc" OR $module=="pchapvprbyho" OR $module=="pchapvprbycoo") {
         
     $noidbr=$_POST['unobr'];
     if ($noidbr=="()") $noidbr = "";
@@ -64,6 +64,14 @@ if ($module=="pchapvprbymkt") {
         }
     }
     
+    if ($module=="pchapvprbychc") {
+        $papproveby="apvmgrchc";
+    }elseif ($module=="pchapvprbyho") {
+        $papproveby="apvatasanho";
+    }elseif ($module=="pchapvprbycoo") {
+        //$papproveby="apvcoo";
+    }
+    
     if (empty($pjabatanid) OR empty($papproveby) OR empty($karyawanapv)) {
         echo "Anda tidak berhak proses...";
         mysqli_close($cnmy); exit;
@@ -96,6 +104,12 @@ if ($module=="pchapvprbymkt") {
             }elseif ($papproveby=="apvcoo") {
                 $fielduntukttd=" a.tgl_atasan5=NOW(), b.gbr_atasan5='$gbrapv' ";
                 $fieldtglapprovenya= " (IFNULL(a.tgl_atasan5,'')='' OR IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+            }elseif ($papproveby=="apvmgrchc") {
+                $fielduntukttd=" a.tgl_atasan4=NOW(), b.gbr_atasan4='$gbrapv' ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+            }elseif ($papproveby=="apvatasanho") {
+                $fielduntukttd=" a.tgl_atasan4=NOW(), b.gbr_atasan4='$gbrapv' ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
             }
             
             //echo "$noidbr - APPROVE BY : $papproveby";
@@ -114,6 +128,8 @@ if ($module=="pchapvprbymkt") {
                 }elseif ($papproveby=="apvsm") {
                     
                 }elseif ($papproveby=="apvgsm") {
+                }elseif ($papproveby=="apvmgrchc") {
+                }elseif ($papproveby=="apvatasanho") {
                     
                 }elseif ($papproveby=="apvspv") {
                     $query = "UPDATE dbpurchasing.t_pr_transaksi SET tgl_atasan2=NOW(), atasan2='' WHERE idpr IN $noidbr AND IFNULL(atasan2,'')='' AND (IFNULL(tgl_atasan2,'')='' OR IFNULL(tgl_atasan2,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(tgl_atasan1,'')<>'' AND IFNULL(tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00')";
@@ -128,6 +144,12 @@ if ($module=="pchapvprbymkt") {
             }
         }elseif ($act=="unapprove") {
             
+            $query = "select idpr from dbpurchasing.t_pr_transaksi_po WHERE idpr IN $noidbr AND IFNULL(aktif,'')='Y'";
+            $tampilc= mysqli_query($cnmy, $query);
+            $ketemuc= mysqli_num_rows($tampilc);
+            if ((INT)$ketemuc>0) {
+                mysqli_close($cnmy); echo "Salah satu ID PR sudah diisi vendor..., tidak bisa diproses"; exit;
+            }
             
             $fielduntukttd="";
             $fieldtglapprovenya="";
@@ -148,6 +170,12 @@ if ($module=="pchapvprbymkt") {
             }elseif ($papproveby=="apvcoo") {
                 $fielduntukttd=" a.tgl_atasan5=NULL, b.gbr_atasan5=NULL ";
                 $fieldtglapprovenya= " (IFNULL(a.tgl_validate1,'')='' OR IFNULL(a.tgl_validate1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan5,'')<>'' AND IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+            }elseif ($papproveby=="apvmgrchc") {
+                $fielduntukttd=" a.tgl_atasan4=NULL, b.gbr_atasan4=NULL ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_validate1,'')='' OR IFNULL(a.tgl_validate1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+            }elseif ($papproveby=="apvatasanho") {
+                $fielduntukttd=" a.tgl_atasan4=NULL, b.gbr_atasan4=NULL ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_validate1,'')='' OR IFNULL(a.tgl_validate1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
             }
             
             
@@ -167,6 +195,8 @@ if ($module=="pchapvprbymkt") {
                 }elseif ($papproveby=="apvsm") {
                     
                 }elseif ($papproveby=="apvgsm") {
+                }elseif ($papproveby=="apvmgrchc") {
+                }elseif ($papproveby=="apvatasanho") {
                     
                 }elseif ($papproveby=="apvspv") {
                     
@@ -193,7 +223,7 @@ if ($module=="pchapvprbymkt") {
             
             
             if (!empty($pnamalogin) AND !empty($karyawanapv)) {
-                mysqli_query($cnmy, "update dbpurchasing.t_pr_transaksi set stsnonaktif='Y', userid='$karyawanapv', "
+                mysqli_query($cnmy, "update dbpurchasing.t_pr_transaksi set stsnonaktif='Y', "
                         . " keterangan=CONCAT(IFNULL(keterangan,''),'Ket Reject : $pkethapus', ', user reject : $pnamalogin') WHERE "
                         . " idpr in $noidbr AND "
                         . " ( IFNULL(tgl_validate1,'')='' OR IFNULL(tgl_validate1,'0000-00-00 00:00:00')='0000-00-00 00:00:00' )");

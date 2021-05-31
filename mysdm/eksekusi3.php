@@ -586,6 +586,8 @@
         include 'module/purchasing/pch_purchaseorder/iviewdatapo.php';
     }elseif ($_GET['module']=='pchdatabarang'){
         include 'module/purchasing/pch_barang/lihatgambar.php';
+    }elseif ($_GET['module']=='pchisivendorprvrfq'){
+        include 'module/purchasing/pch_vendorpr/previewlistdatarfq.php';
         
         
     }elseif ($_GET['module']=='isikartustatus'){

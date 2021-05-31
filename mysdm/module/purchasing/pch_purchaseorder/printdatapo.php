@@ -37,6 +37,7 @@
     $tmp01 =" dbtemp.tmpinptpodt01_".$puserid."_$now ";
     
     $query = "select idpo, karyawanid, tanggal, kdsupp, notes, idbayar, tglkirim, note_kirim, status_bayar, "
+            . " dir1, dir2, tgl_dir1, tgl_dir2, "
             . " ppn, ppnrp, disc, discrp, pembulatan, totalrp "
             . " from dbpurchasing.t_po_transaksi WHERE "
             . " IFNULL(stsnonaktif,'')<>'Y' AND idpo='$pidpo'";
@@ -51,11 +52,23 @@
     $pkdvendor=$row['kdsupp'];
     $pidbayar=$row['idbayar'];
     $pidkryid=$row['karyawanid'];
+    $piddir1=$row['dir1'];
+    $piddir2=$row['dir2'];
     
     $query = "select karyawanid as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE karyawanid='$pidkryid'";
     $tampilk= mysqli_query($cnmy, $query);
     $krow= mysqli_fetch_array($tampilk);
     $pnamakry=$krow['nama_karyawan'];
+    
+    $query = "select karyawanid as karyawanid, nama as nama_dir1 from hrd.karyawan WHERE karyawanid='$piddir1'";
+    $tampilk= mysqli_query($cnmy, $query);
+    $krow= mysqli_fetch_array($tampilk);
+    $nmatasandir1=$krow['nama_dir1'];
+    
+    $query = "select karyawanid as karyawanid, nama as nama_dir2 from hrd.karyawan WHERE karyawanid='$piddir2'";
+    $tampilk= mysqli_query($cnmy, $query);
+    $krow= mysqli_fetch_array($tampilk);
+    $nmatasandir2=$krow['nama_dir2'];
     
     
     
@@ -75,12 +88,17 @@
     $paktifvendor=$vrow['AKTIF'];
     
     
-    $query = "select idpo, gambar from dbttd.t_po_transaksi_ttd WHERE idpo='$pidpo'";
+    $query = "select idpo, gambar, gbr_dir1, gbr_dir2 from dbttd.t_po_transaksi_ttd WHERE idpo='$pidpo'";
     $tampilg= mysqli_query($cnmy, $query);
     $grow= mysqli_fetch_array($tampilg);
     
     $namapengaju="";
     $gambar=$grow['gambar'];
+    
+    $namadir1="";
+    $gambardir1=$grow['gbr_dir1'];
+    $namadir2="";
+    $gambardir2=$grow['gbr_dir2'];
     
     if (!empty($gambar)) {
         $data="data:".$gambar;
@@ -90,6 +108,26 @@
         $data = base64_decode($data);
         $namapengaju="img_".$pidpo."PENGAJUPO_.png";
         file_put_contents('images/tanda_tangan_base64/'.$namapengaju, $data);
+    }
+    
+    if (!empty($gambardir1)) {
+        $data="data:".$gambardir1;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namadir1="img_".$pidpo."PENGAJUDIR1PO_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namadir1, $data);
+    }
+    
+    if (!empty($gambardir2)) {
+        $data="data:".$gambardir2;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namadir2="img_".$pidpo."PENGAJUDIR2PO_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namadir2, $data);
     }
     
     
@@ -388,13 +426,13 @@
                     echo "<tr>";
                     
                         echo "<td align='center'>";
-                        echo "Marketing Director :";
-                        if (!empty($namadirmkt)) {
-                            echo "<br/><img src='images/tanda_tangan_base64/$namadirmkt' height='$gmrheight'><br/>";
+                        echo "Approved :";
+                        if (!empty($namadir1)) {
+                            echo "<br/><img src='images/tanda_tangan_base64/$namadir1' height='$gmrheight'><br/>";
                         }else{
                             echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                         }
-                        echo "<b><u>$nmatasandirmkt</u></b>";
+                        echo "<b><u>$nmatasandir1</u></b>";
 
                         echo "</td>";
                     

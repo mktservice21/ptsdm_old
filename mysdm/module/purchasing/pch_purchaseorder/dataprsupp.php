@@ -32,7 +32,7 @@ if ($pmodule=="viewdataprpo"){
     //mysqli_query($cnmy, $query);
     //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "select d.idpo, d.idpr_po as sudahpo,a.idpr, a.idpr_d, a.idpr_po, c.karyawanid, 
+    $query = "select d.idpo, d.idpr_po as sudahpo, a.idpr, a.idpr_d, a.idpr_po, c.karyawanid, 
             a.kdsupp, b.NAMA_SUP as nama_sup, b.ALAMAT as alamat, b.TELP as telp, 
             a.idbarang, a.namabarang, 
             a.idbarang_d, a.spesifikasi1, a.spesifikasi2, 
@@ -45,7 +45,7 @@ if ($pmodule=="viewdataprpo"){
             JOIN dbpurchasing.t_po_transaksi as bb on aa.idpo=bb.idpo WHERE IFNULL(bb.stsnonaktif,'')<>'Y') as d 
             on d.idpr_po=a.idpr_po WHERE IFNULL(c.stsnonaktif,'')<>'Y' AND 
             IFNULL(a.kdsupp,'')='$pkdsup' AND IFNULL(a.aktif,'')='Y' order by a.aktif, b.NAMA_SUP";
-    $query = "create TEMPORARY table $tmp01 ($query)"; 
+    $query = "create  table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -60,6 +60,17 @@ if ($pmodule=="viewdataprpo"){
         $query = "UPDATE $tmp01 SET totalrp=IFNULL(jumlah,0)*IFNULL(harga,0)"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "delete $tmp01 from $tmp01 "
+                . " JOIN dbpurchasing.t_pr_transaksi_po as b "
+                . " on $tmp01.idpr=b.idpr AND $tmp01.idpr_d=b.idpr_d "
+                . " join dbpurchasing.t_po_transaksi_d as c "
+                . " on b.idpr_po=c.idpr_po "
+                . " join dbpurchasing.t_po_transaksi as d on c.idpo=d.idpo "
+                . " WHERE IFNULL(d.stsnonaktif,'')<>'Y'";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
     }
 ?>
     

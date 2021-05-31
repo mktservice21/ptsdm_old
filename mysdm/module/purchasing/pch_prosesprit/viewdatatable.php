@@ -154,6 +154,7 @@ session_start();
                         $pspesifikasi=$row1['spesifikasi1'];
                         $pketerangan=$row1['keterangan'];
                         $pnotes=$row1['aktivitas'];
+                        $npengajuan=$row1['pengajuan'];
                         $puserinput=$row1['nama_user'];
                         $psudahisivendor=$row1['sudahisivendor'];
                         
@@ -200,11 +201,18 @@ session_start();
                     
                         $pstsapvoleh="";
                         
-                        if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve $pketgsmhos"; $ceklisnya=""; $pedit=""; $phapus=""; }
-                        if (empty($ptglatasan3) AND !empty($pidatasan3)) { $pstsapvoleh="Belum Approve SM"; $ceklisnya=""; $pedit=""; $phapus=""; }
-                        if (empty($ptglatasan2) AND !empty($pidatasan2)) { $pstsapvoleh="Belum Approve DM"; $ceklisnya=""; $pedit=""; $phapus=""; }
-                        if (empty($ptglatasan1) AND !empty($pidatasan1)) { $pstsapvoleh="Belum Approve SPV/AM"; $ceklisnya=""; $pedit=""; $phapus=""; }
-                        
+                        if ($npengajuan=="HO") {
+                            $pketgsmhos="Atasan";
+                            if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve $pketgsmhos"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                        }elseif ($npengajuan=="OTC" OR $npengajuan=="CHC") {
+                            $pketgsmhos="HOS";
+                            if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve $pketgsmhos"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                        }else{
+                            if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve $pketgsmhos"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                            if (empty($ptglatasan3) AND !empty($pidatasan3)) { $pstsapvoleh="Belum Approve SM"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                            if (empty($ptglatasan2) AND !empty($pidatasan2)) { $pstsapvoleh="Belum Approve DM"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                            if (empty($ptglatasan1) AND !empty($pidatasan1)) { $pstsapvoleh="Belum Approve SPV/AM"; $ceklisnya=""; $pedit=""; $phapus=""; }
+                        }
                         if (!empty($pstsapvoleh)) {
                             $pstsapvoleh="<span style='color:red;'>$pstsapvoleh</span>";
                         }

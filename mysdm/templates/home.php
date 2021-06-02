@@ -780,6 +780,8 @@
         include 'module/purchasing/pch_apvpreth/apvpcheth.php';
     }elseif ($_GET['module']=='pchapvpobycoo'){
         include 'module/purchasing/pch_apvpoeth/apvpchpoeth.php';
+    }elseif ($_GET['module']=='pchterimabarangpo'){
+        include 'module/purchasing/pch_terimabarangpo/terimabarangpo.php';
         
     }elseif ($_GET['module']=='mapsalescust'){
         include 'module/sls_mapsalescust/mapsalescust.php';

@@ -21,9 +21,10 @@ $columns = array(
     0 =>'a.idterima',
     1 =>'a.idterima',
     2 => 'RIGHT(a.idterima,10)',
-    3=> 'b.idpo',
-    4=> 'e.NAMA_SUP',
-    5=> 'a.tgl_terima'
+    3=> 'g.divisi',
+    4=> 'b.idpo',
+    5=> 'e.NAMA_SUP',
+    6=> 'a.tgl_terima'
 );
 
 $nkaryawanid=$_GET['ukryid'];
@@ -36,13 +37,15 @@ $ptgl2= date("Y-m-t", strtotime($ptgl2));
 //a.id, a.jml_terima, a.ket_terima, b.idpr_po, a.idpo_d, 
 $sql = "select DISTINCT a.igroup, a.tglinput, a.tgl_terima, 
     a.keterangan, a.`status`, a.stsnonaktif, a.userid, 
-    a.idterima,
+    a.idterima, g.divisi, 
     b.idpo, c.kdsupp, e.NAMA_SUP as nama_sup 
     from dbpurchasing.t_po_transaksi_terima as a 
     JOIN dbpurchasing.t_po_transaksi_d as b on a.idpo_d=b.idpo_d 
     JOIN dbpurchasing.t_po_transaksi as c on b.idpo=c.idpo 
     JOIN dbpurchasing.t_pr_transaksi_po as d on b.idpr_po=d.idpr_po AND c.kdsupp=d.kdsupp 
-    JOIN dbmaster.t_supplier as e on c.kdsupp=e.KDSUPP ";
+    JOIN dbmaster.t_supplier as e on c.kdsupp=e.KDSUPP 
+    JOIN dbpurchasing.t_pr_transaksi_d as f on d.idpr_d=f.idpr_d 
+    JOIN dbpurchasing.t_pr_transaksi as g on f.idpr=g.idpr";
 $sql .=" WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
 $sql.=" AND ( (a.tglinput between '$ptgl1' and '$ptgl2') OR (a.tgl_terima between '$ptgl1' and '$ptgl2') ) ";
 
@@ -55,6 +58,7 @@ $totalFiltered = $totalData;  // when there is no search parameter then total nu
 if( !empty($requestData['search']['value']) ) {   // if there is a search parameter, $requestData['search']['value'] contains search parameter
     $sql.=" AND ( a.id LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR b.idpo LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR g.divisi LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR c.kdsupp LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR e.NAMA_SUP LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.ket_terima LIKE '%".$requestData['search']['value']."%' ";
@@ -79,6 +83,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $pidno=$row['idterima'];
     $pidgroup=$row['igroup'];
+    $piddivisi=$row['divisi'];
     $pidpo=$row['idpo'];
     $pnamasup=$row['nama_sup'];
     $ptglterima=$row['tgl_terima'];
@@ -107,6 +112,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $no;
     $nestedData[] = $pbutton;
     $nestedData[] = $pidno;
+    $nestedData[] = $piddivisi;
     $nestedData[] = $pidpo;
     $nestedData[] = $pnamasup;
     $nestedData[] = $ptglterima;

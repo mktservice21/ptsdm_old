@@ -42,6 +42,7 @@
     $piddivisi=$_POST['e_iddivisi'];
     $pstsdiscount=$_POST['e_stsdisc'];
     $prptby=$_POST['e_rptby'];
+    $pjenisklaim=$_POST['cb_jenisklaim'];
     
     
     $fprodothfilter="";
@@ -190,7 +191,13 @@
             
         }
     }
-        
+    
+    //REGULER ATAU ONLINE SKS
+    if ($pjenisklaim=="R" OR $pjenisklaim=="O") {
+        if ($pjenisklaim=="R") $query .=" AND IFNULL(jenisklaim,'')=''";
+        elseif ($pjenisklaim=="O") $query .=" AND IFNULL(jenisklaim,'')<>''";
+    }
+    
     //$query .=" AND region='B'";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -343,6 +350,16 @@
             <?PHP
             if ( ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") AND !empty($fprodothfilter)) {
                 echo "<tr class='miring text2'><td>Produk</td><td>:</td><td>$pnmprodukoth</td></tr>";
+            }
+            
+            if ($pjenisklaim=="R" OR $pjenisklaim=="O") {
+                $pnmklaimjenis="";
+                if ($pjenisklaim=="R") $pnmklaimjenis="Reguler";
+                elseif ($pjenisklaim=="O") $pnmklaimjenis="Online";
+            }
+            
+            if (!empty($pnmklaimjenis)) {
+                echo "<tr class='miring text2'><td>Jenis Klaim </td><td>:</td><td>$pnmklaimjenis</td></tr>";
             }
             ?>
         </table>

@@ -29,6 +29,7 @@ $pdivisiid="";
 $pidvendor="";
 $pnmvendor="";
 
+$pudahpernah=false;
 $act="input";
 if ($pact=="editdata"){
     include "config/fungsi_ubahget_id.php";
@@ -37,9 +38,28 @@ if ($pact=="editdata"){
     $pidbr_ec=$_GET['id'];
     $pidbr = decodeString($pidbr_ec);
     
-    $edit = mysqli_query($cnmy, "SELECT * FROM dbpurchasing.t_po_transaksi_terima WHERE id='$pidbr'");
-    $r    = mysqli_fetch_array($edit);
+    $sql = "select DISTINCT a.igroup, a.tglinput, a.tgl_terima, 
+        a.keterangan, a.`status`, a.stsnonaktif, a.userid, 
+        a.idterima, g.divisi, 
+        b.idpo, c.kdsupp, e.NAMA_SUP as nama_sup 
+        from dbpurchasing.t_po_transaksi_terima as a 
+        JOIN dbpurchasing.t_po_transaksi_d as b on a.idpo_d=b.idpo_d 
+        JOIN dbpurchasing.t_po_transaksi as c on b.idpo=c.idpo 
+        JOIN dbpurchasing.t_pr_transaksi_po as d on b.idpr_po=d.idpr_po AND c.kdsupp=d.kdsupp 
+        JOIN dbmaster.t_supplier as e on c.kdsupp=e.KDSUPP 
+        JOIN dbpurchasing.t_pr_transaksi_d as f on d.idpr_d=f.idpr_d 
+        JOIN dbpurchasing.t_pr_transaksi as g on f.idpr=g.idpr";
+    $sql .=" WHERE IFNULL(a.stsnonaktif,'')<>'Y' AND idterima='$pidbr'";
+
+    $edit = mysqli_query($cnmy, $sql);
+    $row  = mysqli_fetch_array($edit);
     
+    $pidpo=$row['idpo'];
+    $pidvendor=$row['kdsupp'];
+    $pnmvendor=$row['nama_sup'];
+    
+    
+    $pudahpernah=true;
     
 }
 ?>
@@ -157,7 +177,11 @@ if ($pact=="editdata"){
             
             <div class='col-md-12 col-sm-12 col-xs-12'>
                 <div class='x_panel'>
-                <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Simpan</button>
+                    <?PHP if ($pact=="editdata"){ ?>                    
+                        <button type='button' class='btn btn-success' onclick='disp_confirm("Update ?", "<?PHP echo $act; ?>")'>Update</button>
+                    <?PHP }else{ ?>
+                        <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Simpan</button>
+                    <?PHP } ?>
                 </div>
             </div>
             

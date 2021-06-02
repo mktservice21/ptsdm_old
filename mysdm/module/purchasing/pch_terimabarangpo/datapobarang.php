@@ -38,7 +38,8 @@ if ($pmodule=="viewdatapobarang"){
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "ALTER TABLE $tmp00 ADD COLUMN jmlsudahterima DECIMAL(20,0), ADD COLUMN jmlsisa DECIMAL(20,0)";
+    $query = "ALTER TABLE $tmp00 ADD COLUMN jmlsudahterima DECIMAL(20,0), ADD COLUMN jmlterima DECIMAL(20,0), ADD COLUMN jmlsisa DECIMAL(20,0), "
+            . " ADD COLUMN ket_terima VARCHAR(300)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -49,26 +50,50 @@ if ($pmodule=="viewdatapobarang"){
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "UPDATE $tmp00 as a JOIN (select idpo_d, SUM(jml_terima) as jml_terima FROM $tmp01 GROUP BY 1) as b ON a.idpo_d=b.idpo_d SET "
-            . " a.jmlsudahterima=b.jml_terima";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    $query = "UPDATE $tmp00 SET jmlsisa=IFNULL(jumlah,0)-IFNULL(jmlsudahterima,0)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
     
     
     $pchkallname="deselect";
     $pchkallpilih="checked";
-    $query = "select * FROM $tmp00 WHERE IFNULL(jmlsisa,'0')='0'";
-    $tampilk= mysqli_query($cnmy, $query);
-    $ketemuk= mysqli_num_rows($tampilk);
-    if ((INT)$ketemuk>0) {
-        $pchkallpilih="";
-        $pchkallname="select";
+    if ($pact=="editdata") {
+        $query = "DELETE $tmp00 FROM $tmp00 JOIN dbpurchasing.t_po_transaksi_terima ON "
+                . " $tmp00.idpo_d=dbpurchasing.t_po_transaksi_terima.idpo_d WHERE "
+                . " dbpurchasing.t_po_transaksi_terima.idterima<>'$pidinput'";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp00 as a JOIN (select idpo_d, ket_terima, SUM(jml_terima) as jml_terima FROM $tmp01 GROUP BY 1,2) as b ON a.idpo_d=b.idpo_d SET "
+                . " a.jmlterima=b.jml_terima, a.ket_terima=b.ket_terima";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp00 SET jmlsisa=IFNULL(jumlah,0)-IFNULL(jmlterima,0)";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+    }else{
+        
+        $query = "UPDATE $tmp00 as a JOIN (select idpo_d, SUM(jml_terima) as jml_terima FROM $tmp01 GROUP BY 1) as b ON a.idpo_d=b.idpo_d SET "
+                . " a.jmlsudahterima=b.jml_terima";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+        $query = "UPDATE $tmp00 SET jmlsisa=IFNULL(jumlah,0)-IFNULL(jmlsudahterima,0)";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+        $query = "select * FROM $tmp00 WHERE IFNULL(jmlsisa,'0')='0'";
+        $tampilk= mysqli_query($cnmy, $query);
+        $ketemuk= mysqli_num_rows($tampilk);
+        if ((INT)$ketemuk>0) {
+            $pchkallpilih="";
+            $pchkallname="select";
+        }
     }
     
+    $ptrnone="";
+    if ($pact=="editdata") {
+        $ptrnone=" class='divnone' ";
+    }
 ?>
 
     
@@ -82,7 +107,7 @@ if ($pmodule=="viewdatapobarang"){
             <thead>
                 <tr>
                     <th width='7px'>No</th>
-                    <th width='20px'>
+                    <th width='20px' <?PHP echo $ptrnone; ?> >
                         <input type="checkbox" id="chkall[]" name="chkall[]" onclick="SelAllCheckBox('chkall[]', 'chk_detail[]')" value='<?PHP echo $pchkallname; ?>' <?PHP echo $pchkallpilih; ?> >
                     </th>
                     <th width='20px'>Divisi</th>
@@ -99,10 +124,10 @@ if ($pmodule=="viewdatapobarang"){
                 <?PHP
                 $no=1;
                 $query = "select * from $tmp00 ";
-                if (empty($pidinput)) {
-                    $query .=" ORDER BY IFNULL(jmlsisa,9999) desc, divisi, namabarang";
-                }else{
+                if ($pact=="editdata") {
                     $query .=" ORDER BY divisi, namabarang";
+                }else{
+                    $query .=" ORDER BY IFNULL(jmlsisa,9999) desc, divisi, namabarang";
                 }
                 $tampil= mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
@@ -113,9 +138,11 @@ if ($pmodule=="viewdatapobarang"){
                     $pjumlah=$row['jumlah'];
                     $pjmlsdh=$row['jmlsudahterima'];
                     $pjmlsisa=$row['jmlsisa'];
-                    $pjmltrm=0;
+                    $pjmltrm=$row['jmlterima'];
+                    $pkettrm=$row['ket_terima'];
                     
-                    $pkettrm="";//$row['jmlsisa'];
+                    if (Empty($pjmltrm)) $pjmltrm=0;
+                    
                     
                     if (empty($pjmlsisa)) $pjmlsisa=0;
                     
@@ -155,7 +182,7 @@ if ($pmodule=="viewdatapobarang"){
                     
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
-                    echo "<td nowrap>$pchkbox</td>";
+                    echo "<td nowrap $ptrnone>$pchkbox</td>";
                     echo "<td nowrap>$piddiv $txt_iddivisi</td>";
                     echo "<td nowrap>$pidbarang $txt_idbrg </td>";
                     echo "<td nowrap>$pnmbarang</td>";

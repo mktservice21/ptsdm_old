@@ -26,7 +26,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                $judul="List Data Customer/Outlet Baru Per April 2021";
+                $judul="List Data Customer/Outlet Baru Per Mei 2021";
                 if ($pact=="tambahbaru")
                     echo "Input $judul";
                 elseif ($pact=="editdata")

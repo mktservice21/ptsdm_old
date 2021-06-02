@@ -648,7 +648,10 @@
         
     }elseif ($_GET['module']=='previewmintadana'){
         include 'module/budget/aksi_rptspdpd.php';
-
+    }elseif ($_GET['module']=='lapkascab'){
+        include 'module/laporan/mod_lapkascab/aksi_lapkascab.php';
+        
+        
         
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';

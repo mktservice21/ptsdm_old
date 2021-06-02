@@ -26,7 +26,7 @@ $query = "select
     a.SYS_NOW,
     a.VALIDATEID,
     a.VALIDATEDATE
-    from dbmaster.t_barang_terima a JOIN dbmaster.t_divisi_gimick b on a.DIVISIID=b.DIVISIID LEFT JOIN 
+    from dbmaster.t_barang_terima a LEFT JOIN dbmaster.t_divisi_gimick b on a.DIVISIID=b.DIVISIID LEFT JOIN 
     dbmaster.t_supplier c on a.KDSUPP=c.KDSUPP
     LEFT JOIN hrd.karyawan d on a.KARYAWANID=d.karyawanId 
     WHERE a.IDTERIMA='$pidkeluar'";

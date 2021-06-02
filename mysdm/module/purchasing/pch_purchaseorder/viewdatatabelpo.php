@@ -27,7 +27,7 @@
     
     
     include "../../../config/koneksimysqli.php";
-    
+    include "../../../config/fungsi_ubahget_id.php";
     
     $date1=$_POST['uperiode1'];
     $date2=$_POST['uperiode2'];
@@ -99,6 +99,8 @@
                 $tampil= mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     $pidpo=$row['idpo'];
+                    $pidnoget=encodeString($pidpo);
+                    
                     $pbelumlewat=false;
                     
                     $query = "select * from $tmp01 WHERE idpo='$pidpo' order by idpo DESC";
@@ -139,7 +141,7 @@
                         $pppn=ROUND($pppn,2);
                         $pdisc=ROUND($pdisc,2);
                         
-                        $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidpo'>Edit</a>";
+                        $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidnoget'>Edit</a>";
                         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$pidpo')\">";
                         
                         $print="<a title='Print / Cetak' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "

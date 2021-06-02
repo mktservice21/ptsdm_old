@@ -641,6 +641,7 @@ function BuatFormatNumberRp($prp, $ppilih) {
     $numrp=$prp;
     if ($ppilih=="1") $numrp=number_format($prp,0,",",",");
     elseif ($ppilih=="2") $numrp=number_format($prp,0,".",".");
+    elseif ($ppilih=="3") $numrp=number_format($prp,0,"","");
 
     return $numrp;
 }

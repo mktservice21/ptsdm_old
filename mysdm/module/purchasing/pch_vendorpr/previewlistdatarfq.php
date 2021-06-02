@@ -44,6 +44,7 @@
     include("config/koneksimysqli.php");
     include("config/common.php");
 
+    $pviewdate=date("d/m/Y H:i:s");
     $now=date("mdYhis");
     $tmp01 =" dbtemp.tmpprvlistrfq01_".$puserid."_$now ";
     $tmp02 =" dbtemp.tmpprvlistrfq02_".$puserid."_$now ";
@@ -85,6 +86,7 @@
 
     echo "<b>List Data RFQ</b><br/>";
     //echo "<b>Nama : $pnamakarywanpl - $puserlogin</b><br/>";
+    echo "<small>view date : $pviewdate</small><br/>";
     echo "<hr/><br/>";
     
     

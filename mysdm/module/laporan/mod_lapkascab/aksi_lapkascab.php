@@ -17,6 +17,7 @@ $ppilihrpt="";
 
 if (isset($_GET['ket'])) $ppilihrpt=$_GET['ket'];
 if ($ppilihrpt=="excel") {
+    $ppilformat=3;
     // Fungsi header dengan mengirimkan raw data excel
     header("Content-type: application/vnd-ms-excel");
     // Mendefinisikan nama file ekspor "hasil-export.xls"

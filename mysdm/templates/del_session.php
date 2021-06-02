@@ -708,6 +708,7 @@
     $_SESSION['APVPCHPRBLN2']="";
     $_SESSION['APVPCHPRAPVBY']="";
     
+    
     //APPROVE PO ETHICAL
     $_SESSION['APVPCHPOSTS']="";
     $_SESSION['APVPCHPOBLN1']="";
@@ -715,4 +716,8 @@
     $_SESSION['APVPCHPOAPVBY']="";
     
     
+    //TERIMA BARANG PO
+    $_SESSION['POTBRGKARYA']="";
+    $_SESSION['POTBRGTGL01']="";
+    $_SESSION['POTBRGTGL02']="";
 ?>

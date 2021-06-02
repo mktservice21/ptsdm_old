@@ -56,7 +56,7 @@
                 { "orderable": false, "targets": 0 },
                 { "orderable": false, "targets": 1 },
                 //{ className: "text-right", "targets": [6] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5] }//nowrap , 6, 7
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6] }//nowrap , 7, 8
 
             ],
             "language": {
@@ -103,6 +103,7 @@
                     <th width='7px'>No</th>
                     <th width='50px'></th>
                     <th width='40px'>ID</th>
+                    <th width='40px'>Divisi</th>
                     <th width='50px'>ID PO</th>
                     <th width='80px'>Vendor</th>
                     <th width='40px'>Tgl. Terima</th>

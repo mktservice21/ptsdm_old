@@ -45,7 +45,7 @@ if ($pmodule=="viewdataprpo"){
             JOIN dbpurchasing.t_po_transaksi as bb on aa.idpo=bb.idpo WHERE IFNULL(bb.stsnonaktif,'')<>'Y') as d 
             on d.idpr_po=a.idpr_po WHERE IFNULL(c.stsnonaktif,'')<>'Y' AND 
             IFNULL(a.kdsupp,'')='$pkdsup' AND IFNULL(a.aktif,'')='Y' order by a.aktif, b.NAMA_SUP";
-    $query = "create  table $tmp01 ($query)"; 
+    $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -53,6 +53,17 @@ if ($pmodule=="viewdataprpo"){
     if ($pact=="editdata") {
         $query = "DELETE FROM $tmp01 WHERE idpo<>'$pidinput' AND IFNULL(sudahpo,'0') <> '0' AND IFNULL(sudahpo,'') <> ''"; 
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "delete $tmp01 from $tmp01 "
+                . " JOIN dbpurchasing.t_pr_transaksi_po as b "
+                . " on $tmp01.idpr=b.idpr AND $tmp01.idpr_d=b.idpr_d "
+                . " join dbpurchasing.t_po_transaksi_d as c "
+                . " on b.idpr_po=c.idpr_po "
+                . " join dbpurchasing.t_po_transaksi as d on c.idpo=d.idpo "
+                . " WHERE IFNULL(d.stsnonaktif,'')<>'Y' AND d.idpo <> '$pidinput'";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
     }else{
         $query = "DELETE FROM $tmp01 WHERE IFNULL(sudahpo,'0') <> '0' AND IFNULL(sudahpo,'') <> ''"; 
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

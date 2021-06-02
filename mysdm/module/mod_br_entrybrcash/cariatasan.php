@@ -46,6 +46,22 @@ if ($_GET['module']=="cariatasan") {
         $nmlbldm="AM";
         $nmlblsm="SM";
     }
+    
+    
+    $gsmhiden="hidden";
+    if ($iidkar=="0000000184" OR $iidkar=="0000001164") {
+        $adaspv="";
+        $adadm="";
+        $adasm="";
+        $adagsm="0000000159";
+
+        $adanmspv="";
+        $adanmdm="";
+        $adanmsm="";
+        $adanmgsm="SOESILO";
+        
+        $gsmhiden="class='form-group'";
+    }
 ?>
 
     <!-- Appove SPV / AM -->
@@ -146,7 +162,7 @@ if ($_GET['module']=="cariatasan") {
     </div>
 
     <!-- GSM -->
-    <div hidden <?PHP echo $gsmhiden; ?>>
+    <div <?PHP echo $gsmhiden; ?>>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>GSM <span class='required'></span></label>
         <div class='col-xs-9'>
             <select class='form-control input-sm' id='e_atasan4' name='e_atasan4' onchange="">

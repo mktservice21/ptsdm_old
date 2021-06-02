@@ -39,8 +39,12 @@ $pact=$_GET['act'];
 $act="input";
 
 if ($pact=="editdata"){
+    include "config/fungsi_ubahget_id.php";
+    
     $act="update";
-    $pidbr=$_GET['id'];
+    $pidbr_ec=$_GET['id'];
+    $pidbr = decodeString($pidbr_ec);
+    
     $edit = mysqli_query($cnmy, "SELECT * FROM dbpurchasing.t_po_transaksi WHERE idpo='$pidbr'");
     $r    = mysqli_fetch_array($edit);
     

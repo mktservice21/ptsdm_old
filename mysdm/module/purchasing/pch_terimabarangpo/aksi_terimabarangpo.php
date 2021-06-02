@@ -48,7 +48,66 @@ if ($module=='pchterimabarangpo')
         mysqli_close($cnmy);
         header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
         
-    }elseif ($act=="input" OR $act=="update") {
+    }elseif ($act=="update") {
+        $pcardidlog=$_POST['e_idcardlogin'];
+        if (empty($pcardidlog)) $pcardidlog=$pidcard;
+        
+        if (empty($pcardidlog)) {
+            echo "ANDA HARUS LOGIN ULANG...";
+            exit;
+        }
+        include "../../../config/koneksimysqli.php";
+        
+        $kodenya=$_POST['e_id'];
+        $ptglinput=$_POST['e_tglberlaku'];
+        
+        $pttgl = str_replace('/', '-', $ptglinput);
+        $ptanggal= date("Y-m-d", strtotime($pttgl));
+        
+        $pidcekdetail="";
+        if (isset($_POST['chk_detail'])) $pidcekdetail=$_POST['chk_detail'];
+        
+        if (empty($pidcekdetail)) {
+            echo "data belum dipilih...";
+            mysqli_close($cnmy);
+            exit;
+        }
+        
+        $pizinsimpanterima=false;
+        foreach ($pidcekdetail as $piddata) {
+            if (!empty($piddata)) {
+                $piddivisi=$_POST['txtiddiv'][$piddata];
+                $pidbrg=$_POST['txtidbrg'][$piddata];
+                $pjmlterima=$_POST['txtjmltrm'][$piddata];
+                $pketterima=$_POST['txtkettrm'][$piddata];
+                
+                $pjmlterima=str_replace(",","", $pjmlterima);
+                if (empty($pjmlterima)) $pjmlterima=0;
+                if (!empty($pketterima)) $pketterima = str_replace("'", " ", $pketterima);
+                
+                //echo "$piddivisi, $pidbrg, $pjmlterima, $pketterima<br/>";
+                
+                $query = "UPDATE dbpurchasing.t_po_transaksi_terima SET tgl_terima='$ptanggal', jml_terima='$pjmlterima', ket_terima='$pketterima' WHERE idterima='$kodenya' AND idpo_d='$piddata' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan;  mysqli_close($cnmy); exit; }
+                
+                $query = "UPDATE dbmaster.t_barang_terima SET TANGGAL='$ptanggal' WHERE IDTERIMA='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan;  mysqli_close($cnmy); exit; }
+                
+                $query = "UPDATE dbmaster.t_barang_terima_d SET TANGGAL='$ptanggal', JUMLAH='$pjmlterima', KET_TERIMA='$pketterima' WHERE IDTERIMA='$kodenya' AND IDBARANG='$pidbrg' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan;  mysqli_close($cnmy); exit; }
+                
+                $pizinsimpanterima=true;
+            }
+        }
+        
+        mysqli_close($cnmy);
+        if ($pizinsimpanterima==true) {
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
+        }else{
+            echo "tidak ada data yang diupdate....";
+        }
+        exit;
+    }elseif ($act=="input") {
         
         $pcardidlog=$_POST['e_idcardlogin'];
         if (empty($pcardidlog)) $pcardidlog=$pidcard;
@@ -193,7 +252,6 @@ if ($module=='pchterimabarangpo')
                     }
                     
                     $urut++;
-                    $pidgroup++;
                     $pizinsimpanterima=true;
                     
                 }

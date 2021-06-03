@@ -153,7 +153,7 @@
 
         $sql_ex .=" AND IFNULL(CONCAT(IFNULL(subkode,''), IFNULL(jenis_rpt,''), IFNULL(karyawanid,'')),'') IN "
                 . " (select IFNULL(CONCAT(IFNULL(subkode,''), IFNULL(jenis_rpt,''), IFNULL(karyawaninput,'')),'') "
-                . " FROM dbmaster.t_kode_spd_exp WHERE karyawanid='$pses_idcard') ";
+                . " FROM dbmaster.t_kode_spd_exp WHERE karyawanid='$pses_idcard' AND IFNULL(nomor_apv,0)=2) ";
 
         if (strtoupper($cket)=="APPROVE") {
             $sql_ex.=" AND IFNULL(tgl_apv1,'')<>'' AND IFNULL(tgl_apv1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' ";

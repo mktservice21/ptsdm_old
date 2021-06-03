@@ -67,7 +67,7 @@ if ($module=="ttdspdbyfin") {
                 mysqli_query($cnmy, "update dbmaster.t_suratdana_br set apv1='$karyawanapv', tgl_apv1=NOW(), gbr_apv1='$gbrapv' WHERE karyawanid='$karyawanapv' AND idinput in $noidbr AND ( IFNULL(tgl_apv2,'')='' OR IFNULL(tgl_apv2,'0000-00-00 00:00:00')='0000-00-00 00:00:00' )");
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
                 
-                mysqli_query($cnmy, "update dbmaster.t_suratdana_br set apv2='$karyawanapv', tgl_apv2=NOW(), gbr_apv2='$gbrapv' WHERE idinput in $noidbr AND IFNULL(tgl_apv1,'')<>'' AND IFNULL(tgl_apv1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' AND ( IFNULL(tgl_dir,'')='' OR IFNULL(tgl_dir,'0000-00-00 00:00:00')='0000-00-00 00:00:00' )");
+                mysqli_query($cnmy, "update dbmaster.t_suratdana_br set apv2='$karyawanapv', tgl_apv2=NOW(), gbr_apv2='$gbrapv' WHERE idinput in $noidbr AND IFNULL(tgl_apv1,'')<>'' AND IFNULL(tgl_apv1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' AND ( IFNULL(tgl_dir,'')='' OR IFNULL(tgl_dir,'0000-00-00 00:00:00')='0000-00-00 00:00:00' ) AND karyawanid<>'$karyawanapv' AND apv1<>'$karyawanapv'");
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
                 
                 $padaygapprove=true;
@@ -102,7 +102,7 @@ if ($module=="ttdspdbyfin") {
             
             $padaygapprove=false;
             if ($pwewenang1 == true AND $pwewenang2 == true) {
-                mysqli_query($cnmy, "update dbmaster.t_suratdana_br set tgl_apv2=NULL, gbr_apv2=NULL WHERE idinput in $noidbr AND IFNULL(tgl_apv1,'')<>'' AND IFNULL(tgl_apv1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' AND ( IFNULL(tgl_dir,'')='' OR IFNULL(tgl_dir,'0000-00-00 00:00:00')='0000-00-00 00:00:00' )");
+                mysqli_query($cnmy, "update dbmaster.t_suratdana_br set tgl_apv2=NULL, gbr_apv2=NULL WHERE idinput in $noidbr AND IFNULL(tgl_apv1,'')<>'' AND IFNULL(tgl_apv1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00' AND ( IFNULL(tgl_dir,'')='' OR IFNULL(tgl_dir,'0000-00-00 00:00:00')='0000-00-00 00:00:00' ) AND karyawanid<>'$karyawanapv' AND apv1<>'$karyawanapv'");
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
                 
                 mysqli_query($cnmy, "update dbmaster.t_suratdana_br set tgl_apv1=NULL, gbr_apv1=NULL WHERE karyawanid='$karyawanapv' AND idinput in $noidbr AND ( IFNULL(tgl_apv2,'')='' OR IFNULL(tgl_apv2,'0000-00-00 00:00:00')='0000-00-00 00:00:00' )");

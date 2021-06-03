@@ -301,7 +301,12 @@
         $pnamapembuat=$pnmapv1;//"SAIFUL RAHMAT";
         $pnamaapprove=$pnmapv2;//"MARIANNE PRASANTI";
     //}
-    
+        
+    if (empty($pnamapembuat)) $pnamapembuat=$pnmkaryawan;
+    if (empty($pnamaapprove)) {
+        if ((INT)$nkaryawanid==962) $pnamaapprove="MARIANNE PRASANTI";
+        if ((INT)$nkaryawanid==1272) $pnamaapprove="SAIFUL RAHMAT";
+    }
     
     
     

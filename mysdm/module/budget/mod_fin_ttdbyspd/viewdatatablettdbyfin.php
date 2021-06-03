@@ -155,7 +155,7 @@ session_start();
             . " a.kodeid, b.nama as namakode, a.subkode, b.subnama, "
             . " a.jumlah, a.jumlah2, a.jumlah3, IFNULL(a.jumlah,0)+IFNULL(a.jumlah2,0) as jumlah_trans, "
             . " a.nomor, a.nodivisi, a.pilih, a.karyawanid, d.nama as nama_karyawan, a.jenis_rpt, "
-            . " a.userproses, a.tgl_proses, a.tgl_dir, a.tgl_dir2, a.tgl_apv1, a.tgl_apv2, a.tgl_apv3 "
+            . " a.userproses, a.tgl_proses, a.apv1, a.apv2, a.tgl_dir, a.tgl_dir2, a.tgl_apv1, a.tgl_apv2, a.tgl_apv3 "
             . " from dbmaster.t_suratdana_br as a "
             . " LEFT JOIN dbmaster.t_kode_spd as b on "
             . " a.kodeid=b.kodeid AND a.subkode=b.subkode "
@@ -163,6 +163,9 @@ session_start();
     $query_data .=" WHERE 1=1 ";
     $query_data.=" AND ( (a.tglinput between '$pbulan1' and '$pbulan2') OR (a.tgl between '$pbulan1' and '$pbulan2') ) ";
     $query_data .=" AND IFNULL(a.jenis_rpt,'') NOT IN ('W') ";
+    
+    
+    //$query_data .=" AND a.idinput in (2700, 2696, 2761) ";
     
     
     
@@ -197,7 +200,6 @@ session_start();
         $query = "create TEMPORARY table $tmp01 ($query_q1)"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
 
 
         $query_q2 =$query_data." AND ( (a.subkode IN $filterwewenang_e2 AND a.divisi NOT IN ('OTC', 'CHC')) OR (a.subkode IN $filterwewenang_o2 AND a.divisi IN ('OTC', 'CHC')) ) ";
@@ -245,7 +247,55 @@ session_start();
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-    
+        
+        $query_ex =$query_data." AND IFNULL(CONCAT(IFNULL(a.subkode,''), IFNULL(a.jenis_rpt,''), IFNULL(a.karyawanid,'')),'') IN "
+                . " (select IFNULL(CONCAT(IFNULL(subkode,''), IFNULL(jenis_rpt,''), IFNULL(karyawaninput,'')),'') "
+                . " FROM dbmaster.t_kode_spd_exp WHERE karyawanid='$pkaryawanid' AND IFNULL(nomor_apv,0)=2) ";
+        if ($ppilihsts=="REJECT") {
+            $query_ex .=" AND IFNULL(a.stsnonaktif,'')='Y' ";
+        }else{
+            $query_ex .=" AND IFNULL(a.stsnonaktif,'')<>'Y' ";
+            if ($ppilihsts=="ALLDATA") {
+
+            }else{
+                if ($ppilihsts=="APPROVE") {
+                    $query_ex .= " AND (IFNULL(a.tgl_apv2,'')='' OR IFNULL(a.tgl_apv2,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                }elseif ($ppilihsts=="UNAPPROVE") {
+                    $query_ex .= " AND (IFNULL(a.tgl_apv2,'')<>'' AND IFNULL(a.tgl_apv2,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }
+            }
+        }
+        
+        $query = "INSERT INTO $tmp01 $query_ex"; 
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+        
+        
+        $query_ex2 =$query_data." AND IFNULL(CONCAT(IFNULL(a.subkode,''), IFNULL(a.jenis_rpt,''), IFNULL(a.karyawanid,'')),'') IN "
+                . " (select IFNULL(CONCAT(IFNULL(subkode,''), IFNULL(jenis_rpt,''), IFNULL(karyawaninput,'')),'') "
+                . " FROM dbmaster.t_kode_spd_exp WHERE karyawanid='$pkaryawanid' AND IFNULL(nomor_apv,0)=1) ";
+        if ($ppilihsts=="REJECT") {
+            $query_ex2 .=" AND IFNULL(a.stsnonaktif,'')='Y' ";
+        }else{
+            $query_ex2 .=" AND IFNULL(a.stsnonaktif,'')<>'Y' ";
+            if ($ppilihsts=="ALLDATA") {
+
+            }else{
+                if ($ppilihsts=="APPROVE") {
+                    $query_ex2 .= " AND (IFNULL(a.tgl_apv1,'')='' OR IFNULL(a.tgl_apv1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                }elseif ($ppilihsts=="UNAPPROVE") {
+                    $query_ex2 .= " AND (IFNULL(a.tgl_apv1,'')<>'' AND IFNULL(a.tgl_apv1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }
+            }
+        }
+        
+        $query = "INSERT INTO $tmp01 $query_ex2"; 
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
     }
     
     $query ="ALTER TABLE $tmp01 ADD COLUMN iurutan VARCHAR(2), ADD COLUMN nama_pengajuan VARCHAR(100), ADD COLUMN nama_report VARCHAR(100), ADD COLUMN nama_ket VARCHAR(100), ADD COLUMN link_eth VARCHAR(100), ADD COLUMN link_otc VARCHAR(100), ADD COLUMN tgl_trans DATE";
@@ -269,6 +319,13 @@ session_start();
             . " a.tgl_trans=tanggal"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    
+    $query = "select DISTINCT * FROM $tmp01";
+    $query = "create TEMPORARY table $tmp02 ($query)"; 
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
 echo "<div style='font-weight:bold; color:blue;'>";
 if ($ppilihsts=="APPROVE") {
     echo "DATA YANG BELUM DIAPPROVE";
@@ -319,7 +376,7 @@ echo "</div>";
                 <?PHP
                 $no=1;
                 $pmystsyginput="";
-                $query = "select * from $tmp01 order by IFNULL(iurutan,''), nama_karyawan, idinput DESC";
+                $query = "select * from $tmp02 order by IFNULL(iurutan,''), nama_karyawan, idinput DESC";
                 $tampil= mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     
@@ -350,6 +407,8 @@ echo "</div>";
                     
                     $plinketh=$row["link_eth"];
                     $plinkotc=$row["link_otc"];
+                    
+                    $papprove1=$row["apv1"];
                     
                     $ptglatasan1=$row["tgl_apv1"];
                     $ptglatasan2=$row["tgl_apv2"];
@@ -438,6 +497,10 @@ echo "</div>";
                     
                     if (!empty($ptgltrans)) {
                         $ceklisnya="";
+                    }
+                    
+                    if (!empty($ptglatasan1) AND $pkryid==$papprove1 AND $ppilihsts=="APPROVE") {
+                        //$ceklisnya="";
                     }
                     
                     echo "<tr>";

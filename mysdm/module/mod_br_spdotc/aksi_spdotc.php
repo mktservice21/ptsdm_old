@@ -176,6 +176,7 @@ elseif ($module=='spdotc')
                         $purutan=$_POST['cb_urut'][$no_brid];
                     }
                     
+                    if (empty($purutan)) $purutan=0;
                     
                     $query = "INSERT INTO $dbname.t_suratdana_br1 (idinput, bridinput, kodeinput, urutan, amount)VALUES"
                             . "('$kodenya', '$no_brid', '$kodeinput', '$purutan', '$pamount_rp')";

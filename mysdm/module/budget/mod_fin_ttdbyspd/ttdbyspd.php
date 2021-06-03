@@ -1,5 +1,5 @@
 <?PHP
-    //include "config/cek_akses_modul.php";
+    include "config/cek_akses_modul.php";
     $aksi="module/budget/mod_fin_ttdbyspd/aksi_ttdbyspd.php";
     $hari_ini = date("Y-m-d");
     $tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));

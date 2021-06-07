@@ -89,10 +89,12 @@ if ($_GET['module']=="viewdataotc"){
         $query = "select a.brOtcId, a.tgltrans, a.COA4, b.NAMA4, a.icabangid_o, c.nama nama_cabang, a.noslip, a.kodeid, a.subpost,
            a.keterangan1, a.real1, a.jumlah, a.realisasi, 
            a.pajak, a.dpp, a.ppn, a.ppn_rp, a.pph_jns, a.pph, a.pph_rp, a.tgl_fp, a.noseri, a.pembulatan,
-           a.lampiran, a.ca, a.via, a.tglbr, a.tglrpsby, a.tglreal, a.jenis, CAST(0 as DECIMAL(20,2)) as amount, CAST('' as CHAR(1)) as sinput  
+           a.lampiran, a.ca, a.via, a.tglbr, a.tglrpsby, a.tglreal, a.jenis, CAST(0 as DECIMAL(20,2)) as amount, CAST('' as CHAR(1)) as sinput,
+           a.karyawanid, d.nama as nama_karyawan 
            from hrd.br_otc a 
            LEFT JOIN dbmaster.coa_level4 b on a.COA4=b.COA4 
-           LEFT JOIN mkt.icabang_o c on a.icabangid_o=c.icabangid_o WHERE 1=1 " //AND $ftypetgl $filterlampiran  $filsudahada
+           LEFT JOIN mkt.icabang_o c on a.icabangid_o=c.icabangid_o 
+           LEFT JOIN hrd.karyawan as d on a.karyawanid=d.karyawanId WHERE 1=1 " //AND $ftypetgl $filterlampiran  $filsudahada
            . " ";//AND a.brOtcId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp03 WHERE IFNULL(sinput,'')<>'Y')
         if ($pact=="editdata") {
             $query .= " AND ( ($ftypetgl $filterlampiran AND a.brOtcId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp03 WHERE IFNULL(sinput,'')<>'Y')) OR "
@@ -104,7 +106,7 @@ if ($_GET['module']=="viewdataotc"){
         
         if ($fgroupid=="1" OR $fgroupid=="24") {
         }else{
-            $query .= " AND a.karyawanid='$fkaryawan' ";
+            //$query .= " AND a.karyawanid='$fkaryawan' ";
         }
         
         $query = "create TEMPORARY table $tmp01 ($query)"; 
@@ -166,6 +168,7 @@ if ($_GET['module']=="viewdataotc"){
                         <th align="center" nowrap>Tgl. Rpt. Sby</th>
                         <th align="center" nowrap>Jenis</th>
                         <th align="center" nowrap>Keterangan</th>
+                        <th align="center" nowrap>Yg. Membuat</th>
                         <th align="center" nowrap>ID</th>
                     </tr>
                 </thead>
@@ -228,6 +231,7 @@ if ($_GET['module']=="viewdataotc"){
                             $pamount=number_format($pamount,0,",",",");
                             
                             $pjmlreal = $row['realisasi'];
+                            $ppnamakaryawan = $row['nama_karyawan'];
                             
                             $ptglterima;
                             
@@ -291,6 +295,7 @@ if ($_GET['module']=="viewdataotc"){
                             echo "<td nowrap>$ptglsby</td>";
                             echo "<td nowrap>$njenis</td>";
                             echo "<td nowrap>$paktivitas1</td>";
+                            echo "<td nowrap>$ppnamakaryawan</td>";
                             echo "<td nowrap>$pbrid</td>";
                             
                             echo "</tr>";

@@ -64,9 +64,7 @@
         $pilih_koneksi="config/koneksimysqli.php";
         $ptgl_pillih = $_POST['bulan1'];
         $stsreport = $_POST['sts_rpt'];
-        
-        $pprosid_sts="";
-        if (isset($_POST['sts_sudahprosesid'])) $pprosid_sts = $_POST['sts_sudahprosesid'];
+        $pprosid_sts = $_POST['sts_sudahprosesid'];
         $scaperiode1 = "";
         $scaperiode2 = "";
         $iproses_simpandata=false;
@@ -194,15 +192,6 @@
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    
-    $userid=$_SESSION['USERID'];
-    $now=date("mdYhis");
-    $tmp01xxx =" dbtemp.tmpxxx01_".$userid."_$now ";
-    
-    //$query = "create  table $tmp01xxx (select * from $tmp01)"; 
-    //mysqli_query($cnit, $query);
-    //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
     //goto hapusdata;
     
 
@@ -215,6 +204,80 @@
     $rp_gtotca1=0; $rp_gtotjmlsaldo=0; $rp_gtotca2=0; $rp_gtotadj=0; $rp_gtotselisih=0; $rp_gtottrans=0;
     
     $no=1;
+    
+    
+    
+    $puserid=$_SESSION['USERID'];
+    $now=date("mdYhis");
+    $temp001 =" dbtemp.tmptrkcapl001_".$puserid."_$now ";
+    $temp002 =" dbtemp.tmptrkcapl002_".$puserid."_$now ";
+    $query = "select * from $tmp01";
+    $query = "create TEMPORARY table $temp001 ($query)";
+    mysqli_query($cnit, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    //echo "$m_periode1 - $m_periode2<br/>";
+    
+    $query = "select a.idca, a.periode, a.karyawanid, b.nama as nama_karyawan, a.icabangid, c.nama as nama_cabang,
+        a.tgl_fin, FORMAT(a.jumlah,0) as jumlah 
+        from dbmaster.t_ca0 as a LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId 
+        LEFT JOIN mkt.icabang as c on a.icabangid=c.iCabangId
+        where left(a.periode,7)='$m_periode1' AND a.idca NOT IN 
+        (select distinct IFNULL(idca1,'') from $temp001) 
+        and IFNULL(a.stsnonaktif,'')<>'Y' AND IFNULL(a.divi,'') NOT IN ('OTC', 'CHC')";
+    $query = "create TEMPORARY table $temp002 ($query)";
+    mysqli_query($cnit, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "INSERT INTO $temp002 
+        select a.idca, a.periode, a.karyawanid, b.nama as nama_karyawan, a.icabangid, c.nama as nama_cabang,
+        a.tgl_fin, FORMAT(a.jumlah,0) as jumlah 
+        from dbmaster.t_ca0 as a LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId 
+        LEFT JOIN mkt.icabang as c on a.icabangid=c.iCabangId
+        where left(a.periode,7)='$m_periode2' AND a.idca NOT IN 
+        (select distinct IFNULL(idca2,'') from $temp001) 
+        and IFNULL(a.stsnonaktif,'')<>'Y' AND IFNULL(a.divi,'') NOT IN ('OTC', 'CHC')";
+    mysqli_query($cnit, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "select * from $temp002 order by periode, nama_karyawan";
+    $tampilv= mysqli_query($cnmy, $query);
+    $vketemu= mysqli_num_rows($tampilv);
+    if ((INT)$vketemu>0) {
+        echo "<b style='color:red;'>ADA DATA YANG BELUM MASUK</b><br/>";
+        echo "<table id='datatable2' class='table table-striped table-bordered example_2' border='1px solid black'>";
+        echo "<tr>";
+            echo "<th>Periode</th>";
+            echo "<th>IDCA</th>";
+            echo "<th>Karyawan ID</th>";
+            echo "<th>Nama Karyawan</th>";
+            echo "<th>Jumlah</th>";
+            echo "<th>Proses FIN</th>";
+        echo "</tr>";
+        while ($vrow= mysqli_fetch_array($tampilv)) {
+            $vper01=$vrow['periode'];
+            $vicaid=$vrow['idca'];
+            $vkryid=$vrow['karyawanid'];
+            $vkrynm=$vrow['nama_karyawan'];
+            $vtglfin=$vrow['tgl_fin'];
+            $vjumlah=$vrow['jumlah'];
+            
+            if ($vtglfin=="0000-00-00" OR $vtglfin=="0000-00-00 00:00:00") $vtglfin="";
+            
+            $vper01 = date("F Y", strtotime($vper01));
+            
+            echo "<tr>";
+            echo "<td nowrap>$vper01</td>";
+            echo "<td nowrap>$vicaid</td>";
+            echo "<td nowrap>$vkryid</td>";
+            echo "<td nowrap>$vkrynm</td>";
+            echo "<td nowrap align='right'>$vjumlah</td>";
+            echo "<td nowrap>$vtglfin</td>";
+            echo "</tr>";
+            
+        }
+        echo "</table>";
+        echo "<br/>&nbsp;<br/>&nbsp;<hr/>";
+    }
+    
     
 ?>
     
@@ -376,12 +439,15 @@
     
     echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
 hapusdata:
+    mysqli_query($cnit, "drop TEMPORARY table if EXISTS $temp001");
+    mysqli_query($cnit, "drop TEMPORARY table if EXISTS $temp002");
     mysqli_query($cnit, "drop TEMPORARY table $tmp00");
     mysqli_query($cnit, "drop TEMPORARY table $tmp01");
     mysqli_query($cnit, "drop TEMPORARY table $tmp02");
     mysqli_query($cnit, "drop TEMPORARY table $tmp03");
     mysqli_query($cnit, "drop TEMPORARY table $tmp04");
     mysqli_query($cnit, "drop TEMPORARY table $tmp05");
+    
     
     mysqli_close($cnit);
 ?>

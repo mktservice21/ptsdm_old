@@ -122,48 +122,48 @@
 
                                                 <select class='form-control' name='cb_mr' id='cb_mr'>
                                                     <?PHP
-													if ($_SESSION['IDCARD']=="0000000175") {
-														echo "<option value=''>-- Pilihan --</option>";
-													}else{
-														$query_kry="";
-														if ($pmyjabatanid=="15") {
-															$query_kry = "select b.karyawanId, b.nama from ms.karyawan b WHERE karyawanId='$pmyidcard' order by b.nama";
-														}elseif ($pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjabatanid=="08" OR $pmyjabatanid=="20") {
-															$query_kry = "select b.karyawanId, b.nama from ms.karyawan b WHERE b.karyawanid IN $filter_karyawan  ";
-															/*
-															$query_kry .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
-																	. " and LEFT(b.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
-																	. " and LEFT(b.nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
-																	. " AND LEFT(b.nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
-																	. " AND LEFT(b.nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
-															$query_kry .= " AND b.nama NOT IN ('ACCOUNTING')";
-															*/
-															$query_kry .=" ORDER BY b.nama";
-														}else{
-															$query_kry = "select b.karyawanId, b.nama from ms.karyawan b WHERE b.karyawanid IN $filter_karyawan  "
-																	. " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
-																	/*
-															$query_kry .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
-																	. " and LEFT(b.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
-																	. " and LEFT(b.nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
-																	. " AND LEFT(b.nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
-																	. " AND LEFT(b.nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
-																	*/
-															$query_kry .= " AND b.nama NOT IN ('ACCOUNTING')";
-															$query_kry .=" ORDER BY b.nama";
-														}
-														
-														if (!empty($query_kry)) {
-															$tampil = mysqli_query($cnms, $query_kry);
-															$ketemu= mysqli_num_rows($tampil);
-															if ($ketemu==0) echo "<option value=''>-- Pilihan --</option>";
-															while ($rx= mysqli_fetch_array($tampil)) {
-																$nidkry=$rx['karyawanId'];
-																$nnmkry=$rx['nama'];
-																echo "<option value='$nidkry'>$nnmkry</option>";
-															}
-														}
-													}
+                                                    if ($_SESSION['IDCARD']=="0000000175") {
+                                                        echo "<option value=''>-- Pilihan --</option>";
+                                                    }else{
+                                                        $query_kry="";
+                                                        if ($pmyjabatanid=="15") {
+                                                                $query_kry = "select b.karyawanId, b.nama from ms.karyawan b WHERE karyawanId='$pmyidcard' order by b.nama";
+                                                        }elseif ($pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjabatanid=="08" OR $pmyjabatanid=="20") {
+                                                            $query_kry = "select b.karyawanId, b.nama from ms.karyawan b WHERE b.karyawanid IN $filter_karyawan  ";
+                                                            /*
+                                                            $query_kry .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                                        . " and LEFT(b.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                                        . " and LEFT(b.nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                                        . " AND LEFT(b.nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                                        . " AND LEFT(b.nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                                            $query_kry .= " AND b.nama NOT IN ('ACCOUNTING')";
+                                                            */
+                                                            $query_kry .=" ORDER BY b.nama";
+                                                        }else{
+                                                            $query_kry = "select b.karyawanId, b.nama from ms.karyawan b WHERE b.karyawanid IN $filter_karyawan  "
+                                                                        . " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
+                                                                            /*
+                                                            $query_kry .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                                        . " and LEFT(b.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                                        . " and LEFT(b.nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                                        . " AND LEFT(b.nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                                        . " AND LEFT(b.nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                                                            */
+                                                            $query_kry .= " AND b.nama NOT IN ('ACCOUNTING')";
+                                                            $query_kry .=" ORDER BY b.nama";
+                                                        }
+
+                                                        if (!empty($query_kry)) {
+                                                            $tampil = mysqli_query($cnms, $query_kry);
+                                                            $ketemu= mysqli_num_rows($tampil);
+                                                            if ($ketemu==0) echo "<option value=''>-- Pilihan --</option>";
+                                                            while ($rx= mysqli_fetch_array($tampil)) {
+                                                                $nidkry=$rx['karyawanId'];
+                                                                $nnmkry=$rx['nama'];
+                                                                echo "<option value='$nidkry'>$nnmkry</option>";
+                                                            }
+                                                        }
+                                                    }
                                                     ?>
                                                 </select>
                                                 
@@ -171,10 +171,18 @@
                                         </div>
                                         
                                         <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for='distibutor'>&nbsp; <span class='required'></span></label>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <input type="checkbox" id="chkboth" name="chkboth" value="Y" /> Include Produk Other Peacock
                                                 <br/>( produk other peacock tidak masuk achievement MR, SPV/AM, DM )
+                                            </div>
+                                        </div>
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                            <div class='col-md-9 col-sm-9 col-xs-12'>
+                                                <input type="checkbox" id="chkincmaklo" name="chkincmaklo" value="Y" /> Include Produk Maklon
+                                                <br/>
                                             </div>
                                         </div>
                                         

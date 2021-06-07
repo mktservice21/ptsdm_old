@@ -112,11 +112,13 @@
                                                 $nidkry=$du['karyawanid'];
                                                 $nnmkry=$du['nama_karyawan'];
                                                 $nidkry_=(INT)$nidkry;
+                                                echo "<option value='$nidkry'>$nnmkry ($nidkry_)</option>";
+                                                /*
                                                 if ($nidkry==$fkaryawan)
                                                     echo "<option value='$nidkry' selected>$nnmkry ($nidkry_)</option>";
                                                 else
                                                     echo "<option value='$nidkry'>$nnmkry ($nidkry_)</option>";
-
+                                                */
                                             }
 
                                         ?>

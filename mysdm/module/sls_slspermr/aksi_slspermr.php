@@ -1,6 +1,6 @@
 <?php
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -57,6 +57,9 @@ $pnamakry=$rs['nama'];
 $pprodoth = "";
 if (isset($_POST['chkboth'])) $pprodoth=$_POST['chkboth'];
 
+$pprodmkl = "";
+if (isset($_POST['chkincmaklo'])) $pprodmkl=$_POST['chkincmaklo'];
+
 //30-3-2020 info bpk. yakub via WA ditambah fileter kategori hanya EXISTING, login mr, am, dm
 
 $filterkategori="";
@@ -73,6 +76,12 @@ if ($pprodoth=="Y") {
 }else{
     $query .= " AND iprodid NOT IN (select IFNULL(iprodid,'') iprodid from sls.othproduk WHERE divprodid='PEACO')";
 }
+
+if ($pprodmkl=="Y") {
+}else{
+    $query .= " AND divprodid NOT IN ('MAKLO')";
+}
+
 $query .=" GROUP BY 1,2";
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
 mysqli_query($cnms, $query);
@@ -155,6 +164,13 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     }else{
                         echo "<tr><td colspan=5 width='150px'>Tanpa Produk Other Peacock</td></tr>";
                     }
+                    
+                    if ($pprodmkl=="Y") {
+                        echo "<tr><td colspan=5 width='150px'>Include Produk Maklon</td></tr>";
+                    }else{
+                        echo "<tr><td colspan=5 width='150px'>Tanpa Produk Maklon</td></tr>";
+                    }
+                    
                     echo "<tr><td colspan=5 width='150px'>view date : $pviewdate</td></tr>";
                 }else{
                     echo "<tr><td width='150px'><b><h3>Report Sales Per MR</h3></b></td></tr>";
@@ -165,6 +181,13 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     }else{
                         echo "<tr><td width='150px'>Tanpa Produk Other Peacock</td></tr>";
                     }
+                    
+                    if ($pprodmkl=="Y") {
+                        echo "<tr><td width='150px'>Include Produk Maklon</td></tr>";
+                    }else{
+                        echo "<tr><td width='150px'>Tanpa Produk Maklon</td></tr>";
+                    }
+                    
                     echo "<tr><td width='150px'><i>view date : $pviewdate</i></td></tr>";
                 }
                 ?>

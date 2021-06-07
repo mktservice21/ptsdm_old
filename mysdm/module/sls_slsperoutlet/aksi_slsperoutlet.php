@@ -56,6 +56,9 @@ $pperiode2=date("d F Y", strtotime($tgl02));
 $pprodoth = "";
 if (isset($_POST['chkboth'])) $pprodoth=$_POST['chkboth'];
 
+$pprodmkl = "";
+if (isset($_POST['chkincmaklo'])) $pprodmkl=$_POST['chkincmaklo'];
+
 
 $pviewdate=date("d/m/Y H:i:s");
 
@@ -148,6 +151,11 @@ $query = "select * from sls.mr_sales2 WHERE tgljual BETWEEN '$pbln1' AND '$pbln2
 if ($pprodoth=="Y") {
 }else{
     $query .= " AND iprodid NOT IN (select IFNULL(iprodid,'') iprodid from sls.othproduk WHERE divprodid='PEACO')";
+}
+
+if ($pprodmkl=="Y") {
+}else{
+    $query .= " AND divprodid NOT IN ('MAKLO')";
 }
 //echo $query;
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
@@ -244,6 +252,13 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     }else{
                         echo "<tr><td colspan=5 width='150px'>Tanpa Produk Other Peacock</td></tr>";
                     }
+                    
+                    if ($pprodmkl=="Y") {
+                        echo "<tr><td colspan=5 width='150px'>Include Produk Maklon</td></tr>";
+                    }else{
+                        echo "<tr><td colspan=5 width='150px'>Tanpa Produk Maklon</td></tr>";
+                    }
+                    
                     echo "<tr><td colspan=5 width='150px'>view date : $pviewdate</td></tr>";
                 }else{
                     echo "<tr><td width='150px'><b><h3>Report Sales Per Outlet</h3></b></td></tr>";
@@ -261,6 +276,13 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
                     }else{
                         echo "<tr><td width='150px'>Tanpa Produk Other Peacock</td></tr>";
                     }
+                    
+                    if ($pprodmkl=="Y") {
+                        echo "<tr><td width='150px'>Include Produk Maklon</td></tr>";
+                    }else{
+                        echo "<tr><td width='150px'>Tanpa Produk Maklon</td></tr>";
+                    }
+                    
                     echo "<tr><td width='150px'><i>view date : $pviewdate</i></td></tr>";
                 }
                 ?>

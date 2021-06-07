@@ -126,11 +126,17 @@
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "Alter table $tmp01 ADD COLUMN qtysdhsplt DECIMAL(20,2)"; 
+    $query = "Alter table $tmp01 ADD COLUMN qtysdhsplt DECIMAL(20,2), ADD COLUMN divisiprod VARCHAR(5)"; 
     mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "UPDATE $tmp01 as a JOIN (select fakturid, iprodid, sum(qty) as qtysp from $tmp02 GROUP BY 1,2) as b on a.iprodid=b.iprodid AND a.fakturid=b.fakturid SET a.qtysdhsplt=b.qtysp"; 
     mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 as a JOIN mkt.iproduk as b on a.iprodid=b.iprodid SET a.divisiprod=b.DivProdId"; 
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "DELETE FROM $tmp01 WHERE IFNULL(divisiprod,'')='OTC'";
+    //mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     //echo "$pnamadist, $pnmtblsales, $pnamaecabang, $pecusid - $pnmecust - $icabangid_map ($pnmcabang) - $areaid_map ($pnmarea), $icustid_map - $pnmicustsdm";
@@ -199,6 +205,7 @@
                     $pqty=$row['qbeli'];
                     $ptgljual=$row['tgljual'];
                     $pqtysplte=$row['qtysdhsplt'];
+                    $pidvisisi=$row['divisiprod'];
                     
                     /*
                     $query = "select sum(qty) as qtysp from $tmp02 WHERE iprodid='$pidprod'";
@@ -225,6 +232,10 @@
                     $pqty=number_format($pqty,0,",",",");
                     $pqtysplte=number_format($pqtysplte,0,",",",");
                     $psisa=number_format($psisa,0,",",",");
+                    
+                    if ($pidvisisi=="OTC" OR $pidvisisi=="CHC") {
+                        $pbtnmaping="$pidvisisi";
+                    }
                     
                     echo "<tr>";
                     echo "<td nowrap>$pnamaprod</td>";

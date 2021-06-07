@@ -567,13 +567,20 @@
                                         
                                         
                                         <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for='distibutor'>&nbsp; <span class='required'></span></label>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <input type="checkbox" id="chkboth" name="chkboth" value="Y" /> Include Produk Other Peacock
                                                 <br/>( produk other peacock tidak masuk achievement MR, SPV/AM, DM )
                                             </div>
                                         </div>
                                         
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                            <div class='col-md-9 col-sm-9 col-xs-12'>
+                                                <input type="checkbox" id="chkincmaklo" name="chkincmaklo" value="Y" /> Include Produk Maklon
+                                                <br/>
+                                            </div>
+                                        </div>
                                         
                                         
                                     </div>

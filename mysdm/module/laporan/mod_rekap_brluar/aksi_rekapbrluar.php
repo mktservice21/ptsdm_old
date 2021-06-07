@@ -72,6 +72,7 @@
     }else{
         $pbulan=$_POST['bulan1'];
         $pperiode= date("Ym", strtotime($pbulan));
+        $tgljakukannya= date("Ymd", strtotime($pbulan));
         $psudahprosesfin=$_POST['sts_apv'];
         $stsreport=$_POST['sts_rpt'];
         
@@ -250,6 +251,14 @@
 		}
 		
 		
+    }else{
+        
+        if (!empty($tgljakukannya)) {
+            if ((double)$tgljakukannya>='20200701') {
+                $nnama_ss_mktdir=$nnama_ss_mktdir2;
+            }
+        }
+        
     }
     
     

@@ -1,6 +1,6 @@
 <?PHP
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
 ?>
 <link href="css/inputselectbox.css" rel="stylesheet" type="text/css" />
@@ -327,7 +327,8 @@ $tglberlku = date('m/Y', strtotime($hari_ini));
 $tgl_pertama = date('01 F Y', strtotime($hari_ini));
 $tgl_terakhir = date('t F Y', strtotime($hari_ini));
 
-$pbulanpilih = date('F Y', strtotime($hari_ini));
+//$pbulanpilih = date('F Y', strtotime($hari_ini));
+$pbulanpilih = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
 
 $pidgroup=$_SESSION['GROUP'];
                 

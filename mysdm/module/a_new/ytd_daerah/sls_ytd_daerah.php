@@ -574,43 +574,43 @@ $(document).ready(function() {
                         echo "</tr>\n";
                     }
               
-              }
+              
 			  
                 
-              $result43 = DB::query("SELECT
-              IFNULL(SUM(mtd_value_target),0) AS mtd_target,
-              IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
-              IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
-              IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
-              IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
-              IFNULL(SUM(ytd_value_target),0) AS ytd_target,
-              IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
-              IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
-              IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
-              IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
-              IFNULL(SUM(thn_value_target),0) AS thn_tgt,
-              IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
-              FROM %l0",$namatabel);
+                    $result43 = DB::query("SELECT
+                    IFNULL(SUM(mtd_value_target),0) AS mtd_target,
+                    IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
+                    IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
+                    IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
+                    IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
+                    IFNULL(SUM(ytd_value_target),0) AS ytd_target,
+                    IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
+                    IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
+                    IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
+                    IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
+                    IFNULL(SUM(thn_value_target),0) AS thn_tgt,
+                    IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
+                    FROM %l0",$namatabel);
 
-              foreach ($result43 as $r43){
-                  echo "<tr>";
-                  echo "<td colspan='2'><b>Total All <b></td><td class='divnone'></td>";
-                  echo "<td align='right'><b>".number_format($r43["mtd_target"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r43["mtd_sales"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r43["mtd_ach"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r43["thnlalu"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r43["grw"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r43["ytd_target"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r43["ytd_sales"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r43["ytd_ach"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r43["ytd_thnlalu"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r43["ytd_grw"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r43["thn_tgt"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r43["ach_year"]."</b></td>\n";
-                  echo "</tr>\n";
+                    foreach ($result43 as $r43){
+                        echo "<tr>";
+                        echo "<td colspan='2'><b>Total All <b></td><td class='divnone'></td>";
+                        echo "<td align='right'><b>".number_format($r43["mtd_target"],0,",",",")."</b></td>\n";
+                        echo "<td align='right'><b>".number_format($r43["mtd_sales"],0,",",",")."</b></td>\n";
+                        echo "<td align='right'><b>".$r43["mtd_ach"]."</b></td>\n";
+                        echo "<td align='right'><b>".number_format($r43["thnlalu"],0,",",",")."</b></td>\n";
+                        echo "<td align='right'><b>".$r43["grw"]."</b></td>\n";
+                        echo "<td align='right'><b>".number_format($r43["ytd_target"],0,",",",")."</b></td>\n";
+                        echo "<td align='right'><b>".number_format($r43["ytd_sales"],0,",",",")."</b></td>\n";
+                        echo "<td align='right'><b>".$r43["ytd_ach"]."</b></td>\n";
+                        echo "<td align='right'><b>".number_format($r43["ytd_thnlalu"],0,",",",")."</b></td>\n";
+                        echo "<td align='right'><b>".$r43["ytd_grw"]."</b></td>\n";
+                        echo "<td align='right'><b>".number_format($r43["thn_tgt"],0,",",",")."</b></td>\n";
+                        echo "<td align='right'><b>".$r43["ach_year"]."</b></td>\n";
+                        echo "</tr>\n";
+                    }
+              
               }
-              
-              
               
         ?>
     </tbody>

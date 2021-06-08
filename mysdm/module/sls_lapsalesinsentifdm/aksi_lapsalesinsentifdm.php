@@ -179,7 +179,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
     <div class="clearfix"></div>
 
     <hr/>
-    <div class="ijudul"><h2>Tanpa New dan Other Produk</h2></div>
+    <div class="ijudul"><h2>Tanpa Produk New & Other & Maklon</h2></div>
     <table id='mydatatable1' class='table table-striped table-bordered' width="100%" border="1px solid black">
         <thead>
             <tr>
@@ -193,7 +193,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
         <tbody>
             <?PHP
             $query = "select icabangid, nama_cabang, sum(value_sales) as value_sales, sum(value_target) as value_target FROM "
-                    . " $tmp02 GROUP BY 1,2";
+                    . " $tmp02 WHERE divprodid NOT IN ('MAKLO') GROUP BY 1,2";
             $query .=" ORDER BY 2,1";
             $tampil= mysqli_query($cnms, $query);
             while ($row= mysqli_fetch_array($tampil)) {

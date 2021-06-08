@@ -199,7 +199,8 @@
         , CAST(''  AS char(1)) IKET 
         from hrd.karyawan k JOIN dbmaster.t_karyawan_posisi b on k.karyawanId=b.karyawanId
         LEFT JOIN MKT.iarea_o o on b.areaId=o.areaid_o and b.icabangid=o.icabangid_o
-        WHERE k.karyawanId not in (select DISTINCT karyawanId from dbmaster.t_karyawanadmin) and b.divisiId='OTC' and b.aktif='Y' AND k.karyawanId <> '0000001272'";
+        WHERE IFNULL(b.rutin_chc,'')='Y'";
+        //WHERE k.karyawanId not in (select DISTINCT karyawanId from dbmaster.t_karyawanadmin) and b.divisiId='OTC' and b.aktif='Y' AND k.karyawanId <> '0000001272'";
     $query = "create temporary table $tmp01 ($query)";
     mysqli_query($cnit, $query);
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }

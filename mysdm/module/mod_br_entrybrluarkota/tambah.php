@@ -429,6 +429,10 @@ if (isset($_GET['ca'])) {
 												
 												$query .= " OR b.karyawanid='$idajukan' ";
 												
+                                                                                                
+                                                                                                $query = "select DISTINCT b.karyawanId as karyawanid, b.nama FROM hrd.karyawan as b JOIN dbmaster.t_karyawan_posisi as a "
+                                                                                                        . " on a.karyawanId=b.karyawanId WHERE ( (IFNULL(a.rutin_chc,'')='Y' AND IFNULL(a.aktif,'')<>'N') OR "
+                                                                                                        . " b.karyawanId='$idajukan' ) ";
 												$query .= " order by b.nama";
 												$tampil=mysqli_query($cnmy, $query);
 												while ($rt= mysqli_fetch_array($tampil)) {

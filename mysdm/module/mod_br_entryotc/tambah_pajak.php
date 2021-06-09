@@ -65,6 +65,9 @@
     $prpjumlahjasa="";
     $pchkjasa="";
     $pchkatrika="";
+    
+    $ppphviasby="";
+    $pchkpphsby="";
 ?>
 
 
@@ -209,6 +212,14 @@
                                     </div>
                                         
                                         
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">&nbsp;<span class='required'></span></label>
+                                        <div class='col-md-6 col-sm-6 col-xs-12'>
+                                            <input type="checkbox" value="pphsby" id="chk_pphsby" name="chk_pphsby" onclick="cekBoxPilihPPHPILIH()" <?PHP echo $pchkpphsby; ?>> PPH Via SBY
+                                        </div>
+                                    </div>
+                                    
+                                    
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:000;">PPH <span class='required'></span></label>
                                         <div class='col-xs-9'>
@@ -499,12 +510,18 @@
         var ejmlusulan = document.getElementById("e_jmlusulan").value;
         var ejmltptotminta = document.getElementById("e_jumlahminta").value;
         var chkatrika = document.getElementById('chk_atrika').checked;
+        var chkpphviasby = document.getElementById('chk_pphsby').checked;
+        
         
         var chkatk="";
         if (chkatrika==true) {
             chkatk="atrika";
         }
         
+        var ichksbyvia="";
+        if (chkpphviasby==true) {
+            ichksbyvia="pphsby";
+        }
         
         if (ejmltptotminta=="") {
             ejmltptotminta="0";
@@ -530,7 +547,7 @@
                     data:"uidbr="+eidbr+"&uidinput="+eidinput+"&cbpajak="+cbpajak+"&ekenapajak="+ekenapajak+"&enoserifp="+enoserifp+
                          "&etglfp="+etglfp+"&erpjmljasa="+erpjmljasa+"&ejmldpp="+ejmldpp+"&ejmlppn="+ejmlppn+"&ejmlrpppn="+ejmlrpppn+
                          "&cbpph="+cbpph+"&ejmlpph="+ejmlpph+"&ejmlrppph="+ejmlrppph+"&ejmlbulat="+ejmlbulat+"&ejmlmaterai="+ejmlmaterai+
-                         "&ejmlusulan="+ejmlusulan+"&chk_atrika="+chkatk+"&ujmltptotminta="+ejmltptotminta,
+                         "&ejmlusulan="+ejmlusulan+"&chk_atrika="+chkatk+"&ujmltptotminta="+ejmltptotminta+"&uchksbyvia="+ichksbyvia,
                     success:function(data){
                         if (data.length > 2) {
                             alert(data);
@@ -727,6 +744,9 @@
         }
     }
     
+    function cekBoxPilihPPHPILIH() {
+        HitungPPH();
+    }
     
     function HitungPPH(){
         var newchar = '';
@@ -781,6 +801,8 @@
 
         var newchar = '';
         
+        var echkpilihsby = document.getElementById("chk_pphsby").checked;
+        
         var echkjasa = document.getElementById("chk_jasa").checked;
         var echkatrika = document.getElementById("chk_atrika").checked;
         var erpjmljasa="0";
@@ -825,7 +847,7 @@
             idpp_pilih=erpjmljasa;
         }*/
         
-        if (epph=="pph21" || epph=="pph23" || epph=="pph10") {
+        if ( (epph=="pph21" || epph=="pph23" || epph=="pph10") && echkpilihsby==false ) {
             e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(nrpppn) - parseFloat(nrppph) ) );
         }else{
             e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(nrpppn)));

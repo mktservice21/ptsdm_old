@@ -16,6 +16,7 @@ if ($pilihdarims==true) {
     
     
     $filterdivpprod="";
+    $filterdivpprod_exp="";
     $result2 = DB::query("SELECT DISTINCT divprodid FROM ms.penempatan_pm WHERE karyawanid='$karyawanid'");
     foreach ($result2 as $r2){
         $pdivp=$r2['divprodid'];
@@ -23,16 +24,33 @@ if ($pilihdarims==true) {
         if (strpos($filterdivpprod, $pdivp)==false) $filterdivpprod .="'".$pdivp."',";
     }
     
-    if (!empty($filterdivpprod)) $filterdivpprod=" AND divprodid IN (".substr($filterdivpprod, 0, -1).")";
+    if (!empty($filterdivpprod)) $filterdivpprod_exp=" AND divprodid IN (".substr($filterdivpprod, 0, -1).")";
     
     $filterregion="";
     if (!empty($region)) $filterregion =" AND region ='$region' ";
     
     
+    $filterprodukexp="";
+    $result21 = DB::query("SELECT DISTINCT iprodid FROM sls.porduk_exception WHERE karyawanid='$karyawanid'");
+    foreach ($result21 as $r21){
+        $piprodp=$r21['iprodid'];
+        
+        if (strpos($filterprodukexp, $piprodp)==false) $filterprodukexp .="'".$piprodp."',";
+    }
+    
+    
+    if (!empty($filterprodukexp) AND !empty($filterdivpprod)) {
+        //$filterprodukexp=" AND iprodid IN (".substr($filterprodukexp, 0, -1).")";
+        
+        $filterdivpprod_exp=" AND ( divprodid IN (".substr($filterdivpprod, 0, -1).") OR iprodid IN (".substr($filterprodukexp, 0, -1)." ) ) ";
+        
+    }
+    
+    
     $now=date("mdYhis");
     $tmp00 =" dbtemp.TMPYTDDAR00_".$karyawanid."_$now ";
     //daerah 026 tidak masuk ke sales marketing, info bpk yakub dan erika tgl 2021 jan 07
-    $query = "select * from sls.ytd where iddaerah NOT IN ('026') AND bulan='$bulan' $filterregion $filterdivpprod";
+    $query = "select * from sls.ytd where iddaerah NOT IN ('026') AND bulan='$bulan' $filterregion $filterdivpprod_exp";
     $results1 = DB::query("CREATE TEMPORARY TABLE $tmp00 ($query)");
     $query = "UPDATE $tmp00 SET divprodid='ZOTHER' WHERE kategori='OTHER'";
     $results1 = DB::query($query);
@@ -66,6 +84,13 @@ if ($pilihdarims==true) {
 
 	$namatabel=$tmp00;
         
+}
+
+$pprodukmaklo="";
+//$resultsdel = DB::query("DELETE FROM $namatabel WHERE IFNULL(mtd_qty_sales,0)=0 AND IFNULL(mtd_value_sales,0)=0 AND IFNULL(mtd_qty_thnlalu,0)=0 AND IFNULL(mtd_value_thnlalu,0)=0");
+$resultssel = DB::query("SELECT DISTINCT divprodid FROM %l WHERE divprodid IN  ('MAKLO', 'MAKLON') ORDER BY 1",$namatabel);
+foreach ($resultssel as $sl) {
+    if (!empty($sl['divprodid'])) $pprodukmaklo=$sl['divprodid'];
 }
 ?>
 
@@ -179,35 +204,35 @@ $(document).ready(function() {
                 foreach ($result2 as $r2){
                     $kategori=$r2['kategori'];
 					
-					if ($pnmdividprodid!="OTHER" AND $pnmdividprodid!="OTHERS") {
-						echo "<tr><td align='center' colspan='2'><b>".$kategori."</b></td>"
-								. "<td class='divnone'></td><td class='divnone'></td>\n";
-						echo "<td align=\"center\" colspan=\"12\"></td>"
-						. "<td class='divnone'></td><td class='divnone'></td><td class='divnone'></td><td class='divnone'></td>"
-								. "<td class='divnone'></td><td class='divnone'></td><td class='divnone'></td><td class='divnone'></td>"
-								. "<td class='divnone'></td><td class='divnone'></td></tr>\n";
-					}
+                    if ($pnmdividprodid!="OTHER" AND $pnmdividprodid!="OTHERS") {
+                        echo "<tr><td align='center' colspan='2'><b>".$kategori."</b></td>"
+                            . "<td class='divnone'></td><td class='divnone'></td>\n";
+                        echo "<td align=\"center\" colspan=\"12\"></td>"
+                        . "<td class='divnone'></td><td class='divnone'></td><td class='divnone'></td><td class='divnone'></td>"
+                            . "<td class='divnone'></td><td class='divnone'></td><td class='divnone'></td><td class='divnone'></td>"
+                            . "<td class='divnone'></td><td class='divnone'></td></tr>\n";
+                    }
 							
                     $result6 = DB::query("SELECT
-                    ip.`nama` AS namaproduk,
-                    s.hna_sales,
-                    IFNULL(SUM(s.mtd_qty_target),0) AS mtd_target,
-                    IFNULL(SUM(s.mtd_qty_sales),0) AS mtd_sales,
-                    IFNULL(FORMAT((SUM(s.mtd_qty_sales)/SUM(s.mtd_qty_target))*100,2),0) AS mtd_ach,
-                    IFNULL(SUM(s.mtd_qty_thnlalu),0) AS thnlalu,
-                    IFNULL(FORMAT(((SUM(s.mtd_qty_sales)/SUM(s.mtd_qty_thnlalu))*100-100),2),0) AS grw,
-                    IFNULL(SUM(s.ytd_qty_target),0) AS ytd_target,
-                    IFNULL(SUM(s.ytd_qty_sales),0) AS ytd_sales,
-                    IFNULL(FORMAT((SUM(s.ytd_qty_sales)/SUM(s.ytd_qty_target))*100,2),0) AS ytd_ach,
-                    IFNULL(SUM(s.ytd_qty_thnlalu),0) AS ytd_thnlalu,
-                    IFNULL(FORMAT(((SUM(s.ytd_qty_sales)/SUM(s.ytd_qty_thnlalu))*100-100),2),0) AS ytd_grw,
-                    IFNULL(SUM(s.thn_qty_target),0) AS thn_tgt,
-                    IFNULL(FORMAT((SUM(s.ytd_qty_sales)/SUM(s.thn_qty_target))*100,2),0) AS ach_year
-                  FROM
-                    %l0 s JOIN sls.`iproduk` ip
-                    ON s.iprodid=ip.iprodid
-                  WHERE s.divprodid=%s1 AND s.kategori=%s2 AND s.divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')
-                  GROUP BY ip.`nama`,s.hna_sales",$namatabel,$divprodid,$kategori);
+                        ip.`nama` AS namaproduk,
+                        s.hna_sales,
+                        IFNULL(SUM(s.mtd_qty_target),0) AS mtd_target,
+                        IFNULL(SUM(s.mtd_qty_sales),0) AS mtd_sales,
+                        IFNULL(FORMAT((SUM(s.mtd_qty_sales)/SUM(s.mtd_qty_target))*100,2),0) AS mtd_ach,
+                        IFNULL(SUM(s.mtd_qty_thnlalu),0) AS thnlalu,
+                        IFNULL(FORMAT(((SUM(s.mtd_qty_sales)/SUM(s.mtd_qty_thnlalu))*100-100),2),0) AS grw,
+                        IFNULL(SUM(s.ytd_qty_target),0) AS ytd_target,
+                        IFNULL(SUM(s.ytd_qty_sales),0) AS ytd_sales,
+                        IFNULL(FORMAT((SUM(s.ytd_qty_sales)/SUM(s.ytd_qty_target))*100,2),0) AS ytd_ach,
+                        IFNULL(SUM(s.ytd_qty_thnlalu),0) AS ytd_thnlalu,
+                        IFNULL(FORMAT(((SUM(s.ytd_qty_sales)/SUM(s.ytd_qty_thnlalu))*100-100),2),0) AS ytd_grw,
+                        IFNULL(SUM(s.thn_qty_target),0) AS thn_tgt,
+                        IFNULL(FORMAT((SUM(s.ytd_qty_sales)/SUM(s.thn_qty_target))*100,2),0) AS ach_year
+                      FROM
+                        %l0 s JOIN sls.`iproduk` ip
+                        ON s.iprodid=ip.iprodid
+                      WHERE s.divprodid=%s1 AND s.kategori=%s2 AND s.divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')
+                      GROUP BY ip.`nama`,s.hna_sales",$namatabel,$divprodid,$kategori);
                     
                     foreach ($result6 as $r6){
                         $hna_sales=number_format($r6['hna_sales'],0,",",",");
@@ -230,6 +255,55 @@ $(document).ready(function() {
                     }
 
                     $result5 = DB::query("SELECT
+                        IFNULL(SUM(mtd_value_target),0) AS mtd_target,
+                        IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
+                        IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
+                        IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
+                        IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
+                        IFNULL(SUM(ytd_value_target),0) AS ytd_target,
+                        IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
+                        IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
+                        IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
+                        IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
+                        IFNULL(SUM(thn_value_target),0) AS thn_tgt,
+                        IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
+                        FROM %l0 WHERE divprodid=%s1 and kategori=%s2 AND divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel,$divprodid,$kategori);
+
+
+                    foreach ($result5 as $r5){
+						
+                        if ($pnmdividprodid!="OTHER" AND $pnmdividprodid!="OTHERS") {
+                            echo "<tr>";
+                            /*
+                            echo ""
+                                . "<td align=\"right\" colspan=\"2\"><b>Total ".$divprodid." ".$kategori."</b></td>"
+                                . "<td class='divnone'></td><td class='divnone'></td>\n";
+                             * 
+                             */
+                            echo "<td colspan='2' align='center'><b>Total $pnmdividprodid $kategori<b></td><td class='divnone'></td>";
+
+                            echo "<td align='right'><b>".number_format($r5["mtd_target"],0,",",",")."</b></td>\n";
+                            echo "<td align='right'><b>".number_format($r5["mtd_sales"],0,",",",")."</b></td>\n\n";
+                            echo "<td align='right'><b>".$r5["mtd_ach"]."</b></td>\n";
+                            echo "<td align='right'><b>".number_format($r5["thnlalu"],0,",",",")."</b></td>\n";
+                            echo "<td align='right'><b>".$r5["grw"]."</b></td>\n";
+                            echo "<td align='right'><b>".number_format($r5["ytd_target"],0,",",",")."</b></td>\n";
+                            echo "<td align='right'><b>".number_format($r5["ytd_sales"],0,",",",")."</b></td>\n";
+                            echo "<td align='right'><b>".$r5["ytd_ach"]."</b></td>\n";
+                            echo "<td align='right'><b>".number_format($r5["ytd_thnlalu"],0,",",",")."</b></td>\n";
+                            echo "<td align='right'><b>".$r5["ytd_grw"]."</b></td>\n";
+                            echo "<td align='right'><b>".number_format($r5["thn_tgt"],0,",",",")."</b></td>\n";
+                            echo "<td align='right'><b>".$r5["ach_year"]."</b></td>\n";
+                            echo "</tr>\n";
+                        }
+						
+                    }
+                }
+                
+                
+                
+                
+                $result3 = DB::query("SELECT
                     IFNULL(SUM(mtd_value_target),0) AS mtd_target,
                     IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
                     IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
@@ -242,53 +316,7 @@ $(document).ready(function() {
                     IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
                     IFNULL(SUM(thn_value_target),0) AS thn_tgt,
                     IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
-                    FROM %l0 WHERE divprodid=%s1 and kategori=%s2 AND divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel,$divprodid,$kategori);
-
-
-                    foreach ($result5 as $r5){
-						
-						if ($pnmdividprodid!="OTHER" AND $pnmdividprodid!="OTHERS") {
-							echo "<tr>";
-							/*
-							echo ""
-							. "<td align=\"right\" colspan=\"2\"><b>Total ".$divprodid." ".$kategori."</b></td>"
-									. "<td class='divnone'></td><td class='divnone'></td>\n";
-							 * 
-							 */
-							echo "<td colspan='2' align='center'><b>Total $pnmdividprodid $kategori<b></td><td class='divnone'></td>";
-							
-							echo "<td align='right'><b>".number_format($r5["mtd_target"],0,",",",")."</b></td>\n";
-							echo "<td align='right'><b>".number_format($r5["mtd_sales"],0,",",",")."</b></td>\n\n";
-							echo "<td align='right'><b>".$r5["mtd_ach"]."</b></td>\n";
-							echo "<td align='right'><b>".number_format($r5["thnlalu"],0,",",",")."</b></td>\n";
-							echo "<td align='right'><b>".$r5["grw"]."</b></td>\n";
-							echo "<td align='right'><b>".number_format($r5["ytd_target"],0,",",",")."</b></td>\n";
-							echo "<td align='right'><b>".number_format($r5["ytd_sales"],0,",",",")."</b></td>\n";
-							echo "<td align='right'><b>".$r5["ytd_ach"]."</b></td>\n";
-							echo "<td align='right'><b>".number_format($r5["ytd_thnlalu"],0,",",",")."</b></td>\n";
-							echo "<td align='right'><b>".$r5["ytd_grw"]."</b></td>\n";
-							echo "<td align='right'><b>".number_format($r5["thn_tgt"],0,",",",")."</b></td>\n";
-							echo "<td align='right'><b>".$r5["ach_year"]."</b></td>\n";
-							echo "</tr>\n";
-						}
-						
-                    }
-                }
-                
-                $result3 = DB::query("SELECT
-                IFNULL(SUM(mtd_value_target),0) AS mtd_target,
-                IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
-                IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
-                IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
-                IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
-                IFNULL(SUM(ytd_value_target),0) AS ytd_target,
-                IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
-                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
-                IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
-                IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
-                IFNULL(SUM(thn_value_target),0) AS thn_tgt,
-                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
-                FROM %l0 WHERE divprodid=%s1 AND divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel,$divprodid);
+                    FROM %l0 WHERE divprodid=%s1 AND divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel,$divprodid);
                 
                 foreach ($result3 as $r3){
                     echo "<tr>";
@@ -315,45 +343,48 @@ $(document).ready(function() {
                 
             }
             
-              $result4 = DB::query("SELECT
-              IFNULL(SUM(mtd_value_target),0) AS mtd_target,
-              IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
-              IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
-              IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
-              IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
-              IFNULL(SUM(ytd_value_target),0) AS ytd_target,
-              IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
-              IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
-              IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
-              IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
-              IFNULL(SUM(thn_value_target),0) AS thn_tgt,
-              IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
-              FROM %l0 WHERE divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel);
+            
+            /*
+            $result4 = DB::query("SELECT
+                IFNULL(SUM(mtd_value_target),0) AS mtd_target,
+                IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
+                IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
+                IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
+                IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
+                IFNULL(SUM(ytd_value_target),0) AS ytd_target,
+                IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
+                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
+                IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
+                IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
+                IFNULL(SUM(thn_value_target),0) AS thn_tgt,
+                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
+                FROM %l0 WHERE divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel);
 
-              foreach ($result4 as $r4){
-                  echo "<tr>";
-                  /*
-                  echo "<td align=\"left\" colspan=\"2\"><b>Total ".$namaregion."</b></td>"
-                          . "<td class='divnone'></td><td class='divnone'></td>\n";
-                   * 
-                   */
-                  echo "<td colspan='2'><b>Total $namaregion<b></td><td class='divnone'></td>";
-                  echo "<td align='right'><b>".number_format($r4["mtd_target"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r4["mtd_sales"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r4["mtd_ach"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r4["thnlalu"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r4["grw"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r4["ytd_target"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r4["ytd_sales"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r4["ytd_ach"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r4["ytd_thnlalu"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r4["ytd_grw"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r4["thn_tgt"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r4["ach_year"]."</b></td>\n";
-                  echo "</tr>\n";
-              }
+            foreach ($result4 as $r4){
+                echo "<tr>";
+                /*
+                echo "<td align=\"left\" colspan=\"2\"><b>Total ".$namaregion."</b></td>"
+                        . "<td class='divnone'></td><td class='divnone'></td>\n";
+                 * 
+                 */
+                /*
+                echo "<td colspan='2'><b>Total $namaregion<b></td><td class='divnone'></td>";
+                echo "<td align='right'><b>".number_format($r4["mtd_target"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r4["mtd_sales"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r4["mtd_ach"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r4["thnlalu"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r4["grw"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r4["ytd_target"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r4["ytd_sales"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r4["ytd_ach"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r4["ytd_thnlalu"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r4["ytd_grw"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r4["thn_tgt"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r4["ach_year"]."</b></td>\n";
+                echo "</tr>\n";
+            }
 			  
-			  
+		*/	  
 			  
 			  
 			  
@@ -379,7 +410,7 @@ $(document).ready(function() {
 				
 				
 				
-                    $result9 = DB::query("SELECT
+                $result9 = DB::query("SELECT
                     ip.`nama` AS namaproduk,
                     s.hna_sales,
                     IFNULL(SUM(s.mtd_qty_target),0) AS mtd_target,
@@ -400,41 +431,41 @@ $(document).ready(function() {
                   WHERE s.divprodid IN ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH') 
                   GROUP BY ip.`nama`,s.hna_sales",$namatabel);
                     
-                    foreach ($result9 as $r9){
-                        $hna_sales=number_format($r9['hna_sales'],0,",",",");
-                        echo "<tr>";
-                        echo "<td>".$r9["namaproduk"]."</td>\n";
-                        echo "<td align='right'>".$hna_sales."</td>\n";
-                        echo "<td align='right'>".number_format($r9["mtd_target"],0,",",",")."</td>\n";
-                        echo "<td align='right'>".number_format($r9["mtd_sales"],0,",",",")."</td>\n";
-                        echo "<td align='right'>".$r9["mtd_ach"]."</td>\n";
-                        echo "<td align='right'>".number_format($r9["thnlalu"],0,",",",")."</td>\n";
-                        echo "<td align='right'>".$r9["grw"]."</td>\n";
-                        echo "<td align='right'>".number_format($r9["ytd_target"],0,",",",")."</td>\n";
-                        echo "<td align='right'>".number_format($r9["ytd_sales"],0,",",",")."</td>\n";
-                        echo "<td align='right'>".$r9["ytd_ach"]."</td>\n";
-                        echo "<td align='right'>".number_format($r9["ytd_thnlalu"],0,",",",")."</td>\n";
-                        echo "<td align='right'>".$r9["ytd_grw"]."</td>\n";
-                        echo "<td align='right'>".number_format($r9["thn_tgt"],0,",",",")."</td>\n";
-                        echo "<td align='right'>".$r9["ach_year"]."</td>\n";
-                        echo "</tr>\n";
-                    }
+                foreach ($result9 as $r9){
+                    $hna_sales=number_format($r9['hna_sales'],0,",",",");
+                    echo "<tr>";
+                    echo "<td>".$r9["namaproduk"]."</td>\n";
+                    echo "<td align='right'>".$hna_sales."</td>\n";
+                    echo "<td align='right'>".number_format($r9["mtd_target"],0,",",",")."</td>\n";
+                    echo "<td align='right'>".number_format($r9["mtd_sales"],0,",",",")."</td>\n";
+                    echo "<td align='right'>".$r9["mtd_ach"]."</td>\n";
+                    echo "<td align='right'>".number_format($r9["thnlalu"],0,",",",")."</td>\n";
+                    echo "<td align='right'>".$r9["grw"]."</td>\n";
+                    echo "<td align='right'>".number_format($r9["ytd_target"],0,",",",")."</td>\n";
+                    echo "<td align='right'>".number_format($r9["ytd_sales"],0,",",",")."</td>\n";
+                    echo "<td align='right'>".$r9["ytd_ach"]."</td>\n";
+                    echo "<td align='right'>".number_format($r9["ytd_thnlalu"],0,",",",")."</td>\n";
+                    echo "<td align='right'>".$r9["ytd_grw"]."</td>\n";
+                    echo "<td align='right'>".number_format($r9["thn_tgt"],0,",",",")."</td>\n";
+                    echo "<td align='right'>".$r9["ach_year"]."</td>\n";
+                    echo "</tr>\n";
+                }
 				
 				
                 $result10 = DB::query("SELECT
-                IFNULL(SUM(mtd_value_target),0) AS mtd_target,
-                IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
-                IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
-                IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
-                IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
-                IFNULL(SUM(ytd_value_target),0) AS ytd_target,
-                IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
-                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
-                IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
-                IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
-                IFNULL(SUM(thn_value_target),0) AS thn_tgt,
-                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
-                FROM %l0 WHERE divprodid IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel);
+                    IFNULL(SUM(mtd_value_target),0) AS mtd_target,
+                    IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
+                    IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
+                    IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
+                    IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
+                    IFNULL(SUM(ytd_value_target),0) AS ytd_target,
+                    IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
+                    IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
+                    IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
+                    IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
+                    IFNULL(SUM(thn_value_target),0) AS thn_tgt,
+                    IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
+                    FROM %l0 WHERE divprodid IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel);
                 
                 foreach ($result10 as $r10){
                     echo "<tr>";
@@ -456,41 +487,149 @@ $(document).ready(function() {
 				
 				
 			  
+            
+            $pregnm=$namaregion;
+            if ($namaregion=="All" AND !empty($pprodukmaklo)) $pregnm="";
+            $result41 = DB::query("SELECT
+                IFNULL(SUM(mtd_value_target),0) AS mtd_target,
+                IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
+                IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
+                IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
+                IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
+                IFNULL(SUM(ytd_value_target),0) AS ytd_target,
+                IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
+                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
+                IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
+                IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
+                IFNULL(SUM(thn_value_target),0) AS thn_tgt,
+                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
+                FROM %l0 WHERE divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH', 'MAKLO', 'MAKLON')",$namatabel);
+
+            foreach ($result41 as $r41){
+                echo "<tr>";
+                echo "<td colspan='2'><b>Total $pregnm<b></td><td class='divnone'></td>";
+                echo "<td align='right'><b>".number_format($r41["mtd_target"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r41["mtd_sales"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r41["mtd_ach"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r41["thnlalu"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r41["grw"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r41["ytd_target"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r41["ytd_sales"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r41["ytd_ach"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r41["ytd_thnlalu"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r41["ytd_grw"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r41["thn_tgt"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r41["ach_year"]."</b></td>\n";
+                echo "</tr>\n";
+            }
+                 
+            
+            
+            $result8 = DB::query("SELECT
+                IFNULL(SUM(mtd_value_target),0) AS mtd_target,
+                IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
+                IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
+                IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
+                IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
+                IFNULL(SUM(ytd_value_target),0) AS ytd_target,
+                IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
+                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
+                IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
+                IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
+                IFNULL(SUM(thn_value_target),0) AS thn_tgt,
+                IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
+                FROM %l0 WHERE divprodid NOT IN  ('MAKLO', 'MAKLON')",$namatabel);
 			  
-              $result8 = DB::query("SELECT
-              IFNULL(SUM(mtd_value_target),0) AS mtd_target,
-              IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
-              IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
-              IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
-              IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
-              IFNULL(SUM(ytd_value_target),0) AS ytd_target,
-              IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
-              IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
-              IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
-              IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
-              IFNULL(SUM(thn_value_target),0) AS thn_tgt,
-              IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
-              FROM %l0",$namatabel);
+            foreach ($result8 as $r8){
+                echo "<tr>";
+                echo "<td colspan='2'><b>Total $pregnm + OTHER<b></td><td class='divnone'></td>";
+                echo "<td align='right'><b>".number_format($r8["mtd_target"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r8["mtd_sales"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r8["mtd_ach"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r8["thnlalu"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r8["grw"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r8["ytd_target"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r8["ytd_sales"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r8["ytd_ach"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r8["ytd_thnlalu"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r8["ytd_grw"]."</b></td>\n";
+                echo "<td align='right'><b>".number_format($r8["thn_tgt"],0,",",",")."</b></td>\n";
+                echo "<td align='right'><b>".$r8["ach_year"]."</b></td>\n";
+                echo "</tr>\n";
+            }
 			  
-              foreach ($result8 as $r8){
-                  echo "<tr>";
-                  echo "<td colspan='2'><b>Total $namaregion + OTHER<b></td><td class='divnone'></td>";
-                  echo "<td align='right'><b>".number_format($r8["mtd_target"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r8["mtd_sales"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r8["mtd_ach"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r8["thnlalu"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r8["grw"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r8["ytd_target"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r8["ytd_sales"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r8["ytd_ach"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r8["ytd_thnlalu"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r8["ytd_grw"]."</b></td>\n";
-                  echo "<td align='right'><b>".number_format($r8["thn_tgt"],0,",",",")."</b></td>\n";
-                  echo "<td align='right'><b>".$r8["ach_year"]."</b></td>\n";
-                  echo "</tr>\n";
-              }
-			  
-			  
+            if (!empty($pprodukmaklo)) {
+                
+                $result42 = DB::query("SELECT
+                    IFNULL(SUM(mtd_value_target),0) AS mtd_target,
+                    IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
+                    IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
+                    IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
+                    IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
+                    IFNULL(SUM(ytd_value_target),0) AS ytd_target,
+                    IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
+                    IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
+                    IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
+                    IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
+                    IFNULL(SUM(thn_value_target),0) AS thn_tgt,
+                    IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
+                    FROM %l0 WHERE divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel);
+
+                foreach ($result42 as $r42){
+                    echo "<tr>";
+                    echo "<td colspan='2'><b>Total $pregnm + MAKLON<b></td><td class='divnone'></td>";
+                    echo "<td align='right'><b>".number_format($r42["mtd_target"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r42["mtd_sales"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r42["mtd_ach"]."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r42["thnlalu"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r42["grw"]."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r42["ytd_target"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r42["ytd_sales"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r42["ytd_ach"]."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r42["ytd_thnlalu"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r42["ytd_grw"]."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r42["thn_tgt"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r42["ach_year"]."</b></td>\n";
+                    echo "</tr>\n";
+                }
+                
+                
+                $result43 = DB::query("SELECT
+                    IFNULL(SUM(mtd_value_target),0) AS mtd_target,
+                    IFNULL(SUM(mtd_value_sales),0) AS mtd_sales,
+                    IFNULL(FORMAT((SUM(mtd_value_sales)/SUM(mtd_value_target))*100,2),0) AS mtd_ach,
+                    IFNULL(SUM(mtd_value_thnlalu),0) AS thnlalu,
+                    IFNULL(FORMAT(((SUM(mtd_value_sales)/SUM(mtd_value_thnlalu))*100-100),2),0) AS grw,
+                    IFNULL(SUM(ytd_value_target),0) AS ytd_target,
+                    IFNULL(SUM(ytd_value_sales),0) AS ytd_sales,
+                    IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(ytd_value_target))*100,2),0) AS ytd_ach,
+                    IFNULL(SUM(ytd_value_thnlalu),0) AS ytd_thnlalu,
+                    IFNULL(FORMAT(((SUM(ytd_value_sales)/SUM(ytd_value_thnlalu))*100-100),2),0) AS ytd_grw,
+                    IFNULL(SUM(thn_value_target),0) AS thn_tgt,
+                    IFNULL(FORMAT((SUM(ytd_value_sales)/SUM(thn_value_target))*100,2),0) AS ach_year
+                    FROM %l0 WHERE divprodid NOT IN  ('ZOTHER', 'ZOTHE', 'ZOTHERS', 'ZOTH')",$namatabel);
+
+                foreach ($result43 as $r43){
+                    echo "<tr>";
+                    echo "<td colspan='2'><b>Total All<b></td><td class='divnone'></td>";
+                    echo "<td align='right'><b>".number_format($r43["mtd_target"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r43["mtd_sales"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r43["mtd_ach"]."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r43["thnlalu"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r43["grw"]."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r43["ytd_target"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r43["ytd_sales"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r43["ytd_ach"]."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r43["ytd_thnlalu"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r43["ytd_grw"]."</b></td>\n";
+                    echo "<td align='right'><b>".number_format($r43["thn_tgt"],0,",",",")."</b></td>\n";
+                    echo "<td align='right'><b>".$r43["ach_year"]."</b></td>\n";
+                    echo "</tr>\n";
+                }
+                
+                
+                
+            }
                 
         ?>
     </tbody>

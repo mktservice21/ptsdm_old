@@ -511,6 +511,9 @@ $pkenapajak="";
 $prpjumlahjasa="";
 $pchkjasa="";
 $pchkatrika="";
+$ppphviasby="";
+$pchkpphsby="";
+
 
 $ncarisudahclosebrid=false;
 
@@ -567,6 +570,7 @@ if ($_GET['act']=="editdata"){
     $pjenisdpp=$r['jenis_dpp'];
     
     
+    
     $prpjumlahjasa=$r['jasa_rp'];
     if (empty($prpjumlahjasa)) $prpjumlahjasa=0;
 
@@ -579,6 +583,8 @@ if ($_GET['act']=="editdata"){
         $pchkatrika="checked";
     }
             
+    $ppphviasby=$r['pph_pilih'];
+    if ($ppphviasby=="pphsby") $pchkpphsby="checked";
     
     $rpjumlahreal=$r['realisasi'];
     
@@ -1074,6 +1080,13 @@ if ($_GET['act']=="editdata"){
                                         </div><!--disabled='disabled'-->
                                     </div>
                                     
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">&nbsp;<span class='required'></span></label>
+                                        <div class='col-md-6 col-sm-6 col-xs-12'>
+                                            <input type="checkbox" value="pphsby" id="chk_pphsby" name="chk_pphsby" onclick="cekBoxPilihPPHPILIH()" <?PHP echo $pchkpphsby; ?>> PPH Via SBY
+                                        </div>
+                                    </div>
                                     
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">PPH <span class='required'></span></label>
@@ -1587,6 +1600,7 @@ if ($_GET['act']=="editdata"){
     }
 
     function ShowPPH(){
+        
         document.getElementById("e_jmlpph").value = "0";
         document.getElementById("e_jmlpph").value = "0";
         document.getElementById("e_jmlrppph").value = "0";
@@ -1658,11 +1672,16 @@ if ($_GET['act']=="editdata"){
         document.getElementById("e_jmlrppph").value = e_totrppph;
         HitungJumlahUsulan();
     }
-
+    
+    function cekBoxPilihPPHPILIH() {
+        HitungPPH();
+    }
 
     function HitungJumlahUsulan(){
 
         var newchar = '';
+        
+        var echkpilihsby = document.getElementById("chk_pphsby").checked;
         
         var echkjasa = document.getElementById("chk_jasa").checked;
         var echkatrika = document.getElementById("chk_atrika").checked;
@@ -1708,7 +1727,7 @@ if ($_GET['act']=="editdata"){
             idpp_pilih=erpjmljasa;
         }*/
         
-        if (epph=="pph21" || epph=="pph23" || epph=="pph10") {
+        if ( (epph=="pph21" || epph=="pph23" || epph=="pph10") && echkpilihsby==false ) {
             e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(nrpppn) - parseFloat(nrppph) ) );
         }else{
             e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(nrpppn)));

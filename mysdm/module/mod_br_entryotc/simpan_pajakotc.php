@@ -44,6 +44,9 @@
             
             $fieldjasa = ", jasa_rp='$prpjmljasa', jenis_dpp='B' ";
         }
+        
+        $pchkpilihpph="";
+        if (isset($_POST['uchksbyvia'])) $pchkpilihpph=$_POST['uchksbyvia'];
     
         
         $pekenapajak=$_POST['ekenapajak'];
@@ -105,7 +108,7 @@
 
                 $query = "UPDATE hrd.br_otc SET pajak='Y', nama_pengusaha='$pekenapajak', noseri='$penoserifp', tgl_fp=$petglfp'', "
                         . "dpp='$pejmldpp', ppn='$pejmlppn', ppn_rp='$pejmlrpppn', pph_jns='$pcbpph', pph='$pejmlpph', "
-                        . "pph_rp='$pejmlrppph', pembulatan='$pejmlbulat', materai_rp='$pejmlmaterai' $fieldjasa WHERE "
+                        . "pph_rp='$pejmlrppph', pph_pilih='$pchkpilihpph', pembulatan='$pejmlbulat', materai_rp='$pejmlmaterai' $fieldjasa WHERE "
                         . "brOtcId='$pbrid' AND pajak<>'Y' LIMIT 1";
 
                 $query = "UPDATE hrd.br_otc SET pajak='Y' WHERE brOtcId='$pbrid' AND pajak<>'Y' LIMIT 1";
@@ -117,14 +120,14 @@
         if (empty($pidinput) AND $act=="inputdatapajak") {
             $query = "INSERT INTO dbmaster.t_br_otc_pajak (brOtcId,"
                     . "nama_pengusaha, noseri, tgl_fp, dpp, ppn, ppn_rp, "
-                    . "pph_jns, pph, pph_rp, jasa_rp, jenis_dpp, jumlah, pembulatan, materai_rp)VALUES"
+                    . "pph_jns, pph, pph_rp, jasa_rp, jenis_dpp, jumlah, pembulatan, materai_rp, pph_pilih)VALUES"
                     . "('$pbrid', "
                     . "'$pekenapajak', '$penoserifp', '$petglfp', '$pejmldpp', '$pejmlppn', '$pejmlrpppn',"
-                    . "'$pcbpph', '$pejmlpph', '$pejmlrppph', '$perpjmljasa', $pjenis_dpp, '$pejmlusulan', '$pejmlbulat', '$pejmlmaterai')";
+                    . "'$pcbpph', '$pejmlpph', '$pejmlrppph', '$perpjmljasa', $pjenis_dpp, '$pejmlusulan', '$pejmlbulat', '$pejmlmaterai', '$pchkpilihpph')";
         }else{
             $query = "UPDATE dbmaster.t_br_otc_pajak SET nama_pengusaha='$pekenapajak', noseri='$penoserifp', tgl_fp='$petglfp', "
                     . " dpp='$pejmldpp', ppn='$pejmlppn', ppn_rp='$pejmlrpppn', "
-                    . " pph_jns='$pcbpph', pph='$pejmlpph', pph_rp='$pejmlrppph', jumlah='$pejmlusulan', pembulatan='$pejmlbulat', materai_rp='$pejmlmaterai' $fieldjasa WHERE idinput='$pidinput' AND brOtcId='$pbrid' LIMIT 1";
+                    . " pph_jns='$pcbpph', pph='$pejmlpph', pph_rp='$pejmlrppph', pph_pilih='$pchkpilihpph', jumlah='$pejmlusulan', pembulatan='$pejmlbulat', materai_rp='$pejmlmaterai' $fieldjasa WHERE idinput='$pidinput' AND brOtcId='$pbrid' LIMIT 1";
         }
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan : br otc pajak"; exit; }

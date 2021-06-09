@@ -230,7 +230,7 @@
                             <div class='col-sm-2'>
                                 <small>&nbsp;</small>
                                 <div class="form-group">
-                                    <input type='button' class='btn btn-success  btn-xs' id="s-submit" value="Refresh" onclick="RefreshDataTabel()">
+                                    <input type='button' class='btn btn-success  btn-xs' id="s-submit" value="View Data" onclick="RefreshDataTabel()">
                                 </div>
                             </div>
                         </div>

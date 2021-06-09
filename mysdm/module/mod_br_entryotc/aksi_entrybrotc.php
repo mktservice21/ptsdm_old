@@ -306,7 +306,7 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
     }
     
     
-    
+    if (empty($prprealisasikd)) $prprealisasikd=0;
     $query = "update $dbname.br_otc set tglbr='$ptglinput',
              icabangid_o='$pidcabang', areaid='$pareasdm', 
              subpost='$psubkode',
@@ -422,7 +422,7 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
     
 
     
-    
+    if (empty($pkdbankreal)) $pkdbankreal="0";
     mysqli_query($cnmy, "delete from $dbname.br_otc_bank WHERE brOtcId='$kodenya' ");
     $query = "insert into $dbname.br_otc_bank (brOtcId, id, idkontak)values('$kodenya', '$pkdbankreal' , '$prprealisasikd')";
     mysqli_query($cnmy, $query);
@@ -471,6 +471,9 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
     }
     
     
+    $pchkpilihpph="";
+    if (isset($_POST['chk_pphsby'])) $pchkpilihpph=$_POST['chk_pphsby'];
+    
     if ($pjnspajak!="Y") {
         $pnmpengusaha="";
         $pnoseri="";
@@ -483,12 +486,13 @@ elseif ($module=='entrybrotc' AND ($act=='editterima' OR $act=='edittransfer' OR
         $prppph=0;
         $ppembulatan=0;
         $prpmaterai=0;
+        $pchkpilihpph="";
     }
     
     
     $query = "update $dbname.br_otc set pajak='$pjnspajak', nama_pengusaha='$pnmpengusaha', noseri='$pnoseri',"
             . " tgl_fp='$ptglfp', dpp='$prpdpp', ppn='$pppn', ppn_rp='$prpppn', "
-            . " pph_jns='$pjnspph', pph='$ppph', pph_rp='$prppph', pembulatan='$ppembulatan', materai_rp='$prpmaterai' $fieldjasa WHERE brOtcId='$kodenya'  LIMIT 1";
+            . " pph_jns='$pjnspph', pph='$ppph', pph_rp='$prppph', pph_pilih='$pchkpilihpph', pembulatan='$ppembulatan', materai_rp='$prpmaterai' $fieldjasa WHERE brOtcId='$kodenya'  LIMIT 1";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     

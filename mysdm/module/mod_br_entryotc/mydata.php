@@ -135,9 +135,9 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
         if (!empty($puserinput)) {
             if ((INT)$nkaryawaninput==(INT)$fkaryawan) {
             }else{
-                $pbtnedit="";
-                $pbtnhapus="";
-                $btnbatal="";
+                //$pbtnedit="";
+                //$pbtnhapus="";
+                //$btnbatal="";
             }
         }
     }

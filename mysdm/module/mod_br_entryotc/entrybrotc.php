@@ -103,6 +103,11 @@
                         });
                     }
                     
+                    
+                    function ShowDataBR(skey) {
+                        
+                    }
+                    
                 </script>
                 
                 <div class='col-md-12 col-sm-12 col-xs-12'>
@@ -227,10 +232,11 @@
                         -->
                         
                         <div class='x_panel'>
-                            <div class='col-sm-2'>
+                            <div class='col-sm-8'>
                                 <small>&nbsp;</small>
                                 <div class="form-group">
-                                    <input type='button' class='btn btn-success  btn-xs' id="s-submit" value="View Data" onclick="RefreshDataTabel()">
+                                    <input type='button' class='btn btn-success  btn-xs' id="s-submit" value="View Data" onclick="RefreshDataTabel()">&nbsp; &nbsp; 
+                                    <input type='button' class='btn btn-dark  btn-xs' id="s-submit" value="View Data PPH Via SBY" onclick="ShowDataBR('2')">
                                 </div>
                             </div>
                         </div>

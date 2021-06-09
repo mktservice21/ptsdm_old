@@ -59,14 +59,16 @@
             . " ( (a.tglspd between '$periode1' AND '$periode2') OR (a.tgl between '$periode1' AND '$periode2') ) ";
     $sql_data .=" AND a.subkode NOT IN ('29') ";
     $sql =$sql_data." AND karyawanid='$pkaryawanid' ";
+    if ($pses_divisi=="OTC") $sql =$sql_data." AND a.divisi='OTC'";
     
     $query = "create TEMPORARY table $tmp01 ($sql)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $sql =$sql_data." AND a.idinput not in (select distinct idinput from $tmp01)";
-    $sql .=" AND a.subkode in (select distinct subkode from dbmaster.t_kode_spd_exp WHERE karyawanid='$pkaryawanid')";
+    $sql =$sql_data." AND a.idinput not in (select distinct idinput from $tmp01) ";
+    $sql .=" AND CONCAT(a.subkode, a.karyawanid) in (select distinct IFNULL(CONCAT(IFNULL(subkode,''), IFNULL(karyawaninput,'')),'') from dbmaster.t_kode_spd_exp WHERE karyawanid='$pkaryawanid')";
+    //if ($pses_divisi=="OTC") $sql .=" AND a.divisi='OTC'";
     $query = "create TEMPORARY table $tmp02 ($sql)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

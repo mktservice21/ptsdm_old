@@ -238,6 +238,12 @@ if ($_GET['module']=="viewdataposting"){
         $pchkatrika="checked";
         $pbuka_js="";
     }
+    
+    $pchkpphsby="";
+    $ppphviasby=$row['pph_pilih'];
+    if ($ppphviasby=="pphsby") $pchkpphsby="checked";
+    
+    
 ?>
 
     <script src="js/inputmask.js"></script>
@@ -327,7 +333,16 @@ if ($_GET['module']=="viewdataposting"){
         </div><!--disabled='disabled'-->
     </div>
 
+    
+    
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">&nbsp;<span class='required'></span></label>
+        <div class='col-md-6 col-sm-6 col-xs-12'>
+            <input type="checkbox" value="pphsby" id="chk_pphsby" name="chk_pphsby" onclick="cekBoxPilihPPHPILIH()" <?PHP echo $pchkpphsby; ?>> PPH Via SBY
+        </div>
+    </div>
 
+    
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:000;">PPH <span class='required'></span></label>
         <div class='col-xs-9'>

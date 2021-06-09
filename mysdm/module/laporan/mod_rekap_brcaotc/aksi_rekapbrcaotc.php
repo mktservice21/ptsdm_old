@@ -47,6 +47,7 @@
 	br.idca,
 	br.periode,
 	br.karyawanid,
+        br.karyawanid as karyawanid_asli,
 	br.icabangid,
 	br.areaid,
 	br.jumlah,
@@ -56,6 +57,9 @@
     $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 SET karyawanid=ikdkry_kontrak WHERE karyawanid='0000002200'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     $query = "SELECT
 	br.idrutin,
@@ -77,7 +81,7 @@
     
     
     $query = "CREATE TEMPORARY TABLE $tmp03 "
-            . "(select DISTINCT karyawanid, karyawanid as karyawanid_asli, nama_karyawan, ikdkry_kontrak, divisi, icabangid, areaid, atasan1, atasan2, atasan3, atasan4 from $tmp01)";
+            . "(select DISTINCT karyawanid, karyawanid_asli, nama_karyawan, ikdkry_kontrak, divisi, icabangid, areaid, atasan1, atasan2, atasan3, atasan4 from $tmp01)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     $query = "INSERT INTO $tmp03 (karyawanid, karyawanid_asli, nama_karyawan, ikdkry_kontrak, divisi, icabangid, areaid, atasan1, atasan2, atasan3, atasan4) "
@@ -115,7 +119,7 @@
     
     $query = "ALTER TABLE $tmp04 ADD COLUMN CA1 DECIMAL(20,2), ADD COLUMN LK1 DECIMAL(20,2), "
             . " ADD COLUMN SALDO DECIMAL(20,2), ADD COLUMN LK2 DECIMAL(20,2), ADD COLUMN CA2 DECIMAL(20,2), "
-            . " ADD COLUMN CAKIRIM VARCHAR(200)";
+            . " ADD COLUMN CAKIRIM DECIMAL(20,2)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
@@ -129,7 +133,10 @@
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     
-    $query = "UPDATE $tmp04 set SALDO=ifnull(CA1-LK1,0), LK2=ifnull(LK1-CA1,0)";
+    $query = "UPDATE $tmp04 set SALDO=ifnull(IFNULL(CA1,0)-IFNULL(LK1,0),0), LK2=ifnull(IFNULL(LK1,0)-IFNULL(CA1,0),0)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    $query = "UPDATE $tmp04 set CAKIRIM=ifnull(LK2,0)+ifnull(CA2,0)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     mysqli_query($cnmy, "drop temporary table IF EXISTS $tmp01");

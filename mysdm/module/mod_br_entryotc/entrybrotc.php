@@ -187,7 +187,7 @@
                                     if ($_SESSION['OTCTGLTIPE']=="2") $sb=" selected";
                                     if ($_SESSION['OTCTGLTIPE']=="1") $sa=" selected";
                                     if ($_SESSION['OTCTGLTIPE']=="3") $sc=" selected";
-                                    if (empty($_SESSION['OTCTGLTIPE'])) $sb="selected"
+                                    if (empty($_SESSION['OTCTGLTIPE'])) $sa="selected"
                                     ?>
                                     <option value="1" <?PHP echo $sa; ?>>Tanggal Input</option>
                                     <option value="2" <?PHP echo $sb; ?>>Tanggal Transfer</option>

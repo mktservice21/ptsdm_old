@@ -37,7 +37,7 @@
     $tmp01 =" dbtemp.tmpinptpodt01_".$puserid."_$now ";
     
     $query = "select idpo, karyawanid, tanggal, kdsupp, notes, idbayar, tglkirim, note_kirim, status_bayar, "
-            . " dir1, dir2, tgl_dir1, tgl_dir2, "
+            . " apv_mgr, tgl_mgr, dir1, dir2, tgl_dir1, tgl_dir2, "
             . " ppn, ppnrp, disc, discrp, pembulatan, totalrp "
             . " from dbpurchasing.t_po_transaksi WHERE "
             . " IFNULL(stsnonaktif,'')<>'Y' AND idpo='$pidpo'";
@@ -52,6 +52,7 @@
     $pkdvendor=$row['kdsupp'];
     $pidbayar=$row['idbayar'];
     $pidkryid=$row['karyawanid'];
+    $pidmanager=$row['apv_mgr'];
     $piddir1=$row['dir1'];
     $piddir2=$row['dir2'];
     
@@ -59,6 +60,11 @@
     $tampilk= mysqli_query($cnmy, $query);
     $krow= mysqli_fetch_array($tampilk);
     $pnamakry=$krow['nama_karyawan'];
+    
+    $query = "select karyawanid as karyawanid, nama as nama_mgr from hrd.karyawan WHERE karyawanid='$pidmanager'";
+    $tampilmg= mysqli_query($cnmy, $query);
+    $mg= mysqli_fetch_array($tampilmg);
+    $nmatasanmgr=$mg['nama_mgr'];
     
     $query = "select karyawanid as karyawanid, nama as nama_dir1 from hrd.karyawan WHERE karyawanid='$piddir1'";
     $tampilk= mysqli_query($cnmy, $query);
@@ -88,13 +94,15 @@
     $paktifvendor=$vrow['AKTIF'];
     
     
-    $query = "select idpo, gambar, gbr_dir1, gbr_dir2 from dbttd.t_po_transaksi_ttd WHERE idpo='$pidpo'";
+    $query = "select idpo, gambar, gbr_mgr, gbr_dir1, gbr_dir2 from dbttd.t_po_transaksi_ttd WHERE idpo='$pidpo'";
     $tampilg= mysqli_query($cnmy, $query);
     $grow= mysqli_fetch_array($tampilg);
     
     $namapengaju="";
     $gambar=$grow['gambar'];
     
+    $namamgr="";
+    $gambarmgr=$grow['gbr_mgr'];
     $namadir1="";
     $gambardir1=$grow['gbr_dir1'];
     $namadir2="";
@@ -108,6 +116,16 @@
         $data = base64_decode($data);
         $namapengaju="img_".$pidpo."PENGAJUPO_.png";
         file_put_contents('images/tanda_tangan_base64/'.$namapengaju, $data);
+    }
+    
+    if (!empty($gambarmgr)) {
+        $data="data:".$gambarmgr;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namamgr="img_".$pidpo."PENGAJUMGRPO_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namamgr, $data);
     }
     
     if (!empty($gambardir1)) {
@@ -433,6 +451,17 @@
                             echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                         }
                         echo "<b><u>$nmatasandir1</u></b>";
+
+                        echo "</td>";
+                    
+                        echo "<td align='center'>";
+                        echo "Approved :";
+                        if (!empty($namamgr)) {
+                            echo "<br/><img src='images/tanda_tangan_base64/$namamgr' height='$gmrheight'><br/>";
+                        }else{
+                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                        }
+                        echo "<b><u>$nmatasanmgr</u></b>";
 
                         echo "</td>";
                     

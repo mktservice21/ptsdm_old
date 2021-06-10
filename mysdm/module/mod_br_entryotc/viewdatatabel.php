@@ -151,7 +151,7 @@
         <table id='datatableotc' class='table table-striped table-bordered' width='100%'>
             <thead>
                 <tr>
-                    <th width='7px'><?PHP echo $kettipeisi; ?></th><th>Aksi</th>
+                    <th width='7px'><?PHP echo $kettipeisi; ?></th><th>&nbsp;</th>
                     <th width='20px'>No ID</th>
                     <th width='60px'>Tanggal</th><th width='60px'>Tgl. Transfer</th>
                     <th>NoSlip</th>

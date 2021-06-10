@@ -116,6 +116,7 @@ if ($pmodule=="viewdatapobarang"){
                     <th width='50px'>Jml. PO</th>
                     <th width='10px'>Jml. Sudah Terima</th>
                     <th width='50px'>Jml. Terima</th>
+                    <th width='50px'>Bonus</th>
                     <th width='50px'>Sisa</th>
                     <th width='70px'>Keterangan Terima</th>
                 </tr>
@@ -169,6 +170,9 @@ if ($pmodule=="viewdatapobarang"){
                             . " id='txtjmltrm[$pidpod]' name='txtjmltrm[$pidpod]' class='inputmaskrp2' autocomplete='off' >";
                     $txt_jmlsisa="<input type='text' value='$pjmlsisa' size='10px' id='txtjmlsisa[$pidpod]' name='txtjmlsisa[$pidpod]' class='inputmaskrp2' autocomplete='off' Readonly $nstyle_text>";
                     
+                    $pjmlbonus=0;
+                    $txt_jmlbonus="<input type='text' value='$pjmlbonus' size='10px' id='txtjmlbonus[$pidpod]' name='txtjmlbonus[$pidpod]' class='inputmaskrp2' autocomplete='off' size='10px'>";
+                    
                     $txt_ketterima="<input type='text' value='$pkettrm' size='40px' id='txtkettrm[$pidpod]' name='txtkettrm[$pidpod]' class='' >";
                     
                     
@@ -189,6 +193,7 @@ if ($pmodule=="viewdatapobarang"){
                     echo "<td nowrap align='right'>$txt_jmlpo</td>";
                     echo "<td nowrap align='right'>$txt_jmlsdhtrm</td>";
                     echo "<td nowrap align='right'>$txt_jmltrm</td>";
+                    echo "<td nowrap align='right'>$txt_jmlbonus</td>";
                     echo "<td nowrap align='right'>$txt_jmlsisa</td>";
                     echo "<td nowrap >$txt_ketterima</td>";
                     echo "</tr>";
@@ -322,7 +327,12 @@ if ($pmodule=="viewdatapobarang"){
             ijmltrm = ijmltrm.split(',').join(newchar);
             
             var itotalsisa="0";
-            itotalsisa=parseFloat(ijmlpo)-parseFloat(ijmltrm);
+            itotalsisa=parseFloat(ijmlpo)-parseFloat(ijmltrm)-parseFloat(ijmlsdh);
+            
+            if (parseFloat(itotalsisa)<0) {
+                itotalsisa="0";
+                document.getElementById(stxttrm).value=parseFloat(ijmlpo)-parseFloat(ijmlsdh);
+            }
             
             document.getElementById(stxtsisa).value=itotalsisa;
         }

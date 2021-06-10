@@ -140,7 +140,10 @@ if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
         $pdivisiid="CAN";
         
         if (empty($pfilcabang) AND empty($pcabangid)) {
-            $pcabangid=$pcabidpilihposisi2;
+            $query ="SELECT iCabangId as icabangid FROM hrd.karyawan WHERE karyawanId='$idajukan'";
+            $ptampil= mysqli_query($cnmy, $query);
+            $nrs= mysqli_fetch_array($ptampil);
+            $pcabangid=$nrs['icabangid'];
         }
         
     }else{

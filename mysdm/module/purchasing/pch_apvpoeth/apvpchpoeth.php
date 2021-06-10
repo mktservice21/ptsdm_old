@@ -67,14 +67,12 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                if ($pmodule=="pchapvpobychc") {
-                    echo "Approve PO Marketing CHC";
-                }elseif ($pmodule=="pchapvpobyho") {
-                    echo "Approve PO HO";
+                if ($pmodule=="pchapvpobymgr") {
+                    echo "Approve PO By Manager Purchasing";
                 }elseif ($pmodule=="pchapvpobycoo") {
                     echo "Approve PO By COO";
                 }else{
-                    echo "Approve PO Marketing Ethical";
+                    echo "Approve PO";
                 }
                 ?>
                 

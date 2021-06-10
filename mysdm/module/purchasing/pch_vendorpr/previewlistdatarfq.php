@@ -103,7 +103,7 @@
             echo "<th align='left'><small>Harga</small></th>";
             echo "<th align='left'><small>Satuan</small></th>";
             echo "<th align='left'><small>Total</small></th>";
-            echo "<th align='left'><small>ID PO</small></th>";
+            echo "<th align='left'><small>Keterangan</small></th>";
         echo "</tr>";
 
         $no=1;
@@ -122,6 +122,7 @@
             $ntotalrp=$row0['totalrp'];
             $nsatuan=$row0['satuan'];
             $nidpo=$row0['idpo'];
+            $nketerangan=$row0['keterangan'];
             
             
             $ntglinputrfq= date("d/m/Y", strtotime($ntglinputrfq));
@@ -141,7 +142,7 @@
             echo "<td nowrap align='right'>$nharga</td>";
             echo "<td nowrap>$nsatuan</td>";
             echo "<td nowrap align='right'>$ntotalrp</td>";
-            echo "<td nowrap>$nidpo</td>";
+            echo "<td >$nketerangan</td>";
             echo "</tr>";
 
             $no++;

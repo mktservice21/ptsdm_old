@@ -17,7 +17,18 @@
     if (!empty($_SESSION['APVPCHPRBLN2'])) $tgl_akhir=$_SESSION['APVPCHPRBLN2'];
     //if (!empty($_SESSION['APVPCHPRAPVBY'])) $pkaryawanid=$_SESSION['APVPCHPRAPVBY'];
     
+    $pkaryawaninpilih=false;
+    if ($pgroupid=="1" OR $pgroupid=="24") {
+        $pkaryawaninpilih=true;
+    }
+    $query = "select karyawanid from dbpurchasing.t_pr_admin WHERE karyawanid='$pkaryawanid'";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $pkaryawaninpilih=true;
+    }
     
+
     $pmodule=$_GET['module'];
 ?>
 
@@ -136,7 +147,7 @@
                                 <?PHP 
                                 $query = "select karyawanId as karyawanid, nama as nama From hrd.karyawan
                                     WHERE (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
-                                if ($pgroupid=="1" OR $pgroupid=="24") {
+                                if ($pkaryawaninpilih==true) {
                                     $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
                                             . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
                                             . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "

@@ -30,7 +30,7 @@ $pnmbrg=$nrw['namabarang'];
 $pidbrg2=$nrw['idbarang_d'];
 $pspesifikasi=$nrw['spesifikasi1'];
 $psatuan=$nrw['satuan'];
-$pketerangan=$nrw['keterangan'];
+$pketerangan="";//$nrw['keterangan'];
 $ptipeminta=$nrw['idtipe'];
 $ptglval1=$nrw['tgl_validate1'];
 
@@ -306,7 +306,7 @@ if ($pact=="editisivendor") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <textarea rows='4' class='form-control' id="e_ketdetail" name='e_ketdetail' maxlength='300' readonly><?PHP echo $pketerangan; ?></textarea>
+                                        <textarea rows='4' class='form-control' id="e_ketdetail" name='e_ketdetail' maxlength='300' ><?PHP echo $pketerangan; ?></textarea>
                                     </div>
                                 </div>
                                 

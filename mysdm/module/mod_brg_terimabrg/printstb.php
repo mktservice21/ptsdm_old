@@ -6,6 +6,7 @@ if (!isset($_SESSION['USERID'])) {
     echo "ANDA HARUS LOGIN ULANG...!!!";
     exit;
 }
+$pviewdate=date("d/m/Y H:i");
 include "config/koneksimysqli.php";
 
 $pidkeluar=$_GET['nid'];
@@ -201,6 +202,9 @@ if (!empty($ptglval)) {
         </tr>
         <tr>
             <td valign="top"><b>Status</b></td><td valign="top">:</td><td valign="top"><?PHP echo "$pstsvalidate"; ?></td>
+        </tr>
+        <tr>
+            <td valign="top"><b><i>Print Date</i></b></td><td valign="top">:</td><td valign="top"><?PHP echo "<i>$pviewdate</i>"; ?></td>
         </tr>
     </table>
     

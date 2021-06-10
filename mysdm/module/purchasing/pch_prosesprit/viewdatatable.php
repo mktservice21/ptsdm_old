@@ -126,12 +126,13 @@ session_start();
             </thead>
             <tbody>
                 <?PHP
-                $no=1;
+                $no=1; $pnomornya="";
                 $query = "select distinct idpr from $tmp01 order by IFNULL(sudahapprove,'ZZ'), idpr asc";
                 $tampil= mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     $pidpr=$row['idpr'];
                     $pbelumlewat=false;
+                    $pnomornya=$no;
                     
                     $npmdl="pchpurchasereq";
 
@@ -234,7 +235,7 @@ session_start();
                         
                         echo "<tr>";
                         
-                        echo "<td nowrap>$no</td>";
+                        echo "<td nowrap>$pnomornya</td>";
                         echo "<td nowrap class='divnone'>$pidpr $pnmtipe $pkrynm $puserinput $ptgl </td>";
                         echo "<td nowrap>$ceklisnya</td>";
                         echo "<td nowrap>$pprint</td>";
@@ -254,12 +255,13 @@ session_start();
                         echo "</tr>";
                         
                         $pbelumlewat=true;
-                        $no++;
+                        
                         $ceklisnya="";
                         $pprint="";
+                        $pnomornya="";
                     }
                     
-                    
+                    $no++;
                 }
                 ?>
             </tbody>

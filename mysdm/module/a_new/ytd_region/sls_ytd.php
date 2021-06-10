@@ -52,6 +52,17 @@ if ($pilihdarims==true) {
 	$namatabel=$tmp00;
 }
 
+if (!empty($region)) {
+    $ppilihanmakloya="";
+    $resultsmkl = DB::query("SELECT DISTINCT maklo FROM ms.cbgytd WHERE IFNULL(maklo,'')='Y' AND region='$region'");
+    foreach ($resultsmkl as $mk) {
+        if ($mk['maklo']=="Y"); $ppilihanmakloya=$mk['maklo'];
+    }
+    if ($ppilihanmakloya=="Y") {
+    }else{
+        $resultsdel = DB::query("DELETE FROM $namatabel WHERE divprodid='MAKLO'");
+    }
+}
 
 $pprodukmaklo="";
 //$resultsdel = DB::query("DELETE FROM $namatabel WHERE IFNULL(mtd_qty_sales,0)=0 AND IFNULL(mtd_value_sales,0)=0 AND IFNULL(mtd_qty_thnlalu,0)=0 AND IFNULL(mtd_value_thnlalu,0)=0");

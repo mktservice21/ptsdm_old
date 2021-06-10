@@ -20,7 +20,7 @@ session_start();
     $pnamalogin=$_SESSION['NAMALENGKAP'];
     $pidgroup=$_SESSION['GROUP'];
     
-if ($module=="pchapvprbymkt" OR $module=="pchapvpobychc" OR $module=="pchapvpobyho" OR $module=="pchapvpobycoo") {
+if ($module=="pchapvprbymkt" OR $module=="pchapvpobychc" OR $module=="pchapvpobyho" OR $module=="pchapvpobycoo" OR $module=="pchapvpobymgr") {
         
     $noidbr=$_POST['unobr'];
     if ($noidbr=="()") $noidbr = "";
@@ -64,13 +64,20 @@ if ($module=="pchapvprbymkt" OR $module=="pchapvpobychc" OR $module=="pchapvpoby
         }
     }
     
-    if ($module=="pchapvpobychc") {
-        $papproveby="apvmgrchc";
-    }elseif ($module=="pchapvpobyho") {
-        $papproveby="apvatasanho";
+    if ($module=="pchapvpobymgr") {
+        $papproveby="apvatasanmgrpurch";
     }elseif ($module=="pchapvpobycoo") {
         //$papproveby="apvcoo";
     }
+    
+    
+    if ($papproveby=="apvatasanmgrpurch") {
+        $tampil=mysqli_query($cnmy, "select karyawanid FROM dbpurchasing.t_po_apvby WHERE karyawanid='$karyawanapv'");
+        $pr= mysqli_fetch_array($tampil);
+        $pkryadaid=$pr['karyawanid'];
+        if (empty($pkryadaid)) $papproveby="";
+    }
+    
     
     if (empty($pjabatanid) OR empty($papproveby) OR empty($karyawanapv)) {
         echo "Anda tidak berhak proses...";
@@ -97,9 +104,12 @@ if ($module=="pchapvprbymkt" OR $module=="pchapvpobychc" OR $module=="pchapvpoby
                 
             }elseif ($papproveby=="apvspv") {
                 
+            }elseif ($papproveby=="apvatasanmgrpurch") {
+                $fielduntukttd=" a.apv_mgr='$karyawanapv', a.tgl_mgr=NOW(), b.gbr_mgr='$gbrapv' ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_mgr,'')='' OR IFNULL(a.tgl_mgr,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
             }elseif ($papproveby=="apvcoo") {
                 $fielduntukttd=" a.dir1='$karyawanapv', a.tgl_dir1=NOW(), b.gbr_dir1='$gbrapv' ";
-                $fieldtglapprovenya= " (IFNULL(a.tgl_dir1,'')='' OR IFNULL(a.tgl_dir1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_dir1,'')='' OR IFNULL(a.tgl_dir1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_mgr,'')<>'' AND IFNULL(a.tgl_mgr,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
             }elseif ($papproveby=="apvmgrchc") {
                 
             }elseif ($papproveby=="apvatasanho") {
@@ -126,6 +136,8 @@ if ($module=="pchapvprbymkt" OR $module=="pchapvpobychc" OR $module=="pchapvpoby
                     
                 }elseif ($papproveby=="apvspv") {
                     
+                }elseif ($papproveby=="apvatasanmgrpurch") {
+                    
                     
                 }
                 
@@ -151,7 +163,9 @@ if ($module=="pchapvprbymkt" OR $module=="pchapvpobychc" OR $module=="pchapvpoby
             }elseif ($papproveby=="apvgsm") {
                 
             }elseif ($papproveby=="apvspv") {
-                
+            }elseif ($papproveby=="apvatasanmgrpurch") {
+                $fielduntukttd=" a.tgl_mgr=NULL, b.gbr_mgr=NULL ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_dir1,'')='' OR IFNULL(a.tgl_dir1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_mgr,'')<>'' AND IFNULL(a.tgl_mgr,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
             }elseif ($papproveby=="apvcoo") {
                 $fielduntukttd=" a.tgl_dir1=NULL, b.gbr_dir1=NULL ";
                 $fieldtglapprovenya= " (IFNULL(a.tgl_dir2,'')='' OR IFNULL(a.tgl_dir2,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_dir1,'')<>'' AND IFNULL(a.tgl_dir1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
@@ -180,6 +194,7 @@ if ($module=="pchapvprbymkt" OR $module=="pchapvpobychc" OR $module=="pchapvpoby
                 }elseif ($papproveby=="apvatasanho") {
                     
                 }elseif ($papproveby=="apvspv") {
+                }elseif ($papproveby=="apvatasanmgrpurch") {
                     
                     
                     

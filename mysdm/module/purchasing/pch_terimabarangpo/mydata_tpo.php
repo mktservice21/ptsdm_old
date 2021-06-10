@@ -47,6 +47,7 @@ $sql = "select DISTINCT a.igroup, a.tglinput, a.tgl_terima,
     JOIN dbpurchasing.t_pr_transaksi_d as f on d.idpr_d=f.idpr_d 
     JOIN dbpurchasing.t_pr_transaksi as g on f.idpr=g.idpr";
 $sql .=" WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
+$sql .=" AND IFNULL(a.ibonus,'')<>'Y' ";
 $sql.=" AND ( (a.tglinput between '$ptgl1' and '$ptgl2') OR (a.tgl_terima between '$ptgl1' and '$ptgl2') ) ";
 
 

@@ -114,6 +114,8 @@ session_start();
         $query .= " AND a.pengajuan IN ('OTC', 'CHC') ";
     }elseif ($pmodule=="pchapvprbyho") {
         $query .= " AND a.pengajuan IN ('HO') ";
+    }elseif ($pmodule=="pchapvprbycoo") {
+        
     }else{
         $query .= " AND a.pengajuan NOT IN ('OTC', 'CHC', 'HO') ";
     }
@@ -125,7 +127,7 @@ session_start();
     }elseif ($papproveby=="apvgsm") {
         $query .= " AND a.atasan4='$pkaryawanid' ";//AND a.jabatanid NOT IN ('15', '38')
     }elseif ($papproveby=="apvcoo") {
-        $query .= " AND a.atasan5='$pkaryawanid' AND a.jabatanid IN ('05', '36') ";
+        $query .= " AND ( a.atasan5='$pkaryawanid' OR a.atasan4='$pkaryawanid' ) ";
     }elseif ($papproveby=="apvmgrchc") {
         $query .= " AND a.atasan4='$pkaryawanid' ";
     }elseif ($papproveby=="apvatasanho") {//, 
@@ -151,8 +153,12 @@ session_start();
                     $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                     $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvcoo") {
-                    $query .= " AND (IFNULL(a.tgl_atasan5,'')='' OR IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
-                    $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                    $query .= " AND ( ";
+                    $query .= " (IFNULL(a.tgl_atasan5,'')='' OR IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " OR ";
+                    $query .= " (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " ) ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvmgrchc") {
                     $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                     $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";

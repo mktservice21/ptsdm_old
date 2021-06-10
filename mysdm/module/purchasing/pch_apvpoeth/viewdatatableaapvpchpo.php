@@ -70,13 +70,20 @@ session_start();
         }
     }
     
-    if ($pmodule=="pchapvpobychc") {
-        $papproveby="apvmgrchc";
-    }elseif ($pmodule=="pchapvpobyho") {
-        $papproveby="apvatasanho";
+    if ($pmodule=="pchapvpobymgr") {
+        $papproveby="apvatasanmgrpurch";
     }elseif ($pmodule=="pchapvpobycoo") {
         $papproveby="apvcoo";
     }
+    
+    
+    if ($papproveby=="apvatasanmgrpurch") {
+        $tampil=mysqli_query($cnmy, "select karyawanid FROM dbpurchasing.t_po_apvby WHERE karyawanid='$pkaryawanid'");
+        $pr= mysqli_fetch_array($tampil);
+        $pkryadaid=$pr['karyawanid'];
+        if (empty($pkryadaid)) $papproveby="";
+    }
+    
     
     if (empty($pjabatanid) OR empty($papproveby) OR empty($pkaryawanid)) {
         echo "Anda tidak berhak proses...";
@@ -98,7 +105,7 @@ session_start();
     $query = "SELECT distinct a.idpo, a.tglinput, a.tanggal, a.kdsupp, d.NAMA_SUP as nama_sup, a.karyawanid, b.nama as nama_karyawan, "
             . " a.notes, a.idbayar, c.nama_bayar, a.tglkirim, a.note_kirim, a.status_bayar, "
             . " a.ppn, a.ppnrp, a.disc, a.discrp, a.jnspph, a.pph, a.pphrp, a.pembulatan, a.totalrp as jumlah, "
-            . " a.dir1, a.tgl_dir1, a.dir2, a.tgl_dir2, a.userid "
+            . " a.apv_mgr, a.tgl_mgr, a.dir1, a.tgl_dir1, a.dir2, a.tgl_dir2, a.userid "
             . " FROM dbpurchasing.t_po_transaksi as a "
             . " LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid "
             . " LEFT JOIN dbpurchasing.t_jenis_bayar as c on a.idbayar=c.idbayar "
@@ -139,8 +146,11 @@ session_start();
                     
                 }elseif ($papproveby=="apvgsm") {
                     
+                }elseif ($papproveby=="apvatasanmgrpurch") {
+                    $query .= " AND (IFNULL(a.tgl_mgr,'')='' OR IFNULL(a.tgl_mgr,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvcoo") {
                     $query .= " AND (IFNULL(a.tgl_dir1,'')='' OR IFNULL(a.tgl_dir1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_mgr,'')<>'' AND IFNULL(a.tgl_mgr,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvmgrchc") {
                     
                 }elseif ($papproveby=="apvatasanho") {
@@ -155,6 +165,8 @@ session_start();
                     
                 }elseif ($papproveby=="apvgsm") {
                     
+                }elseif ($papproveby=="apvatasanmgrpurch") {
+                    $query .= " AND (IFNULL(a.tgl_mgr,'')<>'' AND IFNULL(a.tgl_mgr,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvcoo") {
                     $query .= " AND (IFNULL(a.tgl_dir1,'')<>'' AND IFNULL(a.tgl_dir1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvmgrchc") {
@@ -219,6 +231,9 @@ session_start();
             
         }elseif ($papproveby=="apvgsm") {
             
+        }elseif ($papproveby=="apvatasanmgrpurch") {
+            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE IFNULL(tgl_mgr,'')<>'' AND IFNULL(tgl_mgr,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         }elseif ($papproveby=="apvcoo") {
             $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE IFNULL(tgl_dir1,'')<>'' AND IFNULL(tgl_dir1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -421,9 +436,10 @@ echo "</div>";
                     $pkeperluan=$row1['notes'];
                     $nidbayar=$row1['idbayar'];
                     $nnmbayar=$row1['nama_bayar'];
-                    $psudahisivendor=$row1['sudahisikirim'];
+                    $psudahisiterima=$row1['sudahisikirim'];
                     
 					
+                    $ptglmgr=$row1['tgl_mgr'];
                     $ptgldir1=$row1['tgl_dir1'];
                     $ptgldir2=$row1['tgl_dir2'];
                     
@@ -431,6 +447,7 @@ echo "</div>";
                     $piddir2=$row1['dir2'];
                     
                     
+                    if ($ptglmgr=="0000-00-00" OR $ptglmgr=="0000-00-00 00:00:00") $ptglmgr="";
                     if ($ptgldir1=="0000-00-00" OR $ptgldir1=="0000-00-00 00:00:00") $ptgldir1="";
                     if ($ptgldir2=="0000-00-00" OR $ptgldir2=="0000-00-00 00:00:00") $ptgldir2="";
                     
@@ -451,9 +468,6 @@ echo "</div>";
                     
                     $pstsapvoleh="";
                     
-                    if ($ppilihsts=="UNAPPROVE") {
-                        
-                    }
                     
                     if ($ppilihsts=="APPROVE") {
                         if ($nnmbayar=="HO" OR $nnmbayar=="OTC" OR $nnmbayar=="CHC") {
@@ -466,6 +480,12 @@ echo "</div>";
                         }
                         
                     }elseif ($ppilihsts=="UNAPPROVE") {
+                        
+                        if ($papproveby=="apvatasanmgrpurch") {
+                            if (!empty($ptgldir1)) {
+                                $ceklisnya="";
+                            }
+                        }
                         
                         if ($nnmbayar=="HO" OR $nnmbayar=="OTC" OR $nnmbayar=="CHC") {
                             
@@ -511,7 +531,7 @@ echo "</div>";
 
                     if (!empty($cnmbrg)) $cnmbrg=substr($cnmbrg, 0, -2);
                 
-                    if ($psudahisivendor=="Y") {
+                    if ($psudahisiterima=="Y" AND $ppilihsts=="UNAPPROVE") {
                         $ceklisnya="";
                     }
                         

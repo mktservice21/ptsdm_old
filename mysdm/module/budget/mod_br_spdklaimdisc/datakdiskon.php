@@ -113,7 +113,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     $query = "ALTER TABLE $tmp02 ADD COLUMN amount DECIMAL(20,2), ADD COLUMN urutan INT(4), "
-            . " ADD COLUMN trans_ke VARCHAR(10), ADD COLUMN bridinput VARCHAR(20)";
+            . " ADD COLUMN trans_ke VARCHAR(10), ADD COLUMN bridinput VARCHAR(20), ADD COLUMN viasby VARCHAR(1)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     if ($pact=="editdata") {
@@ -133,6 +133,9 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
     $tr_nhidden=" class='divnone' ";
     if ($pact=="editdata") {
         $tr_nhidden="";
+    }else{
+        $query = "UPDATE $tmp02 SET viasby='Y' WHERE distid IN ('0000000002', '0000000015', '0000000017', '0000000005')";//spp dan enggal, GMP, PV
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     }
     
     
@@ -171,7 +174,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
                         }
                         
                         $no=1;
-                        $query = "select * from $tmp02 order by IFNULL(tgl_atasan5,'9999-99-99'), nama_karyawan, nama_dist, noslip, pengajuan, klaimid";
+                        $query = "select * from $tmp02 order by IFNULL(viasby,''), tgl, nama_dist, IFNULL(tgl_atasan5,'9999-99-99'), nama_karyawan, nama_dist, noslip, pengajuan, klaimid";
                         $tampil=mysqli_query($cnmy, $query);
                         while ($row= mysqli_fetch_array($tampil)) {
                             $pbrid = $row['klaimid'];

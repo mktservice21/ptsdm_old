@@ -102,8 +102,8 @@ if ($module=="pchapvprbymkt" OR $module=="pchapvprbychc" OR $module=="pchapvprby
                 $fielduntukttd=" a.tgl_atasan1=NOW(), b.gbr_atasan1='$gbrapv' ";
                 $fieldtglapprovenya= " (IFNULL(a.tgl_atasan1,'')='' OR IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
             }elseif ($papproveby=="apvcoo") {
-                $fielduntukttd=" a.tgl_atasan5=NOW(), b.gbr_atasan5='$gbrapv' ";
-                $fieldtglapprovenya= " (IFNULL(a.tgl_atasan5,'')='' OR IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                $fielduntukttd=" a.tgl_atasan4=NOW(), b.gbr_atasan4='$gbrapv', a.tgl_atasan5=NOW(), b.gbr_atasan5='$gbrapv' ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_atasan5,'')='' OR IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
             }elseif ($papproveby=="apvmgrchc") {
                 $fielduntukttd=" a.tgl_atasan4=NOW(), b.gbr_atasan4='$gbrapv' ";
                 $fieldtglapprovenya= " (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
@@ -168,7 +168,7 @@ if ($module=="pchapvprbymkt" OR $module=="pchapvprbychc" OR $module=="pchapvprby
                         . " ( (IFNULL(a.tgl_atasan3,'')='' OR IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')='0000-00-00 00:00:00') OR IFNULL(atasan3,'')='' ) AND "
                         . " (IFNULL(a.tgl_atasan1,'')<>'' AND IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
             }elseif ($papproveby=="apvcoo") {
-                $fielduntukttd=" a.tgl_atasan5=NULL, b.gbr_atasan5=NULL ";
+                $fielduntukttd=" a.tgl_atasan4=NULL, b.gbr_atasan4=NULL, a.tgl_atasan5=NULL, b.gbr_atasan5=NULL ";
                 $fieldtglapprovenya= " (IFNULL(a.tgl_validate1,'')='' OR IFNULL(a.tgl_validate1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan5,'')<>'' AND IFNULL(a.tgl_atasan5,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
             }elseif ($papproveby=="apvmgrchc") {
                 $fielduntukttd=" a.tgl_atasan4=NULL, b.gbr_atasan4=NULL ";

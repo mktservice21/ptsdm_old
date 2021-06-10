@@ -21,6 +21,7 @@
     include "config/library.php";
     
     $ppilformat="1";
+    $pviewdate=date("d/m/Y H:i");
     
     $pidpr=$_GET['brid'];
     
@@ -357,6 +358,7 @@
                     <?PHP
                     echo "<tr><td>PR No</td><td>:</td> <td nowrap><b>$pidpr</b></td></tr>";
                     echo "<tr><td>Tanggal</td><td>:</td> <td nowrap>$ptanggal</td></tr>";
+                    echo "<tr><td><i>Print Date</i></td><td>:</td> <td nowrap><i>$pviewdate</i></td></tr>";
                     ?>
                 </table>
             </div>

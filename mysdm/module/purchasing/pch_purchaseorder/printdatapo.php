@@ -21,6 +21,7 @@
     include "config/library.php";
     
     $ppilformat="1";
+    $pviewdate=date("d/m/Y H:i");
     
     $pidpo=$_GET['brid'];
     
@@ -340,7 +341,7 @@
             </div>
             <div class="clearfix"></div>
         </div>
-        
+        <br/><div class="clearfix"></div>
         <div id="container">
 
             <div id="left">
@@ -444,13 +445,13 @@
                     echo "<tr>";
                     
                         echo "<td align='center'>";
-                        echo "Approved :";
-                        if (!empty($namadir1)) {
-                            echo "<br/><img src='images/tanda_tangan_base64/$namadir1' height='$gmrheight'><br/>";
+                        echo "Purchasing :";
+                        if (!empty($namapengaju)) {
+                            echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
                         }else{
                             echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                         }
-                        echo "<b><u>$nmatasandir1</u></b>";
+                        echo "<b><u>$pnamakry</u></b>";
 
                         echo "</td>";
                     
@@ -464,23 +465,40 @@
                         echo "<b><u>$nmatasanmgr</u></b>";
 
                         echo "</td>";
-                    
+                        
+                        
                         echo "<td align='center'>";
-                        echo "Purchasing :";
-                        if (!empty($namapengaju)) {
-                            echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
+                        echo "Approved :";
+                        if (!empty($namadir1)) {
+                            echo "<br/><img src='images/tanda_tangan_base64/$namadir1' height='$gmrheight'><br/>";
                         }else{
                             echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                         }
-                        echo "<b><u>$pnamakry</u></b>";
+                        echo "<b><u>$nmatasandir1</u></b>";
 
                         echo "</td>";
+                        
                         
                     echo "</tr>";
                 ?>
             </table>
         </center>
         <br/>
+        
+        
+        <div id="kotakjudul">
+            <div id="isikiri">
+                <table class='tjudul' width='100%'>
+                    <?PHP
+                    echo "<tr><td><i>Print Date</i></td><td>:</td> <td nowrap><i>$pviewdate</i></td></tr>";
+                    ?>
+                </table>
+            </div>
+            <div id="isikanan">
+
+            </div>
+            <div class="clearfix"></div>
+        </div>
         
     </div>
 

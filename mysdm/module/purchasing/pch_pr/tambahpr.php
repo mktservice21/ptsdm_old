@@ -42,6 +42,13 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
     }
 }
 
+$query = "select karyawanid from dbpurchasing.t_pr_admin WHERE karyawanid='$pidcardpl'";
+$tampil= mysqli_query($cnmy, $query);
+$ketemu= mysqli_num_rows($tampil);
+if ((INT)$ketemu>0) {
+    $pkaryawaninpilih=true;
+}
+
 $pkdspv="";
 $pnamaspv="";
 $pkddm="";
@@ -173,6 +180,11 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
 
     if ($pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05") {
         $pdivisiid="CAN";
+        
+        if (empty($pfilcabang) AND empty($pcabangid)) {
+            $pcabangid=$pcabidpilihposisi2;
+        }
+        
     }else{
         if ($pidjbtpl=="38") $pdivisiid="HO";//ADMIN CABANG
         else{

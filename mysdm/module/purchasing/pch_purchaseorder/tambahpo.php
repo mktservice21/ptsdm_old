@@ -20,6 +20,7 @@ $pidsup="";
 $pnotes_kirim="";
 $pnotes="";
 
+$pjmldpp=0;
 $pppn_h=10;
 $pppn_hrp=0;
 $pdisc_h=0;
@@ -65,6 +66,7 @@ if ($pact=="editdata"){
     $pnotes_kirim=$r['note_kirim'];
     $pnotes=$r['notes'];
     
+    $pjmldpp=$r['dpp'];
     //$pppn_h=$r['ppn'];
     $pppn_hrp=$r['ppnrp'];
     $pdisc_h=$r['disc'];
@@ -249,6 +251,14 @@ if ($pact=="editdata"){
                                 </div>
                                 
                                 
+                                <div class='form-group'>
+                                    <div id='loading2'></div>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DPP <span class='required'></span></label>
+                                    <div class='col-md-3'>
+                                        <input type='text' id='e_jmldpp' name='e_jmldpp' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmldpp; ?>' onblur="HitungDPP()">
+                                    </div>
+                                </div>
+                                
                                 
                                 <div id="c_input">
                                     <div class='form-group'>
@@ -326,29 +336,52 @@ if ($pact=="editdata"){
 
                                                 //$ketPPH22="PPH21 (DPP*6%*50%) atau (JML AWAL*6%*50%)";
                                                 
-                                                $ketPPH21="PPH21";
-                                                $ketPPH23="PPH23";
+                                                $ketPPHbd="PPH Badan (DPP*2%/100)";
+                                                $ketPPHpr="PPH Perorangan (DPP*4%/100)";
                                                 
                                                 if ($pjnspph=="pph21") {
                                                     echo "<option value=''></option>";
                                                     echo "<option value='pph21' selected>$ketPPH21</option>";
                                                     echo "<option value='pph23'>$ketPPH23</option>";
-                                                    //echo "<option value='pph22'>$ketPPH22</option>";
+                                                    echo "<option value='pph22'>$ketPPH22</option>";
+                                                    echo "<option value='pphbd'>$ketPPHbd</option>";
+                                                    echo "<option value='pphpr'>$ketPPHpr</option>";
                                                 }elseif ($pjnspph=="pph23") {
                                                     echo "<option value=''></option>";
                                                     echo "<option value='pph21'>$ketPPH21</option>";
                                                     echo "<option value='pph23' selected>$ketPPH23</option>";
-                                                    //echo "<option value='pph22'>$ketPPH22</option>";
+                                                    echo "<option value='pph22'>$ketPPH22</option>";
+                                                    echo "<option value='pphbd'>$ketPPHbd</option>";
+                                                    echo "<option value='pphpr'>$ketPPHpr</option>";
                                                 }elseif ($pjnspph=="pph22") {
                                                     echo "<option value=''></option>";
                                                     echo "<option value='pph21'>$ketPPH21</option>";
                                                     echo "<option value='pph23'>$ketPPH23</option>";
-                                                    //echo "<option value='pph22' selected>$ketPPH22</option>";
+                                                    echo "<option value='pph22' selected>$ketPPH22</option>";
+                                                    echo "<option value='pphbd'>$ketPPHbd</option>";
+                                                    echo "<option value='pphpr'>$ketPPHpr</option>";
+                                                }elseif ($pjnspph=="pphbd") {
+                                                    echo "<option value=''></option>";
+                                                    //echo "<option value='pph21'>$ketPPH21</option>";
+                                                    //echo "<option value='pph23'>$ketPPH23</option>";
+                                                    //echo "<option value='pph22'>$ketPPH22</option>";
+                                                    echo "<option value='pphbd' selected>$ketPPHbd</option>";
+                                                    echo "<option value='pphpr'>$ketPPHpr</option>";
+                                                    
+                                                }elseif ($pjnspph=="pphpr") {
+                                                    echo "<option value=''></option>";
+                                                    //echo "<option value='pph21'>$ketPPH21</option>";
+                                                    //echo "<option value='pph23'>$ketPPH23</option>";
+                                                    //echo "<option value='pph22'>$ketPPH22</option>";
+                                                    echo "<option value='pphbd'>$ketPPHbd</option>";
+                                                    echo "<option value='pphpr' selected>$ketPPHpr</option>";
                                                 }else{
                                                     echo "<option value='' selected></option>";
-                                                    echo "<option value='pph21'>$ketPPH21</option>";
-                                                    echo "<option value='pph23'>$ketPPH23</option>";
+                                                    //echo "<option value='pph21'>$ketPPH21</option>";
+                                                    //echo "<option value='pph23'>$ketPPH23</option>";
                                                     //echo "<option value='pph22'>$ketPPH22</option>";
+                                                    echo "<option value='pphbd'>$ketPPHbd</option>";
+                                                    echo "<option value='pphpr'>$ketPPHpr</option>";
                                                 }
                                                 ?>
                                             </select>
@@ -504,139 +537,28 @@ if ($pact=="editdata"){
         
     }
     
+    function HitungDPP() {
+        HitungJumlahUsulan();
+        
+    }
+    
     function HitungPPN() {
-        HitungJumlahUsulan(); return false;
-        
-        var newchar = '';
-        var ijml = document.getElementById('e_jmlusulan').value;
-        var ippn = document.getElementById('cb_ppn').value;
-        if (ijml=="") ijml="0";
-        if (ippn=="") ippn="0";
-        
-        ijml = ijml.split(',').join(newchar);
-        ippn = ippn.split(',').join(newchar);
-        
-        
-        var itotalppn="0";
-        itotalppn=parseFloat(ippn)*parseFloat(ijml)/100;
-        document.getElementById('e_jmlppnrp').value=itotalppn;
-        HitungPembulatan();
+        HitungJumlahUsulan();
         
     }
     
     function HitungDiscount() {
         HitungJumlahUsulan();
-        return false;
-        
-        
-        var newchar = '';
-        var ijml = document.getElementById('e_jmlusulan').value;
-        var idisc = document.getElementById('e_jmldisc').value;
-        
-        if (ijml=="") ijml="0";
-        if (idisc=="") idisc="0";
-        
-        ijml = ijml.split(',').join(newchar);
-        idisc = idisc.split(',').join(newchar);
-        
-        var itotaldisc="0";
-        itotaldisc=parseFloat(idisc)*parseFloat(ijml)/100;
-        document.getElementById('e_jmldiscrp').value=itotaldisc;
-        HitungPembulatan();
         
     }
     
     function HitungPembulatan() {
-        HitungJumlahUsulan(); return false;
-        
-        var newchar = '';
-        var ijml = document.getElementById('e_jmlusulan').value;
-        var ibulat = document.getElementById('e_jmlbulat').value;
-        var ippn = document.getElementById('e_jmlppnrp').value;
-        var idisc = document.getElementById('e_jmldiscrp').value;
-        
-        if (ijml=="") ijml="0";
-        if (ippn=="") ippn="0";
-        if (idisc=="") idisc="0";
-        if (ibulat=="") ibulat="0";
-        
-        ijml = ijml.split(',').join(newchar);
-        ippn = ippn.split(',').join(newchar);
-        idisc = idisc.split(',').join(newchar);
-        ibulat = ibulat.split(',').join(newchar);
-        
-        //alert(ijml+" "+ippn+" "+idisc+" "+ibulat);
-        var itotal="0";
-        itotal=parseFloat(ijml)+parseFloat(ippn)-parseFloat(idisc)+parseFloat(ibulat);
-        document.getElementById('e_jmlbayarrp').value=itotal;
+        HitungJumlahUsulan();
     }
     
     
     function ShowPPH(){
-        HitungJumlahUsulan(); return false;
-        
-        document.getElementById("e_jmlpph").value = "0";
-        document.getElementById("e_jmlpph").value = "0";
-        document.getElementById("e_jmlrppph").value = "0";
-        
-
-        
-        var epph = document.getElementById("cb_pph").value;
-        if (epph=="pph21") {
-            document.getElementById("e_jmlpph").value = "5";
-            HitungPPH();
-        }else if (epph=="pph23") {
-            document.getElementById("e_jmlpph").value = "2";
-            HitungPPH();
-        }else if (epph=="pph22") {
-            document.getElementById("e_jmlpph").value = "6";
-            HitungPPH();
-        }else{
-            document.getElementById("e_jmlpph").value = "0";
-            document.getElementById("e_jmlrppph").value = "0";
-            HitungPPH();
-        }
-        
-        //setInterval(function() {
-            //HitungPPH();
-        //}, 100);
-        
-    }
-    
-    
-    function HitungPPH(){
-        var newchar = '';
-        var e_totrppph = "0";
-        var epph = document.getElementById("cb_pph").value;
-        
-        if (epph!="") {
-            var npph="0";
-            var ejmldpp = document.getElementById("e_jmlusulan").value;//e_jmldpp
-            if (ejmldpp!="" && ejmldpp != "0") {
-                
-                var idpp_pilih=ejmldpp;
-                
-                idpp_pilih = idpp_pilih.split(',').join(newchar);
-                
-                if (epph=="pph21") {
-                    npph = "5";
-                    e_totrppph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100)*50/100;
-                }else if (epph=="pph23") {
-                    npph = "2";
-                    e_totrppph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100);
-                }else if (epph=="pph22") {
-                    npph = "6";
-                    e_totrppph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100)*50/100;
-                }
-                
-            }
-        }
-        document.getElementById("e_jmlrppph").value = e_totrppph;
-        
-        //setInterval(function() {
-            HitungJumlahUsulan();
-        //}, 100);
-        
+        HitungJumlahUsulan();
     }
     
     
@@ -645,6 +567,19 @@ if ($pact=="editdata"){
         var ejmlusul = document.getElementById("e_jmlusulan").value;
         if (ejmlusul=="") ejmlusul="0";
         ejmlusul = ejmlusul.split(',').join(newchar);
+        
+        
+        var ejmldpp = document.getElementById("e_jmldpp").value;
+        if (ejmldpp=="") ejmldpp="0";
+        ejmldpp = ejmldpp.split(',').join(newchar);
+        
+        var epph = document.getElementById("cb_pph").value;
+        var idpp_pilih=ejmlusul;//e_jmldpp dari jml ususl, biasanya dari dpp
+        var ipajak="N";
+        if (epph=="pph21" || epph=="pph23" || epph=="pph22" || epph=="pphbd" || epph=="pphpr") {
+            ipajak="Y";
+            idpp_pilih=ejmldpp;//e_jmldpp dari jml ususl, biasanya dari dpp
+        }
         
         //DISCOUNT
         
@@ -664,7 +599,7 @@ if ($pact=="editdata"){
         ippn = ippn.split(',').join(newchar);
         
         var itotalppn="0";
-        itotalppn=parseFloat(ippn)*parseFloat(ejmlusul)/100;
+        itotalppn=parseFloat(ippn)*parseFloat(idpp_pilih)/100;
         document.getElementById('e_jmlppnrp').value=itotalppn;
         //END PPN
         
@@ -674,10 +609,9 @@ if ($pact=="editdata"){
         document.getElementById("e_jmlpph").value = "0";
         document.getElementById("e_jmlrppph").value = "0";
         
-        var epph = document.getElementById("cb_pph").value;
+        
         var npph="0";
         var itotalpph = "0";
-        var idpp_pilih=ejmlusul;//e_jmldpp dari jml ususl, biasanya dari dpp
         
         if (epph!="") {
             
@@ -687,12 +621,16 @@ if ($pact=="editdata"){
                 npph="2";
             }else if (epph=="pph22") {
                 npph="6";
+            }else if (epph=="pphbd") {
+                npph="2";
+            }else if (epph=="pphpr") {
+                npph="4";
             }else{
             }
             
             
             
-            if (epph!="" && idpp_pilih!="" && idpp_pilih != "0") {
+            if (ipajak=="Y" && idpp_pilih!="" && idpp_pilih != "0") {
                 
                 if (epph=="pph21") {
                     itotalpph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100)*50/100;
@@ -700,6 +638,10 @@ if ($pact=="editdata"){
                     itotalpph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100);
                 }else if (epph=="pph22") {
                     itotalpph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100)*50/100;
+                }else if (epph=="pphbd") {
+                    itotalpph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100);
+                }else if (epph=="pphpr") {
+                    itotalpph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100);
                 }
                 
             }
@@ -718,50 +660,14 @@ if ($pact=="editdata"){
         
         var itotalbayar="0";
         //TOTAL BAYAR
-        if (epph=="pph21" || epph=="pph23" || epph=="pph22") {
+        if (ipajak=="Y") {
             itotalbayar=( ( parseFloat(idpp_pilih)- parseFloat(itotalpph) ) );
         }else{
-            itotalbayar=parseFloat(ejmlusul);
+            itotalbayar=parseFloat(idpp_pilih);
         }
         itotalbayar=parseFloat(itotalbayar)+parseFloat(itotalppn)+parseFloat(ejmlbulat)-parseFloat(itotaldisc);
         
         document.getElementById("e_jmlbayarrp").value=itotalbayar;
-        
-        return false;
-        /*
-        var ejmlusul = document.getElementById("e_jmlusulan").value;
-        var ejmldisc = document.getElementById("e_jmldiscrp").value;
-        var ejmlppn = document.getElementById("e_jmlppnrp").value;
-        var ejmlpph = document.getElementById("e_jmlrppph").value;
-        var ejmlbulat = document.getElementById("e_jmlbulat").value;
-        var ejmlbyr = document.getElementById("e_jmlbayarrp").value;
-        
-        var epph = document.getElementById("cb_pph").value;
-        
-        if (ejmlusul=="") ejmlusul="0";
-        if (ejmldisc=="") ejmldisc="0";
-        if (ejmlppn=="") ejmlppn="0";
-        if (ejmlpph=="") ejmlpph="0";
-        if (ejmlbulat=="") ejmlbulat="0";
-        
-        ejmlusul = ejmlusul.split(',').join(newchar);
-        ejmldisc = ejmldisc.split(',').join(newchar);
-        ejmlppn = ejmlppn.split(',').join(newchar);
-        ejmlpph = ejmlpph.split(',').join(newchar);
-        ejmlbulat = ejmlbulat.split(',').join(newchar);
-        
-        var idpp_pilih=ejmlusul;
-        var e_totrpusulan="0";
-        if (epph=="pph21" || epph=="pph23" || epph=="pph22") {
-            e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(ejmlppn) - parseFloat(ejmlpph) ) );
-        }else{
-            e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(ejmlppn)));
-        }
-        e_totrpusulan=parseFloat(e_totrpusulan)+parseFloat(ejmlbulat)-parseFloat(ejmldisc);
-        
-        document.getElementById("e_jmlbayarrp").value=e_totrpusulan;
-         * 
-         */
         
     }
     

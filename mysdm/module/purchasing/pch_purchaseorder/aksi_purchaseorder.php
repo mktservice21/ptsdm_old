@@ -78,7 +78,11 @@ if ($module=='pchpotransaksi')
         $pbulat_h=$_POST['e_jmlbulat'];
         $ptotbayar_h=$_POST['e_jmlbayarrp'];
         
-        $jnspph_h=""; $ppph_h=0; $ppph_hrp=0;
+        
+        $jnspph_h=$_POST['cb_pph'];
+        $ppph_h=$_POST['e_jmlpph'];
+        $ppph_hrp=str_replace(",","", $_POST['e_jmlrppph']);
+        
         
         
         $pthn= date("Y", strtotime($ptgl));
@@ -250,7 +254,7 @@ if ($module=='pchpotransaksi')
 
                 $query = "INSERT INTO dbpurchasing.t_po_transaksi (idpo, tanggal, kdsupp, notes, idbayar, tglkirim, note_kirim, ppn, ppnrp, disc, discrp, "
                         . " pembulatan, totalrp, "
-                        . " jnspph, pph, pphrp, userid, karyawanid)values"
+                        . " pph_jns, pph, pph_rp, userid, karyawanid)values"
                         . "('$kodenya', '$ptglpo', '$pkdsupp', '$pnote', '$pidbayar', '$ptglkirim', '$pnotekirim', '$pppn_h', '$pppn_hrp', '$pdisc_h', '$pdisc_hrp', "
                         . " '$pbulat_h', '$ptotbayar_h', "
                         . " '$jnspph_h', '$ppph_h', '$ppph_hrp', '$pcardidlog', '$pcardidlog')";
@@ -264,7 +268,7 @@ if ($module=='pchpotransaksi')
                     . " notes='$pnote', idbayar='$pidbayar', tglkirim='$ptglkirim', "
                     . " note_kirim='$pnotekirim', ppn='$pppn_h', ppnrp='$pppn_hrp', "
                     . " disc='$pdisc_h', discrp='$pdisc_hrp', pembulatan='$pbulat_h', totalrp='$ptotbayar_h', "
-                    . " jnspph='$jnspph_h', pph='$ppph_h', pphrp='$ppph_hrp', userid='$pcardidlog', karyawanid='$pcardidlog' WHERE "
+                    . " pph_jns='$jnspph_h', pph='$ppph_h', pph_rp='$ppph_hrp', userid='$pcardidlog', karyawanid='$pcardidlog' WHERE "
                     . " idpo='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
@@ -296,7 +300,7 @@ if ($module=='pchpotransaksi')
             mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
             
             mysqli_close($cnmy);
-            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
+            //header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
         }else{
             echo "Tidak ada data yang disimpan...";
         }

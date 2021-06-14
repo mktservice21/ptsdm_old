@@ -323,6 +323,7 @@ if ($pmodule=="viewdataprpo"){
                 }
             }
 
+            document.getElementById('e_jmldpp').value=nTotal_;
             document.getElementById('e_jmlusulan').value=nTotal_;
             HitungJumlahUsulan();
             //HitungPPN();

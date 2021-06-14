@@ -64,22 +64,23 @@ $tmp03 ="dbtemp.tmprptinclp03_".$puser."_$now$milliseconds";
 include("config/koneksimysqli_ms.php");
 
 $pdivprodid="";
+$papprovebypilih="GSM";
 $plapketerangan="GSM";
 $filterjenis=" IFNULL(jenis2,'')='GSM' ";
 if ($pmodule=="incentivelappm") {
+    $papprovebypilih="PM";
     $plapketerangan="PM";
     $query = "select divprodid from ms.penempatan_pm WHERE karyawanid='$pmyidcard'";
     $tampild=mysqli_query($cnms, $query);
     $rowd=mysqli_fetch_array($tampild);
     $pdivprodid=$rowd['divprodid'];
-    $filtjnsdiv=$pdivprodid."PM";
+    $filtjnsdiv="PM";
     $filterjenis=" IFNULL(jenis2,'')='$filtjnsdiv'";
 
-    if ($pidgroup=="1" OR $pidgroup=="24") $filterjenis=" IFNULL(jenis2,'')<>'GSM'";
+    //if ($pidgroup=="1" OR $pidgroup=="24") $filterjenis=" IFNULL(jenis2,'')<>'GSM'";
 }
 
-
-$query = "select karyawanid, `status` as sts, sys_time from ms.approve_insentif WHERE karyawanid='$pmyidcard' AND LEFT(bulan,7)='$pplbulan'";
+$query = "select karyawanid, `status` as sts, sys_time from ms.approve_insentif WHERE karyawanid='$pmyidcard' AND LEFT(bulan,7)='$pplbulan' AND sts_apv='$papprovebypilih'";
 $tampilp=mysqli_query($cnms, $query);
 $rowp=mysqli_fetch_array($tampilp);
 $pstsapv=$rowp['sts'];
@@ -99,7 +100,7 @@ $query = "INSERT INTO $tmp01 (icabangid, karyawanid, sts)
     select distinct icabangid, mr, 'MR' as sts 
     from ms.penempatan_marketing where bulan Between '$pbln1' AND '$pbln2' 
     and ifnull(mr,'')<>'' ";
-if ($pidgroup=="1" OR $pidgroup=="24") {
+if ($pidgroup=="1" OR $pidgroup=="24" OR $papprovebypilih=="PM") {
 }else{
     if ($pmyjabatanid=="15") $query .= " AND mr='$pmyidcard' ";
     elseif ($pmyjabatanid=="10" OR $pmyjabatanid=="18") $query .= " AND am='$pmyidcard' ";
@@ -117,7 +118,7 @@ $query = "INSERT INTO $tmp01 (icabangid, karyawanid, sts)
     select distinct icabangid, am, 'AM' as sts 
     from ms.penempatan_marketing where bulan Between '$pbln1' AND '$pbln2' 
     and ifnull(am,'')<>'' ";
-if ($pidgroup=="1" OR $pidgroup=="24") {
+if ($pidgroup=="1" OR $pidgroup=="24" OR $papprovebypilih=="PM") {
 }else{
     if ($pmyjabatanid=="15") $query .= " AND mr='$pmyidcard' ";
     elseif ($pmyjabatanid=="10" OR $pmyjabatanid=="18") $query .= " AND am='$pmyidcard' ";
@@ -135,7 +136,7 @@ $query = "INSERT INTO $tmp01 (icabangid, karyawanid, sts)
     select distinct icabangid, dm, 'DM' as sts 
     from ms.penempatan_marketing where bulan Between '$pbln1' AND '$pbln2' 
     and ifnull(dm,'')<>'' ";
-if ($pidgroup=="1" OR $pidgroup=="24") {
+if ($pidgroup=="1" OR $pidgroup=="24" OR $papprovebypilih=="PM") {
 }else{
     if ($pmyjabatanid=="15") $query .= " AND mr='$pmyidcard' ";
     elseif ($pmyjabatanid=="10" OR $pmyjabatanid=="18") $query .= " AND am='$pmyidcard' ";
@@ -212,6 +213,18 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 $query = "DELETE $tmp02 FROM $tmp02 JOIN $tmp03 on $tmp02.icabangid=$tmp03.icabangid WHERE IFNULL($tmp03.icabangid,'')=''";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
+//if ($pidgroup=="1" OR $pidgroup=="24") {
+//}else{
+    if ($pmodule=="incentivelappm") {
+        $query = "DELETE FROM $tmp02 WHERE IFNULL(incentive,0)=0";
+        mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+        $query = "DELETE FROM $tmp03 WHERE IFNULL(incentive,0)=0";
+        mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    }
+//}
+
+    
+    
 ?>
 
 <HTML>
@@ -562,7 +575,16 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 
                     $pnamefield=$nkryid;
                     $pnamebtnfld="btn".$nkryid;
-                    $pbtnshow = "<input type='button' id='$pnamebtnfld' name='$pnamebtnfld' class='btn btn-success btn-xs' value='detail' onClick=\"showhideRow('$pnamefield')\">";
+                    
+                    if ($pmodule=="incentivelappm") {
+                        $ptxtvalue="  ---  ";
+                        $pstyledetail="";
+                    }else{
+                        $ptxtvalue="detail";
+                        $pstyledetail="style='display:none;'";
+                    }
+                    
+                    $pbtnshow = "<input type='button' id='$pnamebtnfld' name='$pnamebtnfld' class='btn btn-success btn-xs' value='$ptxtvalue' onClick=\"showhideRow('$pnamefield')\">";
 
                     echo "<tr>";
                     echo "<td nowrap>$pbtnshow</td>";
@@ -573,8 +595,9 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     //echo "<td nowrap align='right'>$nratio</td>";
                     echo "</tr>";
 
-
-                    echo "<tr id='$pnamefield' style='display:none;'>";
+                    
+                    
+                    echo "<tr id='$pnamefield' $pstyledetail>";
                     //echo "<td class='divnone'>$nkryid</td>";
                     echo "<td class='divnone'>$nkrynm</td>";
                     echo "<td class='divnone'></td>";
@@ -760,6 +783,15 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                             <input type='text' id='e_nmregion' name='e_nmregion' required='required' class='form-control' value='<?PHP echo $pnamaregion; ?>' Readonly>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td nowrap>Approve By </td>
+                        <td nowrap> : </td>
+                        <td>
+                            <input type='hidden' id='e_apvbykd' name='e_apvbykd' required='required' class='form-control' value='<?PHP echo $papprovebypilih; ?>' Readonly>
+                            <input type='text' id='e_apvbynm' name='e_apvbynm' required='required' class='form-control' value='<?PHP echo $plapketerangan; ?>' Readonly>
+                        </td>
+                    </tr>
                     <tr>
                         
                             <?PHP
@@ -769,7 +801,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                             }else{
                                 echo "<td>&nbsp;</td><td>&nbsp;</td>";
                                 echo "<td>
-                                    <input type='button' id='btnsimpan' name='btnsimpan' class='btn btn-warning' value='Approve' onClick=\"SimpanApproveInc('$pplblnapv', '$pmyidcard', '$pregion')\">
+                                    <input type='button' id='btnsimpan' name='btnsimpan' class='btn btn-warning' value='Approve' onClick=\"SimpanApproveInc('$pplblnapv', '$pmyidcard', '$pregion', '$papprovebypilih')\">
                                     <label id='lblstatus'></label>
                                     </td>";
                             }
@@ -947,11 +979,12 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
         }
         // END SCROLL
     
-        function SimpanApproveInc(itgl, ikaryawan, iregion) {
+        function SimpanApproveInc(itgl, ikaryawan, iregion, iapvby) {
             if (itgl=="") {
                 alert("tidak ada data yang akan diapprove...");
                 return false;
             }
+            
             var pText_="Apakah akan melakukan approve...?";
             ok_ = 1;
             if (ok_) {
@@ -961,7 +994,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     $.ajax({
                         type:"post",
                         url:"module/incentive/inc_incentivelap/simpanapproveinc.php?module=simpandataapprove",
-                        data:"ubulan="+itgl+"&ukaryawan="+ikaryawan+"&uregion="+iregion,
+                        data:"ubulan="+itgl+"&ukaryawan="+ikaryawan+"&uregion="+iregion+"&uapvby="+iapvby,
                         beforeSend: function () {
                             //$('select[name=cb_karyawan]').attr('disabled',true)
                             //$('select[name=cb_karyawan]').empty();

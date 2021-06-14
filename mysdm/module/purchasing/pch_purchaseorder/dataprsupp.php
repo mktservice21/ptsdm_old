@@ -324,9 +324,10 @@ if ($pmodule=="viewdataprpo"){
             }
 
             document.getElementById('e_jmlusulan').value=nTotal_;
-            HitungPPN();
-            HitungDiscount();
-            HitungPembualatan();
+            HitungJumlahUsulan();
+            //HitungPPN();
+            //HitungDiscount();
+            //HitungPembualatan();
         }
          
 //$ptifledtotal="'$pidprpo', 'e_txtjml[$pidprpo]', 'e_txtharga[$pidprpo]', 'e_txtdisc[$pidprpo]', 'e_txtdiscrp[$pidprpo]', 'e_txtjmltot[$pidprpo]'";         

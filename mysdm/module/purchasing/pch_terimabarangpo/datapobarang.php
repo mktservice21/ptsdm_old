@@ -38,7 +38,7 @@ if ($pmodule=="viewdatapobarang"){
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "ALTER TABLE $tmp00 ADD COLUMN jmlsudahterima DECIMAL(20,0), ADD COLUMN jmlterima DECIMAL(20,0), ADD COLUMN jmlsisa DECIMAL(20,0), "
+    $query = "ALTER TABLE $tmp00 ADD COLUMN jmlsudahterima DECIMAL(20,0), ADD COLUMN jmlterima DECIMAL(20,0), ADD COLUMN jmlbonus DECIMAL(20,0), ADD COLUMN jmlsisa DECIMAL(20,0), "
             . " ADD COLUMN ket_terima VARCHAR(300)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -62,8 +62,8 @@ if ($pmodule=="viewdatapobarang"){
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-        $query = "UPDATE $tmp00 as a JOIN (select idpo_d, ket_terima, SUM(jml_terima) as jml_terima FROM $tmp01 GROUP BY 1,2) as b ON a.idpo_d=b.idpo_d SET "
-                . " a.jmlterima=b.jml_terima, a.ket_terima=b.ket_terima";
+        $query = "UPDATE $tmp00 as a JOIN (select idpo_d, ket_terima, SUM(jml_terima) as jml_terima, sum(jml_bonus) as jml_bonus FROM $tmp01 GROUP BY 1,2) as b ON a.idpo_d=b.idpo_d SET "
+                . " a.jmlterima=b.jml_terima, a.jmlbonus=b.jml_bonus, a.ket_terima=b.ket_terima";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         $query = "UPDATE $tmp00 SET jmlsisa=IFNULL(jumlah,0)-IFNULL(jmlterima,0)";
@@ -140,9 +140,11 @@ if ($pmodule=="viewdatapobarang"){
                     $pjmlsdh=$row['jmlsudahterima'];
                     $pjmlsisa=$row['jmlsisa'];
                     $pjmltrm=$row['jmlterima'];
+                    $pjmlbonus=$row['jmlbonus'];
                     $pkettrm=$row['ket_terima'];
                     
                     if (Empty($pjmltrm)) $pjmltrm=0;
+                    if (Empty($pjmlbonus)) $pjmlbonus=0;
                     
                     
                     if (empty($pjmlsisa)) $pjmlsisa=0;
@@ -170,7 +172,7 @@ if ($pmodule=="viewdatapobarang"){
                             . " id='txtjmltrm[$pidpod]' name='txtjmltrm[$pidpod]' class='inputmaskrp2' autocomplete='off' >";
                     $txt_jmlsisa="<input type='text' value='$pjmlsisa' size='10px' id='txtjmlsisa[$pidpod]' name='txtjmlsisa[$pidpod]' class='inputmaskrp2' autocomplete='off' Readonly $nstyle_text>";
                     
-                    $pjmlbonus=0;
+                    
                     $txt_jmlbonus="<input type='text' value='$pjmlbonus' size='10px' id='txtjmlbonus[$pidpod]' name='txtjmlbonus[$pidpod]' class='inputmaskrp2' autocomplete='off' size='10px'>";
                     
                     $txt_ketterima="<input type='text' value='$pkettrm' size='40px' id='txtkettrm[$pidpod]' name='txtkettrm[$pidpod]' class='' >";

@@ -71,6 +71,7 @@ if ($module=='pchpotransaksi')
         
         
         $pjmlusul_h=$_POST['e_jmlusulan'];
+        $prpdpprp_h=$_POST['e_jmldpp'];
         $pppn_h=$_POST['cb_ppn'];
         $pppn_hrp=$_POST['e_jmlppnrp'];
         $pdisc_h=$_POST['e_jmldisc'];
@@ -100,6 +101,8 @@ if ($module=='pchpotransaksi')
         $pdisc_hrp=str_replace(",","", $pdisc_hrp);
         $pbulat_h=str_replace(",","", $pbulat_h);
         $ptotbayar_h=str_replace(",","", $ptotbayar_h);
+        
+        $prpdpprp_h=str_replace(",","", $prpdpprp_h);
         
         
         $ppph_h=str_replace(",","", $ppph_h);
@@ -254,10 +257,10 @@ if ($module=='pchpotransaksi')
 
                 $query = "INSERT INTO dbpurchasing.t_po_transaksi (idpo, tanggal, kdsupp, notes, idbayar, tglkirim, note_kirim, ppn, ppnrp, disc, discrp, "
                         . " pembulatan, totalrp, "
-                        . " pph_jns, pph, pph_rp, userid, karyawanid)values"
+                        . " pph_jns, pph, pph_rp, userid, karyawanid, dpp)values"
                         . "('$kodenya', '$ptglpo', '$pkdsupp', '$pnote', '$pidbayar', '$ptglkirim', '$pnotekirim', '$pppn_h', '$pppn_hrp', '$pdisc_h', '$pdisc_hrp', "
                         . " '$pbulat_h', '$ptotbayar_h', "
-                        . " '$jnspph_h', '$ppph_h', '$ppph_hrp', '$pcardidlog', '$pcardidlog')";
+                        . " '$jnspph_h', '$ppph_h', '$ppph_hrp', '$pcardidlog', '$pcardidlog', '$prpdpprp_h')";
                 mysqli_query($cnmy, $query);
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
 
@@ -268,7 +271,8 @@ if ($module=='pchpotransaksi')
                     . " notes='$pnote', idbayar='$pidbayar', tglkirim='$ptglkirim', "
                     . " note_kirim='$pnotekirim', ppn='$pppn_h', ppnrp='$pppn_hrp', "
                     . " disc='$pdisc_h', discrp='$pdisc_hrp', pembulatan='$pbulat_h', totalrp='$ptotbayar_h', "
-                    . " pph_jns='$jnspph_h', pph='$ppph_h', pph_rp='$ppph_hrp', userid='$pcardidlog', karyawanid='$pcardidlog' WHERE "
+                    . " pph_jns='$jnspph_h', pph='$ppph_h', pph_rp='$ppph_hrp', userid='$pcardidlog', karyawanid='$pcardidlog', "
+                    . " dpp='$prpdpprp_h' WHERE "
                     . " idpo='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }

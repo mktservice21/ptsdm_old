@@ -11,7 +11,7 @@ function caridatainsentif_query($con, $temp, $bulan, $jabatan, $pdivprod, $pincf
     
 
     $pfilterincfrom=" AND IFNULL(i.jenis2,'')='$pincfrom' ";
-    if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(i.jenis2,'') NOT IN ('GSM', '') ";
+    //if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(i.jenis2,'') NOT IN ('GSM', '') ";
 
     if ((INT)$ptahun<=2020) {
         $pfilterincfrom="";

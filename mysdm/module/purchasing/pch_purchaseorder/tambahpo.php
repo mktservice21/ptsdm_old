@@ -28,6 +28,10 @@ $ppembulatan_h="";
 $pjumlah_h=0;
 $pjmlbayar_h=0;
 
+$pjnspph="";
+$pjmlpph="";
+$pjmlrppph="";
+
 $pselppn1="selected";
 $pselppn2="";
 
@@ -66,6 +70,10 @@ if ($pact=="editdata"){
     $pdisc_h=$r['disc'];
     $pdisc_hrp=$r['discrp'];
     $ppembulatan_h=$r['pembulatan'];
+    
+    $pjnspph=$r['pph_jns'];
+    $pjmlpph=$r['pph'];
+    $pjmlrppph=$r['pph_rp'];
     
     $pjmlbayar_h=$r['totalrp'];
     
@@ -240,6 +248,29 @@ if ($pact=="editdata"){
                                     </div>
                                 </div>
                                 
+                                
+                                
+                                <div id="c_input">
+                                    <div class='form-group'>
+                                        <div id='loading2'></div>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Discount (%) <span class='required'></span></label>
+                                        <div class='col-md-3'>
+                                            <input type='text' id='e_jmldisc' name='e_jmldisc' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pdisc_h; ?>' onblur="HitungDiscount()">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="c_input">
+                                    <div class='form-group'>
+                                        <div id='loading2'></div>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Sub Total <span class='required'></span></label>
+                                        <div class='col-md-3'>
+                                            <input type='text' id='e_jmldiscrp' name='e_jmldiscrp' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pdisc_hrp; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>PPN <span class='required'></span></label>
                                     <div class='col-xs-3'>
@@ -263,17 +294,6 @@ if ($pact=="editdata"){
                                 </div>
                                 
                                 
-                                <div id="c_input">
-                                    <div class='form-group'>
-                                        <div id='loading2'></div>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Discount (%) <span class='required'></span></label>
-                                        <div class='col-md-3'>
-                                            <input type='text' id='e_jmldisc' name='e_jmldisc' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pdisc_h; ?>' onblur="HitungDiscount()">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                
                                 <div hidden id="c_input">
                                     <div class='form-group'>
                                         <div id='loading2'></div>
@@ -284,12 +304,56 @@ if ($pact=="editdata"){
                                     </div>
                                 </div>
                                 
-                                <div id="c_input">
+                                <div hidden id="c_input">
                                     <div class='form-group'>
                                         <div id='loading2'></div>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pembulatan <span class='required'></span></label>
                                         <div class='col-md-3'>
                                             <input type='text' id='e_jmlbulat' name='e_jmlbulat' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $ppembulatan_h; ?>' onblur="HitungPembulatan()">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>PPH <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <div style="margin-bottom:2px;">
+                                            <select class='soflow' name='cb_pph' id='cb_pph' onchange="ShowPPH()">
+                                                <?php
+                                                //$ketPPH21="PPH21 (DPP*5%*50%) atau (JML AWAL*5%*50%)";
+                                                //$ketPPH23="PPH23 (DPP*2%) atau (JML AWAL*2%)";
+
+                                                //$ketPPH22="PPH21 (DPP*6%*50%) atau (JML AWAL*6%*50%)";
+                                                
+                                                $ketPPH21="PPH21";
+                                                $ketPPH23="PPH23";
+                                                
+                                                if ($pjnspph=="pph21") {
+                                                    echo "<option value=''></option>";
+                                                    echo "<option value='pph21' selected>$ketPPH21</option>";
+                                                    echo "<option value='pph23'>$ketPPH23</option>";
+                                                    //echo "<option value='pph22'>$ketPPH22</option>";
+                                                }elseif ($pjnspph=="pph23") {
+                                                    echo "<option value=''></option>";
+                                                    echo "<option value='pph21'>$ketPPH21</option>";
+                                                    echo "<option value='pph23' selected>$ketPPH23</option>";
+                                                    //echo "<option value='pph22'>$ketPPH22</option>";
+                                                }elseif ($pjnspph=="pph22") {
+                                                    echo "<option value=''></option>";
+                                                    echo "<option value='pph21'>$ketPPH21</option>";
+                                                    echo "<option value='pph23'>$ketPPH23</option>";
+                                                    //echo "<option value='pph22' selected>$ketPPH22</option>";
+                                                }else{
+                                                    echo "<option value='' selected></option>";
+                                                    echo "<option value='pph21'>$ketPPH21</option>";
+                                                    echo "<option value='pph23'>$ketPPH23</option>";
+                                                    //echo "<option value='pph22'>$ketPPH22</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                            <input type='hidden' id='e_jmlpph' name='e_jmlpph' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlpph; ?>' readonly>
+                                            <input type='hidden' id='e_jmlrppph' name='e_jmlrppph' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlrppph; ?>' Readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -441,6 +505,8 @@ if ($pact=="editdata"){
     }
     
     function HitungPPN() {
+        HitungJumlahUsulan(); return false;
+        
         var newchar = '';
         var ijml = document.getElementById('e_jmlusulan').value;
         var ippn = document.getElementById('cb_ppn').value;
@@ -459,6 +525,10 @@ if ($pact=="editdata"){
     }
     
     function HitungDiscount() {
+        HitungJumlahUsulan();
+        return false;
+        
+        
         var newchar = '';
         var ijml = document.getElementById('e_jmlusulan').value;
         var idisc = document.getElementById('e_jmldisc').value;
@@ -477,6 +547,8 @@ if ($pact=="editdata"){
     }
     
     function HitungPembulatan() {
+        HitungJumlahUsulan(); return false;
+        
         var newchar = '';
         var ijml = document.getElementById('e_jmlusulan').value;
         var ibulat = document.getElementById('e_jmlbulat').value;
@@ -498,6 +570,202 @@ if ($pact=="editdata"){
         itotal=parseFloat(ijml)+parseFloat(ippn)-parseFloat(idisc)+parseFloat(ibulat);
         document.getElementById('e_jmlbayarrp').value=itotal;
     }
+    
+    
+    function ShowPPH(){
+        HitungJumlahUsulan(); return false;
+        
+        document.getElementById("e_jmlpph").value = "0";
+        document.getElementById("e_jmlpph").value = "0";
+        document.getElementById("e_jmlrppph").value = "0";
+        
+
+        
+        var epph = document.getElementById("cb_pph").value;
+        if (epph=="pph21") {
+            document.getElementById("e_jmlpph").value = "5";
+            HitungPPH();
+        }else if (epph=="pph23") {
+            document.getElementById("e_jmlpph").value = "2";
+            HitungPPH();
+        }else if (epph=="pph22") {
+            document.getElementById("e_jmlpph").value = "6";
+            HitungPPH();
+        }else{
+            document.getElementById("e_jmlpph").value = "0";
+            document.getElementById("e_jmlrppph").value = "0";
+            HitungPPH();
+        }
+        
+        //setInterval(function() {
+            //HitungPPH();
+        //}, 100);
+        
+    }
+    
+    
+    function HitungPPH(){
+        var newchar = '';
+        var e_totrppph = "0";
+        var epph = document.getElementById("cb_pph").value;
+        
+        if (epph!="") {
+            var npph="0";
+            var ejmldpp = document.getElementById("e_jmlusulan").value;//e_jmldpp
+            if (ejmldpp!="" && ejmldpp != "0") {
+                
+                var idpp_pilih=ejmldpp;
+                
+                idpp_pilih = idpp_pilih.split(',').join(newchar);
+                
+                if (epph=="pph21") {
+                    npph = "5";
+                    e_totrppph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100)*50/100;
+                }else if (epph=="pph23") {
+                    npph = "2";
+                    e_totrppph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100);
+                }else if (epph=="pph22") {
+                    npph = "6";
+                    e_totrppph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100)*50/100;
+                }
+                
+            }
+        }
+        document.getElementById("e_jmlrppph").value = e_totrppph;
+        
+        //setInterval(function() {
+            HitungJumlahUsulan();
+        //}, 100);
+        
+    }
+    
+    
+    function HitungJumlahUsulan(){
+        var newchar = '';
+        var ejmlusul = document.getElementById("e_jmlusulan").value;
+        if (ejmlusul=="") ejmlusul="0";
+        ejmlusul = ejmlusul.split(',').join(newchar);
+        
+        //DISCOUNT
+        
+        var idisc = document.getElementById('e_jmldisc').value;
+        if (idisc=="") idisc="0";
+        idisc = idisc.split(',').join(newchar);
+        
+        var itotaldisc="0";
+        itotaldisc=parseFloat(idisc)*parseFloat(ejmlusul)/100;
+        document.getElementById('e_jmldiscrp').value=itotaldisc;
+        
+        //END DISCOUNT
+        
+        //PPN
+        var ippn = document.getElementById('cb_ppn').value;
+        if (ippn=="") ippn="0";
+        ippn = ippn.split(',').join(newchar);
+        
+        var itotalppn="0";
+        itotalppn=parseFloat(ippn)*parseFloat(ejmlusul)/100;
+        document.getElementById('e_jmlppnrp').value=itotalppn;
+        //END PPN
+        
+        //PPH
+        
+        document.getElementById("e_jmlpph").value = "0";
+        document.getElementById("e_jmlpph").value = "0";
+        document.getElementById("e_jmlrppph").value = "0";
+        
+        var epph = document.getElementById("cb_pph").value;
+        var npph="0";
+        var itotalpph = "0";
+        var idpp_pilih=ejmlusul;//e_jmldpp dari jml ususl, biasanya dari dpp
+        
+        if (epph!="") {
+            
+            if (epph=="pph21") {
+                npph="5";
+            }else if (epph=="pph23") {
+                npph="2";
+            }else if (epph=="pph22") {
+                npph="6";
+            }else{
+            }
+            
+            
+            
+            if (epph!="" && idpp_pilih!="" && idpp_pilih != "0") {
+                
+                if (epph=="pph21") {
+                    itotalpph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100)*50/100;
+                }else if (epph=="pph23") {
+                    itotalpph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100);
+                }else if (epph=="pph22") {
+                    itotalpph = (parseFloat(idpp_pilih) * parseFloat(npph) / 100)*50/100;
+                }
+                
+            }
+            
+            
+        }
+        
+        document.getElementById("e_jmlpph").value = npph;
+        document.getElementById("e_jmlrppph").value = itotalpph;
+        
+        //END PPH
+        
+        var ejmlbulat = document.getElementById("e_jmlbulat").value;
+        if (ejmlbulat=="") ejmlbulat="0";
+        ejmlbulat = ejmlbulat.split(',').join(newchar);
+        
+        var itotalbayar="0";
+        //TOTAL BAYAR
+        if (epph=="pph21" || epph=="pph23" || epph=="pph22") {
+            itotalbayar=( ( parseFloat(idpp_pilih)- parseFloat(itotalpph) ) );
+        }else{
+            itotalbayar=parseFloat(ejmlusul);
+        }
+        itotalbayar=parseFloat(itotalbayar)+parseFloat(itotalppn)+parseFloat(ejmlbulat)-parseFloat(itotaldisc);
+        
+        document.getElementById("e_jmlbayarrp").value=itotalbayar;
+        
+        return false;
+        /*
+        var ejmlusul = document.getElementById("e_jmlusulan").value;
+        var ejmldisc = document.getElementById("e_jmldiscrp").value;
+        var ejmlppn = document.getElementById("e_jmlppnrp").value;
+        var ejmlpph = document.getElementById("e_jmlrppph").value;
+        var ejmlbulat = document.getElementById("e_jmlbulat").value;
+        var ejmlbyr = document.getElementById("e_jmlbayarrp").value;
+        
+        var epph = document.getElementById("cb_pph").value;
+        
+        if (ejmlusul=="") ejmlusul="0";
+        if (ejmldisc=="") ejmldisc="0";
+        if (ejmlppn=="") ejmlppn="0";
+        if (ejmlpph=="") ejmlpph="0";
+        if (ejmlbulat=="") ejmlbulat="0";
+        
+        ejmlusul = ejmlusul.split(',').join(newchar);
+        ejmldisc = ejmldisc.split(',').join(newchar);
+        ejmlppn = ejmlppn.split(',').join(newchar);
+        ejmlpph = ejmlpph.split(',').join(newchar);
+        ejmlbulat = ejmlbulat.split(',').join(newchar);
+        
+        var idpp_pilih=ejmlusul;
+        var e_totrpusulan="0";
+        if (epph=="pph21" || epph=="pph23" || epph=="pph22") {
+            e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(ejmlppn) - parseFloat(ejmlpph) ) );
+        }else{
+            e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(ejmlppn)));
+        }
+        e_totrpusulan=parseFloat(e_totrpusulan)+parseFloat(ejmlbulat)-parseFloat(ejmldisc);
+        
+        document.getElementById("e_jmlbayarrp").value=e_totrpusulan;
+         * 
+         */
+        
+    }
+    
+    
     
     function disp_confirm(pText_,ket)  {
         var iid = document.getElementById('e_id').value;

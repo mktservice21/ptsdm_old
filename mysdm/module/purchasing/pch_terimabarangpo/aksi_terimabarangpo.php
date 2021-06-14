@@ -79,21 +79,26 @@ if ($module=='pchterimabarangpo')
                 $piddivisi=$_POST['txtiddiv'][$piddata];
                 $pidbrg=$_POST['txtidbrg'][$piddata];
                 $pjmlterima=$_POST['txtjmltrm'][$piddata];
+                $pjmlbonus=$_POST['txtjmlbonus'][$piddata];
                 $pketterima=$_POST['txtkettrm'][$piddata];
                 
                 $pjmlterima=str_replace(",","", $pjmlterima);
+                $pjmlbonus=str_replace(",","", $pjmlbonus);
                 if (empty($pjmlterima)) $pjmlterima=0;
+                if (empty($pjmlbonus)) $pjmlbonus=0;
                 if (!empty($pketterima)) $pketterima = str_replace("'", " ", $pketterima);
                 
-                //echo "$piddivisi, $pidbrg, $pjmlterima, $pketterima<br/>";
+                $pjumlahinputterima=(DOUBLE)$pjmlterima+(DOUBLE)$pjmlbonus;
                 
-                $query = "UPDATE dbpurchasing.t_po_transaksi_terima SET tgl_terima='$ptanggal', jml_terima='$pjmlterima', ket_terima='$pketterima' WHERE idterima='$kodenya' AND idpo_d='$piddata' LIMIT 1";
+                //echo "$piddivisi, $pidbrg, $pjmlterima, $pjmlbonus, $pketterima<br/>";
+                
+                $query = "UPDATE dbpurchasing.t_po_transaksi_terima SET tgl_terima='$ptanggal', jml_terima='$pjmlterima', jml_bonus='$pjmlbonus', ket_terima='$pketterima' WHERE idterima='$kodenya' AND idpo_d='$piddata' LIMIT 1";
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan;  mysqli_close($cnmy); exit; }
                 
                 $query = "UPDATE dbmaster.t_barang_terima SET TANGGAL='$ptanggal' WHERE IDTERIMA='$kodenya' LIMIT 1";
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan;  mysqli_close($cnmy); exit; }
                 
-                $query = "UPDATE dbmaster.t_barang_terima_d SET TANGGAL='$ptanggal', JUMLAH='$pjmlterima', KET_TERIMA='$pketterima' WHERE IDTERIMA='$kodenya' AND IDBARANG='$pidbrg' LIMIT 1";
+                $query = "UPDATE dbmaster.t_barang_terima_d SET TANGGAL='$ptanggal', JUMLAH='$pjumlahinputterima', JML_TERIMA='$pjmlterima', JML_BONUS='$pjmlbonus', KET_TERIMA='$pketterima' WHERE IDTERIMA='$kodenya' AND IDBARANG='$pidbrg' LIMIT 1";
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan;  mysqli_close($cnmy); exit; }
                 
                 $pizinsimpanterima=true;
@@ -126,7 +131,7 @@ if ($module=='pchterimabarangpo')
         $tmp02 =" dbtemp.tmpsavetrmpo02_".$puserid."_$now ";
         
         $query ="idterima varchar(20), igroup int(10), kdsupp varchar(15), divisi varchar(5), idpo_d INT(10) zerofill unsigned, "
-                . " idbarang VARCHAR(20), tgl_terima Date, jml_terima INT(6), jml_bonus INT(6), ket_terima varchar(300), userid varchar(10), "
+                . " idbarang VARCHAR(20), tgl_terima Date, jml_terima INT(6), jml_bonus INT(6), jml_terimaplusbonus INT(6), ket_terima varchar(300), userid varchar(10), "
                 . " ibonus varchar(1) DEFAULT 'N'";
         $query = "create TEMPORARY table $tmp01 ($query)"; 
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan;  mysqli_close($cnmy); exit; }
@@ -142,8 +147,8 @@ if ($module=='pchterimabarangpo')
         $ptanggal= date("Y-m-d", strtotime($pttgl));
         $pthnbln= date("ym", strtotime($pttgl));
         
-        $ptahun = date('Y', strtotime($ptglinput));
-        $ptahunbulan = date('Ym', strtotime($ptglinput));
+        $ptahun = date('Y', strtotime($pttgl));
+        $ptahunbulan = date('Ym', strtotime($pttgl));
         
         $pidcekdetail="";
         if (isset($_POST['chk_detail'])) $pidcekdetail=$_POST['chk_detail'];
@@ -175,7 +180,9 @@ if ($module=='pchterimabarangpo')
                 
                 if ((INT)$pjmlterima<>0 OR !empty($pketterima) OR (DOUBLE)$pjmlbonus<>0) {
                     
-                    $pinsert_data[] = "('$pidsup', '$piddivisi', '$piddata', '$pidbrg', '$ptanggal', '$pjmlterima', '$pketterima', '$pcardidlog', '$pjmlbonus')";
+                    $pjumlahinputterima=(DOUBLE)$pjmlterima+(DOUBLE)$pjmlbonus;
+                    
+                    $pinsert_data[] = "('$pidsup', '$piddivisi', '$piddata', '$pidbrg', '$ptanggal', '$pjmlterima', '$pketterima', '$pcardidlog', '$pjmlbonus', '$pjumlahinputterima')";
                     
                     $isimpan=true;
                 }
@@ -186,7 +193,7 @@ if ($module=='pchterimabarangpo')
         $pizinsimpanterima=false;
         
         if ($isimpan==true) {
-            $query = "INSERT INTO $tmp01 (kdsupp, divisi, idpo_d, idbarang, tgl_terima, jml_terima, ket_terima, userid, jml_bonus) "
+            $query = "INSERT INTO $tmp01 (kdsupp, divisi, idpo_d, idbarang, tgl_terima, jml_terima, ket_terima, userid, jml_bonus, jml_terimaplusbonus) "
                     . " VALUES ".implode(', ', $pinsert_data);
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {
@@ -195,7 +202,7 @@ if ($module=='pchterimabarangpo')
                 exit;
             }
             
-            
+            /*
             // BONUS
             $query = "select kdsupp, divisi, idpo_d, idbarang, tgl_terima, jml_bonus as jml_terima, 'BONUS' as ket_terima, userid, jml_bonus, 'Y' as ibonus "
                     . " FROM $tmp01 WHERE IFNULL(jml_bonus,0)<>0";
@@ -222,9 +229,9 @@ if ($module=='pchterimabarangpo')
             mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $tmp02");
             
             // END BONUS
+            */
             
-            
-            $query = "select distinct kdsupp, divisi, ibonus FROM $tmp01";
+            $query = "select distinct kdsupp, divisi FROM $tmp01";
             $query = "create TEMPORARY table $tmp02 ($query)"; 
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan;  mysqli_close($cnmy); exit; }
             
@@ -260,12 +267,11 @@ if ($module=='pchterimabarangpo')
                 }
                 
                 
-                $query = "select distinct kdsupp, divisi, ibonus FROM $tmp02 order by kdsupp, divisi";
+                $query = "select distinct kdsupp, divisi FROM $tmp02 order by kdsupp, divisi";
                 $tampil= mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     $pnkdsup=$row['kdsupp'];
                     $pndiv=$row['divisi'];
-                    $pnbonuspl=$row['ibonus'];
                     
                     $purutan=$urut;
                     $jml=  strlen($urut);
@@ -273,7 +279,7 @@ if ($module=='pchterimabarangpo')
                     $pidterima=$ptahunbulan."-STB".str_repeat("0", $awal).$urut;
                     //echo "$purutan, $jml, $awal, $pidterima<br/>";
 
-                    $query = "UPDATE $tmp01 SET idterima='$pidterima', igroup='$pidgroup' WHERE IFNULL(kdsupp,'')='$pnkdsup' AND IFNULL(divisi,'')='$pndiv' AND IFNULL(ibonus,'')='$pnbonuspl'";
+                    $query = "UPDATE $tmp01 SET idterima='$pidterima', igroup='$pidgroup' WHERE IFNULL(kdsupp,'')='$pnkdsup' AND IFNULL(divisi,'')='$pndiv'";
                     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan;  mysqli_close($cnmy); exit; }
                     
                     
@@ -306,8 +312,8 @@ if ($module=='pchterimabarangpo')
             
             
             $query = "INSERT INTO dbpurchasing.t_po_transaksi_terima "
-                    . " (igroup, idpo_d, tgl_terima, jml_terima, ket_terima, userid, idterima, ibonus)"
-                    . " SELECT igroup, idpo_d, tgl_terima, jml_terima, ket_terima, userid, idterima, ibonus FROM $tmp01";
+                    . " (igroup, idpo_d, tgl_terima, jml_terima, ket_terima, userid, idterima, jml_bonus)"
+                    . " SELECT igroup, idpo_d, tgl_terima, jml_terima, ket_terima, userid, idterima, jml_bonus FROM $tmp01";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { 
                 echo $erropesan;
@@ -337,8 +343,8 @@ if ($module=='pchterimabarangpo')
             }
             
             $query = "INSERT INTO dbmaster.t_barang_terima_d "
-                    . " (IDTERIMA, IDBARANG, JUMLAH, TANGGAL, IDPO_D, KET_TERIMA) "
-                    . " SELECT idterima, idbarang, jml_terima, tgl_terima, idpo_d, ket_terima FROM $tmp01";
+                    . " (IDTERIMA, IDBARANG, JUMLAH, JML_TERIMA, JML_BONUS, TANGGAL, IDPO_D, KET_TERIMA) "
+                    . " SELECT idterima, idbarang, jml_terimaplusbonus, jml_terima, jml_bonus, tgl_terima, idpo_d, ket_terima FROM $tmp01";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {
                 

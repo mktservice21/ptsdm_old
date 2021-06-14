@@ -26,7 +26,8 @@ $query = "select
     a.STSNONAKTIF,
     a.SYS_NOW,
     a.VALIDATEID,
-    a.VALIDATEDATE
+    a.VALIDATEDATE,
+    a.PILIHPO
     from dbmaster.t_barang_terima a LEFT JOIN dbmaster.t_divisi_gimick b on a.DIVISIID=b.DIVISIID LEFT JOIN 
     dbmaster.t_supplier c on a.KDSUPP=c.KDSUPP
     LEFT JOIN hrd.karyawan d on a.KARYAWANID=d.karyawanId 
@@ -46,6 +47,8 @@ $pnmsupplier=$row['NAMA_SUP'];
 
 $pnotes=$row['NOTES'];
 $ptglval=$row['VALIDATEDATE'];
+
+$ppopilihan=$row['PILIHPO'];
 
 $pstsvalidate="belum validate";
 if ($ptglval=="0000-00-00" OR $ptglval=="0000-00-00 00:00:00") $ptglval="";
@@ -194,9 +197,18 @@ if (!empty($ptglval)) {
         <tr>
             <td><b>Supplier</b></td><td>:</td><td><?PHP echo "$pnmsupplier"; ?></td>
         </tr>
-        <tr>
-            <td><b>Grp. Produk</b></td><td>:</td><td><?PHP echo "$pgrpprod"; ?></td>
-        </tr>
+        
+        <?PHP
+        if ($ppopilihan=="Y") {
+        }else{
+        ?>
+            <tr>
+                <td><b>Grp. Produk</b></td><td>:</td><td><?PHP echo "$pgrpprod"; ?></td>
+            </tr>
+        <?PHP
+        }
+        ?>
+            
         <tr>
             <td valign="top"><b>Notes</b></td><td valign="top">:</td><td valign="top"><?PHP echo "$pnotes"; ?></td>
         </tr>
@@ -214,13 +226,20 @@ if (!empty($ptglval)) {
             <th>No</th>
             <th>Kategori</th>
             <th>Nama Barang</th>
+            
+            <?PHP
+            if ($ppopilihan=="Y") {
+                echo "<th>Jml. Terima</th>";
+                echo "<th>Jml. Bonus</th>";
+            }
+            ?>
             <th>Jumlah</th>
         </tr>
         <tbody class='inputdatauc'>
             <?PHP
             $no=1;
             $query = "select a.NOURUT, a.IDTERIMA, b.IDKATEGORI, c.NAMA_KATEGORI, "
-                    . " a.IDBARANG, b.NAMABARANG, a.JUMLAH from "
+                    . " a.IDBARANG, b.NAMABARANG, a.JUMLAH, a.JML_TERIMA, a.JML_BONUS from "
                     . " dbmaster.t_barang_terima_d a JOIN "
                     . " dbmaster.t_barang b on a.IDBARANG=b.IDBARANG "
                     . " LEFT JOIN dbmaster.t_barang_kategori c "
@@ -231,13 +250,21 @@ if (!empty($ptglval)) {
                 $pnmkategori=$nrow['NAMA_KATEGORI'];
                 $pnmbarang=$nrow['NAMABARANG'];
                 $pjumlah=$nrow['JUMLAH'];
+                $pjmltrm=$nrow['JML_TERIMA'];
+                $pjmlbns=$nrow['JML_BONUS'];
                 
                 $pjumlah=number_format($pjumlah,0);
+                $pjmltrm=number_format($pjmltrm,0);
+                $pjmlbns=number_format($pjmlbns,0);
                         
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
                 echo "<td nowrap>$pnmkategori</td>";
                 echo "<td nowrap>$pnmbarang</td>";
+                if ($ppopilihan=="Y") {
+                    echo "<td nowrap align='right'>$pjmltrm</td>";
+                    echo "<td nowrap align='right'>$pjmlbns</td>";
+                }
                 echo "<td nowrap align='right'>$pjumlah</td>";
                 echo "</tr>";
                 

@@ -91,8 +91,8 @@
                                                     <?PHP
                                                     if ($pmodule=="incentivelappm") {
                                                         echo "<option value='' selected>All</option>";
-                                                        echo "<option value='B'>Barat</option>";
-                                                        echo "<option value='T'>Timur</option>";
+                                                        //echo "<option value='B'>Barat</option>";
+                                                        //echo "<option value='T'>Timur</option>";
                                                     }else{
                                                         if ($pidkaryawan=="0000000158") {
                                                             echo "<option value='B' selected>Barat</option>";

@@ -205,7 +205,7 @@
                         $pjumlah=number_format($pjumlah,0,",",",");
                         
                         if ($sudahproses==true AND empty($pdivisi) AND $figroupuser!="28") {
-                            $simpandata= "<input type='button' class='btn btn-warning btn-xs' id='s-submit' value='Update' onclick=\"SimpanDataDivisiInc('input', 'e_blnthn$no', 'e_kryid$no', 'cb_div$no')\">";
+                            $simpandata= "<input type='button' class='btn btn-warning btn-xs' id='s-submit' value='Update' onclick=\"SimpanDataDivisiInc('input', 'e_blnthn$no', 'e_kryid$no', 'cb_div$no', '$pincfrom')\">";
                             $ndivisi="<table>";
                             $ndivisi .="<tr>";
                             
@@ -448,7 +448,7 @@
         }
     }
     
-    function SimpanDataDivisiInc(eact, abulan, akry, adivisi)  {
+    function SimpanDataDivisiInc(eact, abulan, akry, adivisi, afrom)  {
         var etgl =document.getElementById(abulan).value;
         var ekry =document.getElementById(akry).value;
         var edivisi =document.getElementById(adivisi).value;
@@ -482,7 +482,7 @@
                 $.ajax({
                     type:"post",
                     url:"module/md_m_prosesdatainsentif/simpandataincdivisi.php?module="+module+"&act="+eact+"&idmenu="+idmenu,
-                    data:"utgl="+etgl+"&ukry="+ekry+"&udivisi="+edivisi,
+                    data:"utgl="+etgl+"&ukry="+ekry+"&udivisi="+edivisi+"&ufrom="+afrom,
                     success:function(data){
                         if (data.length > 2) {
                             alert(data);

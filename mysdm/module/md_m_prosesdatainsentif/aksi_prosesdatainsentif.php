@@ -16,6 +16,7 @@ if ($module=='mstprosesinsentif' AND $act=='hapus')
 {
     $ptgl=$_POST['utgl'];
     $ptgl1= date("Y-m-01", strtotime($ptgl));
+    $pbulanpl= date("Y-m", strtotime($ptgl));
     
     $pdivprod=$_POST['udivisi'];
     $fildivisi="";
@@ -26,6 +27,11 @@ if ($module=='mstprosesinsentif' AND $act=='hapus')
     $pfilterincfrom=" AND IFNULL(jenis2,'')='$pincfrom' ";
     //if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(jenis2,'') NOT IN ('GSM', '') ";
 
+    
+    $query="DELETE FROM ms.incentiveperdivisi_h WHERE bulan='$pbulanpl' $pfilterincfrom";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
     
     $query="DELETE FROM ms.incentiveperdivisi WHERE bulan='$ptgl1' $fildivisi $pfilterincfrom";
     mysqli_query($cnmy, $query);
@@ -41,6 +47,7 @@ elseif ($module=='mstprosesinsentif')
     
     $ptgl=$_POST['utgl'];
     $ptgl1= date("Y-m-01", strtotime($ptgl));
+    $pbulanpl= date("Y-m", strtotime($ptgl));
     
     $pdivprod=$_POST['udivisi'];
     $fildivisi="";
@@ -71,9 +78,19 @@ elseif ($module=='mstprosesinsentif')
         //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
+    $query="DELETE FROM ms.incentiveperdivisi_h WHERE bulan='$pbulanpl' $pfilterincfrom";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
     $query="DELETE FROM ms.incentiveperdivisi WHERE bulan='$ptgl1' $fildivisi $pfilterincfrom";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "INSERT INTO ms.incentiveperdivisi_h (bulan, jenis2)VALUES('$pbulanpl', '$pincfrom')";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
     
     $query="INSERT INTO ms.incentiveperdivisi (bulan, divisi, cabang, jabatan, karyawanid, nama, region, jumlah, jenis2)"
             . "select bulan, divisi, icabangid, jabatan, karyawanid, nama, region, jumlah, '$pincfrom' as jenis2 FROM $tmp01";
@@ -89,6 +106,9 @@ elseif ($module=='mstprosesinsentif')
     
     exit;
 hapusdata:
+    
+    $query="DELETE FROM ms.incentiveperdivisi_h WHERE bulan='$pbulanpl' $pfilterincfrom";
+    mysqli_query($cnmy, $query);
     
     $query="DELETE FROM ms.incentiveperdivisi WHERE bulan='$ptgl1' $fildivisi $pfilterincfrom";
     mysqli_query($cnmy, $query);

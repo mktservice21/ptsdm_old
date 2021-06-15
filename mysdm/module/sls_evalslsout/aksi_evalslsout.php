@@ -87,7 +87,7 @@ if ((INT)$ketemup>0) {
     while ($nrow= mysqli_fetch_array($tampilp)) {
         $pprodukpm=$nrow['divprodid'];
     
-        if (strpos($filterdivpprod, $pdivp)==false) $filterdivpprod .="'".$pprodukpm."',";
+        if (strpos($filterdivpprod, $pprodukpm)==false) $filterdivpprod .="'".$pprodukpm."',";
     }
     
     if (!empty($filterdivpprod)) $filterdivpprod="(".substr($filterdivpprod, 0, -1).")";

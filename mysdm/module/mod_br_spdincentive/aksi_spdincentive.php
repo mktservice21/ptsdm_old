@@ -48,7 +48,15 @@ elseif ($module=='spdincentive')
 
     
     $pjenis="";//lampiran
-    $padvance="";//advance/klaim/belum ada kuitansi
+    
+    $padvance="INCALL";
+    if ($pincfrom=="PM") {
+        $padvance="INCPM";
+    }elseif ($pincfrom=="GSM") {
+        $padvance="INCGSM";
+    }
+    
+    
     
     $ppertipe="";
     

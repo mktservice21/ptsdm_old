@@ -197,7 +197,7 @@ if ($pketinc=="PM") $preadonlyincfrom="Readonly";
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal Pengajuan Dana</label>
                                     <div class='col-md-3'>
                                         <div class='input-group date' id=''>
-                                            <input type="text" class="form-control" id='e_tglberlaku' name='e_tglberlaku' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $tgl1; ?>'>
+                                            <input type="text" class="form-control" id='e_tglberlaku' name='e_tglberlaku' autocomplete='off' required='required' placeholder='d F Y' value='<?PHP echo $tgl1; ?>' Readonly>
                                             <span class='input-group-addon'>
                                                 <span class='glyphicon glyphicon-calendar'></span>
                                             </span>
@@ -229,65 +229,69 @@ if ($pketinc=="PM") $preadonlyincfrom="Readonly";
                                 <div id="c_input">
                                     <div class='form-group'>
                                         <div id='loading2'></div>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><span style='color:blue;'><b>Rincian Rp.</b></span></label>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><span style='color:blue;'><b>&nbsp;</b></span></label>
                                         <div class='col-md-3'>
+                                            <button type='button' class='btn btn-info btn-xs' onclick='TampilkanDataRincian()'>Rincian Rp.</button> <span class='required'></span>
                                             &nbsp;
                                         </div>
                                     </div>
                                 </div>
                                 
+                                <div id="div_jmldivisi">
                                 
-                                <div id="c_input">
-                                    <div class='form-group'>
-                                        <div id='loading2'></div>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><b>CANARY</b></label>
-                                        <div class='col-md-3'>
-                                            <input type='text' id='e_jmlc' name='e_jmlc' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmlc; ?>' <?PHP echo $preadonlyincfrom; ?>>
+                                    <div id="c_input">
+                                        <div class='form-group'>
+                                            <div id='loading2'></div>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><b>CANARY</b></label>
+                                            <div class='col-md-3'>
+                                                <input type='text' id='e_jmlc' name='e_jmlc' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmlc; ?>' <?PHP echo $preadonlyincfrom; ?>>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <div id="c_input">
-                                    <div class='form-group'>
-                                        <div id='loading2'></div>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><b>EAGLE</b></label>
-                                        <div class='col-md-3'>
-                                            <input type='text' id='e_jmle' name='e_jmle' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmle; ?>' >
+
+                                    <div id="c_input">
+                                        <div class='form-group'>
+                                            <div id='loading2'></div>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><b>EAGLE</b></label>
+                                            <div class='col-md-3'>
+                                                <input type='text' id='e_jmle' name='e_jmle' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmle; ?>' >
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <div id="c_input">
-                                    <div class='form-group'>
-                                        <div id='loading2'></div>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><b>PEACOCK</b></label>
-                                        <div class='col-md-3'>
-                                            <input type='text' id='e_jmlpea' name='e_jmlpea' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmlpea; ?>' >
+
+                                    <div id="c_input">
+                                        <div class='form-group'>
+                                            <div id='loading2'></div>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><b>PEACOCK</b></label>
+                                            <div class='col-md-3'>
+                                                <input type='text' id='e_jmlpea' name='e_jmlpea' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmlpea; ?>' >
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <div id="c_input">
-                                    <div class='form-group'>
-                                        <div id='loading2'></div>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><b>PIGEON</b></label>
-                                        <div class='col-md-3'>
-                                            <input type='text' id='e_jmlp' name='e_jmlp' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmlp; ?>' >
+
+                                    <div id="c_input">
+                                        <div class='form-group'>
+                                            <div id='loading2'></div>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><b>PIGEON</b></label>
+                                            <div class='col-md-3'>
+                                                <input type='text' id='e_jmlp' name='e_jmlp' onblur="hit_total()" autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jmlp; ?>' >
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                                 
-                                
-                                
-                                <div id="c_input">
-                                    <div class='form-group'>
-                                        <div id='loading2'></div>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah</label>
-                                        <div class='col-md-3'>
-                                            <input type='text' id='e_jmlusulan' name='e_jmlusulan' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jumlah; ?>' Readonly>
+                                    <div id="c_input">
+                                        <div class='form-group'>
+                                            <div id='loading2'></div>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah</label>
+                                            <div class='col-md-3'>
+                                                <input type='text' id='e_jmlusulan' name='e_jmlusulan' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jumlah; ?>' Readonly>
+                                            </div>
                                         </div>
                                     </div>
+                                    
                                 </div>
+                                
+
                                 
                                 
                                 
@@ -332,7 +336,7 @@ if ($pketinc=="PM") $preadonlyincfrom="Readonly";
 
 <script type="text/javascript">
     $(function() {
-        $('#e_tglberlaku').datepicker({
+        $('#e_tglberlaku_x').datepicker({
             changeMonth: true,
             changeYear: true,
             numberOfMonths: 1,
@@ -361,6 +365,22 @@ if ($pketinc=="PM") $preadonlyincfrom="Readonly";
                 document.getElementById('e_nomordiv').value=data;
             }
         });
+    }
+    
+    function TampilkanDataRincian() {
+        var iblninc = document.getElementById('e_periodeinc').value;
+        var ifrom = document.getElementById('cb_incfrom').value;
+        var isubkod = document.getElementById('cb_kodesub').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/mod_br_spdincentive/viewdata.php?module=viewdatajumlahincentiv",
+            data:"ublninc="+iblninc+"&ufrom="+ifrom+"&usubkod="+isubkod,
+            success:function(data){
+                $("#div_jmldivisi").html(data);
+            }
+        });
+        
     }
     
     function hit_total() {

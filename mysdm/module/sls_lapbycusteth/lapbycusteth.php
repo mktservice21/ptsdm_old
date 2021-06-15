@@ -186,6 +186,7 @@ $pidcard=$_SESSION['IDCARD'];
                                                     <?PHP
                                                     if ($pidcard=="0000000157"){
                                                         echo "<option value='PIGEO' selected>PIGEON</option>";
+                                                        echo "<option value='MAKLO'>MAKLON</option>";
                                                     }elseif ($pidcard=="0000000910"){
                                                         echo "<option value='PEACO' selected>PEACOCK</option>";
                                                     }elseif ($pidcard=="0000000257"){

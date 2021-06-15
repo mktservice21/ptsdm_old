@@ -14,7 +14,7 @@
         $puserid=$_SESSION['USERID'];
         
         $phiddenreg="";
-        if ($pgroupid=="43" OR $pgroupid=="40" OR $pgroupid=="48" OR $pgroupid=="51" OR $pgroupid=="38") $phiddenreg="hidden";
+        if ($pgroupid=="43X" OR $pgroupid=="40X" OR $pgroupid=="48" OR $pgroupid=="51" OR $pgroupid=="38") $phiddenreg="hidden";
                 
         $aksi="eksekusi3.php";
         switch($_GET['act']){
@@ -183,6 +183,7 @@
                                                 <select class='form-control input-sm' id='e_region' name='e_region' >
                                                     <?PHP
                                                     if ($pgroupid=="43" OR $pgroupid=="40") {//ahmad dan titik 
+                                                        echo "<option value='' >--All--</option>";
                                                         if ($puserid=="144") {
                                                             echo "<option value='T' selected>Timur</option>";
                                                         }else{

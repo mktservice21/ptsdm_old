@@ -304,7 +304,7 @@ if ($module=='pchpotransaksi')
             mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
             
             mysqli_close($cnmy);
-            //header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
         }else{
             echo "Tidak ada data yang disimpan...";
         }

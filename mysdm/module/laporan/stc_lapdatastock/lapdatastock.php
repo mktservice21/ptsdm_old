@@ -13,13 +13,21 @@
         $pidcabangpil="";
         include ("config/koneksimysqli_ms.php");
         
+        $filterdivpprod="";
         $pdivisipm="";
-        $query = "SELECT DISTINCT divprodid FROM ms.penempatan_pm where karyawanid='$fkaryawan'";
+        $query = "SELECT DISTINCT divprodid FROM ms.penempatan_pm where karyawanid='$fkaryawan' ORDER BY 1";
         $tampil= mysqli_query($cnms, $query);
-        $nrow= mysqli_fetch_array($tampil);
-        $pdivisipm=$nrow['divprodid'];
+        while ($nrow= mysqli_fetch_array($tampil)) {
+            $pdivisipm=$nrow['divprodid'];
+            
+            if (strpos($filterdivpprod, $pdivisipm)==false) $filterdivpprod .="'".$pdivisipm."',";
+        }
+        if (!empty($filterdivpprod)) $filterdivpprod="(".substr($filterdivpprod, 0, -1).")";
         
-        if ($pmygroupid=="48" OR $pmygroupid=="51" OR $pmygroupid=="38") $pdivisipm= "OTC";
+        if ($pmygroupid=="48" OR $pmygroupid=="51" OR $pmygroupid=="38") {
+            $pdivisipm= "OTC";
+            $filterdivpprod="('OTC')";
+        }
         
         $pmobilepilih=$_SESSION['MOBILE'];
                 
@@ -81,7 +89,8 @@
                                                     <?PHP
                                                     if (empty($pdivisipm)) echo "<option value='' selected>--All--</option>";
                                                     $query = "select divprodid, nama from MKT.divprod WHERE 1=1 ";
-                                                    if (!empty($pdivisipm)) $query .=" AND divprodid='$pdivisipm' ";
+                                                    //if (!empty($pdivisipm)) $query .=" AND divprodid='$pdivisipm' ";
+                                                    if (!empty($filterdivpprod)) $query .=" AND divprodid IN $filterdivpprod ";
                                                     else $query .=" AND br='Y' and divprodid NOT IN ('HO', 'CAN') ";
                                                     $query .="order by divprodid";
                                                     $tampil= mysqli_query($cnmy, $query);
@@ -105,13 +114,15 @@
                                                     <option value='' selected>--All--</option>
                                                     <?PHP
                                                     $query = "select divprodid, iprodid, nama from sls.iproduk WHERE aktif='Y' ";
-                                                    if (!empty($pdivisipm)) $query .= " AND divprodid='$pdivisipm' ";
+                                                    //if (!empty($pdivisipm)) $query .= " AND divprodid='$pdivisipm' ";
+                                                    if (!empty($filterdivpprod)) $query .= " AND divprodid IN $filterdivpprod ";
                                                     $query .= " ORDER BY divprodid, nama";
                                                     
                                                     $query = "select a.id, a.kdproduk, a.nmproduk, b.divprodid, a.iprodid from "
                                                             . " sls.imaping_produk a "
                                                             . " LEFT JOIN sls.iproduk b on a.iprodid=b.iprodid WHERE 1=1 ";
-                                                    if (!empty($pdivisipm)) $query .= " AND (b.divprodid='$pdivisipm' OR IFNULL(a.iprodid,'')='') ";
+                                                    //if (!empty($pdivisipm)) $query .= " AND (b.divprodid='$pdivisipm' OR IFNULL(a.iprodid,'')='') ";
+                                                    if (!empty($filterdivpprod)) $query .= " AND (b.divprodid IN $filterdivpprod OR IFNULL(a.iprodid,'')='') ";
                                                     $query .= " ORDER BY b.divprodid, a.nmproduk";
                                                     
                                                     $tampil= mysqli_query($cnms, $query);

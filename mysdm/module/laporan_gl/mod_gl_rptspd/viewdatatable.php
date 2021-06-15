@@ -333,7 +333,14 @@
                             $pmymodule="module=bgtpdkaskecilcabang&act=input&idmenu=305&ket=bukan&ispd=$idno&bln=$tglbuat";
                             $pmymodule2="module=bgtpdkaskecilcabang&act=input&idmenu=305&ket=excel&ispd=$idno&bln=$tglbuat";
                         }
-						
+				
+                    if ($pjenisrpt=="D" OR $pjenisrpt=="C") {
+                        if ($pkaryawanid=="0000000266" OR $pkaryawanid=="0000000144") {
+                            //$pmymodule="module=saldosuratdana&act=viewbrklaim&idmenu=192&ket=bukan&ispd=$idno&iid=$pmystsyginput";
+                            $pmymodule="module=previewmintadana&act=viewrptklaimdist&idmenu=504ket=bukan&ispd=$idno&iid=$pmystsyginput";
+                        }
+                    }
+                    
                     if ( ($pkode=="2" AND $psubkode=="25") ) {//BPJS
                         $pmymodule="module=viewrptdatabpjs&act=viewrptdatabpjs&idmenu=205&ket=bukan&ispd=$idno&bln=$tglbuat";
                         $pmymodule2="module=viewrptdatabpjs&act=viewrptdatabpjs&idmenu=205&ket=excel&ispd=$idno&bln=$tglbuat";

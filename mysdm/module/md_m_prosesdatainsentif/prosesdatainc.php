@@ -28,7 +28,7 @@ function caridatainsentif_query($con, $temp, $bulan, $jabatan, $pdivprod, $pincf
                 . " LEFT JOIN (SELECT mr, divprodid FROM ms.mrgp WHERE bulan = '$ptgl1') g ON i.karyawanid = g.mr JOIN ms.karyawan k ON i.karyawanid = k.karyawanId "
                 . " JOIN (SELECT DISTINCT mr, icabangid FROM ms.penempatan_marketing WHERE bulan = '$ptgl1' AND mr <> '000') pm ON i.karyawanid = pm.mr "
                 . " JOIN sls.icabang c ON pm.icabangid = c.iCabangId WHERE bulan = '$ptgl1' $fildivisi $pfilterincfrom "
-                . " GROUP BY k.nama, c.region, c.nama";
+                . " GROUP BY 1,2,3,4,5,6,7,8,9,10";
     }else{
         
         $query = "SELECT CAST(1 as DECIMAL(10,0)) as urutan, '$ptgl1' AS bulan, g.divprodid AS divisi, c.iCabangId icabangid, c.nama AS cabang, "
@@ -85,7 +85,7 @@ if ($pdivprod=="" OR $pdivprod=="CAN") {
                 . " FROM ms.incentive_am i "
                 . " LEFT JOIN (SELECT DISTINCT icabangid, am FROM ms.penempatan_marketing pm WHERE bulan = '$ptgl1') pm ON i.karyawanid = pm.am JOIN ms.karyawan k ON i.karyawanid = k.karyawanId "
                 . " JOIN sls.icabang c ON pm.icabangid = c.iCabangId WHERE i.bulan = '$ptgl1' $pfilterincfrom  "
-                . " GROUP BY k.nama, c.region, c.nama";
+                . " GROUP BY 1,2,3,4,5,6,7,8,9,10";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
@@ -96,7 +96,7 @@ if ($pdivprod=="" OR $pdivprod=="CAN") {
                 . " LEFT JOIN (SELECT DISTINCT icabangid, dm FROM ms.penempatan_marketing pm WHERE bulan = '$ptgl1') pm ON i.karyawanid = pm.dm "
                 . " JOIN ms.karyawan k ON i.karyawanid = k.karyawanId JOIN sls.icabang c ON pm.icabangid = c.iCabangId "
                 . " WHERE i.bulan = '$ptgl1' $pfilterincfrom  "
-                . " GROUP BY k.nama, c.region, c.nama";
+                . " GROUP BY 1,2,3,4,5,6,7,8,9,10";
         
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

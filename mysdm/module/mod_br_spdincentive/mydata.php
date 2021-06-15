@@ -83,7 +83,12 @@
         $ptglproses=$row["tgl_proses"];
         $nourut = "";
         
-    
+        $pnmjns="";
+        if ($pjenisrpt=="INCGSM") $pnmjns="GSM";
+        elseif ($pjenisrpt=="INCPM") $pnmjns="PM";
+        
+        if (!empty($pnmjns)) $psubnama =$psubnama." ".$pnmjns;
+        
         $pedit="<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$idno'>Edit</a>";
         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$idno')\">";
         

@@ -24,7 +24,7 @@ if ($module=='mstprosesinsentif' AND $act=='hapus')
 
     $pincfrom=$_POST['uincfm'];
     $pfilterincfrom=" AND IFNULL(jenis2,'')='$pincfrom' ";
-    if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(jenis2,'') NOT IN ('GSM', '') ";
+    //if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(jenis2,'') NOT IN ('GSM', '') ";
 
     
     $query="DELETE FROM ms.incentiveperdivisi WHERE bulan='$ptgl1' $fildivisi $pfilterincfrom";
@@ -49,7 +49,7 @@ elseif ($module=='mstprosesinsentif')
     
     $pincfrom=$_POST['uincfm'];
     $pfilterincfrom=" AND IFNULL(jenis2,'')='$pincfrom' ";
-    if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(jenis2,'') NOT IN ('GSM', '') ";
+    //if ($pincfrom=="PM") $pfilterincfrom=" AND IFNULL(jenis2,'') NOT IN ('GSM', '') ";
 
     include "prosesdatainc.php";
     
@@ -71,7 +71,7 @@ elseif ($module=='mstprosesinsentif')
         //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
-    $query="DELETE FROM ms.incentiveperdivisi WHERE bulan='$ptgl1' $fildivisi";
+    $query="DELETE FROM ms.incentiveperdivisi WHERE bulan='$ptgl1' $fildivisi $pfilterincfrom";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     

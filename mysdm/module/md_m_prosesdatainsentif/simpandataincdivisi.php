@@ -16,8 +16,9 @@ if ($module=='mstprosesinsentif' AND $act=='input')
     
     $pdivprod=$_POST['udivisi'];
     $pkryid=$_POST['ukry'];
+    $pfromapv=$_POST['ufrom'];
     
-    $query="UPDATE ms.incentiveperdivisi SET divisi='$pdivprod' WHERE bulan='$ptgl1' AND karyawanid='$pkryid'";
+    $query="UPDATE ms.incentiveperdivisi SET divisi='$pdivprod' WHERE bulan='$ptgl1' AND karyawanid='$pkryid' AND IFNULL(jenis2,'')='$pfromapv'";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     

@@ -32,15 +32,22 @@ if ($pmodule=="caridataregion") {
     }
     
     if ($pgroupid=="43" OR $pgroupid=="40") {//ahmad dan titik 
-        if ($puserid=="144") {
-            echo "<option value='T' selected>Timur</option>";
-        }else{
-            if ($pidivisi=="OTC" OR $pidivisi=="CHC") {
-                echo "<option value='BB' selected>Barat & All CHC</option>";
-                echo "<option value='B'>Barat</option>";
-            }else{
-                echo "<option value='BB'>Barat & All CHC</option>";
+        echo "<option value='' $pselall>--All--</option>";
+        if ($pidivisi=="OTHER" OR $pidivisi=="OTHERS") {
+            if ($puserid=="266") {
                 echo "<option value='B' selected>Barat</option>";
+            }
+        }else{
+            if ($puserid=="144") {
+                echo "<option value='T' selected>Timur</option>";
+            }else{
+                if ($pidivisi=="OTC" OR $pidivisi=="CHC") {
+                    echo "<option value='BB' selected>Barat & All CHC</option>";
+                    echo "<option value='B'>Barat</option>";
+                }else{
+                    echo "<option value='BB'>Barat & All CHC</option>";
+                    echo "<option value='B' selected>Barat</option>";
+                }
             }
         }
     }else{

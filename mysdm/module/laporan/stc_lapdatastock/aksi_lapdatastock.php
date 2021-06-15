@@ -37,14 +37,22 @@
     $puserid=$_SESSION['USERID'];
     $pmygroupid=$_SESSION['GROUP'];
     
-    
+    $filterdivpprod="";
     $pdivisipm="";
-    $query = "SELECT DISTINCT divprodid FROM ms.penempatan_pm where karyawanid='$picardid'";
+    $query = "SELECT DISTINCT divprodid FROM ms.penempatan_pm where karyawanid='$picardid' ORDER BY 1";
     $tampilg= mysqli_query($cnms, $query);
-    $grow= mysqli_fetch_array($tampilg);
-    $pdivisipm=$grow['divprodid'];
-
-    if ($pmygroupid=="48") $pdivisipm= "OTC";
+    while ($grow= mysqli_fetch_array($tampilg)) {
+        $pdivisipm=$grow['divprodid'];
+        
+        if (strpos($filterdivpprod, $pdivisipm)==false) $filterdivpprod .="'".$pdivisipm."',";
+    }
+    
+    if (!empty($filterdivpprod)) $filterdivpprod="(".substr($filterdivpprod, 0, -1).")";
+    
+    if ($pmygroupid=="48") {
+        $pdivisipm= "OTC";
+        $filterdivpprod="('OTC')";
+    }
         
         
     $now=date("mdYhis");

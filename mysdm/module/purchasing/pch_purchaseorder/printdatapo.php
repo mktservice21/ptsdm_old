@@ -39,7 +39,7 @@
     
     $query = "select idpo, karyawanid, tanggal, kdsupp, notes, idbayar, tglkirim, note_kirim, status_bayar, "
             . " apv_mgr, tgl_mgr, dir1, dir2, tgl_dir1, tgl_dir2, "
-            . " ppn, ppnrp, disc, discrp, pembulatan, totalrp "
+            . " ppn, ppnrp, disc, discrp, pembulatan, totalrp, dpp, pph, pph_rp, pph_jns "
             . " from dbpurchasing.t_po_transaksi WHERE "
             . " IFNULL(stsnonaktif,'')<>'Y' AND idpo='$pidpo'";
     $tampil= mysqli_query($cnmy, $query);
@@ -56,6 +56,14 @@
     $pidmanager=$row['apv_mgr'];
     $piddir1=$row['dir1'];
     $piddir2=$row['dir2'];
+    
+    $pdpprp=$row['dpp'];
+    $pdisc_h=$row['disc'];
+    $pdiscrp_h=$row['discrp'];
+    
+    $ppphjns_h=$row['pph_jns'];
+    $ppph_h=$row['pph'];
+    $ppphrp_h=$row['pph_rp'];
     
     $query = "select karyawanid as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE karyawanid='$pidkryid'";
     $tampilk= mysqli_query($cnmy, $query);
@@ -417,7 +425,49 @@
                     echo "</tr>";
                     $no++;
                 }
+                
                 $ptotalbayar=BuatFormatNum($ptotalbayar, $ppilformat);
+                
+                if ((DOUBLE)$pdpprp<>0) {
+                    $pdpprp=BuatFormatNum($pdpprp, $ppilformat);
+                    
+                    echo "<tr style='font-weight:bold;'>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap>DPP :</td>";
+                    echo "<td nowrap align='right'>$pdpprp</td>";
+                    echo "</tr>";
+                }
+                
+                if ((DOUBLE)$pdiscrp_h<>0) {
+                    $pdisc_h=BuatFormatNum($pdisc_h, $ppilformat);
+                    $pdiscrp_h=BuatFormatNum($pdiscrp_h, $ppilformat);
+                    
+                    echo "<tr style='font-weight:bold;'>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap>Discount ($pdisc_h %) :</td>";
+                    echo "<td nowrap align='right'>$pdiscrp_h</td>";
+                    echo "</tr>";
+                }
+                
+                if ((DOUBLE)$ppphrp_h<>0) {
+                    $ppph_h=BuatFormatNum($ppph_h, $ppilformat);
+                    $ppphrp_h=BuatFormatNum($ppphrp_h, $ppilformat);
+                
+                    echo "<tr style='font-weight:bold;'>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap>PPH ($ppph_h %) :</td>";
+                    echo "<td nowrap align='right'>$ppphrp_h</td>";
+                    echo "</tr>";
+                }
                 
                 echo "<tr style='font-weight:bold;'>";
                 echo "<td nowrap></td>";

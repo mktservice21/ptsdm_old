@@ -307,16 +307,6 @@ if ($pact=="editdata"){
                                 <div hidden id="c_input">
                                     <div class='form-group'>
                                         <div id='loading2'></div>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Discount (Rp.) <span class='required'></span></label>
-                                        <div class='col-md-3'>
-                                            <input type='text' id='e_jmldiscrp' name='e_jmldiscrp' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pdisc_hrp; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div hidden id="c_input">
-                                    <div class='form-group'>
-                                        <div id='loading2'></div>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pembulatan <span class='required'></span></label>
                                         <div class='col-md-3'>
                                             <input type='text' id='e_jmlbulat' name='e_jmlbulat' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $ppembulatan_h; ?>' onblur="HitungPembulatan()">

@@ -8,13 +8,17 @@
     $hari_ini = date("Y-m-d");
     $tgl_pertama = date('F Y', strtotime($hari_ini));
     
+    $filterdivpprod="";
     $pdivisipm="";
     include "config/koneksimysqli_ms.php";
     $query = "SELECT DISTINCT divprodid FROM ms.penempatan_pm where karyawanid='$fkaryawan'";
     $tampil= mysqli_query($cnms, $query);
-    $nrow= mysqli_fetch_array($tampil);
-    $pdivisipm=$nrow['divprodid'];
-    
+    while ($nrow= mysqli_fetch_array($tampil)) {
+        $pdivisipm=$nrow['divprodid'];
+
+        if (strpos($filterdivpprod, $pdivisipm)==false) $filterdivpprod .="'".$pdivisipm."',";
+    }
+    if (!empty($filterdivpprod)) $filterdivpprod="(".substr($filterdivpprod, 0, -1).")";
 ?>
 <div class="">
 
@@ -80,8 +84,8 @@
                                             <div id="kotak-multi2" class="jarak">
                                                 <?PHP
                                                     $query = "select a.kodeid, a.nama, a.divprodid from hrd.br_kode a where 1=1 ";
-                                                    if (!empty($pdivisipm)) {
-                                                        $query .= " AND a.divprodid='$pdivisipm' ";
+                                                    if (!empty($filterdivpprod)) {
+                                                        $query .= " AND a.divprodid IN $filterdivpprod ";
                                                     }
                                                     $query .= " and a.kodeid IN ('700-01-05', '700-04-05', '700-01-06', '700-04-06', '700-04-01', '700-02-01', '700-01-01')";
                                                     $query .= " ORDER BY a.divprodid, a.nama";

@@ -190,6 +190,13 @@
                 $query.=" AND (user1='266' OR user1='0000000266' OR ( (user1='0000001043' OR user1='1043') AND karyawanid='0000000266' ) ) ";
             
         }
+    }else{
+        if ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") {
+            if ($puserid=="144")//titik
+                $query.=" AND (user1='$puserid' OR user1='$pcardid' OR ( (user1='0000001043' OR user1='1043') AND ( karyawanid='$pcardid' OR karyawanid='0000002073' ) ) ) ";//MULYA RAYA PETRA SEJAHTERA
+            //if ($puserid=="266")//ahmad ahmed
+                //$query.=" AND (user1='$puserid' OR user1='$pcardid' OR ( (user1='0000001043' OR user1='1043') AND karyawanid='$pcardid' ) ) ";
+        }
     }
     
     //REGULER ATAU ONLINE SKS
@@ -343,7 +350,22 @@
         <table class="tbljudul">
             <tr><td>Tahun</td><td>:</td><td><?PHP echo "$pthn"; ?></td></tr>
             <tr class='miring text2'><td>view date</td><td>:</td><td><?PHP echo "$printdate"; ?></td></tr>
-            <tr class='miring text2'><td>Region</td><td>:</td><td><?PHP echo "$ppilihregion"; ?></td></tr>
+            <?PHP
+            if ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") {
+                if (!empty($pidregion) OR $puserid=="144") {
+                    $pnamaregpilihan="";
+                    if ($pidregion=="B") $pnamaregpilihan="Barat";
+                    elseif ($pidregion=="T" OR $puserid=="144") $pnamaregpilihan="Timur";
+                    
+                    echo "<tr class='miring text2'><td>Region Sales</td><td>:</td><td>$ppilihregion</td></tr>";
+                    echo "<tr class='miring text2'><td>Region Disc.</td><td>:</td><td>$pnamaregpilihan</td></tr>";
+                }else{
+                    echo "<tr class='miring text2'><td>Region</td><td>:</td><td>$ppilihregion</td></tr>";
+                }
+            }else{
+                echo "<tr class='miring text2'><td>Region</td><td>:</td><td>$ppilihregion</td></tr>";
+            }
+            ?>
             <tr class='miring text2'><td>Divisi</td><td>:</td><td><?PHP echo "$pnotest"; ?></td></tr>
             <tr class='miring text2'><td>Periode By</td><td>:</td><td><?PHP echo "$pperiodeby"; ?></td></tr>
             <tr class='miring text2'><td>Status Disc.</td><td>:</td><td><?PHP echo "$pketstsdic"; ?></td></tr>

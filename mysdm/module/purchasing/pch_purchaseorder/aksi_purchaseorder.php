@@ -68,6 +68,7 @@ if ($module=='pchpotransaksi')
         $pidbayar=$_POST['cb_bayar'];
         $pnotekirim=$_POST['e_noteskirim'];
         $pnote=$_POST['e_notes'];
+        $palamatkirim=$_POST['cb_almtkirim'];
         
         
         $pjmlusul_h=$_POST['e_jmlusulan'];
@@ -257,10 +258,10 @@ if ($module=='pchpotransaksi')
 
                 $query = "INSERT INTO dbpurchasing.t_po_transaksi (idpo, tanggal, kdsupp, notes, idbayar, tglkirim, note_kirim, ppn, ppnrp, disc, discrp, "
                         . " pembulatan, totalrp, "
-                        . " pph_jns, pph, pph_rp, userid, karyawanid, dpp)values"
+                        . " pph_jns, pph, pph_rp, userid, karyawanid, dpp, id_alamat)values"
                         . "('$kodenya', '$ptglpo', '$pkdsupp', '$pnote', '$pidbayar', '$ptglkirim', '$pnotekirim', '$pppn_h', '$pppn_hrp', '$pdisc_h', '$pdisc_hrp', "
                         . " '$pbulat_h', '$ptotbayar_h', "
-                        . " '$jnspph_h', '$ppph_h', '$ppph_hrp', '$pcardidlog', '$pcardidlog', '$prpdpprp_h')";
+                        . " '$jnspph_h', '$ppph_h', '$ppph_hrp', '$pcardidlog', '$pcardidlog', '$prpdpprp_h', '$palamatkirim')";
                 mysqli_query($cnmy, $query);
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
 
@@ -272,7 +273,7 @@ if ($module=='pchpotransaksi')
                     . " note_kirim='$pnotekirim', ppn='$pppn_h', ppnrp='$pppn_hrp', "
                     . " disc='$pdisc_h', discrp='$pdisc_hrp', pembulatan='$pbulat_h', totalrp='$ptotbayar_h', "
                     . " pph_jns='$jnspph_h', pph='$ppph_h', pph_rp='$ppph_hrp', userid='$pcardidlog', karyawanid='$pcardidlog', "
-                    . " dpp='$prpdpprp_h' WHERE "
+                    . " dpp='$prpdpprp_h', id_alamat='$palamatkirim' WHERE "
                     . " idpo='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }

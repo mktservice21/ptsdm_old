@@ -19,6 +19,7 @@ $pidbayar="";
 $pidsup="";
 $pnotes_kirim="";
 $pnotes="";
+$pidalamatkrm="1";
 
 $pjmldpp=0;
 $pppn_h=10;
@@ -65,6 +66,7 @@ if ($pact=="editdata"){
     $pidsup=$r['kdsupp'];
     $pnotes_kirim=$r['note_kirim'];
     $pnotes=$r['notes'];
+    $pidalamatkrm=$r['id_alamat'];
     
     $pjmldpp=$r['dpp'];
     //$pppn_h=$r['ppn'];
@@ -226,6 +228,29 @@ if ($pact=="editdata"){
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Notes Kirim <span class='required'></span></label>
                                     <div class='col-xs-6'>
                                         <input type='text' id='e_noteskirim' name='e_noteskirim' class='form-control col-md-7 col-xs-12' maxlength="200" value="<?PHP echo $pnotes_kirim; ?>">
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Alamat Kirim <span class='required'></span></label>
+                                    <div class='col-xs-6'>
+                                          <select class='form-control input-sm' id='cb_almtkirim' name='cb_almtkirim' onchange="" data-live-search="true">
+                                              <?PHP
+                                                $query = "select id_alamat, nama, alamat1, alamat2 from dbpurchasing.t_alamat_kirim order by id_alamat";
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $pnidalmt=$z['id_alamat'];
+                                                    $pnnmalmt=$z['nama'];
+                                                    $pnalamat1=$z['alamat1'];
+                                                    
+                                                    if ($pnidalmt==$pidalamatkrm)
+                                                        echo "<option value='$pnidalmt' selected>$pnidalmt - $pnnmalmt - $pnalamat1</option>";
+                                                    else
+                                                        echo "<option value='$pnidalmt'>$pnidalmt - $pnnmalmt - $pnalamat1</option>";
+                                                }
+                                              ?>
+                                          </select>
                                     </div>
                                 </div>
                                 

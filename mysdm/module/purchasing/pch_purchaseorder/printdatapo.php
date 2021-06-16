@@ -39,7 +39,7 @@
     
     $query = "select idpo, karyawanid, tanggal, kdsupp, notes, idbayar, tglkirim, note_kirim, status_bayar, "
             . " apv_mgr, tgl_mgr, dir1, dir2, tgl_dir1, tgl_dir2, "
-            . " ppn, ppnrp, disc, discrp, pembulatan, totalrp, dpp, pph, pph_rp, pph_jns "
+            . " ppn, ppnrp, disc, discrp, pembulatan, totalrp, dpp, pph, pph_rp, pph_jns, id_alamat "
             . " from dbpurchasing.t_po_transaksi WHERE "
             . " IFNULL(stsnonaktif,'')<>'Y' AND idpo='$pidpo'";
     $tampil= mysqli_query($cnmy, $query);
@@ -64,6 +64,32 @@
     $ppphjns_h=$row['pph_jns'];
     $ppph_h=$row['pph'];
     $ppphrp_h=$row['pph_rp'];
+    
+    
+    $pidalamatkirim=$row['id_alamat'];
+    $query = "select id_alamat, nama, alamat1, alamat2, kel_kec, kota, provinsi, kodepos, telp, hp, kontakperson from dbpurchasing.t_alamat_kirim WHERE id_alamat='$pidalamatkirim'";
+    $tampilak= mysqli_query($cnmy, $query);
+    $akr= mysqli_fetch_array($tampilak);
+    $pnamaalmt=$akr['nama'];
+    $pnalamat1=$akr['alamat1'];
+    $pnalamat2=$akr['alamat2'];
+    $pkelkec=$akr['kel_kec'];
+    $pkota=$akr['kota'];
+    $pprovinsi=$akr['provinsi'];
+    $pkodepos=$akr['kodepos'];
+    $ptelp=$akr['telp'];
+    $phpalmt=$akr['hp'];
+    $pkontakperson=$akr['kontakperson'];
+    
+    $palamatkirim01=$pnalamat1;
+    $palamatkirim02=$pkelkec.", ".$pkota.", ".$pkodepos." ".$pprovinsi;
+    
+    if (empty($palamatkirim01)) {
+        $palamatkirim01="Jl. Paseban Raya No. 21";
+        $palamatkirim02="Senen, Jakarta Pusat, 10440 DKI Jakarta";
+        $ptelp="(021) 3162414";
+    }
+    
     
     $query = "select karyawanid as karyawanid, nama as nama_karyawan from hrd.karyawan WHERE karyawanid='$pidkryid'";
     $tampilk= mysqli_query($cnmy, $query);
@@ -106,6 +132,7 @@
     $query = "select idpo, gambar, gbr_mgr, gbr_dir1, gbr_dir2 from dbttd.t_po_transaksi_ttd WHERE idpo='$pidpo'";
     $tampilg= mysqli_query($cnmy, $query);
     $grow= mysqli_fetch_array($tampilg);
+    
     
     $namapengaju="";
     $gambar=$grow['gambar'];
@@ -365,9 +392,9 @@
             <div id="right">
                 <table id="tbljudul">
                     <tr><td><u>Place of Delivery</u></td></tr>
-                    <tr><td>Jl. Paseban Raya No. 21</td></tr>
-                    <tr><td>Senen, Jakarta Pusat, 10440 DKI Jakarta</td></tr>
-                    <tr><td>Telp. (021) 3162414</td></tr>
+                    <tr><td><?PHP echo $palamatkirim01; ?></td></tr>
+                    <tr><td><?PHP echo $palamatkirim02; ?></td></tr>
+                    <tr><td><?PHP echo "Telp. $ptelp"; ?></td></tr>
                 </table>
             </div>
 

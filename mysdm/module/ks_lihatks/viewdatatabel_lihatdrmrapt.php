@@ -64,14 +64,14 @@
 ?>
 
     <div class='x_content'>
-        <b>List Data Dokter MR : <?PHP echo "$pnamakarywanpl"; ?></b>
+        <b>List Data User MR : <?PHP echo "$pnamakarywanpl"; ?></b>
         <hr/>
         <table id='datatabledrlstmr' class='table table-striped table-bordered' width='100%'>
             <thead>
                 <tr>
                     <th width='10px'>No</th>
                     <th width='10px'>&nbsp;</th>
-                    <th width='20px'>Nama Dokter</th>
+                    <th width='20px'>Nama User</th>
                     <th width='10px'>&nbsp;</th>
                     <th width='10px'>&nbsp;</th>
                     <th width='20px'>Apt. Type</th>
@@ -272,7 +272,7 @@
         }
         
         if (eiddok=="") {
-            alert("dokter harus diisi...!!!");
+            alert("user harus diisi...!!!");
             return false;
         }
         
@@ -281,7 +281,7 @@
         
         var eiddok2 =document.getElementById('e_iddokt').value;
         if (eiddok2=="") {
-            alert("dokter harus diisi...!!!");
+            alert("user harus diisi...!!!");
             return false;
         }
         

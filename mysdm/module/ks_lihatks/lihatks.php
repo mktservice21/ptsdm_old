@@ -257,7 +257,7 @@ switch($pactpilih){
 
                                         <div hidden class='form-group'>
                                             <div class='col-sm-12'>
-                                                <b>Dokter</b><br/>
+                                                <b>User</b><br/>
                                                 <div class="form-group">
 
                                                     <div class='input-group '>
@@ -284,12 +284,12 @@ switch($pactpilih){
 
                                         <div hidden class='form-group'>
                                             <div class='col-sm-12'>
-                                                <b>Pilih Dokter</b>
+                                                <b>Pilih User</b>
                                                 <div class="form-group">
                                                     <select class='form-control' id="cb_drks" name="cb_drks">
                                                         <?PHP
                                                             echo "<option value='' selected>-- All --</option>";
-                                                            echo "<option value='HKS'>Hanya Dokter KS</option>";
+                                                            echo "<option value='HKS'>Hanya User KS</option>";
                                                         ?>
                                                     </select>
                                                 </div>
@@ -300,11 +300,11 @@ switch($pactpilih){
                                         <div class='col-sm-10'>
                                             <small>&nbsp;</small>
                                            <div class="form-group">
-                                               <button type='button' class='btn btn-dark btn-xs' onclick='ListDataDokter()'>List Data Dokter</button>
+                                               <button type='button' class='btn btn-dark btn-xs' onclick='ListDataDokter()'>List Data User</button>
                                                <?PHP
                                                if ($fjbtid=="38" OR ($fgroupid=="1" OR $fgroupid=="24") ) {
                                                ?>
-                                                    <button type='button' class='btn btn-warning btn-xs' onclick='ListDataAptKosong()'>List Data Dokter Apotik Kosong</button>
+                                                    <button type='button' class='btn btn-warning btn-xs' onclick='ListDataAptKosong()'>List Data User Apotik Kosong</button>
                                                <?PHP
                                                }
                                                ?>

@@ -81,6 +81,65 @@ if ($pmodule=="viewdatakaryawan") {
     
     
     mysqli_close($cnmy);
+}elseif ($pmodule=="viewdataareacab") {
+    include "../../config/koneksimysqli.php";
+    
+    $pidcab=$_POST['uidcab'];
+    
+    echo "<option value='' selected>-- All --</option>";
+    $query = "select areaid as areaid, nama as nama from mkt.iarea WHERE iCabangId='$pidcab' AND IFNULL(aktif,'')<>'N' ";
+    $query .=" order by nama";
+    $tampil= mysqli_query($cnmy, $query);
+    while ($row= mysqli_fetch_array($tampil)) {
+        $nareaid=$row['areaid'];
+        $nareanm=$row['nama'];
+        
+        echo "<option value='$nareaid' >$nareanm</option>";
+    }
+    
+    mysqli_close($cnmy);
+    
+}elseif ($pmodule=="viewdataoutlet") {
+    include "../../config/koneksimysqli_ms.php";
+    
+    $pidcab=$_POST['uidcab'];
+    $pidarea=$_POST['uidarea'];
+    
+    echo "<option value='' selected>-- Pilih --</option>";
+    
+    $query = "SELECT distinct d.iCabangId as icabangid, g.nama as nama_cabang, d.areaId as areaid, 
+        h.nama as nama_area, a.id as idoutlet, a.nama as nama_outelt, a.jenis, b.nama as nama_sektor, 
+        a.type, c.Nama as nama_type, a.dispensing, a.alamat,
+        e.iddokter, f.namalengkap as nama_dokter  
+        FROM ms2.outlet_master as a LEFT JOIN mkt.isektor as b on a.jenis=b.iSektorId 
+        LEFT JOIN ms2.outlet_type as c on a.type=c.id 
+        LEFT JOIN ms2.outlet_customer as d on a.id=d.outletId 
+        LEFT JOIN ms2.tempatpraktek as e on d.outletId=e.outletId
+        LEFT JOIN ms2.masterdokter as f on e.iddokter=f.id 
+        LEFT JOIN mkt.icabang as g on d.iCabangId=g.iCabangId 
+        LEFT JOIN mkt.iarea as h on d.iCabangId=h.iCabangId and d.areaId=h.areaId 
+        WHERE d.icabangid='$pidcab' ";
+    if (!empty($pidarea)) {
+        $query .=" AND d.areaid='$pidarea' ";
+    }
+    $query .=" ORDER BY a.nama, a.id";
+    $tampil= mysqli_query($cnms, $query);
+    while ($row= mysqli_fetch_array($tampil)) {
+        $pnareaid=$row['areaid'];
+        $pnareanm=$row['nama_area'];
+        $pnotlid=$row['idoutlet'];
+        $pnotlnm=$row['nama_outelt'];
+        $pntypeotl=$row['nama_type'];
+        $pndispensing=$row['dispensing'];
+        $pnalamatotl=$row['alamat'];
+        $pniddokt=$row['iddokter'];
+        $pnnmdokt=$row['nama_dokter'];
+        
+        echo "<option value='$pnotlid' >$pnotlnm  - $pnnmdokt</option>";
+    }
+    
+    mysqli_close($cnms);
+    
 }
 
 ?>

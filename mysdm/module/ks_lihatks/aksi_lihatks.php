@@ -171,7 +171,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     <?PHP
 
         echo "<b>Kartu Status : $pnamakarywanpl - $pkaryawanid</b><br>";
-        echo "<br>Customer : $pnamadokter - $pdokterid<br>";
+        echo "<br>User : $pnamadokter - $pdokterid<br>";
 
         echo "<table border='1' cellspacing='0' cellpadding='1'>";
             echo "<tr>";
@@ -615,7 +615,72 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 
         echo "</table>";
-
+        
+        echo "<div id='div_map' class='no-print'>";
+            echo "<br/>&nbsp;<br/>&nbsp;";
+            
+            echo "<div style='font-weight:bold;'>";
+            echo "<u>Mapping ke Data KS Baru</u><br/>";
+            echo "Kartu Status : $pnamakarywanpl - $pkaryawanid<br/>";
+            echo "User : $pnamadokter - $pdokterid<br>";
+            echo "</div>";
+            echo "<br/>&nbsp;";
+            
+            echo "<div>";
+            echo "<table border='1' cellspacing='0' cellpadding='1'>";
+                echo "<thead>";
+                    echo "<tr>";
+                        echo "<th>No</th>";
+                        echo "<th>Id Apotik</th>";
+                        echo "<th>Nama Apotik</th>";
+                        //echo "<th>Type Apotik</th>";
+                        echo "<th>&nbsp;</th>";
+                    echo "</tr>";
+                echo "</thead>";
+                echo "<tbody>";
+                    $no=1;//, apttype
+                    $query = "select DISTINCT nama_apotik, idapotik from $tmp03 where IFNULL(idapotik,'') <>'' AND IFNULL(idapotik,'0') <> '0' order by nama_apotik, idapotik";
+                    $tampil=mysqli_query($cnmy, $query);
+                    $ketemu=mysqli_num_rows($tampil);
+                    if ((INT)$ketemu>0) {
+                        while ($row= mysqli_fetch_array($tampil)) {
+                            $nidapotik=$row['idapotik'];
+                            $nnmapotik=$row['nama_apotik'];
+                            
+                            $ntypeapotik="";
+                            /*
+                            $ntypeapotik=$row['apttype'];
+                            if ($ptypeapotik=="1") {
+                                $nnmtypeapt="D";
+                            } else {
+                                $nnmtypeapt="R";
+                            }
+                             * 
+                             */
+                            
+                            $nbutton="<button type='button' class='btn btn-success btn-xs' data-toggle='modal' "
+                                    . " data-target='#myModal' onClick=\"MappingKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter', '$nidapotik', '$nnmapotik', '$ntypeapotik')\">Mapping</button>";
+                            
+                            
+                            echo "<tr>";
+                            echo "<td nowrap><small>$no</small></td>";
+                            echo "<td nowrap><small>$nidapotik</small></td>";
+                            echo "<td nowrap><small>$nnmapotik</small></td>";
+                            //echo "<td nowrap><small>$nnmtypeapt</small></td>";
+                            echo "<td nowrap><small>&nbsp; $nbutton &nbsp; </small></td>";
+                            echo "</tr>";
+                            
+                            $no++;
+                        }
+                    }
+                echo "</tbody>";
+                
+            echo "</table>";
+                
+            echo "</div>";
+            
+        echo "</div>";
+        
         echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
 
     ?>
@@ -706,6 +771,17 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 type:"post",
                 url:"module/ks_lihatks/aksi_lihatks_br_mdl.php?module=viewbrdetail",
                 data:"uid="+eid,
+                success:function(data){
+                    $("#myModal").html(data);
+                }
+            });
+        }
+        
+        function MappingKeKSBARU(eidkry, enmkry, eiddokt, enmdokt, eidapt, enmapt, etypapt){
+            $.ajax({
+                type:"post",
+                url:"module/ks_lihatks/mapingkeksbaru.php?module=mapingksnew",
+                data:"uidkry="+eidkry+"&unmkry="+enmkry+"&uiddokt="+eiddokt+"&unmdokt="+enmdokt+"&uidapt="+eidapt+"&unmapt="+enmapt+"&utypapt="+etypapt,
                 success:function(data){
                     $("#myModal").html(data);
                 }

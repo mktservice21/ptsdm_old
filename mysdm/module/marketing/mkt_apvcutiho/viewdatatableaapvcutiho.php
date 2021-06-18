@@ -77,7 +77,7 @@ session_start();
     $query = "SELECT distinct a.idcuti, a.tglinput, a.karyawanid, c.nama as nama_karyawan, a.jabatanid, "
             . " a.id_jenis, d.nama_jenis, a.keperluan, a.bulan1, a.bulan2, "
             . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, atasan5, "
-            . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5 FROM hrd.t_cuti0 as a "
+            . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_atasan5, a.hrd_user, a.hrd_date FROM hrd.t_cuti0 as a "
             . " LEFT JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti JOIN hrd.karyawan as c on a.karyawanid=c.karyawanid"
             . " LEFT JOIN hrd.jenis_cuti as d on a.id_jenis=d.id_jenis "
             . " WHERE 1=1 ";
@@ -325,12 +325,14 @@ echo "</div>";
                     $ptglatasan3=$row1['tgl_atasan3'];
                     $ptglatasan4=$row1['tgl_atasan4'];
                     $ptglatasan5=$row1['tgl_atasan5'];
+                    $ptglhrd=$row1['hrd_date'];
                     
                     $pidatasan1=$row1['atasan1'];
                     $pidatasan2=$row1['atasan2'];
                     $pidatasan3=$row1['atasan3'];
                     $pidatasan4=$row1['atasan4'];
                     $pidatasan5=$row1['atasan5'];
+                    $ptglhrd=$row1['hrd_date'];
                     
                     
                     if ($ptglatasan1=="0000-00-00" OR $ptglatasan1=="0000-00-00 00:00:00") $ptglatasan1="";
@@ -338,6 +340,7 @@ echo "</div>";
                     if ($ptglatasan3=="0000-00-00" OR $ptglatasan3=="0000-00-00 00:00:00") $ptglatasan3="";
                     if ($ptglatasan4=="0000-00-00" OR $ptglatasan4=="0000-00-00 00:00:00") $ptglatasan4="";
                     if ($ptglatasan5=="0000-00-00" OR $ptglatasan5=="0000-00-00 00:00:00") $ptglatasan5="";
+                    if ($ptglhrd=="0000-00-00" OR $ptglhrd=="0000-00-00 00:00:00") $ptglhrd="";
                     
                     $pketgsmhos="Atasan";
                     $npmdl="mktformcutiho";
@@ -360,6 +363,11 @@ echo "</div>";
                         
                     }elseif ($ppilihsts=="UNAPPROVE") {
                         if (!empty($ptglatasan4) AND !empty($pidatasan4)) $pstsapvoleh="Sudah Approve $pketgsmhos";
+                        
+                        if (!empty($ptglhrd)) {
+                            $pstsapvoleh="<span style='color:blue;'>Sudah Proses HRD</span>";
+                            $ceklisnya="";
+                        }
                         
                     }
                     

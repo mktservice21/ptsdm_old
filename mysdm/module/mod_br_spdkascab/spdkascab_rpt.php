@@ -261,6 +261,32 @@
         
         
         
+        $query = "select * from dbmaster.t_kaskecilcabang_adj WHERE idinput='$pnodiv'";
+        $query = "create TEMPORARY table $tmp04 ($query)"; 
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+        $query = "ALTER TABLE $tmp03 ADD COLUMN jml_adj DECIMAL(20,2), ADD COLUMN ket_adj VARCHAR(200)"; 
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp03 as a JOIN $tmp04 as b on a.idkascab=b.idkascab AND LEFT(a.bulan,7)=LEFT(b.bulan,7) SET "
+                . " a.jml_adj=b.jumlah, a.ket_adj=b.keterangan"; 
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+        $padaadjustment=false;
+        $query = "select sum(jml_adj) as jml_adj FROM $tmp03";
+        $tampiladj=mysqli_query($cnmy, $query);
+        $ketemuadj=mysqli_num_rows($tampiladj);
+        if ((INT)$ketemuadj>0) {
+            $adj= mysqli_fetch_array($tampiladj);
+            $pnjmladj=$adj['jml_adj'];
+            if (empty($pnjmladj)) $pnjmladj=0;
+            if ((DOUBLE)$pnjmladj<>0) $padaadjustment=true;
+        }
+
+        
         $query = "select distinct kodeid, subkode, tglf, tglt, tglpd, divisipd divisi, kodenama, nomor, nodivisi, coa, coa_nama, jumlahpd, jenis_rpt, jml_kasbon FROM $tmp03 order by tglpd, divisipd, nodivisi";
       
         $tampil=mysqli_query($cnmy, $query);
@@ -365,9 +391,19 @@
                         <th align="center">Saldo Awal Rp.</th>
                         <th align="center">Isi PC Bln Lalu Rp.</th>
                         <th align="center">Jumlah Rp.</th>
+                        <?PHP
+                        if ($padaadjustment==true) {
+                            echo "<th align='center'>Adjustment</th>";
+                        }
+                        ?>
                         <th align="center">PC-M Rp.</th>
                         <th align="center">Sisa Rp.</th>
                         <th align="center">Keterangan</th>
+                        <?PHP
+                        if ($padaadjustment==true) {
+                            echo "<th align='center'>Ket. Adjustment</th>";
+                        }
+                        ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -377,6 +413,8 @@
                         $ptotpclalu=0;
                         $ptotalpengajuan=0;
                         $ptotalpc=0;
+                        $ptotaladj=0;
+                        $ptotaltransfer=0;
                         $query = "select * from $tmp03 order by bulan, nama_cabang";
                         $tampil=mysqli_query($cnmy, $query);
                         while ($row= mysqli_fetch_array($tampil)) {
@@ -387,6 +425,8 @@
                             $nrpsldawal=$row['saldoawal'];
                             $prpblnlalu=$row['pc_bln_lalu'];
                             $nrpjml=$row['jumlah'];
+                            $nadjrp=$row['jml_adj'];
+                            $nadjket=$row['ket_adj'];
                             $nrppc=$row['pcm'];
                             $nketerangan=$row['keterangan'];
                             $nnmreal=$row['nmrealisasi'];
@@ -408,6 +448,10 @@
                             $nrpjml=number_format($nrpjml,0,",",",");
                             $nrppc=number_format($nrppc,0,",",",");
                             $sisarp=number_format($sisarp,0,",",",");
+                            
+                            $ptotaladj=(DOUBLE)$ptotaladj+(DOUBLE)$nadjrp;
+                            $nadjrp=number_format($nadjrp,0,",",",");
+                            
                             
                             $nrpsldawal=number_format($nrpsldawal,0,",",",");
                             $prpblnlalu=number_format($prpblnlalu,0,",",",");
@@ -437,14 +481,23 @@
                             echo "<td nowrap>$nnorek</td>";
                             echo "<td nowrap align='right'>$nrpsldawal</td>";
                             echo "<td nowrap align='right'>$prpblnlalu</td>";
-                            echo "<td nowrap align='right'>$nrpjml</td>";
+                            echo "<td nowrap align='right' style='font-weight:bold; font-size:12px; color:#000060;'>$nrpjml</td>";
+                            if ($padaadjustment==true) {
+                                echo "<td nowrap align='right' style='font-weight:bold; font-size:12px; color:#660000;'>$nadjrp</td>";
+                            }
                             echo "<td nowrap align='right'>$nrppc</td>";
                             echo "<td nowrap align='right'>$sisarp</td>";
                             echo "<td >$nketerangan</td>";
+                            if ($padaadjustment==true) {
+                                echo "<td >$nadjket</td>";
+                            }
                             echo "</tr>";
                             
                             $no++;
                         }
+                        
+                        
+                        $ptotaltransfer=(DOUBLE)$ptotalpengajuan+(DOUBLE)$ptotaladj;
                         
                         //$sisarp=(DOUBLE)$ptotalpc-(DOUBLE)$ptotalpengajuan;
                         $sisarp=(DOUBLE)$ptotawal+(DOUBLE)$ptotpclalu-(DOUBLE)$ptotalpengajuan;
@@ -458,6 +511,9 @@
                         
                         $sisarp=number_format($sisarp,0,",",",");
                         
+                        $ptotaladj=number_format($ptotaladj,0,",",",");
+                        
+                        
                         echo "<tr style='font-weight:bold;'>";
                         echo "<td nowrap></td>";
                         echo "<td nowrap></td>";
@@ -468,11 +524,38 @@
                         echo "<td nowrap>Total : </td>";
                         echo "<td nowrap align='right'>$ptotawal</td>";
                         echo "<td nowrap align='right'>$ptotpclalu</td>";
-                        echo "<td nowrap align='right'>$ptotalpengajuan</td>";
+                        echo "<td nowrap align='right' style='font-size:12px; color:#000060;'>$ptotalpengajuan</td>";
+                        if ($padaadjustment==true) {
+                            echo "<td nowrap align='right' style='font-size:12px; color:#660000;'>$ptotaladj</td>";
+                        }
                         echo "<td nowrap align='right'>$ptotalpc</td>";
                         echo "<td nowrap align='right'>$sisarp</td>";
                         echo "<td ></td>";
+                        if ($padaadjustment==true) {
+                            echo "<td ></td>";
+                        }
                         echo "</tr>";
+                        
+                        if ($padaadjustment==true) {
+                            $ptotaltransfer=number_format($ptotaltransfer,0,",",",");
+                            
+                            echo "<tr style='font-weight:bold;'>";
+                            echo "<td nowrap></td>";
+                            echo "<td nowrap></td>";
+                            echo "<td nowrap></td>";
+                            echo "<td nowrap></td>";
+                            echo "<td nowrap></td>";
+                            echo "<td nowrap></td>";
+                            echo "<td nowrap>Total Transfer (Realisasi) : </td>";
+                            echo "<td nowrap align='right'>&nbsp;</td>";
+                            echo "<td nowrap align='right'>&nbsp;</td>";
+                            echo "<td nowrap colspan='2' align='center' style='font-size:13px;'>$ptotaltransfer</td>";
+                            echo "<td nowrap align='right'>&nbsp;</td>";
+                            echo "<td nowrap align='right'>&nbsp;</td>";
+                            echo "<td ></td>";
+                            echo "<td ></td>";
+                            echo "</tr>";
+                        }
                         ?>
                     </tbody>
                 </table>

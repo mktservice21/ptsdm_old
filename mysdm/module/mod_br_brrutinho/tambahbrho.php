@@ -10,8 +10,8 @@ $pidcard=$_SESSION['IDCARD'];
 $pidgroup=$_SESSION['GROUP'];
 
 $hari_ini = date("Y-m-d");
-//$pbln = date('F Y', strtotime($hari_ini));
-$pbln = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
+$pbln = date('F Y', strtotime($hari_ini));
+//$pbln = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
 
 $mytglini="";
 $mytglini = getfield("select CURRENT_DATE as lcfields");
@@ -470,7 +470,14 @@ if ($pidact=="editdata"){
 <script>
                                     
     $(document).ready(function() {
-
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var nact = urlku.searchParams.get("act");
+        if (nact=="tambahbaru") {
+            showKodePeriode();
+            showPeriode();
+        }
+        
         var dataTable = $('#datatable').DataTable( {
             "ordering": false,
             bFilter: false, bInfo: false, "bLengthChange": false, "bLengthChange": false,

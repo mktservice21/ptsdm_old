@@ -125,8 +125,8 @@ elseif ($module=='entrybrrutinho' AND ($act=='input' OR $act=='update'))
     
     $pbln_c=$_POST['e_bulan'];
     $pkdperiode=$_POST['e_periode'];
-    $ptgl1=$_POST['e_periode01'];
-    $ptgl2=$_POST['e_periode02'];
+    $ptgl_pl1=$_POST['e_periode01'];
+    $ptgl_pl2=$_POST['e_periode02'];
     $pnotes=$_POST['e_ket'];
     $patasan=$_POST['e_atasan'];
     $ptotalrp=$_POST['e_totalsemua'];
@@ -179,10 +179,19 @@ elseif ($module=='entrybrrutinho' AND ($act=='input' OR $act=='update'))
     $pbln= date("Y-m-01", strtotime($pbln_c));
     $pcari_bln= date("Ym", strtotime($pbln_c));
     
-    $ptgl1 = str_replace('/', '-', $ptgl1);
-    $ptgl2 = str_replace('/', '-', $ptgl2);
-    $ptgl1= date("Y-m-d", strtotime($ptgl1));
-    $ptgl2= date("Y-m-d", strtotime($ptgl2));
+    $ptgl_pl1 = str_replace('/', '-', $ptgl_pl1);
+    $ptgl_pl2 = str_replace('/', '-', $ptgl_pl2);
+    $ptgl1= date("Y-m-d", strtotime($ptgl_pl1));
+    $ptgl2= date("Y-m-d", strtotime($ptgl_pl2));
+    
+    $pbln_pl1=date("Ym", strtotime($ptgl_pl1));
+    $pbln_pl2=date("Ym", strtotime($ptgl_pl2));
+    
+    //echo "$ptgl1 :: $ptgl2 dan $ptgl_pl1 :: $ptgl_pl2 --> bulan $pcari_bln in $pbln_pl1 :: $pbln_pl2<br/>";
+    
+    if ( ($pcari_bln<>$pbln_pl1) OR ($pcari_bln<>$pbln_pl2) ) {
+        echo "Bulan dan Periode tidak sesuai...."; exit;
+    } //echo "ADA"; exit;
     
     if (!empty($pnotes)) $pnotes = str_replace("'", " ", $pnotes);
     

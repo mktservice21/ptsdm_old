@@ -243,6 +243,20 @@
     $pketerangandetail=$pr['iket'];
     
     
+    $pnjmladj=0;
+    $pketadj="";
+    $padaadjustment=false;
+    $query = "select idkascab, jumlah as jml_adj, keterangan FROM dbmaster.t_kaskecilcabang_adj WHERE idkascab='$pidkodeinput'";
+    $tampiladj=mysqli_query($cnmy, $query);
+    $ketemuadj=mysqli_num_rows($tampiladj);
+    if ((INT)$ketemuadj>0) {
+        $adj= mysqli_fetch_array($tampiladj);
+        $pketadj=$adj['keterangan'];
+        $pnjmladj=$adj['jml_adj'];
+        if (empty($pnjmladj)) $pnjmladj=0;
+        if ((DOUBLE)$pnjmladj<>0) $padaadjustment=true;
+    }
+    
 ?>
 
 <HTML>
@@ -481,6 +495,18 @@
             echo "<td nowrap></td>";
             echo "</tr>";
             
+            
+            if ($padaadjustment == true) {
+                $pnjmladj=number_format($pnjmladj,0,",",",");
+                
+                echo "<tr>";
+                echo "<td nowrap></td>";
+                echo "<td nowrap><b>Adjustment</b></td>";
+                echo "<td nowrap align='right'><b>$pnjmladj</b></td>";
+                echo "<td nowrap>$pketadj</td>";
+                echo "</tr>";
+                
+            }
             
             
             echo "<tr>";

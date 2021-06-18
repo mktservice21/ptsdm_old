@@ -23,6 +23,7 @@
     
     $pdivprod="";
     $date1=$_POST['bulan1'];
+    $pincfrom=$_POST['e_incfrom'];
 
     $ptgl1= date("Y-m-01", strtotime($date1));
     $per1= date("F Y", strtotime($date1));
@@ -41,9 +42,14 @@
     if (!empty($pdivprod)) $fildivisi=" AND IFNULL(a.divisi,'')='$pdivprod'";
     if ($pdivprod=="blank") $fildivisi=" AND IFNULL(a.divisi,'')=''";
 
-    $query = "SELECT CAST(null as DECIMAL(10,0)) as urutan, a.bulan, a.divisi, a.cabang icabangid, b.nama cabang, "
-            . " a.jabatan, a.karyawanid, a.nama, a.region, a.jumlah FROM dbmaster.incentiveperdivisi a "
-            . " LEFT JOIN mkt.icabang b on a.cabang=b.iCabangId WHERE a.bulan='$ptgl1' $fildivisi";
+    
+    $query = "SELECT CAST(null as DECIMAL(10,0)) as urutan, a.bulan, a.cabang icabangid, b.nama cabang, "
+            . " a.jabatan, a.karyawanid, a.nama, a.region, SUM(a.jumlah) as jumlah FROM fe_ms.incentiveperdivisi a "
+            . " LEFT JOIN mkt.icabang b on a.cabang=b.iCabangId WHERE a.bulan='$ptgl1' $fildivisi ";
+    if (!empty($pincfrom)) {
+        $query .=" AND IFNULL(a.jenis2,'')='$pincfrom' ";
+    }
+    $query .=" GROUP BY 1,2,3,4,5,6,7,8 ";
     //echo $query; goto hapusdata;
     $query = "create Temporary table $tmp01 ($query)";
     mysqli_query($cnmy, $query);
@@ -61,7 +67,11 @@
         mysqli_query($cnmy, $query);
     }
     
+    $query="Alter table $tmp01 ADD COLUMN coa VARCHAR(50), ADD COLUMN nama_coa VARCHAR(100), ADD COLUMN divisi VARCHAR(5)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    
+    /*
     $query="Alter table $tmp01 ADD COLUMN coa CHAR(50), ADD COLUMN nama_coa CHAR(100)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -81,6 +91,7 @@
     $query ="UPDATE $tmp01 a SET a.nama_coa=(select NAMA4 FROM dbmaster.coa_level4 b WHERE a.coa=b.COA4) WHERE IFNULL(divisi,'')<>''";
     mysqli_query($cnmy, $query);
     
+    */
     
     $query = "select a.*, b.atasnama_b, b.norek_b "
             . " from $tmp01 a LEFT JOIN dbmaster.t_karyawan_bank_rutin b on a.karyawanid=b.karyawanid";
@@ -152,6 +163,11 @@
             <table class='tjudul' width='100%'>
                 <tr><td width="150px"><b>PT SDM</b></td><td></td></tr>
                 <tr><td width="210px"><b>Report Incentive Per </b></td><td><?PHP echo "$per1 "; ?></td></tr>
+                <?PHP
+                if (!empty($pincfrom)) {
+                    echo "<tr><td width='210px'><b>Inc. From </b></td><td>$pincfrom</td></tr>";
+                }
+                ?>
             </table>
         </div>
         <div id="isikanan">
@@ -167,8 +183,8 @@
             <thead>
                 <tr>
                     <th width='5px'>NO</th>
-                    <th width='50px'>Kode</th>
-                    <th width='20px'>Perkiraan</th>
+                    <!--<th width='50px'>Kode</th>
+                    <th width='20px'>Perkiraan</th>-->
                     <th width='10px'>Region</th>
                     <th width='20px'>Cabang</th>
                     <th width='30px'>Jabatan</th>
@@ -229,8 +245,8 @@
 
                         echo "<tr>";
                         echo "<td nowrap>$no</td>";
-                        echo "<td nowrap>$pcoa</td>";
-                        echo "<td nowrap>$pnmcoa</td>";
+                        //echo "<td nowrap>$pcoa</td>";
+                        //echo "<td nowrap>$pnmcoa</td>";
                         echo "<td nowrap>$pregion</td>";
                         echo "<td nowrap>$pnmcabang</td>";
                         echo "<td nowrap>$pjabatan</td>";
@@ -246,8 +262,8 @@
                 //}
                 $grand_total=number_format($grand_total,0,",",",");
                 echo "<tr>";
-                echo "<td nowrap></td>";
-                echo "<td nowrap></td>";
+                //echo "<td nowrap></td>";
+                //echo "<td nowrap></td>";
                 echo "<td nowrap></td>";
                 echo "<td nowrap></td>";
                 echo "<td nowrap></td>";
@@ -400,8 +416,8 @@ hapusdata:
                 "order": [[ 0, "asc" ]],
                 "columnDefs": [
                     { "visible": false },
-                    { className: "text-right", "targets": [7] },//right
-                    { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7,8,9] }//nowrap
+                    { className: "text-right", "targets": [5] },//right
+                    { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7] }//nowrap
 
                 ],
                 bFilter: true, bInfo: true, "bLengthChange": true, "bLengthChange": true,

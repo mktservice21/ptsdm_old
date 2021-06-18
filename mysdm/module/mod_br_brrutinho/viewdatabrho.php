@@ -8,20 +8,29 @@ if ($pmodule=="cekdatasudahada") {
     $pid=$_POST['uid'];
     $pidkar=$_POST['ukry'];
     $pbln=$_POST['ubln'];
-    $ptgl1=$_POST['up01'];
-    $ptgl2=$_POST['up02'];
+    $ptgl_pl1=$_POST['up01'];
+    $ptgl_pl2=$_POST['up02'];
     $pkdperiode=$_POST['ukdperiode'];
     
     $pbulan= date("Ym", strtotime($pbln));
     
     
-    $ptgl1 = str_replace('/', '-', $ptgl1);
-    $ptgl2 = str_replace('/', '-', $ptgl2);
-    $ptgl1= date("Y-m-d", strtotime($ptgl1));
-    $ptgl2= date("Y-m-d", strtotime($ptgl2));
+    $ptgl_pl1 = str_replace('/', '-', $ptgl_pl1);
+    $ptgl_pl2 = str_replace('/', '-', $ptgl_pl2);
+    $ptgl1= date("Y-m-d", strtotime($ptgl_pl1));
+    $ptgl2= date("Y-m-d", strtotime($ptgl_pl2));
+    
+    $pbln_pl1=date("Ym", strtotime($ptgl_pl1));
+    $pbln_pl2=date("Ym", strtotime($ptgl_pl2));
     
     
     $bolehinput="boleh";
+    
+    
+    if ( ($pbulan<>$pbln_pl1) OR ($pbulan<>$pbln_pl2) ) {
+        echo "Bulan dan Periode tidak sesuai...."; exit;
+    }
+    
     
     include "../../config/koneksimysqli.php";
     
@@ -60,7 +69,7 @@ if ($pmodule=="cekdatasudahada") {
         echo "<option value='2' selected>Periode 2</option>";
     }else{
         if ($pbulan==$tglini){
-            if ((int)$hariiniserver > 20) {
+            if ((int)$hariiniserver > 17) {
                 echo "<option value='2' selected>Periode 2</option>";
             }else{
                 echo "<option value='1'>Periode 1</option>";

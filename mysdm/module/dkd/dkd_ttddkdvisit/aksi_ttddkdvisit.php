@@ -43,15 +43,29 @@ if ($module=='dkdrealplanbysign')
         $platitude=$_POST['e_latitude'];
         $plongitude=$_POST['e_longitude'];
         
+        $pidjabatan=$_POST['e_idjbt'];
+        
+        if (empty($pidjabatan)) {
+            if (isset($_SESSION['JABATANID'])) $pidjabatan=$_SESSION['JABATANID'];
+        }
+        
         $ptanggal= date("Y-m-d", strtotime($ptgl));
+        $pjenis="";
         
-        
-        //echo "$kodenya, $ptanggal : $pkaryawanid, $pdoktid, $platitude, $plongitude";
+        $query = "select dokterid from hrd.dkd_new1 as a WHERE "
+                . " a.dokterid='$pdoktid' AND a.tanggal='$ptanggal'";
+        $tampil=mysqli_query($cnmy, $query);
+        $ketemu=mysqli_num_rows($tampil);
+        if ((INT)$ketemu<=0) {
+            $pjenis="EC";
+        }
+            
+        //echo "$kodenya, $ptanggal : $pkaryawanid, $pdoktid, $platitude, $plongitude, $pidjabatan, $pjenis"; exit;
         
         if ($act=="simpandatattdvstpln") {
             
-            $query = "INSERT INTO hrd. (nourut, tanggal, karyawanid, dokterid, l_latitude, l_longitude, userid) values "
-                    . "('$kodenya', '$ptanggal', '$pkaryawanid', '$pdoktid', '$platitude', '$plongitude', '$pcardidlog')";
+            $query = "INSERT INTO hrd.dkd_new_real1 (ttd, tanggal, karyawanid, dokterid, l_latitude, l_longitude, jabatanid, jenis) values "
+                    . "('Y', '$ptanggal', '$pkaryawanid', '$pdoktid', '$platitude', '$plongitude', '$pidjabatan', '$pjenis')";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
             

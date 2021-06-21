@@ -46,7 +46,7 @@ $pilihperiodetipe="I";
 $jumlah=0;
 $chkpilih="";
 $chkpilihsby="";
-
+$plkdari="";
 
 $act="input";
 
@@ -71,6 +71,7 @@ if ($_GET['act']=="editdata"){
     $pdivnomor=$r['nodivisi'];
     $jumlah=$r['jumlah'];
     $divisi=$r['divisi'];
+    $plkdari=$r['jenis_rpt'];
     
     
 }
@@ -157,8 +158,13 @@ if ($_GET['act']=="editdata"){
                                                 if ($pkode=="1") {
                                                     echo "<option value='RT'>Rutin</option>";
                                                 }else{
-                                                    echo "<option value='LK' selected>Luar Kota</option>";
-                                                    echo "<option value='CA'>CA</option>";
+                                                    if ($plkdari=="CAOTC") {
+                                                        echo "<option value='LK'>Luar Kota</option>";
+                                                        echo "<option value='CA' selected>CA</option>";
+                                                    }else{
+                                                        echo "<option value='LK' selected>Luar Kota</option>";
+                                                        echo "<option value='CA'>CA</option>";
+                                                    }
                                                 }
                                               ?>
                                           </select>

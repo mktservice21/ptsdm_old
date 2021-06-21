@@ -144,7 +144,7 @@ if ($pact=="editdata") {
                                 </div>
                                 
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                     <div class='col-xs-5'>
                                         <button type='button' class='btn btn-danger btn-xs' onclick='hapus_nodivisi()'>hapus nodivisi</button>
@@ -155,18 +155,23 @@ if ($pact=="editdata") {
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pilih No. BR/Divisi<br/><span style="color:red;"><u><i>(klik pilih)</i></u></span> <span class='required'></span></label>
                                     <div class='col-xs-5'>
                                         <div class='input-group '>
-                                        <span class='input-group-btn'>
-                                            <button type='button' class='btn btn-primary' data-toggle='modal' data-target='#myModal' onClick="getDataNoDivisi('e_idinput', 'e_nodivisi', 'e_jmlnodiv', 'e_kodeinput', '<?PHP echo "$pidcard"; ?>', '<?PHP echo "$pidgroup"; ?>')">Pilih</button>
-                                        </span>
-                                        <input type='text' class='form-control' id='e_nodivisi' name='e_nodivisi' value='<?PHP echo $pnodivisi; ?>' Readonly>
-                                        <input type='hidden' class='form-control' id='e_idinput' name='e_idinput' value='<?PHP echo $pidinput; ?>' Readonly>
-                                        <input type='hidden' class='form-control' id='e_jmlnodiv' name='e_jmlnodiv' value='<?PHP echo $pnodivisi; ?>' Readonly>
-                                        <input type='hidden' class='form-control' id='e_kodeinput' name='e_kodeinput' value='<?PHP echo $pkodeinput; ?>' Readonly>
+                                            <span class='input-group-btn'>
+                                                <button type='button' class='btn btn-primary' data-toggle='modal' data-target='#myModal' onClick="getDataNoDivisi('e_idinput', 'e_nodivisi', 'e_jmlnodiv', 'e_kodeinput', '<?PHP echo "$pidcard"; ?>', '<?PHP echo "$pidgroup"; ?>')">Pilih</button>
+                                            </span>
+                                            <input type='text' class='form-control' id='e_nodivisi' name='e_nodivisi' value='<?PHP echo $pnodivisi; ?>' Readonly>
+                                            
+                                            <span class='input-group-btn'>
+                                                <button type='button' class='btn btn-danger btn-xs' onclick='hapus_nodivisi()'>x</button>
+                                            </span>
+                                            
+                                            <input type='hidden' class='form-control' id='e_idinput' name='e_idinput' value='<?PHP echo $pidinput; ?>' Readonly>
+                                            <input type='hidden' class='form-control' id='e_jmlnodiv' name='e_jmlnodiv' value='<?PHP echo $pnodivisi; ?>' Readonly>
+                                            <input type='hidden' class='form-control' id='e_kodeinput' name='e_kodeinput' value='<?PHP echo $pkodeinput; ?>' Readonly>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                     <div class='col-xs-5'>
                                         <button type='button' class='btn btn-danger btn-xs' onclick='hapus_brinput()'>hapus br input</button>
@@ -177,14 +182,19 @@ if ($pact=="editdata") {
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID INPUT BR <span class='required'></span></label>
                                     <div class='col-xs-5'>
                                         <div class='input-group '>
-                                        <span class='input-group-btn'>
-                                            <button type='button' class='btn btn-primary' data-toggle='modal' data-target='#myModal' onClick="getDataBRInput('e_idnobr', 'e_noslipbr', 'e_realisasibr', 'e_customerbr', 'e_ketbr')">Pilih!</button>
-                                        </span>
-                                        <input type='text' class='form-control' id='e_idnobr' name='e_idnobr' value='<?PHP echo $pbrnoid; ?>' Readonly>
-                                        <input type='hidden' class='form-control' id='e_noslipbr' name='e_noslipbr' value='<?PHP echo $pnoslipbr; ?>' Readonly>
-                                        <input type='hidden' class='form-control' id='e_realisasibr' name='e_realisasibr' value='<?PHP echo $prealisasibr; ?>' Readonly>
-                                        <input type='hidden' class='form-control' id='e_customerbr' name='e_customerbr' value='<?PHP echo $pcustbr; ?>' Readonly>
-                                        <input type='hidden' class='form-control' id='e_ketbr' name='e_ketbr' value='<?PHP echo $pketeranganbr; ?>' Readonly>
+                                            <span class='input-group-btn'>
+                                                <button type='button' class='btn btn-primary' data-toggle='modal' data-target='#myModal' onClick="getDataBRInput('e_idnobr', 'e_noslipbr', 'e_realisasibr', 'e_customerbr', 'e_ketbr')">Pilih!</button>
+                                            </span>
+                                            <input type='text' class='form-control' id='e_idnobr' name='e_idnobr' value='<?PHP echo $pbrnoid; ?>' Readonly>
+                                            
+                                            <span class='input-group-btn'>
+                                                <button type='button' class='btn btn-danger btn-xs' onclick='hapus_brinput()'>x</button>
+                                            </span>
+                                            
+                                            <input type='hidden' class='form-control' id='e_noslipbr' name='e_noslipbr' value='<?PHP echo $pnoslipbr; ?>' Readonly>
+                                            <input type='hidden' class='form-control' id='e_realisasibr' name='e_realisasibr' value='<?PHP echo $prealisasibr; ?>' Readonly>
+                                            <input type='hidden' class='form-control' id='e_customerbr' name='e_customerbr' value='<?PHP echo $pcustbr; ?>' Readonly>
+                                            <input type='hidden' class='form-control' id='e_ketbr' name='e_ketbr' value='<?PHP echo $pketeranganbr; ?>' Readonly>
                                         </div>
                                     </div>
                                 </div>

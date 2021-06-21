@@ -31,7 +31,7 @@
     // getting total number records without any search
     $sql = "SELECT idinput, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, "
             . "divisi, kodeid, nama, subkode, subnama, FORMAT(jumlah,0,'de_DE') as jumlah, "
-            . " nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, DATE_FORMAT(tgl_proses,'%d/%m/%Y') tgl_proses, jenis_rpt, periodeby, keterangan ";
+            . " nomor, nodivisi, pilih, karyawanid, jenis_rpt, userproses, DATE_FORMAT(tgl_proses,'%d/%m/%Y') tgl_proses, jenis_rpt, periodeby, keterangan, tgl_dir ";
     $sql.=" FROM dbmaster.v_suratdana_br ";
     $sql.=" WHERE stsnonaktif <> 'Y' ";
     $sql.=" AND Date_format(tglinput, '%Y-%m') between '$tgl1' and '$tgl2' ";
@@ -84,6 +84,7 @@
         $pperiodeby=$row["periodeby"];
         $pket=RTRIM($row["keterangan"]);
         $nourut = "";
+        $ptgldir=$row["tgl_dir"];
         
         $pmystsyginput="";
         if ($pkode=="1" AND $psubkode=="03") {//ria
@@ -118,6 +119,13 @@
         
         if ($pdivisi=="OTC") {
             if ($row["pilih"]=="N") $ndiviotc="<div style='color:red;'>$ndiviotc</div>";
+        }
+        
+        if ($ptgldir=="0000-00-00" OR $ptgldir=="0000-00-00 00:00:00") $ptgldir="";
+        
+        if (!empty($ptgldir)) {
+            $pedit="";
+            $phapus="";
         }
         
         if (!empty($puserproses)) {

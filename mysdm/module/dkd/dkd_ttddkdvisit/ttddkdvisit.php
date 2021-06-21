@@ -172,6 +172,13 @@
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                     <div class='x_panel'>
 
+                        <div class='x_title'>
+                            <h2><input class='btn btn-default' type=button value='Tambah Baru'
+                                onclick="window.location.href='<?PHP echo "?module=$pmodule&idmenu=$pidmenu&act=tambahbaru"; ?>';">
+                                <small></small>
+                            </h2>
+                            <div class='clearfix'></div>
+                        </div>
                         
                         <div class='col-sm-2'>
                             Cabang
@@ -356,6 +363,10 @@
 
             case "ttdvisit":
                 include "tambah_ttd.php";
+            break;
+
+            case "tambahbaru":
+                include "tambah_ttdnew.php";
             break;
         
 

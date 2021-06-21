@@ -651,6 +651,9 @@
     }elseif ($_GET['module']=='lapkascab'){
         include 'module/laporan/mod_lapkascab/aksi_lapkascab.php';
         
+    }elseif ($_GET['module']=='viewmapttddkd'){
+        include 'module/dkd/dkd_ttddkdvisit/ttddkdvisit_viewmap.php';
+        
         
         
     }elseif ($_GET['module']=='eksekusifileelastik'){

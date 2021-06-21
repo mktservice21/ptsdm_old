@@ -37,7 +37,13 @@ elseif ($module=='spdrutinotc')
     $ppilihdari=$_POST['cb_daripilihan'];
     $pjenis="";
     
-    $padvance = "A";
+    $padvance = "RTNOTC";
+    if ($psubkode=="03") $padvance = "RTNOTC";
+    elseif ($psubkode=="36") $padvance = "SRVOTC";
+    elseif ($psubkode=="21") {
+        $padvance = "LKOTC";
+        if ($ppilihdari=="CA") $padvance = "CAOTC";
+    }
     
     $pnomor=$_POST['e_nomor'];
     //$ptgl = str_replace('/', '-', $_POST['e_tglberlaku']);

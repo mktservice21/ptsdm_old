@@ -55,6 +55,34 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "alter table $tmp01 add column sdhreal varchar(1), add column ttd varchar(1) DEFAULT 'N', add l_latitude varchar(200), add l_longitude varchar(200)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $sql = "select a.nourut, a.karyawanid, a.tanggal, a.dokterid, b.namalengkap as nama_dokter, a.jenis, a.ttd, a.l_latitude, a.l_longitude FROM hrd.dkd_new_real1 as a "
+            . " JOIN dr.masterdokter as b on a.dokterid=b.id "
+            . " WHERE a.karyawanid='$pkryid'";
+    $sql .=" AND a.tanggal = '$ptgl1'";
+    $query = "create TEMPORARY table $tmp02 ($sql)"; 
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $sql = "select * from $tmp01";
+    $query = "create TEMPORARY table $tmp03 ($sql)"; 
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "INSERT INTO $tmp01 (nourut, karyawanid, tanggal, dokterid, nama_dokter, jenis, ttd, l_latitude, l_longitude) "
+            . " SELECT nourut, karyawanid, tanggal, dokterid, nama_dokter, jenis, ttd, l_latitude, l_longitude FROM $tmp02 WHERE dokterid NOT IN "
+            . " (select distinct IFNULL(dokterid,'') FROM $tmp03)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "UPDATE $tmp01 as a JOIN $tmp02 as b on a.karyawanid=b.karyawanid AND "
+            . " a.dokterid=b.dokterid AND a.tanggal=b.tanggal SET a.sdhreal='Y', a.ttd=b.ttd, a.l_latitude=b.l_latitude, a.l_longitude=b.l_longitude";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
@@ -98,6 +126,11 @@
                 $ntgl=$row0['tanggal'];
                 $ndoktid=$row0['dokterid'];
                 $ndoktnm=$row0['nama_dokter'];
+                $nfromttd=$row0['ttd'];
+                $nsudahreal=$row0['sdhreal'];
+                
+                $nlat=$row0['l_latitude'];
+                $nlong=$row0['l_longitude'];
                 
                 $pidget=encodeString($cidinput);
 
@@ -109,6 +142,14 @@
                 $xthn= date('Y', strtotime($ntgl));
                 
                 $pttd="<a class='btn btn-info btn-xs' href='?module=$pmodule&act=ttdvisit&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget&nid=$ntgl'>Tanda Tangan</a>";
+                $plihatview = "<a class='btn btn-success btn-xs' href='eksekusi3.php?module=viewmapttddkd&ket=bukan&ilat=$nlat&ilong=$nlong' target='_blank'>View Map</a>";
+                
+                if ($nsudahreal=="Y") {
+                    $pttd="";
+                    if ($nfromttd=="Y") {
+                        $pttd = $plihatview;
+                    }
+                }
                 
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";

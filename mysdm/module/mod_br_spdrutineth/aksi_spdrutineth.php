@@ -37,6 +37,9 @@ elseif ($module=='spdrutineth')
     $pjenis="";
     
     $padvance = "A";
+    if ($psubkode=="03") $padvance = "RTNETH";
+    elseif ($psubkode=="05") $padvance = "SWA";
+    elseif ($psubkode=="21") $padvance = "LKETH";
     
     $pnomor=$_POST['e_nomor'];
     //$ptgl = str_replace('/', '-', $_POST['e_tglberlaku']);

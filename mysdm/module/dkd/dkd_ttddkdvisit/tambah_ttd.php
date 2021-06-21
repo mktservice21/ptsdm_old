@@ -47,6 +47,7 @@ $row0= mysqli_fetch_array($tampil);
 $nkryid=$row0['karyawanid'];
 $ntgl=$row0['tanggal'];
 $ptanggal=$ntgl;
+$pidjbt=$row0['jabatanid'];
 $pdokterid=$row0['dokterid'];
 $pdokternm=$row0['nama_dokter'];
 $pdokter=$pdokternm." - ".$pdokterid;
@@ -102,6 +103,7 @@ $ptglhari="$xhari, $xtgl $xbulan $xthn";
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput; ?>' Readonly>
                                         <input type='hidden' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='hidden' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
+                                        <input type='hidden' id='e_idjbt' name='e_idjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbt; ?>' Readonly>
                                     </div>
                                 </div>
                                 

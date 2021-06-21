@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Street View split-map-panes</title>
+    <title>Street View</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <style>
         html,

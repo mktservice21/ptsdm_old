@@ -29,7 +29,7 @@ if ($module=="ttdspdfin") {
             $gbrapv=$_POST['uttd'];
             //if ($ttdkosong==$gbrapv) { echo "ttdkosong"; exit; }
             
-            if ($pses_grpuser=="3" OR $pses_grpuser=="23" OR $pses_grpuser=="28" OR $pses_grpuser=="61" OR $pses_grpuser=="40") {
+            if ($pses_grpuser=="3" OR $pses_grpuser=="67" OR $pses_grpuser=="23" OR $pses_grpuser=="28" OR $pses_grpuser=="61" OR $pses_grpuser=="40") {
                 mysqli_query($cnmy, "update $dbname.t_suratdana_br set apv1='$karyawanapv', tgl_apv1=NOW(), gbr_apv1='$gbrapv' WHERE idinput in $noidbr AND IFNULL(tgl_apv2,'')=''");
             }elseif ($pses_grpuser=="25") {//anne || AND $pses_grpuser=="26"
                 mysqli_query($cnmy, "update $dbname.t_suratdana_br set apv1='$karyawanapv', tgl_apv1=NOW(), gbr_apv1='$gbrapv' WHERE karyawanid='$pses_idcard' AND idinput in $noidbr AND IFNULL(tgl_apv2,'')=''");
@@ -52,7 +52,7 @@ if ($module=="ttdspdfin") {
             
         }elseif ($act=="unapprove") {
             
-            if ($pses_grpuser=="3" OR $pses_grpuser=="23" OR $pses_grpuser=="28" OR $pses_grpuser=="61" OR $pses_grpuser=="40") {
+            if ($pses_grpuser=="3" OR $pses_grpuser=="67" OR $pses_grpuser=="23" OR $pses_grpuser=="28" OR $pses_grpuser=="61" OR $pses_grpuser=="40") {
                 mysqli_query($cnmy, "update $dbname.t_suratdana_br set apv1=NULL, tgl_apv1=NULL, gbr_apv1=NULL WHERE idinput in $noidbr AND IFNULL(tgl_apv2,'')=''");
             }elseif ($pses_grpuser=="25") {//anne || AND $pses_grpuser=="26"
                 mysqli_query($cnmy, "update $dbname.t_suratdana_br set apv2=NULL, tgl_apv2=NULL, gbr_apv2=NULL WHERE idinput in $noidbr AND IFNULL(tgl_apv1,'')<>'' AND IFNULL(tgl_dir,'')=''");

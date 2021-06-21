@@ -55,6 +55,9 @@ elseif ($module=='spdkas')
     
     $pjenis="";//lampiran
     $padvance="";//advance/klaim/belum ada kuitansi
+    if ($psubkode=="22") $padvance="KKHO";
+    elseif ($psubkode=="23") $padvance="KKCO";
+    
     
     $ppertipe="";
     

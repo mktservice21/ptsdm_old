@@ -199,10 +199,23 @@ function ReloadTandaTangan(){
             
             
             var iid = document.getElementById('e_id').value;
+            var iiddokter = document.getElementById('e_doktid').value;
+            var ilatit = document.getElementById('e_latitude').value;
+            var ilongit = document.getElementById('e_longitude').value;
             
             
             if (iid=="") {
                 alert("ID kosong...");
+                return false;
+            }
+            
+            if (iiddokter=="") {
+                alert("user harus dipilih...");
+                return false;
+            }
+            
+            if (ilatit=="" || ilongit=="") {
+                alert("lokasi masih kosong...");
                 return false;
             }
             

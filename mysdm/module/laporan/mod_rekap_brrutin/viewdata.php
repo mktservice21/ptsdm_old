@@ -392,8 +392,8 @@ if ($_GET['module']=="caribuktisudahada"){
             }
             
             if (!empty($kodenya)){
-                $query = "INSERT INTO $dbname.t_suratdana_br (idinput, divisi, kodeid, subkode, tgl, nodivisi, jumlah, userid, coa4, kodeperiode, tglf, tglt, karyawanid)values"
-                        . "('$kodenya', '$ndivisi', '$pkode', '$psubkode', '$tglinput_skr', '$pdivno', '$pjumlah', '$userid', '$pcoa', '$kdperiode', '$myinpperiode1', '$myinpperiode2', '0000000143')";
+                $query = "INSERT INTO $dbname.t_suratdana_br (idinput, divisi, kodeid, subkode, tgl, nodivisi, jumlah, userid, coa4, kodeperiode, tglf, tglt, karyawanid, jenis_rpt)values"
+                        . "('$kodenya', '$ndivisi', '$pkode', '$psubkode', '$tglinput_skr', '$pdivno', '$pjumlah', '$userid', '$pcoa', '$kdperiode', '$myinpperiode1', '$myinpperiode2', '0000000143', 'RTNETH')";
                 mysqli_query($cnmy, $query);
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "Error..."; exit; }
                 

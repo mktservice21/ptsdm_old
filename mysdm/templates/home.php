@@ -901,6 +901,8 @@
         include 'module/dkd/dkd_reportpalnreal/reportpalnreal.php';
     }elseif ($_GET['module']=='dkdrptpintcall'){
         include 'module/dkd/dkd_reportpointcall/reportpointcall.php';
+    }elseif ($_GET['module']=='dkdrealplanbysign'){
+        include 'module/dkd/dkd_ttddkdvisit/ttddkdvisit.php';
         
     }elseif ($_GET['module']=='lapkascab'){
         include 'module/laporan/mod_lapkascab/lapkascab.php';

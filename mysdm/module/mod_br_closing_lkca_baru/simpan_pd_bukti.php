@@ -215,7 +215,7 @@
                 $query = "INSERT INTO $dbname.t_suratdana_br (idinput, divisi, kodeid, subkode, tgl, nodivisi, jumlah, jumlah3, userid, coa4, "
                         . " tglf, tglt, sts, karyawanid, jenis_rpt)values"
                         . "('$kodenya', '', '$pkode', '$psubkode', CURRENT_DATE(), '$pnodivisi', '$psaldo', '$pjmltransf', '$userid', '$pcoa', "
-                        . " '$myinpperiode1', '$myinpperiode2', '$stsreport', '$userid', 'K')";
+                        . " '$myinpperiode1', '$myinpperiode2', '$stsreport', '$userid', 'LKETH')";
                 mysqli_query($cnit, $query);
                 $erropesan = mysqli_error($cnit); 
                 if (!empty($erropesan)) { 

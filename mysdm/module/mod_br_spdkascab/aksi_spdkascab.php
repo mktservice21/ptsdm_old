@@ -78,7 +78,8 @@ elseif ($module=='bgtpdkaskecilcabang')
 
     
     $pjenis="";//lampiran
-    $padvance="";//advance/klaim/belum ada kuitansi
+    $padvance="KKCBETH";//advance/klaim/belum ada kuitansi
+    if ($pdivisi=="OTC") $padvance="KKCBOTC";
     
     $ppertipe="";
     

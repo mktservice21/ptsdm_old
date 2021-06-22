@@ -121,10 +121,10 @@
         mysqli_query($cnmy, $query);
     }
     
-    if ($figroupuser=="28" OR $figroupuser=="3" OR $figroupuser=="25" OR $figroupuser=="23" OR $figroupuser=="26") {
+    //if ($figroupuser=="28" OR $figroupuser=="3" OR $figroupuser=="25" OR $figroupuser=="23" OR $figroupuser=="26" OR $figroupuser=="22") {
         $query="DELETE FROM $tmp01 WHERE IFNULL(jumlah,0)=0";
         mysqli_query($cnmy, $query);
-    }
+    //}
     
     
     $query="Alter table $tmp01 ADD COLUMN coa CHAR(50), ADD COLUMN nama_coa CHAR(100)";

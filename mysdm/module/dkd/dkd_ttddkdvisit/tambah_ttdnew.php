@@ -40,9 +40,9 @@ $plongitude="";
 
 $hari_ini = date('Y-m-d');
 $ntgl=$hari_ini;
+$ptanggal=$hari_ini;
 
-$nkryid="";
-$ptanggal="";
+$nkryid=$pidcard;
 $pdokterid="";
 $pdokternm="";
 $pdokter="";

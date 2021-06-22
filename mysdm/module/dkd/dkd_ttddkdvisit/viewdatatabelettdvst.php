@@ -145,7 +145,7 @@
                 $plihatview = "<a class='btn btn-success btn-xs' href='eksekusi3.php?module=viewmapttddkd&ket=bukan&ilat=$nlat&ilong=$nlong' target='_blank'>View Map</a>";
                 
                 if ($nsudahreal=="Y") {
-                    $pttd="";
+                    $pttd="sudah realisasi";
                     if ($nfromttd=="Y") {
                         $pttd = $plihatview;
                     }

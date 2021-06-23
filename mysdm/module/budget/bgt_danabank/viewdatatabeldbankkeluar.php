@@ -115,6 +115,11 @@
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
 
+    $query = "UPDATE $tmp01 a SET a.jumlah=IFNULL(jumlah,0)+IFNULL(jumlah2,0) WHERE subkode='20' and jenis_rpt='B'";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
 ?>
 
 <!-- Modal -->

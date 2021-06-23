@@ -97,13 +97,13 @@ $query = "SELECT a.fakturid, b.region, a.icabangid, b.nama nama_cabang, a.areaid
         . " a.distid, g.nama nama_dist, a.tgljual, "
         . " a.hna, sum(a.qty) as qty, sum(IFNULL(a.hna,0)*IFNULL(a.qty,0)) as tvalue "
         . " FROM $tmp01 a "
-        . " LEFT JOIN sls.icabang b on a.icabangid=b.icabangid "
-        . " LEFT JOIN sls.iarea c on a.icabangid=c.icabangid and b.icabangid=c.icabangid and a.areaid=c.areaid "
-        . " LEFT JOIN sls.icust d on a.icabangid=d.iCabangId and a.icustid=d.iCustId "
+        . " LEFT JOIN mkt.icabang b on a.icabangid=b.icabangid "
+        . " LEFT JOIN mkt.iarea c on a.icabangid=c.icabangid and b.icabangid=c.icabangid and a.areaid=c.areaid "
+        . " LEFT JOIN mkt.icust d on a.icabangid=d.iCabangId and a.icustid=d.iCustId "
         . " LEFT JOIN MKT.isektor e on d.iSektorId=e.iSektorId "
-        . " LEFT JOIN sls.iproduk f on a.iprodid=f.iprodid "
-        . " LEFT JOIN sls.distrib0 g on a.distid=g.Distid "
-        . " LEFT JOIN sls.eproduk i on f.iprodid=i.iprodid AND a.distid=i.DistId WHERE 1=1";
+        . " LEFT JOIN mkt.iproduk f on a.iprodid=f.iprodid "
+        . " LEFT JOIN mkt.distrib0 g on a.distid=g.Distid "
+        . " LEFT JOIN mkt.eproduk i on f.iprodid=i.iprodid AND a.distid=i.DistId WHERE 1=1";
 if (!empty($pkdsektor)) {
     $query .=" AND d.iSektorId='$pkdsektor' ";
 }

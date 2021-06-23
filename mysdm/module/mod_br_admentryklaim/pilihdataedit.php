@@ -58,7 +58,8 @@ $ptampilsql = mysqli_query($cnmy, "SELECT noslip FROM hrd.klaim "
         . " WHERE karyawanid='$pidcard' AND noslip NOT IN ('', 'via Surabaya', 'VIA', 'via', 'Via', 'SBY', 'Via SBY', 'via Srby PotTag', 'via SBY Pot Tag', 'SBY PotTagihan') "
         . " and left(noslip,3) NOT IN ('via', 'Via', 'VIA') "
         . " and year(tgl)='$ptahunini' "
-        . " ORDER BY noslip desc LIMIT 1");
+        . " and tgl>='2021-05-25' "
+        . " ORDER BY IFNULL(noslip,'') desc LIMIT 1");
 $row2    = mysqli_fetch_array($ptampilsql);
 $pnoslipakhir=$row2['noslip'];
 if (empty($pnoslipakhir)) $pnoslipakhir="0000";

@@ -210,6 +210,9 @@
         $query = "create TEMPORARY table $tmp01 ($query)";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp01 SET icabangid='ZKLAIMDISC', nama_cabang='ZKLAIMDISC' WHERE kodeinput='B'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
         
         if (!empty($ppilbank)) {
@@ -350,7 +353,7 @@
         mysqli_query($cnit, $query);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-        
+        /*
         
         // 6 = MELANOX DECORATIVE 1 = MELANOX PREMIUM
         $query = "UPDATE $tmp03 SET icabangid='PM_MELANOX' WHERE IFNULL(GRP_FKIDEN,'') IN ('1', '6')";
@@ -368,7 +371,7 @@
         $query = "UPDATE $tmp03 SET icabangid='PM_ACNEMED' WHERE IFNULL(GRP_FKIDEN,'') IN ('10')";
         mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-        
+        */
         
         //$query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from dbmaster.sales_otc_local WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1,2,3";
         $query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from $tmp03 GROUP BY 1,2,3";
@@ -432,6 +435,9 @@
     
     }else{
         $query = "UPDATE $tmp10 a LEFT JOIN MKT.icabang b on a.icabangid=b.icabangid SET a.nama_cabang=b.nama";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp10 SET nama_cabang='ZKLAIMDISC' WHERE icabangid='ZKLAIMDISC'";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     }
     
@@ -602,6 +608,7 @@
                         $znmcab=$arrnmcab[$ix];
                         
                         if ($znmcab=="zz") $znmcab="OTHERS";
+                        elseif ($znmcab=="ZKLAIMDISC") $znmcab="KLAIM DISCOUNT";
                         
                         echo "<th align='center' nowrap>%</th>";
                         echo "<th align='center' nowrap>$znmcab</th>";

@@ -107,35 +107,38 @@ if ($pmodule=="viewdatakaryawan") {
     
     echo "<option value='' selected>-- Pilih --</option>";
     
-    $query = "SELECT distinct d.iCabangId as icabangid, g.nama as nama_cabang, d.areaId as areaid, 
-        h.nama as nama_area, a.id as idoutlet, a.nama as nama_outelt, a.jenis, b.nama as nama_sektor, 
-        a.type, c.Nama as nama_type, a.dispensing, a.alamat,
-        e.iddokter, f.namalengkap as nama_dokter  
-        FROM ms2.outlet_master as a LEFT JOIN mkt.isektor as b on a.jenis=b.iSektorId 
-        LEFT JOIN ms2.outlet_type as c on a.type=c.id 
-        LEFT JOIN ms2.outlet_customer as d on a.id=d.outletId 
-        LEFT JOIN ms2.tempatpraktek as e on d.outletId=e.outletId
-        LEFT JOIN ms2.masterdokter as f on e.iddokter=f.id 
-        LEFT JOIN mkt.icabang as g on d.iCabangId=g.iCabangId 
-        LEFT JOIN mkt.iarea as h on d.iCabangId=h.iCabangId and d.areaId=h.areaId 
+    $query = "SELECT a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
+        b.jenis, b.type, c.Nama as nama_type, b.dispensing, 
+        d.iCustId as icustid, d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+        a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+        FROM ms2.tempatpraktek as a 
+        JOIN ms2.outlet_master as b on a.outletId=b.id 
+        LEFT JOIN ms2.outlet_type as c on b.type=c.id 
+        JOIN ms2.outlet_customer as d on a.outletId=d.outletId 
+        LEFT JOIN mkt.icabang as e on d.iCabangId=e.iCabangId 
+        LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
+        JOIN ms2.masterdokter as g on a.iddokter=g.id 
+        LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
         WHERE d.icabangid='$pidcab' ";
     if (!empty($pidarea)) {
         $query .=" AND d.areaid='$pidarea' ";
     }
-    $query .=" ORDER BY a.nama, a.id";
+    $query .=" ORDER BY b.nama, a.id";
     $tampil= mysqli_query($cnms, $query);
     while ($row= mysqli_fetch_array($tampil)) {
+        $pnidpraktek=$row['idpraktek'];
         $pnareaid=$row['areaid'];
         $pnareanm=$row['nama_area'];
         $pnotlid=$row['idoutlet'];
-        $pnotlnm=$row['nama_outelt'];
+        $pnotlnm=$row['nama_outlet'];
         $pntypeotl=$row['nama_type'];
         $pndispensing=$row['dispensing'];
         $pnalamatotl=$row['alamat'];
         $pniddokt=$row['iddokter'];
         $pnnmdokt=$row['nama_dokter'];
+        $pnnamatype=$row['nama_type'];
         
-        echo "<option value='$pnotlid' >$pnotlnm  - $pnnmdokt</option>";
+        echo "<option value='$pnidpraktek' >$pnnmdokt - $pnotlnm - ($pnnamatype)</option>";
     }
     
     mysqli_close($cnms);

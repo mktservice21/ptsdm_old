@@ -616,70 +616,98 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
         echo "</table>";
         
-        echo "<div id='div_map' class='no-print'>";
-            echo "<br/>&nbsp;<br/>&nbsp;";
+        $pgroupid=$_SESSION['GROUP'];
+        $pjabatanid=$_SESSION['JABATANID'];
+        
+        if ($pgroupid=="1" OR $pgroupid=="24" OR $pjabatanid=="38") {
+            mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
-            echo "<div style='font-weight:bold;'>";
-            echo "<u>Mapping ke Data KS Baru</u><br/>";
-            echo "Kartu Status : $pnamakarywanpl - $pkaryawanid<br/>";
-            echo "User : $pnamadokter - $pdokterid<br>";
-            echo "</div>";
-            echo "<br/>&nbsp;";
+            $query = "select DISTINCT nama_apotik, idapotik from $tmp03 where IFNULL(idapotik,'') <>'' AND IFNULL(idapotik,'0') <> '0'";
+            $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+            $query = "ALTER TABLE $tmp01 ADD COLUMN idpraktek INT(10) Unsigned, add column nama_outlet varchar(200), add column nama_dokt varchar(200)";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+            $query = "UPDATE $tmp01 as a JOIN (select karyawanid, dokterid, idapotik, idpraktek FROM fe_ms.mapping_ks_dsu WHERE "
+                    . " karyawanid='$pkaryawanid' and dokterid='$pdokterid') as b on a.idapotik=b.idapotik SET a.idpraktek=b.idpraktek";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
-            echo "<div>";
-            echo "<table border='1' cellspacing='0' cellpadding='1'>";
-                echo "<thead>";
-                    echo "<tr>";
-                        echo "<th>No</th>";
-                        echo "<th>Id Apotik</th>";
-                        echo "<th>Nama Apotik</th>";
-                        //echo "<th>Type Apotik</th>";
-                        echo "<th>&nbsp;</th>";
-                    echo "</tr>";
-                echo "</thead>";
-                echo "<tbody>";
-                    $no=1;//, apttype
-                    $query = "select DISTINCT nama_apotik, idapotik from $tmp03 where IFNULL(idapotik,'') <>'' AND IFNULL(idapotik,'0') <> '0' order by nama_apotik, idapotik";
-                    $tampil=mysqli_query($cnmy, $query);
-                    $ketemu=mysqli_num_rows($tampil);
-                    if ((INT)$ketemu>0) {
-                        while ($row= mysqli_fetch_array($tampil)) {
-                            $nidapotik=$row['idapotik'];
-                            $nnmapotik=$row['nama_apotik'];
-                            
-                            $ntypeapotik="";
-                            /*
-                            $ntypeapotik=$row['apttype'];
-                            if ($ptypeapotik=="1") {
-                                $nnmtypeapt="D";
-                            } else {
-                                $nnmtypeapt="R";
+            
+            echo "<div id='div_map' class='no-print'>";
+                echo "<br/>&nbsp;<br/>&nbsp;";
+
+                echo "<div style='font-weight:bold;'>";
+                echo "<u>Mapping KS ke DSU</u><br/>";
+                echo "Kartu Status : $pnamakarywanpl - $pkaryawanid<br/>";
+                echo "User : $pnamadokter - $pdokterid<br>";
+                echo "</div>";
+                echo "<br/>&nbsp;";
+
+                echo "<div>";
+                echo "<table border='1' cellspacing='0' cellpadding='1'>";
+                    echo "<thead>";
+                        echo "<tr>";
+                            echo "<th>No</th>";
+                            echo "<th>Id Apotik</th>";
+                            echo "<th>Nama Apotik</th>";
+                            //echo "<th>Type Apotik</th>";
+                            echo "<th>&nbsp;</th>";
+                        echo "</tr>";
+                    echo "</thead>";
+                    echo "<tbody>";
+                        $no=1;//, apttype
+                        $query = "select DISTINCT nama_apotik, idapotik, idpraktek from $tmp01 order by nama_apotik, idapotik";
+                        $tampil=mysqli_query($cnmy, $query);
+                        $ketemu=mysqli_num_rows($tampil);
+                        if ((INT)$ketemu>0) {
+                            while ($row= mysqli_fetch_array($tampil)) {
+                                $nidapotik=$row['idapotik'];
+                                $nnmapotik=$row['nama_apotik'];
+                                $nidpraktek=$row['idpraktek'];
+
+                                $ntypeapotik="";
+                                if ($nidpraktek=="0") $nidpraktek="";
+                                
+                                /*
+                                $ntypeapotik=$row['apttype'];
+                                if ($ptypeapotik=="1") {
+                                    $nnmtypeapt="D";
+                                } else {
+                                    $nnmtypeapt="R";
+                                }
+                                 * 
+                                 */
+
+                                $nbutton="<button type='button' class='btn btn-success btn-xs' data-toggle='modal' "
+                                        . " data-target='#myModal' onClick=\"MappingKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter', '$nidapotik', '$nnmapotik', '$ntypeapotik')\">Mapping</button>";
+
+
+                                if (!empty($nidpraktek)) {
+                                    $nbutton = "SUDAH MAPPING";
+                                }
+                                
+                                echo "<tr>";
+                                echo "<td nowrap><small>$no</small></td>";
+                                echo "<td nowrap><small>$nidapotik</small></td>";
+                                echo "<td nowrap><small>$nnmapotik</small></td>";
+                                //echo "<td nowrap><small>$nnmtypeapt</small></td>";
+                                echo "<td nowrap><small>&nbsp; $nbutton &nbsp; </small></td>";
+                                echo "</tr>";
+
+                                $no++;
                             }
-                             * 
-                             */
-                            
-                            $nbutton="<button type='button' class='btn btn-success btn-xs' data-toggle='modal' "
-                                    . " data-target='#myModal' onClick=\"MappingKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter', '$nidapotik', '$nnmapotik', '$ntypeapotik')\">Mapping</button>";
-                            
-                            
-                            echo "<tr>";
-                            echo "<td nowrap><small>$no</small></td>";
-                            echo "<td nowrap><small>$nidapotik</small></td>";
-                            echo "<td nowrap><small>$nnmapotik</small></td>";
-                            //echo "<td nowrap><small>$nnmtypeapt</small></td>";
-                            echo "<td nowrap><small>&nbsp; $nbutton &nbsp; </small></td>";
-                            echo "</tr>";
-                            
-                            $no++;
                         }
-                    }
-                echo "</tbody>";
-                
-            echo "</table>";
-                
+                    echo "</tbody>";
+
+                echo "</table>";
+
+                echo "</div>";
+
             echo "</div>";
-            
-        echo "</div>";
+        
+        }
         
         echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
 

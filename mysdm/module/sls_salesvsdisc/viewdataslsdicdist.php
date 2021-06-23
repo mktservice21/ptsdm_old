@@ -36,6 +36,8 @@ if ($pmodule=="caridataregion") {
         if ($pidivisi=="OTHER" OR $pidivisi=="OTHERS") {
             if ($puserid=="266") {
                 echo "<option value='B' selected>Barat</option>";
+            }elseif ($puserid=="144") {
+                echo "<option value='T' selected>Timur</option>";
             }
         }else{
             if ($puserid=="144") {

@@ -19,6 +19,7 @@
     
     
     $now=date("mdYhis");
+    $tmp00 =" dbtemp.RPTREKOTCF00_".$_SESSION['USERID']."_$now ";
     $tmp01 =" dbtemp.RPTREKOTCF01_".$_SESSION['USERID']."_$now ";
     $tmp02 =" dbtemp.RPTREKOTCF02_".$_SESSION['USERID']."_$now ";
     $tmp03 =" dbtemp.RPTREKOTCF03_".$_SESSION['USERID']."_$now ";
@@ -68,6 +69,16 @@
         
         
     }elseif ($pdivisi_pilih=="KD") {
+        $query = "select DISTINCT IFNULL(a.bridinput,'') as bridinput from dbmaster.t_suratdana_br1 as a "
+                . " JOIN dbmaster.t_suratdana_br as b "
+                . " on a.idinput=b.idinput WHERE a.kodeinput='E' AND IFNULL(b.stsnonaktif,'')<>'Y' "
+                . " and CONCAT(b.subkode,b.jenis_rpt) IN ('01C')";
+        $query = "create TEMPORARY table $tmp00 ($query)";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapudata; }
+        
+        if ($pviasby=="Y") $f_via=" AND klaimId IN (select IFNULL(bridinput,'') FROM $tmp00) ";
+        elseif ($pviasby=="T") $f_via=" AND klaimId NOT IN (select IFNULL(bridinput,'') FROM $tmp00) ";
         
         $query = "select 'IDR' as ccyId, klaimId brid, noslip, COA4, pengajuan as divprodid, distid icabangid,
             CAST('' AS CHAR(10)) as areaid, CAST('' AS CHAR(10)) as idcabang, 
@@ -399,6 +410,7 @@
 
 <?PHP
 hapudata:
+    mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp00");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp01");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp02");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp03");

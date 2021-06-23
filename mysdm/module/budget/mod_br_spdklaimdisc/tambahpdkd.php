@@ -54,15 +54,24 @@ if ($pact=="editdata") {
 
 }
 
+$pselpilihviasby01="";
+$pselpilihviasby02="selected";
+$pselpilihviasby03="";
+
+
 $pjenis1="";
 $pjenis2="";
 
 if ($pjenis=="C") {
     $pjenis1="";
     $pjenis2="selected";
+    
+    if ($pact=="editdata") $pselpilihviasby03="selected";
 }else{
     $pjenis1="selected";
     $pjenis2="";
+    
+    if ($pact=="editdata") $pselpilihviasby02="selected";
 }
 
 $ptupeper1="";
@@ -268,6 +277,21 @@ if ($pperiodeby=="K") {
                                 
                                 
                                 <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">&nbsp; <span class='required'></span></label>
+                                    <div class='col-md-3'>
+                                        <div class="form-group">
+
+                                            <select class='form-control input-sm' id="cb_viajenis" name="cb_viajenis" onchange="" data-live-search="true">
+                                                <option value="" <?PHP echo $pselpilihviasby01; ?>>All</option>
+                                                <option value="NV" <?PHP echo $pselpilihviasby02; ?>>Non Via SBY</option>
+                                                <option value="VS" <?PHP echo $pselpilihviasby03; ?>>Via SBY</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">Periode By <span class='required'></span></label>
                                     <div class='col-md-3'>
                                         <div class="form-group">
@@ -465,6 +489,13 @@ if ($pperiodeby=="K") {
     
     function ShowDariJenis() {
         ShowNoDivisiKD();
+        
+        var ijenis =document.getElementById('cb_jenispilih').value;
+        if (ijenis=="C") {
+            document.getElementById('cb_viajenis').value="VS";
+        }else{
+            document.getElementById('cb_viajenis').value="NV";
+        }
     }
     
     function ShowNoDivisiKD() {
@@ -503,6 +534,7 @@ if ($pperiodeby=="K") {
         var epertipe=document.getElementById('cb_pertipe').value;
         var eper1=document.getElementById('e_periode1').value;
         var eper2=document.getElementById('e_periode2').value;
+        var eviajenis=document.getElementById('cb_viajenis').value;
         
         var myurl = window.location;
         var urlku = new URL(myurl);
@@ -515,7 +547,7 @@ if ($pperiodeby=="K") {
             type:"post",
             url:"module/budget/mod_br_spdklaimdisc/datakdiskon.php?module="+module+"&ket=dataklaimdisc",
             data:"uact="+iact+"&uidinput="+eidinput+"&udivisi="+edivisi+"&ujenis="+ejenis+"&utgl="+etgl+
-                    "&upertipe="+epertipe+"&uper1="+eper1+"&uper2="+eper2,
+                    "&upertipe="+epertipe+"&uper1="+eper1+"&uper2="+eper2+"&uviajenis="+eviajenis,
             success:function(data){
                 $("#s_div").html(data);
                 $("#loading3").html("");

@@ -192,10 +192,10 @@
         }
     }else{
         if ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") {
-            if ($puserid=="144")//titik
-                $query.=" AND (user1='$puserid' OR user1='$pcardid' OR ( (user1='0000001043' OR user1='1043') AND ( karyawanid='$pcardid' OR karyawanid='0000002073' ) ) ) ";//MULYA RAYA PETRA SEJAHTERA
-            //if ($puserid=="266")//ahmad ahmed
-                //$query.=" AND (user1='$puserid' OR user1='$pcardid' OR ( (user1='0000001043' OR user1='1043') AND karyawanid='$pcardid' ) ) ";
+            //if ($puserid=="144")//titik
+                //$query.=" AND (user1='$puserid' OR user1='$pcardid' OR ( (user1='0000001043' OR user1='1043') AND ( karyawanid='$pcardid' OR karyawanid='0000002073' ) ) ) ";//MULYA RAYA PETRA SEJAHTERA
+            ////if ($puserid=="266")//ahmad ahmed
+                ////$query.=" AND (user1='$puserid' OR user1='$pcardid' OR ( (user1='0000001043' OR user1='1043') AND karyawanid='$pcardid' ) ) ";
         }
     }
     
@@ -356,9 +356,12 @@
                     $pnamaregpilihan="";
                     if ($pidregion=="B") $pnamaregpilihan="Barat";
                     elseif ($pidregion=="T" OR $puserid=="144") $pnamaregpilihan="Timur";
-                    
-                    echo "<tr class='miring text2'><td>Region Sales</td><td>:</td><td>$ppilihregion</td></tr>";
-                    echo "<tr class='miring text2'><td>Region Disc.</td><td>:</td><td>$pnamaregpilihan</td></tr>";
+                    if (!empty($pidregion) AND $puserid=="144") {
+                        echo "<tr class='miring text2'><td>Region Sales</td><td>:</td><td>$ppilihregion</td></tr>";
+                        echo "<tr class='miring text2'><td>Region Disc.</td><td>:</td><td>$pnamaregpilihan</td></tr>";
+                    }else{
+                        echo "<tr class='miring text2'><td>Region</td><td>:</td><td>$ppilihregion</td></tr>";
+                    }
                 }else{
                     echo "<tr class='miring text2'><td>Region</td><td>:</td><td>$ppilihregion</td></tr>";
                 }

@@ -225,7 +225,7 @@
                 <div class='col-md-12 col-sm-12 col-xs-12'>
                     <div class='x_panel'>
 
-                        <div class='x_title'>
+                        <div class='x_titleX'>
                             <h2>
                                 <input class='btn btn-default' type=button value='Tambah Baru (Debit/Kredit)'
                                     onclick="window.location.href='<?PHP echo "?module=$_GET[module]&idmenu=$_GET[idmenu]&act=tambahbaru"; ?>';">
@@ -289,7 +289,7 @@
                                 </div>
                             </div>
 
-                            <div class='col-sm-3'>
+                            <div class='col-sm-6'>
                                 <small>&nbsp;</small>
                                 <div class="form-group">
                                     <input type='button' class='btn btn-success btn-xs' id="s-submit" value="View Data Bank" onclick="RefreshDataTabel()">&nbsp;

@@ -29,6 +29,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
     $ppertipe=$_POST['upertipe'];
     $pperiode1=$_POST['uper1'];
     $pperiode2=$_POST['uper2'];
+    $pviajenis=$_POST['uviajenis'];
     
     $ptgl= date("Y-m-d", strtotime($ptgl));
     $pbulan01= date("Y-m-01", strtotime($pperiode1));
@@ -106,6 +107,14 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
         $query .= " AND $ftypetgl ";
         $query .= " AND a.klaimId NOT IN (select DISTINCT IFNULL(klaimId,'') FROM hrd.klaim_reject) ";
         $query .= " AND a.klaimId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp00)";
+    }
+    
+    if (!empty($pviajenis)) {
+        if ($pviajenis=="NV") {
+            $query .= " AND a.distid NOT IN ('0000000002', '0000000005', '0000000015', '0000000017')";
+        }elseif ($pviajenis=="VS") {
+            $query .= " AND a.distid IN ('0000000002', '0000000005', '0000000015', '0000000017')";
+        }
     }
     
     $query = "create TEMPORARY table $tmp02 ($query)"; 

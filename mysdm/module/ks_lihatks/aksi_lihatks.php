@@ -657,6 +657,32 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         echo "</tr>";
                     echo "</thead>";
                     echo "<tbody>";
+                    
+                        $query = "select sum(jumlah) as jumlahki, sum(jumlah_ex) as jumlahki_ex from $tmp02";
+                        $tampilbr=mysqli_query($cnmy, $query);
+                        $ketemubr=mysqli_num_rows($tampilbr);
+                        if ((INT)$ketemubr>0) {
+                            while ($rbr= mysqli_fetch_array($tampilbr)) {
+                                $pjmlbr=$rbr['jumlahki'];
+                                $pjmlexbr=$rbr['jumlahki_ex'];
+                                
+                                if ((DOUBLE)$pjmlbr<>0) {
+                                    $nbutton="<button type='button' class='btn btn-dark btn-xs' data-toggle='modal' "
+                                            . " data-target='#myModal' onClick=\"MappingKIKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter')\">Mapping KI</button>";
+                                
+                                    echo "<tr>";
+                                    echo "<td nowrap><small>&nbsp;</small></td>";
+                                    echo "<td nowrap><small>KI</small></td>";
+                                    echo "<td nowrap><small>&nbsp;</small></td>";
+                                    //echo "<td nowrap><small>&nbsp;</small></td>";
+                                    echo "<td nowrap><small>&nbsp; $nbutton &nbsp; </small></td>";
+                                    echo "</tr>";
+                                
+                                }
+                                
+                            }
+                        }
+                        
                         $no=1;//, apttype
                         $query = "select DISTINCT nama_apotik, idapotik, idpraktek from $tmp01 order by nama_apotik, idapotik";
                         $tampil=mysqli_query($cnmy, $query);
@@ -799,6 +825,17 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 type:"post",
                 url:"module/ks_lihatks/aksi_lihatks_br_mdl.php?module=viewbrdetail",
                 data:"uid="+eid,
+                success:function(data){
+                    $("#myModal").html(data);
+                }
+            });
+        }
+        
+        function MappingKIKeKSBARU(eidkry, enmkry, eiddokt, enmdokt){
+            $.ajax({
+                type:"post",
+                url:"module/ks_lihatks/mapingkikeksbaru.php?module=mapingkiksnew",
+                data:"uidkry="+eidkry+"&unmkry="+enmkry+"&uiddokt="+eiddokt+"&unmdokt="+enmdokt,
                 success:function(data){
                     $("#myModal").html(data);
                 }

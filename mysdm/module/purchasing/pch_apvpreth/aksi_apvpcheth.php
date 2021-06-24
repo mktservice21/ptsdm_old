@@ -224,7 +224,7 @@ if ($module=="pchapvprbymkt" OR $module=="pchapvprbychc" OR $module=="pchapvprby
             
             if (!empty($pnamalogin) AND !empty($karyawanapv)) {
                 mysqli_query($cnmy, "update dbpurchasing.t_pr_transaksi set stsnonaktif='Y', "
-                        . " keterangan=CONCAT(IFNULL(keterangan,''),'Ket Reject : $pkethapus', ', user reject : $pnamalogin') WHERE "
+                        . " aktivitas=CONCAT(IFNULL(aktivitas,''),'Ket Reject : $pkethapus', ', user reject : $pnamalogin') WHERE "
                         . " idpr in $noidbr AND "
                         . " ( IFNULL(tgl_validate1,'')='' OR IFNULL(tgl_validate1,'0000-00-00 00:00:00')='0000-00-00 00:00:00' )");
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }

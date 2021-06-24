@@ -182,7 +182,7 @@ if ((INT)$ketemud>0) {
                                 
                                 
                                 <div class='form-group' style="margin-top:200px;">
-                                    <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>Outelt (DSU) <span class='required'></span></label>
+                                    <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>User & Outelt (DSU) <span class='required'></span></label>
                                     <div class='col-md-8'>
                                         <!-- cb_outlet = idpraktek -->
                                         <select class='soflow s2' id="cb_outlet" name="cb_outlet" onchange="" style="width: 340px;">

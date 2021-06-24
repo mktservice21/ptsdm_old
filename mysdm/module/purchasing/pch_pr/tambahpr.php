@@ -365,6 +365,9 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
     $pbukaarea="";
 }elseif ($pdivisilogin=="HO") {
     $pnamagsmhos="Atasan";
+    if ($pidjbtpl=="10" OR $pidjbtpl=="18" OR $pidjbtpl=="08" OR $pidjbtpl=="20" OR $pidjbtpl=="05") {
+        $pnamagsmhos="GSM";
+    }
 }
 
 //CARI AREA

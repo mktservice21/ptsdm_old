@@ -22,6 +22,7 @@
     $pidinput_spd=$_POST['uidinput'];
     $pnospd=$_POST['unospd'];
     $pnodiv=$_POST['unodiv'];
+    $pjnsrpt=$_POST['ujnsrpt'];
     $pjmlminta=str_replace(",","", $_POST['ujumlah']);
     if (empty($pjmlminta)) $pjmlminta=0;
 
@@ -190,6 +191,13 @@
                                             </div>
                                         </div>
 
+                                        <div hidden class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis Rpt <span class='required'></span></label>
+                                            <div class='col-md-4'>
+                                                <input type='text' id='e_jnsrpt' name='e_jnsrpt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pjnsrpt; ?>' Readonly>
+                                            </div>
+                                        </div>
+
 
                                         <div hidden id="div_nodivisi1">
                                                 
@@ -248,7 +256,7 @@
                                         <th width='200px'>KETERANGAN</th>
                                     </tr>
                                 </thead>
-                                <body>
+                                <tbody>
                                     <?PHP
                                         $sql = "SELECT a.nobukti, a.idinputbank, DATE_FORMAT(a.tanggal,'%d/%m/%Y') as tgl, 
                                                 DATE_FORMAT(a.tanggal,'%d %M %Y') as tanggal, a.kodeid, a.subkode, "
@@ -314,13 +322,86 @@
                                             $no=$no+1;
                                         }
                                     ?>
-                                </body>
+                                </tbody>
                             </table>
 
                         </div>
                     </div>
                 </div>
+                
+                
+                <?PHP
+                if ($pdivisi=="OTC" AND ($psubkode=="01" OR $psubkode=="20" OR $psubkode=="02") ) {
+                    //02== gaji spg
+                    //echo $pidinput_spd;
+                ?>
+                
+                    <div class='col-md-12 col-sm-12 col-xs-12'>
+                        <div class='x_content'>
+                            <div class='x_panel'>
+                                <div style="font-weight:bold;"><u>Data BR</u></div>
+                                
+                                <div style="height: 500px; overflow: auto">
+                                    <table id='datatableindb' class='table table-striped table-bordered' width='100%'>
+                                        <thead>
+                                            <tr>
+                                                <th width='5px'>No</th>
+                                                <th width='20px'>ID</th>
+                                                <th width='30px' nowrap>Tanggal</th>
+                                                <th width='30px' nowrap>TGL. Transfer</th>
+                                                <th width='20px'>NoSlip</th>
+                                                <th width='50px'>Jumlah</th>
+                                                <th width='50px'>Realisasi</th>
+                                                <th width='20px'>Aktivitas</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?PHP
+                                            $query = "select a.brOtcId as brotcid, a.tglbr, a.tgltrans, a.noslip, FORMAT(a.jumlah,0,'de_DE') as  jumlah, FORMAT(a.realisasi,0,'de_DE') as realisasi, a.keterangan1 "
+                                                    . " from hrd.br_otc as a JOIN dbmaster.t_suratdana_br1 as b on a.brOtcId=IFNULL(b.bridinput,'') "
+                                                    . " JOIN dbmaster.t_suratdana_br as c on b.idinput=c.idinput "
+                                                    . " where b.idinput='$pidinput_spd' and b.kodeinput='D' AND IFNULL(c.stsnonaktif,'')<>'Y' AND c.divisi='OTC'";
+                                            $query=mysqli_query($cnmy, $query) or die("error");
+                                            $no=1;
+                                            while( $row=mysqli_fetch_array($query) ) {
+                                                $pdidbrotc=$row['brotcid'];
+                                                $pdtgl=$row['tglbr'];
+                                                $pdtgltrs=$row['tgltrans'];
+                                                $pdnoslip=$row['noslip'];
+                                                $pdjml=$row['jumlah'];
+                                                $pdjmlreal=$row['realisasi'];
+                                                $pdket=$row['keterangan1'];
 
+                                                if ($pdtgltrs=="0000-00-00") $pdtgltrs="";
+                                                
+                                                if (!empty($pdtgl)) $pdtgl = date('d/m/Y', strtotime($pdtgl));
+                                                if (!empty($pdtgltrs)) $pdtgltrs = date('d/m/Y', strtotime($pdtgltrs));
+                                                
+                                                echo "<tr>";
+                                                echo "<td nowrap>$no</td>";
+                                                echo "<td nowrap>$pdidbrotc</td>";
+                                                echo "<td nowrap>$pdtgl</td>";
+                                                echo "<td nowrap>$pdtgltrs</td>";
+                                                echo "<td nowrap>$pdnoslip</td>";
+                                                echo "<td nowrap align='right'>$pdjml</td>";
+                                                echo "<td nowrap align='right'>$pdjmlreal</td>";
+                                                echo "<td >$pdket</td>";
+                                                echo "</tr>";
+
+                                                $no++;
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                
+                <?PHP
+                }
+                ?>
 
             </div>
             <!--end row-->
@@ -441,6 +522,8 @@
         var ddivisi=document.getElementById('e_divisi').value;
         var dcoa=document.getElementById('e_coa').value;
         
+        var djnsrpt=document.getElementById('e_jnsrpt').value;
+        
         //e_kodeid, e_subkode, e_divisi, e_coa
         var inodiv_dari="";
         
@@ -539,7 +622,7 @@ Apakah akan melakukan update data...?";
                             "&utglkeluar="+itglkeluar+"&utglaslkeluar="+itglaslkeluar+"&unobukti="+inobukti+
                             "&ujumlah="+ijumlah+"&uket="+iket+
                             "&unodiv_dari="+inodiv_dari+
-                            "&ukode="+dkode+"&usubkode="+dsubkode+"&udivisi="+ddivisi+"&ucoa="+dcoa,
+                            "&ukode="+dkode+"&usubkode="+dsubkode+"&udivisi="+ddivisi+"&ucoa="+dcoa+"&ujnsrpt="+djnsrpt,
                         success:function(data){
                             if (data.length > 2) {
                                 alert(data);

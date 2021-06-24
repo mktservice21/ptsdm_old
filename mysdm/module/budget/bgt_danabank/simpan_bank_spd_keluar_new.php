@@ -203,16 +203,24 @@
             
             if ($pdivisi=="OTC" AND ($psubkode=="01" OR $psubkode=="20" OR $psubkode=="02") ) {
                 
-                //$pjnsrpt subkode=20 and jenis_rpt=B == PCM bisa diubah
-                
-                $query = "UPDATE hrd.br_otc as a "
-                        . " JOIN dbmaster.t_suratdana_br1 as b on a.brOtcId=IFNULL(b.bridinput,'') "
-                        . " JOIN dbmaster.t_suratdana_br as c on b.idinput=c.idinput SET "
-                        . " a.tgltrans='$ptglkeluar', a.realisasi=a.jumlah WHERE "
-                        . " b.idinput='$pidinputspd' and b.kodeinput='D' AND IFNULL(c.stsnonaktif,'')<>'Y' AND c.divisi='OTC' AND "
-                        . " ( IFNULL(a.tgltrans,'')='' OR IFNULL(a.tgltrans,'0000-00-00')='0000-00-00' )";
-                //mysqli_query($cnmy, $query);
-                //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysql_close($cnmy); exit; }
+                // $psubkode subkode=20 and $pjnsrpt jenis_rpt=B == PCM bisa diubah
+                if ( $psubkode=="20" OR $pjnsrpt=="B" ) {
+                    $query = "UPDATE hrd.br_otc as a "
+                            . " JOIN dbmaster.t_suratdana_br1 as b on a.brOtcId=IFNULL(b.bridinput,'') "
+                            . " JOIN dbmaster.t_suratdana_br as c on b.idinput=c.idinput SET "
+                            . " a.tgltrans='$ptglkeluar' WHERE "
+                            . " b.idinput='$pidinputspd' and b.kodeinput='D' AND IFNULL(c.stsnonaktif,'')<>'Y' AND c.divisi='OTC' AND "
+                            . " ( IFNULL(a.tgltrans,'')='' OR IFNULL(a.tgltrans,'0000-00-00')='0000-00-00' )";
+                }else{
+                    $query = "UPDATE hrd.br_otc as a "
+                            . " JOIN dbmaster.t_suratdana_br1 as b on a.brOtcId=IFNULL(b.bridinput,'') "
+                            . " JOIN dbmaster.t_suratdana_br as c on b.idinput=c.idinput SET "
+                            . " a.tgltrans='$ptglkeluar', a.realisasi=a.jumlah WHERE "
+                            . " b.idinput='$pidinputspd' and b.kodeinput='D' AND IFNULL(c.stsnonaktif,'')<>'Y' AND c.divisi='OTC' AND "
+                            . " ( IFNULL(a.tgltrans,'')='' OR IFNULL(a.tgltrans,'0000-00-00')='0000-00-00' )";
+                }
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysql_close($cnmy); exit; }
                 
                 
             }

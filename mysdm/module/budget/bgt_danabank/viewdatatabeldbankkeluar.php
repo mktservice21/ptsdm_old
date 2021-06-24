@@ -182,6 +182,7 @@
                         $ptgldir1=$row1["tgl_dir"];
                         $ptgldir2=$row1["tgl_dir2"];
                         $ppilih=$row1["pilih"];
+                        $pjnsrptpilih=$row1["jenis_rpt"];
 
                         $psdh=$row1['sdh'];
 
@@ -225,7 +226,7 @@
                         
                         $pbtninputjumlah="<button type='button' class='$pnmbtn' title='' data-toggle='modal' "
                                 . " data-target='#myModal' "
-                                . " onClick=\"InputBankKeluar('$pidinput', '$pidnomor', '$pnodivisi', '$pjumlah', '$pkodeid', '$pnsubdiv', '$pdivisi', '$pcoabkeluar')\">$pjumlah</button>";
+                                . " onClick=\"InputBankKeluar('$pidinput', '$pidnomor', '$pnodivisi', '$pjumlah', '$pkodeid', '$pnsubdiv', '$pdivisi', '$pcoabkeluar', '$pjnsrptpilih')\">$pjumlah</button>";
                                 
                         if (empty($pnodivisi)) {
                             //$pbtninputjumlah=$pjumlah;
@@ -271,12 +272,12 @@
     </div>
 </form>
     <script>
-        function InputBankKeluar(didinput, dnospd, dnodiv, djumlah, dkode, dsubkode, ddivisi, dcoa){
+        function InputBankKeluar(didinput, dnospd, dnodiv, djumlah, dkode, dsubkode, ddivisi, dcoa, djnsrpt){
             $.ajax({
                 type:"post",
                 url:"module/budget/bgt_danabank/input_bank_keluar.php?module=viewdatabankkeluar",
                 data:"uidinput="+didinput+"&unospd="+dnospd+"&unodiv="+dnodiv+"&ujumlah="+djumlah+
-                        "&ukode="+dkode+"&usubkode="+dsubkode+"&udivisi="+ddivisi+"&ucoa="+dcoa,
+                        "&ukode="+dkode+"&usubkode="+dsubkode+"&udivisi="+ddivisi+"&ucoa="+dcoa+"&ujnsrpt="+djnsrpt,
                 success:function(data){
                     $("#myModal").html(data);
                 }

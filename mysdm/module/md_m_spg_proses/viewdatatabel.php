@@ -455,8 +455,8 @@
                     $pinsentif=number_format($pinsentif,0,",",",");
                     $pinsentif_booster=number_format($pinsentif_booster,0,",",",");
                     
-                    $pbpjskerja_kry=number_format($pbpjskerja_kry,0,",",",");
-                    $pbpjskerja_sdm=number_format($pbpjskerja_sdm,0,",",",");
+                    //$pbpjskerja_kry=number_format($pbpjskerja_kry,0,",",",");
+                    //$pbpjskerja_sdm=number_format($pbpjskerja_sdm,0,",",",");
                     
                     $ptotalspg=number_format($ptotalspg,0,",",",");
                     

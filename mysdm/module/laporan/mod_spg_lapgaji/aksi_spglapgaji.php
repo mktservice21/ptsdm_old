@@ -61,6 +61,7 @@
     $tmp02 =" dbtemp.DGJSPGOTCL02_".$_SESSION['IDCARD']."_$now ";
     $tmp03 =" dbtemp.DGJSPGOTCL03_".$_SESSION['IDCARD']."_$now ";
     $tmp04 =" dbtemp.DGJSPGOTCL04_".$_SESSION['IDCARD']."_$now ";
+    $tmp05 =" dbtemp.DGJSPGOTCL05_".$_SESSION['IDCARD']."_$now ";
     
     $query = "SELECT * FROM dbmaster.t_spg_data WHERE DATE_FORMAT(periode,'%Y%m')='$periode1'";
     $query ="CREATE TEMPORARY TABLE $tmp04 ($query)";
@@ -95,9 +96,9 @@
             CAST(null AS DECIMAL(20,2)) realisasi,
             a.keterangan,
             b.namabank, b.pemilikrekening, b.norekening, b.jabatid, 
-            CAST(null AS DECIMAL(20,2)) lebihkurang, CAST(null AS DECIMAL(20,2)) insentif, a.gaji, a.keterangan hk, a.umakan rpmakan, a.tmakan makan, a.sewakendaraan sewa, a.pulsa, a.parkir, a.bbm,
-            CAST(null AS DECIMAL(20,2)) rlebihkurang, CAST(null AS DECIMAL(20,2)) rinsentif, CAST(null AS DECIMAL(20,2)) rgaji, CAST(null AS DECIMAL(20,2)) rmakan, CAST(null AS DECIMAL(20,2)) rsewa, CAST(null AS DECIMAL(20,2)) rpulsa, CAST(null AS DECIMAL(20,2)) rparkir, CAST(null AS DECIMAL(20,2)) rbbm,
-            CAST(null AS DECIMAL(20,2)) slebihkurang, CAST(null AS DECIMAL(20,2)) sinsentif, CAST(null AS DECIMAL(20,2)) sgaji, CAST(null AS DECIMAL(20,2)) smakan, CAST(null AS DECIMAL(20,2)) ssewa, CAST(null AS DECIMAL(20,2)) spulsa, CAST(null AS DECIMAL(20,2)) sparkir, CAST(null AS DECIMAL(20,2)) sbbm 
+            CAST(null AS DECIMAL(20,2)) lebihkurang, CAST(null AS DECIMAL(20,2)) insentif, a.gaji, a.keterangan hk, a.umakan rpmakan, a.tmakan makan, a.sewakendaraan sewa, a.pulsa, a.parkir, a.bbm, a.jmlbpjs_kry, a.jmlbpjs_sdm,
+            CAST(null AS DECIMAL(20,2)) rlebihkurang, CAST(null AS DECIMAL(20,2)) rinsentif, CAST(null AS DECIMAL(20,2)) rgaji, CAST(null AS DECIMAL(20,2)) rmakan, CAST(null AS DECIMAL(20,2)) rsewa, CAST(null AS DECIMAL(20,2)) rpulsa, CAST(null AS DECIMAL(20,2)) rparkir, CAST(null AS DECIMAL(20,2)) rbbm, CAST(null AS DECIMAL(20,2)) rjmlbpjs_kry, CAST(null AS DECIMAL(20,2)) rjmlbpjs_sdm,
+            CAST(null AS DECIMAL(20,2)) slebihkurang, CAST(null AS DECIMAL(20,2)) sinsentif, CAST(null AS DECIMAL(20,2)) sgaji, CAST(null AS DECIMAL(20,2)) smakan, CAST(null AS DECIMAL(20,2)) ssewa, CAST(null AS DECIMAL(20,2)) spulsa, CAST(null AS DECIMAL(20,2)) sparkir, CAST(null AS DECIMAL(20,2)) sbbm, CAST(null AS DECIMAL(20,2)) sjmlbpjs_kry, CAST(null AS DECIMAL(20,2)) sjmlbpjs_sdm 
             FROM
             $tmp_tabel a
             JOIN $tmp04 b ON a.id_spg = b.id_spg
@@ -138,9 +139,9 @@
             a.realisasi,
             a.keterangan,
             b.namabank, b.pemilikrekening, b.norekening, b.jabatid, 
-            a.total lebihkurang, a.total insentif, a.total gaji, a.keterangan hk, a.total rpmakan, a.total makan, a.total sewa, a.total pulsa, a.total parkir, a.total bbm,
-            a.total rlebihkurang, a.total rinsentif, a.total rgaji, a.total rmakan, a.total rsewa, a.total rpulsa, a.total rparkir, a.total rbbm,
-            a.total slebihkurang, a.total sinsentif, a.total sgaji, a.total smakan, a.total ssewa, a.total spulsa, a.total sparkir, a.total sbbm
+            a.total lebihkurang, a.total insentif, a.total gaji, a.keterangan hk, a.total rpmakan, a.total makan, a.total sewa, a.total pulsa, a.total parkir, a.total bbm, a.total as jmlbpjs_kry, a.total as jmlbpjs_sdm, 
+            a.total rlebihkurang, a.total rinsentif, a.total rgaji, a.total rmakan, a.total rsewa, a.total rpulsa, a.total rparkir, a.total rbbm, a.total as rjmlbpjs_kry, a.total as rjmlbpjs_sdm, 
+            a.total slebihkurang, a.total sinsentif, a.total sgaji, a.total smakan, a.total ssewa, a.total spulsa, a.total sparkir, a.total sbbm, a.total as sjmlbpjs_kry, a.total as sjmlbpjs_sdm
             FROM
             $tmp03 a
             JOIN $tmp04 b ON a.id_spg = b.id_spg
@@ -151,9 +152,9 @@
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
 
-        mysqli_query($cnmy, "UPDATE $tmp01 SET lebihkurang=0, insentif=0, gaji=0, hk='', rpmakan=0, makan=0, sewa=0, pulsa=0, parkir=0, bbm=0");
-        mysqli_query($cnmy, "UPDATE $tmp01 SET rlebihkurang=0, rinsentif=0, rgaji=0, rmakan=0, rsewa=0, rpulsa=0, rparkir=0, rbbm=0");//ralisasi
-        mysqli_query($cnmy, "UPDATE $tmp01 SET slebihkurang=0, sinsentif=0, sgaji=0, smakan=0, ssewa=0, spulsa=0, sparkir=0, sbbm=0");//selisih
+        mysqli_query($cnmy, "UPDATE $tmp01 SET lebihkurang=0, insentif=0, gaji=0, hk='', rpmakan=0, makan=0, sewa=0, pulsa=0, parkir=0, bbm=0, jmlbpjs_kry=0, jmlbpjs_sdm=0");
+        mysqli_query($cnmy, "UPDATE $tmp01 SET rlebihkurang=0, rinsentif=0, rgaji=0, rmakan=0, rsewa=0, rpulsa=0, rparkir=0, rbbm=0, rjmlbpjs_kry=0, rjmlbpjs_sdm=0");//ralisasi
+        mysqli_query($cnmy, "UPDATE $tmp01 SET slebihkurang=0, sinsentif=0, sgaji=0, smakan=0, ssewa=0, spulsa=0, sparkir=0, sbbm=0, sjmlbpjs_kry=0, sjmlbpjs_sdm=0");//selisih
 
         $query = "SELECT * FROM dbmaster.t_spg_gaji_br1 WHERE idbrspg IN (select distinct idbrspg FROM $tmp01)";
         $query ="CREATE TEMPORARY TABLE $tmp02 ($query)";
@@ -175,6 +176,9 @@
         mysqli_query($cnmy, "UPDATE $tmp01 a SET a.parkir=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='06'),0)");
         
         mysqli_query($cnmy, "UPDATE $tmp01 a SET a.bbm=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='08'),0)");
+        
+        mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_sdm=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='10'),0)");
+        mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_kry=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='11'),0)");
 
         //realisasi
         mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rinsentif=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='01'),0)");
@@ -189,6 +193,10 @@
         
         mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rbbm=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='08'),0)");
 
+        mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rjmlbpjs_sdm=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='10'),0)");
+        mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rjmlbpjs_kry=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='11'),0)");
+        
+        
         mysqli_query($cnmy, "UPDATE $tmp01 SET sinsentif=insentif-rinsentif");
         mysqli_query($cnmy, "UPDATE $tmp01 SET sgaji=gaji-rgaji");
         mysqli_query($cnmy, "UPDATE $tmp01 SET smakan=makan-rmakan");
@@ -199,6 +207,10 @@
         mysqli_query($cnmy, "UPDATE $tmp01 SET slebihkurang=lebihkurang-rlebihkurang");
         
         mysqli_query($cnmy, "UPDATE $tmp01 SET sbbm=bbm-rbbm");
+        
+        mysqli_query($cnmy, "UPDATE $tmp01 SET sjmlbpjs_sdm=jmlbpjs_sdm-rjmlbpjs_sdm");
+        mysqli_query($cnmy, "UPDATE $tmp01 SET sjmlbpjs_kry=jmlbpjs_kry-rjmlbpjs_kry");
+        
     }
     
     $pnmcabang="";
@@ -221,6 +233,11 @@
     }
     
     
+    $query = "UPDATE $tmp01 SET total=IFNULL(total,0)-IFNULL(jmlbpjs_kry,0)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        
     $pviewdate= date("d/m/Y h:i:s");
 ?>
     <center><h2><u></u></h2></center>
@@ -264,6 +281,11 @@
                     <th align="center" rowspan="2">INSENTIF</th>
                     
                     <th align="center" rowspan="2">SISA<br/>(Lebih/<br/>Kurang)</th>
+                    
+                    <th align="center" rowspan="2">BPJS<br/>KARYAWAN</th>
+                    <th align="center" rowspan="2">BPJS<br/>PERUSAHAAN</th>
+                    
+                    
                     <th align="center" rowspan="2">GRAND TOTAL</th>
                     <th align="center" colspan="3">DATA REKENING</th>
                 </tr>
@@ -284,6 +306,9 @@
                 $gtotaljml=0;
                 $gtotaltot=0;
                 $gtotaltrans=0;
+                
+                $gtotbpjssdm=0;
+                $gtotbpjskry=0;
 
                 $no=1;
                 $query = "select distinct icabangid, nama_cabang from $tmp01 order by nama_cabang";
@@ -313,6 +338,9 @@
                     echo "<td nowrap align='right'></td>";
 
 
+                    echo "<td nowrap align='right'><b></b></td>";//bpjs
+                    echo "<td nowrap align='right'><b></b></td>";//bpjs
+
                     echo "<td nowrap align='right'><b></b></td>";
                     echo "<td nowrap align='right'><b></b></td>";
 
@@ -324,6 +352,9 @@
                     
                     $no=1;
                     $subtotal=0;
+                    
+                    $stotbpjssdm=0;
+                    $stotbpjskry=0;
                     
                     $query2 = "select * from $tmp01 WHERE icabangid='$picabang' order by nama_cabang, nama, id_spg";
                     $tampil2= mysqli_query($cnmy, $query2);
@@ -355,6 +386,15 @@
                         $pnmjabatan=$jb['nama_jabatan'];
                         
                         
+                        $pjmlbpjssdm=$row2['sjmlbpjs_sdm'];
+                        $pjmlbpjskry=$row2['sjmlbpjs_kry'];
+                        
+                        $stotbpjssdm=(DOUBLE)$stotbpjssdm+(DOUBLE)$pjmlbpjssdm;
+                        $stotbpjskry=(DOUBLE)$stotbpjskry+(DOUBLE)$pjmlbpjskry;
+                        
+                        $gtotbpjssdm=(DOUBLE)$gtotbpjssdm+(DOUBLE)$pjmlbpjssdm;
+                        $gtotbpjskry=(DOUBLE)$gtotbpjskry+(DOUBLE)$pjmlbpjskry;
+                        
                         $tottunjangan=(double)$row2['sewa']+(double)$row2['pulsa']+(double)$row2['bbm']+(double)$row2['parkir'];
                         $totgp_tunjangan=(double)$tottunjangan+(double)$row2['gaji'];
                         
@@ -366,6 +406,9 @@
                         $pparkir=number_format($row2['parkir'],0,",",",");
                         $pbbm=number_format($row2['bbm'],0,",",",");
                         $pjumlah=number_format($row2['total'],0,",",",");
+                        
+                        $pjmlbpjssdm=number_format($pjmlbpjssdm,2,".",",");
+                        $pjmlbpjskry=number_format($pjmlbpjskry,2,".",",");
                         
                         $psisa_lebihkurang=number_format($row2['lebihkurang'],0,",",",");
                         
@@ -385,7 +428,12 @@
                             $subtotal=$subtotal+$ptotal;
                             $gtotaltot=$gtotaltot+$ptotal;
                         //}
-                        $jmltotal=number_format($ptotal,0,",",",");
+                            
+                        //if ($periode1>='202106') {
+                        //    $jmltotal=number_format($ptotal,2,".",",");
+                        //}else{
+                            $jmltotal=number_format($ptotal,0,",",",");
+                        //}
                         
                         
                         if ((double)$pharikerja==0) {
@@ -425,7 +473,11 @@
                         
 
                         echo "<td nowrap align='right'><b>$psisa_lebihkurang</b></td>";
-                        echo "<td nowrap align='right'><b>$jmltotal</b></td>";
+                        
+                        echo "<td nowrap align='right'><b>$pjmlbpjskry</b></td>";
+                        echo "<td nowrap align='right'><b>$pjmlbpjssdm</b></td>";
+                        
+                        echo "<td nowrap align='right' style='color:#990000; font-size:12px; padding:5px;'><b>$jmltotal</b></td>";
                         
                         echo "<td nowrap>$ppemilikrek</td>";
                         echo "<td nowrap>$pnmbank</td>";
@@ -437,28 +489,52 @@
                         $no++;
                     }
                     
-                    $subtotal=number_format($subtotal,0,",",",");
-
+                    //if ($periode1>='202106') {
+                    //    $subtotal=number_format($subtotal,2,".",",");
+                    //}else{
+                        $subtotal=number_format($subtotal,0,",",",");
+                    //}
+                    
+                    $stotbpjssdm=number_format($stotbpjssdm,2,".",",");
+                    $stotbpjskry=number_format($stotbpjskry,2,".",",");
+                    
                     echo "<tr>";
                     echo "<td colspan='14' align='center'><b>TOTAL $pnmcabang</b> </td>";
                     echo "<td align='right'><b></b></td>";
                     echo "<td align='right'><b>&nbsp;</b></td>";
-                    echo "<td align='right'><b>$subtotal</b></td>";
+                    
+                    echo "<td align='right'><b>$stotbpjskry</b></td>";//bpjs
+                    echo "<td align='right'><b>$stotbpjssdm</b></td>";//bpjs
+                    
+                    echo "<td align='right' style='color:#990000; font-size:12px; padding:5px;'><b>$subtotal</b></td>";
                 
                 }
                 echo "<tr>";
-                echo "<td colspan='20'></td>";
+                echo "<td colspan='22'></td>";
                 echo "</tr>";
 
-                $gtotaljml=number_format($gtotaljml,0,",",",");
-                $gtotaltot=number_format($gtotaltot,0,",",",");
-                $gtotaltrans=number_format($gtotaltrans,0,",",",");
-
+                //if ($periode1>='202106') {
+                //    $gtotaljml=number_format($gtotaljml,2,".",",");
+                //    $gtotaltot=number_format($gtotaltot,2,".",",");
+                //    $gtotaltrans=number_format($gtotaltrans,2,".",",");
+                //}else{
+                    $gtotaljml=number_format($gtotaljml,0,",",",");
+                    $gtotaltot=number_format($gtotaltot,0,",",",");
+                    $gtotaltrans=number_format($gtotaltrans,0,",",",");
+                //}
+                
+                $gtotbpjssdm=number_format($gtotbpjssdm,2,".",",");
+                $gtotbpjskry=number_format($gtotbpjskry,2,".",",");
+                
                 echo "<tr>";
                 echo "<td colspan='14' align='center'><b>GRAND TOTAL</b> </td>";
                 echo "<td align='right'><b></b></td>";
                 echo "<td align='right'><b>&nbsp;</b></td>";
-                echo "<td align='right'><b>$gtotaltot</b></td>";
+                
+                echo "<td align='right'><b>$gtotbpjskry</b></td>";//bpjs
+                echo "<td align='right'><b>$gtotbpjssdm</b></td>";//bpjs
+                
+                echo "<td align='right' style='color:#990000; font-size:12px; padding:5px;'><b>$gtotaltot</b></td>";
                 
                 echo "<td nowrap colspan='3'></td>";
                 
@@ -472,6 +548,7 @@
         mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp02");
         mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp03");
         mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp04");
+        mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp05");
         
         mysqli_close($cnmy);
         

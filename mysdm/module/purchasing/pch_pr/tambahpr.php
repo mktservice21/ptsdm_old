@@ -89,6 +89,7 @@ $query_divisi="";
     $pnamagsm=$nrs['nama_gsm'];
     $pcabidpilihposisi=$nrs['icabangid_posisi'];
     $pcabidpilihposisi2=$nrs['icabangid'];
+    $pareaidpilih=$nrs['areaid'];
 
 // END ATASAN
 
@@ -217,6 +218,7 @@ $untukpil3="";
 
 if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC") {
     $untukpil2="selected";
+    $pareaid=$pareaidpilih;
 }else{
     if ($pstatuslogin=="ETH") {
         $untukpil1="selected";

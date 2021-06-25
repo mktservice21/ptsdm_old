@@ -533,11 +533,16 @@ $nrs2= mysqli_fetch_array($ptampil2);
 $pkdgsm=$nrs2['gsm'];
 $pnamagsm=$nrs2['nama_gsm'];
 
-if ($pcabangid=="0000000003" OR $pcabangid=="0000000005") {
+if ($pcabangid=="0000000003") {
     $pkdspv="";
     $pnamaspv="";
     $pkddm="";
     $pnamadm="";
+}
+
+if ($pcabangid=="0000000005") {//medan
+    $pkdspv="";
+    $pnamaspv="";
 }
 
 if ($pcabangid=="00000000114") {

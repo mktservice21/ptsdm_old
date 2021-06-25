@@ -72,11 +72,16 @@ $pidjbtpl=$nrs['jabatanid'];
     $pkdgsm=$nrs2['gsm'];
     $pnamagsm=$nrs2['nama_gsm'];
     
-    if ($pcabangid=="0000000003" OR $pcabangid=="0000000005") {
+    if ($pcabangid=="0000000003") {
         $pkdspv="";
         $pnamaspv="";
         $pkddm="";
         $pnamadm="";
+    }
+    
+    if ($pcabangid=="0000000005") {
+        $pkdspv="";
+        $pnamaspv="";
     }
     
     if ($pcabangid=="00000000114") {

@@ -50,8 +50,22 @@ $tmp04 ="dbtemp.tmprptincmr04_".$puser."_$now$milliseconds";
 include("config/koneksimysqli_ms.php");
 
 
-$query = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a.icabangid, a.areaid, b.nama as nama_cabang, c.nama as nama_area from sls.imr0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
+//dara penempatan marketing
+$query = "select distinct a.mr as karyawanid, a.divprodid as divisiid, a.divprodid, 'Y' as aktif, "
+        . " a.icabangid, a.areaid, b.nama as nama_cabang, "
+        . " c.nama as nama_area, b.aktif as aktifcab, c.aktif as aktifarea "
+        . " from ms.penempatan_marketing as a "
+        . " JOIN sls.icabang as b on a.icabangid=b.icabangid "
+        . " JOIN sls.iarea as c on a.icabangid=c.icabangid "
+        . " and a.areaid=c.areaid WHERE a.mr='$pkaryawanid' "
+        . " and a.bulan BETWEEN '$pbln1' AND '$pbln2'";
+
+
+//dari imr0
+$queryXX = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a.icabangid, a.areaid, b.nama as nama_cabang, c.nama as nama_area from sls.imr0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
         . " sls.iarea as c on a.icabangid=c.icabangid AND a.areaid=c.areaid WHERE a.karyawanid='$pkaryawanid'";
+
+
 $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 

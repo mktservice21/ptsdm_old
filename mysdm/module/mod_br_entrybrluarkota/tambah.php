@@ -1418,16 +1418,17 @@ if (isset($_GET['ca'])) {
             if (aq_totuc=="0") {
                 alert("Anda belum mengisi Form UC...\n\
 Untuk mengisi Biaya Luar Kota, silakan form cuti/uc diisi terlebih dahulu.\n\
-Apabila sudah input, pastikan sudah diapprove atasan"); return false;
+Apabila sudah input UC, pastikan sudah diapprove atasan"); return false;
             }
         }else{
             if (aq_totuc=="0") {
                 alert("Anda belum mengisi Form UC...\n\
 Untuk mengisi HOTEL form cuti/uc harus diisi terlebih dahulu.\n\
-Apabila sudah input, pastikan sudah diapprove atasan"); return false;
+Apabila sudah input UC, pastikan sudah diapprove atasan"); return false;
             }else{
                 if (parseInt(aq_sdh_input)>parseInt(aq_totuc)) {
-                    alert("Jumlah hari (HOTEL), melebihi jumlah UC..."); return false;
+                    alert("Jumlah hari (HOTEL), melebihi jumlah UC...\n\
+Apabila sudah input UC, pastikan sudah diapprove atasan"); return false;
                 }
             }
         }

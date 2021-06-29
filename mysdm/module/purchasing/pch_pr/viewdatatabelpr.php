@@ -124,6 +124,7 @@
                         $pspesifikasi=$row1['spesifikasi1'];
                         $pketerangan=$row1['keterangan'];
                         $pnotes=$row1['aktivitas'];
+                        $nuseridinput=$row1['userid'];
                         $puserinput=$row1['nama_user'];
                         $psatuan=$row1['satuan'];
                         $pnmdept=$row1['nama_dep'];
@@ -194,6 +195,14 @@
     
                         //$print="<a title='Print / Cetak' href='eksekusi3.php?module=$pmodule&brid=$pidpr&iprint=print' class='btn btn-info btn-xs' data-toggle='modal' target='_blank'>Print</a>";
                         
+                        if ($pgroupid=="1" OR $pgroupid=="24") {
+                        }else{
+                            if ($nuseridinput<>$psescardidid) {
+                                $pedit="";
+                                $phapus="";
+                            }
+                        }
+                        
                         if ($nsudahapprove==true) {
                             $pedit="";
                             $phapus="";
@@ -205,6 +214,7 @@
                         if ($psudah=="Y") {
                             $ppilihan="$print";
                         }
+                        
                         
                         echo "<tr>";
                         if ($pbelumlewat==false) {

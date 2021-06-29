@@ -644,6 +644,56 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "User : $pnamadokter - $pdokterid<br>";
                 echo "</div>";
                 echo "<br/>&nbsp;";
+                
+                echo "<div>";
+                echo "<table border='1' cellspacing='0' cellpadding='1'>";
+                    echo "<thead>";
+                        echo "<tr>";
+                            echo "<th>No</th>";
+                            echo "<th>ID</th>";
+                            echo "<th>Jumlah</th>";
+                            //echo "<th>Type Apotik</th>";
+                            echo "<th>&nbsp;</th>";
+                        echo "</tr>";
+                    echo "</thead>";
+                    echo "<tbody>";
+                        $no=1;
+                        $query = "select brid, sum(jumlah) as jumlahki, sum(jumlah_ex) as jumlahki_ex from $tmp02 GROUP BY 1";
+                        $tampilbr=mysqli_query($cnmy, $query);
+                        $ketemubr=mysqli_num_rows($tampilbr);
+                        if ((INT)$ketemubr>0) {
+                            while ($rbr= mysqli_fetch_array($tampilbr)) {
+                                $pbrid=$rbr['brid'];
+                                $pjmlbr=$rbr['jumlahki'];
+                                $pjmlexbr=$rbr['jumlahki_ex'];
+                                
+                                if ((DOUBLE)$pjmlbr<>0) {
+                                    
+                                    $pjmlbr=number_format($pjmlbr,0,",",",");
+                                    
+                                    $nbutton="<button type='button' class='btn btn-dark btn-xs' data-toggle='modal' "
+                                            . " data-target='#myModal' onClick=\"MappingKIKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter')\">Mapping KI</button>";
+                                
+                                    echo "<tr>";
+                                    echo "<td nowrap><small>$no</small></td>";
+                                    echo "<td nowrap><small>$pbrid</small></td>";
+                                    echo "<td nowrap align='right'><small>$pjmlbr</small></td>";
+                                    //echo "<td nowrap><small>&nbsp;</small></td>";
+                                    echo "<td nowrap><small>&nbsp; $nbutton &nbsp; </small></td>";
+                                    echo "</tr>";
+                                    
+                                    $no++;
+                                }
+                                
+                            }
+                        }
+                    echo "</tbody>";
+
+                echo "</table>";
+
+                echo "</div>";
+                
+                echo "<hr/>";
 
                 echo "<div>";
                 echo "<table border='1' cellspacing='0' cellpadding='1'>";
@@ -658,30 +708,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     echo "</thead>";
                     echo "<tbody>";
                     
-                        $query = "select sum(jumlah) as jumlahki, sum(jumlah_ex) as jumlahki_ex from $tmp02";
-                        $tampilbr=mysqli_query($cnmy, $query);
-                        $ketemubr=mysqli_num_rows($tampilbr);
-                        if ((INT)$ketemubr>0) {
-                            while ($rbr= mysqli_fetch_array($tampilbr)) {
-                                $pjmlbr=$rbr['jumlahki'];
-                                $pjmlexbr=$rbr['jumlahki_ex'];
-                                
-                                if ((DOUBLE)$pjmlbr<>0) {
-                                    $nbutton="<button type='button' class='btn btn-dark btn-xs' data-toggle='modal' "
-                                            . " data-target='#myModal' onClick=\"MappingKIKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter')\">Mapping KI</button>";
-                                
-                                    echo "<tr>";
-                                    echo "<td nowrap><small>&nbsp;</small></td>";
-                                    echo "<td nowrap><small>KI</small></td>";
-                                    echo "<td nowrap><small>&nbsp;</small></td>";
-                                    //echo "<td nowrap><small>&nbsp;</small></td>";
-                                    echo "<td nowrap><small>&nbsp; $nbutton &nbsp; </small></td>";
-                                    echo "</tr>";
-                                
-                                }
-                                
-                            }
-                        }
                         
                         $no=1;//, apttype
                         $query = "select DISTINCT nama_apotik, idapotik, idpraktek from $tmp01 order by nama_apotik, idapotik";
@@ -730,6 +756,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "</table>";
 
                 echo "</div>";
+                
+                
 
             echo "</div>";
         

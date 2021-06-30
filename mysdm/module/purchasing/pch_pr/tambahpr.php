@@ -634,7 +634,7 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
                                     </div>
                                     
                                     <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang <span class='required'></span></label>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang / Area <span class='required'></span></label>
                                         <div class='col-xs-5'>
                                             <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="ShowDataArea()">
                                                 <option value='' selected>-- Pilihan --</option>

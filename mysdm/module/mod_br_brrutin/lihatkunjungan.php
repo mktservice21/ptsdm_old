@@ -15,9 +15,19 @@
     $bulan= date("Ym", strtotime($date1));
     $idkar=$i['karyawanid'];
     $idajukan=$i['karyawanid'];
+    
+    $query = "select nama from hrd.karyawan where karyawanid='$idkar'";
+    $tampil2= mysqli_query($cnmy, $query);
+    $i2= mysqli_fetch_array($tampil2);
+    
+    $pnamakaryawna=$i2['nama'];
 
     ?>
     <div class='x_content'>
+        <div>
+            karyawan : <?PHP echo $pnamakaryawna; ?>
+        </div>
+        <hr/>
         <table id='datatablercbi' class='table table-striped table-bordered' width='100%'>
             <thead>
                 <tr>
@@ -47,6 +57,12 @@
                             $stl="style='background:#FAEBD7;'";
                         
                         $sql = "SELECT * FROM dbmaster.t_planuc_mkt WHERE karyawanid='$idkar' and DATE_FORMAT(tgl, '%Y%m%d') = '$mytgl' order by tgl";
+                        
+                        $sql= "select a.nourut, a.tanggal, b.keperluan, b.id_jenis, c.nama_jenis, "
+                                . " CONCAT(c.nama_jenis, ' - ', b.keperluan) as keterangan, atasan1, atasan2, atasan3 "
+                                . " from hrd.t_cuti1 as a join hrd.t_cuti0 as b on a.idcuti=b.idcuti "
+                                . " join hrd.jenis_cuti as c on b.id_jenis=c.id_jenis WHERE IFNULL(b.stsnonaktif,'')<>'Y' "
+                                . " and b.karyawanid='$idkar' and DATE_FORMAT(a.tanggal, '%Y%m%d') = '$mytgl'";
                         $tampil = mysqli_query($cnmy, $sql);
                         $ketemu = mysqli_num_rows($tampil);
                         if ($ketemu>0) {

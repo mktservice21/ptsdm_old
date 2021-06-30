@@ -166,7 +166,7 @@
                     ifnull(tgl_atasan4,'0000-00-00') tgl_atasan4,
                     br.gbr_atasan4,
                     ifnull(br.tgl_fin,'0000-00-00') tgl_fin,
-                    br.jabatanid
+                    br.jabatanid, br.atasan4 
                     FROM dbmaster.t_brrutin0 AS br
                     LEFT JOIN hrd.karyawan AS k ON br.karyawanid = k.karyawanId
                     LEFT JOIN (SELECT distinct DISTINCT idrutin from dbimages.img_brrutin1) as i on i.idrutin=br.idrutin 
@@ -222,6 +222,8 @@
                     $pdivisi = $row["divisi"];
                     if ($pdivisi=="CAN") $pdivisi = "CANARY";
                     $cekbox = "<input type=checkbox value='$idno' name=chkbox_br[]>";
+                    
+                    $paatasan4 = $row["atasan4"];
                     
                     $pidnoget=encodeString($idno);
 
@@ -300,6 +302,14 @@
                             . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                             . "$idno</a>";
                     }
+                    
+                    if (strtoupper($cket)=="APPROVE") {
+                        if ($paatasan4=="0000002403") {
+                            //if (empty($apv4)) $cekbox="";
+                        }
+                    }
+                    
+                    
 					
 					
                     echo "<tr>";

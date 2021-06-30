@@ -48,10 +48,22 @@ $tmp03 ="dbtemp.tmpmrinstf03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 
+//dara penempatan marketing
+$query = "select distinct a.mr as karyawanid, a.divprodid as divisiid, a.divprodid, b.aktif, "
+        . " a.icabangid, a.areaid, b.nama as nama_cabang, "
+        . " c.nama as nama_area, b.aktif as aktifcab, c.aktif as aktifarea "
+        . " from ms.penempatan_marketing as a "
+        . " JOIN sls.icabang as b on a.icabangid=b.icabangid "
+        . " JOIN sls.iarea as c on a.icabangid=c.icabangid "
+        . " and a.areaid=c.areaid WHERE a.mr='$pkaryawanid' "
+        . " and a.bulan BETWEEN '$pbln1' AND '$pbln2'";
+
+//dari imr0
 $query = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a.icabangid, a.areaid, "
         . " b.nama as nama_cabang, c.nama as nama_area, b.aktif as aktifcab, c.aktif as aktifarea "
         . " from sls.imr0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
         . " sls.iarea as c on a.icabangid=c.icabangid AND a.areaid=c.areaid WHERE a.karyawanid='$pkaryawanid'";
+
 //echo $query;
 $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
@@ -131,6 +143,19 @@ $query .= " GROUP BY 1,2,3,4";
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+$query = "ALTER TABLE $tmp01 ADD COLUMN aktifcab VARCHAR(1), ADD COLUMN aktifarea VARCHAR(1)";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+$query = "UPDATE $tmp01 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid SET a.aktifcab=b.aktif";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+$query = "UPDATE $tmp01 as a JOIN mkt.iarea as b on a.icabangid=b.icabangid AND a.areaid=b.areaid SET a.aktifarea=b.aktif";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+$query = "delete FROM $tmp01 WHERE IFNULL(aktifarea,'')='N'";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
 
 $query = "SELECT a.icabangid, c.nama as nama_cabang, a.areaid, d.nama as nama_area, a.divprodid, a.iprodid, b.nama as nama_produk, a.qty_target, a.value_target, "
         . " a.qty_sales, a.value_sales  "

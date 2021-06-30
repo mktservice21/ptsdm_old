@@ -245,11 +245,17 @@
                             $cekbox="";
                         }
                     }
+                    
+                    
+                    $lihatkunjungan="<a title='lihat bukti' href='#' class='btn btn-default btn-xs' data-toggle='modal' "
+                        . "onClick=\"window.open('eksekusi3.php?module=entrybrrutin&brid=$idno&iprint=lihatkunjungan',"
+                        . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                        . "$nama</a>";
     
                     echo "<tr>";
                     echo "<td>$cekbox</td>";
                     echo "<td>$print $edit</td>";
-                    echo "<td>$nama</td>";
+                    echo "<td>$lihatkunjungan</td>";
                     echo "<td>$jumlah</td>";
                     echo "<td>$ppn</td>";
                     echo "<td>$periode</td>";

@@ -654,6 +654,8 @@
     }elseif ($_GET['module']=='viewmapttddkd'){
         include 'module/dkd/dkd_ttddkdvisit/ttddkdvisit_viewmap.php';
         
+    }elseif ($_GET['module']=='glrealbiayamktchccab'){
+        include 'module/laporan_gl/mod_gl_rbmchccab/aksi_rbmchccab.php';
         
         
     }elseif ($_GET['module']=='eksekusifileelastik'){

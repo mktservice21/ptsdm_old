@@ -795,7 +795,7 @@ elseif ($module=='entrybrrutin')
 	
 	
                                         
-    if ($pkaryawan=="0000000184" OR $pkaryawan=="0000001164") {
+    if ($pkaryawan=="0000000184" OR $pkaryawan=="0000001164" OR $pkaryawan=="0000002329") {
         $query = "update $dbname.t_brrutin0 set atasan1='$patasan4', tgl_atasan1=NOW(), atasan2='$patasan4', tgl_atasan2=NOW(), atasan3='$patasan4', tgl_atasan3=NOW(), atasan4='$patasan4' WHERE idrutin='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
     }

@@ -104,7 +104,7 @@ session_start();
     
     $query = "SELECT distinct a.idpo, a.tglinput, a.tanggal, a.kdsupp, d.NAMA_SUP as nama_sup, a.karyawanid, b.nama as nama_karyawan, "
             . " a.notes, a.idbayar, c.nama_bayar, a.tglkirim, a.note_kirim, a.status_bayar, "
-            . " a.ppn, a.ppnrp, a.disc, a.discrp, a.jnspph, a.pph, a.pphrp, a.pembulatan, a.totalrp as jumlah, "
+            . " a.ppn, a.ppnrp, a.disc, a.discrp, a.pph_jns, a.pph, a.pph_rp, a.pembulatan, a.totalrp as jumlah, "
             . " a.apv_mgr, a.tgl_mgr, a.dir1, a.tgl_dir1, a.dir2, a.tgl_dir2, a.userid "
             . " FROM dbpurchasing.t_po_transaksi as a "
             . " LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid "

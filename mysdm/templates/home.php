@@ -593,7 +593,8 @@
     }elseif ($_GET['module']=='appdirblk'){
         include 'module/dir_apvblk/apvblkdir.php';
     }elseif ($_GET['module']=='appdirrutin'){
-        include 'module/dir_apvrutin/apvrutindir.php';
+        //include 'module/dir_apvrutin/apvrutindir.php';
+        include 'module/budget/coo_apvlkrutin/cooapvlkrutin.php';
     }elseif ($_GET['module']=='appdirpd'){
         include 'module/dir_apvspd/apvspddir.php';
     }elseif ($_GET['module']=='apvdanamktdir'){
@@ -929,6 +930,9 @@
         include 'module/budget/bgt_danabank/danabank.php';
     }elseif ($_GET['module']=='spdbrethical'){
         include 'module/budget/bgt_spdbrethical/spdbrethical.php';
+        
+    }elseif ($_GET['module']=='glrealbiayamktchccab'){
+        include 'module/laporan_gl/mod_gl_rbmchccab/rbmchccab.php';
         
 
     }else{

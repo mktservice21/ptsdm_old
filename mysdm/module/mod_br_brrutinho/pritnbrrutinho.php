@@ -127,6 +127,10 @@
     
     $pketperiksa04="Diperiksa oleh :";
     if ($pidatasan4=="0000002403") $pketperiksa04="Menyetujui :";
+    
+    if ($pkaryawanid=="0000001479") {
+        if (empty($gbr4)) $nmatasan4="";
+    }
 ?>
 
 <HTML>

@@ -720,4 +720,13 @@
     $_SESSION['POTBRGKARYA']="";
     $_SESSION['POTBRGTGL01']="";
     $_SESSION['POTBRGTGL02']="";
+    
+    
+    //approve biaya luar kota dan rutin by coo
+    $_SESSION['COOAPLKRTSTS']="";
+    $_SESSION['COOAPLKRTBLN1']="";
+    $_SESSION['COOAPLKRTBLN2']="";
+    $_SESSION['COOAPLKRTAPVBY']="";
+    
+    
 ?>

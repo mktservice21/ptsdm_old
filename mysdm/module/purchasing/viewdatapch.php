@@ -48,6 +48,7 @@ if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
     $nrs= mysqli_fetch_array($ptampil);
     $pcabidpilihposisi=$nrs['icabangid_posisi'];
     $pcabidpilihposisi2=$nrs['icabangid'];
+    $pareaidpilih=$nrs['areaid'];
     
     $pcabangid=$pcabidpilihposisi;
     if (empty($pcabangid)) {
@@ -174,7 +175,7 @@ $pfilarea="";
 $query_area="";
 
 if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
-    
+    $pareaid=$pareaidpilih;
 }else{
     if (!empty($pcabangid)) {
         if ($pidjbtpl=="15") {
@@ -274,7 +275,7 @@ if ($ppengajuanid=="HO") {
     </div>
 
     <div class='form-group'>
-        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang <span class='required'></span></label>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang / Area <span class='required'></span></label>
         <div class='col-xs-5'>
             <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="">
                 <option value='' selected>-- Pilihan --</option>

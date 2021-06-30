@@ -717,7 +717,7 @@ if ($_GET['act']=="editdata"){
                                           <select class='soflow' id='e_idcabang' name='e_idcabang' onchange="showArea('e_idcabang', 'cb_areasdm')">
                                               <option value='' selected>-- Pilihan --</option>
                                               <?PHP
-                                                $tampil=mysqli_query($cnmy, "SELECT distinct icabangid_o, nama from dbmaster.v_icabang_o where aktif='Y'");
+                                                $tampil=mysqli_query($cnmy, "SELECT distinct icabangid_o, nama from dbmaster.v_icabang_o where aktif='Y' ORDER BY 2,1");
                                                 while($a=mysqli_fetch_array($tampil)){
                                                     if ($a['icabangid_o']==$idcabang)
                                                         echo "<option value='$a[icabangid_o]' selected>$a[nama]</option>";

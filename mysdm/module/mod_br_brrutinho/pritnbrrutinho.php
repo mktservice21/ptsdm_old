@@ -55,7 +55,7 @@
             . " LEFT JOIN hrd.karyawan as e on a.atasan4=e.karyawanid "
             . " WHERE "
             . " a.idrutin='$pidrutin' ";
-    if ( ($pidgroup=="28" AND $pidcard=="0000000143") OR $pidgroup=="50" ) {
+    if ( ($pidgroup=="28" AND $pidcard=="0000000143") OR $pidgroup=="50" OR $pidgroup=="46" OR $pidgroup=="1" OR $pidgroup=="24" ) {
         if ($pidgroup == "50") {
             $query .=" AND ( a.karyawanid='$pidcard' OR a.karyawanid IN $pfilterkrypilih ) ";
         }
@@ -124,6 +124,9 @@
         file_put_contents('images/tanda_tangan_base64/'.$namagsm, $data);
     }
     
+    
+    $pketperiksa04="Diperiksa oleh :";
+    if ($pidatasan4=="0000002403") $pketperiksa04="Menyetujui :";
 ?>
 
 <HTML>
@@ -454,7 +457,7 @@
                     echo "<tr>";
                     
                         echo "<td align='center'>";
-                        echo "Diperiksa oleh :";
+                        echo "$pketperiksa04";
                         if (!empty($namagsm)) {
                             echo "<br/><img src='images/tanda_tangan_base64/$namagsm' height='$gmrheight'><br/>";
                         }else{

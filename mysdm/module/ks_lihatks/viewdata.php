@@ -99,11 +99,45 @@ if ($pmodule=="viewdatakaryawan") {
     
     mysqli_close($cnmy);
     
+}elseif ($pmodule=="viewdatadokter") {
+    include "../../config/koneksimysqli_ms.php";
+    
+    $pidcab=$_POST['uidcab'];
+    $pidarea=$_POST['uidarea'];
+    
+    echo "<option value='' selected>-- Pilih --</option>";
+
+    $query = "SELECT DISTINCT d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+        a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+        FROM ms2.tempatpraktek as a 
+        JOIN ms2.outlet_master as b on a.outletId=b.id 
+        LEFT JOIN ms2.outlet_type as c on b.type=c.id 
+        JOIN ms2.outlet_customer as d on a.outletId=d.outletId 
+        LEFT JOIN mkt.icabang as e on d.iCabangId=e.iCabangId 
+        LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
+        JOIN ms2.masterdokter as g on a.iddokter=g.id 
+        LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
+        WHERE d.icabangid='$pidcab' ";
+    if (!empty($pidarea)) {
+        $query .=" AND d.areaid='$pidarea' ";
+    }
+    $query .=" ORDER BY g.namalengkap, a.iddokter";
+    $tampil= mysqli_query($cnms, $query);
+    while ($row= mysqli_fetch_array($tampil)) {
+        $pniddokt=$row['iddokter'];
+        $pnnmdokt=$row['nama_dokter'];
+
+        echo "<option value='$pniddokt' >$pnnmdokt - ($pniddokt)</option>";
+    }    
+    
+    mysqli_close($cnms);
+    
 }elseif ($pmodule=="viewdataoutlet") {
     include "../../config/koneksimysqli_ms.php";
     
     $pidcab=$_POST['uidcab'];
     $pidarea=$_POST['uidarea'];
+    $piddokt=$_POST['uiddokt'];
     
     echo "<option value='' selected>-- Pilih --</option>";
     
@@ -123,6 +157,7 @@ if ($pmodule=="viewdatakaryawan") {
     if (!empty($pidarea)) {
         $query .=" AND d.areaid='$pidarea' ";
     }
+    $query .=" AND a.iddokter='$piddokt' ";
     $query .=" ORDER BY b.nama, a.id";
     $tampil= mysqli_query($cnms, $query);
     while ($row= mysqli_fetch_array($tampil)) {
@@ -138,7 +173,7 @@ if ($pmodule=="viewdatakaryawan") {
         $pnnmdokt=$row['nama_dokter'];
         $pnnamatype=$row['nama_type'];
         
-        echo "<option value='$pnidpraktek' >$pnnmdokt - $pnotlnm - ($pnnamatype)</option>";
+        echo "<option value='$pnotlid' >$pnotlnm - $pnotlid ($pnnamatype)</option>";
     }
     
     mysqli_close($cnms);

@@ -104,8 +104,8 @@ if ($module=="appdirrutin") {
                 $fielduntukttd=" a.tgl_atasan1=NOW(), a.gbr_atasan1='$gbrapv' ";
                 $fieldtglapprovenya= " (IFNULL(a.tgl_atasan1,'')='' OR IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
             }elseif ($papproveby=="apvcoo") {
-                $fielduntukttd=" a.tgl_atasan4=NOW(), a.gbr_atasan4='$gbrapv' ";
-                $fieldtglapprovenya= " (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                $fielduntukttd=" a.tgl_atasan4=NOW(), a.gbr_atasan4='$gbrapv', a.dir='$karyawanapv', a.tgl_dir=NOW(), a.gbr_dir='$gbrapv' ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00')  AND a.jabatanid NOT IN ('05') ";
             }elseif ($papproveby=="apvmgrchc") {
                 $fielduntukttd=" a.tgl_atasan4=NOW(), a.gbr_atasan4='$gbrapv' ";
                 $fieldtglapprovenya= " (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
@@ -131,7 +131,11 @@ if ($module=="appdirrutin") {
                 }elseif ($papproveby=="apvgsm") {
                 }elseif ($papproveby=="apvmgrchc") {
                 }elseif ($papproveby=="apvatasanho") {
-                    
+                }elseif ($papproveby=="apvcoo") {
+                                        
+                    $query = "UPDATE dbmaster.t_brrutin0 as a SET a.dir='$karyawanapv', a.tgl_dir=NOW(), a.gbr_dir='$gbrapv' WHERE a.idrutin IN $noidbr AND (IFNULL(a.tgl_dir,'')='' OR IFNULL(a.tgl_dir,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') AND a.jabatanid IN ('05')";
+                    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+                                        
                 }elseif ($papproveby=="apvspv") {
                     $query = "UPDATE dbmaster.t_brrutin0 SET tgl_atasan2=NOW(), atasan2='', gbr_atasan2=NULL WHERE idrutin IN $noidbr AND IFNULL(atasan2,'')='' AND (IFNULL(tgl_atasan2,'')='' OR IFNULL(tgl_atasan2,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(tgl_atasan1,'')<>'' AND IFNULL(tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00')";
                     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
@@ -162,8 +166,8 @@ if ($module=="appdirrutin") {
                         . " ( (IFNULL(a.tgl_atasan3,'')='' OR IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')='0000-00-00 00:00:00') OR IFNULL(atasan3,'')='' ) AND "
                         . " (IFNULL(a.tgl_atasan1,'')<>'' AND IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
             }elseif ($papproveby=="apvcoo") {
-                $fielduntukttd=" a.tgl_atasan4=NULL, a.gbr_atasan4=NULL ";
-                $fieldtglapprovenya= " (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                $fielduntukttd=" a.tgl_atasan4=NULL, a.gbr_atasan4=NULL, a.tgl_dir=NULL, a.gbr_dir=NULL ";
+                $fieldtglapprovenya= " (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') AND a.jabatanid NOT IN ('05') ";
             }elseif ($papproveby=="apvmgrchc") {
                 $fielduntukttd=" a.tgl_atasan4=NULL, a.gbr_atasan4=NULL ";
                 $fieldtglapprovenya= " (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
@@ -191,6 +195,10 @@ if ($module=="appdirrutin") {
                 }elseif ($papproveby=="apvgsm") {
                 }elseif ($papproveby=="apvmgrchc") {
                 }elseif ($papproveby=="apvatasanho") {
+                }elseif ($papproveby=="apvcoo") {
+                    
+                    $query = "UPDATE dbmaster.t_brrutin0 as a SET a.tgl_dir=NULL, a.gbr_dir=NULL WHERE a.idrutin IN $noidbr AND (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_dir,'')<>'' AND IFNULL(a.tgl_dir,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') AND a.jabatanid IN ('05')";
+                    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
                     
                 }elseif ($papproveby=="apvspv") {
                     

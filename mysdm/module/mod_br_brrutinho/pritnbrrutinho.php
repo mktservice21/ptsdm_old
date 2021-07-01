@@ -100,6 +100,13 @@
     
     if ($ptglatasan4=="0000-00-00") $ptglatasan4="";
     
+    $ptglatasandir=$row['tgl_dir'];
+    if ($ptglatasandir=="0000-00-00") $ptglatasandir="";
+    $patasandir=$row['dir'];
+    $nmatasandir = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasandir'");
+    $gbrdir=$row['gbr_dir'];
+                
+    
     
     $puserid=$row['userid'];
     
@@ -124,12 +131,30 @@
         file_put_contents('images/tanda_tangan_base64/'.$namagsm, $data);
     }
     
+    $namadir="";
+    if (!empty($gbrdir)) {
+        $data="data:".$gbrdir;
+        $data=str_replace(' ','+',$data);
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+        $namadir="img_".$pidrutin."DIR01_.png";
+        file_put_contents('images/tanda_tangan_base64/'.$namadir, $data);
+    }
+    
     
     $pketperiksa04="Diperiksa oleh :";
     if ($pidatasan4=="0000002403") $pketperiksa04="Menyetujui :";
     
     if ($pkaryawanid=="0000001479") {
         if (empty($gbr4)) $nmatasan4="";
+    }else{
+    
+        if ($pjbtid=="05") {
+            $nmatasan4=$nmatasandir;
+            $namagsm=$namadir;
+        }
+        
     }
 ?>
 

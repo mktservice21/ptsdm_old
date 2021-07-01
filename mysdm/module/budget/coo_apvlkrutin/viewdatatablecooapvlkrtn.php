@@ -129,7 +129,7 @@ session_start();
     }elseif ($papproveby=="apvgsm") {
         $query .= " AND a.atasan4='$pkaryawanid' ";//AND a.jabatanid NOT IN ('15', '38')
     }elseif ($papproveby=="apvcoo") {
-        $query .= " AND ( a.karyawanid='$pkaryawanid' OR a.atasan4='$pkaryawanid' ) ";
+        $query .= " AND ( a.karyawanid='$pkaryawanid' OR a.atasan4='$pkaryawanid' OR a.dir='$pkaryawanid' ) ";
     }elseif ($papproveby=="apvmgrchc") {
         $query .= " AND a.atasan4='$pkaryawanid' ";
     }elseif ($papproveby=="apvatasanho") {//, 
@@ -155,9 +155,20 @@ session_start();
                     $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                     $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                 }elseif ($papproveby=="apvcoo") {
-                    $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    //$query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    //$query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                    //$query .= " AND (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    
+                    
+                    $query .= " AND ( ";
+                    $query .= " (IFNULL(a.tgl_dir,'')='' OR IFNULL(a.tgl_dir,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " OR ";
+                    $query .= " (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " ) ";
                     $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
                     $query .= " AND (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    
+                    
                 }elseif ($papproveby=="apvmgrchc") {
                     $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
                     $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
@@ -446,6 +457,7 @@ echo "</div>";
                     $nbulan=$row1['bulan'];
                     $nper1=$row1['periode1'];
                     $nper2=$row1['periode2'];
+                    $njabatanid=$row1['jabatanid'];
                     
                     $nbulan= date("F Y", strtotime($nbulan));
                     $nper1= date("d/m/Y", strtotime($nper1));
@@ -523,6 +535,14 @@ echo "</div>";
                         }
                         if (!empty($pstsapvoleh)) {
                             $pstsapvoleh="<span style='color:red;'>$pstsapvoleh</span>";
+                        }
+                        
+                        if ($papproveby == "apvcoo") {
+                            if ($njabatanid=="05") {
+                                if (empty($ptglatasan4)) {
+                                    $ceklisnya="Blm Approve GSM";
+                                }
+                            }
                         }
                         
                     }elseif ($ppilihsts=="UNAPPROVE") {

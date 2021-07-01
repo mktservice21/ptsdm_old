@@ -48,7 +48,8 @@
         c.idbarang, c.namabarang, c.idbarang_d, c.spesifikasi1, 
         c.spesifikasi2, c.uraian, c.keterangan,
         a.dir1, a.tgl_dir1, a.dir2, a.tgl_dir2, 
-        c.jumlah, c.satuan, c.harga, c.ppn, c.ppnrp, c.disc, c.discrp, c.pembulatan as pembulatanpr, c.totalrp
+        c.jumlah, c.satuan, c.harga, c.ppn, c.ppnrp, c.disc, c.discrp, c.pembulatan as pembulatanpr, c.totalrp,
+        a.apv_mgr, a.tgl_mgr 
         from dbpurchasing.t_po_transaksi as a 
         join dbpurchasing.t_po_transaksi_d as b on a.idpo=b.idpo 
         JOIN dbpurchasing.t_pr_transaksi_po as c on b.idpr_po=c.idpr_po AND a.kdsupp=c.kdsupp  
@@ -130,8 +131,12 @@
                         $ntgldir2=$row1['tgl_dir2'];
                         $ndir2=$row1['dir2'];
                         
+                        $ntglmgr=$row1['tgl_mgr'];
+                        $napvmgr=$row1['apv_mgr'];
+                        
                         if ($ntgldir1=="0000-00-00 00:00:00") $ntgldir1="";
                         if ($ntgldir2=="0000-00-00 00:00:00") $ntgldir2="";
+                        if ($ntglmgr=="0000-00-00 00:00:00") $ntglmgr="";
                         
                         $ptgl= date("d/m/Y", strtotime($ptgl));
                         $pjml=number_format($pjml,0,",",",");
@@ -152,6 +157,15 @@
                         //$print="<a title='Print / Cetak' href='eksekusi3.php?module=$pmodule&brid=$pidpo&iprint=print' class='btn btn-info btn-xs' data-toggle='modal' target='_blank'>Print</a>";
                         
                         $pketapprove="";
+                        
+                        
+                        if (!empty($ntglmgr)) {
+                            $pedit="";
+                            $phapus="";
+                            
+                            $pketapprove="Sudah Approve";
+                        }
+                        
                         if (!empty($ntgldir1)) {
                             $pedit="";
                             $phapus="";

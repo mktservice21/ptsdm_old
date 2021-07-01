@@ -98,7 +98,7 @@ include "../../../config/koneksimysqli.php";
                             WHERE IFNULL(bb.stsnonaktif,'')<>'Y') as c on a.idpr_po=c.idpr_po and a.kdsupp=c.kdsupp WHERE 
                             1=1 ";
 
-                    $query .=" AND (a.tglinput BETWEEN '$pbulan1' AND '$pbulan2') ";
+                    $query .=" AND (LEFT(a.tglinput,10) BETWEEN '$pbulan1' AND '$pbulan2') ";
 
                     $query .= " order by IFNULL(c.kdsupp,'ZZ'), a.aktif, b.NAMA_SUP";
                     $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";

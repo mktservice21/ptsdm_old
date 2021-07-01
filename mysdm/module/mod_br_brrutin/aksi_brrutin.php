@@ -801,6 +801,11 @@ elseif ($module=='entrybrrutin')
     }
     
     
+    if ($pkaryawan=="0000000159" OR $pkaryawan=="0000000158") {
+        $query = "update $dbname.t_brrutin0 set dir='0000002403' WHERE idrutin='$kodenya' LIMIT 1";
+        mysqli_query($cnmy, $query);
+    }
+    
     
     $pkrynone = "";
     if (isset($_POST['e_stskaryawan'])) $pkrynone = $_POST['e_stskaryawan'];

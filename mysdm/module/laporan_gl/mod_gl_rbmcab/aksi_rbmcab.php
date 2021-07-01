@@ -42,6 +42,8 @@
     $tmp09 =" dbtemp.tmplapglreak09_".$puserid."_$now ";
     $tmp10 =" dbtemp.tmplapglreak10_".$puserid."_$now ";
     $tmp11 =" dbtemp.tmplapglreak11_".$puserid."_$now ";
+    $tmp12 =" dbtemp.tmplapglreak12_".$puserid."_$now ";
+    $tmp13 =" dbtemp.tmplapglreak13_".$puserid."_$now ";
     
 ?>
 
@@ -353,25 +355,45 @@
         mysqli_query($cnit, $query);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-        /*
+        
+        $query = "select * from $tmp03 WHERE IFNULL(GRP_FKIDEN,'') IN ('1', '6', '4', '5', '2', '3', '7', '10')";
+        $query = "create TEMPORARY table $tmp12 ($query)";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "select * from $tmp03";
+        $query = "create TEMPORARY table $tmp13 ($query)";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp13 SET icabangid='ZKLAIMDISC'";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+        
+        
         
         // 6 = MELANOX DECORATIVE 1 = MELANOX PREMIUM
-        $query = "UPDATE $tmp03 SET icabangid='PM_MELANOX' WHERE IFNULL(GRP_FKIDEN,'') IN ('1', '6')";
+        $query = "UPDATE $tmp12 SET icabangid='PM_MELANOX' WHERE IFNULL(GRP_FKIDEN,'') IN ('1', '6')";
         mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         //  4 	 PARASOL (FOCUS) 5 	 PARASOL EXIST 
-        $query = "UPDATE $tmp03 SET icabangid='PM_PARASOL' WHERE IFNULL(GRP_FKIDEN,'') IN ('4', '5')";
+        $query = "UPDATE $tmp12 SET icabangid='PM_PARASOL' WHERE IFNULL(GRP_FKIDEN,'') IN ('4', '5')";
         mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         // 2 	 CARMED LOTION
-        $query = "UPDATE $tmp03 SET icabangid='PM_CARMED' WHERE IFNULL(GRP_FKIDEN,'') IN ('2')";
+        $query = "UPDATE $tmp12 SET icabangid='PM_CARMED' WHERE IFNULL(GRP_FKIDEN,'') IN ('2')";
         mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         //  3 	 LANORE MAKE UP 	7 	 LANORE SKIN CARE 
-        $query = "UPDATE $tmp03 SET icabangid='PM_LANORE' WHERE IFNULL(GRP_FKIDEN,'') IN ('3', '7')";
+        $query = "UPDATE $tmp12 SET icabangid='PM_LANORE' WHERE IFNULL(GRP_FKIDEN,'') IN ('3', '7')";
         mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         //  10 	 ACNEMED
-        $query = "UPDATE $tmp03 SET icabangid='PM_ACNEMED' WHERE IFNULL(GRP_FKIDEN,'') IN ('10')";
+        $query = "UPDATE $tmp12 SET icabangid='PM_ACNEMED' WHERE IFNULL(GRP_FKIDEN,'') IN ('10')";
         mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-        */
+        $query = "INSERT INTO $tmp03 select * from $tmp12";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "INSERT INTO $tmp03 select * from $tmp13";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
         
         //$query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from dbmaster.sales_otc_local WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1,2,3";
         $query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from $tmp03 GROUP BY 1,2,3";
@@ -527,8 +549,11 @@
     $query = "DELETE from $tmp07";
     mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-                                            
+    //$query = "DELETE from $tmp04 WHERE icabangid IN ('PM_ACNEMED', 'PM_CARMED', 'PM_LANORE', 'PM_MELANOX', 'PM_PARASOL', 'ZKLAIMDISC')";
+    //mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+                                            
+    $parraycabang=array('PM_ACNEMED', 'PM_CARMED', 'PM_LANORE', 'PM_MELANOX', 'PM_PARASOL', 'ZKLAIMDISC');
 ?>
 
 <HTML>
@@ -953,7 +978,14 @@
                     if ($ketemusls>0) {
                         $rsls= mysqli_fetch_array($rowsls);
                         $ztotalsls[$ix]=$rsls['rpsales'];
-                        $ztotsls=(double)$ztotsls+(double)$ztotalsls[$ix];
+                        
+                        if (in_array($zidcab, $parraycabang)) {
+                            
+                        }else{
+                            $ztotsls=(double)$ztotsls+(double)$ztotalsls[$ix];
+                        }
+                        
+                        
                     }
 
 
@@ -1034,6 +1066,7 @@
                         $znmcab=$arrnmcab[$ix];
                         
                         if ($znmcab=="zz") $znmcab="OTHERS";
+                        elseif ($znmcab=="ZKLAIMDISC") $znmcab="KLAIM DISCOUNT";
                         
                         echo "<th align='center' nowrap>%</th>";
                         echo "<th align='center' nowrap>$znmcab</th>";
@@ -1622,5 +1655,7 @@ hapusdata:
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp09");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp10");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp11");
+    mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp12");
+    mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp13");
     mysqli_close($cnmy);
 ?>

@@ -30,9 +30,10 @@
         $papotikid=$_POST['uaptid'];
         $pcabangid=$_POST['udcabid'];
         $pareaid=$_POST['uareaid'];
+        $pdsudoktid=$_POST['udsudoktid'];
         $pouteltid=$_POST['uoutletid'];
         
-        if (!empty($pkaryawanid) AND !empty($pdokterid) AND !empty($pouteltid) AND !empty($papotikid)) {
+        if (!empty($pkaryawanid) AND !empty($pdokterid) AND !empty($pouteltid) AND !empty($pdsudoktid) AND !empty($papotikid)) {
             
             include "../../config/koneksimysqli_ms.php";
             
@@ -48,8 +49,8 @@
             $query = "DELETE FROM ms2.mapping_ks_dsu WHERE dokterid='$pdokterid' AND karyawanid='$pkaryawanid' AND idapotik='$papotikid' LIMIT 1";
             mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnms); exit; }
             
-            $query = "INSERT INTO ms2.mapping_ks_dsu (karyawanid, dokterid, idapotik, idpraktek, userid)VALUES"
-                    . " ('$pkaryawanid', '$pdokterid', '$papotikid', '$pouteltid', '$pidcard')";
+            $query = "INSERT INTO ms2.mapping_ks_dsu (karyawanid, dokterid, idapotik, iddokter, outletid, userid)VALUES"
+                    . " ('$pkaryawanid', '$pdokterid', '$papotikid', '$pdsudoktid', '$pouteltid', '$pidcard')";
             mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnms); exit; }
             
             

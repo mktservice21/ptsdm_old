@@ -164,12 +164,14 @@
                 $ptglatasan3=$row['tgl_atasan3'];
                 $ptglatasan4=$row['tgl_atasan4'];
                 $ptglatasanfin=$row['tgl_fin'];
+                $ptglatasandir=$row['tgl_dir'];
                 
                 if ($ptglatasan1=="0000-00-00") $ptglatasan1="";
                 if ($ptglatasan2=="0000-00-00") $ptglatasan2="";
                 if ($ptglatasan3=="0000-00-00") $ptglatasan3="";
                 if ($ptglatasan4=="0000-00-00") $ptglatasan4="";
                 if ($ptglatasanfin=="0000-00-00") $ptglatasanfin="";
+                if ($ptglatasandir=="0000-00-00") $ptglatasandir="";
                 
                 $phari=date("w", strtotime($row['tgl']));
                 $pdate=date("d", strtotime($row['tgl']));
@@ -213,12 +215,15 @@
                 $nmatasan3 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan3'");
                 $patasan4=$row['atasan4'];
                 $nmatasan4 = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasan4'");
+                $patasandir=$row['dir'];
+                $nmatasandir = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasandir'");
                 
                 $gambar=$row['gambar'];
                 $gbr1=$row['gbr_atasan1'];
                 $gbr2=$row['gbr_atasan2'];
                 $gbr3=$row['gbr_atasan3'];
                 $gbr4=$row['gbr_atasan4'];
+                $gbrdir=$row['gbr_dir'];
                 
                 if ($patasan4==$pkaryawan) $gambar=$row['gbr_atasan4'];
                 
@@ -230,6 +235,7 @@
                 $namadm="";
                 $namasm="";
                 $namagsm="";
+                $namadir="";
                 $gmrheight = "80px";
                 
                 if ($pdivisi=="OTC" AND $_GET['module']=="entrybrrutin") {
@@ -318,6 +324,18 @@
                     }
                     
                 }
+                
+                if (!empty($gbrdir)) {
+                    $data="data:".$gbrdir;
+                    $data=str_replace(' ','+',$data);
+                    list($type, $data) = explode(';', $data);
+                    list(, $data)      = explode(',', $data);
+                    $data = base64_decode($data);
+                    $namadir="img_".$idbr."DIR01_.png";
+                    file_put_contents('images/tanda_tangan_base64/'.$namadir, $data);
+                }
+                
+                
             ?>
             
             <center>
@@ -810,35 +828,65 @@
                             echo "</tr>";
                             
                         }else{
-                        
-                            echo "<tr>";
                             
-                                echo "<td align='center'>";
-                                    echo "Menyetujui :";
-                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                    echo "(.................................)";
-                                echo "</td>";
-                            
-                            
-                                echo "<td align='center'>";
-                                    echo "Mengetahui :";
-                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                    echo "(.................................)";
-                                echo "</td>";
-                            
-                                echo "<td align='center'>";
-                                    echo "Yang Membuat :";
-                                    if (!empty($namapengaju))
-                                        echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
-                                    else
-                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                    echo "<b><u>$nama</u></b>";
-                                echo "</td>";
+                            if ( ($pjabatanid=="05" OR $pjabatanid=="25") AND !empty($gbrdir)) {
                                 
-                            echo "</tr>";
-                            
+                                echo "<tr>";
+
+                                    echo "<td align='center'>";
+                                        echo "Menyetujui :";
+                                        if (!empty($namadir))
+                                            echo "<br/><img src='images/tanda_tangan_base64/$namadir' height='$gmrheight'><br/>";
+                                        else
+                                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                        echo "<b><u>$nmatasandir</u></b>";
+                                    echo "</td>";
+
+                                    echo "<td align='center'>";
+                                        echo "Yang Membuat :";
+                                        if (!empty($namapengaju))
+                                            echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
+                                        else
+                                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                        echo "<b><u>$nama</u></b>";
+                                    echo "</td>";
+
+                                echo "</tr>";
+                                
+                            }else{
+                                
+                                echo "<tr>";
+
+                                    echo "<td align='center'>";
+                                        echo "Menyetujui :";
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                        echo "(.................................)";
+                                    echo "</td>";
+
+
+                                    echo "<td align='center'>";
+                                        echo "Mengetahui :";
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                        echo "(.................................)";
+                                    echo "</td>";
+
+                                    echo "<td align='center'>";
+                                        echo "Yang Membuat :";
+                                        if (!empty($namapengaju))
+                                            echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
+                                        else
+                                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                        echo "<b><u>$nama</u></b>";
+                                    echo "</td>";
+
+                                echo "</tr>";
+
+                            }
+                        
                         }
                     }
+                    
+                    
                     ?>
                 </table>
             </center>

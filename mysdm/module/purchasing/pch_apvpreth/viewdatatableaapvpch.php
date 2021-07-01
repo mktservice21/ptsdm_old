@@ -590,6 +590,7 @@ echo "</div>";
                 
                     if ($psudahisivendor=="Y") {
                         $ceklisnya="";
+                        $pstsapvoleh="RFQ";
                     }
                         
                     echo "<tr>";

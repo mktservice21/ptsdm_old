@@ -627,11 +627,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-            $query = "ALTER TABLE $tmp01 ADD COLUMN idpraktek INT(10) Unsigned, add column nama_outlet varchar(200), add column nama_dokt varchar(200)";
+            $query = "ALTER TABLE $tmp01 ADD COLUMN idpraktek INT(10) Unsigned, ADD COLUMN iddokter INT(10) Unsigned, ADD COLUMN outletid INT(10) Unsigned, add column nama_outlet varchar(200), add column nama_dokt varchar(200)";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-            $query = "UPDATE $tmp01 as a JOIN (select karyawanid, dokterid, idapotik, idpraktek FROM fe_ms.mapping_ks_dsu WHERE "
-                    . " karyawanid='$pkaryawanid' and dokterid='$pdokterid') as b on a.idapotik=b.idapotik SET a.idpraktek=b.idpraktek";
+            $query = "UPDATE $tmp01 as a JOIN (select karyawanid, dokterid, idapotik, iddokter, outletid FROM fe_ms.mapping_ks_dsu WHERE "
+                    . " karyawanid='$pkaryawanid' and dokterid='$pdokterid') as b on a.idapotik=b.idapotik SET a.iddokter=b.iddokter, a.outletid=b.outletid";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
             
@@ -710,17 +710,18 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     
                         
                         $no=1;//, apttype
-                        $query = "select DISTINCT nama_apotik, idapotik, idpraktek from $tmp01 order by nama_apotik, idapotik";
+                        $query = "select DISTINCT nama_apotik, idapotik, iddokter, outletid from $tmp01 order by nama_apotik, idapotik";
                         $tampil=mysqli_query($cnmy, $query);
                         $ketemu=mysqli_num_rows($tampil);
                         if ((INT)$ketemu>0) {
                             while ($row= mysqli_fetch_array($tampil)) {
                                 $nidapotik=$row['idapotik'];
                                 $nnmapotik=$row['nama_apotik'];
-                                $nidpraktek=$row['idpraktek'];
+                                $nidpraktek="";//$row['idpraktek'];
+                                $niddokterdsu=$row['iddokter'];
 
                                 $ntypeapotik="";
-                                if ($nidpraktek=="0") $nidpraktek="";
+                                if ($niddokterdsu=="0") $niddokterdsu="";
                                 
                                 /*
                                 $ntypeapotik=$row['apttype'];
@@ -736,7 +737,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                         . " data-target='#myModal' onClick=\"MappingKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter', '$nidapotik', '$nnmapotik', '$ntypeapotik')\">Mapping</button>";
 
 
-                                if (!empty($nidpraktek)) {
+                                if (!empty($niddokterdsu)) {
                                     $nbutton = "SUDAH MAPPING";
                                 }
                                 

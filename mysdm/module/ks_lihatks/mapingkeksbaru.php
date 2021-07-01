@@ -20,7 +20,9 @@ $pidapt=$_POST['uidapt'];
 $pnmapt=$_POST['unmapt'];
 $ptypapt=$_POST['utypapt'];
 
+$pidotlet="";
 $pidpraktek="";
+$piddokter="";
 
 $query = "select a.brId as brid, a.aktivitas1, a.aktivitas2, "
         . " a.tgl, a.tgltrans, a.realisasi1, a.karyawanid, b.nama as nama_karyawan "
@@ -34,16 +36,18 @@ $npcabangid="";
 $npareaid="";
 
 $psudahmaping=false;
-$query = "SELECT idpraktek FROM ms2.mapping_ks_dsu WHERE dokterid='$piddokt' AND karyawanid='$pidkry' AND idapotik='$pidapt'";
+$query = "SELECT iddokter, outletid FROM ms2.mapping_ks_dsu WHERE dokterid='$piddokt' AND karyawanid='$pidkry' AND idapotik='$pidapt'";
 $tampild= mysqli_query($cnms, $query);
 $ketemud= mysqli_num_rows($tampild);
 if ((INT)$ketemud>0) {
     $nro= mysqli_fetch_array($tampild);
     $psudahmaping=true;
-    $pidpraktek=$nro['idpraktek'];
+    $pidpraktek="";//$nro['idpraktek'];
+    $gsdsudoktit=$nro['iddokter'];
+    $gsouteltid=$nro['outletid'];
     
     $query = "SELECT a.id, a.outletid, b.iCabangId as icabangid, b.areaId as areaid FROM ms2.tempatpraktek as a "
-            . " JOIN ms2.outlet_customer as b on a.outletId=b.outletId where a.id='$pidpraktek'";
+            . " JOIN ms2.outlet_customer as b on a.outletId=b.outletId where a.iddokter='$gsdsudoktit' AND a.outletid='$gsouteltid'";
     $tampilp= mysqli_query($cnms, $query);
     $np= mysqli_fetch_array($tampilp);
     $npcabangid=$np['icabangid'];
@@ -158,7 +162,7 @@ if ((INT)$ketemud>0) {
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>Area <span class='required'></span></label>
                                     <div class='col-md-8'>
                                         
-                                        <select class='soflow' id="cb_area" name="cb_area" onchange="ShowDataOutelt()">
+                                        <select class='soflow' id="cb_area" name="cb_area" onchange="ShowDataDokter()">
                                             <?PHP
                                                 echo "<option value='' selected>-- All --</option>";
                                                 if (!empty($npcabangid)) {
@@ -182,7 +186,48 @@ if ((INT)$ketemud>0) {
                                 
                                 
                                 <div class='form-group' style="margin-top:200px;">
-                                    <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>User & Outelt (DSU) <span class='required'></span></label>
+                                    <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>User <span class='required'></span></label>
+                                    <div class='col-md-8'>
+                                        <select class='soflow s3' id="cb_dokt" name="cb_dokt" onchange="ShowDataOutelt()" style="width: 340px;">
+                                            <?PHP
+                                                echo "<option value='' selected>-- Pilih --</option>";
+                                                if (!empty($npcabangid)) {
+                                                    
+                                                    $query = "SELECT DISTINCT d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+                                                        a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+                                                        FROM ms2.tempatpraktek as a 
+                                                        JOIN ms2.outlet_master as b on a.outletId=b.id 
+                                                        LEFT JOIN ms2.outlet_type as c on b.type=c.id 
+                                                        JOIN ms2.outlet_customer as d on a.outletId=d.outletId 
+                                                        LEFT JOIN mkt.icabang as e on d.iCabangId=e.iCabangId 
+                                                        LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
+                                                        JOIN ms2.masterdokter as g on a.iddokter=g.id 
+                                                        LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
+                                                        WHERE d.icabangid='$npcabangid' ";
+                                                    if (!empty($npareaid)) {
+                                                        $query .=" AND d.areaid='$npareaid' ";
+                                                    }
+                                                    $query .=" ORDER BY g.namalengkap, a.iddokter";
+                                                    $tampil= mysqli_query($cnms, $query);
+                                                    while ($row= mysqli_fetch_array($tampil)) {
+                                                        $pniddokt=$row['iddokter'];
+                                                        $pnnmdokt=$row['nama_dokter'];
+                                                        
+                                                        if ($pniddokt==$piddokter)
+                                                            echo "<option value='$pniddokt' selected>$pnnmdokt - ($pniddokt)</option>";
+                                                        else
+                                                            echo "<option value='$pniddokt' >$pnnmdokt - ($pniddokt)</option>";
+                                                    }
+    
+                                                }
+                                            ?>
+                                        </select>
+                                        
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group' style="margin-top:240px;">
+                                    <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>Outelt <span class='required'></span></label>
                                     <div class='col-md-8'>
                                         <!-- cb_outlet = idpraktek -->
                                         <select class='soflow s2' id="cb_outlet" name="cb_outlet" onchange="" style="width: 340px;">
@@ -190,7 +235,7 @@ if ((INT)$ketemud>0) {
                                                 echo "<option value='' selected>-- Pilih --</option>";
                                                 if (!empty($npcabangid)) {
                                                     
-                                                    $query = "SELECT a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
+                                                    $query = "SELECT DISTINCT a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
                                                         b.jenis, b.type, c.Nama as nama_type, b.dispensing, 
                                                         d.iCustId as icustid, d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
                                                         a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
@@ -221,10 +266,10 @@ if ((INT)$ketemud>0) {
                                                         $pnnmdokt=$row['nama_dokter'];
                                                         $pnnamatype=$row['nama_type'];
                                                         
-                                                        if ($pnidpraktek==$pidpraktek)
-                                                            echo "<option value='$pnidpraktek' selected>$pnnmdokt - $pnotlnm - ($pnnamatype)</option>";
+                                                        if ($pnotlid==$pidotlet)
+                                                            echo "<option value='$pnotlid' selected>$pnotlnm - $pnotlid ($pnnamatype)</option>";
                                                         else
-                                                            echo "<option value='$pnidpraktek' >$pnnmdokt - $pnotlnm - ($pnnamatype)</option>";
+                                                            echo "<option value='$pnotlid' >$pnotlnm - $pnotlid ($pnnamatype)</option>";
                                                     }
     
                                                 }
@@ -237,7 +282,7 @@ if ((INT)$ketemud>0) {
                                 
 
 
-                                <div class='form-group' style="margin-top:250px;">
+                                <div class='form-group' style="margin-top:290px;">
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                     <div class='col-md-8'>
                                         <?PHP
@@ -353,6 +398,22 @@ if ((INT)$ketemud>0) {
             data:"uidcab="+eidcab,
             success:function(data){
                 $("#cb_area").html(data);
+                ShowDataDokter();
+            }
+        });
+    }
+    
+    
+    function ShowDataDokter() {
+        var eidcab =document.getElementById('cb_cabang').value;
+        var eidarea =document.getElementById('cb_area').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/ks_lihatks/viewdata.php?module=viewdatadokter",
+            data:"uidcab="+eidcab+"&uidarea="+eidarea,
+            success:function(data){
+                $("#cb_dokt").html(data);
                 ShowDataOutelt();
             }
         });
@@ -362,11 +423,12 @@ if ((INT)$ketemud>0) {
     function ShowDataOutelt() {
         var eidcab =document.getElementById('cb_cabang').value;
         var eidarea =document.getElementById('cb_area').value;
+        var eiddokt =document.getElementById('cb_dokt').value;
         
         $.ajax({
             type:"post",
             url:"module/ks_lihatks/viewdata.php?module=viewdataoutlet",
-            data:"uidcab="+eidcab+"&uidarea="+eidarea,
+            data:"uidcab="+eidcab+"&uidarea="+eidarea+"&uiddokt="+eiddokt,
             success:function(data){
                 $("#cb_outlet").html(data);
             }
@@ -394,6 +456,7 @@ if ((INT)$ketemud>0) {
         var iaptid =document.getElementById('e_idapt').value;
         var idcabid =document.getElementById('cb_cabang').value;
         var iareaid =document.getElementById('cb_area').value;
+        var idsudoktid =document.getElementById('cb_dokt').value;
         var ioutletid =document.getElementById('cb_outlet').value;
         
         
@@ -403,7 +466,7 @@ if ((INT)$ketemud>0) {
         }
         
         if (idoktid=="") {
-            alert("USER Kosong...");
+            alert("USER KS Kosong...");
             return false;    
         }
         
@@ -412,8 +475,13 @@ if ((INT)$ketemud>0) {
             return false;    
         }
         
+        if (idsudoktid=="") {
+            alert("New User DSU Kosong...");
+            return false;    
+        }
+        
         if (ioutletid=="") {
-            alert("New User / Outlet DSU Kosong...");
+            alert("Outlet DSU Kosong...");
             return false;    
         }
         
@@ -432,7 +500,7 @@ Data yang sudah tersimpan tidak bisa diubah kembali...";
                 $.ajax({
                     type:"post",
                     url:"module/ks_lihatks/simpandatamapingnewks.php?module="+module+"&act=simpanksnew&idmenu="+idmenu,
-                    data:"ukryid="+ikryid+"&udoktid="+idoktid+"&uaptid="+iaptid+"&udcabid="+idcabid+"&uareaid="+iareaid+"&uoutletid="+ioutletid,
+                    data:"ukryid="+ikryid+"&udoktid="+idoktid+"&uaptid="+iaptid+"&udcabid="+idcabid+"&uareaid="+iareaid+"&uoutletid="+ioutletid+"&udsudoktid="+idsudoktid,
                     success:function(data){
                         document.getElementById("ibuttonsave").disabled = true;
                         alert(data);
@@ -465,5 +533,6 @@ mysqli_close($cnms);
 <script>
 $(document).ready(function() {
         $('.s2').select2();
+        $('.s3').select2();
     });
 </script>

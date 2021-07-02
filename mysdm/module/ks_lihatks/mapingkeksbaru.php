@@ -24,19 +24,13 @@ $pidotlet="";
 $pidpraktek="";
 $piddokter="";
 
-$query = "select a.brId as brid, a.aktivitas1, a.aktivitas2, "
-        . " a.tgl, a.tgltrans, a.realisasi1, a.karyawanid, b.nama as nama_karyawan "
-        . " FROM hrd.br0 as a LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId where a.brId='$pidbr'";
-$tampil=mysqli_query($cnmy, $query);
-$row= mysqli_fetch_array($tampil);
-
-$ptanggal=$row['tgl'];
-
 $npcabangid="";
 $npareaid="";
+$gsdsudoktit = "";
+$gsouteltid = "";
 
 $psudahmaping=false;
-$query = "SELECT iddokter, outletid FROM ms2.mapping_ks_dsu WHERE dokterid='$piddokt' AND karyawanid='$pidkry' AND idapotik='$pidapt'";
+$query = "SELECT iddokter, outletid, icabangid FROM ms2.mapping_ks_dsu WHERE dokterid='$piddokt' AND karyawanid='$pidkry' AND idapotik='$pidapt'";
 $tampild= mysqli_query($cnms, $query);
 $ketemud= mysqli_num_rows($tampild);
 if ((INT)$ketemud>0) {
@@ -45,9 +39,10 @@ if ((INT)$ketemud>0) {
     $pidpraktek="";//$nro['idpraktek'];
     $gsdsudoktit=$nro['iddokter'];
     $gsouteltid=$nro['outletid'];
+    $npcabangid=$nro['icabangid'];
     
     $query = "SELECT a.id, a.outletid, b.iCabangId as icabangid, b.areaId as areaid FROM ms2.tempatpraktek as a "
-            . " JOIN ms2.outlet_customer as b on a.outletId=b.outletId where a.iddokter='$gsdsudoktit' AND a.outletid='$gsouteltid'";
+            . " JOIN ms2.outlet_customer as b on a.outletId=b.outletId where a.iddokter='$gsdsudoktit' AND a.outletid='$gsouteltid' AND b.icabangid='$npcabangid'";
     $tampilp= mysqli_query($cnms, $query);
     $np= mysqli_fetch_array($tampilp);
     $npcabangid=$np['icabangid'];
@@ -213,7 +208,7 @@ if ((INT)$ketemud>0) {
                                                         $pniddokt=$row['iddokter'];
                                                         $pnnmdokt=$row['nama_dokter'];
                                                         
-                                                        if ($pniddokt==$piddokter)
+                                                        if ($pniddokt==$gsdsudoktit)
                                                             echo "<option value='$pniddokt' selected>$pnnmdokt - ($pniddokt)</option>";
                                                         else
                                                             echo "<option value='$pniddokt' >$pnnmdokt - ($pniddokt)</option>";
@@ -227,7 +222,7 @@ if ((INT)$ketemud>0) {
                                 </div>
                                 
                                 <div class='form-group' style="margin-top:240px;">
-                                    <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>Outelt <span class='required'></span></label>
+                                    <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>Lokasi Praktek <span class='required'></span></label>
                                     <div class='col-md-8'>
                                         <!-- cb_outlet = idpraktek -->
                                         <select class='soflow s2' id="cb_outlet" name="cb_outlet" onchange="" style="width: 340px;">
@@ -237,7 +232,7 @@ if ((INT)$ketemud>0) {
                                                     
                                                     $query = "SELECT DISTINCT a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
                                                         b.jenis, b.type, c.Nama as nama_type, b.dispensing, 
-                                                        d.iCustId as icustid, d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+                                                        d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
                                                         a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
                                                         FROM ms2.tempatpraktek as a 
                                                         JOIN ms2.outlet_master as b on a.outletId=b.id 
@@ -251,6 +246,7 @@ if ((INT)$ketemud>0) {
                                                     if (!empty($npareaid)) {
                                                         $query .=" AND d.areaid='$npareaid' ";
                                                     }
+                                                    $query .=" AND a.iddokter='$gsdsudoktit' ";
                                                     $query .=" ORDER BY b.nama, a.id";
                                                     $tampil= mysqli_query($cnms, $query);
                                                     while ($row= mysqli_fetch_array($tampil)) {
@@ -266,7 +262,7 @@ if ((INT)$ketemud>0) {
                                                         $pnnmdokt=$row['nama_dokter'];
                                                         $pnnamatype=$row['nama_type'];
                                                         
-                                                        if ($pnotlid==$pidotlet)
+                                                        if ($pnotlid==$gsouteltid)
                                                             echo "<option value='$pnotlid' selected>$pnotlnm - $pnotlid ($pnnamatype)</option>";
                                                         else
                                                             echo "<option value='$pnotlid' >$pnotlnm - $pnotlid ($pnnamatype)</option>";
@@ -481,7 +477,7 @@ if ((INT)$ketemud>0) {
         }
         
         if (ioutletid=="") {
-            alert("Outlet DSU Kosong...");
+            alert("Lokasi Praktek Kosong...");
             return false;    
         }
         

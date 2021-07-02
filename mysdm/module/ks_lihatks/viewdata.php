@@ -141,9 +141,10 @@ if ($pmodule=="viewdatakaryawan") {
     
     echo "<option value='' selected>-- Pilih --</option>";
     
-    $query = "SELECT a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
+    //d.iCustId as icustid, 
+    $query = "SELECT distinct a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
         b.jenis, b.type, c.Nama as nama_type, b.dispensing, 
-        d.iCustId as icustid, d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+        d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
         a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
         FROM ms2.tempatpraktek as a 
         JOIN ms2.outlet_master as b on a.outletId=b.id 

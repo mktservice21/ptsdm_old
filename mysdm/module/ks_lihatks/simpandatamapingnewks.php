@@ -46,11 +46,16 @@
                 exit;
             }
             
+            $query = "select id as idpraktek from ms2.tempatpraktek WHERE outletid='$pouteltid' AND iddokter='$pdsudoktid'";
+            $tampil2= mysqli_query($cnms, $query);
+            $row2= mysqli_fetch_array($tampil2);
+            $pidpraktek=$row2['idpraktek'];
+            
             $query = "DELETE FROM ms2.mapping_ks_dsu WHERE dokterid='$pdokterid' AND karyawanid='$pkaryawanid' AND idapotik='$papotikid' LIMIT 1";
             mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnms); exit; }
             
-            $query = "INSERT INTO ms2.mapping_ks_dsu (karyawanid, dokterid, idapotik, iddokter, outletid, userid)VALUES"
-                    . " ('$pkaryawanid', '$pdokterid', '$papotikid', '$pdsudoktid', '$pouteltid', '$pidcard')";
+            $query = "INSERT INTO ms2.mapping_ks_dsu (karyawanid, dokterid, idapotik, iddokter, outletid, userid, icabangid, idpraktek)VALUES"
+                    . " ('$pkaryawanid', '$pdokterid', '$papotikid', '$pdsudoktid', '$pouteltid', '$pidcard', '$pcabangid', '$pidpraktek')";
             mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnms); exit; }
             
             

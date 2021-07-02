@@ -74,7 +74,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 
 
-$query = "select a.brid, a.tgl, DATE_FORMAT(tgl,'%Y-%m') as bulan, a.mrid, a.dokterid, a.jumlah, a.jumlah1, a.aktivitas1, a.aktivitas2  
+$query = "select a.brid, a.divprodid, a.tgl, DATE_FORMAT(tgl,'%Y-%m') as bulan, a.mrid, a.dokterid, a.jumlah, a.jumlah1, a.aktivitas1, a.aktivitas2  
     from hrd.br0 as a JOIN hrd.br_kode as b on a.kode=b.kodeid 
     where a.mrid='$pkaryawanid' AND a.dokterid='$pdokterid' AND b.ks='Y' and IFNULL(a.batal,'')<>'Y' AND 
     IFNULL(a.retur,'')<>'Y' and a.brid not in (select distinct IFNULL(brid,'') from hrd.br0_reject)";
@@ -619,7 +619,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         $pgroupid=$_SESSION['GROUP'];
         $pjabatanid=$_SESSION['JABATANID'];
         
-        if ($pgroupid=="1" OR $pgroupid=="24" OR $pjabatanid=="38") {
+        if ($pgroupid=="1" OR $pgroupid=="24") {// OR $pjabatanid=="38"
             mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
@@ -634,6 +634,12 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     . " karyawanid='$pkaryawanid' and dokterid='$pdokterid') as b on a.idapotik=b.idapotik SET a.iddokter=b.iddokter, a.outletid=b.outletid";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
+            
+            $query = "ALTER TABLE $tmp02 ADD COLUMN idpraktek INT(10) Unsigned, ADD COLUMN iddokter INT(10) Unsigned, ADD COLUMN outletid INT(10) Unsigned, add column nama_outlet varchar(200), add column nama_dokt varchar(200)";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            $query = "UPDATE $tmp02 as a JOIN fe_ms.mapping_br_dsu as b on a.brid=b.brid SET a.iddokter=b.iddokter, a.outletid=b.outletid";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
             echo "<div id='div_map' class='no-print'>";
                 echo "<br/>&nbsp;<br/>&nbsp;";
@@ -652,33 +658,38 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                             echo "<th>No</th>";
                             echo "<th>ID</th>";
                             echo "<th>Jumlah</th>";
-                            //echo "<th>Type Apotik</th>";
+                            echo "<th>Divisi</th>";
                             echo "<th>&nbsp;</th>";
                         echo "</tr>";
                     echo "</thead>";
                     echo "<tbody>";
                         $no=1;
-                        $query = "select brid, sum(jumlah) as jumlahki, sum(jumlah_ex) as jumlahki_ex from $tmp02 GROUP BY 1";
+                        $query = "select brid, divprodid, iddokter, sum(jumlah) as jumlahki, sum(jumlah_ex) as jumlahki_ex from $tmp02 GROUP BY 1,2,3";
                         $tampilbr=mysqli_query($cnmy, $query);
                         $ketemubr=mysqli_num_rows($tampilbr);
                         if ((INT)$ketemubr>0) {
                             while ($rbr= mysqli_fetch_array($tampilbr)) {
                                 $pbrid=$rbr['brid'];
+                                $pdivisi=$rbr['divprodid'];
                                 $pjmlbr=$rbr['jumlahki'];
                                 $pjmlexbr=$rbr['jumlahki_ex'];
-                                
+                                $niddokterdsu=$rbr['iddokter'];
                                 if ((DOUBLE)$pjmlbr<>0) {
                                     
                                     $pjmlbr=number_format($pjmlbr,0,",",",");
                                     
                                     $nbutton="<button type='button' class='btn btn-dark btn-xs' data-toggle='modal' "
-                                            . " data-target='#myModal' onClick=\"MappingKIKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter')\">Mapping KI</button>";
+                                            . " data-target='#myModal' onClick=\"MappingKIKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter', '$pdivisi', '$pbrid')\">Mapping KI</button>";
                                 
+                                    if (!empty($niddokterdsu)) {
+                                        $nbutton = "SUDAH MAPPING";
+                                    }
+                                    
                                     echo "<tr>";
                                     echo "<td nowrap><small>$no</small></td>";
                                     echo "<td nowrap><small>$pbrid</small></td>";
                                     echo "<td nowrap align='right'><small>$pjmlbr</small></td>";
-                                    //echo "<td nowrap><small>&nbsp;</small></td>";
+                                    echo "<td nowrap><small>$pdivisi</small></td>";
                                     echo "<td nowrap><small>&nbsp; $nbutton &nbsp; </small></td>";
                                     echo "</tr>";
                                     
@@ -860,11 +871,15 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             });
         }
         
-        function MappingKIKeKSBARU(eidkry, enmkry, eiddokt, enmdokt){
+        function MappingKIKeKSBARU(eidkry, enmkry, eiddokt, enmdokt, edivisi, ebrid){
+            var eidapt="";
+            var enmapt="";
+            var etypapt="";
+            
             $.ajax({
                 type:"post",
                 url:"module/ks_lihatks/mapingkikeksbaru.php?module=mapingkiksnew",
-                data:"uidkry="+eidkry+"&unmkry="+enmkry+"&uiddokt="+eiddokt+"&unmdokt="+enmdokt,
+                data:"uidkry="+eidkry+"&unmkry="+enmkry+"&uiddokt="+eiddokt+"&unmdokt="+enmdokt+"&udivisi="+edivisi+"&ubrid="+ebrid+"&uidapt="+eidapt+"&unmapt="+enmapt+"&utypapt="+etypapt,
                 success:function(data){
                     $("#myModal").html(data);
                 }

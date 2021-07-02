@@ -420,6 +420,19 @@
         mysqli_query($cnit, $query);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
+        
+        $query = "select * from $tmp04";
+        $query = "create TEMPORARY table $tmp13 ($query)";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "UPDATE $tmp13 SET icabangid='ZKLAIMDISC'";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "INSERT INTO $tmp04 select * from $tmp13";
+        mysqli_query($cnit, $query); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $tmp13");
+        
     }
     
     $query = "CREATE INDEX `norm1` ON $tmp04 (bulan, divprodid)";

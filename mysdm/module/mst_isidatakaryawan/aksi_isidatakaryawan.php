@@ -338,6 +338,9 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
     $psmid=$_POST['e_sm'];
     $pgsmid=$_POST['e_gsm'];
     
+    $prutinchc= "N";
+    if (isset($_POST['chk_rutinchc'])) $prutinchc = $_POST['chk_rutinchc'];
+    
     $patasanidpilih="";
     if (!empty($pgsmid)) $patasanidpilih=$pgsmid;
     if (!empty($psmid)) $patasanidpilih=$psmid;
@@ -437,7 +440,7 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
         mysqli_query($cnit, $query);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnit); exit; }
         
-        $query = "INSERT INTO dbmaster.t_karyawan_posisi (karyawanid, aktif)VALUES('$pkodenya', 'Y')";
+        $query = "INSERT INTO dbmaster.t_karyawan_posisi (karyawanid, aktif, rutin_chc)VALUES('$pkodenya', 'Y', '$prutinchc')";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
@@ -569,7 +572,7 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
                         . " divisiid='$pdivisiid1', icabangid='$pcabangid', areaid='$pareaid', atasanid='$patasanidpilih', "
                         . " b_bank='$pbnknama', b_cabang='$pbnkcab', b_norek='$pbnknorek', "
                         . " spv='$pspvid', dm='$pdmid', sm='$psmid', gsm='$pgsmid', "
-                        . " divisi1='$pdivisiid1', divisi2='$pdivisiid2' WHERE karyawanid='$pkodenya' LIMIT 1";
+                        . " divisi1='$pdivisiid1', divisi2='$pdivisiid2', rutin_chc='$prutinchc' WHERE karyawanid='$pkodenya' LIMIT 1";
                 mysqli_query($cnmy, $query);
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
                 

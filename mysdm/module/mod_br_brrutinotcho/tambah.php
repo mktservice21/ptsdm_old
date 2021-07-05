@@ -168,7 +168,7 @@ if ($pidact=="editdata") {
                                             <option value='' selected>--Pilihan--</option>
                                             <?PHP
                                             $query = "select b.karyawanid, b.nama from hrd.karyawan b WHERE b.aktif='Y' and (IFNULL(b.tglkeluar,'')='' OR IFNULL(b.tglkeluar,'0000-00-00')='0000-00-00') ";
-											$query .= " AND IFNULL(b.jabatanid,'') NOT IN ('35') ";
+                                            $query .= " AND IFNULL(b.jabatanid,'') NOT IN ('35') ";
                                             $query .= " AND b.divisiId='OTC' ";
                                             $query .= " AND b.karyawanid NOT IN ('0000001272', '0000000992') ";//, '0000000432'
                                             $query .=" AND b.karyawanId Not In (select distinct karyawanId from dbmaster.t_karyawanadmin) ";
@@ -183,6 +183,7 @@ if ($pidact=="editdata") {
                                             $query = "select DISTINCT b.karyawanId as karyawanid, b.nama FROM hrd.karyawan as b JOIN dbmaster.t_karyawan_posisi as a "
                                                     . " on a.karyawanId=b.karyawanId WHERE ( (IFNULL(a.rutin_chc,'')='Y' AND IFNULL(a.aktif,'')<>'N') OR "
                                                     . " b.karyawanId IN ('$idajukan', '0000002200') ) ";
+                                            $query .= " and a.karyawanid<>'0000000962' ";
                                             $query .= " order by b.nama";
                                             $tampil=mysqli_query($cnmy, $query);
                                             while ($rt= mysqli_fetch_array($tampil)) {

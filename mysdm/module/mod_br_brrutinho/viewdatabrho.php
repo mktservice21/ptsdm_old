@@ -107,10 +107,10 @@ if ($pmodule=="cekdatasudahada") {
         $bln2= date("d/m/Y", strtotime($periode2));
     }
     
-    if ($_SESSION['DIVISI']=="OTC") {
-        $bln1= date("01/m/Y", strtotime($periode1));
-        $bln2= date("t/m/Y", strtotime($periode2));
-    }
+    //if ($_SESSION['DIVISI']=="OTC") {
+        //$bln1= date("01/m/Y", strtotime($periode1));
+        //$bln2= date("t/m/Y", strtotime($periode2));
+    //}
     
     echo "$bln1, $bln2";
 }

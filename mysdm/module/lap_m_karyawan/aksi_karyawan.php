@@ -31,6 +31,9 @@ if ($module=='datakaryawan' AND $act=='update')
     $pbank = $_POST['e_bank'];
     $pnorek = $_POST['e_norek'];
     
+    $prutinchc= "N";
+    if (isset($_POST['chk_rutinchc'])) $prutinchc = $_POST['chk_rutinchc'];
+    
     $pdivisi1 = $_POST['cb_divisi1'];
     $pdivisi2 = $_POST['cb_divisi2'];
     $pdivisi3 = $_POST['cb_divisi3'];
@@ -55,8 +58,8 @@ if ($module=='datakaryawan' AND $act=='update')
         
         mysqli_query($cnmy, "DELETE FROM $dbname.t_karyawan_posisi WHERE karyawanId='$pkaryawan'");
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
-        $query = "insert into $dbname.t_karyawan_posisi (karyawanId, jabatanId, divisiId, iCabangId, areaId, atasanId, region, IDCAB, aktif, dm, sm, b_bank, b_norek, spv, gsm, divisi1, divisi2, divisi3)values"
-                . "('$pkaryawan', '$pjabatan', '$pdivisi', '$pidcabang', '$pareaid', '$patasan', '$pregion', '$pidcab', '$paktif', '$pdm', '$psm', '$pbank', '$pnorek', '$pspv', '$pgsm', '$pdivisi1', '$pdivisi2', '$pdivisi3')";
+        $query = "insert into $dbname.t_karyawan_posisi (karyawanId, jabatanId, divisiId, iCabangId, areaId, atasanId, region, IDCAB, aktif, dm, sm, b_bank, b_norek, spv, gsm, divisi1, divisi2, divisi3, rutin_chc)values"
+                . "('$pkaryawan', '$pjabatan', '$pdivisi', '$pidcabang', '$pareaid', '$patasan', '$pregion', '$pidcab', '$paktif', '$pdm', '$psm', '$pbank', '$pnorek', '$pspv', '$pgsm', '$pdivisi1', '$pdivisi2', '$pdivisi3', '$prutinchc')";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         

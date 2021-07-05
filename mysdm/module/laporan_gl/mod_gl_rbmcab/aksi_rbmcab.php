@@ -877,7 +877,10 @@
                         if ($ketemusls>0) {
                             $rsls= mysqli_fetch_array($rowsls);
                             $ztotalsls[$ix]=$rsls['rpsales'];
-                            $ztotsls=(double)$ztotsls+(double)$ztotalsls[$ix];
+                            if ($zidcab=="ZKLAIMDISC" AND $ppildivisiid!="OTC") {
+                            }else{
+                                $ztotsls=(double)$ztotsls+(double)$ztotalsls[$ix];
+                            }
                         }
 
 

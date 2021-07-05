@@ -972,7 +972,7 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
             return 0;
         }
         if (ecab==""){
-            //alert("cabang masih kosong....");
+            alert("cabang masih kosong....");
             //return 0;
         }
         if (ejumlah==""){

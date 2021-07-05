@@ -292,6 +292,8 @@ $lblnmgsm="GSM/HOS";
 $pnamareadonly="";
 $pketnama="";
 
+$puntukrutinchc="";
+
 $pstsact=$_GET['act'];
 $act="input";
 if ($_GET['act']=="editdata"){
@@ -434,6 +436,8 @@ if ($_GET['act']=="editdata"){
     $atasaniddm=$ns['dm'];
     $atasanidsm=$ns['sm'];
     $atasanidgsm=$ns['gsm'];
+    
+    if (isset($ns['rutin_chc'])) $puntukrutinchc = $ns['rutin_chc'];
     
 }
 
@@ -1195,6 +1199,21 @@ if ($_GET['act']=="editdata"){
                     <div class='x_panel'>
                         <div class='x_content form-horizontal form-label-left'>
 
+                            
+                            <div class='form-group'>
+                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_idcab'>OTC Rutin / CA <span class='required'></span></label>
+                                <div class='col-xs-5'>
+                                    <?PHP
+
+                                    if ($puntukrutinchc=="Y")
+                                        echo "<input type='checkbox' name='chk_rutinchc' id='chk_rutinchc' checked value='Y'>";
+                                    else
+                                        echo "<input type='checkbox' name='chk_rutinchc' id='chk_rutinchc' >";
+                                    ?>
+                                </div>
+                            </div>
+                            <hr/>
+                            
                             <div class='form-group'>
                                 <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> &nbsp;<span class='required'></span></label>
                                 <div class='col-xs-9'>

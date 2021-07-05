@@ -29,6 +29,7 @@ $pdivisi1 = "";
 $pdivisi2 = "";
 $pdivisi3 = "";
 
+$puntukrutinchc="";
 $act="input";
 if ($_GET['act']=="editdata"){
     $act="update";
@@ -48,6 +49,8 @@ if ($_GET['act']=="editdata"){
     $idarea = $r['areaId'];
     $jabatanid = $r['jabatanId'];
     $atasanid = $r['atasanId'];
+    
+    if (isset($r['rutin_chc'])) $puntukrutinchc = $r['rutin_chc'];
     
     if (isset($r['spv'])) $atasanidspv = $r['spv'];
     if (isset($r['dm'])) $atasaniddm = $r['dm'];
@@ -496,6 +499,19 @@ if ($_SESSION['DIVISI']=="OTC") {
                                             echo "<input type='checkbox' name='chk_admin' id='chk_admin' checked>";
                                         else
                                             echo "<input type='checkbox' name='chk_admin' id='chk_admin' >";
+                                        ?>
+                                    </div>
+                                </div>
+                                <br/>&nbsp;
+                                <div <?PHP echo $khusushidden; ?>>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_idcab'>OTC Rutin / CA <span class='required'></span></label>
+                                    <div class='col-xs-5'>
+                                        <?PHP
+                                        
+                                        if ($puntukrutinchc=="Y")
+                                            echo "<input type='checkbox' name='chk_rutinchc' id='chk_rutinchc' checked value='Y'>";
+                                        else
+                                            echo "<input type='checkbox' name='chk_rutinchc' id='chk_rutinchc' >";
                                         ?>
                                     </div>
                                 </div>

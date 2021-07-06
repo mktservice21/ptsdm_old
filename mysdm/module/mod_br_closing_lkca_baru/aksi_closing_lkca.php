@@ -1,8 +1,8 @@
 <?PHP
     session_start();
-    ini_set('display_errors', '0');
+    //ini_set('display_errors', '0');
     date_default_timezone_set('Asia/Jakarta');
-    ini_set("memory_limit","10G");
+    ini_set("memory_limit","1G");
     ini_set('max_execution_time', 0);
 	
     include "../../config/koneksimysqli.php";
@@ -163,7 +163,7 @@ elseif ($module=='closingbrlkca2')
         $query = "INSERT INTO $tmp_01 (karyawanid, ca1, kuranglebihca1, selisih, jmltrans)VALUES"
                 . "('$no_brid', '$pjmlca1', '$pjmlkurlebca1', '$pjmlselisih', '$pjmltrans')";
         mysqli_query($cnit, $query);
-        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; exit; }
     }
     
     

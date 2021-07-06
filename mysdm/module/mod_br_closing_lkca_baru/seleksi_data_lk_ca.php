@@ -176,9 +176,9 @@
     mysqli_query($cnit, "drop TEMPORARY table $tmp03");
     
     //RUTIN
-    $query = "select *, jumlah credit, CAST('' as DECIMAL(20,2)) as saldo, CAST('' as CHAR(10)) as idca1, CAST('' as DECIMAL(20,2)) as ca1, "
-            . " CAST('' as CHAR(10)) as idca2, CAST('' as DECIMAL(20,2)) as ca2, CAST('' as DECIMAL(20,2)) as selisih,"
-            . " CAST('' as DECIMAL(20,2)) as jmltrans, CAST('' as DECIMAL(20,2)) as jml_adj, CAST(NULL as date) as bulan from $tmp04";
+    $query = "select *, jumlah credit, CAST(null as DECIMAL(20,2)) as saldo, CAST('' as CHAR(10)) as idca1, CAST(null as DECIMAL(20,2)) as ca1, "
+            . " CAST('' as CHAR(10)) as idca2, CAST(null as DECIMAL(20,2)) as ca2, CAST(null as DECIMAL(20,2)) as selisih,"
+            . " CAST(null as DECIMAL(20,2)) as jmltrans, CAST(null as DECIMAL(20,2)) as jml_adj, CAST(NULL as date) as bulan from $tmp04";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnit, $query);
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -202,8 +202,9 @@
     
     
     //insert yang belum ada di rutin
-    $query = "INSERT INTO $tmp02 (karyawanid, divisi, icabangid, areaid, atasan1, atasan2, atasan3, atasan4, jabatanid)"
-            . " SELECT DISTINCT karyawanid, divisi, icabangid, areaid, atasan1, atasan2, atasan3, atasan4, jabatanid "
+    $query = "INSERT INTO $tmp02 (idrutin, karyawanid, divisi, icabangid, areaid, atasan1, atasan2, atasan3, atasan4, jabatanid)"
+            . " SELECT DISTINCT '' as idrutin, karyawanid, IFNULL(divisi,''), IFNULL(icabangid,''), IFNULL(areaid,''), "
+            . " IFNULL(atasan1,''), IFNULL(atasan2,''), IFNULL(atasan3,''), IFNULL(atasan4,''), IFNULL(jabatanid,'') "
             . " FROM $tmp03 WHERE karyawanid NOT IN (select distinct IFNULL(karyawanid,'') FROM $tmp04)";
     mysqli_query($cnit, $query);
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

@@ -106,8 +106,8 @@ if ($pmodule=="viewdatakaryawan") {
     $pidarea=$_POST['uidarea'];
     
     echo "<option value='' selected>-- Pilih --</option>";
-
-    $query = "SELECT DISTINCT d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+    //d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+    $query = "SELECT DISTINCT 
         a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
         FROM ms2.tempatpraktek as a 
         JOIN ms2.outlet_master as b on a.outletId=b.id 

@@ -124,8 +124,8 @@ $pmin_bulan=$rowk['bulan'];
 if ($pmin_bulan=="0000-00") $pmin_bulan="";
 
 
-$query = "INSERT INTO $tmp03 (bulan, nama_produk)
-    select DISTINCT bulan, 'ZZINPUTKI' as nama_produk FROM $tmp02 WHERE bulan>='$pmin_bulan' AND bulan NOT IN 
+$query = "INSERT INTO $tmp03 (bulan, nama_produk, tvalue)
+    select DISTINCT bulan, 'ZZINPUTKI' as nama_produk, '0' as tvalue FROM $tmp02 WHERE bulan>='$pmin_bulan' AND bulan NOT IN 
     (select distinct IFNULL(bulan,'') FROM $tmp01)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 

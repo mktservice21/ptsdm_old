@@ -47,6 +47,15 @@ if ((INT)$ketemud>0) {
     $np= mysqli_fetch_array($tampilp);
     $npcabangid=$np['icabangid'];
     $npareaid=$np['areaid'];
+}else{
+    $query = "SELECT distinct iddokter, icabangid FROM ms2.mapping_ks_dsu WHERE dokterid='$piddokt' AND karyawanid='$pidkry'";
+    $tampild= mysqli_query($cnms, $query);
+    $ketemud= mysqli_num_rows($tampild);
+    if ((INT)$ketemud>0) {
+        $nro= mysqli_fetch_array($tampild);
+        $gsdsudoktit=$nro['iddokter'];
+        $npcabangid=$nro['icabangid'];
+    }
 }
             
 ?>

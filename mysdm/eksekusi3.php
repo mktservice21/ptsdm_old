@@ -657,6 +657,8 @@
     }elseif ($_GET['module']=='glrealbiayamktchccab'){
         include 'module/laporan_gl/mod_gl_rbmchccab/aksi_rbmchccab.php';
         
+    }elseif ($_GET['module']=='slsreakpdatasales'){
+        include 'module/sales/mod_lap_rekapsales/aksi_rekapdatasales.php';
         
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';

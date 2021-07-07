@@ -57,6 +57,16 @@ if ((INT)$ketemud>0) {
     $np= mysqli_fetch_array($tampilp);
     $npcabangid=$np['icabangid'];
     $npareaid=$np['areaid'];
+}else{
+    $query = "SELECT distinct iddokter, icabangid FROM fe_ms.mapping_br_dsu WHERE brid IN "
+            . " (select distinct IFNULL(brId,'') as brid FROM hrd.br0 WHERE mrid='$pidkry' AND dokterId='$piddokt')";
+    $tampild= mysqli_query($cnmy, $query);
+    $ketemud= mysqli_num_rows($tampild);
+    if ((INT)$ketemud>0) {
+        $nro= mysqli_fetch_array($tampild);
+        $gsdsudoktit=$nro['iddokter'];
+        $npcabangid=$nro['icabangid'];
+    }
 }
             
 ?>
@@ -203,8 +213,8 @@ if ((INT)$ketemud>0) {
                                             <?PHP
                                                 echo "<option value='' selected>-- Pilih --</option>";
                                                 if (!empty($npcabangid)) {
-                                                    
-                                                    $query = "SELECT DISTINCT d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+                                                    //d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+                                                    $query = "SELECT DISTINCT 
                                                         a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
                                                         FROM ms2.tempatpraktek as a 
                                                         JOIN ms2.outlet_master as b on a.outletId=b.id 

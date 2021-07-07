@@ -934,6 +934,9 @@
     }elseif ($_GET['module']=='glrealbiayamktchccab'){
         include 'module/laporan_gl/mod_gl_rbmchccab/rbmchccab.php';
         
+    }elseif ($_GET['module']=='slsreakpdatasales'){
+        include 'module/sales/mod_lap_rekapsales/rekapdatasales.php';
+        
 
     }else{
         include 'del_session.php';

@@ -49,11 +49,24 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "select * from $tmp01 WHERE divprodid IN ('EAGLE', 'PIGEO')";
+    $query = "create temporary table $tmp03 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp03 SET divprodid='CAN'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
     $query = "INSERT INTO $tmp01 (divprodid, bulan, value_sales)"
             . " select divprodid, CONCAT(LEFT(tgljual,7),'-01') as bulan, sum(IFNULL(qty,0)*IFNULL(hna,0)) as value_sales "
             . " from fe_it.otc_etl "
             . " WHERE icabangid <> 22 AND tgljual BETWEEN '$pbulan01' AND '$pbulan02' ";
     $query .=" GROUP BY 1,2";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query ="INSERT INTO $tmp01 (divprodid, bulan, value_sales) SELECT divprodid, bulan, value_sales FROM $tmp03";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -115,6 +128,7 @@
             if ($ziddiv=="PEACO") $znmdiv="PEACOCK";
             if ($ziddiv=="PIGEO") $znmdiv="PIGEON";
             if ($ziddiv=="MAKLO") $znmdiv="MAKLON";
+            if ($ziddiv=="OTC") $znmdiv="CHC";
                 
             $arriddivisi[]=$ziddiv;
             $arrnmdivisi[]=$znmdiv;
@@ -149,7 +163,7 @@
             
         }
     
-        $query = "UPDATE $tmp02 a JOIN (select bulan, SUM(value_sales) as value_sales FROM $tmp01 GROUP BY 1) as b "
+        $query = "UPDATE $tmp02 a JOIN (select bulan, SUM(value_sales) as value_sales FROM $tmp01 WHERE divprodid NOT IN ('CAN') GROUP BY 1) as b "
                 . " on a.bulan=b.bulan SET a.STOTAL=b.value_sales";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -217,9 +231,12 @@
                     if ($pdivisi=="PEACO") $pnmdivisi="PEACOCK";
                     if ($pdivisi=="PIGEO") $pnmdivisi="PIGEON";
                     if ($pdivisi=="MAKLO") $pnmdivisi="MAKLON";
+                    if ($pdivisi=="OTC") $pnmdivisi="CHC";
 
                     $ptotalsls=$row['STOTAL'];
-                    $pgrandtotalsls=(DOUBLE)$pgrandtotalsls+(DOUBLE)$ptotalsls;
+                    
+                    if ($pdivisi=="CAN"){}
+                    else $pgrandtotalsls=(DOUBLE)$pgrandtotalsls+(DOUBLE)$ptotalsls;
 
                     $ptotalsls=BuatFormatNumberRp($ptotalsls, $ppilformat);//1 OR 2 OR 3
 
@@ -231,7 +248,8 @@
                         $pjmlsls=$row[$nmcol];
                         if (empty($pjmlsls)) $pjmlsls=0;
 
-                        $pgrandtotblnsls[$x]=(DOUBLE)$pgrandtotblnsls[$x]+(DOUBLE)$pjmlsls;
+                        if ($pdivisi=="CAN"){}
+                        else $pgrandtotblnsls[$x]=(DOUBLE)$pgrandtotblnsls[$x]+(DOUBLE)$pjmlsls;
 
                         $pjmlsls=BuatFormatNumberRp($pjmlsls, $ppilformat);//1 OR 2 OR 3
 
@@ -310,7 +328,7 @@
                         $nmcol="S".$ziddiv;
                         $pjmlsls=$row[$nmcol];
                         if (empty($pjmlsls)) $pjmlsls=0;
-
+                        
                         $pgrandtotblnsls[$ix]=(DOUBLE)$pgrandtotblnsls[$ix]+(DOUBLE)$pjmlsls;
 
                         $pjmlsls=BuatFormatNumberRp($pjmlsls, $ppilformat);//1 OR 2 OR 3

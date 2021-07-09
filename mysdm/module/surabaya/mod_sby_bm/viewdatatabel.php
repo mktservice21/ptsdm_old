@@ -45,7 +45,7 @@
                 { "orderable": false, "targets": 0 },
                 { "orderable": false, "targets": 1 },
                 { className: "text-right", "targets": [7,10] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7,8,9,10,11] }//nowrap
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7,8,9,10,11,12] }//nowrap
 
             ],
             "language": {
@@ -131,6 +131,7 @@
                     <th width='80px'>NAMA KREDIT</th>
                     <th width='40px'>KREDIT</th>
                     <th width='50px'>KETERANGAN</th>
+                    <th width='50px'>Yg. MEMBUAT</th>
                 </tr>
             </thead>
         </table>

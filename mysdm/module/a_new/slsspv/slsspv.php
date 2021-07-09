@@ -34,6 +34,7 @@ $(document).ready(function() {
     $filtericabareaid="";
     $filtericabareaid2="";
     $filtericabareaid_p="";
+    $filtericabareaid3="";
     $pprodoth="";
     if ($pilihdarims==true) {
         $tgl01=$_POST["bulan"];
@@ -54,6 +55,7 @@ $(document).ready(function() {
         }
         $filtericabareaid=" and CONCAT(icabangid, areaid) in $filtericabareaid_p ";
         $filtericabareaid2=" and CONCAT(icabangid, areaid) NOT in $filtericabareaid_p ";
+        $filtericabareaid3=" and CONCAT(a.icabangid, a.areaid) in $filtericabareaid_p ";
         
         if (isset($_POST['chkboth'])) $pprodoth=$_POST['chkboth'];
         
@@ -126,6 +128,8 @@ $(document).ready(function() {
     $tmp5 ="DTSALESSPVXX05_".$idspv."_$now$milliseconds";
     $tmp6 ="DTSALESSPVXX06_".$idspv."_$now$milliseconds";
     $tmp7 ="DTSALESSPVXX07_".$idspv."_$now$milliseconds";
+    $tmp8 ="DTSALESSPVXX08_".$idspv."_$now$milliseconds";
+    $tmp9 ="DTSALESSPVXX09_".$idspv."_$now$milliseconds";
     
     DB::useDB("dbtemp");
     if ($pprodoth=="Y") {
@@ -169,14 +173,53 @@ $(document).ready(function() {
 	//new	
 	$query = "SELECT bulan as tgl, icabangid, areaId, divprodid, iprodid, qty_target as target, hna_target as hna 
 		FROM $tmp5";
-	
     DB::useDB("dbtemp");
     $results1 = DB::query("create TEMPORARY table $tmp6($query)");
     
     
+    //cari data area dan divisi MAKLO
+        $query = "select distinct sp.karyawanid, sp.icabangid, sp.areaid, sp.divisiid from sls.ispv0 as sp WHERE sp.karyawanid='$idspv'";
+        DB::useDB("dbtemp");
+        $results1 = DB::query("create TEMPORARY table $tmp8($query)");
+
+        $query = "select * from sls.maklon_daerah WHERE iddaerah IN "
+                . " (select DISTINCT idcbg from ms.cabangareaytd where 1=1 $filtericabareaid)";
+
+        $query = "select DISTINCT '$idspv' as karyawanid, a.icabangid, a.areaid, a.idcbg, b.iprodid, 'MAKLO' as divisiid, b.divprodid as divisiid_asli "
+                . " FROM ms.cabangareaytd as a JOIN sls.maklon_daerah as b on a.idcbg=b.iddaerah "
+                . " WHERE 1=1 $filtericabareaid3";
+        DB::useDB("dbtemp");
+        $results1 = DB::query("create TEMPORARY table $tmp9($query)");
+
+        $query = "INSERT INTO $tmp8 (karyawanid, icabangid, areaid, divisiid) SELECT DISTINCT karyawanid, icabangid, areaid, divisiid FROM $tmp9";
+        DB::useDB("dbtemp");
+        $results1 = DB::query($query);
+        
+        
+        $filterprodukexp="";
+        $filterprodukexp_pilih="";
+        $resultsmkl = DB::query("SELECT DISTINCT iprodid FROM $tmp9");
+        foreach ($resultsmkl as $mk) {
+            $piprodp=$mk['iprodid'];
+            //$pdivisiid=$mk['divisiid'];
+
+            if (strpos($filterprodukexp, $piprodp)==false) $filterprodukexp .="'".$piprodp."',";
+
+        }
+        if (!empty($filterprodukexp)) {
+            $filterprodukexp_pilih=" (".substr($filterprodukexp, 0, -1).")";
+        }
+    
+        
+        
+        
+    //END cari data area dan divisi MAKLO
+    
+    
+    
     $query="select s.bulan, s.icabangid, s.areaid, a.nama as nama_area, s.divprodid, s.iprodid, sum(s.qty_sales) as qty, sum(s.value_sales) as tvalue from $tmp5 as s
         join sls.iarea as a on s.areaid=a.areaid and s.icabangid=a.icabangid
-        where CONCAT(s.icabangid,s.areaid,s.divprodid) in (select distinct CONCAT(sp.icabangid,sp.areaid,sp.divisiid) from sls.ispv0 as sp  
+        where CONCAT(s.icabangid,s.areaid,s.divprodid) in (select distinct CONCAT(sp.icabangid,sp.areaid,sp.divisiid) from $tmp8 as sp  
         where sp.karyawanid='$idspv')
         group by s.bulan, s.icabangid, s.areaid, a.nama, s.divprodid, s.iprodid";
     DB::useDB("dbtemp");//a.aktif='Y' and 
@@ -185,7 +228,7 @@ $(document).ready(function() {
 
     
     $query = "select t1.tgl, t1.icabangid, t1.areaId, t1.divprodid, t1.iprodid, sum(t1.target) as qty, sum(t1.hna*t1.target) as tvalue from $tmp6 as t1  
-            where CONCAT(t1.icabangid,t1.areaId,t1.divProdId) in (select distinct CONCAT(sp.icabangid,sp.areaid,sp.divisiid) from sls.ispv0 as sp 
+            where CONCAT(t1.icabangid,t1.areaId,t1.divProdId) in (select distinct CONCAT(sp.icabangid,sp.areaid,sp.divisiid) from $tmp8 as sp 
             join sls.iarea as a on sp.areaid=a.areaid where sp.karyawanid='$idspv'    )
             GROUP BY t1.tgl, t1.icabangid, t1.areaId, t1.divprodid, t1.iprodid";//and a.aktif='Y'
     
@@ -202,13 +245,13 @@ $(document).ready(function() {
             CAST(0 as DECIMAL(20,2)) as ytd_ach, CAST(0 as DECIMAL(20,2)) as ytd_sqty, CAST(0 as DECIMAL(20,2)) as ytd_tqty
             from $tmp1 as a, sls.iproduk as p
             where p.divprodid in (select distinct divisiid 
-            from sls.ispv0 where karyawanid='$idspv')";
+            from $tmp8 where karyawanid='$idspv')";
     $results1 = DB::query("create TEMPORARY table $tmp4($query)");
     
     $query = "insert into $tmp4 (icabangid, areaid, nama_area, divprodid, iprodid, nama)
             select distinct a.icabangid, a.areaid, i.nama, p.divprodid, p.iprodid, p.nama from $tmp2 as a Join sls.iproduk as p on p.iprodid=a.iprodid 
             join sls.iarea as i on a.areaid=i.areaid and a.icabangid=i.icabangid
-        where p.divprodid in (select distinct divisiid from sls.ispv0 where karyawanid='$idspv')
+        where p.divprodid in (select distinct divisiid from $tmp8 where karyawanid='$idspv')
                     And CONCAT(a.icabangid,a.areaid, p.divprodid, p.iprodid) not in (select distinct CONCAT(icabangid,areaid, divprodid, iprodid) from $tmp1)";
     $results1 = DB::query($query);
     
@@ -257,6 +300,17 @@ $(document).ready(function() {
     $results1 = DB::query("drop TEMPORARY table if exists $tmp1");
     $results1 = DB::query("drop TEMPORARY table if exists $tmp2");
     $results1 = DB::query("drop TEMPORARY table if exists $tmp4");
+    
+    if (!empty($filterprodukexp_pilih)) {
+        $query = "DELETE FROM $tmp5 WHERE iprodid NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
+        DB::useDB("dbtemp"); $results1 = DB::query($query);
+        $query = "DELETE FROM $tmp6 WHERE iprodid NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
+        DB::useDB("dbtemp"); $results1 = DB::query($query);
+        $query = "DELETE FROM $tmp3 WHERE iprodid NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
+        DB::useDB("dbtemp"); $results1 = DB::query($query);
+
+    }
+        
 ?>
 
 
@@ -589,6 +643,8 @@ hapusdata:
     $results1 = DB::query("drop TEMPORARY table if exists $tmp5");
     $results1 = DB::query("drop TEMPORARY table if exists $tmp6");
     $results1 = DB::query("drop TEMPORARY table if exists $tmp7");
+    $results1 = DB::query("drop TEMPORARY table if exists $tmp8");
+    $results1 = DB::query("drop TEMPORARY table if exists $tmp9");
 ?>
 
 

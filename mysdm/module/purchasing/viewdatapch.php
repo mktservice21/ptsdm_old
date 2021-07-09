@@ -262,6 +262,7 @@ if ($ppengajuanid=="HO") {
                     if ($piddiv=="CAN") $pnmdiv="CANARY/ETHICAL";
                     elseif ($piddiv=="PEACO") $pnmdiv="PEACOCK";
                     elseif ($piddiv=="PIGEO") $pnmdiv="PIGEON";
+                    elseif ($piddiv=="OTC") $pnmdiv="CHC";
 
                     if ($piddiv==$pdivisiid)
                         echo "<option value='$piddiv' selected>$pnmdiv</option>";

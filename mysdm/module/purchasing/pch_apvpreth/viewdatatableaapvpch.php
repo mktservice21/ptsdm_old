@@ -242,7 +242,7 @@ session_start();
             $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE pengajuan in ('OTC', 'CHC') AND IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         }elseif ($papproveby=="apvatasanho") {
-            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE pengajuan in ('HO') AND IFNULL(tgl_atasan3,'')<>'' AND IFNULL(tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
+            $query = "UPDATE $tmp01 SET sudahapprove='Y' WHERE pengajuan in ('HO') AND IFNULL(tgl_atasan4,'')<>'' AND IFNULL(tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00'";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
         }
@@ -485,7 +485,7 @@ echo "</div>";
                     
                     if ($ppilihsts=="APPROVE") {
                         if ($npengajuan=="HO" OR $npengajuan=="OTC" OR $npengajuan=="CHC") {
-                            if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh=""; }
+                            if (empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Belum Approve"; }
                         }else{
                         
                             if ($papproveby=="apvdm") {
@@ -511,7 +511,8 @@ echo "</div>";
                     }elseif ($ppilihsts=="UNAPPROVE") {
                         
                         if ($npengajuan=="HO" OR $npengajuan=="OTC" OR $npengajuan=="CHC") {
-                            
+                            if (!empty($ptglatasan4) AND !empty($pidatasan4)) { $pstsapvoleh="Sudah Approve Atasan"; }
+                            if (!empty($ptglatasan5) AND !empty($pidatasan5)) { $pstsapvoleh="Sudah Approve COO"; }
                         }else{
                             
                             if ($papproveby=="apvdm") {

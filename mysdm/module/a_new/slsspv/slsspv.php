@@ -185,9 +185,8 @@ $(document).ready(function() {
         $query = "select * from sls.maklon_daerah WHERE iddaerah IN "
                 . " (select DISTINCT idcbg from ms.cabangareaytd where 1=1 $filtericabareaid)";
 
-        $query = "select DISTINCT '$idspv' as karyawanid, a.icabangid, a.areaid, a.idcbg, b.iprodid, 'MAKLO' as divisiid, b.divprodid as divisiid_asli "
-                . " FROM ms.cabangareaytd as a JOIN sls.maklon_daerah as b on a.idcbg=b.iddaerah "
-                . " WHERE 1=1 $filtericabareaid3";
+        $query = "select DISTINCT '$idspv' as karyawanid, a.icabangid, a.areaid, a.iprodid, 'MAKLO' as divisiid, a.divprodid as divisiid_asli "
+                . " FROM sls.maklon_cabangarea as a WHERE 1=1 $filtericabareaid3";
         DB::useDB("dbtemp");
         $results1 = DB::query("create TEMPORARY table $tmp9($query)");
 
@@ -195,15 +194,17 @@ $(document).ready(function() {
         DB::useDB("dbtemp");
         $results1 = DB::query($query);
         
-        
+        $ppilihanmakloya="";
         $filterprodukexp="";
         $filterprodukexp_pilih="";
-        $resultsmkl = DB::query("SELECT DISTINCT iprodid FROM $tmp9");
+        $resultsmkl = DB::query("SELECT DISTINCT iprodid, icabangid, areaid FROM $tmp9");
         foreach ($resultsmkl as $mk) {
             $piprodp=$mk['iprodid'];
-            //$pdivisiid=$mk['divisiid'];
+            $xcabid=$mk['icabangid'];
+            $xareaid=$mk['areaid'];
+            $ppilihanmakloya="Y";
 
-            if (strpos($filterprodukexp, $piprodp)==false) $filterprodukexp .="'".$piprodp."',";
+            if (strpos($filterprodukexp, $piprodp."".$xcabid."".$xareaid)==false) $filterprodukexp .="'".$piprodp."".$xcabid."".$xareaid."',";
 
         }
         if (!empty($filterprodukexp)) {
@@ -301,14 +302,24 @@ $(document).ready(function() {
     $results1 = DB::query("drop TEMPORARY table if exists $tmp2");
     $results1 = DB::query("drop TEMPORARY table if exists $tmp4");
     
-    if (!empty($filterprodukexp_pilih)) {
-        $query = "DELETE FROM $tmp5 WHERE iprodid NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
-        DB::useDB("dbtemp"); $results1 = DB::query($query);
-        $query = "DELETE FROM $tmp6 WHERE iprodid NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
-        DB::useDB("dbtemp"); $results1 = DB::query($query);
-        $query = "DELETE FROM $tmp3 WHERE iprodid NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
-        DB::useDB("dbtemp"); $results1 = DB::query($query);
+    //echo "$ppilihanmakloya - $filterprodukexp_pilih<br/>";
+    if ($ppilihanmakloya=="Y") {
+        if (!empty($filterprodukexp_pilih)) {
+            $query = "DELETE FROM $tmp5 WHERE CONCAT(iprodid, icabangid, areaid) NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
+            DB::useDB("dbtemp"); $results1 = DB::query($query);
+            $query = "DELETE FROM $tmp6 WHERE CONCAT(iprodid, icabangid, areaid) NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
+            DB::useDB("dbtemp"); $results1 = DB::query($query);
+            $query = "DELETE FROM $tmp3 WHERE CONCAT(iprodid, icabangid, areaid) NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
+            DB::useDB("dbtemp"); $results1 = DB::query($query);
+        }
 
+    }else{
+        $query = "DELETE FROM $tmp5 WHERE divprodid='MAKLO'";
+        DB::useDB("dbtemp"); $results1 = DB::query($query);
+        $query = "DELETE FROM $tmp6 WHERE divprodid='MAKLO'";
+        DB::useDB("dbtemp"); $results1 = DB::query($query);
+        $query = "DELETE FROM $tmp3 WHERE divprodid='MAKLO'";
+        DB::useDB("dbtemp"); $results1 = DB::query($query);
     }
         
 ?>

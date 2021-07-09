@@ -394,6 +394,7 @@
                 $tampil1=mysqli_query($cnmy, $query);
                 while ($row1= mysqli_fetch_array($tampil1)){
                     
+                    $pidprdetail=$row1['idpr_d'];
                     $pnamabrg=$row1['namabarang'];
                     $pspesifikasibrg1=$row1['spesifikasi1'];
                     $psatuan=$row1['satuan'];
@@ -407,6 +408,24 @@
                     $pharga=BuatFormatNum($pharga, $ppilformat);
                     $ptotalrp=BuatFormatNum($ptotalrp, $ppilformat);
                     
+                    $query_po = "select DISTINCT a.idbarang, a.namabarang, a.spesifikasi1 "
+                            . " from dbpurchasing.t_pr_transaksi_po as a "
+                            . " JOIN dbpurchasing.t_po_transaksi_d as b on a.idpr_po=b.idpr_po "
+                            . " JOIN dbpurchasing.t_po_transaksi as c on b.idpo=c.idpo "
+                            . " WHERE IFNULL(a.aktif,'')='Y' AND IFNULL(c.stsnonaktif,'')<>'Y' "
+                            . " AND IFNULL(c.tgl_dir1,'')<>'' AND IFNULL(c.tgl_dir1, '0000-00-00 00:00:00')<>'0000-00-00 00:00:00' "
+                            . " AND a.idpr_d='$pidprdetail'";
+                    $tampilpo=mysqli_query($cnmy, $query_po);
+                    $rpo= mysqli_fetch_array($tampilpo);
+                    $po_namabarang=$rpo['namabarang'];
+                    $po_specfbarang=$rpo['spesifikasi1'];
+                    
+                    if (!empty($po_namabarang)) {
+                        if (!empty($pspesifikasibrg1)) $pnamabrg=$pnamabrg." &#8594; ".$pspesifikasibrg1;
+                        
+                        $pspesifikasibrg1="PO : <b>".$po_namabarang."</b>";
+                        if (!empty($po_specfbarang)) $pspesifikasibrg1="PO : <b>".$po_namabarang."</b> &#8594; ".$po_specfbarang."";
+                    }
                     
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";

@@ -74,6 +74,28 @@ if ($pilihdarims==true) {
     
     $filblnprod=date_format($date,"Ym");
     
+    
+    $filtercabangid="";
+    $filtercabangid_pilih="";
+    $query = "SELECT DISTINCT a.`icabangid`
+                FROM ms.`cabangareaytd` a
+                JOIN ms.`cbgytd` b ON a.`idcbg` = b.`idcabang`
+                WHERE b.`region` = '$region'";
+    $resultsmkl = DB::query($query);
+    foreach ($resultsmkl as $mk) {
+        $xcabid=$mk['icabangid'];
+
+        if (strpos($filtercabangid, $xcabid)==false) $filtercabangid .="'".$xcabid."',";
+
+    }
+    if (!empty($filtercabangid)) {
+        $filtercabangid_pilih=" (".substr($filtercabangid, 0, -1).")";
+    }else{
+        $filtercabangid_pilih="('')";
+    }
+    
+    
+    /*
     $query = "SELECT
 	s.divprodid, CONCAT(
 		s.`initial`,
@@ -94,7 +116,24 @@ if ($pilihdarims==true) {
                 WHERE b.`region` = '$region'
         )
         GROUP BY 1, 2, 3, 4";
+    */
     
+    $query = "SELECT
+	s.divprodid, CONCAT(
+		s.`initial`,
+		'-',
+		s.`ecabangid`
+	) initialcab, s.iprodid, 
+	ip.`nama` nama_produk,
+	SUM(s.`qty`) AS qty,
+	SUM(s.`qty` * s.hna) AS tvalue
+        FROM sls.mr_sales2 s
+        JOIN sls.iproduk ip ON s.`iprodid` = ip.`iprodid`
+        WHERE s.tgljual BETWEEN '$tgl_pertama'
+        AND '$tgl_terakhir'
+        AND s.`icabangid` IN $filtercabangid_pilih 
+        GROUP BY 1, 2, 3, 4";
+    echo $query;
     DB::useDB("dbtemp");
     $results1 = DB::query("create table $tmp2($query)");
     
@@ -246,12 +285,13 @@ if ($pilihdarims==true) {
 -->
 <?PHP
 
-
-$results1 = DB::query("drop table $tmp1");
-$results1 = DB::query("drop table $tmp2");
-$results1 = DB::query("drop table $tmp3");
-$results1 = DB::query("drop table $tmp4");
-$results1 = DB::query("drop table $tmp5");
+hapusdata:
+    DB::useDB("dbtemp");
+    $results1 = DB::query("drop table if EXISTS $tmp1");
+    $results1 = DB::query("drop table if EXISTS $tmp2");
+    $results1 = DB::query("drop table if EXISTS $tmp3");
+    $results1 = DB::query("drop table if EXISTS $tmp4");
+    $results1 = DB::query("drop table if EXISTS $tmp5");
 
 ?>
 

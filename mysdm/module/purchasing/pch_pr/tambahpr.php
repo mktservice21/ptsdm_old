@@ -223,7 +223,11 @@ if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC") {
     if ($pstatuslogin=="ETH") {
         $untukpil1="selected";
     }else{
-        $untukpil0="selected";
+        if ($pstatuslogin=="HO") {
+            $untukpil3="selected";
+        }else{
+            $untukpil0="selected";
+        }
     }
 }
 
@@ -621,6 +625,7 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
                                                     if ($piddiv=="CAN") $pnmdiv="CANARY/ETHICAL";
                                                     elseif ($piddiv=="PEACO") $pnmdiv="PEACOCK";
                                                     elseif ($piddiv=="PIGEO") $pnmdiv="PIGEON";
+                                                    elseif ($piddiv=="OTC") $pnmdiv="CHC";
                                                     
                                                     if ($piddiv==$pdivisiid)
                                                         echo "<option value='$piddiv' selected>$pnmdiv</option>";
@@ -1116,6 +1121,17 @@ th {
         var element = document.getElementById("div_atasan");
         //element.classList.remove("disabledDiv");
         element.classList.add("disabledDiv");
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var pact = urlku.searchParams.get("act");
+        if (pact=="tambahbaru") {
+            var iuntuk = document.getElementById('cb_untuk').value;
+            if (iuntuk=="HO") {
+                ShowDataAtasan();
+            }
+        }
+                            
     } );
 
 

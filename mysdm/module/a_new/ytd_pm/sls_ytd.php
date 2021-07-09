@@ -15,8 +15,13 @@ if ($pilihdarims==true) {
     require_once 'module/a_new/meekrodb.2.3.class.php';
     
     
+    $filterregion="";
+    if (!empty($region)) $filterregion =" AND region ='$region' ";
+    
+    $filterdivpprod_exp = "";
+    
     $filterdivpprod="";
-    $filterdivpprod_exp="";
+    $filterdivpprod_pilih="";
     $result2 = DB::query("SELECT DISTINCT divprodid FROM ms.penempatan_pm WHERE karyawanid='$karyawanid'");
     foreach ($result2 as $r2){
         $pdivp=$r2['divprodid'];
@@ -24,26 +29,32 @@ if ($pilihdarims==true) {
         if (strpos($filterdivpprod, $pdivp)==false) $filterdivpprod .="'".$pdivp."',";
     }
     
-    if (!empty($filterdivpprod)) $filterdivpprod_exp=" AND divprodid IN (".substr($filterdivpprod, 0, -1).")";
+    if (!empty($filterdivpprod)) $filterdivpprod_pilih=" (".substr($filterdivpprod, 0, -1).")";
     
-    $filterregion="";
-    if (!empty($region)) $filterregion =" AND region ='$region' ";
     
+    //$result21 = DB::query("SELECT DISTINCT iprodid FROM sls.produk_exception WHERE karyawanid='$karyawanid'");
     
     $filterprodukexp="";
-    $result21 = DB::query("SELECT DISTINCT iprodid FROM sls.porduk_exception WHERE karyawanid='$karyawanid'");
+    $filterprodukexp_pilih="";
+    $query = "SELECT DISTINCT iprodid FROM sls.maklon_liniproduk WHERE 1=1 ";
+    if (!empty($filterdivpprod_pilih)) $query .=" AND divprodid IN $filterdivpprod_pilih ";
+    else $query .=" AND divprodid IN ('NONE_PILIH') ";
+    $result21 = DB::query($query);
     foreach ($result21 as $r21){
         $piprodp=$r21['iprodid'];
         
         if (strpos($filterprodukexp, $piprodp)==false) $filterprodukexp .="'".$piprodp."',";
     }
     
+    if (!empty($filterprodukexp)) $filterprodukexp_pilih=" (".substr($filterprodukexp, 0, -1).")";
     
-    if (!empty($filterprodukexp) AND !empty($filterdivpprod)) {
-        //$filterprodukexp=" AND iprodid IN (".substr($filterprodukexp, 0, -1).")";
-        
-        $filterdivpprod_exp=" AND ( divprodid IN (".substr($filterdivpprod, 0, -1).") OR iprodid IN (".substr($filterprodukexp, 0, -1)." ) ) ";
-        
+    
+    
+    if (!empty($filterdivpprod_pilih) AND !empty($filterprodukexp_pilih)) {
+        $filterdivpprod_exp = " AND ( divprodid IN $filterdivpprod_pilih OR iprodid IN $filterprodukexp_pilih )";
+    }else{
+        if (!empty($filterdivpprod_pilih)) $filterdivpprod_exp = " AND divprodid IN $filterdivpprod_pilih ";
+        else if (!empty($filterprodukexp_pilih)) $filterdivpprod_exp = " AND iprodid IN $filterprodukexp_pilih ";
     }
     
     

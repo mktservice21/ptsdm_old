@@ -203,6 +203,14 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
 $pdepartmen="";
 if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC" OR $pstatuslogin=="ETH") {
     $pdepartmen="MKT";
+}else{
+    if ($pstatuslogin=="HO") {
+        $query = "select iddep FROM dbmaster.t_karyawan_dep WHERE karyawanid='$idajukan'";
+        $ptampildv= mysqli_query($cnmy, $query);
+        $ketemudv= mysqli_num_rows($ptampildv);
+        $nrdv= mysqli_fetch_array($ptampildv);
+        $pdepartmen=$nrdv['iddep'];
+    }
 }
 
 //END CARI DEPARTEMEN
@@ -861,7 +869,7 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama Barang <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <input type='text' id='e_nmbrg' name='e_nmbrg' class='form-control col-md-7 col-xs-12' oninput="this.value = this.value.toUpperCase()" maxlength="150" onblur='CekBarangKode()'>
+                                        <input type='text' id='e_nmbrg' name='e_nmbrg' class='form-control col-md-7 col-xs-12' maxlength="150" onblur='CekBarangKode()' style="text-transform: uppercase">
                                     </div>
                                 </div>
                                 
@@ -885,7 +893,7 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Satuan <span class='required'></span></label>
                                     <div class='col-xs-3'>
-                                        <input type='text' id='e_satuanbrg' name='e_satuanbrg' class='form-control col-md-7 col-xs-12' oninput="this.value = this.value.toUpperCase()" >
+                                        <input type='text' id='e_satuanbrg' name='e_satuanbrg' class='form-control col-md-7 col-xs-12' onkeypress="return event.charCode < 48 || event.charCode  >57" style="text-transform: uppercase">
                                     </div>
                                 </div>
                                 

@@ -32,6 +32,23 @@ if ($_GET['module']=="viewcoadivisi"){
     while ($z= mysqli_fetch_array($tampil)) {
         echo "<option value='$z[COA4]'>$z[COA4] - $z[NAMA4]</option>";
     }
+}elseif ($_GET['module']=="viwewbiayauntuk"){
+    include "../../../config/koneksimysqli.php";
+    $mydivisi = $_POST['udivi'];
+    
+    if ($mydivisi=="OTC") {
+        $query = "select gkode, nama_group FROM hrd.brkd_otc_group 
+            WHERE 1=1 ";
+        $query .= " ORDER BY gkode";
+        $tampil = mysqli_query($cnmy, $query);
+        echo "<option value='' selected>-- All --</option>";
+        while ($z= mysqli_fetch_array($tampil)) {
+            echo "<option value='$z[gkode]'>$z[gkode] - $z[nama_group]</option>";
+        }
+    }else{
+        echo "<option value=''>-- All --</option>";
+    }
+    
 }elseif ($_GET['module']=="xxx"){
     
 }

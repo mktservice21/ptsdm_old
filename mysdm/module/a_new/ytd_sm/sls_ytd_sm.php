@@ -56,15 +56,33 @@ if ($pilihdarims==true) {
 }
 
 if (!empty($idsm)) {
+    
+    $filterprodukexp="";
+    $filterprodukexp_pilih="";
+    //$resultsmkl = DB::query("SELECT DISTINCT maklo FROM ms.cbgytd WHERE IFNULL(maklo,'')='Y' AND id_sm='$idsm'");
     $ppilihanmakloya="";
-    $resultsmkl = DB::query("SELECT DISTINCT maklo FROM ms.cbgytd WHERE IFNULL(maklo,'')='Y' AND id_sm='$idsm'");
+    $resultsmkl = DB::query("SELECT DISTINCT iddaerah, iprodid, divprodid FROM sls.maklon_daerah WHERE iddaerah IN "
+            . " (select distinct IFNULL(idcabang,'') as idcabang from ms.cbgytd where id_sm='$idsm')");
     foreach ($resultsmkl as $mk) {
-        if ($mk['maklo']=="Y"); $ppilihanmakloya=$mk['maklo'];
+        if (!empty($mk['iddaerah'])) $ppilihanmakloya="Y";
+        
+        $piprodp=$mk['iprodid'];
+        
+        if (strpos($filterprodukexp, $piprodp)==false) $filterprodukexp .="'".$piprodp."',";
+        
     }
+    if (!empty($filterprodukexp)) {
+        $filterprodukexp_pilih=" (".substr($filterprodukexp, 0, -1).")";
+    }
+    
     if ($ppilihanmakloya=="Y") {
+        if (!empty($filterprodukexp_pilih)) {
+            $resultsdel = DB::query("DELETE FROM $namatabel WHERE iprodid NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'");
+        }
     }else{
         $resultsdel = DB::query("DELETE FROM $namatabel WHERE divprodid='MAKLO'");
     }
+    
 }
 
 $pprodukmaklo="";

@@ -20,6 +20,8 @@ elseif ($module=='sbyinputbm')
 {
     $kodenya=$_POST['e_id'];
     $pdivisi=$_POST['cb_divisi'];
+    $pkaryawanid=$_POST['cb_karyawan'];
+    $pbiayauntuk=$_POST['cb_biayauntuk'];
     
     $pnobbm=$_POST['e_nobbm'];
     $pnobbk=$_POST['e_nobbk'];
@@ -40,12 +42,12 @@ elseif ($module=='sbyinputbm')
     $saldo=(double)$pjumlahd-(double)$pjumlahk;
     
     if ($act=="input") {
-        $query = "INSERT INTO $dbname.t_bm_sby (TGLINPUT, TANGGAL, DIVISI, COA4, DEBIT, KREDIT, KETERANGAN, USERID, NOBBM, NOBBK, SALDO, COA4_K)values"
-                . "(CURRENT_DATE(), '$periode1', '$pdivisi', '$pcoa', '$pjumlahd', '$pjumlahk', '$pket', '$_SESSION[IDCARD]', '$pnobbm', '$pnobbk', '$saldo', '$pcoa2')";
+        $query = "INSERT INTO $dbname.t_bm_sby (TGLINPUT, TANGGAL, DIVISI, COA4, DEBIT, KREDIT, KETERANGAN, USERID, NOBBM, NOBBK, SALDO, COA4_K, KARYAWANID, BIAYA_UNTUK)values"
+                . "(CURRENT_DATE(), '$periode1', '$pdivisi', '$pcoa', '$pjumlahd', '$pjumlahk', '$pket', '$_SESSION[IDCARD]', '$pnobbm', '$pnobbk', '$saldo', '$pcoa2', '$pkaryawanid', '$pbiayauntuk')";
     }else{
         $query = "UPDATE $dbname.t_bm_sby SET divisi='$pdivisi', TANGGAL='$periode1', "
                 . " COA4='$pcoa', KETERANGAN='$pket', DEBIT='$pjumlahd', KREDIT='$pjumlahk', userid='$_SESSION[IDCARD]', "
-                . " NOBBM='$pnobbm', NOBBK='$pnobbk', SALDO='$saldo', COA4_K='$pcoa2' WHERE "
+                . " NOBBM='$pnobbm', NOBBK='$pnobbk', SALDO='$saldo', COA4_K='$pcoa2', KARYAWANID='$pkaryawanid', BIAYA_UNTUK='$pbiayauntuk' WHERE "
                 . " ID='$kodenya'";
     }
     

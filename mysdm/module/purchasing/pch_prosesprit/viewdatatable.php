@@ -233,7 +233,12 @@ session_start();
                             $pedit=""; $phapus="";
                         }
                         
-                        echo "<tr>";
+                        $philangkandata="";
+                        if ($ppilihsts=="APPROVE" AND empty($ceklisnya)) {
+                            $philangkandata=" class='divnone' ";
+                        }
+                        
+                        echo "<tr $philangkandata>";
                         
                         echo "<td nowrap>$pnomornya</td>";
                         echo "<td nowrap class='divnone'>$pidpr $pnmtipe $pkrynm $puserinput $ptgl </td>";

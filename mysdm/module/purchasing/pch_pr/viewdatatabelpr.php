@@ -180,6 +180,7 @@
                         if ($pdivid=="CAN") $pnmdivisi="CANARY/ETHICAL";
                         elseif ($pdivid=="PEACO") $pnmdivisi="PEACOCK";
                         elseif ($pdivid=="PIGEO") $pnmdivisi="PIGEON";
+                        elseif ($pdivid=="OTC") $pnmdivisi="CHC";
                         
                         $ptgl= date("d/m/Y", strtotime($ptgl));
                         $pjml=number_format($pjml,0,",",",");

@@ -32,6 +32,7 @@
 function ShowCOA(udiv, ucoa, ucoa2) {
     ShowCOA1(udiv, ucoa);
     ShowCOA2(udiv, ucoa2);
+    ShowBiayaUntuk();
 }
 
 function ShowCOA1(udiv, ucoa) {
@@ -60,6 +61,18 @@ function ShowCOA2(udiv, ucoa) {
     });
 }
 
+function ShowBiayaUntuk() {
+    var icar = "";
+    var idiv = document.getElementById('cb_divisi').value;
+    $.ajax({
+        type:"post",
+        url:"module/surabaya/mod_sby_bm/viewdata.php?module=viwewbiayauntuk",
+        data:"umr="+icar+"&udivi="+idiv,
+        success:function(data){
+            $("#cb_biayauntuk").html(data);
+        }
+    });
+}
 
 function disp_confirm(pText_,ket)  {
     
@@ -115,6 +128,7 @@ $coa="";
 $coa2="";
 $nobbm="";
 $nobbk="";
+$pbiayauntuk="";
     
     $thurufbln=CariBulanHuruf(date('m', strtotime($hari_ini)));
     $tglnomor = $thurufbln."/".date('Y', strtotime($hari_ini));
@@ -143,8 +157,7 @@ if ($_GET['act']=="editdata"){
     $idbr=$r['ID'];
     $tglberlku = date('d/m/Y', strtotime($r['TANGGAL']));
     $tgl1 = date('d/m/Y', strtotime($r['TANGGAL']));
-    $idajukan=$_SESSION['IDCARD']; 
-    $nmajukan=$_SESSION['NAMALENGKAP']; 
+    $idajukan=$r['KARYAWANID']; 
     $keterangan=$r['KETERANGAN'];
     $jumlahd=$r['DEBIT'];
     $jumlahk=$r['KREDIT'];
@@ -153,6 +166,7 @@ if ($_GET['act']=="editdata"){
     $coa2=$r['COA4_K'];
     $nobbm=$r['NOBBM'];
     $nobbk=$r['NOBBK'];
+    $pbiayauntuk=$r['BIAYA_UNTUK'];
     
 }
     
@@ -222,6 +236,69 @@ if ($_GET['act']=="editdata"){
                                         </select>
                                     </div>
                                 </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Yang Membuat <span class='required'></span></label>
+                                    <div class='col-xs-5'>
+                                        <select class='form-control input-sm' id='cb_karyawan' name='cb_karyawan' onchange="">
+                                            <option value='' selected>-- Pilihan --</option>
+                                            <?PHP
+                                            $query = "select karyawanId as karyawanid, nama as nama_karyawan From hrd.karyawan WHERE 1=1 ";
+                                            $query .= " AND ( ";
+                                                $query .= " ( ";
+                                                    $query .= " (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
+                                                    $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                            . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                            . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                            . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                            . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                                    $query .= " AND nama NOT IN ('ACCOUNTING')";
+                                                    $query .= " AND karyawanid NOT IN ('0000002200', '0000002083') ";
+                                                    //$query .= " AND divisiId NOT IN ('OTC', 'CHC') ";
+                                                $query .= " ) ";
+                                            $query .= " OR karyawanId='$idajukan' ) ";
+                                            $query .= " ORDER BY nama";
+                                            $tampil = mysqli_query($cnmy, $query);
+                                            while ($z= mysqli_fetch_array($tampil)) {
+                                                $pkaryid=$z['karyawanid'];
+                                                $pkarynm=$z['nama_karyawan'];
+                                                $pkryid=(INT)$pkaryid;
+                                                
+                                                if ($pkaryid==$idajukan)
+                                                    echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                else
+                                                    echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Biaya Untuk <span class='required'></span></label>
+                                    <div class='col-xs-5'>
+                                        <select class='form-control input-sm' id='cb_biayauntuk' name='cb_biayauntuk' onchange="">
+                                            <option value='' selected>-- All --</option>
+                                            <?PHP
+                                            if ($divisi=="OTC") {
+                                                $query = "select gkode, nama_group FROM hrd.brkd_otc_group 
+                                                    WHERE 1=1 ";
+                                                $query .= " ORDER BY gkode";
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                echo "<option value='' selected>-- All --</option>";
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    if ($z['gkode']==$pbiayauntuk)
+                                                        echo "<option value='$z[gkode]' selected>$z[gkode] - $z[nama_group]</option>";
+                                                    else
+                                                        echo "<option value='$z[gkode]'>$z[gkode] - $z[nama_group]</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
                                 
                                 
                                 <div class='form-group'>

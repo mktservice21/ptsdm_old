@@ -37,7 +37,7 @@ $tgl2= date("Y-m", strtotime($tgl2));
 // getting total number records without any search
 $sql = "SELECT ID, DATE_FORMAT(TANGGAL,'%d %M %Y') as TANGGAL, "
         . "DIVISI, FORMAT(DEBIT,0,'de_DE') as DEBIT, FORMAT(KREDIT,0,'de_DE') as KREDIT, "
-        . " COA4, NAMA4, KETERANGAN, COA4_K, NAMA4_K, NOBBK, NOBBM ";
+        . " COA4, NAMA4, KETERANGAN, COA4_K, NAMA4_K, NOBBK, NOBBM, nama_karyawan ";
 $sql.=" FROM dbmaster.v_bm_sby ";
 $sql.=" WHERE stsnonaktif <> 'Y' ";
 $sql.=" AND Date_format(TANGGAL, '%Y-%m') between '$tgl1' and '$tgl2' ";
@@ -53,6 +53,7 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
     $sql.=" OR NAMA4 LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR COA4 LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR KETERANGAN LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR nama_karyawan LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR DATE_FORMAT(TANGGAL,'%d %M %Y') LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR DIVISI LIKE '%".$requestData['search']['value']."%' )";
 }
@@ -82,6 +83,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $row["NAMA4_K"];
     $nestedData[] = $row["KREDIT"];
     $nestedData[] = $row["KETERANGAN"];
+    $nestedData[] = $row["nama_karyawan"];
 
     $data[] = $nestedData;
     $no=$no+1;

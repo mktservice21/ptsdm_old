@@ -164,6 +164,14 @@ if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
 $pdepartmen="";
 if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC" OR $ppengajuanid=="ETH") {
     $pdepartmen="MKT";
+}else{
+    if ($ppengajuanid=="HO") {
+        $query = "select iddep FROM dbmaster.t_karyawan_dep WHERE karyawanid='$idajukan'";
+        $ptampildv= mysqli_query($cnmy, $query);
+        $ketemudv= mysqli_num_rows($ptampildv);
+        $nrdv= mysqli_fetch_array($ptampildv);
+        $pdepartmen=$nrdv['iddep'];
+    }
 }
 
 //END CARI DEPARTEMEN

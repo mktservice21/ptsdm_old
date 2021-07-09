@@ -151,13 +151,14 @@
     if (!empty($pidprod)) $query .= " AND iprodid='$pidprod'";
     if (!empty($piddist)) $query .= " AND distid='$piddist' ";
     $query .=" GROUP BY icabangid, areaid, icustid, iprodid ";
-    $query = "create TEMPORARY table $tmp01 ($query)"; 
+    $query = "create  table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $pnamasektorpilih= "";
     $filidsektor="";
+    $filidsektor_p="";
     if (!empty($ppilihsektor)) {
     
         $pplsektor = explode(",", $ppilihsektor);
@@ -186,6 +187,10 @@
 
             if (!empty($filsektor2)) $filsektor2="(".substr($filsektor2, 0, -1).")";
             else $filsektor2="('')";
+        }else{
+            if ($ppilihsektor=="99") {
+                $filidsektor="('99', '')";
+            }
         }
 
         $pnamasektorpilih= "";
@@ -193,7 +198,7 @@
             $query = "select distinct '' as isektorid, nama_pvt as nama_sektor from MKT.isektor WHERE nama_pvt IN $filidsektor";
 
         }else{
-            $query = "select distinct isektorid, nama as nama_sektor from MKT.isektor WHERE isektorid IN $filidsektor";
+            $query = "select distinct isektorid, nama as nama_sektor from MKT.isektor WHERE IFNULL(isektorid,'') IN $filidsektor";
         }
         $tampil= mysqli_query($cnmy, $query);
         while ($row= mysqli_fetch_array($tampil)) {
@@ -216,24 +221,39 @@
     
     
     if (!empty($ppilihsektor)) {
-        $filidsektor= " AND isektorid IN $filidsektor ";
+        $filidsektor_=$filidsektor;
+        
+        $filidsektor= " AND IFNULL(isektorid,'') IN $filidsektor ";
+        $filidsektor_p= " AND IFNULL(b.isektorid,'') IN $filidsektor_ ";
     }
     
     
     $query = "select * from sls.icust WHERE CONCAT(icabangid,areaid,IFNULL(icustid,'')) "
             . " IN (select distinct CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(icustid,'')) FROM $tmp01) $filidsektor";
     $query = "create TEMPORARY table $tmp03 ($query)"; 
+    //mysqli_query($cnmy, $query);
+    //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "select distinct a.iCabangId, a.areaId, a.iCustId, b.nama, b.alamat1, b.alamat2, b.kodepos, b.contact, b.telp, b.fax, "
+            . " b.iKotaId, b.kota, b.iSektorId, b.aktif, b.dispen, b.User1, b.oldFlag, b.scode, b.grp, b.grp_spp, b.istatus, b.iCustId_old "
+            . " from $tmp01 as a LEFT JOIN sls.icust as b on a.icabangid=b.iCabangId AND a.areaid=b.areaId AND a.icustid=b.iCustId "
+            . " WHERE 1=1 $filidsektor_p";
+    $query = "create  table $tmp03 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+
+    $query = "UPDATE $tmp03 SET iSektorId='99' WHERE IFNULL(iSektorId,'')=''"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
     
     $lcfieldpil=" b.isektorid, ise.nama nama_sektor ";
     if ($pjenissektor=="G") {
         $lcfieldpil=" ise.grp_pvt as isektorid, ise.nama_pvt nama_sektor ";
+    }else{
     }
+    
     $query = "UPDATE $tmp03 SET iSektorId='99' WHERE IFNULL(iSektorId,'')=''";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+        
     $query = "select a.icabangid, c.nama nama_cabang, a.areaid, d.nama nama_area, a.iprodid, e.nama nama_produk, "
             . " a.icustid, b.nama, b.alamat1, b.alamat2, b.kodepos, b.contact, b.telp, b.fax, b.ikotaid, b.kota, "
             . " $lcfieldpil, "
@@ -244,6 +264,7 @@
             . " LEFT JOIN sls.iproduk e on a.iprodid=e.iprodid "
             . " LEFT JOIN MKT.isektor ise on b.iSektorId = ise.iSektorId ";
     $query .= " GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18";
+    echo $query;
     $query = "create TEMPORARY table $tmp04 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

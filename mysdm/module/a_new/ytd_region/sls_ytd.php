@@ -53,12 +53,28 @@ if ($pilihdarims==true) {
 }
 
 if (!empty($region)) {
+    $filterprodukexp="";
+    $filterprodukexp_pilih="";
+    
     $ppilihanmakloya="";
-    $resultsmkl = DB::query("SELECT DISTINCT maklo FROM ms.cbgytd WHERE IFNULL(maklo,'')='Y' AND region='$region'");
+    $resultsmkl = DB::query("SELECT DISTINCT region, iprodid, divprodid FROM sls.maklon_region WHERE region='$region'");
     foreach ($resultsmkl as $mk) {
-        if ($mk['maklo']=="Y"); $ppilihanmakloya=$mk['maklo'];
+        if (!empty($mk['region'])) $ppilihanmakloya="Y";
+        
+        $piprodp=$mk['iprodid'];
+        
+        if (strpos($filterprodukexp, $piprodp)==false) $filterprodukexp .="'".$piprodp."',";
+        
     }
+    if (!empty($filterprodukexp)) {
+        $filterprodukexp_pilih=" (".substr($filterprodukexp, 0, -1).")";
+    }
+    
     if ($ppilihanmakloya=="Y") {
+        if (!empty($filterprodukexp_pilih)) {
+            echo $filterprodukexp_pilih;
+            $resultsdel = DB::query("DELETE FROM $namatabel WHERE iprodid NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'");
+        }
     }else{
         $resultsdel = DB::query("DELETE FROM $namatabel WHERE divprodid='MAKLO'");
     }

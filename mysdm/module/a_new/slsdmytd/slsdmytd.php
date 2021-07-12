@@ -106,6 +106,31 @@ $(document).ready(function() {
     
     DB::useDB("dbtemp");
     
+    
+    $query = "select DISTINCT a.icabangid, a.areaid, a.iprodid, 'MAKLO' as divisiid, a.divprodid as divisiid_asli "
+            . " FROM sls.maklon_cabangarea as a "
+            . " JOIN sls.idm0 as b on a.icabangid=b.icabangid WHERE b.karyawanid='$idspv'";
+    $results1 = DB::query("create TEMPORARY table $tmp2($query)");
+        
+
+    $ppilihanmakloya="";
+    $filterprodukexp="";
+    $filterprodukexp_pilih="";
+    $resultsmkl = DB::query("SELECT DISTINCT iprodid, icabangid, areaid FROM $tmp2");
+    foreach ($resultsmkl as $mk) {
+        $piprodp=$mk['iprodid'];
+        $xcabid=$mk['icabangid'];
+        $xareaid=$mk['areaid'];
+        $ppilihanmakloya="Y";
+
+        if (strpos($filterprodukexp, $piprodp)==false) $filterprodukexp .="'".$piprodp."',";
+
+    }
+    if (!empty($filterprodukexp)) {
+        $filterprodukexp_pilih=" (".substr($filterprodukexp, 0, -1).")";
+    }
+    
+    
     $query = "select DATE_FORMAT(bulan,'%Y%m') bulan, divprodid, iprodid, hna_sales, sum(qty_target) tqty, 
         sum(value_target) ttvalue, sum(qty_sales) sqty, sum(value_sales) tsvalue
         from ms.sales_dm s WHERE karyawanid='$idspv'
@@ -171,6 +196,18 @@ $(document).ready(function() {
     
     $results1 = DB::query("drop table $tmp1");
 	
+    
+    if ($ppilihanmakloya=="Y") {
+        if (!empty($filterprodukexp_pilih)) {
+            $query = "DELETE FROM $tmp0 WHERE CONCAT(iprodid) NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
+            DB::useDB("dbtemp"); $results1 = DB::query($query);
+        }
+    }else{
+        $query = "DELETE FROM $tmp0 WHERE divprodid='MAKLO'";
+        DB::useDB("dbtemp"); $results1 = DB::query($query);
+    }
+    
+    
 	/*
 	$query = "ALTER table $tmp0 ADD COLUMN kategori VARCHAR(100)";
 	$results1 = DB::query($query);

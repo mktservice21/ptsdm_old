@@ -254,7 +254,7 @@ if ($pact=="editdata") {
                                     
                                     
                                     <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Pengajuan <span class='required'></span></label>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Divisi <span class='required'></span></label>
                                         <div class='col-xs-5'>
                                             <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="">
                                                 <option value='' selected>-- Pilihan --</option>

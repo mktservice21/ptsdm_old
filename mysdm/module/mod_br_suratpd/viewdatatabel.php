@@ -308,6 +308,9 @@
                     if ($papv_dir1=="0000-00-00") $papv_dir1="";
                     if ($papv_dir2=="0000-00-00") $papv_dir2="";
                     
+                    $ptglinput = $row["tglinput"];
+                    $ptglinput= date("Ym", strtotime($ptglinput));
+                    
                     $pmystsyginput="";
                     if ($pkaryawanid=="0000000566") {
                         $pmystsyginput=1;
@@ -334,12 +337,16 @@
                     $pmymodule="";
                     $plihat="";
                     if ($pdivisi=="OTC") {
-                        if ( ($pkode=="1" AND $psubkode=="03") ) {
-                            $pmymodule="module=rekapbiayarutinotc&act=input&idmenu=171&ket=bukan&ispd=$idno";
-                        }elseif ( ($pkode=="2" AND $psubkode=="21") ) {
-                            $pmymodule="module=rekapbiayaluarotc&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                        if ($psubkode=="02" AND (double)$ptglinput>='201910' AND $pjenisrpt <>'G' ) {//$pnodivisi<>'026/BROTC-GAJI/XI/19'
+                            $pmymodule="module=laporangajispgotc&act=input&idmenu=134&ket=bukan&ispd=$idno";
                         }else{
-                            $pmymodule="module=lapbrotcpermo&act=input&idmenu=134&ket=bukan&ispd=$idno";
+                            if ( ($pkode=="1" AND $psubkode=="03") ) {
+                                $pmymodule="module=rekapbiayarutinotc&act=input&idmenu=171&ket=bukan&ispd=$idno";
+                            }elseif ( ($pkode=="2" AND $psubkode=="21") ) {
+                                $pmymodule="module=rekapbiayaluarotc&act=input&idmenu=245&ket=bukan&ispd=$idno";
+                            }else{
+                                $pmymodule="module=lapbrotcpermo&act=input&idmenu=134&ket=bukan&ispd=$idno";
+                            }
                         }
                     }else{
                         if ($pmystsyginput==1) {

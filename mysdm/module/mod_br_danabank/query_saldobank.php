@@ -153,7 +153,7 @@ function seleksi_query_bank($nkodeneksi, $pperiode){
     
     //update idots sesuai igroup
     $query = "UPDATE $tmp02 a JOIN $tmp03 b on a.igroup=b.igroup "
-            . " SET a.idots=b.igroup WHERE IFNULL(aigroup,'')<>''";
+            . " SET a.idots=b.igroup WHERE IFNULL(a.igroup,'')<>''";
     mysqli_query($cnmy, $query);
     
     

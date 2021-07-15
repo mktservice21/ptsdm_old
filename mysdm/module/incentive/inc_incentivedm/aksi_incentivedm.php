@@ -45,6 +45,7 @@ $now=date("mdYhis");
 $tmp01 ="dbtemp.tmprptincdm01_".$puser."_$now$milliseconds";
 $tmp02 ="dbtemp.tmprptincdm02_".$puser."_$now$milliseconds";
 $tmp03 ="dbtemp.tmprptincdm03_".$puser."_$now$milliseconds";
+$tmp04 ="dbtemp.tmprptincdm04_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 
@@ -54,6 +55,35 @@ $query = "select a.karyawanid, a.aktif, a.icabangid, b.nama as nama_cabang from 
 $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
+
+// MECARI DATA DIVISI MAKLO
+$query = "select DISTINCT a.icabangid, a.areaid, a.iprodid, 'MAKLO' as divisiid, a.divprodid as divisiid_asli "
+        . " FROM sls.maklon_cabangarea as a "
+        . " JOIN $tmp03 as b on a.icabangid=b.icabangid";
+$query = "CREATE TEMPORARY TABLE $tmp04 ($query)";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+    
+$ppilihanmakloya="";
+$filterprodukexp="";
+$filterprodukexp_pilih="";
+$query = "SELECT DISTINCT iprodid, icabangid, areaid FROM $tmp04";
+$tampilmk= mysqli_query($cnms, $query);
+while ($mk= mysqli_fetch_array($tampilmk)) {
+    $piprodp=$mk['iprodid'];
+    $xcabid=$mk['icabangid'];
+    $xareaid=$mk['areaid'];
+    $ppilihanmakloya="Y";
+
+    if (strpos($filterprodukexp, $piprodp)==false) $filterprodukexp .="'".$piprodp."',";
+
+}
+if (!empty($filterprodukexp)) {
+    $filterprodukexp_pilih=" (".substr($filterprodukexp, 0, -1).")";
+}
+
+// END MECARI DATA DIVISI MAKLO
+    
 $query = "select nama as nama from ms.karyawan WHERE karyawanid='$pkaryawanid'";
 $tampilk= mysqli_query($cnms, $query);
 $rowk= mysqli_fetch_array($tampilk);
@@ -93,6 +123,18 @@ $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
+
+if ($ppilihanmakloya=="Y") {
+    if (!empty($filterprodukexp_pilih)) {
+        $query = "DELETE FROM $tmp02 WHERE CONCAT(iprodid) NOT IN $filterprodukexp_pilih AND divprodid='MAKLO'";
+        mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    }
+}else{
+    $query = "DELETE FROM $tmp02 WHERE divprodid='MAKLO'";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+}
+    
+    
 ?>
 
 <HTML>
@@ -699,5 +741,6 @@ hapusdata:
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp01");
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp02");
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp03");
+    mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp04");
     mysqli_close($cnms);
 ?>

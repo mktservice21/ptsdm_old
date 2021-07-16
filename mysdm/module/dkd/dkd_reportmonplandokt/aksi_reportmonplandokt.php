@@ -298,7 +298,7 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
         echo "<thead>";
             echo "<tr>";
                 echo "<th align='center'><small>No</small></th>";
-                echo "<th align='center'><small>Dokter</small></th>";
+                echo "<th align='center'><small>User</small></th>";
                 for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
                     $pntgl=$ix;
                     if (strlen($pntgl)<=1) $pntgl="0".$ix;

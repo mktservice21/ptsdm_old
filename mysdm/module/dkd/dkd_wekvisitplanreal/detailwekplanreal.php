@@ -65,7 +65,7 @@ $ptanggal="$xhari, $xtgl $xbulan $xthn";
     <tr>
         <th width='5px' align='center'>No</th>
         <th width='5px' align='center'>Jenis</th>
-        <th width='200px' align='center'>Nama Dokter</th>
+        <th width='200px' align='center'>Nama User</th>
         <th width='200px' align='center'>Notes</th>
         <th width='200px' align='center'>Saran</th>
     </tr>

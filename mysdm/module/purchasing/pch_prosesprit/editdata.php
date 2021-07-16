@@ -211,7 +211,7 @@ $pact=$_GET['act'];
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama Barang <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <input type='text' id='e_nmbrg' name='e_nmbrg' class='form-control col-md-7 col-xs-12' oninput="this.value = this.value.toUpperCase()" maxlength="150" onblur='CekBarangKode()'>
+                                        <input type='text' id='e_nmbrg' name='e_nmbrg' class='form-control col-md-7 col-xs-12' style="text-transform: uppercase" maxlength="150" onblur='CekBarangKode()'>
                                     </div>
                                 </div>
                                 
@@ -235,7 +235,7 @@ $pact=$_GET['act'];
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Satuan <span class='required'></span></label>
                                     <div class='col-xs-3'>
-                                        <input type='text' id='e_satuanbrg' name='e_satuanbrg' class='form-control col-md-7 col-xs-12' oninput="this.value = this.value.toUpperCase()" >
+                                        <input type='text' id='e_satuanbrg' name='e_satuanbrg' class='form-control col-md-7 col-xs-12' onkeypress="return event.charCode < 48 || event.charCode  >57" style="text-transform: uppercase" >
                                     </div>
                                 </div>
                                 

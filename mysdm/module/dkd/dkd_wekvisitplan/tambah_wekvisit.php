@@ -512,7 +512,7 @@ $pnamajabatan=$nr['nama'];
 
 
                                 <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Dokter <span class='required'></span></label>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>User <span class='required'></span></label>
                                     <div class='col-xs-4'>
                                         <select class='soflow form-control s2' name='cb_doktid' id='cb_doktid' onchange="">
                                             <?php
@@ -577,7 +577,7 @@ $pnamajabatan=$nr['nama'];
                                                     <th width='10px' align='center' class='divnone'></th><!--class='divnone' -->
                                                     <th width='5px' align='center'>&nbsp;</th>
                                                     <th width='5px' align='center'>JV</th>
-                                                    <th width='200px' align='center'>Nama Dokter</th>
+                                                    <th width='200px' align='center'>Nama User</th>
                                                     <th width='200px' align='center'>Notes</th>
                                                 </tr>
                                             </thead>

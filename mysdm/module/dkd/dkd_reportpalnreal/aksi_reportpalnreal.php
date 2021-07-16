@@ -409,11 +409,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         echo "<tr>";
         
             echo "<th align='left'><small>Jenis</small></th>";
-            echo "<th align='left'><small>Dokter</small></th>";
+            echo "<th align='left'><small>User</small></th>";
             
             echo "<th align='left'><small>Jam</small></th>";
             echo "<th align='left'><small>Jenis</small></th>";
-            echo "<th align='left'><small>Dokter</small></th>";
+            echo "<th align='left'><small>User</small></th>";
             echo "<th align='left'><small>&nbsp;</small></th>";
             echo "<th align='left'><small>&nbsp;</small></th>";
             

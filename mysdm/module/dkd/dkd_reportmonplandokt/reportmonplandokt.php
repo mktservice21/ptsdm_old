@@ -120,7 +120,7 @@ switch($pactpilih){
 
         <div class="">
 
-            <div class="page-title"><div class="title_left"><h3>Report Monthly Plan By Dokter</h3></div></div><div class="clearfix"></div>
+            <div class="page-title"><div class="title_left"><h3>Report Monthly Plan By User</h3></div></div><div class="clearfix"></div>
 
             <div class="row">
 

@@ -17,7 +17,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                $judul="Master Dokter DKU";
+                $judul="Master User DKU";
                 if ($pact=="tambahbaru")
                     echo "Input $judul";
                 elseif ($pact=="editdata")

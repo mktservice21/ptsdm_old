@@ -215,6 +215,60 @@ if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC" OR $pstatuslogin=="ETH") {
 
 //END CARI DEPARTEMEN
 
+
+//CARI PENGECUALIAN
+$ppenecualianatasan=false;
+$query = "select * from dbpurchasing.t_karyawan_input_exc WHERE karyawanid='$idajukan'";
+$ptampilexc= mysqli_query($cnmy, $query);
+$ketemuexc= mysqli_num_rows($ptampilexc);
+if ((DOUBLE)$ketemuexc>0) {
+    $nexp= mysqli_fetch_array($ptampilexc);
+    $ppengajuanexp=$nexp['pengajuan'];
+    $pdepartmenexp=$nexp['iddep'];
+    $pdivisiidexp=$nexp['divisi'];
+    $patasanexp=$nexp['atasanid'];
+    
+    
+    if (!empty($patasanexp)) {
+        $query = "select nama from hrd.karyawan WHERE karyawanid='$patasanexp'";
+        $tmpkn= mysqli_query($cnmy, $query);
+        $tkn=mysqli_fetch_array($tmpkn);
+        $pnamaatasanexp=$tkn['nama'];
+    
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+        $pkdgsm=$patasanexp;
+        $pnamagsm=$pnamaatasanexp;
+        
+    }
+    
+    
+    if (!empty($pdivisiidexp)) {
+        $pdivisilogin=$pdivisiidexp;
+        $pdivisiid=$pdivisiidexp;
+        
+        $pfildivisi="('$pdivisiidexp')";
+    }
+    
+    if (!empty($ppengajuanexp)) $pstatuslogin=$ppengajuanexp;
+    if (!empty($pdepartmenexp)) $pdepartmen=$pdepartmenexp;
+    
+    if ($pdivisiidexp=="OTC") {
+        $pcabangid="0000000007";
+    }else{
+        $pcabangid="0000000001";
+    }
+    
+    $ppenecualianatasan=true;
+}
+        
+//END CARI PENGECUALIAN
+
+
 $pareaid="";
 
 $pidtipe="101";
@@ -384,6 +438,7 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
     }
 }
 
+
 //CARI AREA
 $pfilarea="";
 $query_area="";
@@ -428,6 +483,11 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
 
 //END CARI AREA
 
+
+if ($ppenecualianatasan==true) {
+    $pnamagsmhos="Atasan";
+    if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") $pareaid="0000000001";
+}
 
 ?>
 

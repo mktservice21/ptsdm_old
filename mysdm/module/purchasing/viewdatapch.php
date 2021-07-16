@@ -229,6 +229,45 @@ if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
 if ($ppengajuanid=="HO") {
     $pdivisiid="HO";
 }
+
+
+//CARI PENGECUALIAN
+$ppengajuanexp=""; $pdepartmenexp=""; $pdivisiidexp=""; $patasanexp=""; $pnamaatasanexp="";
+$ppenecualianatasan=false;
+$query = "select * from dbpurchasing.t_karyawan_input_exc WHERE karyawanid='$idajukan'";
+$ptampilexc= mysqli_query($cnmy, $query);
+$ketemuexc= mysqli_num_rows($ptampilexc);
+if ((DOUBLE)$ketemuexc>0) {
+    $nexp= mysqli_fetch_array($ptampilexc);
+    $ppengajuanexp=$nexp['pengajuan'];
+    $pdepartmenexp=$nexp['iddep'];
+    $pdivisiidexp=$nexp['divisi'];
+    $patasanexp=$nexp['atasanid'];
+    
+    
+    if (!empty($patasanexp)) {
+        $query = "select nama from hrd.karyawan WHERE karyawanid='$patasanexp'";
+        $tmpkn= mysqli_query($cnmy, $query);
+        $tkn=mysqli_fetch_array($tmpkn);
+        $pnamaatasanexp=$tkn['nama'];
+    
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+        $pkdgsm=$patasanexp;
+        $pnamagsm=$pnamaatasanexp;
+        
+    }
+    
+    $ppenecualianatasan=true;
+}
+        
+//END CARI PENGECUALIAN
+
+
 ?>
     <div hidden class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
@@ -463,6 +502,58 @@ if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
     $pnamagsmhos="HOS";
 }elseif ($ppengajuanid=="HO") {
     $pnamagsmhos="Atasan";
+}
+
+
+
+//CARI PENGECUALIAN
+$ppengajuanexp=""; $pdepartmenexp=""; $pdivisiidexp=""; $patasanexp=""; $pnamaatasanexp="";
+$ppenecualianatasan=false;
+$query = "select * from dbpurchasing.t_karyawan_input_exc WHERE karyawanid='$idajukan'";
+$ptampilexc= mysqli_query($cnmy, $query);
+$ketemuexc= mysqli_num_rows($ptampilexc);
+if ((DOUBLE)$ketemuexc>0) {
+    $nexp= mysqli_fetch_array($ptampilexc);
+    $ppengajuanexp=$nexp['pengajuan'];
+    $pdepartmenexp=$nexp['iddep'];
+    $pdivisiidexp=$nexp['divisi'];
+    $patasanexp=$nexp['atasanid'];
+    
+    
+    if (!empty($patasanexp)) {
+        $query = "select nama from hrd.karyawan WHERE karyawanid='$patasanexp'";
+        $tmpkn= mysqli_query($cnmy, $query);
+        $tkn=mysqli_fetch_array($tmpkn);
+        $pnamaatasanexp=$tkn['nama'];
+    
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+        $pkdgsm=$patasanexp;
+        $pnamagsm=$pnamaatasanexp;
+        
+    }
+    
+    $ppenecualianatasan=true;
+}
+        
+//END CARI PENGECUALIAN
+
+if ($ppenecualianatasan==true) {
+    $pnamagsmhos="Atasan";
+    if (!empty($patasanexp)) {
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+        $pkdgsm=$patasanexp;
+        $pnamagsm=$pnamaatasanexp;
+    }
 }
 ?>
     <div class='form-group'>

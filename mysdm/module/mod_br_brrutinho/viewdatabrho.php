@@ -69,7 +69,7 @@ if ($pmodule=="cekdatasudahada") {
         echo "<option value='2' selected>Periode 2</option>";
     }else{
         if ($pbulan==$tglini){
-            if ((int)$hariiniserver > 17) {
+            if ((int)$hariiniserver > 20) {
                 echo "<option value='2' selected>Periode 2</option>";
             }else{
                 echo "<option value='1'>Periode 1</option>";

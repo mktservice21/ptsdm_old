@@ -65,6 +65,10 @@
     $result = mysqli_query($cnmy, $query);
     $row = mysqli_fetch_array($result);
     
+    
+    $pbulanpengajuan=$row['bulan'];
+    $pbulanpengajuan=date("Ym", strtotime($pbulanpengajuan));
+    
     $tglajukan=date("d-m-Y", strtotime($row['tgl']));
     $pkaryawanid=$row['karyawanid'];
     $pnamakry=$row['nama_kry'];
@@ -95,8 +99,21 @@
     $nmatasan4=$row['nama_atasan4'];
     $ptglatasan4=$row['tgl_atasan4'];
     
-    $gambar=$row['gambar'];
-    $gbr4=$row['gbr_atasan4'];
+    
+    if ($pbulanpengajuan<'202107') {
+        $query_ttd = "SELECT idrutin, gambar, gbr_atasan4 FROM "
+                . " dbttd.t_brrutin_ttd WHERE idrutin='$pidrutin'";
+    }else{
+        $query_ttd = "SELECT idrutin, gambar, gbr_atasan4 FROM "
+                . " dbmaster.t_brrutin0 WHERE idrutin='$pidrutin'";
+    }
+    $tampilttd = mysqli_query($cnmy, $query_ttd);
+    $nttd = mysqli_fetch_array($tampilttd);
+                
+    $gambar=$nttd['gambar'];
+    $gbr4=$nttd['gbr_atasan4'];
+    
+    
     
     if ($ptglatasan4=="0000-00-00") $ptglatasan4="";
     

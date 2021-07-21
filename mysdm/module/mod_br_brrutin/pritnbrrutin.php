@@ -143,13 +143,31 @@
                 include "config/koneksimysqli.php";
                 include "config/fungsi_sql.php";
                 include "config/library.php";
-                $query = "select * from dbmaster.v_brrutin0 where idrutin='$_GET[brid]' order by nama, bulan, nama_area";
+                
+                $pidbrrutin=$_GET['brid'];
+                
+                    $qXuery = "select * from dbmaster.v_brrutin0 where idrutin='$pidbrrutin' order by nama, bulan, nama_area";
+                
+                
+                $query = "select a.idrutin, a.tgl, a.bulan, a.periode1, a.periode2, a.karyawanid, b.nama, "
+                        . " a.divisi, a.icabangid, c.nama as nama_cabang, a.areaid, d.nama as nama_area, a.keterangan, "
+                        . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_dir, a.tgl_fin, "
+                        . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, a.dir, a.fin, "
+                        . " a.nama_karyawan, a.userid, a.jabatanid "
+                        . " FROM dbmaster.t_brrutin0 as a LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
+                        . " LEFT JOIN mkt.icabang as c on a.icabangid=c.iCabangId "
+                        . " LEFT JOIN mkt.iarea as d on a.icabangid=d.iCabangId AND a.areaid=d.areaId "
+                        . " WHERE a.idrutin='$pidbrrutin' ";
+                
                 $result = mysqli_query($cnmy, $query);
                 $row = mysqli_fetch_array($result);
+                $pbulanpengajuan=$row['bulan'];
                 $idbr=$row['idrutin'];
                 $tglajukan=date("d-m-Y", strtotime($row['tgl']));
                 //$tgl_idbr=date("Ymd", strtotime($row['tgl']))."-".(int)$idbr;
                 $tgl_idbr=$idbr;
+                
+                $pbulanpengajuan=date("Ym", strtotime($pbulanpengajuan));
                 
                 $pkaryawan=$row['karyawanid'];
                 $nama=$row['nama'];
@@ -166,12 +184,12 @@
                 $ptglatasanfin=$row['tgl_fin'];
                 $ptglatasandir=$row['tgl_dir'];
                 
-                if ($ptglatasan1=="0000-00-00") $ptglatasan1="";
-                if ($ptglatasan2=="0000-00-00") $ptglatasan2="";
-                if ($ptglatasan3=="0000-00-00") $ptglatasan3="";
-                if ($ptglatasan4=="0000-00-00") $ptglatasan4="";
-                if ($ptglatasanfin=="0000-00-00") $ptglatasanfin="";
-                if ($ptglatasandir=="0000-00-00") $ptglatasandir="";
+                if ($ptglatasan1=="0000-00-00" OR $ptglatasan1=="0000-00-00 00:00:00") $ptglatasan1="";
+                if ($ptglatasan2=="0000-00-00" OR $ptglatasan2=="0000-00-00 00:00:00") $ptglatasan2="";
+                if ($ptglatasan3=="0000-00-00" OR $ptglatasan3=="0000-00-00 00:00:00") $ptglatasan3="";
+                if ($ptglatasan4=="0000-00-00" OR $ptglatasan4=="0000-00-00 00:00:00") $ptglatasan4="";
+                if ($ptglatasanfin=="0000-00-00" OR $ptglatasanfin=="0000-00-00 00:00:00") $ptglatasanfin="";
+                if ($ptglatasandir=="0000-00-00" OR $ptglatasandir=="0000-00-00 00:00:00") $ptglatasandir="";
                 
                 $phari=date("w", strtotime($row['tgl']));
                 $pdate=date("d", strtotime($row['tgl']));
@@ -218,12 +236,22 @@
                 $patasandir=$row['dir'];
                 $nmatasandir = getfield("select nama as lcfields from hrd.karyawan where karyawanId='$patasandir'");
                 
-                $gambar=$row['gambar'];
-                $gbr1=$row['gbr_atasan1'];
-                $gbr2=$row['gbr_atasan2'];
-                $gbr3=$row['gbr_atasan3'];
-                $gbr4=$row['gbr_atasan4'];
-                $gbrdir=$row['gbr_dir'];
+                if ($pbulanpengajuan<'202107') {
+                    $query_ttd = "SELECT idrutin, gambar, gbr_atasan1, gbr_atasan2, gbr_atasan3, gbr_atasan4, gbr_dir FROM "
+                            . " dbttd.t_brrutin_ttd WHERE idrutin='$pidbrrutin'";
+                }else{
+                    $query_ttd = "SELECT idrutin, gambar, gbr_atasan1, gbr_atasan2, gbr_atasan3, gbr_atasan4, gbr_dir FROM "
+                            . " dbmaster.t_brrutin0 WHERE idrutin='$pidbrrutin'";
+                }
+                $tampilttd = mysqli_query($cnmy, $query_ttd);
+                $nttd = mysqli_fetch_array($tampilttd);
+                
+                $gambar=$nttd['gambar'];
+                $gbr1=$nttd['gbr_atasan1'];
+                $gbr2=$nttd['gbr_atasan2'];
+                $gbr3=$nttd['gbr_atasan3'];
+                $gbr4=$nttd['gbr_atasan4'];
+                $gbrdir=$nttd['gbr_dir'];
                 
                 if ($patasan4==$pkaryawan) $gambar=$row['gbr_atasan4'];
                 
@@ -324,7 +352,7 @@
                     }
                     
                 }
-                
+				
                 if (!empty($gbrdir)) {
                     $data="data:".$gbrdir;
                     $data=str_replace(' ','+',$data);
@@ -334,8 +362,8 @@
                     $namadir="img_".$idbr."DIR01_.png";
                     file_put_contents('images/tanda_tangan_base64/'.$namadir, $data);
                 }
-                
-                
+				
+				
             ?>
             
             <center>
@@ -620,7 +648,7 @@
                         </tr>
                         ';
 						
-						}else{
+                    }else{
 							
 							
 							
@@ -660,52 +688,52 @@
                             </tr>
                             ';
                         }else{
-							echo '
-							<tr>
-								<td align="center">
-									Disetujui :
-									<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;
-									(.............................)
-								</td>
-								<td align="center">';
-                                                                if ($pdivisi=="OTC" AND ( $_GET['module']=="entrybrrutinotc" OR $_GET['module']=="entrybrluarkotaotc") ) {
-                                                                    echo 'Diperiksa oleh HOS :';
-                                                                }else{
-                                                                    echo 'Diperiksa oleh SM :';
-                                                                }
-									if (!empty($namasm))
-										echo "<br/><img src='images/tanda_tangan_base64/$namasm' height='$gmrheight'><br/>";
-									else
-										echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-									echo "<b><u>$nmatasan3</u></b>";
-                                                                        
-							echo '</td>';
-                                                        if (!empty($nmatasan2)) {
-                                                            echo '<td align="center">
-                                                                            Diperiksa oleh Atasan :';
-                                                                            if (!empty($namadm))
-                                                                                    echo "<br/><img src='images/tanda_tangan_base64/$namadm' height='$gmrheight'><br/>";
-                                                                            else
-                                                                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                                                                            echo "<b><u>$nmatasan2</u></b>";
+                            echo '
+                            <tr>
+                                <td align="center">
+                                        Disetujui :
+                                        <br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;
+                                        (.............................)
+                                </td>
+                                <td align="center">';
+                                if ($pdivisi=="OTC" AND ( $_GET['module']=="entrybrrutinotc" OR $_GET['module']=="entrybrluarkotaotc") ) {
+                                    echo 'Diperiksa oleh HOS :';
+                                }else{
+                                    echo 'Diperiksa oleh SM :';
+                                }
+                                    if (!empty($namasm))
+                                        echo "<br/><img src='images/tanda_tangan_base64/$namasm' height='$gmrheight'><br/>";
+                                    else
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    echo "<b><u>$nmatasan3</u></b>";
 
-                                                            echo '</td>';
-                                                        }
-                                                        echo '<td align="center">
-									Yang Membuat :';
-									if (!empty($namapengaju))
-										echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
-									else
-										echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-									echo "<b><u>$nama</u></b>";
-							echo '</td>
-							</tr>
-							';
-						}
+                            echo '</td>';
+                            if (!empty($nmatasan2)) {
+                                echo '<td align="center">
+                                    Diperiksa oleh Atasan :';
+                                    if (!empty($namadm))
+                                        echo "<br/><img src='images/tanda_tangan_base64/$namadm' height='$gmrheight'><br/>";
+                                    else
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    echo "<b><u>$nmatasan2</u></b>";
+
+                                echo '</td>';
+                            }
+                            echo '<td align="center">
+                                Yang Membuat :';
+                                if (!empty($namapengaju))
+                                    echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
+                                else
+                                    echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                echo "<b><u>$nama</u></b>";
+                            echo '</td>
+                            </tr>
+                            ';
+                        }
 						
 						
 						
-						}
+                    }
 						
 						
 						
@@ -737,33 +765,33 @@
                             
                         }else{
 						
-							echo '
-							<tr>
-								<td align="center">
-									Disetujui :
-									<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;
-									(.............................)
-								</td>
-								<td align="center">
-									Diperiksa oleh Atasan :';
-									if (!empty($namasm))
-										echo "<br/><img src='images/tanda_tangan_base64/$namasm' height='$gmrheight'><br/>";
-									else
-										echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-									echo "<b><u>$nmatasan3</u></b>";
-							echo '</td>
-								<td align="center">
-									Yang Membuat :';
-									if (!empty($namapengaju))
-										echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
-									else
-										echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-									echo "<b><u>$nama</u></b>";
-							echo '</td>
-							</tr>
-							';
+                            echo '
+                            <tr>
+                                <td align="center">
+                                    Disetujui :
+                                    <br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;
+                                    (.............................)
+                                </td>
+                                <td align="center">
+                                    Diperiksa oleh Atasan :';
+                                    if (!empty($namasm))
+                                        echo "<br/><img src='images/tanda_tangan_base64/$namasm' height='$gmrheight'><br/>";
+                                    else
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    echo "<b><u>$nmatasan3</u></b>";
+                            echo '</td>
+                                <td align="center">
+                                    Yang Membuat :';
+                                    if (!empty($namapengaju))
+                                        echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
+                                    else
+                                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                                    echo "<b><u>$nama</u></b>";
+                            echo '</td>
+                            </tr>
+                            ';
 							
-						}
+                        }
 						
 						
                     }elseif ($lvlpengajuan=="FF4") {
@@ -828,7 +856,7 @@
                             echo "</tr>";
                             
                         }else{
-                            
+                        
                             if ( ($pjabatanid=="05" OR $pjabatanid=="25") AND !empty($gbrdir)) {
                                 
                                 echo "<tr>";
@@ -854,7 +882,7 @@
                                 echo "</tr>";
                                 
                             }else{
-                                
+						
                                 echo "<tr>";
 
                                     echo "<td align='center'>";
@@ -881,12 +909,11 @@
 
                                 echo "</tr>";
 
-                            }
-                        
+                        }
+							
+                            
                         }
                     }
-                    
-                    
                     ?>
                 </table>
             </center>

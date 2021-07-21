@@ -1,9 +1,86 @@
 
 <?php
+    ini_set("memory_limit","5G");
+    ini_set('max_execution_time', 0);
+    
     session_start();
+    
+    $puserid="";
+    if (isset($_SESSION['USERID'])) $puserid=$_SESSION['USERID'];
+
+    if (empty($puserid)) {
+        echo "ANDA HARUS LOGIN ULANG...";
+        exit;
+    }
+    
+    
     include "../../config/koneksimysqli.php";
     include "../../config/fungsi_sql.php";
     include "../../config/fungsi_ubahget_id.php";
+    
+    
+    
+
+    $now=date("mdYhis");
+    $tmp01 =" dbtemp.tmpprosfinbrutinid01_".$puserid."_$now ";
+    $tmp02 =" dbtemp.tmpprosfinbrutinid02_".$puserid."_$now ";
+    $tmp03 =" dbtemp.tmpprosfinbrutinid03_".$puserid."_$now ";
+    $tmp04 =" dbtemp.tmpprosfinbrutinid04_".$puserid."_$now ";
+    $tmp05 =" dbtemp.tmpprosfinbrutinid05_".$puserid."_$now ";
+
+    //$query = "select idrutin FROM dbmaster.t_brrutin0_20210719 WHERE year(bulan)='2021' AND left(bulan,7)<='2021-06' AND idrutin <>'BRT0035190'";// AND idrutin <>'BRT0035190'
+    $query = "select idrutin FROM dbmaster.t_brrutin0_20210719 WHERE left(bulan,7)>'2021-06'";
+    $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; mysqli_close($cnmy); exit; }
+
+    //$query = "CREATE TEMPORARY TABLE $tmp02 (select * from dbmaster.t_brrutin0_field WHERE 0=0)";
+    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; mysqli_close($cnmy); exit; }
+    
+    $no=1;
+    $query = "select * from $tmp01 ORDER BY idrutin";
+    $tampiln = mysqli_query($cnmy, $query);
+    while ($nrow= mysqli_fetch_array($tampiln)) {
+        $nnidrutin=$nrow['idrutin'];
+        echo "$no = $nnidrutin<br/>";
+        
+        //$query = "INSERT INTO $tmp02 SELECT * FROM dbmaster.t_brrutin0 WHERE idrutin='$nnidrutin'";
+        
+        $query = "INSERT INTO dbttd.t_brrutin_ttd (idrutin, gambar, gbr_atasan1, gbr_atasan2, gbr_atasan3, gbr_atasan4, gbr_dir) SELECT "
+                . " idrutin, gambar, gbr_atasan1, gbr_atasan2, gbr_atasan3, gbr_atasan4, gbr_dir FROM dbmaster.t_brrutin0 WHERE idrutin='$nnidrutin'";
+        
+        
+            $qXuery = "INSERT INTO dbmaster.t_brrutin0_backup_20210719 "
+                    . "(idrutin, kode, tgl, karyawanid, icabangid, areaid, icabangid_o, areaid_o, "
+                    . " bulan, kodeperiode, periode1, periode2, jumlah, ppn, nopol, keterangan, "
+                    . " atasanid, jabatanid, divisi, COA4, KODEWILAYAH, stsnonaktif, userid, sys_now, "
+                    . " tgltrans, jmltrans, atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3, atasan4, tgl_atasan4, "
+                    . " validate, validate_date, fin, tgl_fin, idca, divi, nobukti, nama_karyawan, dir, tgl_dir, ikdkry_kontrak"
+                    . ", gambar, gbr_atasan1, gbr_atasan2, gbr_atasan3, gbr_atasan4, gbr_dir)"
+                    . " SELECT idrutin, kode, tgl, karyawanid, icabangid, areaid, icabangid_o, areaid_o, "
+                    . " bulan, kodeperiode, periode1, periode2, jumlah, ppn, nopol, keterangan, "
+                    . " atasanid, jabatanid, divisi, COA4, KODEWILAYAH, stsnonaktif, userid, sys_now, "
+                    . " tgltrans, jmltrans, atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3, atasan4, tgl_atasan4, "
+                    . " validate, validate_date, fin, tgl_fin, idca, divi, nobukti, nama_karyawan, dir, tgl_dir, ikdkry_kontrak"
+                    . ", gambar, gbr_atasan1, gbr_atasan2, gbr_atasan3, gbr_atasan4, gbr_dir "
+                    . " FROM dbmaster.t_brrutin0 WHERE idrutin='$nnidrutin'";
+        //echo $qXuery; exit;
+        //mysqli_query($cnmy, $query);
+        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan<br/>"; }
+
+        $no++;
+        
+    }
+
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp01");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp02");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp03");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp04");
+    mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp05");
+    mysqli_close($cnmy);
+    exit;
+    
+    
+    
     
     $kodeinput = " AND br.kode=1 "; //membedakan biaya luar kota dan rutin
     
@@ -172,6 +249,35 @@
                     LEFT JOIN (SELECT distinct DISTINCT idrutin from dbimages.img_brrutin1) as i on i.idrutin=br.idrutin 
                     ";
                 
+				
+                $sql = "SELECT
+                    br.divisi,
+                    br.idrutin,
+                    br.karyawanid,
+                    k.nama, nama_karyawan,
+                    DATE_FORMAT(br.tgl,'%d %M %Y') as tgl,
+                    br.bulan,
+                    br.kodeperiode,
+                    DATE_FORMAT(br.periode1,'%d/%m/%Y') as periode1,
+                    DATE_FORMAT(br.periode2,'%d/%m/%Y') as periode2,
+                    FORMAT(br.jumlah,0,'de_DE') as jumlah,
+                    br.keterangan,
+                    '' as bukti,
+                    ifnull(br.tgl_atasan1,'0000-00-00') tgl_atasan1,
+                    '' as gbr_atasan1,
+                    ifnull(br.tgl_atasan2,'0000-00-00') tgl_atasan2,
+                    '' as gbr_atasan2,
+                    ifnull(br.tgl_atasan3,'0000-00-00') tgl_atasan3,
+                    '' as gbr_atasan3,
+                    ifnull(tgl_atasan4,'0000-00-00') tgl_atasan4,
+                    '' as gbr_atasan4,
+                    ifnull(br.tgl_fin,'0000-00-00') tgl_fin,
+                    br.jabatanid, br.atasan4 
+                    FROM dbmaster.v_brrutin0_limit AS br
+                    LEFT JOIN hrd.karyawan AS k ON br.karyawanid = k.karyawanId
+                    ";
+				
+				
                 $sql.=" WHERE 1=1 $kodeinput ";
                 $sql.=" AND Date_format(br.bulan, '%Y-%m') between '$tgl1' and '$tgl2' ";
                 
@@ -222,8 +328,8 @@
                     $pdivisi = $row["divisi"];
                     if ($pdivisi=="CAN") $pdivisi = "CANARY";
                     $cekbox = "<input type=checkbox value='$idno' name=chkbox_br[]>";
-                    
-                    $paatasan4 = $row["atasan4"];
+					
+					$paatasan4 = $row["atasan4"];
                     
                     $pidnoget=encodeString($idno);
 
@@ -302,14 +408,12 @@
                             . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                             . "$idno</a>";
                     }
-                    
+					
                     if (strtoupper($cket)=="APPROVE") {
                         if ($paatasan4=="0000002403") {
                             //if (empty($apv4)) $cekbox="";
                         }
                     }
-                    
-                    
 					
 					
                     echo "<tr>";

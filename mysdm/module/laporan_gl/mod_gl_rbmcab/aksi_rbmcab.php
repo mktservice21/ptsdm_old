@@ -339,8 +339,8 @@
     $npppperi=$periode."12";
     
     if ($ppildivisiid=="OTC") { //mkt.otc_etl
-        //$query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from dbmaster.sales_otc_local WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1,2,3";
-        $query = "select * from dbmaster.sales_otc_local WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22";
+        //$query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from fe_it.otc_etl WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1,2,3";
+        $query = "select * from fe_it.otc_etl WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22";
         $query = "create TEMPORARY table $tmp01 ($query)";
         mysqli_query($cnit, $query);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -395,7 +395,7 @@
         
         
         
-        //$query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from dbmaster.sales_otc_local WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1,2,3";
+        //$query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from fe_it.otc_etl WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1,2,3";
         $query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from $tmp03 GROUP BY 1,2,3";
         $query = "create TEMPORARY table $tmp04 ($query)";
         mysqli_query($cnit, $query);
@@ -406,7 +406,7 @@
         
     }else{
         
-        $query = "select icabangid, date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from dbmaster.sales_local WHERE YEAR(bulan)='$periode' ";// DATE_FORMAT(bulan,'%Y%m')='$npppperi'
+        $query = "select icabangid, date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from fe_ms.sales WHERE YEAR(bulan)='$periode' ";// DATE_FORMAT(bulan,'%Y%m')='$npppperi'
         if ($pidgrouppil=="8") {
             $ppilregion="B";
             if ($picardid=="0000000159") $ppilregion="T";

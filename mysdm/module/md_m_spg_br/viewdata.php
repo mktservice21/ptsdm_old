@@ -57,7 +57,7 @@ if ($_GET['module']=="viewspg"){
     
     $pinsentif=0;
     if (!empty($pidspg)) {
-        $query = "select sum(inct_total) jumlah from dbmaster.t_spg_incentive where id_spg='$pidspg' AND inct_bulan='$cbulan'";
+        $query = "select sum(inct_total) jumlah from fe_it.t_spg_incentive where id_spg='$pidspg' AND inct_bulan='$cbulan'";
         $tampil=mysqli_query($cnit, $query);
         $in=mysqli_fetch_array($tampil);
         $pinsentif=$in['jumlah'];

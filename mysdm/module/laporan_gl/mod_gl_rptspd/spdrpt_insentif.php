@@ -69,7 +69,7 @@ $mpilihdivisi="ETHICAL";
     echo "<br/>&nbsp;";
     
     $query = "SELECT CAST(null as DECIMAL(10,0)) as urutan, a.bulan, a.divisi, a.cabang icabangid, b.nama cabang, "
-            . " a.jabatan, a.karyawanid, a.nama, a.region, a.jumlah FROM dbmaster.incentiveperdivisi a "
+            . " a.jabatan, a.karyawanid, a.nama, a.region, a.jumlah FROM fe_ms.incentiveperdivisi a "
             . " LEFT JOIN mkt.icabang b on a.cabang=b.iCabangId WHERE DATE_FORMAT(a.bulan,'%Y%m')='$periode1'";
     $query = "create TEMPORARY table $tmp01 ($query)";
     mysqli_query($cnmy, $query);

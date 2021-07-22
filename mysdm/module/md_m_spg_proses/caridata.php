@@ -200,7 +200,7 @@ function CariDataSPGGajiTJ($bulan, $pidcabang, $pnoid, $status, $periodeins) {
     mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
     
     //insentif
-    $query ="select * from dbmaster.t_spg_incentive WHERE REPLACE(inct_bulan,'-','')='$periodeins' AND "
+    $query ="select * from fe_it.t_spg_incentive WHERE REPLACE(inct_bulan,'-','')='$periodeins' AND "
             . " id_spg IN (SELECT distinct id_spg FROM $tmp01)";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -500,7 +500,7 @@ function CariDataSPG($bulan, $pidcabang, $pnoid, $status, $periodeins) {
     mysqli_query($cnmy, "drop TEMPORARY table $tmp04");
     
     //insentif
-    $query ="select * from dbmaster.t_spg_incentive WHERE REPLACE(inct_bulan,'-','')='$periodeins' AND "
+    $query ="select * from fe_it.t_spg_incentive WHERE REPLACE(inct_bulan,'-','')='$periodeins' AND "
             . " id_spg IN (SELECT distinct id_spg FROM $tmp01)";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnmy, $query);

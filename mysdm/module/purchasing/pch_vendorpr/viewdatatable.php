@@ -296,7 +296,7 @@ session_start();
                         echo "<td nowrap align='right'>$pjml</td>";
                         echo "<td nowrap align='right'>$pharga</td>";
                         
-                        echo "<td >$puserinput</td>";
+                        echo "<td nowrap>$puserinput</td>";
                         
                         echo "</tr>";
                         

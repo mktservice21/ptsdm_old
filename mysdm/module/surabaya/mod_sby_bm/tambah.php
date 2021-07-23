@@ -33,6 +33,7 @@ function ShowCOA(udiv, ucoa, ucoa2) {
     ShowCOA1(udiv, ucoa);
     ShowCOA2(udiv, ucoa2);
     ShowBiayaUntuk();
+    ShowDataCabang();
 }
 
 function ShowCOA1(udiv, ucoa) {
@@ -70,6 +71,33 @@ function ShowBiayaUntuk() {
         data:"umr="+icar+"&udivi="+idiv,
         success:function(data){
             $("#cb_biayauntuk").html(data);
+            ShowBiayaUntukKredit();
+        }
+    });
+}
+
+function ShowBiayaUntukKredit() {
+    var icar = "";
+    var idiv = document.getElementById('cb_divisi').value;
+    $.ajax({
+        type:"post",
+        url:"module/surabaya/mod_sby_bm/viewdata.php?module=viwewbiayauntuk",
+        data:"umr="+icar+"&udivi="+idiv,
+        success:function(data){
+            $("#cb_biayauntukk").html(data);
+        }
+    });
+}
+
+function ShowDataCabang() {
+    var icar = "";
+    var idiv = document.getElementById('cb_divisi').value;
+    $.ajax({
+        type:"post",
+        url:"module/surabaya/mod_sby_bm/viewdata.php?module=viwewdatacabang",
+        data:"umr="+icar+"&udivi="+idiv,
+        success:function(data){
+            $("#cb_cabang").html(data);
         }
     });
 }
@@ -129,6 +157,7 @@ $coa2="";
 $nobbm="";
 $nobbk="";
 $pbiayauntuk="";
+$pbiayauntuk_k="";
     
     $thurufbln=CariBulanHuruf(date('m', strtotime($hari_ini)));
     $tglnomor = $thurufbln."/".date('Y', strtotime($hari_ini));
@@ -148,6 +177,8 @@ $pbiayauntuk="";
     $nobbm = "BBM".$tnobbm."/".$tglnomor;
     $nobbk = "BBK".$tnobbk."/".$tglnomor;
     
+$picabangid="";
+
 $act="input";
 if ($_GET['act']=="editdata"){
     $act="update";
@@ -167,6 +198,8 @@ if ($_GET['act']=="editdata"){
     $nobbm=$r['NOBBM'];
     $nobbk=$r['NOBBK'];
     $pbiayauntuk=$r['BIAYA_UNTUK'];
+    $pbiayauntuk_k=$r['BIAYA_UNTUK_K'];
+    $picabangid=$r['ICABANGID'];
     
 }
     
@@ -276,29 +309,39 @@ if ($_GET['act']=="editdata"){
                                 
                                 
                                 <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Biaya Untuk <span class='required'></span></label>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Cabang <span class='required'></span></label>
                                     <div class='col-xs-5'>
-                                        <select class='form-control input-sm' id='cb_biayauntuk' name='cb_biayauntuk' onchange="">
-                                            <option value='' selected>-- All --</option>
+                                        <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="">
                                             <?PHP
                                             if ($divisi=="OTC") {
-                                                $query = "select gkode, nama_group FROM hrd.brkd_otc_group 
-                                                    WHERE 1=1 ";
-                                                $query .= " ORDER BY gkode";
-                                                $tampil = mysqli_query($cnmy, $query);
-                                                echo "<option value='' selected>-- All --</option>";
-                                                while ($z= mysqli_fetch_array($tampil)) {
-                                                    if ($z['gkode']==$pbiayauntuk)
-                                                        echo "<option value='$z[gkode]' selected>$z[gkode] - $z[nama_group]</option>";
-                                                    else
-                                                        echo "<option value='$z[gkode]'>$z[gkode] - $z[nama_group]</option>";
-                                                }
+                                                $query = "SELECT * FROM (select icabangid_o as icabangid, nama as nama_cabang FROM MKT.icabang_o WHERE aktif<>'N' ";
+                                                $query .= "UNION ";
+                                                $query .= "select cabangid_ho as icabangid, nama as nama_cabang FROM dbmaster.cabang_otc WHERE aktif<>'N') as tcab ";
+                                                $query .= " ORDER BY nama_cabang";
+                                                
+                                                echo "<option value='' selected>-- All CHC --</option>";
+                                            }else{
+                                                $query = "select iCabangId as icabangid, nama as nama_cabang FROM MKT.icabang WHERE aktif<>'N' ";
+                                                $query .= " AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -') ";
+                                                $query .= " ORDER BY nama";
+                                                
+                                                echo "<option value='' selected>-- All Ethical --</option>";
+                                            }
+                                            
+                                            $tampil = mysqli_query($cnmy, $query);
+                                            while ($z= mysqli_fetch_array($tampil)) {
+                                                $nnicabid=$z['icabangid'];
+                                                $nnicabnm=$z['nama_cabang'];
+                                                
+                                                if ($nnicabid==$picabangid)
+                                                    echo "<option value='$nnicabid' selected>$nnicabnm - $nnicabid</option>";
+                                                else
+                                                    echo "<option value='$nnicabid'>$nnicabnm - $nnicabid</option>";
                                             }
                                             ?>
                                         </select>
                                     </div>
                                 </div>
-                                
                                 
                                 
                                 <div class='form-group'>
@@ -316,6 +359,29 @@ if ($_GET['act']=="editdata"){
                                     </div>
                                 </div>
                                 
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Biaya Untuk (Debit) <span class='required'></span></label>
+                                    <div class='col-xs-5'>
+                                        <select class='form-control input-sm' id='cb_biayauntuk' name='cb_biayauntuk' onchange="">
+                                            <option value='' selected>-- All --</option>
+                                            <?PHP
+                                            if ($divisi=="OTC") {
+                                                $query = "select gkode, nama_group FROM hrd.brkd_otc_group 
+                                                    WHERE 1=1 ";
+                                                $query .= " ORDER BY gkode";
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    if ($z['gkode']==$pbiayauntuk)
+                                                        echo "<option value='$z[gkode]' selected>$z[gkode] - $z[nama_group]</option>";
+                                                    else
+                                                        echo "<option value='$z[gkode]'>$z[gkode] - $z[nama_group]</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_coa'>COA / Posting Debit <span class='required'></span></label>
@@ -354,6 +420,29 @@ if ($_GET['act']=="editdata"){
                                     </div>
                                 </div>
                                 
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Biaya Untuk (Kredit) <span class='required'></span></label>
+                                    <div class='col-xs-5'>
+                                        <select class='form-control input-sm' id='cb_biayauntukk' name='cb_biayauntukk' onchange="">
+                                            <option value='' selected>-- All --</option>
+                                            <?PHP
+                                            if ($divisi=="OTC") {
+                                                $query = "select gkode, nama_group FROM hrd.brkd_otc_group 
+                                                    WHERE 1=1 ";
+                                                $query .= " ORDER BY gkode";
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    if ($z['gkode']==$pbiayauntuk_k)
+                                                        echo "<option value='$z[gkode]' selected>$z[gkode] - $z[nama_group]</option>";
+                                                    else
+                                                        echo "<option value='$z[gkode]'>$z[gkode] - $z[nama_group]</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>COA / Posting Kredit <span class='required'></span></label>

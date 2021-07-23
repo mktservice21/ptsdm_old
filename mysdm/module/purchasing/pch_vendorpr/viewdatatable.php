@@ -67,7 +67,7 @@ session_start();
     
     
     
-    $query = "select b.pengajuan, b.idtipe, g.nama_tipe, a.idpr, 
+    $query = "select a.userid as useridinputdetail, h.nama as nmuserinput, b.pengajuan, b.idtipe, g.nama_tipe, a.idpr, 
         b.tglinput, b.tanggal, b.karyawanid, c.nama as nama_karyawan, 
         b.jabatanid, b.divisi, b.icabangid, d.nama as nama_cabang, b.areaid, e.nama nama_area, 
         b.aktivitas, b.userid, f.nama as nama_user,  
@@ -85,7 +85,9 @@ session_start();
         LEFT JOIN MKT.icabang as d on b.icabangid=d.iCabangId
         LEFT JOIN MKT.iarea as e on b.icabangid=e.iCabangId and b.areaid=e.areaid 
         LEFT JOIN hrd.karyawan as f on b.userid=f.karyawanId 
-        LEFT JOIN dbpurchasing.t_pr_tipe as g on b.idtipe=g.idtipe WHERE 1=1 AND IFNULL(pilihpo,'') IN ('Y') ";
+        LEFT JOIN dbpurchasing.t_pr_tipe as g on b.idtipe=g.idtipe 
+        LEFT JOIN hrd.karyawan as h on a.userid=h.karyawanId 
+        WHERE 1=1 AND IFNULL(pilihpo,'') IN ('Y') ";
     $query .=" AND IFNULL(stsnonaktif,'')<>'Y' AND b.tanggal BETWEEN '$pbulan1' AND '$pbulan2' ";
     if ($ppilihsts=="UNAPPROVE") {
         $query .=" AND a.idpr_d IN (select distinct IFNULL(idpr_d,'') from dbpurchasing.t_pr_transaksi_po WHERE IFNULL(aktif,'')='Y') ";
@@ -166,6 +168,7 @@ session_start();
                     <th width='50px'>Jumlah</th>
                     <th width='50px'>Harga</th>
                     <th width='50px'>User Input</th>
+                    <th width='50px'>Edit By</th>
                 </tr>
             </thead>
             <tbody>
@@ -193,6 +196,7 @@ session_start();
                         $psudahisi=$row1['ssudah'];
                         $pposudah=$row1['ssudahpo'];
                         $ptipeminta=$row1['idtipe'];
+                        $pusrnamadetail=$row1['nmuserinput'];
                         
                         $pjml=$row1['jml'];
                         $pharga=$row1['rp_pr'];
@@ -297,6 +301,7 @@ session_start();
                         echo "<td nowrap align='right'>$pharga</td>";
                         
                         echo "<td nowrap>$puserinput</td>";
+                        echo "<td nowrap>$pusrnamadetail</td>";
                         
                         echo "</tr>";
                         

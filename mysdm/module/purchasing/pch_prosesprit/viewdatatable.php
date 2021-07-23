@@ -40,6 +40,7 @@ session_start();
         goto hapusdata;
     }
 
+    $pidcard=$_SESSION['IDCARD'];
     $pidgroup=$_SESSION['GROUP'];
     $userid=$_SESSION['USERID'];
     $now=date("mdYhis");
@@ -47,7 +48,7 @@ session_start();
     $tmp02 =" dbtemp.tmpprositpr02_".$userid."_$now ";
     $tmp03 =" dbtemp.tmpprositpr03_".$userid."_$now ";
 
-    $query = "select b.pengajuan, b.idtipe, g.nama_tipe, a.idpr, 
+    $query = "select a.userid as useridinputdetail, h.nama as nmuserinput, b.pengajuan, b.idtipe, g.nama_tipe, a.idpr, 
         b.tglinput, b.tanggal, b.karyawanid, c.nama as nama_karyawan, 
         b.jabatanid, b.divisi, b.icabangid, d.nama as nama_cabang, b.areaid, e.nama nama_area, 
         b.aktivitas, b.userid, f.nama as nama_user,  
@@ -65,7 +66,9 @@ session_start();
         LEFT JOIN MKT.icabang as d on b.icabangid=d.iCabangId
         LEFT JOIN MKT.iarea as e on b.icabangid=e.iCabangId and b.areaid=e.areaid 
         LEFT JOIN hrd.karyawan as f on b.userid=f.karyawanId 
-        LEFT JOIN dbpurchasing.t_pr_tipe as g on b.idtipe=g.idtipe WHERE 1=1 AND IFNULL(pilihpo,'') IN ('Y') ";
+        LEFT JOIN dbpurchasing.t_pr_tipe as g on b.idtipe=g.idtipe 
+        LEFT JOIN hrd.karyawan as h on a.userid=h.karyawanId 
+        WHERE 1=1 AND IFNULL(pilihpo,'') IN ('Y') ";
     $query .=" AND IFNULL(stsnonaktif,'')<>'Y' AND b.tanggal BETWEEN '$pbulan1' AND '$pbulan2' ";
     if ($ppilihsts=="UNAPPROVE") {
         $query .= " AND (IFNULL(b.tgl_validate1,'')<>'' AND IFNULL(b.tgl_validate1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
@@ -122,6 +125,7 @@ session_start();
                     <th width='50px'>Harga</th>
                     <th width='20px'>Tipe</th>
                     <th width='20px'>Status</th>
+                    <th width='20px'>Edit By</th>
                 </tr>
             </thead>
             <tbody>
@@ -142,6 +146,7 @@ session_start();
                         . "$pidpr</a>";
                         
                     $ceklisnya = "<input type='checkbox' value='$pidpr' name='chkbox_br[]' id='chkbox_br[$pidpr]' class='cekbr'>";
+                    $padaapprove="approve"; $purutannomor=1;
                     
                     $query = "select * from $tmp01 WHERE idpr='$pidpr' order by idpr asc, idpr_d";
                     $tampil1= mysqli_query($cnmy, $query);
@@ -158,6 +163,8 @@ session_start();
                         $npengajuan=$row1['pengajuan'];
                         $puserinput=$row1['nama_user'];
                         $psudahisivendor=$row1['sudahisivendor'];
+                        $pusrinputdetail=$row1['useridinputdetail'];
+                        $pusrnamadetail=$row1['nmuserinput'];
                         
                         $ptglatasan1=$row1['tgl_atasan1'];
                         $ptglatasan2=$row1['tgl_atasan2'];
@@ -195,7 +202,7 @@ session_start();
                         $pwarnafld1="btn btn-default btn-xs";
                         $pwarnafld2="btn btn-default btn-xs";
                         
-                        $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$pidpr')\">";
+                        $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapusDetail('hapus', '$pidpr', '$pidpr_d')\">";
                         $pedit="<a class='btn btn-warning btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&xd=$pidpr_d&id=$pidpr'>Edit</a>";
                         
                         $pketgsmhos="GSM";
@@ -233,9 +240,19 @@ session_start();
                             $pedit=""; $phapus="";
                         }
                         
+                        
+                        if ((INT)$purutannomor==1 AND empty($ceklisnya)) {
+                            $padaapprove="";
+                        }
+                        
                         $philangkandata="";
-                        if ($ppilihsts=="APPROVE" AND empty($ceklisnya)) {
+                        if ($ppilihsts=="APPROVE" AND empty($padaapprove)) {
                             $philangkandata=" class='divnone' ";
+                        }
+                        
+                        if ($pusrinputdetail==$pidcard){
+                        }else{
+                            $phapus="";
                         }
                         
                         echo "<tr $philangkandata>";
@@ -244,7 +261,7 @@ session_start();
                         echo "<td nowrap class='divnone'>$pidpr $pnmtipe $pkrynm $puserinput $ptgl </td>";
                         echo "<td nowrap>$ceklisnya</td>";
                         echo "<td nowrap>$pprint</td>";
-                        echo "<td nowrap>$pedit</td>";
+                        echo "<td nowrap>$pedit $phapus</td>";
                         echo "<td nowrap>$pidpr_d</td>";
                         echo "<td nowrap>$ptgl</td>";
                         echo "<td nowrap>$pkrynm</td>";
@@ -256,6 +273,7 @@ session_start();
                         echo "<td nowrap align='right'>$pharga</td>";
                         echo "<td nowrap>$pnmtipe</td>";
                         echo "<td nowrap>$pstsapvoleh</td>";
+                        echo "<td nowrap>$pusrnamadetail</td>";
                         
                         echo "</tr>";
                         
@@ -264,6 +282,7 @@ session_start();
                         $ceklisnya="";
                         $pprint="";
                         $pnomornya="";
+                        $purutannomor++;
                     }
                     
                     $no++;
@@ -312,6 +331,28 @@ session_start();
                 checkboxes[i].checked = '';
             }
             button.value = 'select';
+        }
+    }
+    
+    function ProsesDataHapusDetail(ket, cidpr, cidprd) {
+        ok_ = 1;
+        if (ok_) {
+            var r = confirm('Apakah akan melakukan proses '+ket+' ...?');
+            if (r==true) {
+
+                var myurl = window.location;
+                var urlku = new URL(myurl);
+                var module = urlku.searchParams.get("module");
+                var idmenu = urlku.searchParams.get("idmenu");
+
+                //document.write("You pressed OK!")
+                document.getElementById("d-form2").action = "module/purchasing/pch_prosesprit/aksi_prosesprit.php?module="+module+"&idmenu="+idmenu+"&act="+ket+"&kethapus="+"&ket="+ket+"&id="+cidpr+"&idd="+cidprd;
+                document.getElementById("d-form2").submit();
+                return 1;
+            }
+        } else {
+            //document.write("You pressed Cancel!")
+            return 0;
         }
     }
     

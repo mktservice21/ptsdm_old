@@ -129,6 +129,28 @@ if ($module=='pchprosesprit' AND $act=="update")
     exit;
 
 }
+else
+if ($module=='pchprosesprit' AND $act=="hapus")
+{
+    if (empty($puserid)) {
+        echo "ANDA HARUS LOGIN ULANG...";
+        exit;
+    }
+    
+    include "../../../config/koneksimysqli.php";
+    $pkodenya=$_GET['id'];
+    $pdetailkodenya=$_GET['idd'];
+    
+    if (!empty($pkodenya) AND !empty($pdetailkodenya)) {
+        $query = "DELETE FROM dbpurchasing.t_pr_transaksi_d WHERE idpr='$pkodenya' idpr_d='$pdetailkodenya' LIMIT 1";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+    }
+    
+    mysqli_close($cnmy);
+    header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
+        
+}
 
 
 function begin($conn){

@@ -142,7 +142,7 @@ if ($module=='pchprosesprit' AND $act=="hapus")
     $pdetailkodenya=$_GET['idd'];
     
     if (!empty($pkodenya) AND !empty($pdetailkodenya)) {
-        $query = "DELETE FROM dbpurchasing.t_pr_transaksi_d WHERE idpr='$pkodenya' idpr_d='$pdetailkodenya' LIMIT 1";
+        $query = "DELETE FROM dbpurchasing.t_pr_transaksi_d WHERE idpr='$pkodenya' AND idpr_d='$pdetailkodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
     }

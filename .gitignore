@@ -1,6 +1,3 @@
-index.php
-cek_login.php
-cek_login_user.php
 _ttd_apv/
 anprs/
 css/
@@ -16,8 +13,4 @@ mysdm/images/
 mysdm/img/
 mysdm/js/
 mysdm/mpdf7/
-mysdm/templates/menu.php
-mysdm/templates/template.php
-mysdm/media.php
-cek_login_vps.php
 mysdm/module/data_lama/jquery/

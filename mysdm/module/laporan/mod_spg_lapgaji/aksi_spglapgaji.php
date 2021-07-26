@@ -177,8 +177,8 @@
         
         mysqli_query($cnmy, "UPDATE $tmp01 a SET a.bbm=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='08'),0)");
         
-        mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_sdm=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='10'),0)");
-        mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_kry=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='11'),0)");
+        mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_sdm=IFNULL((SELECT sum(rptotal2) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='10'),0)");
+        mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_kry=IFNULL((SELECT sum(rptotal2) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='11'),0)");
 
         //realisasi
         mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rinsentif=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='01'),0)");
@@ -233,9 +233,14 @@
     }
     
     
+    $query = "ALTER TABLE $tmp01 ADD COLUMN total_tampa_bpjs DECIMAL(20,2)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
+    $query = "UPDATE $tmp01 SET total_tampa_bpjs=IFNULL(total,0)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
     $query = "UPDATE $tmp01 SET total=IFNULL(total,0)-IFNULL(jmlbpjs_kry,0)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
         
     $pviewdate= date("d/m/Y h:i:s");
@@ -282,11 +287,13 @@
                     
                     <th align="center" rowspan="2">SISA<br/>(Lebih/<br/>Kurang)</th>
                     
+                    <th align="center" rowspan="2">GRAND TOTAL</th>
+                    
                     <th align="center" rowspan="2">BPJS<br/>KARYAWAN</th>
                     <th align="center" rowspan="2">BPJS<br/>PERUSAHAAN</th>
                     
                     
-                    <th align="center" rowspan="2">GRAND TOTAL</th>
+                    <th align="center" rowspan="2">GRAND TOTAL - BPJS KRY</th>
                     <th align="center" colspan="3">DATA REKENING</th>
                 </tr>
                 
@@ -306,6 +313,8 @@
                 $gtotaljml=0;
                 $gtotaltot=0;
                 $gtotaltrans=0;
+                
+                $tanpabpjs_gtotaltot=0;
                 
                 $gtotbpjssdm=0;
                 $gtotbpjskry=0;
@@ -336,6 +345,8 @@
                     echo "<td nowrap align='right'></td>";
 
                     echo "<td nowrap align='right'></td>";
+                    
+                    echo "<td nowrap align='right'></td>";//GRAND TOTAL TANPA BPJS
 
 
                     echo "<td nowrap align='right'><b></b></td>";//bpjs
@@ -352,6 +363,8 @@
                     
                     $no=1;
                     $subtotal=0;
+                    $tanpabpjs_subtotal=0;
+                    
                     
                     $stotbpjssdm=0;
                     $stotbpjskry=0;
@@ -386,8 +399,8 @@
                         $pnmjabatan=$jb['nama_jabatan'];
                         
                         
-                        $pjmlbpjssdm=$row2['sjmlbpjs_sdm'];
-                        $pjmlbpjskry=$row2['sjmlbpjs_kry'];
+                        $pjmlbpjssdm=$row2['jmlbpjs_sdm'];
+                        $pjmlbpjskry=$row2['jmlbpjs_kry'];
                         
                         $stotbpjssdm=(DOUBLE)$stotbpjssdm+(DOUBLE)$pjmlbpjssdm;
                         $stotbpjskry=(DOUBLE)$stotbpjskry+(DOUBLE)$pjmlbpjskry;
@@ -414,6 +427,8 @@
                         
                         $totgp_tunjangan=number_format($totgp_tunjangan,0,",",",");
                         
+                        $ptanpabpjs_total=$row2['total_tampa_bpjs'];
+                        
                         $ptotal=$row2['total'];
 
                         $gtotaljml=$gtotaljml+$row2['total'];
@@ -427,12 +442,17 @@
                         //}else{
                             $subtotal=$subtotal+$ptotal;
                             $gtotaltot=$gtotaltot+$ptotal;
+                            
+                            $tanpabpjs_subtotal=(DOUBLE)$tanpabpjs_subtotal+(DOUBLE)$ptanpabpjs_total;
+                            $tanpabpjs_gtotaltot=(DOUBLE)$tanpabpjs_gtotaltot+(DOUBLE)$ptanpabpjs_total;
                         //}
                             
                         //if ($periode1>='202106') {
                         //    $jmltotal=number_format($ptotal,2,".",",");
+                        //    $ptanpabpjs_total=number_format($ptanpabpjs_total,2,".",",");
                         //}else{
                             $jmltotal=number_format($ptotal,0,",",",");
+                            $ptanpabpjs_total=number_format($ptanpabpjs_total,0,",",",");
                         //}
                         
                         
@@ -440,6 +460,7 @@
                             $prpmakan="";
                             $pmakan=0;
                             //$jmltotal=0;
+                            //$ptanpabpjs_total=0;
                             $ppulsa=0;
                             $totgp_tunjangan=0;
                             
@@ -474,6 +495,8 @@
 
                         echo "<td nowrap align='right'><b>$psisa_lebihkurang</b></td>";
                         
+                        echo "<td nowrap align='right' style='color:#990000; font-size:12px; padding:5px;'><b>$ptanpabpjs_total</b></td>";// TOTAL TANPA BPJS
+                        
                         echo "<td nowrap align='right'><b>$pjmlbpjskry</b></td>";
                         echo "<td nowrap align='right'><b>$pjmlbpjssdm</b></td>";
                         
@@ -491,8 +514,10 @@
                     
                     //if ($periode1>='202106') {
                     //    $subtotal=number_format($subtotal,2,".",",");
+                    //    $tanpabpjs_subtotal=number_format($tanpabpjs_subtotal,2,".",",");
                     //}else{
                         $subtotal=number_format($subtotal,0,",",",");
+                        $tanpabpjs_subtotal=number_format($tanpabpjs_subtotal,0,",",",");
                     //}
                     
                     $stotbpjssdm=number_format($stotbpjssdm,2,".",",");
@@ -503,6 +528,8 @@
                     echo "<td align='right'><b></b></td>";
                     echo "<td align='right'><b>&nbsp;</b></td>";
                     
+                    echo "<td align='right' style='color:#990000; font-size:12px; padding:5px;'><b>$tanpabpjs_subtotal</b></td>";//SUB TOTAL TANPA BPJS
+                    
                     echo "<td align='right'><b>$stotbpjskry</b></td>";//bpjs
                     echo "<td align='right'><b>$stotbpjssdm</b></td>";//bpjs
                     
@@ -510,17 +537,19 @@
                 
                 }
                 echo "<tr>";
-                echo "<td colspan='22'></td>";
+                echo "<td colspan='23'></td>";
                 echo "</tr>";
 
                 //if ($periode1>='202106') {
                 //    $gtotaljml=number_format($gtotaljml,2,".",",");
                 //    $gtotaltot=number_format($gtotaltot,2,".",",");
                 //    $gtotaltrans=number_format($gtotaltrans,2,".",",");
+                //    $tanpabpjs_gtotaltot=number_format($tanpabpjs_gtotaltot,2,".",",");
                 //}else{
                     $gtotaljml=number_format($gtotaljml,0,",",",");
                     $gtotaltot=number_format($gtotaltot,0,",",",");
                     $gtotaltrans=number_format($gtotaltrans,0,",",",");
+                    $tanpabpjs_gtotaltot=number_format($tanpabpjs_gtotaltot,0,",",",");
                 //}
                 
                 $gtotbpjssdm=number_format($gtotbpjssdm,2,".",",");
@@ -530,6 +559,8 @@
                 echo "<td colspan='14' align='center'><b>GRAND TOTAL</b> </td>";
                 echo "<td align='right'><b></b></td>";
                 echo "<td align='right'><b>&nbsp;</b></td>";
+                
+                echo "<td align='right' style='color:#990000; font-size:12px; padding:5px;'><b>$tanpabpjs_gtotaltot</b></td>";//GRAND TOTAL TANPA BPJS
                 
                 echo "<td align='right'><b>$gtotbpjskry</b></td>";//bpjs
                 echo "<td align='right'><b>$gtotbpjssdm</b></td>";//bpjs

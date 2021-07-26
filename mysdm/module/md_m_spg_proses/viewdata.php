@@ -245,6 +245,20 @@ if ($_GET['module']=="hitungtotalcekbox") {
     }
     
     
+    $query = "DELETE FROM dbmaster.t_spg_gaji_br1_unapprove WHERE "
+            . " $npilihcabalok IN $pnoid AND "
+            . " icabangid='$pidcabang' AND DATE_FORMAT(periode,'%Y%m')='$bulan'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "ERROR...."; exit; }
+    
+    
+    $query = "INSERT INTO dbmaster.t_spg_gaji_br1_unapprove (periode, id_spg, icabangid, alokid, areaid, kodeid, qty, rp, rptotal)"
+            . "SELECT periode, id_spg, icabangid, alokid, areaid, kodeid, qty, rp, rptotal FROM dbmaster.t_spg_gaji_br1 WHERE "
+            . " $npilihcabalok IN $pnoid AND "
+            . " icabangid='$pidcabang' AND DATE_FORMAT(periode,'%Y%m')='$bulan' AND kodeid IN ('07', '09')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "ERROR...."; exit; }
+    
+    
+    
     $query = "UPDATE dbmaster.t_spg_gaji_br0 set insentif_tambahan=0, lebihkurang=0, periode_insentif=NULL, apv1=NULL, apvtgl1=NULL, tglpengajuan=NULL, total=NULL, sts='' WHERE "
             . " $npilihcabalok IN $pnoid AND "
             . " icabangid='$pidcabang' AND DATE_FORMAT(periode,'%Y%m')='$bulan'";

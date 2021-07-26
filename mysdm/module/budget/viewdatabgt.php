@@ -501,6 +501,105 @@ if ($pmodule=="viewdatakrybuat") {
 
 <?PHP
     mysqli_close($cnmy);
+    
+}elseif ($pmodule=="viewdataareacab") {
+    include "../../config/koneksimysqli.php";
+    
+    $pidcab=$_POST['uidcab'];
+    
+    echo "<option value='' selected>-- Pilih --</option>";
+    $query = "select areaid as areaid, nama as nama from mkt.iarea WHERE iCabangId='$pidcab' AND IFNULL(aktif,'')<>'N' ";
+    $query .=" order by nama";
+    $tampil= mysqli_query($cnmy, $query);
+    while ($row= mysqli_fetch_array($tampil)) {
+        $nareaid=$row['areaid'];
+        $nareanm=$row['nama'];
+        
+        echo "<option value='$nareaid' >$nareanm</option>";
+    }
+    
+    mysqli_close($cnmy);
+    
+}elseif ($pmodule=="viewdatadokter") {
+    include "../../config/koneksimysqli_ms.php";
+    
+    $pidcab=$_POST['uidcab'];
+    $pidarea=$_POST['uidarea'];
+    
+    echo "<option value='' selected>-- Pilih --</option>";
+    //d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+    $query = "SELECT DISTINCT 
+        a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+        FROM ms2.tempatpraktek as a 
+        JOIN ms2.outlet_master as b on a.outletId=b.id 
+        LEFT JOIN ms2.outlet_type as c on b.type=c.id 
+        JOIN ms2.outlet_customer as d on a.outletId=d.outletId 
+        LEFT JOIN mkt.icabang as e on d.iCabangId=e.iCabangId 
+        LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
+        JOIN ms2.masterdokter as g on a.iddokter=g.id 
+        LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
+        WHERE d.icabangid='$pidcab' ";
+    if (!empty($pidarea)) {
+        $query .=" AND d.areaid='$pidarea' ";
+    }
+    $query .=" ORDER BY g.namalengkap, a.iddokter";
+    $tampil= mysqli_query($cnms, $query);
+    while ($row= mysqli_fetch_array($tampil)) {
+        $pniddokt=$row['iddokter'];
+        $pnnmdokt=$row['nama_dokter'];
+
+        echo "<option value='$pniddokt' >$pnnmdokt - ($pniddokt)</option>";
+    }    
+    
+    mysqli_close($cnms);
+    
+}elseif ($pmodule=="viewdataoutlet") {
+    include "../../config/koneksimysqli_ms.php";
+    
+    $pidcab=$_POST['uidcab'];
+    $pidarea=$_POST['uidarea'];
+    $piddokt=$_POST['uiddokt'];
+    
+    echo "<option value='' selected>-- Pilih --</option>";
+    
+    //d.iCustId as icustid, 
+    $query = "SELECT distinct a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
+        b.jenis, b.type, c.Nama as nama_type, b.dispensing, 
+        d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+        a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+        FROM ms2.tempatpraktek as a 
+        JOIN ms2.outlet_master as b on a.outletId=b.id 
+        LEFT JOIN ms2.outlet_type as c on b.type=c.id 
+        JOIN ms2.outlet_customer as d on a.outletId=d.outletId 
+        LEFT JOIN mkt.icabang as e on d.iCabangId=e.iCabangId 
+        LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
+        JOIN ms2.masterdokter as g on a.iddokter=g.id 
+        LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
+        WHERE d.icabangid='$pidcab' ";
+    if (!empty($pidarea)) {
+        $query .=" AND d.areaid='$pidarea' ";
+    }
+    $query .=" AND a.iddokter='$piddokt' ";
+    $query .=" ORDER BY b.nama, a.id";
+    $tampil= mysqli_query($cnms, $query);
+    while ($row= mysqli_fetch_array($tampil)) {
+        $pnidpraktek=$row['idpraktek'];
+        $pnareaid=$row['areaid'];
+        $pnareanm=$row['nama_area'];
+        $pnotlid=$row['idoutlet'];
+        $pnotlnm=$row['nama_outlet'];
+        $pntypeotl=$row['nama_type'];
+        $pndispensing=$row['dispensing'];
+        $pnalamatotl=$row['alamat'];
+        $pniddokt=$row['iddokter'];
+        $pnnmdokt=$row['nama_dokter'];
+        $pnnamatype=$row['nama_type'];
+        
+        echo "<option value='$pnotlid' >$pnotlnm - $pnotlid ($pnnamatype)</option>";
+    }
+    
+    mysqli_close($cnms);
+    
 }elseif ($pmodule=="x") {
     
 }

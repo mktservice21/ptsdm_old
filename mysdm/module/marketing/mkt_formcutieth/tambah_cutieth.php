@@ -111,7 +111,7 @@ $pcabangid="";
         $pnamasm="";
     }
 
-    if ($pidcard=="0000001164") {//DWI PRIMADARI
+    if ($pidcard=="0000001164" OR $pidcard=="0000002073") {//DWI PRIMADARI dan amandea
         $pkdspv="";
         $pnamaspv="";
         $pkddm="";

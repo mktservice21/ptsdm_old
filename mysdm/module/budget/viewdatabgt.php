@@ -525,6 +525,7 @@ if ($pmodule=="viewdatakrybuat") {
     
     $pidcab=$_POST['uidcab'];
     $pidarea=$_POST['uidarea'];
+    $pidoutlet=$_POST['uoutletid'];
     
     echo "<option value='' selected>-- Pilih --</option>";
     //d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
@@ -539,9 +540,8 @@ if ($pmodule=="viewdatakrybuat") {
         JOIN ms2.masterdokter as g on a.iddokter=g.id 
         LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
         WHERE d.icabangid='$pidcab' ";
-    if (!empty($pidarea)) {
-        $query .=" AND d.areaid='$pidarea' ";
-    }
+    if (!empty($pidarea)) $query .=" AND d.areaid='$pidarea' ";
+    if (!empty($pidoutlet)) $query .=" AND a.outletId='$pidoutlet' ";
     $query .=" ORDER BY g.namalengkap, a.iddokter";
     $tampil= mysqli_query($cnms, $query);
     while ($row= mysqli_fetch_array($tampil)) {
@@ -556,17 +556,18 @@ if ($pmodule=="viewdatakrybuat") {
 }elseif ($pmodule=="viewdataoutlet") {
     include "../../config/koneksimysqli_ms.php";
     
+    $pidjbt=$_SESSION['JABATANID']; 
+    $pidcard=$_SESSION['IDCARD'];
     $pidcab=$_POST['uidcab'];
     $pidarea=$_POST['uidarea'];
     $piddokt=$_POST['uiddokt'];
     
     echo "<option value='' selected>-- Pilih --</option>";
     
-    //d.iCustId as icustid, 
-    $query = "SELECT distinct a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
+    //d.iCustId as icustid, a.id as idpraktek, a.approve as approvepraktek, a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis
+    $query = "SELECT distinct a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
         b.jenis, b.type, c.Nama as nama_type, b.dispensing, 
-        d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
-        a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+        d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area  
         FROM ms2.tempatpraktek as a 
         JOIN ms2.outlet_master as b on a.outletId=b.id 
         LEFT JOIN ms2.outlet_type as c on b.type=c.id 
@@ -576,10 +577,17 @@ if ($pmodule=="viewdatakrybuat") {
         JOIN ms2.masterdokter as g on a.iddokter=g.id 
         LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
         WHERE d.icabangid='$pidcab' ";
-    if (!empty($pidarea)) {
-        $query .=" AND d.areaid='$pidarea' ";
+    if (!empty($piddokt)) $query .=" AND a.iddokter='$piddokt' ";
+    
+    if (!empty($pidarea)) $query .=" AND d.areaid='$pidarea' ";
+    else{
+        if ($pidjbt=="15") {
+            $query .=" AND d.areaid IN (select DISTINCT areaId FROM sls.imr0 WHERE karyawanid='$pidcard' AND iCabangId='$pidcab') ";
+        }elseif ($pidjbt=="10" OR $pidjbt=="18") {
+            $query .=" AND d.areaid IN (select DISTINCT areaId FROM sls.ispv0 WHERE karyawanid='$pidcard' AND iCabangId='$pidcab') ";
+        }
     }
-    $query .=" AND a.iddokter='$piddokt' ";
+                    
     $query .=" ORDER BY b.nama, a.id";
     $tampil= mysqli_query($cnms, $query);
     while ($row= mysqli_fetch_array($tampil)) {
@@ -600,6 +608,155 @@ if ($pmodule=="viewdatakrybuat") {
     
     mysqli_close($cnms);
     
+}elseif ($pmodule=="viewlistdokter") {
+    
+    ?>
+    <link href="css/inputselectbox.css" rel="stylesheet" type="text/css" />
+    <link href="css/stylenew.css" rel="stylesheet" type="text/css" />
+    <script src="js/inputmask.js"></script>
+    <?PHP
+    
+    include "../../config/koneksimysqli_ms.php";
+    
+    $pidjbt=$_SESSION['JABATANID']; 
+    $pidcard=$_SESSION['IDCARD'];
+    $pidcab=$_POST['uidcab'];
+    $pidarea=$_POST['uidarea'];
+    $piddokt=$_POST['uiddokt'];
+    $pidoutlet=$_POST['uoutletid'];
+    $pjmlminta=$_POST['ujumlah'];
+    $princitotal="";
+    
+    $pdivnonearea="";
+    $pdivnoneuser="";
+    $pdivnonelokasi="";
+    $pdivnonejml="";
+    $pdivnonereal=" class='divnone' ";
+    
+    $pdivnonetr="";
+    
+    if (!empty($pidarea)) $pdivnonearea=" class='divnone' ";
+    if (!empty($piddokt)) $pdivnoneuser=" class='divnone' ";
+    if (!empty($pidoutlet)) $pdivnonelokasi=" class='divnone' ";
+    
+    ?>
+        <table id="dtabel" class="table table-bordered table-striped table-highlight">
+            <?PHP
+            
+                $query = "SELECT distinct a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
+                    b.jenis, b.type, c.Nama as nama_type, b.dispensing, 
+                    d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+                    a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+                    FROM ms2.tempatpraktek as a 
+                    JOIN ms2.outlet_master as b on a.outletId=b.id 
+                    LEFT JOIN ms2.outlet_type as c on b.type=c.id 
+                    JOIN ms2.outlet_customer as d on a.outletId=d.outletId 
+                    LEFT JOIN mkt.icabang as e on d.iCabangId=e.iCabangId 
+                    LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
+                    JOIN ms2.masterdokter as g on a.iddokter=g.id 
+                    LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
+                    WHERE d.icabangid='$pidcab' ";
+                if (!empty($piddokt)) $query .=" AND a.iddokter='$piddokt' ";
+                if (!empty($pidoutlet)) $query .=" AND a.outletId='$pidoutlet' ";
+
+                if (!empty($pidarea)) $query .=" AND d.areaid='$pidarea' ";
+                else{
+                    if ($pidjbt=="15") {
+                        $query .=" AND d.areaid IN (select DISTINCT areaId FROM sls.imr0 WHERE karyawanid='$pidcard' AND iCabangId='$pidcab') ";
+                    }elseif ($pidjbt=="10" OR $pidjbt=="18") {
+                        $query .=" AND d.areaid IN (select DISTINCT areaId FROM sls.ispv0 WHERE karyawanid='$pidcard' AND iCabangId='$pidcab') ";
+                    }
+                }
+
+                $query .=" ORDER BY f.Nama, g.namalengkap";
+                //echo $query;
+                $tampil= mysqli_query($cnms, $query);
+                $ketemu= mysqli_num_rows($tampil);
+                
+                $pnamalbljumlah="Jumlah ";
+                if ((INT)$ketemu<=1) {
+                    //$pdivnonejml=" class='divnone' ";
+                    $pdivnonetr=" class='divnone' ";
+                    $pnamalbljumlah="Jumlah";
+                }
+                    
+                echo "<thead>";
+                    echo "<th class='divnone'>&nbsp;</th>";
+                    echo "<th $pdivnonearea>Area</th>";
+                    echo "<th $pdivnoneuser>User</th>";
+                    echo "<th $pdivnonelokasi>Lokasi Praktek</th>";
+                    echo "<th $pdivnonejml>$pnamalbljumlah</th>";
+                    echo "<th $pdivnonereal>Realisasi</th>";
+                    echo "<th>Keterangan</th>";
+                echo "</thead>";
+
+                echo "<tbody>";
+                    while ($row= mysqli_fetch_array($tampil)) {
+                        $npidpraktek=$row['idpraktek'];
+                        $npnmcab=$row['nama_cabang'];
+                        $npidarea=$row['areaid'];
+                        $npnmarea=$row['nama_area'];
+                        $npiddokt=$row['iddokter'];
+                        $npnmdokt=$row['nama_dokter'];
+                        $npidlokasiprkt=$row['idoutlet'];
+                        $npnmlokasiprkt=$row['nama_outlet'];
+                        
+                        $pjumlahdetail="";
+                        $prealdetail="";
+                        $pketerangan="";
+                        
+                        if ((INT)$ketemu<=1) {
+                            $pjumlahdetail=$pjmlminta;
+                            $princitotal=$pjmlminta;
+                        }
+                        
+                        $chkbox = "<input type='checkbox' id='chk_kodeid[$npidpraktek]' name='chk_kodeid[]' value='$npidpraktek' checked>";
+                        
+                        echo "<tr>";
+                        echo "<td class='divnone'>$chkbox</td>";
+                        echo "<td nowrap $pdivnonearea>$npnmarea <input type='hidden' value='$npidarea' class='form-control' id='e_txtareaid[$npidpraktek]' name='e_txtareaid[$npidpraktek]' /></td>";
+                        echo "<td nowrap $pdivnoneuser>$npnmdokt <input type='hidden' value='$npiddokt' class='form-control' id='e_txtdoktid[$npidpraktek]' name='e_txtdoktid[$npidpraktek]' /></td>";
+                        echo "<td nowrap $pdivnonelokasi>$npnmlokasiprkt <input type='hidden' value='$npidlokasiprkt' class='form-control' id='e_txtotletid[$npidpraktek]' name='e_txtotletid[$npidpraktek]' /></td>";
+                        echo "<td $pdivnonejml><input type='text' value='$pjumlahdetail' onblur=\"HitungTotalJumlahRp()\" class='form-control inputmaskrp2' id='e_txtrp[$npidpraktek]' name='e_txtrp[$npidpraktek]' /></td>";
+                        echo "<td $pdivnonereal><input type='text' value='$prealdetail' class='form-control inputmaskrp2' id='e_txtrealrp[$npidpraktek]' name='e_txtrealrp[$npidpraktek]' value='' /></td>";
+                        echo "<td><input type='text' value='$pketerangan' class='form-control' id='e_txtket[$npidpraktek]' name='e_txtket[$npidpraktek]' /></td>";
+                        echo "</tr>";
+                    }
+                    
+                    
+                    if ((INT)$ketemu<=0) {
+                        $pdivnonetr=" class='divnone' ";
+                    }
+                    echo "<tr $pdivnonetr>";
+                    echo "<td class='divnone'></td>";
+                    echo "<td nowrap $pdivnonearea></td>";
+                    echo "<td nowrap $pdivnoneuser></td>";
+                    echo "<td nowrap $pdivnonelokasi></td>";
+                    echo "<td $pdivnonejml><input type='text' value='$princitotal' id='e_jmlusulan2' name='e_jmlusulan2' class='form-control col-md-7 col-xs-12 inputmaskrp2' Readonly></td>";
+                    echo "<td $pdivnonereal></td>";
+                    echo "<td>&nbsp;</td>";
+                    echo "</tr>";
+                echo "</tbody>";
+            ?>
+            
+        </table>
+
+    <style>
+        .divnone {
+            display: none;
+        }
+        #dtabel th {
+            font-size: 13px;
+        }
+        #dtabel td { 
+            font-size: 11px;
+        }
+    </style>
+    <?PHP
+    
+    mysqli_close($cnms); exit;
+}elseif ($pmodule=="cekdatasudahada") {
+    echo "boleh"; exit;
 }elseif ($pmodule=="x") {
     
 }

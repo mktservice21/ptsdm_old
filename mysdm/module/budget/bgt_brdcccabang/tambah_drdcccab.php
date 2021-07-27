@@ -4,6 +4,7 @@ include "config/koneksimysqli_ms.php";
 $pidmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];
 $pidact=$_GET['act'];
+$sudahapv="";
 
 $piduser=$_SESSION['USERID']; 
 $pidcard=$_SESSION['IDCARD'];
@@ -26,6 +27,12 @@ $pnamalengkap=$_SESSION['NAMALENGKAP'];
     $pidjbt="15";
     $pidgroup="7";
     */
+
+    $pidcard="0000000615";
+    $pnamalengkap="HAMBALI";
+    $pidjbt="10";
+    $pidgroup="11";
+    
 $pidcabang="";        
 $pareaid="";
 $pregionid="";
@@ -171,8 +178,21 @@ $hari_ini = date("Y-m-d");
 $tgl_pertama = date('F Y', strtotime($hari_ini));
 $ptglajukan = date('d/m/Y', strtotime($hari_ini));
 
+$pjenis="";
 $pketerangan="";
+$pjumlah="";
 
+$rjnsrealisasi="";
+$pchkjenisreal1="";
+$pchkjenisreal2="checked";
+$prelasijenis="";
+$pbankrealisasi="";
+$pnmbankreal="";
+$pnorekbankreal="";
+        
+
+
+$pidcabang="";
 $act="input";
 if ($pidact=="editdata"){
     $act="update";
@@ -187,6 +207,13 @@ if ($pidact=="editdata"){
     
 }
 
+if ($pjenis=="Y") {
+    $pjenis1="selected";
+    $pjenis2="";
+}else{
+    $pjenis1="";
+    $pjenis2="selected";    
+}
 
 $phiddenatasan1="";
 $phiddenatasan2="hidden";
@@ -260,6 +287,18 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                 </div>
                                 
                                 <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                          <select class='form-control input-sm' id='cb_jenis' name='cb_jenis' onchange="" data-live-search="true">
+                                            <?PHP 
+                                                echo "<option value='sudah' $pjenis1>Sudah Ada Kuitansi (Advance)</option>";
+                                                echo "<option value='belum' $pjenis2>Belum Ada Kuitansi (PC-M)</option>";
+                                            ?>
+                                          </select>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Divisi <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                           <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="" data-live-search="true">
@@ -320,7 +359,8 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                                 }
                                                 $tampilket= mysqli_query($cnmy, $query);
                                                 $ketemu=mysqli_num_rows($tampilket);
-                                                if ((INT)$ketemu<=0) echo "<option value='' selected>-- Pilih --</option>";
+                                                //if ((INT)$ketemu<=0) 
+                                                    echo "<option value='' selected>-- Pilih --</option>";
                                                 while ($du= mysqli_fetch_array($tampilket)) {
                                                     $nidcab=$du['icabangid'];
                                                     $nnmcab=$du['nama_cabang'];
@@ -329,7 +369,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                                     if ($nidcab==$pidcabang)
                                                         echo "<option value='$nidcab' selected>$nnmcab ($nidcab_)</option>";
                                                     else
-                                                    echo "<option value='$nidcab'>$nnmcab ($nidcab_)</option>";
+                                                        echo "<option value='$nidcab'>$nnmcab ($nidcab_)</option>";
     
     
                                                     $cno++;
@@ -342,7 +382,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Area <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="ShowDataDokter()">
+                                        <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="ShowDariArea()">
                                             <option value='' selected>-- Pilihan --</option>
                                             <?PHP
                                             $query_ara="";
@@ -390,7 +430,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>User <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <select class='form-control input-sm' id='cb_dokt' name='cb_dokt' onchange="ShowDataOutelt()">
+                                        <select class='form-control input-sm' id='cb_dokt' name='cb_dokt' onchange="ShowDariUser()">
                                             <?PHP
                                                 echo "<option value='' selected>-- Pilih --</option>";
                                                 if (!empty($pidcabang)) {
@@ -431,7 +471,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Lokasi Praktek <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <select class='form-control input-sm' id='cb_outlet' name='cb_outlet' onchange="">
+                                        <select class='form-control input-sm' id='cb_outlet' name='cb_outlet' onchange="ShowDariLokasiPraktek()">
                                             <?PHP
                                                 echo "<option value='' selected>-- Pilih --</option>";
                                                 if (!empty($pidcabang)) {
@@ -480,79 +520,17 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                         <?PHP //echo $pfilarea; ?>
                                     </div>
                                 </div>
+                                
 
-
-                                <div id='div_akv'>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
-                                        <div class='col-md-9'>
-                                        <textarea class='form-control' id="e_keterangan" name='e_keterangan' maxlength="300"><?PHP echo $pketerangan; ?></textarea>
-                                        </div>
+                                
+                                <div hidden class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah <span class='required'></span></label>
+                                    <div class='col-md-5'>
+                                        <input type='text' id='e_jmlusulan' name='e_jmlusulan' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlah; ?>' onblur='CariDataDariJumlahUsul()'>
                                     </div>
-
                                 </div>
                                 
                                 
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><u>Atasan</u> <span class='required'></span></label>
-                                    <div class='col-xs-9'>
-                                        &nbsp;
-                                    </div>
-                                </div>
-                                
-                                <div id="div_atasan" <?PHP echo $phiddenatasan1; ?>>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SPV / AM <span class='required'></span></label>
-                                        <div class='col-xs-9'>
-                                            <input type='hidden' id='e_kdspv' name='e_kdspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdspv; ?>' Readonly>
-                                            <input type='text' id='e_namaspv' name='e_namaspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamaspv; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DM <span class='required'></span></label>
-                                        <div class='col-xs-9'>
-                                            <input type='hidden' id='e_kddm' name='e_kddm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkddm; ?>' Readonly>
-                                            <input type='text' id='e_namadm' name='e_namadm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadm; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SM <span class='required'></span></label>
-                                        <div class='col-xs-9'>
-                                            <input type='hidden' id='e_kdsm' name='e_kdsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdsm; ?>' Readonly>
-                                            <input type='text' id='e_namasm' name='e_namasm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamasm; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>GSM <span class='required'></span></label>
-                                        <div class='col-xs-9'>
-                                            <input type='hidden' id='e_kdgsm' name='e_kdgsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdgsm; ?>' Readonly>
-                                            <input type='text' id='e_namagsm' name='e_namagsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamagsm; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                
-                                <div id="div_atasan2" <?PHP echo $phiddenatasan2; ?>>
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                        <div class='col-xs-9'>
-                                            <input type='hidden' id='e_kdcoo' name='e_kdcoo' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdcoo; ?>' Readonly>
-                                            <input type='text' id='e_namacoo' name='e_namacoo' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamacoo; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                    <div class='col-xs-9'>
-                                        *) Apabila atasan tidak sesuai, mohon untuk disesuaikan terlebih dahulu sebelum disimpan.
-                                    </div>
-                                </div>
                                 
                             </div>
                         </div>
@@ -564,6 +542,73 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                         <div class='x_panel'>
                             <div class='x_content form-horizontal form-label-left'>
                                 
+                                <div id='d_jenisreal'>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis Realisasi <span class='required'></span></label>
+                                        <div class='col-xs-9'>
+                                            <div style="margin-bottom:2px;">
+                                                <input type="radio" id="chksesuai" name="rb_jenisreal" value="1" <?PHP echo $pchkjenisreal1; ?> onclick="CekDataRealisasi()"> Sesuai Nama Dokter &nbsp;
+                                                <input type="radio" id="chkrelasi" name="rb_jenisreal" value="0" <?PHP echo $pchkjenisreal2; ?> onclick="CekDataRealisasi()"> Relasi Dokter &nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="n_jnsrelasi">
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                                                Relasi (istri /suami /anak /dsb.)
+                                                <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                <input type='text' id='e_nmrealasi' name='e_nmrealasi' class='form-control col-md-7 col-xs-12' value="<?PHP echo $prelasijenis; ?>" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bank <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                          <select class='form-control input-sm' id='cb_bankreal' name='cb_bankreal' onchange="" data-live-search="true">
+                                            <?PHP
+                                                $query = "select `code` as kode_bank, `name` as nama_bank from ms2.bank WHERE 1=1 ";
+                                                $query .=" ORDER BY `name`";
+                                                $tampilket= mysqli_query($cnms, $query);
+                                                $ketemu=mysqli_num_rows($tampilket);
+                                                echo "<option value='' selected>-- Pilih --</option>";
+                                                while ($du= mysqli_fetch_array($tampilket)) {
+                                                    $nidbank=$du['kode_bank'];
+                                                    $nnmbank=$du['nama_bank'];
+    
+                                                    if ($nidbank==$pbankrealisasi)
+                                                        echo "<option value='$nidbank' selected>$nnmbank</option>";
+                                                    else
+                                                    echo "<option value='$nidbank'>$nnmbank</option>";
+    
+    
+                                                    $cno++;
+                                                }
+                                            ?>
+                                          </select>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> Nama <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <input type='text' id='e_nmbankreal' name='e_nmbankreal' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pnmbankreal; ?>" >
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> No Rekening <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <input type='text' id='e_norekbankreal' name='e_norekbankreal' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pnorekbankreal; ?>" >
+                                    </div>
+                                </div>
+                                
                                 
                             </div>
                         </div>
@@ -571,8 +616,118 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
 
                     
                     <div class='clearfix'></div>
+                    
+                    <div class='col-md-12 col-xs-12'>
+                        <div class='x_panel'>
+                            <div class='x_content'>
+                                <div class='col-md-12 col-sm-12 col-xs-12'>
 
+                                    <div id="d_tabeluser" class="table-responsive">
+                                        
+                                        <table class="table table-bordered table-striped table-highlight">
+                                            <thead>
+                                                <th>Area</th>
+                                                <th>User</th>
+                                                <th>Lokasi Praktek</th>
+                                                <th>Jumlah</th>
+                                                <th>Realisasi</th>
+                                                <th>Keterangan</th>
+                                            </thead>
+                                            <tbody>
+                                                
+                                            </tbody>
+                                        </table>
+                                        
+                                    </div>
 
+                                    
+                                    <div class='col-md-6 col-xs-12'>
+
+                                        <div id="div_atasan" <?PHP echo $phiddenatasan1; ?>>
+
+                                            <div class='form-group'>
+                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SPV / AM <span class='required'></span></label>
+                                                <div class='col-xs-9'>
+                                                    <input type='hidden' id='e_kdspv' name='e_kdspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdspv; ?>' Readonly>
+                                                    <input type='text' id='e_namaspv' name='e_namaspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamaspv; ?>' Readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class='form-group'>
+                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DM <span class='required'></span></label>
+                                                <div class='col-xs-9'>
+                                                    <input type='hidden' id='e_kddm' name='e_kddm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkddm; ?>' Readonly>
+                                                    <input type='text' id='e_namadm' name='e_namadm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadm; ?>' Readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class='form-group'>
+                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SM <span class='required'></span></label>
+                                                <div class='col-xs-9'>
+                                                    <input type='hidden' id='e_kdsm' name='e_kdsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdsm; ?>' Readonly>
+                                                    <input type='text' id='e_namasm' name='e_namasm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamasm; ?>' Readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class='form-group'>
+                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>GSM <span class='required'></span></label>
+                                                <div class='col-xs-9'>
+                                                    <input type='hidden' id='e_kdgsm' name='e_kdgsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdgsm; ?>' Readonly>
+                                                    <input type='text' id='e_namagsm' name='e_namagsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamagsm; ?>' Readonly>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div id="div_atasan2" <?PHP echo $phiddenatasan2; ?>>
+                                            <div class='form-group'>
+                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                                <div class='col-xs-9'>
+                                                    <input type='hidden' id='e_kdcoo' name='e_kdcoo' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdcoo; ?>' Readonly>
+                                                    <input type='text' id='e_namacoo' name='e_namacoo' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamacoo; ?>' Readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                *) Apabila atasan tidak sesuai, mohon untuk disesuaikan terlebih dahulu sebelum disimpan.
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class='col-md-12 col-sm-12 col-xs-12'>
+                        <h2>
+                            <?PHP
+                            if (empty($sudahapv)) {
+                                if ($pidact=="editdata" ) {
+                                    ?><button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button><?PHP
+                                }else{
+                                echo "<div class='col-sm-5'>";
+                                include "module/budget/bgt_brdcccabang/ttd_brdcccabang.php";
+                                echo "</div>";
+                                }
+                            ?>
+                            
+                            <?PHP
+                            }elseif ($sudahapv=="reject") {
+                                echo "data sudah hapus";
+                            }else{
+                                echo "tidak bisa diedit, sudah approve";
+                            }
+                            ?>
+                        </h2>
+                        <div class='clearfix'></div>
+                    </div>
+                    
                 </form>
 
             </div>
@@ -590,6 +745,21 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
 <script>
     $(document).ready(function() {
         
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var iact = urlku.searchParams.get("act");
+        
+        if (iact=="tambahbaru") {
+             setTimeout(function () {
+                 CekDataRealisasi();
+                 $("#cb_area").html("<option value=''>-- Pilih --</option>");
+                 //ShowDataArea();
+                 //ShowDataListDokter();
+             }, 200);
+        }
+       
         $('#cbln01').on('change dp.change', function(e){
             //ShowTanggalPilih();
         });
@@ -597,7 +767,15 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
     });
     
     function ShowDataCabang() {
+        $("#cb_area").html("<option value=''>-- Pilih --</option>");
+        $("#cb_dokt").html("<option value=''>-- Pilih --</option>");
+        $("#cb_outlet").html("<option value=''>-- Pilih --</option>");
+        $("#d_tabeluser").html("");
+        document.getElementById('e_jmlusulan').value="";
         ShowDataArea();
+        ShowDataDokter();
+        ShowDataOutelt();
+        ShowDataListDokter();
     }
     
     function ShowDataArea() {
@@ -609,23 +787,68 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
             data:"uidcab="+eidcab,
             success:function(data){
                 $("#cb_area").html(data);
-                ShowDataDokter();
             }
         });
     }
     
+    function ShowDariArea() {
+        $("#cb_dokt").html("<option value=''>-- Pilih --</option>");
+        $("#cb_outlet").html("<option value=''>-- Pilih --</option>");
+        document.getElementById('e_jmlusulan').value="";
+        ShowDataDokter();
+        ShowDataOutelt();
+        setTimeout(function () {
+            ShowDataListDokter();
+        }, 100);
+    }
+    
+    function ShowDariUser() {
+        $("#cb_outlet").html("<option value=''>-- Pilih --</option>");
+        document.getElementById('e_jmlusulan').value="";
+        ShowDataOutelt();
+        ShowDataListDokter();
+    }
+    
+    function ShowDariLokasiPraktek() {
+        document.getElementById('e_jmlusulan').value="";
+        setTimeout(function () {
+            ShowDataListDokter();
+        }, 100);
+    }
+    
+    
+    function ShowDataListDokter() {
+        var eidcab =document.getElementById('cb_cabang').value;
+        var eidarea =document.getElementById('cb_area').value;
+        var eiddokt =document.getElementById('cb_dokt').value;
+        var eoutletid =document.getElementById('cb_outlet').value;
+        var ejumlah =document.getElementById('e_jmlusulan').value;
+        
+        //if (eidarea=="") {
+        //    $("#d_tabeluser").html("");
+        //}else{
+            $.ajax({
+                type:"post",
+                url:"module/budget/viewdatabgt.php?module=viewlistdokter",
+                data:"uidcab="+eidcab+"&uidarea="+eidarea+"&uiddokt="+eiddokt+"&uoutletid="+eoutletid+"&ujumlah="+ejumlah,
+                success:function(data){
+                    $("#d_tabeluser").html(data);
+                }
+            });
+        //}
+    }
     
     function ShowDataDokter() {
         var eidcab =document.getElementById('cb_cabang').value;
         var eidarea =document.getElementById('cb_area').value;
+        var eoutletid =document.getElementById('cb_outlet').value;
         
         $.ajax({
             type:"post",
             url:"module/budget/viewdatabgt.php?module=viewdatadokter",
-            data:"uidcab="+eidcab+"&uidarea="+eidarea,
+            data:"uidcab="+eidcab+"&uidarea="+eidarea+"&uoutletid="+eoutletid,
             success:function(data){
                 $("#cb_dokt").html(data);
-                ShowDataOutelt();
             }
         });
     }
@@ -646,29 +869,82 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
         });
     }
     
-</script>
-
-<script type="text/javascript">
+    function CariDataDariJumlahUsul() {
+        CariDataJumlahDetail();
+    }
     
-    $(document).ready(function() {
-        var myurl = window.location;
-        var urlku = new URL(myurl);
-        var module = urlku.searchParams.get("module");
-        var idmenu = urlku.searchParams.get("idmenu");
-        var iact = urlku.searchParams.get("act");
+    function CariDataJumlahDetail() {
+        var jmlUsulan=document.getElementById('e_jmlusulan').value;
+        var chk_arr1 =  document.getElementsByName('chk_kodeid[]');
+        var chklength1 = chk_arr1.length;
+        var newchar = '';
+
+        var nJmlData="0";
+        var ajml="1";
+        for(k=0;k< chklength1;k++)
+        {
+            if (chk_arr1[k].checked == true) {
+                nJmlData =parseFloat(nJmlData)+parseFloat(ajml);
+            }
+        }
         
-       if (iact=="editdata") {
-            setTimeout(function () {
-                //ShowPeriode()
-            }, 200);
-       }
-       
-    } );
+        if (parseFloat(nJmlData)==parseFloat(ajml)) {
+            var nTotal_="0";
+            for(k=0;k< chklength1;k++)
+            {
+                if (chk_arr1[k].checked == true) {
+                    var kata = chk_arr1[k].value;
+                    var fields = kata.split('-');    
+                    var anm_jml="e_txtrp["+fields[0]+"]";
+                    document.getElementById(anm_jml).value=jmlUsulan;
+                    document.getElementById('e_jmlusulan2').value=jmlUsulan;
+                }
+            }
+        }
+        
+    }
     
     
     
+    function HitungTotalJumlahRp() {
+        var chk_arr1 =  document.getElementsByName('chk_kodeid[]');
+        var chklength1 = chk_arr1.length;
+        var newchar = '';
 
+        
+        
+        var nTotal_="0";
+        for(k=0;k< chklength1;k++)
+        {
+            if (chk_arr1[k].checked == true) {
+                var kata = chk_arr1[k].value;
+                var fields = kata.split('-');    
+                var anm_jml="e_txtrp["+fields[0]+"]";
+                var ajml=document.getElementById(anm_jml).value;
+                if (ajml=="") ajml="0";
+                ajml = ajml.split(',').join(newchar);
+
+                nTotal_ =parseFloat(nTotal_)+parseFloat(ajml);
+            }
+        }
+        document.getElementById('e_jmlusulan').value=nTotal_;
+        document.getElementById('e_jmlusulan2').value=nTotal_;
+        
+    }
+    
+    
+    
+    function CekDataRealisasi() {
+        var chkjns1=document.getElementById("chksesuai").checked;
+        if (chkjns1==true) {
+            n_jnsrelasi.style.display = 'none';
+        }else{
+            n_jnsrelasi.style.display = 'block';
+        }
+    }
+    
 </script>
+
 
 <link href="css/inputselectbox.css" rel="stylesheet" type="text/css" />
 <link href="css/stylenew.css" rel="stylesheet" type="text/css" />

@@ -199,8 +199,8 @@
 
     mysqli_query($cnmy, "UPDATE $tmp01 a SET a.bbm=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='08'),0)");
     
-    mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_sdm=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='10'),0)");
-    mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_kry=IFNULL((SELECT sum(rp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='11'),0)");
+    mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_sdm=IFNULL((SELECT sum(rptotal2) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='10'),0)");
+    mysqli_query($cnmy, "UPDATE $tmp01 a SET a.jmlbpjs_kry=IFNULL((SELECT sum(rptotal2) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='11'),0)");
         
     //realisasi
     mysqli_query($cnmy, "UPDATE $tmp01 a SET a.rinsentif=IFNULL((SELECT sum(realisasirp) FROM $tmp02 b WHERE a.idbrspg=b.idbrspg AND b.kodeid='01'),0)");
@@ -293,7 +293,7 @@
                 <tr style='background-color:#cccccc; font-size: 13px;'>
                     <th rowspan="2">No.</th>
                     <th rowspan="2">Cabang</th>
-                    <th colspan="11">Usulan</th>
+                    <th colspan="13">Usulan</th>
                 </tr>
                 
                 <tr style='background-color:#cccccc; font-size: 13px;'>
@@ -307,7 +307,9 @@
                     <th align="center">Parkir</th>
                     <th align="center">Total</th>
                     <th align="center">BPJS Karyawan</th>
-                    <th align="center">Total & BPJS Karyawan</th>
+                    <th align="center" style='color:blue'>Total - BPJS Karyawan</th>
+                    <th align="center">BPJS SDM</th>
+                    <th align="center">Total & BPJS SDM</th>
                 </tr>
                 
             </thead>
@@ -414,9 +416,11 @@
                     $gtotbpjskry=(DOUBLE)$gtotbpjskry+(DOUBLE)$pjmlbpjskry;
                         
                     $ptotaldanbpjskry=(DOUBLE)$ptotal-(DOUBLE)$pjmlbpjskry;
+                    $ptotaldanbpjssdm=(DOUBLE)$ptotal+(DOUBLE)$pjmlbpjssdm;
                     
                     $ptotal=number_format($ptotal,0,",",",");
                     $ptotaldanbpjskry=number_format($ptotaldanbpjskry,0,",",",");
+                    $ptotaldanbpjssdm=number_format($ptotaldanbpjssdm,0,",",",");
                         
                     $rgtotallebihkurang=(double)$rgtotallebihkurang+(double)$row['rlebihkurang'];
                     
@@ -469,7 +473,11 @@
                     
                     echo "<td nowrap align='right'>$pjmlbpjskry</td>";
                     
-                    echo "<td nowrap align='right'>$ptotaldanbpjskry</td>";
+                    echo "<td nowrap align='right' style='color:blue'>$ptotaldanbpjskry</td>";
+                    
+                    echo "<td nowrap align='right'>$pjmlbpjssdm</td>";
+                    
+                    echo "<td nowrap align='right'>$ptotaldanbpjssdm</td>";
                     
                     $rpinsentif=""; $rpgaji=""; $rpmakan=""; $rpsewa="";
                     $rppulsa=""; $rpbbm=""; $rpparkir=""; $rptotal=""; $rplebihkurang="";
@@ -516,6 +524,7 @@
                 $sgtotallebihkurang=number_format($sgtotallebihkurang,0,",",",");
                 
                 $pgrandtotdanbpjskry=(DOUBLE)$ptotal_grand-(DOUBLE)$gtotbpjskry;
+                $pgrandtotdanbpjssdm=(DOUBLE)$ptotal_grand+(DOUBLE)$gtotbpjssdm;
                 
                 $gtotbpjssdm=number_format($gtotbpjssdm,2,".",",");
                 $gtotbpjskry=number_format($gtotbpjskry,2,".",",");
@@ -523,9 +532,10 @@
                 
                 if (!empty($ptotal_grand)) $ptotal_grand=number_format($ptotal_grand,0,",",",");
                 $pgrandtotdanbpjskry=number_format($pgrandtotdanbpjskry,0,",",",");
+                $pgrandtotdanbpjssdm=number_format($pgrandtotdanbpjssdm,0,",",",");
                 
                 echo "<tr>";
-                echo "<td colspan='13'></td>";
+                echo "<td colspan='15'></td>";
                 echo "<tr>";
                 echo "<td nowrap colspan='2' align='center'><b>TOTAL</b></td>";
                 echo "<td nowrap align='right'><b>$gtotalinc</b></td>";
@@ -541,7 +551,11 @@
                 
                 echo "<td nowrap align='right'><b>$gtotbpjskry</b></td>";
                 
-                echo "<td nowrap align='right'><b>$pgrandtotdanbpjskry</b></td>";
+                echo "<td nowrap align='right' style='color:blue'><b>$pgrandtotdanbpjskry</b></td>";
+                
+                echo "<td nowrap align='right'><b>$gtotbpjssdm</b></td>";
+                
+                echo "<td nowrap align='right'><b>$pgrandtotdanbpjssdm</b></td>";
                 
 
                 

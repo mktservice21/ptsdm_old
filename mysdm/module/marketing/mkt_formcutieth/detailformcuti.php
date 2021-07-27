@@ -359,7 +359,23 @@
                         
                         echo "</td>";
                         
-                        if ($pjabatanid=="15" OR $pjabatanid=="38") {
+                        
+                        if ($pkaryawanid=="0000002073") {
+                            echo "<td align='center' nowrap>";
+                            echo "Menyetujui :";
+                            if (!empty($namagsm)) {
+                                echo "<br/><img src='images/tanda_tangan_base64/$namagsm' height='$gmrheight'><br/>";
+                            }else{
+                                echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                            }
+                            if (!empty($nmatasan4)) echo "<b><u>$nmatasan4</u></b>";
+                            else echo "..........................................";
+                                
+
+                            echo "</td>";
+                        }
+                        
+                        if ($pjabatanid=="15" OR ($pjabatanid=="38" AND $pkaryawanid<>"0000002073") ) {
                             
                             if (!empty($nmatasan1)) {
                                 echo "<td align='center' nowrap>";
@@ -382,7 +398,7 @@
                             
                         }
                         
-                        if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18") {
+                        if ($pjabatanid=="15" OR ( $pjabatanid=="38" AND $pkaryawanid<>"0000002073" ) OR $pjabatanid=="10" OR $pjabatanid=="18") {
                             
                             if (!empty($nmatasan2)) {
                                 echo "<td align='center' nowrap>";
@@ -405,7 +421,7 @@
                             
                         }
                         
-                        if ($pjabatanid=="15" OR $pjabatanid=="38" OR $pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08") {
+                        if ($pjabatanid=="15" OR ( $pjabatanid=="38" AND $pkaryawanid<>"0000002073" ) OR $pjabatanid=="10" OR $pjabatanid=="18" OR $pjabatanid=="08") {
                             
                             echo "<td align='center' nowrap>";
                             /*

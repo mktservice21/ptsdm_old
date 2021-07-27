@@ -104,7 +104,13 @@ session_start();
     }elseif ($papproveby=="apvsm") {
         $query .= " AND a.atasan3='$pkaryawanid' ";
     }elseif ($papproveby=="apvgsm") {
-        $query .= " AND a.atasan4='$pkaryawanid' AND a.jabatanid NOT IN ('15', '38') ";
+        
+        if ($pkaryawanid=="0000000159") {
+            $query .= " AND a.atasan4='$pkaryawanid' AND ( a.jabatanid NOT IN ('15', '38') OR (a.jabatanid='38' AND a.karyawanid='0000002073') ) ";
+        }else{
+            $query .= " AND a.atasan4='$pkaryawanid' AND a.jabatanid NOT IN ('15', '38') ";
+        }
+        
     }elseif ($papproveby=="apvcoo") {
         $query .= " AND a.atasan5='$pkaryawanid' AND a.jabatanid IN ('05') ";
     }else{

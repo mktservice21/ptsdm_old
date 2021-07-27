@@ -2,8 +2,8 @@
     session_start();
     $etipertp = $_POST['e_tipe'];
     $tiperpt="";
-    
-    if ($_GET['ket']=="excel") {
+    $pkettiperpt=$_GET['ket'];
+    if ($pkettiperpt=="excel") {
         // Fungsi header dengan mengirimkan raw data excel
         header("Content-type: application/vnd-ms-excel");
         // Mendefinisikan nama file ekspor "hasil-export.xls"
@@ -18,7 +18,7 @@
 <html>
 <head>
     <title>LAPORAN GAJI SPG<?PHP echo $tiperpt; ?></title>
-<?PHP if ($_GET['ket']!="excel") { ?>
+<?PHP if ($pkettiperpt!="excel") { ?>
     <meta http-equiv="Expires" content="Mon, 01 Jan 2050 1:00:00 GMT">
     <meta http-equiv="Pragma" content="no-cache">
     <link rel="shortcut icon" href="images/icon.ico" />
@@ -271,41 +271,41 @@
         <table id='datatable2' class='table table-striped table-bordered example_2' border="1px solid black">
             <thead>
                 <tr style='background-color:#cccccc; font-size: 13px;'>
-                    <th align="center" rowspan="2">NO</th>
-                    <th align="center" rowspan="2">NAMA</th>
-                    <th align="center" rowspan="2">AREA</th>
-                    <th align="center" rowspan="2">GAJI <br/>POKOK</th>
-                    <th align="center" rowspan="2">JABATAN</th>
-                    <th align="center" rowspan="2">SEWA <br/>KENDARAAN</th>
-                    <th align="center" rowspan="2">PULSA</th>
-                    <th align="center" rowspan="2">BBM</th>
-                    <th align="center" rowspan="2">PARKIR</th>
-                    <th align="center" rowspan="2">TOTAL GP & <br/>TUNJANGAN</th>
-                    <th align="center" colspan="4">UANG MAKAN</th>
+                    <th class='th1' align="center" rowspan="2">NO</th>
+                    <th class='th1' align="center" rowspan="2">NAMA</th>
+                    <th class='th1' align="center" rowspan="2">AREA</th>
+                    <th class='th1' align="center" rowspan="2">GAJI <br/>POKOK</th>
+                    <th class='th1' align="center" rowspan="2">JABATAN</th>
+                    <th class='th1' align="center" rowspan="2">SEWA <br/>KENDARAAN</th>
+                    <th class='th1' align="center" rowspan="2">PULSA</th>
+                    <th class='th1' align="center" rowspan="2">BBM</th>
+                    <th class='th1' align="center" rowspan="2">PARKIR</th>
+                    <th class='th1' align="center" rowspan="2">TOTAL GP & <br/>TUNJANGAN</th>
+                    <th class='th1' align="center" colspan="4">UANG MAKAN</th>
                     
-                    <th align="center" rowspan="2">INSENTIF</th>
+                    <th class='th1' align="center" rowspan="2">INSENTIF</th>
                     
-                    <th align="center" rowspan="2">SISA<br/>(Lebih/<br/>Kurang)</th>
+                    <th class='th1' align="center" rowspan="2">SISA<br/>(Lebih/<br/>Kurang)</th>
                     
-                    <th align="center" rowspan="2">GRAND TOTAL</th>
+                    <th class='th1' align="center" rowspan="2">GRAND TOTAL</th>
                     
-                    <th align="center" rowspan="2">BPJS<br/>KARYAWAN</th>
-                    <th align="center" rowspan="2">BPJS<br/>PERUSAHAAN</th>
+                    <th class='th1' align="center" rowspan="2">BPJS<br/>KARYAWAN</th>
+                    <th class='th1' align="center" rowspan="2">BPJS<br/>PERUSAHAAN</th>
                     
                     
-                    <th align="center" rowspan="2">GRAND TOTAL - BPJS KRY</th>
-                    <th align="center" colspan="3">DATA REKENING</th>
+                    <th class='th1' align="center" rowspan="2">GRAND TOTAL - BPJS KRY</th>
+                    <th class='th1' align="center" colspan="3">DATA REKENING</th>
                 </tr>
                 
                 <tr>
-                    <th align="center">ZONA</th>
-                    <th align="center">HARI KERJA</th>
-                    <th align="center">UANG<br/>MAKAN /<br/>HARI</th>
-                    <th align="center">TOTAL UM</th>
+                    <th align="center" class='th2'>ZONA</th>
+                    <th align="center" class='th2'>HARI KERJA</th>
+                    <th align="center" class='th2'>UANG<br/>MAKAN /<br/>HARI</th>
+                    <th align="center" class='th2'>TOTAL UM</th>
                     
-                    <th align="center">NAMA</th>
-                    <th align="center">BANK</th>
-                    <th align="center">NO. REKENING</th>
+                    <th align="center" class='th2'>NAMA</th>
+                    <th align="center" class='th2'>BANK</th>
+                    <th align="center" class='th2'>NO. REKENING</th>
                 </tr>
             </thead>
             <tbody>
@@ -586,6 +586,25 @@
 
             
     ?>
-        
+    
+    <?PHP if ($pkettiperpt!="excel") { ?>
+        <style>
+
+            .th1 {
+                background: white;
+                position: sticky;
+                top: 0;
+                box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+            }
+
+            .th2 {
+                background: white;
+                position: sticky;
+                top: 23;
+                box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+                border-top: 1px solid #000;
+            }
+        </style>
+    <?PHP } ?>
 </body>
 </html>

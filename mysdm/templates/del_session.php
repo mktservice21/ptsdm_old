@@ -729,4 +729,12 @@
     $_SESSION['COOAPLKRTAPVBY']="";
     
     
+    //DCC CABANG
+    $_SESSION['DCCCABCAB']="";
+    $_SESSION['DCCCABARE']="";
+    $_SESSION['DCCCABKRY']="";
+    $_SESSION['DCCCABJBT']="";
+    $_SESSION['DCCCABKRY']="";
+    $_SESSION['DCCCABTGL']="";
+    
 ?>

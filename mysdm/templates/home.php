@@ -231,6 +231,8 @@
         include 'module/md_m_spg_jmlharikerja/jmlharikerja.php';
     }elseif ($_GET['module']=='importdataspg'){
         include 'module/md_m_spg_importdata/importdataspg.php';
+    }elseif ($_GET['module']=='spgbpjskerja'){
+        include 'module/md_m_spg_bpjskerja/bpjskerja.php';
         
         
     }elseif ($_GET['module']=='spgrekapgaji'){
@@ -930,6 +932,8 @@
         include 'module/budget/bgt_danabank/danabank.php';
     }elseif ($_GET['module']=='spdbrethical'){
         include 'module/budget/bgt_spdbrethical/spdbrethical.php';
+    }elseif ($_GET['module']=='brudcccabang'){
+        include 'module/budget/bgt_brdcccabang/brdcccabang.php';
         
     }elseif ($_GET['module']=='glrealbiayamktchccab'){
         include 'module/laporan_gl/mod_gl_rbmchccab/rbmchccab.php';

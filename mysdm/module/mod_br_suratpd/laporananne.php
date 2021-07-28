@@ -305,7 +305,7 @@
     
     $ntgl_rptsby="";
     //$query="select tglrpsby FROM $tmp02 WHERE IFNULL(tglrpsby,'0000-00-00') <>'0000-00-00' AND IFNULL(tglrpsby,'') <>'' LIMIT 1";
-    $query="select tanggal as tglrpsby from dbmaster.t_suratdana_bank WHERE nodivisi='$nodivisi' and stsinput='N' and stsnonaktif<>'Y'";
+    $query="select tanggal as tglrpsby from dbmaster.t_suratdana_bank WHERE idinput='$idinputspd' and stsinput='N' and stsnonaktif<>'Y'";
     $tampil_s= mysqli_query($cnmy, $query);
     $ketemu_s= mysqli_num_rows($tampil_s);
     if ($ketemu_s>0) {

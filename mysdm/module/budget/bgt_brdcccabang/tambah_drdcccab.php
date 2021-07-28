@@ -570,7 +570,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bank <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                          <select class='form-control input-sm' id='cb_bankreal' name='cb_bankreal' onchange="" data-live-search="true">
+                                          <select class='form-control input-sm s2' id='cb_bankreal' name='cb_bankreal' onchange="" data-live-search="true">
                                             <?PHP
                                                 $query = "select `code` as kode_bank, `name` as nama_bank from ms2.bank WHERE 1=1 ";
                                                 $query .=" ORDER BY `name`";
@@ -1017,3 +1017,13 @@ th {
     border-top: 1px solid #000;
 }
 </style>
+
+<!--<script src="vendors/jquery/dist/jquery.min.js"></script>-->
+<link href="module/dkd/select2.min.css" rel="stylesheet" type="text/css" />
+<script src="module/dkd/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.s2, .s3').select2();
+    });
+</script>

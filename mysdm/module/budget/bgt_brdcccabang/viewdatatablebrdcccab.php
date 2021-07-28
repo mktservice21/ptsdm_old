@@ -5,9 +5,6 @@
     $pcabangid=$_POST['ucabid'];
     $_SESSION['DCCCABCAB']=$pcabangid;
     
-    
-    
-    
     echo "<input type='hidden' name='cb_cabang' id='cb_cabang' value='$pcabangid'>";
     
 
@@ -89,10 +86,12 @@
                     <th width='5px'>No</th>
                     <th width='50px'></th>
                     <th width='20px'>ID</th>
-                    <th width='30px'>Profesi</th>
-                    <th width='30px'>Nama Lengkap</th>
-                    <th width='50px'>Spesialis</th>
-                    <th width='50px'>No Hp</th>
+                    <th width='20px'>Tanggal</th>
+                    <th width='30px'>Jenis</th>
+                    <th width='30px'>Kode</th>
+                    <th width='50px'>Yg. Membuat</th>
+                    <th width='50px'>Jumlah</th>
+                    <th width='50px'>Keterangan</th>
                 </tr>
             </thead>
         </table>

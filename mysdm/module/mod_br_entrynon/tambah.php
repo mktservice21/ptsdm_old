@@ -140,6 +140,12 @@ $prpjumlahjasa=0;
 $pchkjasa="";
 $pchkatrika="";
 
+$pdepartmen="";
+$pidpopr="";
+$arridprpo[]="";
+$filterpoupdate="";
+
+
 $pmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];
 $pact=$_GET['act'];
@@ -180,6 +186,7 @@ if ($pact=="editdata") {
     $plampiran=$r['lampiran'];
     $pcapil=$r['ca'];
     $pviapil=$r['via'];
+    $pdepartmen=$r['iddep'];
 
 
     
@@ -217,6 +224,22 @@ if ($pact=="editdata") {
     }elseif ($pjenisdpp=="B") {
         $pchkatrika="checked";
     }
+    
+    
+    $query = "select brid, idpo, idpr_po from hrd.br0_po WHERE brid='$pidbrid'";
+    $tampilp=mysqli_query($cnmy, $query);
+    while ($nrow= mysqli_fetch_array($tampilp)) {
+        $zidpo=$nrow['idpo'];
+        $zidprpo=$nrow['idpr_po'];
+        
+        $zpilprpo=$zidpo.",".$zidprpo;
+        
+        $arridprpo[]=$zpilprpo;
+        
+        $filterpoupdate .="'".$zidpo."".$zidprpo."',";
+        
+    }
+    if (!empty($filterpoupdate)) $filterpoupdate="(".substr($filterpoupdate, 0, -1).")";
 }
 
 $pnmkaryawan=getfield("select nama as lcfields from hrd.karyawan WHERE karyawanid='$pkaryawanid'");
@@ -276,7 +299,7 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Divisi <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <select class='soflow' id='cb_divisi' name='cb_divisi' onchange="showCOANya()"><!--showKodeNyaNon('cb_divisi', 'cb_kode')-->
+                                        <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="showCOANya()"><!--showKodeNyaNon('cb_divisi', 'cb_kode')-->
                                             <?PHP
                                             $query = "SELECT DivProdId, nama FROM MKT.divprod where br='Y' AND DivProdId NOT IN ('CAN', 'OTHER', 'OTC') OR DivProdId='$pdivisiid' order by nama";
                                             $tampil=mysqli_query($cnmy, $query);
@@ -299,7 +322,7 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_coa'>Kode / COA <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <select class='soflow' id='cb_coa' name='cb_coa' onchange="showKodeNyaNon()">
+                                        <select class='form-control input-sm' id='cb_coa' name='cb_coa' onchange="showKodeNyaNon()">
                                             <option value='' selected>-- Pilihan --</option>
                                         <?PHP
 										/*
@@ -363,7 +386,7 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_kode'>Kode <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <select class='soflow' id='cb_kode' name='cb_kode'>
+                                        <select class='form-control input-sm' id='cb_kode' name='cb_kode'>
                                             <option value="">-- Pilih --</option>
                                             <?PHP
                                                 $query = "select kodeid,nama,divprodid from dbmaster.br_kode where (divprodid='$pdivisiid' and br = '')  "
@@ -389,7 +412,7 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
                                 <div class='form-group'>
                                       <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_idkaryawan'>Yang Membuat <span class='required'></span></label>
                                       <div class='col-xs-9'>
-                                          <select class='soflow' id='e_idkaryawan' name='e_idkaryawan' onchange="showCabangMR()">
+                                          <select class='form-control input-sm s3' id='e_idkaryawan' name='e_idkaryawan' onchange="showDariYangMembuat()">
                                               <option value='' selected>-- Pilihan --</option>
                                               <?PHP
                                                 
@@ -417,15 +440,102 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
                                       </div>
                                 </div>
                                 
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>PO <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <select class='form-control input-sm s2' id='cb_prpo' name='cb_prpo[]' onchange="" multiple="multiple">
+                                            <?PHP
+                                            $query = "select a.idpo, b.idpr_po, a.kdsupp, d.NAMA_SUP as nama_supp, c.idpr, e.iddep, "
+                                                    . " e.karyawanid, f.nama as nama_karyawan, e.icabangid, g.nama as nama_cabang, c.namabarang, "
+                                                    . " c.totalrp from dbpurchasing.t_po_transaksi as a "
+                                                    . " JOIN dbpurchasing.t_po_transaksi_d as b on a.idpo=b.idpo "
+                                                    . " JOIN dbpurchasing.t_pr_transaksi_po as c on b.idpr_po=c.idpr_po AND a.kdsupp=c.kdsupp "
+                                                    . " JOIN dbmaster.t_supplier as d on a.kdsupp=d.KDSUPP "
+                                                    . " JOIN dbpurchasing.t_pr_transaksi as e on c.idpr=e.idpr "
+                                                    . " JOIN hrd.karyawan as f on e.karyawanid=f.karyawanId LEFT "
+                                                    . " JOIN mkt.icabang as g on e.icabangid=g.iCabangId "
+                                                    . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' ";
+                                            if ($pact=="editdata" AND !empty($filterpoupdate)) {
+                                                $query .=" AND ( b.idpr_po NOT IN (select distinct IFNULL(idpr_po,'') FROM hrd.br0_po) OR CONCAT(b.idpo, b.idpr_po) IN $filterpoupdate )";
+                                            }else{
+                                                $query .=" AND b.idpr_po NOT IN (select distinct IFNULL(idpr_po,'') FROM hrd.br0_po)";
+                                            }
+                                            $query .=" Order by a.idpo";
+                                            $tampil = mysqli_query($cnmy, $query);
+                                            //$ketemu = mysqli_num_rows($tampil);
+                                            //if ((INT)$ketemu==0) echo "<option value='' selected>-- Pilihan --</option>";
+                                            while ($z= mysqli_fetch_array($tampil)) {
+                                                $pidpo=$z['idpo'];
+                                                $nidprpo=$z['idpr_po'];
+                                                $pnmpengaju=$z['nama_karyawan'];
+                                                $pnmsupplier=$z['nama_supp'];
+                                                $pnmbarang=$z['namabarang'];
+                                                
+                                                $pidpilihprpo=$pidpo.",".$nidprpo;
+                                                $pnmpengaju_an =$pnmpengaju." (".$pnmsupplier.") - ".$pnmbarang." - ".$pidpo;
+                                                
+                                                
+                                                $ppiliposelec="";
+                                                if ($pact=="editdata") {
+                                                    for($ix=1;$ix<count($arridprpo);$ix++) {
+                                                        $zpilprpo=$arridprpo[$ix];
+                                                        if ($zpilprpo==$pidpilihprpo) $ppiliposelec=" selected ";
+                                                    }
+                                                    echo "<option value='$pidpilihprpo' $ppiliposelec>$pnmpengaju_an</option>";
+                                                    $ppiliposelec="";
+                                                }else{
+                                                    if ($pidpo==$pidpopr)
+                                                        echo "<option value='$pidpilihprpo' selected>$pnmpengaju_an</option>";
+                                                    else
+                                                        echo "<option value='$pidpilihprpo'>$pnmpengaju_an</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Departemen <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <select class='form-control input-sm' id='cb_dept' name='cb_dept' onchange="">
+                                            <?PHP
+                                            echo "<option value='' selected>-- Pilihan --</option>";
+                                            $query = "select iddep as iddep, nama_dep as nama_dep from dbmaster.t_department WHERE 1=1 "
+                                                    . " AND IFNULL(aktif,'')<>'N' OR iddep='$pdepartmen' ";
+                                            $query .=" Order by nama_dep";
+                                            $tampil = mysqli_query($cnmy, $query);
+                                            while ($z= mysqli_fetch_array($tampil)) {
+                                                $piddep=$z['iddep'];
+                                                $pnmdep=$z['nama_dep'];
+                                                if ($piddep==$pdepartmen)
+                                                    echo "<option value='$piddep' selected>$pnmdep</option>";
+                                                else
+                                                    echo "<option value='$piddep'>$pnmdep</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                
                                 <div class='form-group'>
                                       <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_idkaryawan'>Cabang <span class='required'></span></label>
                                       <div class='col-xs-9'>
-                                          <select class='soflow' id='e_idcabang' name='e_idcabang' onchange="showNamaCabang()">
+                                          <select class='form-control input-sm' id='e_idcabang' name='e_idcabang' onchange="showNamaCabang()">
                                               <option value='' selected>-- Pilihan --</option>
                                               <?PHP
                                                 $query = "select karyawan.iCabangId, cabang.nama from hrd.$pnmtabelkry as karyawan join dbmaster.icabang as cabang on "
                                                         . " karyawan.icabangid=cabang.icabangid where karyawanId='$pkaryawanid'";
                                                 $tampil = mysqli_query($cnmy, $query);
+                                                $ketemuc = mysqli_num_rows($tampil);
+                                                if ((INT)$ketemuc==0) {
+                                                    $query = "select iCabangId, nama FROM mkt.icabang WHERE IFNULL(aktif,'')<>'N' ";
+                                                    $query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -')";
+                                                    $query .=" ORDER BY nama";
+                                                    $tampil = mysqli_query($cnmy, $query);
+                                                }
                                                 while($a=mysqli_fetch_array($tampil)){
                                                     $nidcab=$a['iCabangId'];
                                                     $nnmcab=$a['nama'];
@@ -484,7 +594,7 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_jenis'>Mata Uang <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <select class='soflow' name='cb_jenis'>
+                                        <select class='form-control input-sm' name='cb_jenis'>
                                             <?php
                                             $tampil=mysqli_query($cnmy, "SELECT ccyId, nama FROM dbmaster.ccy");
                                             while($c=mysqli_fetch_array($tampil)){
@@ -510,7 +620,7 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_jenis'>Pajak <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                         <div style="margin-bottom:2px;">
-                                            <select class='soflow' name='cb_pajak' id='cb_pajak' onchange="ShowPajak()">
+                                            <select class='form-control input-sm' name='cb_pajak' id='cb_pajak' onchange="ShowPajak()">
                                                 <?php
                                                 if ($pjnspajak=="Y") {
                                                     echo "<option value='N'>N</option>";
@@ -600,7 +710,7 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">PPH <span class='required'></span></label>
                                         <div class='col-xs-9'>
                                             <div style="margin-bottom:2px;">
-                                                <select class='soflow' name='cb_pph' id='cb_pph' onchange="ShowPPH()">
+                                                <select class='form-control input-sm' name='cb_pph' id='cb_pph' onchange="ShowPPH()">
                                                     <?php
                                                     $ketPPH21="PPH21 (DPP*5%*50%) atau (JML AWAL*5%*50%)";
                                                     $ketPPH23="PPH23 (DPP*2%) atau (JML AWAL*2%)";
@@ -902,6 +1012,10 @@ $pnmcabang=getfield("select nama as lcfields from MKT.icabang WHERE icabangid='$
             $("#cb_kode").html(data);
             }
         });
+    }
+    
+    function showDariYangMembuat() {
+        showCabangMR();
     }
     
     function showCabangMR() {
@@ -1283,4 +1397,14 @@ Apakah Akan melakukan simpan...???";
 		document.getElementById("e_jmlusulan").value = parseFloat(e_totrpusulan).toFixed(2);
 
     }
+</script>
+
+<script src="vendors/jquery/dist/jquery.min.js"></script>
+<link href="module/dkd/select2.min.css" rel="stylesheet" type="text/css" />
+<script src="module/dkd/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.s2, .s3').select2();
+    });
 </script>

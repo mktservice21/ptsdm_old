@@ -171,8 +171,10 @@ if ($pmodule=='entrybrnon')
         }
         if (!empty($pcaricbgytd)) $pcabangytd=$pcaricbgytd;
         
+        $piddep=$_POST['cb_dept'];
         
         //echo "$kodenya, $ptglinput, $ptgltransf<br/>$pdivprodid, $pcoa, $pkode, $pkaryawan, $pidcabang<br/>$paktivitas1<br/>$pjenisuang, $prpnya, $pnmrealisasi, $prpcn, $pnoslip, $pwilgabungan<br>Jbt : $pjabatanid, daerah : $pcabangytd<br/>Lamp : $pinplampiran, $pinpca, $pinpsby"; mysqli_close($cnmy); exit;
+        //echo "DEP : $piddep"; exit;
         
         if ($pact=="simpan") {
             
@@ -209,10 +211,10 @@ if ($pmodule=='entrybrnon')
             //INSERT INTO
             $query = "insert into hrd.br0 (brid, tgl, divprodid, COA4, kode, user1, aktivitas1, aktivitas2, ccyid, "
                     . " jumlah, cn, realisasi1, karyawanid, icabangid, KODEWILAYAH, idcabang, "
-                    . " lampiran, ca, via, noslip) VALUES"
+                    . " lampiran, ca, via, noslip, iddep) VALUES"
                     . " ('$kodenya', '$ptglinput', '$pdivprodid', '$pcoa', '$pkode', '$puserid', '$paktivitas1', '$paktivitas2', '$pjenisuang', "
                     . " '$prpnya', '$prpcn', '$pnmrealisasi', '$pkaryawan', '$pidcabang', '$pwilgabungan', '$pcabangytd', "
-                    . " '$pinplampiran', '$pinpca', '$pinpsby', '$pnoslip')";
+                    . " '$pinplampiran', '$pinpca', '$pinpsby', '$pnoslip', '$piddep')";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
             
@@ -246,11 +248,11 @@ if ($pmodule=='entrybrnon')
                 . " jumlah='$prpnya', cn='$prpcn', realisasi1='$pnmrealisasi', "
                 . " karyawanid='$pkaryawan', icabangid='$pidcabang', KODEWILAYAH='$pwilgabungan', idcabang='$pcabangytd', "
                 . " lampiran='$pinplampiran', ca='$pinpca', via='$pinpsby', "
-                . " noslip='$pnoslip' WHERE brid='$kodenya' LIMIT 1";
+                . " noslip='$pnoslip', iddep='$piddep' WHERE brid='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
             
-            
+        
         
         //pajak
         $pjnspajak=$_POST['cb_pajak'];
@@ -334,6 +336,33 @@ if ($pmodule=='entrybrnon')
     
     
         
+        $pidprpo="";
+        $ppilihidpo=""; $ppilihidprpo="";
+        
+        
+        $query = "DELETE FROM hrd.br0_po WHERE brid='$kodenya'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+                    
+        if (isset($_POST['cb_prpo'])) $pidprpo=$_POST['cb_prpo'];
+        if (!empty($pidprpo)) {
+            foreach ($pidprpo as $pval_po)
+            {
+
+                if (!empty($pval_po)) {
+                    $ex_prpo=explode(",", $pval_po);
+                    if (isset($ex_prpo[0])) $ppilihidpo=$ex_prpo[0];
+                    if (isset($ex_prpo[1])) $ppilihidprpo=$ex_prpo[1];
+
+                    //echo "PO : $ppilihidpo, PRPO : $ppilihidprpo, DEP : $piddep<br/>";
+
+                    $query = "INSERT INTO hrd.br0_po (brid, idpo, idpr_po)VALUES('$kodenya', '$ppilihidpo', '$ppilihidprpo')";
+                    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+                    
+                    $ppilihidpo=""; $ppilihidprpo="";
+                }
+
+            }
+        }
         
         
         mysqli_close($cnmy);

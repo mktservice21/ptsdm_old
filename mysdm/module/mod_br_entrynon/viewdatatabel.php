@@ -135,7 +135,7 @@
             . " aktivitas1, aktivitas2, "
             . " kode, dokterid, dokter, karyawanid, karyawani2, karyawani3, karyawani4, mrid, lampiran, via, ca, sby, "
             . " divprodid, pajak, nama_pengusaha, noseri, tgl_fp, dpp, ppn, ppn_rp, pph_jns, pph, pph_rp, pembulatan, jasa_rp, materai_rp, jenis_dpp,"
-            . " noseri_pph, tgl_fp_pph, dpp_pph, batal, alasan_b, lain2 FROM hrd.br0 WHERE 1=1 AND 
+            . " noseri_pph, tgl_fp_pph, dpp_pph, batal, alasan_b, lain2, iddep FROM hrd.br0 WHERE 1=1 AND 
 			 (user1='$pnuseriid' OR user1='$upilidcrd') $filtipetglpil $filterkodeid $filterdivprod ";//$filteruntukcoa
     $query.=" and brId not in (select distinct ifnull(brId,'') from hrd.br0_reject) ";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
@@ -195,6 +195,12 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "ALTER TABLE $tmp05 ADD COLUMN nama_dep VARCHAR(100)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp05 as a JOIN dbmaster.t_department as b on a.iddep=b.iddep SET a.nama_dep=b.nama_dep";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
     
     
 ?>
@@ -235,8 +241,9 @@
                     <th width='50px'>No Div/BR</th>
                     <th width='50px'>ID</th>
                     <th width='50px'>User Input</th>
-					<th width='50px'>Divisi</th>
-					<th width='50px'>COA - Perkiraan</th>
+                    <th width='50px'>Divisi</th>
+                    <th width='50px'>COA - Perkiraan</th>
+                    <th width='50px'>Departemen</th>
 
                 </tr>
             </thead>
@@ -265,10 +272,11 @@
                     $piduser = $row["user1"];
                     $pnmuser = $row["nama_user"];
                     $pnodivisi = $row["nodivisi"];
-					$ppilpajak = $row["pajak"];
-					
-					$pbatal = $row["batal"];
-					$palasanbtl = $row["alasan_b"];
+                    $ppilpajak = $row["pajak"];
+
+                    $pbatal = $row["batal"];
+                    $palasanbtl = $row["alasan_b"];
+                    $pnmdepartmen = $row["nama_dep"];
 					
                     
                     if ($ptgltrans=="0000-00-00") $ptgltrans="";
@@ -298,7 +306,7 @@
                     $ptpajak = "<button type='button' class='btn btn-primary btn-xs' data-toggle='modal' data-target='#myModal' onClick=\"TambahDataInputPajak('$pbrid')\">Pajak</button>";
                     $phapus = "<input type='button' class='btn btn-danger btn-xs' value='Hapus' onClick=\"ProsesDataHapus('hapus', '$pbrid', '$pnodivisi')\">";
 					
-					$pnpajakedit = "<a class='btn btn-warning btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pbrid'>Pajak</a>";
+                    $pnpajakedit = "<a class='btn btn-warning btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pbrid'>Pajak</a>";
                    
                     if ($pgroupid=="1") {
                         
@@ -306,21 +314,21 @@
                         if ($piduser<>$puserid) {
                             $peditdata="";
                             $phapus="";
-							$pnpajakedit="";
+                            $pnpajakedit="";
                         }
                     }
                     
-					if ($ppilpajak!="Y") $ptpajak="";
-					
-					
-					$btnbatal="";
-					$btnbatal="<input type='button' class='btn btn-warning btn-xs' value='Batal' onClick=\"ProsesDataHapus('batal', '$pbrid', '$pnodivisi')\">";
-					$pcolorbatal="";
-					if ($pbatal=="Y") {
-						$pcolorbatal="style='color:red;'";
-						if (!empty($palasanbtl)) $palasanbtl=", Alasan Batal : ".$palasanbtl;
-						$btnbatal="";
-					}else $palasanbtl="";
+                    if ($ppilpajak!="Y") $ptpajak="";
+
+
+                    $btnbatal="";
+                    $btnbatal="<input type='button' class='btn btn-warning btn-xs' value='Batal' onClick=\"ProsesDataHapus('batal', '$pbrid', '$pnodivisi')\">";
+                    $pcolorbatal="";
+                    if ($pbatal=="Y") {
+                        $pcolorbatal="style='color:red;'";
+                        if (!empty($palasanbtl)) $palasanbtl=", Alasan Batal : ".$palasanbtl;
+                        $btnbatal="";
+                    }else $palasanbtl="";
 					
                     echo "<tr $pcolorbatal>";
                     echo "<td nowrap>$no</td>";
@@ -341,6 +349,7 @@
                     echo "<td nowrap>$pnmuser</td>";
                     echo "<td nowrap>$pdividprod</td>";
                     echo "<td nowrap>$pcoaid - $pcoanm</td>";
+                    echo "<td nowrap>$pnmdepartmen</td>";
                     echo "</tr>";
                     
                     $no++;

@@ -1,9 +1,10 @@
 <?php
 session_start();
-include "../../../config/koneksimysqli.php";
+include "../../../config/koneksimysqli_ms.php";
 include "../../../config/fungsi_sql.php";
 include "../../../config/fungsi_ubahget_id.php";
 
+$cnmy=$cnms;
 
 $pidgrpuser=$_SESSION['GROUP'];
 $fkaryawan=$_SESSION['IDCARD'];
@@ -18,10 +19,12 @@ $columns = array(
     0 =>'a.id',
     1 =>'a.id',
     2 => 'a.id',
-    3=> 'a.profesi',
-    4=> 'a.namalengkap',
-    5=> 'a.spesialis',
-    6=> 'a.nohp'
+    3=> 'a.id',
+    4=> 'a.id',
+    5=> 'a.id',
+    6=> 'a.id',
+    7=> 'a.id',
+    8=> 'a.id'
 );
 
 $pcabangid="";
@@ -31,11 +34,14 @@ if (isset($_GET['ucabid'])) {
 
 //FORMAT(realisasi1,2,'de_DE') as 
 // getting total number records without any search
-$sql = "select a.id, a.icabangid as icabangid, b.nama as nama_cabang, 
-    a.namalengkap, a.spesialis, a.nohp, a.profesi ";
-$sql.=" FROM dr.masterdokter as a JOIN mkt.icabang as b on a.icabangid=b.icabangId ";
+$sql = "select a.id, a.tanggal, a.bulan1, a.bulan2, a.icabangid as icabangid, b.nama as nama_cabang, 
+    a.areaid, a.iddokter, a.idpraktek, a.divprodid, a.createdby as karyawanid, c.nama as nama_karyawan, 
+    a.jenis_br, a.kode, a.jumlah, a.keterangan ";
+$sql.=" FROM ms2.br as a LEFT JOIN mkt.icabang as b on a.icabangid=b.icabangId "
+        . " LEFT JOIN ms.karyawan as c on LPAD(ifnull(a.createdby,0), 10, '0')=c.karyawanId ";
 $sql.=" WHERE 1=1 ";
-$sql.=" AND a.icabangId='$pcabangid' ";
+$sql.=" AND a.`kode` IN ('700-02-03', '700-04-03', '700-01-03') ";
+//$sql.=" AND a.icabangId='$pcabangid' ";
 
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
 $totalData = mysqli_num_rows($query);
@@ -46,10 +52,10 @@ $totalFiltered = $totalData;  // when there is no search parameter then total nu
 if( !empty($requestData['search']['value']) ) {   // if there is a search parameter, $requestData['search']['value'] contains search parameter
     $sql.=" AND ( a.id LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.icabangid LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR a.namalengkap LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR a.spesialis LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR a.nohp LIKE '%".$requestData['search']['value']."%' ";
-    $sql.=" OR b.nama LIKE '%".$requestData['search']['value']."%' )";
+    $sql.=" OR  b.nama LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.idpraktek LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.divprodid LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR c.nama LIKE '%".$requestData['search']['value']."%' )";
 }
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
 $totalFiltered = mysqli_num_rows($query); // when there is a search parameter then we have to modify total number filtered rows as per search result. 
@@ -63,13 +69,27 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData=array();
     $idno=$row['id'];
     
+    $ptgl=$row['tanggal'];
     $picabid=$row['icabangid'];
     $pnmcabang=$row['nama_cabang'];
-    $pprofesi=$row['profesi'];
-    $pnamadr=$row['namalengkap'];
-    $pspesial=$row['spesialis'];
-    $pnohp=$row['nohp'];
-
+    $pareaid=$row['icabangid'];
+    $pnamaarea=$row['icabangid'];
+    $pnmkaryawan=$row['nama_karyawan'];
+    $pidkaryawan=$row['karyawanid'];
+    $pjenisbr=$row['jenis_br'];
+    $pkodeid=$row['kode'];
+    $pjumlah=$row['jumlah'];
+    $pket=$row['keterangan'];
+    
+    $pjumlah=number_format($pjumlah,0,",",",");
+    
+    $pnamajenis="";
+    if ($pjenisbr=="ADVANCE") {
+        $pnamajenis="Sudah Ada Kuitansi";
+    }elseif ($pjenisbr=="PCM") {
+        $pnamajenis="Belum Ada Kuitansi";
+    }
+    
     $pidget=encodeString($idno);
     
     
@@ -86,15 +106,17 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     
     $ppilihan="$pedit $phapus";
-
+    
     
     $nestedData[] = $no;
     $nestedData[] = $ppilihan;
     $nestedData[] = $idno;
-    $nestedData[] = $pprofesi;
-    $nestedData[] = $pnamadr;
-    $nestedData[] = $pspesial;
-    $nestedData[] = $pnohp;
+    $nestedData[] = $ptgl;
+    $nestedData[] = $pnamajenis;
+    $nestedData[] = $pkodeid;
+    $nestedData[] = $pnmkaryawan;
+    $nestedData[] = $pjumlah;
+    $nestedData[] = $pket;
 
     $data[] = $nestedData;
     $no=$no+1;

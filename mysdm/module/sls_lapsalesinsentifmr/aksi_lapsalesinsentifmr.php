@@ -63,7 +63,6 @@ $query = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a.i
         . " b.nama as nama_cabang, c.nama as nama_area, b.aktif as aktifcab, c.aktif as aktifarea "
         . " from sls.imr0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
         . " sls.iarea as c on a.icabangid=c.icabangid AND a.areaid=c.areaid WHERE a.karyawanid='$pkaryawanid'";
-
 //echo $query;
 $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
@@ -144,19 +143,6 @@ $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
-$query = "ALTER TABLE $tmp01 ADD COLUMN aktifcab VARCHAR(1), ADD COLUMN aktifarea VARCHAR(1)";
-mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
-
-$query = "UPDATE $tmp01 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid SET a.aktifcab=b.aktif";
-mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
-
-$query = "UPDATE $tmp01 as a JOIN mkt.iarea as b on a.icabangid=b.icabangid AND a.areaid=b.areaid SET a.aktifarea=b.aktif";
-mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
-
-$query = "delete FROM $tmp01 WHERE IFNULL(aktifarea,'')='N'";
-mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
-
-
 $query = "SELECT a.icabangid, c.nama as nama_cabang, a.areaid, d.nama as nama_area, a.divprodid, a.iprodid, b.nama as nama_produk, a.qty_target, a.value_target, "
         . " a.qty_sales, a.value_sales  "
         . " from $tmp01 as a JOIN sls.iproduk as b on a.iprodid=b.iprodid "
@@ -171,17 +157,29 @@ $query = "ALTER TABLE $tmp02 ADD COLUMN groupp VARCHAR(10), ADD COLUMN groupp2 V
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 if ($pdivisiinc=="CAN" OR $pdivisiinc=="CAN+") {
+    
+    $query = "UPDATE $tmp02 SET groupp='GROUP2'";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
     $query = "UPDATE $tmp02 as a JOIN ms.gpeth_sales as b on a.iprodid=b.iprodid SET a.groupp=b.groupp WHERE b.divprodid='CANARY'";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    $query = "UPDATE $tmp02 SET groupp = '' WHERE divprodid='PEACO'";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    
 }else{
+    
     $query = "UPDATE $tmp02 as a JOIN ms.gpeth_sales as b on a.iprodid=b.iprodid SET a.groupp=b.groupp WHERE b.divprodid='$pdivisiinc'";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    $query = "UPDATE $tmp02 SET groupp='GROUP2' WHERE IFNULL(groupp,'')=''";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
 }
-mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 //$query = "UPDATE $tmp02 as a JOIN ms.gpeth_am_sales as b on a.iprodid=b.iprodid AND a.divprodid=b.divprodid SET a.groupp2=b.groupp";
 //mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
-
-$query = "UPDATE $tmp02 SET groupp='GROUP2' WHERE IFNULL(groupp,'')=''";
-mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 //$query = "UPDATE $tmp02 SET groupp2='GROUP2' WHERE IFNULL(groupp2,'')=''";
 //mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }

@@ -100,9 +100,39 @@
                 $tgl_pertama = date('01 F Y', strtotime($hari_ini));
                 ?>
 
+                <?PHP
+                $pketeksekusi="";
+                if (isset($_GET['iderror'])) $pketeksekusi=$_GET['iderror'];
+                if ($pact=="error" OR $pact=="berhasil") {
+                
+                    echo "<div class='col-md-12 col-sm-12 col-xs-12'>";
+
+                        echo "<div class='x_panel'>";
+
+                            echo "<div class='x_title'>";
+                                if ($pact=="error") {
+                                    echo "<h2 style='color:red;'>Gagal simpan data</h2>";
+                                    echo "<div class='clearfix'></div>";
+                                    echo "<div>($pketeksekusi)</div>";
+                                }elseif ($pact=="berhasil") {
+                                    echo "<h2 style='color:blue;'>Data berhasil disimpan</h2>";
+                                }
+                                echo "<ul class='nav navbar-right panel_toolbox'><li><a class='close-link'><i class='fa fa-close'></i></a></li></ul>";
+                                echo "<div class='clearfix'></div>";
+
+                            echo "</div>";
+
+                        echo "</div>";
+
+                    echo "</div>";
+                
+                }
+                ?>
                 
                 <div class='col-md-12 col-sm-12 col-xs-12'>
+                    
                     <div class='x_panel'>
+                        
 
                         <div class='x_title'>
                             <h2><input class='btn btn-default' type=button value='Tambah Baru'

@@ -26,12 +26,12 @@ $pnamalengkap=$_SESSION['NAMALENGKAP'];
     $pnamalengkap="DWIKI RAMADHAN";
     $pidjbt="15";
     $pidgroup="7";
-    */
+    
 
     $pidcard="0000000615";
     $pnamalengkap="HAMBALI";
     $pidjbt="10";
-    $pidgroup="11";
+    $pidgroup="11";*/
     
 $pidcabang="";        
 $pareaid="";
@@ -202,8 +202,8 @@ if ($pidact=="editdata"){
     $pidinput_ec=$_GET['id'];
     $pidinput = decodeString($pidinput_ec);
     
-    $edit = mysqli_query($cnmy, "SELECT * FROM  WHERE ='$pidinput'");
-    $jmlrw0=mysqli_num_rows($edit);
+    //$edit = mysqli_query($cnmy, "SELECT * FROM  WHERE ='$pidinput'");
+    //$jmlrw0=mysqli_num_rows($edit);
     
 }
 
@@ -263,6 +263,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                     <div class='col-md-6'>
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidinput; ?>' Readonly>
                                         <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
+                                        <input type='hidden' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='text' id='e_idjbt' name='e_idjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbt; ?>' Readonly>
                                     </div>
                                 </div>
@@ -291,8 +292,8 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                     <div class='col-xs-9'>
                                           <select class='form-control input-sm' id='cb_jenis' name='cb_jenis' onchange="" data-live-search="true">
                                             <?PHP 
-                                                echo "<option value='sudah' $pjenis1>Sudah Ada Kuitansi (Advance)</option>";
-                                                echo "<option value='belum' $pjenis2>Belum Ada Kuitansi (PC-M)</option>";
+                                                echo "<option value='ADVANCE' $pjenis1>Sudah Ada Kuitansi (Advance)</option>";
+                                                echo "<option value='PCM' $pjenis2>Belum Ada Kuitansi (PC-M)</option>";
                                             ?>
                                           </select>
                                     </div>

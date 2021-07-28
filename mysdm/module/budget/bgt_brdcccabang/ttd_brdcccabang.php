@@ -199,42 +199,45 @@ function ReloadTandaTangan(){
             
             
             var iid = document.getElementById('e_id').value;
-            var ikry = document.getElementById('e_idkaryawan').value;
-            var ibln = document.getElementById('e_bulan').value;
-            var ikdperiode = document.getElementById('e_periode').value;
-            var iperiode01 = document.getElementById('e_periode01').value;
-            var iatasan = document.getElementById('e_atasan').value;
-            var etotsem =document.getElementById('e_totalsemua').value;
-            var ep01 =document.getElementById('e_periode01').value;
-            var ep02 =document.getElementById('e_periode02').value;
+            var ikry = document.getElementById('e_idcarduser').value;
+            var icabang = document.getElementById('cb_cabang').value;
+            var etotsem = document.getElementById('e_jmlusulan').value;
+            var ebank = document.getElementById('cb_bankreal').value;
+            var enmbank = document.getElementById('e_nmbankreal').value;
+            var enorek = document.getElementById('e_norekbankreal').value;
+            
+            var chkjns1=document.getElementById("chksesuai").checked;
             
             if (ikry=="") {
                 alert("Pembuat masih kosong...");
                 return false;
             }
             
-            if (ibln=="") {
-                alert("Bulan masih kosong...");
+            if (icabang=="") {
+                alert("Cabang masih kosong...");
                 return false;
             }
             
-            if (ikdperiode=="") {
-                alert("Kode periode masih kosong...");
+            if (chkjns1==true) {
+            }else{
+                var inmreal = document.getElementById('e_nmrealasi').value;
+                if (inmreal=="") {
+                    alert("Nama relasi realisasi harus diisi...");
+                    return false;
+                }
+            }
+            
+            
+            if (ebank=="" || enmbank=="" || enorek=="") {
+                alert("Bank, Nama dan No Rekening harus diisi...");
                 return false;
             }
             
-            if (iperiode01=="") {
-                alert("periode masih kosong...");
-                return false;
-            }
             
-            if (iatasan=="") {
-                alert("Atasan masih kosong...");
-                return false;
-            }
+            if (etotsem=="") etotsem="0";
             
             if (parseFloat(etotsem)==0) {
-                alert("Total Rupiah Masih Kosong....");
+                alert("Jumlah Permintaan Masih Kosong....");
                 return 0;
             }
     

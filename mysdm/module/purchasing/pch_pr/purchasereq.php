@@ -68,6 +68,8 @@
                     echo "Input $judul";
                 elseif ($_GET['act']=="editdata")
                     echo "Edit $judul";
+                elseif ($_GET['act']=="uploaddok")
+                    echo "Attach Image $judul";
                 else
                     echo "Data $judul";
                 ?>
@@ -273,6 +275,10 @@
 
             case "editdata":
                 include "tambahpr.php";
+            break;
+        
+            case "uploaddok":
+                include "uploadpr.php";
             break;
         
         }

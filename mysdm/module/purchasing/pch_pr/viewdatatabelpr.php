@@ -39,6 +39,7 @@
     
     $now=date("mdYhis");
     $tmp01 =" dbtemp.TMPPCHPRTMPL01_".$puserid."_$now ";
+    $tmp02 =" dbtemp.TMPPCHPRTMPL02_".$puserid."_$now ";
     
     $query = "select b.pengajuan, b.idtipe, g.nama_tipe, a.idpr, 
         b.tglinput, b.tanggal, b.karyawanid, c.nama as nama_karyawan, 
@@ -76,6 +77,19 @@
             . " on IFNULL(a.idpr,'')=IFNULL(b.idpr,'') SET a.ssudah='Y'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
+    
+    $query = "select distinct a.idpr, a.idpr_d from dbimages.img_pr as a "
+            . " JOIN (select distinct idpr from $tmp01) as b on a.idpr=b.idpr";
+    $query = "create TEMPORARY table $tmp02 ($query)"; 
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "ALTER TABLE $tmp01 ADD COLUMN adabukti VARCHAR(1)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 a JOIN $tmp02 b on a.idpr=b.idpr AND a.idpr_d=b.idpr_d SET a.adabukti='Y'"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
 ?>
 
 
@@ -92,6 +106,7 @@
                     <th width='20px'>ID</th>
                     <th width='30px'>Tanggal</th>
                     <th width='30px'>Yg Mengajukan</th>
+                    <th width='30px'>Attach Images</th>
                     <th width='30px'>Nama Barang</th>
                     <th width='50px'>Spesifikasi</th>
                     <th width='50px'>Keterangan</th>
@@ -116,6 +131,9 @@
                     $query = "select * from $tmp01 WHERE idpr='$pidpr' order by idpr DESC";
                     $tampil1= mysqli_query($cnmy, $query);
                     while ($row1= mysqli_fetch_array($tampil1)) {
+                        $pd_idpr=$row1['idpr_d'];
+                        $pd_idpr_d=encodeString($pd_idpr);
+                        
                         $ptgl=$row1['tanggal'];
                         $pnmtipe=$row1['nama_tipe'];
                         $pkryid=$row1['karyawanid'];
@@ -130,6 +148,7 @@
                         $pnmdept=$row1['nama_dep'];
                         $pdivid=$row1['divisi'];
                         $psudah=$row1['ssudah'];
+                        $pgbrbukti = $row1["adabukti"];
                         
                         $pjml=$row1['jml'];
                         $pharga=$row1['rp_pr'];
@@ -196,6 +215,10 @@
     
                         //$print="<a title='Print / Cetak' href='eksekusi3.php?module=$pmodule&brid=$pidpr&iprint=print' class='btn btn-info btn-xs' data-toggle='modal' target='_blank'>Print</a>";
                         
+                        $warna="btn btn-success btn-xs";
+                        if (!empty($pgbrbukti)) $warna="btn btn-danger btn-xs";
+                        $upload="<a class='$warna' href='?module=$pmodule&act=uploaddok&idmenu=$pidmenu&nmun=$pidmenu&id=$pidnoget&idd=$pd_idpr_d'>Upload</a>";
+                    
                         if ($pgroupid=="1" OR $pgroupid=="24") {
                         }else{
                             if ($nuseridinput<>$psescardidid) {
@@ -235,6 +258,7 @@
                             echo "<td nowrap>&nbsp;</td>";
                             echo "<td nowrap>&nbsp;</td>";
                         }
+                        echo "<td nowrap>$upload</td>";
                         echo "<td nowrap>$pnmbarang</td>";
                         echo "<td >$pspesifikasi</td>";
                         echo "<td >$pketerangan</td>";
@@ -342,6 +366,7 @@
 <?PHP
 hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
+    mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
     
     mysqli_close($cnmy);
 ?>

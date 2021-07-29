@@ -37,6 +37,53 @@ if ($module=='pchpurchasereq')
         mysqli_close($cnmy);
         header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
         
+        
+    }elseif ($act=="uploaddok") {
+        
+        $kodenya=$_POST['e_id'];
+        $kodenya_d=$_POST['e_idd'];
+        
+        if (!empty($kodenya)) {
+            include "../../../config/koneksimysqli.php";
+            include "../../../config/fungsi_image.php";
+
+            $gambarnya=$_POST['e_imgconv'];
+
+            if (!empty($gambarnya)) {
+                mysqli_query($cnmy, "insert into dbimages.img_pr (idpr, idpr_d, gambar) values ('$kodenya', '$kodenya_d', '$gambarnya')");
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+            }
+
+            mysqli_close($cnmy);
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=sudahsimpan');
+        }
+
+        exit;
+    
+    }elseif ($act=="hapusgambar") {
+        
+        $kodenya=$_GET['id'];
+        $kodenya_d=$_GET['idd'];
+        $idgam="";
+        if (isset($_GET['idgam'])) $idgam=$_GET['idgam'];
+
+        if (!empty($kodenya) AND !empty($idgam)) {
+            include "../../../config/koneksimysqli.php";
+            mysqli_query($cnmy, "delete from dbimages.img_pr WHERE nourut='$idgam' and idpr='$kodenya' and idpr_d='$kodenya_d' LIMIT 1");
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
+            
+            
+            include "../../../config/fungsi_ubahget_id.php";
+            $kodenya=encodeString($kodenya);
+            $kodenya_d=encodeString($kodenya_d);
+            
+            mysqli_close($cnmy);
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=uploaddok&id='.$kodenya.'&idd='.$kodenya_d);
+        }
+
+        exit;
+    
     }elseif ($act=="input" OR $act=="update") {
         
         $pcardidlog=$_POST['e_idcardlogin'];

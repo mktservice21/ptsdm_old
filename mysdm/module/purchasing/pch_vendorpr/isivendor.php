@@ -86,6 +86,8 @@ if (isset($_GET['act'])) $pact=$_GET['act'];
 
 $act="inputvendor";
 
+$pnmbrg=strtoupper($pnmbrg);
+$psatuan=strtoupper($psatuan);
 
 if ($pact=="editisivendor") {
     $pidinput=$_GET['nid'];

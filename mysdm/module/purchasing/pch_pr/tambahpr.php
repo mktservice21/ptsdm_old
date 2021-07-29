@@ -1489,6 +1489,9 @@ th {
                 alert("jumlah harus diisi...!!!"); return false;
             }
             
+            i_nmbrg = i_nmbrg.toUpperCase();
+            i_nmbrg2 = i_nmbrg2.toUpperCase();
+            i_satuan = i_satuan.toUpperCase();
             
             var xtxnmbrg = i_nmbrg.replace(/\s/gm,"");
             var ntxtspc = i_specbrg.replace(/\s/gm,"");

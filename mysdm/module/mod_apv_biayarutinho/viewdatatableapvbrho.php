@@ -141,7 +141,12 @@ session_start();
             <tbody>
                 <?PHP
                 $no=1;
-                $query = "select * from $tmp01 order by idrutin";
+                $query = "select * from $tmp01 ";
+                if ($ppilihsts=="UNAPPROVE") {
+                    $query .= " order by idrutin DESC";
+                }else{
+                    $query .= " order by idrutin";
+                }
                 $tampil1= mysqli_query($cnmy, $query);
                 while ($row1= mysqli_fetch_array($tampil1)) {
                     $pidrutin=$row1['idrutin'];
@@ -206,6 +211,10 @@ session_start();
                             . "onClick=\"window.open('eksekusi3.php?module=editdataketerutincalk&brid=$pidrutin&iprint=nrutin',"
                             . "'Ratting','width=600,height=350,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                             . "Edit Ket.</a>";
+                    }
+                    
+                    if (!empty($ptglfin)) {
+                        $ceklisnya="";
                     }
                     
                     echo "<tr>";

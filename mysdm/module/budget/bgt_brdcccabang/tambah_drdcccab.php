@@ -549,8 +549,8 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis Realisasi <span class='required'></span></label>
                                         <div class='col-xs-9'>
                                             <div style="margin-bottom:2px;">
-                                                <input type="radio" id="chksesuai" name="rb_jenisreal" value="1" <?PHP echo $pchkjenisreal1; ?> onclick="CekDataRealisasi()"> Sesuai Nama Dokter &nbsp;
-                                                <input type="radio" id="chkrelasi" name="rb_jenisreal" value="0" <?PHP echo $pchkjenisreal2; ?> onclick="CekDataRealisasi()"> Relasi Dokter &nbsp;
+                                                <input type="radio" id="chksesuai" name="rb_jenisreal" value="1" <?PHP echo $pchkjenisreal1; ?> onclick="CekDataRealisasi()"> Sesuai Nama User &nbsp;
+                                                <input type="radio" id="chkrelasi" name="rb_jenisreal" value="0" <?PHP echo $pchkjenisreal2; ?> onclick="CekDataRealisasi()"> Relasi User &nbsp;
                                             </div>
                                         </div>
                                     </div>
@@ -596,7 +596,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                 </div>
                                 
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> Nama <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                         <input type='text' id='e_nmbankreal' name='e_nmbankreal' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pnmbankreal; ?>" >

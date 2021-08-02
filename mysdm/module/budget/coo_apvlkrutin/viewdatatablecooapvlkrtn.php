@@ -103,7 +103,7 @@ session_start();
             . " CASE WHEN IFNULL(a.divisi,'')='OTC' THEN a.areaid_o ELSE a.areaid END as areaid, "
             . " a.keterangan, "
             . " a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, a.atasan3, a.tgl_atasan3, a.atasan4, a.tgl_atasan4, "
-            . " a.fin, a.tgl_fin, "
+            . " a.fin, a.tgl_fin, a.tgl_dir, "
             . " a.gbr_atasan1, a.gbr_atasan2, a.gbr_atasan3, a.gbr_atasan4 "
             . " from dbmaster.t_brrutin0 as a "
             . " JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
@@ -267,6 +267,18 @@ session_start();
     $query = "UPDATE $tmp01 as a JOIN mkt.iarea_o as b on a.icabangid=b.icabangid_o AND a.areaid=b.areaid_o SET a.nama_area=b.nama WHERE divisi IN ('OTC', 'CHC')"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "ALTER TABLE $tmp01 ADD COLUMN pbukti VARCHAR(1)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "select distinct a.idrutin from dbimages.img_brrutin1 as a "
+            . " JOIN $tmp01 as b on a.idrutin=b.idrutin";
+    $query = "create TEMPORARY table $tmp02 ($query)"; 
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 a JOIN $tmp02 b on a.idrutin=b.idrutin AND a.idrutin=b.idrutin SET a.pbukti='Y'"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
 ?>
@@ -434,6 +446,7 @@ echo "</div>";
                     <th width='50px'>Periode</th>
                     <th width='50px'>Cabang</th>
                     <th width='50px'>Jumlah</th>
+                    <th width='50px'>Bukti</th>
                     <th width='50px'>Notes</th>
                     <th width='200px'>&nbsp;</th>
                     <th width='50px'>Satus Approve</th>
@@ -458,6 +471,7 @@ echo "</div>";
                     $nper1=$row1['periode1'];
                     $nper2=$row1['periode2'];
                     $njabatanid=$row1['jabatanid'];
+                    $ppsudhbukti=$row1['pbukti'];
                     
                     $nbulan= date("F Y", strtotime($nbulan));
                     $nper1= date("d/m/Y", strtotime($nper1));
@@ -470,6 +484,7 @@ echo "</div>";
                     $ptglatasan3=$row1['tgl_atasan3'];
                     $ptglatasan4=$row1['tgl_atasan4'];
                     $tglfin=$row1['tgl_fin'];
+                    $tgldir=$row1['tgl_dir'];
                     
                     $pidatasan1=$row1['atasan1'];
                     $pidatasan2=$row1['atasan2'];
@@ -483,6 +498,7 @@ echo "</div>";
                     if ($ptglatasan3=="0000-00-00" OR $ptglatasan3=="0000-00-00 00:00:00") $ptglatasan3="";
                     if ($ptglatasan4=="0000-00-00" OR $ptglatasan4=="0000-00-00 00:00:00") $ptglatasan4="";
                     if ($tglfin=="0000-00-00" OR $tglfin=="0000-00-00 00:00:00") $tglfin="";
+                    if ($tgldir=="0000-00-00" OR $tgldir=="0000-00-00 00:00:00") $tgldir="";
                     
                     
                     $pketgsmhos="GSM";
@@ -504,6 +520,14 @@ echo "</div>";
                         . "$pidrutin</a>";
                     
                     $ceklisnya = "<input type='checkbox' value='$pidrutin' name='chkbox_br[]' id='chkbox_br[$pidrutin]' class='cekbr'>";
+                    
+                    $pbukti="";
+                    if (!empty($ppsudhbukti)) {
+                        $pbukti="<a title='lihat bukti' href='#' class='btn btn-danger btn-xs' data-toggle='modal' "
+                            . "onClick=\"window.open('eksekusi3.php?module=entrybrrutin&brid=$pidrutin&iprint=bukti',"
+                            . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                            . "Lihat</a>";
+                    }
                     
                     
                     $pstsapvoleh="";
@@ -571,6 +595,11 @@ echo "</div>";
                         
                         }
                         
+                        
+                        if (empty($tgldir) AND $njabatanid=="05") {
+                            $ceklisnya="";
+                        }
+                        
                         if (!empty($tglfin)) {
                             $pstsapvoleh="<span style='color:blue;'>Sudah Proses Finance</span>";
                             $ceklisnya="";
@@ -596,6 +625,7 @@ echo "</div>";
                     echo "<td nowrap>$nperiodepengajuan</td>";
                     echo "<td nowrap>$pnmcabang</td>";
                     echo "<td nowrap align='right'>$njumlah</td>";
+                    echo "<td nowrap>$pbukti</td>";
                     echo "<td nowrap>$pkeperluan</td>";
                     echo "<td >$nnamakode</td>";
                     echo "<td nowrap>$pstsapvoleh</td>";

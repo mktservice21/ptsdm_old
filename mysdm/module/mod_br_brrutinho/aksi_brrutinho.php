@@ -419,7 +419,7 @@ elseif ($module=='entrybrrutinho' AND ($act=='input' OR $act=='update'))
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         }
         
-        if ($pidkaryawan=="0000001479" AND $act=="input") {
+        if ($pidkaryawan=="0000001479X" AND $act=="input") {
             $query = "UPDATE dbmaster.t_brrutin0 SET atasan4='', tgl_atasan4=NOW() WHERE idrutin='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         }

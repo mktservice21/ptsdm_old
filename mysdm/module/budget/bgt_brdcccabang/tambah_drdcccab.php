@@ -292,8 +292,8 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                     <div class='col-xs-9'>
                                           <select class='form-control input-sm' id='cb_jenis' name='cb_jenis' onchange="" data-live-search="true">
                                             <?PHP 
-                                                echo "<option value='ADVANCE' $pjenis1>Sudah Ada Kuitansi (Advance)</option>";
-                                                echo "<option value='PCM' $pjenis2>Belum Ada Kuitansi (PC-M)</option>";
+                                                echo "<option value='ADVANCE' $pjenis1>Sudah Ada Kuitansi</option>";
+                                                echo "<option value='PCM' $pjenis2>Cash Advance (PC-M)</option>";
                                             ?>
                                           </select>
                                     </div>

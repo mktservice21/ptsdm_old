@@ -1,3 +1,15 @@
+<?PHP
+$ptglnwoabsmsk=date("Y-m-d");
+$pkaryawanabsmsk="";
+if (isset($_SESSION['IDCARD'])) $pkaryawanabsmsk=$_SESSION['IDCARD'];
+$query = "select jam FROM hrd.t_absen WHERE karyawanid='$pkaryawanabsmsk' AND tanggal='$ptglnwoabsmsk' AND kode_absen='2'";
+$tampilabspln=mysqli_query($cnmy, $query);
+$prow= mysqli_fetch_array($tampilabspln);
+$pjampulangabs="<div class='count'>".$prow['jam']."</div>";
+if (empty($pjampulangabs)) {
+    $pjampulangabs="<div class='count'>17:00</div>";
+}
+?>
 
 <div class='modal fade' id='myModalAbsen' role='dialog' class='no-print'></div>
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -7,7 +19,7 @@
             <i class="fa fa-check-square-o"></i>
 
         </div>
-        <div class="count">17:00</div>
+        <?PHP echo $pjampulangabs; ?>
         <h3>
             <!--<button type='button' class='btn btn-default' id='ibuttonsave' data-toggle='modal' data-target='#myModalAbsen' onclick='ShowFormAbsen("2")'>Absen Masuk</button>-->
             <a href='?module=hrdabsenmasuk&act=absenpulang&idmenu=522&kriteria=Y' class='btn btn-default' id='ibuttonsave'>Absen Pulang</a>

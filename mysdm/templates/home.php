@@ -941,6 +941,11 @@
     }elseif ($_GET['module']=='slsreakpdatasales'){
         include 'module/sales/mod_lap_rekapsales/rekapdatasales.php';
         
+    }elseif ($_GET['module']=='hrdabsenmasuk'){
+        include 'module/hrd/hrd_absen/absen.php';
+    }elseif ($_GET['module']=='hrdreportabsen'){
+        include 'module/hrd/hrd_rptabsen/rptabsen.php';
+        
 
     }else{
         include 'del_session.php';

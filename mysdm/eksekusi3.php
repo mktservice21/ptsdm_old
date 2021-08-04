@@ -660,6 +660,9 @@
     }elseif ($_GET['module']=='slsreakpdatasales'){
         include 'module/sales/mod_lap_rekapsales/aksi_rekapdatasales.php';
         
+    }elseif ($_GET['module']=='hrdreportabsen'){
+        include 'module/hrd/hrd_rptabsen/aksi_rptabsen.php';
+        
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';
         

@@ -945,6 +945,10 @@
         include 'module/hrd/hrd_absen/absen.php';
     }elseif ($_GET['module']=='hrdreportabsen'){
         include 'module/hrd/hrd_rptabsen/rptabsen.php';
+    }elseif ($_GET['module']=='hrdreportrinciabsen'){
+        include 'module/hrd/hrd_rptrinciabsen/rptrinciabsen.php';
+    }elseif ($_GET['module']=='hrdlokasirumah'){
+        include 'module/hrd/hrd_lokasirumah/lokasirumah.php';
         
 
     }else{

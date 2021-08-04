@@ -39,7 +39,7 @@
     
     $query = "select idpo, karyawanid, tanggal, kdsupp, notes, idbayar, tglkirim, note_kirim, status_bayar, "
             . " apv_mgr, tgl_mgr, dir1, dir2, tgl_dir1, tgl_dir2, "
-            . " ppn, ppnrp, disc, discrp, pembulatan, totalrp, dpp, pph, pph_rp, pph_jns, id_alamat "
+            . " ppn as ppn_h, ppnrp as ppnrp_h, disc, discrp, pembulatan, totalrp, dpp, pph, pph_rp, pph_jns, id_alamat "
             . " from dbpurchasing.t_po_transaksi WHERE "
             . " IFNULL(stsnonaktif,'')<>'Y' AND idpo='$pidpo'";
     $tampil= mysqli_query($cnmy, $query);
@@ -64,6 +64,9 @@
     $ppphjns_h=$row['pph_jns'];
     $ppph_h=$row['pph'];
     $ppphrp_h=$row['pph_rp'];
+    
+    $pppn_h=$row['ppn_h'];
+    $pppnrp_h=$row['ppnrp_h'];
     
     
     $pidalamatkirim=$row['id_alamat'];
@@ -453,7 +456,9 @@
                     $no++;
                 }
                 
-                $ptotalbayar=BuatFormatNum($ptotalbayar, $ppilformat);
+                if ((DOUBLE)$pdpprp==(DOUBLE)$ptotalbayar) {
+                    $pdpprp=0;
+                }
                 
                 if ((DOUBLE)$pdpprp<>0) {
                     $pdpprp=BuatFormatNum($pdpprp, $ppilformat);
@@ -467,6 +472,24 @@
                     echo "<td nowrap align='right'>$pdpprp</td>";
                     echo "</tr>";
                 }
+                
+                if ((DOUBLE)$pppnrp_h<>0) {
+                    $ptotalbayar=(DOUBLE)$ptotalbayar+(DOUBLE)$pppnrp_h;
+                    
+                    $pppn_h=str_replace(".00", "", $pppn_h);
+                    $pppnrp_h=BuatFormatNum($pppnrp_h, $ppilformat);
+                    echo "<tr style='font-weight:bold;'>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap>Include PPN $pppn_h% :</td>";
+                    echo "<td nowrap align='right'>$pppnrp_h</td>";
+                    echo "</tr>";
+                }
+                
+                
+                $ptotalbayar=BuatFormatNum($ptotalbayar, $ppilformat);
                 
                 if ((DOUBLE)$pdiscrp_h<>0) {
                     $pdisc_h=BuatFormatNum($pdisc_h, $ppilformat);

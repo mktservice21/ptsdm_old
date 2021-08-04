@@ -39,6 +39,7 @@
     $pidmenu=$_GET['idmenu'];
     
     include "../../config/koneksimysqli.php";
+    include "../../config/fungsi_ubahget_id.php";
     
     
     
@@ -50,12 +51,12 @@
     $tmp05 =" dbtemp.TMPRTCAOTCHO05_".$puserid."_$now ";
     
     
-    $query = "SELECT userid, idrutin, tgl, bulan, periode1, periode2, "
+    $query = "SELECT idca, userid, idrutin, tgl, bulan, periode1, periode2, "
             . " divisi, karyawanid, icabangid_o icabangid, areaid_o areaid, jumlah, keterangan, "
             . " jabatanid, tgl_atasan1, tgl_atasan2, tgl_atasan3, tgl_atasan4, validate, fin, tgl_fin, nama_karyawan ";
     $query .=" FROM dbmaster.t_brrutin0 WHERE IFNULL(stsnonaktif,'')<>'Y' AND "
             . " ( (tgl BETWEEN '$ptgl1' AND '$ptgl2') OR (bulan BETWEEN '$ptgl1' AND '$ptgl2') ) ";
-    $query .=" AND divisi='OTC' ";
+    $query .=" AND divisi='OTC' AND kode='1' ";
 
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -144,6 +145,7 @@
                     $pkaryawanid=$row['karyawanid'];
                     $pnama=$row["nama"];
                     $ptglinput=$row["tgl"];
+                    $ppinputsendiri=$row["idca"];
                     
                     $pperiode = $row["bulan"];
                     $pjumlah = $row["jumlah"];
@@ -188,6 +190,14 @@
                         . "onClick=\"window.open('eksekusi3.php?module=entrybrrutin&brid=$pidno&iprint=print',"
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                         . "Print</a>";
+                    
+                    $pidnoget=encodeString($pidno);
+                    if ($ppinputsendiri=="HO") {
+                        $pprint="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+                            . "onClick=\"window.open('eksekusi3.php?module=entrybrrutinho&brid=$pidnoget&iprint=print',"
+                            . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                            . "Print</a>";
+                    }
     
                     
                     if ($psudahpros=="C") {

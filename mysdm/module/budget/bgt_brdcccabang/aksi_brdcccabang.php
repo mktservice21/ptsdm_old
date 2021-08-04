@@ -252,7 +252,7 @@ if ($module=='brudcccabang')
             mysqli_query($cnms, "DROP TEMPORARY TABLE IF EXISTS $tmp00");
             mysqli_close($cnms);
             //header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=error&iderror='.$erropesan);
-            exit; 
+            exit;
             
         
     }

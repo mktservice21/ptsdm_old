@@ -1,13 +1,18 @@
 <?PHP
 $ptglnwoabsmsk=date("Y-m-d");
 $pkaryawanabsmsk="";
-if (isset($_SESSION['IDCARD'])) $pkaryawanabsmsk=$_SESSION['IDCARD'];
+$pkryjampulang="00:00";
+
+if (isset($_SESSION['IDCARD']))     $pkaryawanabsmsk=$_SESSION['IDCARD'];
+if (isset($_SESSION['J_PULANG']))   $pkryjampulang=$_SESSION['J_PULANG'];
+
 $query = "select jam FROM hrd.t_absen WHERE karyawanid='$pkaryawanabsmsk' AND tanggal='$ptglnwoabsmsk' AND kode_absen='2'";
 $tampilabspln=mysqli_query($cnmy, $query);
 $prow= mysqli_fetch_array($tampilabspln);
-$pjampulangabs="<div class='count'>".$prow['jam']."</div>";
-if (empty($pjampulangabs)) {
-    $pjampulangabs="<div class='count'>17:00</div>";
+$pjmabsen=$prow['jam'];
+$pjampulangabs="<div class='count'>".$pjmabsen."</div>";
+if (empty($pjmabsen)) {
+    $pjampulangabs="<div class='count' style='color:#C0C0C0'>$pkryjampulang</div>";
 }
 ?>
 

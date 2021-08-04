@@ -1,7 +1,29 @@
 <?PHP
-    $platitude_home="";
-    $plongitude_home="";
+$ptglnwoabsmsk=date("Y-m-d");
+$pkaryawanabsmsk="";
+if (isset($_SESSION['IDCARD'])) $pkaryawanabsmsk=$_SESSION['IDCARD'];
+
+$query = "select jam FROM hrd.t_absen WHERE karyawanid='$pkaryawanabsmsk' AND tanggal='$ptglnwoabsmsk' AND kode_absen='3'";
+$tampilabsist=mysqli_query($cnmy, $query);
+$irow= mysqli_fetch_array($tampilabsist);
+$pjamistabs="<div class='count'>".$irow['jam']."</div>";
+if (empty($pjamistabs)) {
+    $pjamistabs="<div class='count'>12:00</div>";
+}
+
+$query = "select jam FROM hrd.t_absen WHERE karyawanid='$pkaryawanabsmsk' AND tanggal='$ptglnwoabsmsk' AND kode_absen='4'";
+$tampilabsist_msk=mysqli_query($cnmy, $query);
+$irow_m= mysqli_fetch_array($tampilabsist_msk);
+$pjamistabs_msk="<div class='count'>".$irow_m['jam']."</div>";
+if (empty($pjamistabs_msk)) {
+    $pjamistabs_msk="<div class='count'>13:00</div>";
+}
+
+$platitude_home="";
+$plongitude_home="";
 ?>
+
+
 <div>
     <input type='hidden' id='e_latitude_home' name='e_latitude_home' class='form-control col-md-7 col-xs-12' value='<?PHP echo $platitude_home; ?>' Readonly>
     <input type='hidden' id='e_longitude_home' name='e_longitude_home' class='form-control col-md-7 col-xs-12' value='<?PHP echo $plongitude_home; ?>' Readonly>
@@ -10,7 +32,7 @@
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
         <div class="icon"><i class="fa fa-comments-o"></i></div>
-        <div class="count">12:00</div>
+        <?PHP echo $pjamistabs; ?>
         <h3><button type='button' class='btn btn-default' id="ibuttonsave" onclick='SimpanAbsensiHome("3")'>Absen Istirahat</button></h3>
         <p>&nbsp;</p>
     </div>
@@ -20,7 +42,7 @@
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div class="tile-stats">
         <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
-        <div class="count">13:00</div>
+        <?PHP echo $pjamistabs_msk; ?>
         <h3><button type='button' class='btn btn-default' id="ibuttonsave" onclick='SimpanAbsensiHome("4")'>Selesai Istirahat</button></h3>
         <p>&nbsp;</p>
     </div>
@@ -87,7 +109,7 @@
                 
                 $.ajax({
                     type:"post",
-                    url:"module/hrd/simpanabsenhome.php?module="+module+"&act=simpandataabsen&idmenu="+idmenu,
+                    url:"module/hrd/hrd_absen/simpanabsenistirahat.php?module="+module+"&act=simpandataabsen&idmenu="+idmenu,
                     data:"ukey="+sKey+"&ulat="+ilat+"&ulong="+ilong,
                     success:function(data){
                         alert(data);

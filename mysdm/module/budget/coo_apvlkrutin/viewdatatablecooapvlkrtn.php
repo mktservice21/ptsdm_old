@@ -117,7 +117,7 @@ session_start();
     }elseif ($pmodule=="lkrtnapvprbyho") {
         $query .= " AND a.divisi IN ('HO') ";
     }elseif ($pmodule=="appdirrutin") {
-        $query .= " AND a.divisi NOT IN ('OTC', 'CHC') ";
+        //$query .= " AND a.divisi NOT IN ('OTC', 'CHC') ";
     }else{
         $query .= " AND a.divisi NOT IN ('OTC', 'CHC', 'HO') ";
     }

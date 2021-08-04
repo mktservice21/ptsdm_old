@@ -37,7 +37,12 @@ if ($pmodule=="cariareacabang") {
         //include "../../config/koneksimysqli.php";
 
         echo "<option value=''>-- All --</option>";
-        $query = "select icabangid iCabangId, areaid areaId, nama Nama from sls.iarea where aktif='Y' AND icabangid='$pidcabang' $piarean order by Nama";
+        //$query = "select icabangid iCabangId, areaid areaId, nama Nama from sls.iarea where aktif='Y' AND icabangid='$pidcabang' $piarean order by Nama";
+        
+        if (empty($piarean)) $piarean = " AND aktif='Y' ";
+        $query = "select icabangid iCabangId, areaid areaId, nama Nama from sls.iarea where icabangid='$pidcabang' $piarean ";
+        $query .=" order by Nama";
+        
         $tampil = mysqli_query($cnms, $query);
         while ($rx= mysqli_fetch_array($tampil)) {
             $nidarea=$rx['areaId'];

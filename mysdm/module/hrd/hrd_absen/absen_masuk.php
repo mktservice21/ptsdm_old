@@ -1,13 +1,18 @@
 <?PHP
 $ptglnwoabsmsk=date("Y-m-d");
 $pkaryawanabsmsk="";
-if (isset($_SESSION['IDCARD'])) $pkaryawanabsmsk=$_SESSION['IDCARD'];
+$pkryjammasuk="00:00";
+
+if (isset($_SESSION['IDCARD']))     $pkaryawanabsmsk=$_SESSION['IDCARD'];
+if (isset($_SESSION['J_MASUK']))    $pkryjammasuk=$_SESSION['J_MASUK'];
+
 $query = "select jam FROM hrd.t_absen WHERE karyawanid='$pkaryawanabsmsk' AND tanggal='$ptglnwoabsmsk' AND kode_absen='1'";
 $tampilabsmsk=mysqli_query($cnmy, $query);
 $mrow= mysqli_fetch_array($tampilabsmsk);
-$pjammasukabs="<div class='count'>".$mrow['jam']."</div>";
-if (empty($pjammasukabs)) {
-    $pjammasukabs="<div class='count'>08:00</div>";
+$pjmabsen=$mrow['jam'];
+$pjammasukabs="<div class='count'>".$pjmabsen."</div>";
+if (empty($pjmabsen)) {
+    $pjammasukabs="<div class='count' style='color:#C0C0C0'>$pkryjammasuk</div>";
 }
 ?>
 <div class='modal fade' id='myModalAbsen' role='dialog' class='no-print'></div>

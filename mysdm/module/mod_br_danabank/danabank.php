@@ -105,6 +105,23 @@
                         }
                     }
                     
+                    function ViewDataBankKeluar(ntxt_ket) {
+                        var ket="";
+                        var etgl1=document.getElementById('tgl1').value;
+                        var etgl2=document.getElementById('tgl2').value;
+
+                        $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+                        $.ajax({
+                            type:"post",
+                            url:"module/mod_br_danabank/viewdatabankkeluar.php?module="+ket,
+                            data:"uketinput="+ntxt_ket+"&uperiode1="+etgl1+"&uperiode2="+etgl2,
+                            success:function(data){
+                                $("#c-data").html(data);
+                                $("#loading").html("");
+                            }
+                        });
+                    }
+
                     function BuatLapTransferUlang(ntxt_ket){
                         var eperiode=document.getElementById('tgl1').value;
                         
@@ -152,10 +169,10 @@
                                 onclick="window.location.href='<?PHP echo "?module=$_GET[module]&idmenu=$_GET[idmenu]&act=tambahbaru"; ?>';">
                                 <?PHP if ($pses_grpuser=="1" OR $pses_grpuser=="24" OR $pses_grpuser=="25") { ?>
                                     &nbsp;<input type='button' class='btn btn-primary' id="s-submit" value="Bank Masuk (Debit)" onclick="IsiBankSPD('1')">
-                                    &nbsp;<input type='button' class='btn btn-info' id="s-submit" value="Bank Keluar (Kredit)" onclick="IsiBankSPD('2')">
+                                    &nbsp;<input type='button' class='btn btn-info' id="s-submit" value="Bank Keluar (Kredit)" onclick="ViewDataBankKeluar('2')">
                                     &nbsp;<input type='button' class='btn btn-warning' id="s-submit" value="Proses Saldo Bank" onclick="IsiBankSPD('3')">
                                 <?PHP }else{ ?>
-                                    &nbsp;<input type='button' class='btn btn-info' id="s-submit" value="Bank Keluar (Kredit)" onclick="IsiBankSPD('2')">
+                                    &nbsp;<input type='button' class='btn btn-info' id="s-submit" value="Bank Keluar (Kredit)" onclick="ViewDataBankKeluar('2')">
                                 <?PHP } ?>
                                 <small></small>
                             </h2>

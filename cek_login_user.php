@@ -354,7 +354,6 @@ if ($pberhasillogin==true) {
     
     //END cek menu tambahan
     
-    
     //CEK ABSEN
     $_SESSION['K_LATITUDE']="";
     $_SESSION['K_LONGITUDE']="";
@@ -416,8 +415,6 @@ if ($pberhasillogin==true) {
         }
     }
     //END CEK ABSEN
-    
-    
     
     //CEK FOTO IMG
     $querytf = "select itipe from dbimages.img_foto_karyawan WHERE karyawanid='$pidkaryawan'";

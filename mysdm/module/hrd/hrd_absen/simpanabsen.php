@@ -57,22 +57,11 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     include "../../../config/fungsi_sql.php";
     
     
-    $pabsensiwfh=false;
-    $query = "select * from hrd.sdm_lokasi";
-    $tampil= mysqli_query($cnmy, $query);
-    $row= mysqli_fetch_array($tampil);
-    $sdmlat=$row['sdm_latitude'];
-    $sdmlong=$row['sdm_longitude'];
-    $sdmradius=$row['sdm_radius'];
-    
-    if (empty($sdmlat)) $sdmlat=0;
-    if (empty($sdmlong)) $sdmlong=0;
-    if (empty($sdmradius)) $sdmradius=0;
-    
-    
+    $pabsensiwfh=false;    
     $a_lat="";
     $a_long="";
     $a_radius="";
+    $a_idstaus="HO1";
     
     $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pcardidabsen'";
     $tampilwfh= mysqli_query($cnmy, $query);
@@ -82,11 +71,24 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
         $a_lat=$row['a_latitude'];
         $a_long=$row['a_longitude'];
         $a_radius=$row['a_radius'];
+        $a_idstaus=$row['id_status'];
         $pabsensiwfh=true;
     }
     if (empty($a_lat)) $a_lat=0;
     if (empty($a_long)) $a_long=0;
     if (empty($a_radius)) $a_radius=0;
+    
+    
+    $query = "select * from hrd.sdm_lokasi WHERE id_status='$a_idstaus'";
+    $tampil= mysqli_query($cnmy, $query);
+    $row= mysqli_fetch_array($tampil);
+    $sdmlat=$row['sdm_latitude'];
+    $sdmlong=$row['sdm_longitude'];
+    $sdmradius=$row['sdm_radius'];
+    
+    if (empty($sdmlat)) $sdmlat=0;
+    if (empty($sdmlong)) $sdmlong=0;
+    if (empty($sdmradius)) $sdmradius=0;
     
     $plangitut_rds="";
     $plongitut_rds="";
@@ -119,7 +121,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     if ( ((DOUBLE)$pjarak_absen_wfo>(DOUBLE)$sdmradius) AND ((DOUBLE)$pjarak_absen_wfh>(DOUBLE)$a_radius) ) {
         mysqli_close($cnmy);
-        echo "GAGAL...\n"."Lokasi ABSEN Tidak Sesuai...\n"."Jarak dari Kantor : ".$pjarak_absen_wfo." KM\n"."Jarak dari Rumah : ".$pjarak_absen_wfh." KM";
+        echo "GAGAL...\n"."Lokasi ABSEN Tidak Sesuai...\n"."Jarak dari Kantor : ".$pjarak_absen_wfo." \n"."Jarak dari Rumah : ".$pjarak_absen_wfh." ";
         exit;
     }
     

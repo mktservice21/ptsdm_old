@@ -13,7 +13,8 @@
     $plangitude="";//-6.1910063
     $plongitude="";//106.8500943    -6.190690628090547, 106.85030691323897
     $pradius=0.10;
-    $judul="Lokasi Rumah";
+    $pidstatus="HO1";
+    
     
     $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pkaryawanid'";
     $tampil= mysqli_query($cnmy, $query);
@@ -24,7 +25,11 @@
         $plangitude=$row['a_latitude'];
         $plongitude=$row['a_longitude'];
         $pradius=$row['a_radius'];
+        $pidstatus=$row['id_status'];
     }
+    
+    
+    $judul="Lokasi Rumah";
     
 ?>
 
@@ -116,6 +121,18 @@
                                             <div class='col-md-4'>
                                                 <input type='hidden' id='e_idkaryawan' name='e_idkaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkaryawanid; ?>' Readonly>
                                                 <input type='text' id='e_nmkaryawan' name='e_nmkaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkaryawannm; ?>' Readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div hidden class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Lokasi (Status) <span class='required'></span></label>
+                                            <div class='col-xs-4'>
+                                                  <select class='form-control input-sm' id='cb_lokasists' name='cb_lokasists' onchange="" data-live-search="true">
+                                                    <?PHP
+                                                        //$pidstatus
+                                                        echo "<option value='HO1' selected>HO1</option>";
+                                                    ?>
+                                                  </select>
                                             </div>
                                         </div>
                                         

@@ -55,12 +55,16 @@
             . " LEFT JOIN hrd.karyawan as e on a.atasan4=e.karyawanid "
             . " WHERE "
             . " a.idrutin='$pidrutin' ";
-    if ( ($pidgroup=="28" AND $pidcard=="0000000143") OR $pidgroup=="50" OR $pidgroup=="46" OR $pidgroup=="1" OR $pidgroup=="24" ) {
-        if ($pidgroup == "50") {
-            $query .=" AND ( a.karyawanid='$pidcard' OR a.karyawanid IN $pfilterkrypilih ) ";
-        }
+    if ( $pidgroup=="26" ) {
+        
     }else{
-        $query .=" AND (a.karyawanid='$pidcard' OR atasan4='$pidcard') ";
+        if ( ($pidgroup=="28" AND $pidcard=="0000000143") OR $pidgroup=="50" OR $pidgroup=="46" OR $pidgroup=="1" OR $pidgroup=="24" ) {
+            if ($pidgroup == "50") {
+                $query .=" AND ( a.karyawanid='$pidcard' OR a.karyawanid IN $pfilterkrypilih ) ";
+            }
+        }else{
+            $query .=" AND (a.karyawanid='$pidcard' OR atasan4='$pidcard') ";
+        }
     }
     $result = mysqli_query($cnmy, $query);
     $row = mysqli_fetch_array($result);

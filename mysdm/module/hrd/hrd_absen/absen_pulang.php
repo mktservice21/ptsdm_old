@@ -32,7 +32,7 @@ if (!empty($pidabsen)) {
 
         <div class="icon">
             <?PHP
-            $iconasli="<i class='fa fa-check-square-o'></i>";
+            $iconasli="<i class='glyphicon glyphicon-log-out'></i>";
             if (!empty($pgambarabs)) {
                 $folderfotofileabs="images/foto_absen/".$pgambarabs;
                 if (!file_exists($folderfotofileabs)) {

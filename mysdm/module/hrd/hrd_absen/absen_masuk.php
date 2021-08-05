@@ -6,13 +6,22 @@ $pkryjammasuk="00:00";
 if (isset($_SESSION['IDCARD']))     $pkaryawanabsmsk=$_SESSION['IDCARD'];
 if (isset($_SESSION['J_MASUK']))    $pkryjammasuk=$_SESSION['J_MASUK'];
 
-$query = "select jam FROM hrd.t_absen WHERE karyawanid='$pkaryawanabsmsk' AND tanggal='$ptglnwoabsmsk' AND kode_absen='1'";
+$query = "select idabsen, jam FROM hrd.t_absen WHERE karyawanid='$pkaryawanabsmsk' AND tanggal='$ptglnwoabsmsk' AND kode_absen='1'";
 $tampilabsmsk=mysqli_query($cnmy, $query);
 $mrow= mysqli_fetch_array($tampilabsmsk);
 $pjmabsen=$mrow['jam'];
+$pidabsen=$mrow['idabsen'];
 $pjammasukabs="<div class='count'>".$pjmabsen."</div>";
 if (empty($pjmabsen)) {
     $pjammasukabs="<div class='count' style='color:#C0C0C0'>$pkryjammasuk</div>";
+}
+
+$pgambarabs="";
+if (!empty($pidabsen)) {
+    $query = "select nama FROM dbimages2.img_absen WHERE idabsen='$pidabsen' AND kode_absen='1'";
+    $tampilabsimg=mysqli_query($cnmy, $query);
+    $rimg= mysqli_fetch_array($tampilabsimg);
+    $pgambarabs=$rimg['nama'];
 }
 ?>
 <div class='modal fade' id='myModalAbsen' role='dialog' class='no-print'></div>
@@ -20,8 +29,19 @@ if (empty($pjmabsen)) {
     <div class="tile-stats">
 
         <div class="icon">
-            <i class="fa fa-caret-square-o-right"></i>
-
+            <?PHP
+            $iconasli="<i class='fa fa-caret-square-o-right'></i>";
+            if (!empty($pgambarabs)) {
+                $folderfotofileabs="images/foto_absen/".$pgambarabs;
+                if (!file_exists($folderfotofileabs)) {
+                    echo "Kosong";
+                }else{
+                    echo "<img src='$folderfotofileabs' width='50px' height='50px' />";
+                }
+            }else{
+                echo $iconasli;
+            }
+            ?>
         </div>
         <?PHP echo $pjammasukabs; ?>
         <h3>

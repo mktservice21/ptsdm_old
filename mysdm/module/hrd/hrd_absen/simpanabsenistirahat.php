@@ -63,7 +63,7 @@ if ($pact=="simpandataabsen") {
     $a_radius="";
     $a_idstaus="HO1";
     
-    $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pcardidabsen'";
+    $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pcardidabsen' AND IFNULL(aktif,'')='Y'";
     $tampilwfh= mysqli_query($cnmy, $query);
     $ketemuwfh= mysqli_num_rows($tampilwfh);
     if ((INT)$ketemuwfh>0) {
@@ -142,8 +142,8 @@ if ($pact=="simpandataabsen") {
         $ketemu= mysqli_num_rows($tampil);
         if ((INT)$ketemu==0) {
             mysqli_close($cnmy);
-            echo "Tidak ada proses absen...\n"."Karena anda belum absen masuk...";
-            exit;
+            //echo "Tidak ada proses absen...\n"."Karena anda belum absen masuk..."; exit;
+            echo "t_234"; exit;
         }
     }
     
@@ -154,8 +154,8 @@ if ($pact=="simpandataabsen") {
         $ketemu= mysqli_num_rows($tampil);
         if ((INT)$ketemu>0) {
             mysqli_close($cnmy);
-            echo "Tidak ada proses absen...\n"."Karena sudah absen pulang...";
-            exit;
+            //echo "Tidak ada proses absen...\n"."Karena sudah absen pulang..."; exit;
+            echo "t_34"; exit;
         }
     }
     
@@ -171,8 +171,7 @@ if ($pact=="simpandataabsen") {
             
             if ((INT)$ketemu==0) {
                 mysqli_close($cnmy);
-                echo "Tidak ada proses absen...\n"."Karena anda belum absen masuk dari istirahat...";
-                exit;
+                echo "Tidak ada proses absen...\n"."Karena anda belum absen masuk dari istirahat..."; exit;
             }
             
         }
@@ -184,8 +183,8 @@ if ($pact=="simpandataabsen") {
         $ketemu= mysqli_num_rows($tampil);
         if ((INT)$ketemu==0) {
             mysqli_close($cnmy);
-            echo "Tidak ada proses absen...\n"."Karena anda belum absen istirahat...";
-            exit;
+            //echo "Tidak ada proses absen...\n"."Karena anda belum absen istirahat..."; exit;
+            echo "t_4"; exit;
         }
     }
     
@@ -194,13 +193,29 @@ if ($pact=="simpandataabsen") {
     $ketemu= mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {
         mysqli_close($cnmy);
-        echo "Tidak ada proses absen...\n"."Karena anda sudah $pnamaabse..., tidak bisa diulang";
-        exit;
+        //echo "Tidak ada proses absen...\n"."Karena anda sudah $pnamaabse..., tidak bisa diulang"; exit;
+        echo "t_ulang"; exit;
+    }
+    
+    $psudahabsenmasuk_status="";
+    $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='1' AND karyawanid='$pcardidabsen'";
+    $tampil_= mysqli_query($cnmy, $query);
+    $nrow= mysqli_fetch_array($tampil_);
+    $psudahabsenmasuk_status=$nrow['l_status'];
+
+    if (!empty($psudahabsenmasuk_status)) {
+        if ($plokasiabs<>$psudahabsenmasuk_status) {
+            mysqli_close($cnmy);
+            //echo "Tidak bisa absen...\n"."Absen masuk anda $psudahabsenmasuk_status..."; exit;
+            echo "t_lokasinot"; exit;
+        }
     }
     
     $query = "INSERT INTO hrd.t_absen(kode_absen, karyawanid, tanggal, jam, l_latitude, l_longitude, l_status, l_radius, l_jarak)VALUES"
             . "('$pkey', '$pcardidabsen', '$ptglabsen', '$pjamabsen', '$plangitut', '$plongitut', '$plokasiabs', '$pradius_rds', '$pjarakdarilokasi')";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "t_error"; mysqli_close($cnmy); exit; }
+    
+    $pkodeid = mysqli_insert_id($cnmy);
     
     $pberhasil="Anda berhasil $pnamaabse, Tgl : $ptangga, Jam : $pjam";
     

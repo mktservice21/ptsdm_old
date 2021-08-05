@@ -30,8 +30,8 @@ if (!empty($pidabsen)) {
 
         <div class="icon">
             <?PHP
-            $iconasli="<i class='fa fa-caret-square-o-right'></i>";
-            if (!empty($pgambarabs)) {
+            $iconasli="<i class='glyphicon glyphicon-check'></i>";
+            if (empty($pgambarabs)) {
                 $folderfotofileabs="images/foto_absen/".$pgambarabs;
                 if (!file_exists($folderfotofileabs)) {
                     echo "Kosong";

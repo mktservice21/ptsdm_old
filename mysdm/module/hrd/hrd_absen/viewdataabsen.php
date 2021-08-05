@@ -44,7 +44,7 @@ if ($pmodule=="carisudahabsen") {
         }
         
         echo "<div class='tile-stats'>";
-            echo "<div class='icon'><i class='fa fa-comments-o'></i></div>";
+            echo "<div class='icon'><i class='glyphicon glyphicon-upload'></i></div>";
             echo $pjamistabs;
             echo "<h3><button type='button' class='btn btn-default' id='ibuttonsave' $ponclickabsist >Absen Istirahat</button></h3>";
             echo "<p>&nbsp;</p>";
@@ -65,7 +65,7 @@ if ($pmodule=="carisudahabsen") {
         }
         
         echo "<div class='tile-stats'>";
-            echo "<div class='icon'><i class='fa fa-sort-amount-desc'></i></div>";
+            echo "<div class='icon'><i class='glyphicon glyphicon-download'></i></div>";
             echo $pjamistabs_msk;
             echo "<h3><button type='button' class='btn btn-default' id='ibuttonsave' $ponclickabsistmsk >Selesai Istirahat</button></h3>";
             echo "<p>&nbsp;</p>";

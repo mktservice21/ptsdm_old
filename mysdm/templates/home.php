@@ -949,6 +949,8 @@
         include 'module/hrd/hrd_rptrinciabsen/rptrinciabsen.php';
     }elseif ($_GET['module']=='hrdlokasirumah'){
         include 'module/hrd/hrd_lokasirumah/lokasirumah.php';
+    }elseif ($_GET['module']=='hrdrptabsenmasuk'){
+        include 'module/hrd/hrd_rptabsenmasuk/rptabsenmasuk.php';
         
 
     }else{

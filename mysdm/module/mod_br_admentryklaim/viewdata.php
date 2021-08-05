@@ -26,7 +26,7 @@ if ($pmodule=="caridataaktivitas") {
     elseif ($pregion=="T") $pnamareg="Reg II";
     //spp = 2
     $pbulan=date('F Y', strtotime($pbln));
-    if ((DOUBLE)$pdistid==2 || $pdistid=="0000000002") {
+    if ((DOUBLE)$pdistid==299999 || $pdistid=="0000000002X") {
         $pbulan=date('F Y', strtotime($pbln))." ".date('d/m/Y', strtotime($pper1))." s/d. ".date('d/m/Y', strtotime($pper2));
     }
     

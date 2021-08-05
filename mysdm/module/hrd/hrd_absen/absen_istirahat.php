@@ -39,7 +39,7 @@ $plongitude_home="";
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div id="div_istirahat">
         <div class="tile-stats">
-            <div class="icon"><i class="fa fa-comments-o"></i></div>
+            <div class="icon"><i class="glyphicon glyphicon-upload"></i></div>
             <?PHP echo $pjamistabs; ?>
             <h3><button type='button' class='btn btn-default' id="ibuttonsave" onclick='SimpanAbsensiHome("3")'>Absen Istirahat</button></h3>
             <p>&nbsp;</p>
@@ -51,7 +51,7 @@ $plongitude_home="";
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div id="div_sdhistirahat">
         <div class='tile-stats'>
-            <div class='icon'><i class='fa fa-sort-amount-desc'></i></div>
+            <div class='icon'><i class='glyphicon glyphicon-download'></i></div>
             <?PHP echo $pjamistabs_msk; ?>
             <h3><button type='button' class='btn btn-default' id='ibuttonsave' onclick='SimpanAbsensiHome("4")'>Selesai Istirahat</button></h3>
             <p>&nbsp;</p>

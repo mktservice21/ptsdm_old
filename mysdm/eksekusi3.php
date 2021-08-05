@@ -664,6 +664,8 @@
         include 'module/hrd/hrd_rptabsen/aksi_rptabsen.php';
     }elseif ($_GET['module']=='hrdreportrinciabsen'){
         include 'module/hrd/hrd_rptrinciabsen/aksi_rptrinciabsen.php';
+    }elseif ($_GET['module']=='hrdrptabsenmasuk'){
+        include 'module/hrd/hrd_rptabsenmasuk/aksi_rptabsenmasuk.php';
         
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';

@@ -44,7 +44,7 @@ $pnamakarywanpl=$rowk['nama'];
 $pnmjbtkarywanpl=$rowk['nama_jabatan'];
 
 
-$sql = "select id_status, karyawanid, kode_absen, tanggal, jam FROM hrd.t_absen "
+$sql = "select id_status, karyawanid, kode_absen, tanggal, jam, keterangan FROM hrd.t_absen "
         . " WHERE 1=1 ";
 if (!empty($pkryid)) $sql .=" AND karyawanid='$pkryid'";
 $sql .=" AND LEFT(tanggal,7)= '$pbulan'";
@@ -237,13 +237,19 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "ALTER TABLE $tmp03 ADD COLUMN jam_masuk VARCHAR(5), ADD COLUMN jam_istirahat VARCHAR(5), ADD COLUMN jam_masuk_ist VARCHAR(5), "
-        . " ADD COLUMN jam_pulang VARCHAR(5), ADD COLUMN ket_absen VARCHAR(100)";
+        . " ADD COLUMN jam_pulang VARCHAR(5), ADD COLUMN ket_absen VARCHAR(100), ADD COLUMN keterangan VARCHAR(300)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
 $query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, jam, ket_absen FROM $tmp01 WHERE kode_absen='1') as b "
         . " on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.jam_masuk=b.jam, a.ket_absen=b.ket_absen";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+//keterangan
+$query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, keterangan FROM $tmp01 WHERE kode_absen='1') as b "
+        . " on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.keterangan=b.keterangan";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 
 $query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, jam FROM $tmp01 WHERE kode_absen='2') as b "
         . " on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.jam_pulang=b.jam";
@@ -344,6 +350,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 $njampulang=$row0['jam_pulang'];
                 $njamistirahat=$row0['jam_istirahat'];
                 $njammmst_ist=$row0['jam_masuk_ist'];
+                $nketerangan=$row0['keterangan'];
                 $nket_abs=$row0['ket_absen'];
                 
                 
@@ -367,6 +374,10 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     }
                 }
                 
+                if (!empty($nketerangan)) {
+                    if (empty($nketerangan_abs)) $nketerangan_abs=$nketerangan;
+                    else $nketerangan_abs=$nketerangan.", ".$nketerangan_abs;
+                }
                 
                 echo "<tr $pclasslibur>";
                 echo "<td nowrap>$pharitanggal</td>";

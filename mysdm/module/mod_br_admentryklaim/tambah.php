@@ -959,7 +959,7 @@ if ($pact=="editdata"){
         
         
         document.getElementById('e_periode1').value="01 "+nbulan1+" "+ntahun1;
-        if (edist=="0000000002" || edist=="2") {
+        if (edist=="0000000002X" || edist=="299999") {
             document.getElementById('e_periode2').value="15 "+nbulan1+" "+ntahun1;
         }else{
             document.getElementById('e_periode2').value=ntgl1+" "+nbulan1+" "+ntahun1;

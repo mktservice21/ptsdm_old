@@ -333,7 +333,7 @@ if ($ketemumysql > 0){
     $_SESSION['J_MSKISTIRAHAT']="";
     $_SESSION['J_MENIT_LAMBAT_MASUK']="";
     
-    $queryabs = "select id_status, a_latitude, a_longitude, a_radius from hrd.karyawan_absen WHERE karyawanid='$_SESSION[IDCARD]'";
+    $queryabs = "select id_status, a_latitude, a_longitude, a_radius from hrd.karyawan_absen WHERE karyawanid='$_SESSION[IDCARD]' AND IFNULL(aktif,'')='Y'";
     $tampilabs=mysqli_query($cnmy, $queryabs);
     $ketemutabs=mysqli_num_rows($tampilabs);
     if ((INT)$ketemutabs>0) {

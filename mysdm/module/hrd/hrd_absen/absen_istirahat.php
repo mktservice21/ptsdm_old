@@ -37,21 +37,25 @@ $plongitude_home="";
 </div>
 
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="tile-stats">
-        <div class="icon"><i class="fa fa-comments-o"></i></div>
-        <?PHP echo $pjamistabs; ?>
-        <h3><button type='button' class='btn btn-default' id="ibuttonsave" onclick='SimpanAbsensiHome("3")'>Absen Istirahat</button></h3>
-        <p>&nbsp;</p>
+    <div id="div_istirahat">
+        <div class="tile-stats">
+            <div class="icon"><i class="fa fa-comments-o"></i></div>
+            <?PHP echo $pjamistabs; ?>
+            <h3><button type='button' class='btn btn-default' id="ibuttonsave" onclick='SimpanAbsensiHome("3")'>Absen Istirahat</button></h3>
+            <p>&nbsp;</p>
+        </div>
     </div>
 </div>
 
 
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="tile-stats">
-        <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
-        <?PHP echo $pjamistabs_msk; ?>
-        <h3><button type='button' class='btn btn-default' id="ibuttonsave" onclick='SimpanAbsensiHome("4")'>Selesai Istirahat</button></h3>
-        <p>&nbsp;</p>
+    <div id="div_sdhistirahat">
+        <div class='tile-stats'>
+            <div class='icon'><i class='fa fa-sort-amount-desc'></i></div>
+            <?PHP echo $pjamistabs_msk; ?>
+            <h3><button type='button' class='btn btn-default' id='ibuttonsave' onclick='SimpanAbsensiHome("4")'>Selesai Istirahat</button></h3>
+            <p>&nbsp;</p>
+        </div>
     </div>
 </div>
 
@@ -119,7 +123,8 @@ $plongitude_home="";
                     url:"module/hrd/hrd_absen/simpanabsenistirahat.php?module="+module+"&act=simpandataabsen&idmenu="+idmenu,
                     data:"ukey="+sKey+"&ulat="+ilat+"&ulong="+ilong,
                     success:function(data){
-                        alert(data);
+                        //alert(data);
+                        ShowDivIstirahat(sKey, data);
                     }
                 });
                 
@@ -129,5 +134,48 @@ $plongitude_home="";
             return 0;
         }
         
+    }
+    
+    
+    function myTrim(x) {
+        return x.replace(/^\s+|\s+$/gm,'');
+    }
+
+    function ShowDivIstirahat(sKey, stext) {
+        $.ajax({
+            type:"post",
+            url:"module/hrd/hrd_absen/viewdataabsen.php?module=carisudahabsen",
+            data:"ukey="+sKey,
+            success:function(data){
+                var tdata = myTrim(stext);
+                if (tdata=="t_234") {
+                    alert("Tidak ada proses absen...\n\
+Karena anda belum absen masuk..."); return false;
+                }else if (tdata=="t_34") {
+                    alert("Tidak ada proses absen...\n\
+Karena sudah absen pulang..."); return false;
+                }else if (tdata=="t_3") {
+                    alert("Tidak bisa absen istirahat"); return false;
+                }else if (tdata=="t_4") {
+                    alert("Tidak ada proses absen...\n\
+Karena anda belum absen istirahat..."); return false;
+                }else if (tdata=="t_ulang") {
+                    alert("Tidak ada proses absen...\n\
+Tidak bisa diulang"); return false;
+                }else if (tdata=="t_lokasinot") {
+                    alert("Tidak ada proses absen...\n\
+Lokasi Masuk dan absen ini tidak sesuai"); return false;
+                }else if (tdata=="t_error") {
+                    alert("GAGAL..."); return false;
+                }else{
+                    if (sKey=="3") {
+                        $("#div_istirahat").html(data);
+                    }else if (sKey=="4") {
+                        $("#div_sdhistirahat").html(data);
+                    }
+                    alert(stext);
+                }
+            }
+        });
     }
 </script>

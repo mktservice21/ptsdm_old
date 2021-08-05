@@ -35,6 +35,10 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     elseif ($pkey=="3") $pnamaabse="Absen Istirahat";
     elseif ($pkey=="4") $pnamaabse="Masuk Dari Istirahat";
     
+    $pketabsen="";
+    if (isset($_POST['uketerangan'])) $pketabsen   = $_POST['uketerangan'];
+    if (!empty($pketabsen)) $pketabsen = str_replace("'", " ", $pketabsen);
+    
     
     if (empty($plangitut) OR empty($plongitut)) {
         $pberhasil= "GAGAL... Lokasi Kosong";
@@ -63,7 +67,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     $a_radius="";
     $a_idstaus="HO1";
     
-    $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pcardidabsen'";
+    $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pcardidabsen' AND IFNULL(aktif,'')='Y'";
     $tampilwfh= mysqli_query($cnmy, $query);
     $ketemuwfh= mysqli_num_rows($tampilwfh);
     if ((INT)$ketemuwfh>0) {
@@ -200,8 +204,22 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     }
     
     
-    $query = "INSERT INTO hrd.t_absen(kode_absen, karyawanid, tanggal, jam, l_latitude, l_longitude, l_status, l_radius, l_jarak)VALUES"
-            . "('$pkey', '$pcardidabsen', '$ptglabsen', '$pjamabsen', '$plangitut', '$plongitut', '$plokasiabs', '$pradius_rds', '$pjarakdarilokasi')";
+    $psudahabsenmasuk_status="";
+    $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='1' AND karyawanid='$pcardidabsen'";
+    $tampil_= mysqli_query($cnmy, $query);
+    $nrow= mysqli_fetch_array($tampil_);
+    $psudahabsenmasuk_status=$nrow['l_status'];
+
+    if (!empty($psudahabsenmasuk_status)) {
+        if ($plokasiabs<>$psudahabsenmasuk_status) {
+            mysqli_close($cnmy);
+            echo "Tidak bisa absen pulang...\n"."Absen masuk anda $psudahabsenmasuk_status...";
+            exit;
+        }
+    }
+        
+    $query = "INSERT INTO hrd.t_absen(kode_absen, karyawanid, tanggal, jam, l_latitude, l_longitude, l_status, l_radius, l_jarak, keterangan)VALUES"
+            . "('$pkey', '$pcardidabsen', '$ptglabsen', '$pjamabsen', '$plangitut', '$plongitut', '$plokasiabs', '$pradius_rds', '$pjarakdarilokasi', '$pketabsen')";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
     
     $pkodeid = mysqli_insert_id($cnmy);
@@ -220,14 +238,20 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     $pdata       = base64_decode($pimgges);
 
     //menamai file, file dinamai secara random dengan unik
-    $pfile       = uniqid() . '.png';
-
+    $pfile       = "a".$pkodeid."_".uniqid() . '.png';
+    
+    
+    if (file_exists(UPLOAD_DIR.$pfile)) {
+        mysqli_close($cnmy);
+        echo "nama file foto sudah ada...";
+        exit; 
+    }
+    
     //memindahkan file ke folder upload
     file_put_contents(UPLOAD_DIR.$pfile, $pdata);
     
-    
-    $query = "INSERT INTO dbimages2.img_absen(idabsen, kode_absen, tanggal, nama, gambar)VALUES"
-            . "('$pkodeid', '$pkey', '$ptglabsen', '$pfile', '$pimg')";
+    $query = "INSERT INTO dbimages2.img_absen(idabsen, kode_absen, tanggal, nama)VALUES"
+            . "('$pkodeid', '$pkey', '$ptglabsen', '$pfile')";//, gambar , '$pimg'
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy);
     if (!empty($erropesan)) {
         mysqli_query($cnmy, "DELETE FROM hrd.t_absen WHERE karyawanid='$pcardidabsen' AND tanggal='$ptglabsen' AND kode_absen='$pkey' LIMIT 1");

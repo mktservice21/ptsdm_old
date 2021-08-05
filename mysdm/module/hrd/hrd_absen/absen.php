@@ -12,6 +12,8 @@
     $plangitude="";//-6.1910063
     $plongitude="";//106.8500943    -6.190690628090547, 106.85030691323897
     
+    $pket_absen="";
+    
     $judul="";
     if ($pact=="absenmasuk") {
         $judul = "Absen Masuk";
@@ -88,6 +90,13 @@
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Longitude <span class='required'></span></label>
                                             <div class='col-md-4'>
                                                 <input type='text' id='e_long' name='e_long' class='form-control col-md-7 col-xs-12' value='<?PHP echo $plongitude; ?>' Readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
+                                            <div class='col-md-4'>
+                                                <input type='text' id='e_ketabsen' name='e_ketabsen' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pket_absen; ?>' >
                                             </div>
                                         </div>
                                         
@@ -258,6 +267,7 @@
 
             var nlat = $('#e_lat').val();
             var nlong = $('#e_long').val();
+            var nketerangan = $('#e_ketabsen').val();
             
             if (nlat=="" || nlong=="") {
                 alert("Lokasi Kosong"); return false;
@@ -284,6 +294,7 @@
                     ukey: sKeyPilih,
                     ulatitude: nlat,
                     ulongitude: nlong,
+                    uketerangan: nketerangan,
                     image: image
                 },
                 success: function (data) {

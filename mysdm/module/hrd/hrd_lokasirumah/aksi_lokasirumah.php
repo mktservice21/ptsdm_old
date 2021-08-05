@@ -39,8 +39,8 @@ if ($module=='hrdlokasirumah')
             goto errorsimpan;
         }
        
-        $query = "INSERT INTO hrd.karyawan_absen (karyawanid, a_latitude, a_longitude, a_radius, userid, id_status) VALUES "
-                . " ('$pkaryawanid', '$platitude', '$plongitude', '$pradius', '$pidcard', '$pidstatus')";
+        $query = "INSERT INTO hrd.karyawan_absen (karyawanid, a_latitude, a_longitude, a_radius, userid, id_status, aktif) VALUES "
+                . " ('$pkaryawanid', '$platitude', '$plongitude', '$pradius', '$pidcard', '$pidstatus', 'Y')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
         
         

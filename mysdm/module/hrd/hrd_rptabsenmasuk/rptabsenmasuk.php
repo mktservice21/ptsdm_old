@@ -10,7 +10,7 @@
     
     $pmodule=$_GET['module'];
     
-    $apvpilih="1";
+    $apvpilih="00";
 ?>
 
 <script>
@@ -70,7 +70,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                echo "Report Data Absen Masuk/Pulang Karyawan";
+                echo "Report Monthly Absensi";
                 ?>
                 
             </h3>
@@ -124,8 +124,12 @@
                                 while ($row= mysqli_fetch_array($tampil)) {
                                     $npidkry=$row['karyawanid'];
                                     $npnmkry=$row['nama'];
-
-                                    echo "<option value='$npidkry'>$npnmkry</option>";
+                                    
+                                    $nidkry_=(INT)$npidkry;
+                                    if ($npidkry==$pkaryawanid)
+                                        echo "<option value='$npidkry' selected>$npnmkry ($nidkry_)</option>";
+                                    else
+                                        echo "<option value='$npidkry'>$npnmkry ($nidkry_)</option>";
                                 }
                                 ?>
                             </select>
@@ -135,8 +139,9 @@
                     <div class='col-sm-3'>
                         &nbsp;
                         <div class="form-group">
-                            <input onclick="pilihData('1')" class='btn btn-success btn-sm' type='button' name='buttonview1' value='Absen Masuk'>
-                            <input onclick="pilihData('2')" class='btn btn-info btn-sm' type='button' name='buttonview1' value='Absen Pulang'>
+                            <input onclick="pilihData('00')" class='btn btn-success btn-sm' type='button' name='buttonview1' value='List Absensi'>
+                            <!--<input onclick="pilihData('1')" class='btn btn-success btn-sm' type='button' name='buttonview1' value='Absen Masuk'>
+                            <input onclick="pilihData('2')" class='btn btn-info btn-sm' type='button' name='buttonview1' value='Absen Pulang'>-->
                         </div>
                     </div>
                     
@@ -150,7 +155,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>Peta <small>klik tanggal di bawah yang sudah tampil</small></h2>
+                            <h2>Peta <small>&nbsp;</small></h2>
                             <input type='hidden' id='txt_hiden' name='txt_hiden' value=''>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li><a class="collapse-link" id='btnlink_hidden' name='btnlink_hidden' onclick="showTombolHiden('btnlink_hidden')" ><i class="fa fa-chevron-up"></i></a></li>

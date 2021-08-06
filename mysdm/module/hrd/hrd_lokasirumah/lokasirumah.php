@@ -29,7 +29,7 @@
     }
     
     
-    $judul="Lokasi Rumah";
+    $judul="Lokasi WFH";
     
 ?>
 
@@ -258,6 +258,7 @@
 
 
 <script type="text/javascript">
+
     $(document).ready(function() {
         //getLocation();
     } );
@@ -266,9 +267,10 @@
 
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else { 
-            x.innerHTML = "Geolocation is not supported by this browser.";
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            alert("Geolocation tidak support pada browser ini.");
+            //x.innerHTML = "Geolocation is not supported by this browser.";
         }
     }
 
@@ -278,6 +280,29 @@
     }
     
     
+    function showError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                alert("Anda Memblokir Lokasi Untuk Situs MS");
+                //x.innerHTML = "User denied the request for Geolocation."
+            break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Informasi Lokasi Tidak Tersedia.");
+                //x.innerHTML = "Location information is unavailable."
+            break;
+            case error.TIMEOUT:
+                alert("Time Out - Permintaan Untuk Mendapatkan Lokasi.");
+                //x.innerHTML = "The request to get user location timed out."
+            break;
+            case error.UNKNOWN_ERROR:
+                alert("Terjadi Kesalahan Yang Tidak Diketahui.");
+                //x.innerHTML = "An unknown error occurred."
+            break;
+        }
+    }
+
+
+
     function disp_confirm_lokasi()  {
         
         getLocation();

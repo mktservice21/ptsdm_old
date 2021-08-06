@@ -103,7 +103,7 @@
                                         <div class='form-group'>
                                             <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                             <div class='col-md-8'>
-                                                <a class='btn btn-default' href="<?PHP echo "?module=home"; ?>">Home</a> &nbsp; &nbsp; &nbsp;
+                                                <a class='btn btn-default' id='btn_home' href="<?PHP echo "?module=home"; ?>">Home</a> &nbsp; &nbsp; &nbsp;
                                                 <?PHP
                                                 if ($psudahabsen==true) {
                                                     echo "";
@@ -301,7 +301,7 @@
                 },
                 success: function (data) {
                     alert(data);
-
+                    document.getElementById('btn_home').click();
                     // menjalankan fungsi update setelah kirim data selesai dilakukan 
                     //update()
                 }

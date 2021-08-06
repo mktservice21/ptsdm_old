@@ -70,33 +70,33 @@
                                 <div class='x_content'>
 
 
-                                    <div class='col-md-12 col-sm-12 col-xs-12'>
+                                    <div class='col-md-6 col-xs-12'>
                                         
                                         <div hidden class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                            <div class='col-md-4'>
+                                            <div class='col-md-8'>
                                                 <input type='text' id='e_key' name='e_key' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkeypilih; ?>' Readonly>
                                             </div>
                                         </div>
                                         
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Latitude <span class='required'></span></label>
-                                            <div class='col-md-4'>
+                                            <div class='col-md-8'>
                                                 <input type='text' id='e_lat' name='e_lat' class='form-control col-md-7 col-xs-12' value='<?PHP echo $plangitude; ?>' Readonly>
                                             </div>
                                         </div>
                                         
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Longitude <span class='required'></span></label>
-                                            <div class='col-md-4'>
+                                            <div class='col-md-8'>
                                                 <input type='text' id='e_long' name='e_long' class='form-control col-md-7 col-xs-12' value='<?PHP echo $plongitude; ?>' Readonly>
                                             </div>
                                         </div>
                                         
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
-                                            <div class='col-md-4'>
-                                                <input type='text' id='e_ketabsen' name='e_ketabsen' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pket_absen; ?>' >
+                                            <div class='col-md-8'>
+                                                <textarea class='form-control' id="e_ketabsen" name='e_ketabsen' maxlength='300'><?PHP echo $pket_absen; ?></textarea>
                                             </div>
                                         </div>
                                         
@@ -120,6 +120,8 @@
                                         
 
                                     </div>
+                                    
+                                    
 
                                 </div>
                             

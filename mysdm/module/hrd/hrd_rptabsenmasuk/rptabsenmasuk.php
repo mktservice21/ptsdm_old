@@ -177,7 +177,8 @@
                             <style type="text/css">
                                 #map { width: 650px; height: 500px; border: 1px; padding: 0px; }
                             </style>
-                            <script src="http://maps.google.com/maps/api/js?v=3&sensor=false" type="text/javascript"></script>
+                            
+                            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClBImVGtLSNzJiU7ceMdSIUbnTAFJhaio&callback=myMap"></script>
                             <script type="text/javascript">
                                 //Sample code written by August Li
                                 var icon = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/micons/blue.png",
@@ -251,11 +252,32 @@
                                     //initMap('-6.1912629', '106.8503225', 'nama');
                                 } );
                                 
+                                function ShowIframeMaps(slatitude, slongitude, snama_karyawan) {
+                                    var istatus=document.getElementById('txt_hiden').value;
+                                    if (istatus=="buka") {
+                                        document.getElementById('btnlink_hidden').click();
+                                        document.getElementById('txt_hiden').value='tutup';
+                                    }
+                                    $.ajax({
+                                        url: 'module/hrd/hrd_rptabsenmasuk/hrd_peta_absen.php?module=showiframemaps',
+                                        type: 'POST',
+                                        data: {
+                                            ulat: slatitude,
+                                            ulong: slongitude,
+                                            unamakry: snama_karyawan
+                                        },
+                                        success: function (data) {
+                                            $("#div_map").html(data);
+                                        }
+                                    })   
+                                }
                             </script>
         
                             
-                            <div id="map"></div>
+                            <!--<div id="map"></div>-->
+                            <div id='div_map'>
                             
+                            </div>
                         </div>
                         
                         

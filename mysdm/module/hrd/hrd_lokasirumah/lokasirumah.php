@@ -142,7 +142,7 @@
                                             <div class='form-group'>
                                                 <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                                 <div class='col-md-4'>
-                                                    <button type='button' class='tombol-simpan btn-xs btn-dark' id='ibuttontampil' onclick="getLocation()">Tampilkan</button>
+                                                    <button type='button' class='tombol-simpan btn-xs btn-dark' id='ibuttontampil' onclick="getLocation()">Tampilkan Lokasi</button>
                                                 </div>
                                             </div>
                                         <?PHP

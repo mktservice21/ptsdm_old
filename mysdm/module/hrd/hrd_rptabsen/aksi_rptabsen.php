@@ -228,7 +228,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 <HTML>
 <HEAD>
-  <TITLE>Report Absensi</TITLE>
+  <TITLE>Report Summary Absensi</TITLE>
     <meta http-equiv="Expires" content="Mon, 01 Jan 2030 1:00:00 GMT">
     <meta http-equiv="Pragma" content="no-cache">
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>
@@ -242,7 +242,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
     
     <?PHP
-    echo "<b>Report Absensi</b><br/>";
+    echo "<b>Report Summary Absensi</b><br/>";
     echo "<b>Periode : $pperiode</b><br/>";
     
     echo "<b>Hari Kerja : $pjmlharikerjasdm</b><br/>";
@@ -265,14 +265,15 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             echo "<tr>";
                 echo "<th align='center' rowspan='2'><small>No</small></th>";
                 echo "<th align='center' rowspan='2'><small>Karyawan</small></th>";
-                echo "<th align='center' colspan='7'><small>Jumlah Absen</small></th>";
+                //echo "<th align='center' colspan='7'><small>Jumlah Absen</small></th>";
+                echo "<th align='center' colspan='5'><small>Jumlah Absen</small></th>";
             echo "</tr>";
             
             echo "<tr>";
                 echo "<th align='center'><small>Masuk</small></th>";
                 echo "<th align='center'><small>Terlambat</small></th>";
-                echo "<th align='center'><small>Istirahat</small></th>";
-                echo "<th align='center'><small>Masuk Istirahat</small></th>";
+                //echo "<th align='center'><small>Istirahat</small></th>";
+                //echo "<th align='center'><small>Masuk Istirahat</small></th>";
                 echo "<th align='center'><small>Pulang</small></th>";
                 echo "<th align='center'><small>Tidak Masuk</small></th>";
                 echo "<th align='center'><small>Masuk Hari Libur</small></th>";
@@ -303,8 +304,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<td nowrap>$nkrynm - $nnkryid</td>";
                 echo "<td nowrap align='right'>$njmlmasuk</td>";
                 echo "<td nowrap align='right'>$njmlterlambat</td>";
-                echo "<td nowrap align='right'>$njmlistirahat</td>";
-                echo "<td nowrap align='right'>$njmlmskist</td>";
+                //echo "<td nowrap align='right'>$njmlistirahat</td>";
+                //echo "<td nowrap align='right'>$njmlmskist</td>";
                 echo "<td nowrap align='right'>$njmlpulang</td>";
                 echo "<td nowrap align='right'>$njmltdkabsen</td>";
                 echo "<td nowrap align='right'>$njmllibur</td>";

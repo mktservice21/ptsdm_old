@@ -44,7 +44,7 @@ $pnamakarywanpl=$rowk['nama'];
 $pnmjbtkarywanpl=$rowk['nama_jabatan'];
 
 
-$sql = "select id_status, karyawanid, kode_absen, tanggal, jam, keterangan FROM hrd.t_absen "
+$sql = "select id_status, karyawanid, kode_absen, tanggal, jam, keterangan, l_status FROM hrd.t_absen "
         . " WHERE 1=1 ";
 if (!empty($pkryid)) $sql .=" AND karyawanid='$pkryid'";
 $sql .=" AND LEFT(tanggal,7)= '$pbulan'";
@@ -237,7 +237,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "ALTER TABLE $tmp03 ADD COLUMN jam_masuk VARCHAR(5), ADD COLUMN jam_istirahat VARCHAR(5), ADD COLUMN jam_masuk_ist VARCHAR(5), "
-        . " ADD COLUMN jam_pulang VARCHAR(5), ADD COLUMN ket_absen VARCHAR(100), ADD COLUMN keterangan VARCHAR(300)";
+        . " ADD COLUMN jam_pulang VARCHAR(5), ADD COLUMN ket_absen VARCHAR(100), ADD COLUMN keterangan VARCHAR(300), ADD COLUMN l_status VARCHAR(100)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
@@ -246,8 +246,8 @@ $query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, jam, ket_absen FR
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 //keterangan
-$query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, keterangan FROM $tmp01 WHERE kode_absen='1') as b "
-        . " on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.keterangan=b.keterangan";
+$query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, keterangan, l_status FROM $tmp01 WHERE kode_absen='1') as b "
+        . " on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.keterangan=b.keterangan, a.l_status=b.l_status";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
@@ -324,6 +324,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<th align='center' rowspan='2'><small>Tanggal</small></th>";
                 echo "<th align='center' colspan='4'><small>Absen</small></th>";
                 echo "<th align='center' rowspan='2'><small>Keterangan</small></th>";
+                echo "<th align='center' rowspan='2'><small>&nbsp;</small></th>";
             echo "</tr>";
             
             echo "<tr>";
@@ -352,6 +353,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 $njammmst_ist=$row0['jam_masuk_ist'];
                 $nketerangan=$row0['keterangan'];
                 $nket_abs=$row0['ket_absen'];
+                $nstatusabs=$row0['l_status'];
                 
                 
 
@@ -386,6 +388,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<td nowrap >$njammmst_ist</td>";
                 echo "<td nowrap >$njampulang</td>";
                 echo "<td nowrap >$nketerangan_abs</td>";
+                echo "<td nowrap >$nstatusabs</td>";
                 echo "</tr>";
                 
                 $no++;

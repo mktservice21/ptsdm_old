@@ -109,7 +109,8 @@ if ($module=='hrdlokasirumah')
         
         
         mysqli_close($cnmy);
-        header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasil');
+        //header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasil');
+        header('location:../../../media.php?module=home&act=berhasil');
         exit;
         
         errorsimpan:

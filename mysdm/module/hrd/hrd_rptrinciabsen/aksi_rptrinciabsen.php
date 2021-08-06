@@ -286,7 +286,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 <HTML>
 <HEAD>
-  <TITLE>Report Rincian Absensi</TITLE>
+  <TITLE>Report Detail Absensi</TITLE>
     <meta http-equiv="Expires" content="Mon, 01 Jan 2030 1:00:00 GMT">
     <meta http-equiv="Pragma" content="no-cache">
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>
@@ -300,7 +300,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
     
     <?PHP
-    echo "<b>Report Rincian Absensi</b><br/>";
+    echo "<b>Report Detail Absensi</b><br/>";
     echo "<b>Periode : $pperiode</b><br/>";
     
     echo "<b>Hari Kerja : $pjmlharikerjasdm</b><br/>";
@@ -322,15 +322,16 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         echo "<thead>";
             echo "<tr>";
                 echo "<th align='center' rowspan='2'><small>Tanggal</small></th>";
-                echo "<th align='center' colspan='4'><small>Absen</small></th>";
+                //echo "<th align='center' colspan='4'><small>Absen</small></th>";
+                echo "<th align='center' colspan='2'><small>Absen</small></th>";
                 echo "<th align='center' rowspan='2'><small>Keterangan</small></th>";
                 echo "<th align='center' rowspan='2'><small>&nbsp;</small></th>";
             echo "</tr>";
             
             echo "<tr>";
                 echo "<th align='center'><small>Masuk</small></th>";
-                echo "<th align='center'><small>Istirahat</small></th>";
-                echo "<th align='center'><small>Masuk Istirahat</small></th>";
+                //echo "<th align='center'><small>Istirahat</small></th>";
+                //echo "<th align='center'><small>Masuk Istirahat</small></th>";
                 echo "<th align='center'><small>Pulang</small></th>";
             echo "</tr>";
             
@@ -376,6 +377,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     }
                 }
                 
+                $nketerangan_abs="";//dihilangkat statusnya
                 if (!empty($nketerangan)) {
                     if (empty($nketerangan_abs)) $nketerangan_abs=$nketerangan;
                     else $nketerangan_abs=$nketerangan.", ".$nketerangan_abs;
@@ -384,8 +386,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<tr $pclasslibur>";
                 echo "<td nowrap>$pharitanggal</td>";
                 echo "<td nowrap $pclasslibur_rd>$njammasuk</td>";
-                echo "<td nowrap >$njamistirahat</td>";
-                echo "<td nowrap >$njammmst_ist</td>";
+                //echo "<td nowrap >$njamistirahat</td>";
+                //echo "<td nowrap >$njammmst_ist</td>";
                 echo "<td nowrap >$njampulang</td>";
                 echo "<td nowrap >$nketerangan_abs</td>";
                 echo "<td nowrap >$nstatusabs</td>";

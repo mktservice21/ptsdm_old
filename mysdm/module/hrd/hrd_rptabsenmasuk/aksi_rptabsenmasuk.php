@@ -313,7 +313,8 @@
                             echo "<div class='clearfix'></div>";
 
                             echo "<h3 style='margin-top:5px;'>";
-                                echo "<a href='#' class='btn btn-default btn-xs' onclick=\"initMap('$nlat', '$nlong', '$nnmkaryawan');\">Lihat Peta Lokasi</a>";
+                                //echo "<a href='#' class='btn btn-default btn-xs' onclick=\"initMap('$nlat', '$nlong', '$nnmkaryawan');\">Lihat Peta Lokasi</a>";
+                                echo "<a href='#' class='btn btn-default btn-xs' onclick=\"ShowIframeMaps('$nlat', '$nlong', '$nnmkaryawan');\">Lihat Peta Lokasi</a>";
                             echo "</h3>";
 
 

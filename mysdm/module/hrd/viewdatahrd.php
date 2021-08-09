@@ -33,7 +33,9 @@ if ($pmodule=="carikaryawanbyatasan") {
             . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
-                                                            
+    
+    $query .= " AND karyawanId IN (select DISTINCT IFNULL(karyawanId,'') FROM dbmaster.t_karyawan_posisi WHERE IFNULL(`ho`,'')='Y')";
+    
     $query .= " ORDER BY nama";
 
 

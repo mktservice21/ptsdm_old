@@ -88,6 +88,7 @@ switch($pactpilih){
                                                             }else{
                                                                 $query .= " AND karyawanId='$fkaryawan'";
                                                             }
+                                                            $query .= " AND karyawanId IN (select DISTINCT IFNULL(karyawanId,'') FROM dbmaster.t_karyawan_posisi WHERE IFNULL(`ho`,'')='Y')";
                                                             $query .= " ORDER BY nama";
 
 

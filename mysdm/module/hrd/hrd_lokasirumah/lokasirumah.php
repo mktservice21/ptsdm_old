@@ -14,7 +14,7 @@
     $plongitude="";//106.8500943    -6.190690628090547, 106.85030691323897
     $pradius=0.10;
     $pidstatus="HO1";
-    
+    $phidenpeta="hidden";
     
     $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pkaryawanid'";
     $tampil= mysqli_query($cnmy, $query);
@@ -26,6 +26,7 @@
         $plongitude=$row['a_longitude'];
         $pradius=$row['a_radius'];
         $pidstatus=$row['id_status'];
+        $phidenpeta="";
     }
     
     
@@ -163,6 +164,15 @@
                                             </div>
                                         </div>
                                         
+                                        <div id="div_petalokasi" <?PHP echo $phidenpeta;?> >
+                                            <div class='form-group'>
+                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                                <div class='col-md-4'>
+                                                    <button type='button' class='tombol-simpan btn-xs btn-success' id='ibuttontampil' onclick="ShowIframeMapsPerson()">Lihat Peta Lokasi</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         <div hidden class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Radius <span class='required'></span></label>
                                             <div class='col-md-4'>
@@ -192,7 +202,12 @@
                             
 
                         </form>
+                        
+                        <div id='div_map'>
 
+                        </div>
+                        
+                        
                     </div>
                     
                     
@@ -268,6 +283,7 @@
     function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition, showError);
+            div_petalokasi.style.display='block';
         } else {
             alert("Geolocation tidak support pada browser ini.");
             //x.innerHTML = "Geolocation is not supported by this browser.";
@@ -347,6 +363,25 @@ Data yang sudah disimpan tidak bisa diubah lagi...";
         return 1;
         
     }
+    
+
+    function ShowIframeMapsPerson() {
+        var slatitude=document.getElementById('e_lat').value;
+        var slongitude=document.getElementById('e_long').value;
+        
+        $.ajax({
+            url: 'module/hrd/hrd_lokasirumah/peta_lokasiwfh.php?module=showiframemaps',
+            type: 'POST',
+            data: {
+                ulat: slatitude,
+                ulong: slongitude,
+            },
+            success: function (data) {
+                $("#div_map").html(data);
+            }
+        })   
+    }
+                                
 </script>
 
 

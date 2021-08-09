@@ -194,13 +194,36 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
         }
     }
     
+    $psudahpernahabsen_masuk=false;
+    $pkodesudahinput="";
     $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='$pkey' AND karyawanid='$pcardidabsen'";
     $tampil= mysqli_query($cnmy, $query);
     $ketemu= mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {
-        mysqli_close($cnmy);
-        echo "Tidak ada proses absen...\n"."Karena anda sudah $pnamaabse..., tidak bisa diulang";
-        exit;
+        if ($pkey=="1") {
+            
+            $row= mysqli_fetch_array($tampil);
+            $pkodesudahinput=$row['idabsen'];
+            $psudahpernahabsen_masuk=true;
+            if ($pkodesudahinput=="0") $pkodesudahinput="";
+            
+            $query_ = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='2' AND karyawanid='$pcardidabsen'";
+            $tampil_= mysqli_query($cnmy, $query_);
+            $ketemu_= mysqli_num_rows($tampil_);
+            if ((INT)$ketemu_>0) {
+                mysqli_close($cnmy);
+                echo "Absen Masuk tidak bisa diulang...\n"."Karena sudah absen pulang...";
+                exit;
+            }
+            
+        }else{
+            
+            mysqli_close($cnmy);
+            echo "Tidak ada proses absen...\n"."Karena anda sudah $pnamaabse..., tidak bisa diulang";
+            exit;
+            
+        }
+        
     }
     
     
@@ -218,11 +241,25 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
         }
     }
         
-    $query = "INSERT INTO hrd.t_absen(kode_absen, karyawanid, tanggal, jam, l_latitude, l_longitude, l_status, l_radius, l_jarak, keterangan)VALUES"
-            . "('$pkey', '$pcardidabsen', '$ptglabsen', '$pjamabsen', '$plangitut', '$plongitut', '$plokasiabs', '$pradius_rds', '$pjarakdarilokasi', '$pketabsen')";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
     
-    $pkodeid = mysqli_insert_id($cnmy);
+    if ($psudahpernahabsen_masuk==true AND $pkey=="1" AND !empty($pkodesudahinput)) {
+        
+        
+        $query = "UPDATE hrd.t_absen SET jam='$pjamabsen', l_latitude='$plangitut', l_longitude='$plongitut', l_status='$plokasiabs', l_radius='$pradius_rds', l_jarak='$pjarakdarilokasi', keterangan='$pketabsen' WHERE idabsen='$pkodesudahinput' AND kode_absen='1' AND tanggal='$ptglabsen' AND karyawanid='$pcardidabsen' LIMIT 1";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        
+        $pkodeid=$pkodesudahinput;
+        
+    }else{
+    
+        $query = "INSERT INTO hrd.t_absen(kode_absen, karyawanid, tanggal, jam, l_latitude, l_longitude, l_status, l_radius, l_jarak, keterangan)VALUES"
+                . "('$pkey', '$pcardidabsen', '$ptglabsen', '$pjamabsen', '$plangitut', '$plongitut', '$plokasiabs', '$pradius_rds', '$pjarakdarilokasi', '$pketabsen')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+        
+        $pkodeid = mysqli_insert_id($cnmy);
+    
+    }
+    
     
     if (empty($pkodeid)) {
         mysqli_query($cnmy, "DELETE FROM hrd.t_absen WHERE karyawanid='$pcardidabsen' AND tanggal='$ptglabsen' AND kode_absen='$pkey' LIMIT 1");
@@ -250,8 +287,12 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     //memindahkan file ke folder upload
     file_put_contents(UPLOAD_DIR.$pfile, $pdata);
     
-    $query = "INSERT INTO dbimages2.img_absen(idabsen, kode_absen, tanggal, nama)VALUES"
-            . "('$pkodeid', '$pkey', '$ptglabsen', '$pfile')";//, gambar , '$pimg'
+    if ($psudahpernahabsen_masuk==true AND $pkey=="1" AND !empty($pkodesudahinput)) {
+        $query = "UPDATE dbimages2.img_absen SET nama='$pfile' WHERE idabsen='$pkodeid' AND kode_absen='$pkey' AND tanggal='$ptglabsen'  LIMIT 1";
+    }else{
+        $query = "INSERT INTO dbimages2.img_absen(idabsen, kode_absen, tanggal, nama)VALUES"
+                . "('$pkodeid', '$pkey', '$ptglabsen', '$pfile')";//, gambar , '$pimg'
+    }
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy);
     if (!empty($erropesan)) {
         mysqli_query($cnmy, "DELETE FROM hrd.t_absen WHERE karyawanid='$pcardidabsen' AND tanggal='$ptglabsen' AND kode_absen='$pkey' LIMIT 1");
@@ -262,7 +303,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     
     
-    $pberhasil="Anda berhasil $pnamaabse, Tgl : $ptangga, Jam : $pjam";
+    $pberhasil="berhasil\n"." Anda berhasil $pnamaabse, Tgl : $ptangga, Jam : $pjam";
     
     
 

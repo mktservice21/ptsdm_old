@@ -38,7 +38,7 @@ if (isset($_POST['ukey'])) $ffolderfile=$_POST['ukey'];
                                     <div class='form-group'>
                                         <center>
                                         <?PHP
-                                        echo "<img src='$ffolderfile' width='50%' />";
+                                        echo "<img src='$ffolderfile' width='310px' height='390px' />";
                                         ?>
                                         </center>
                                     </div>

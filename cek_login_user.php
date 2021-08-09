@@ -300,7 +300,7 @@ if ($pberhasillogin==true) {
         $_SESSION['KRYNONE']="0000002200";
         
         if ($_SESSION['JABATANID']=="18" OR $_SESSION['JABATANID']=="20" OR $_SESSION['JABATANID']=="23") {
-            $_SESSION['GROUP']=391;
+            //$_SESSION['GROUP']=391;
             $_SESSION['NAMAGROUPID']="NOONE";
         }
         

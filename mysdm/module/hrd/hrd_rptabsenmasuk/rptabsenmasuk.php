@@ -62,6 +62,8 @@
     }
 </script>
 
+<div class='modal fade' id='myModalImages' role='dialog' class='no-print'></div>
+
 <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
 
 <div class="">

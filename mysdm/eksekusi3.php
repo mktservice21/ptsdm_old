@@ -661,7 +661,7 @@
         include 'module/sales/mod_lap_rekapsales/aksi_rekapdatasales.php';
         
     }elseif ($_GET['module']=='hrdreportabsen'){
-        include 'module/hrd/hrd_rptabsen/aksi_rptabsen.php';
+        include 'module/hrd/hrd_rptsbsensum/aksi_rptsbsensum.php';
     }elseif ($_GET['module']=='hrdreportrinciabsen'){
         include 'module/hrd/hrd_rptrinciabsen/aksi_rptrinciabsen.php';
     }elseif ($_GET['module']=='hrdrptabsenmasuk'){

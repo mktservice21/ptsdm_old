@@ -131,7 +131,12 @@ switch($pactpilih){
                                             <div class='col-sm-12'>
                                                 <b>&nbsp;</b>
                                                 <div class="form-group">
-                                                <button type='button' class='btn btn-success' onclick="disp_confirm('')">Preview</button>
+                                                    <button type='button' class='btn btn-success' onclick="disp_confirm('')">Preview</button>
+                                                    <?PHP
+                                                    if ($_SESSION['MOBILE']!="Y") {
+                                                        echo "<button type='button' class='btn btn-danger' onclick=\"disp_confirm('excel')\">Excel</button>";
+                                                    }
+                                                    ?>
                                                 </div>
                                             </div>
                                         </div>

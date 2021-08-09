@@ -62,11 +62,6 @@
                               id='d-form2' name='form1' data-parsley-validate class='form-horizontal form-label-left'  enctype='multipart/form-data'>
 
                             
-                            <div class='x_content'>
-                            <div id="my_camera"></div>
-                            </div>
-                            <div class='clearfix'></div>
-                            
                                 <div class='x_content'>
 
 
@@ -92,6 +87,24 @@
                                                 <input type='text' id='e_long' name='e_long' class='form-control col-md-7 col-xs-12' value='<?PHP echo $plongitude; ?>' Readonly>
                                             </div>
                                         </div>
+                                        
+
+                                    </div>
+                                    
+                                    
+
+                                </div>
+                            
+                                <div class='x_content'>
+                                    <div id="my_camera"></div>
+                                </div>
+                                <div class='clearfix'></div>
+                            
+                                <div class='x_content'>
+
+
+                                    <div class='col-md-6 col-xs-12'>
+                                        
                                         
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
@@ -129,6 +142,10 @@
                             
 
                         </form>
+                        
+                        <div id='div_map'>
+
+                        </div>
 
                     </div>
                     
@@ -219,7 +236,10 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        //getLocation();
+        getLocationPlaceholder();
+        setTimeout(function () {
+            ShowIframeMapsAbsen('0');
+        }, 1000);
         //update();
     } );
     
@@ -227,9 +247,10 @@
 
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else { 
-            x.innerHTML = "Geolocation is not supported by this browser.";
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            alert("Geolocation tidak support pada browser ini.");
+            //x.innerHTML = "Geolocation is not supported by this browser.";
         }
     }
 
@@ -238,6 +259,41 @@
         document.getElementById("e_long").value=position.coords.longitude;
     }
     
+    
+    function getLocationPlaceholder() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPositionPlaceholder, showError);
+        } else {
+            alert("Geolocation tidak support pada browser ini.");
+            //x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    
+    function showPositionPlaceholder(position) {
+        document.getElementById("e_lat").placeholder=position.coords.latitude;
+        document.getElementById("e_long").placeholder=position.coords.longitude;
+    }
+    
+    function showError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                alert("Anda Memblokir Lokasi Untuk Situs MS");
+                //x.innerHTML = "User denied the request for Geolocation."
+            break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Informasi Lokasi Tidak Tersedia.");
+                //x.innerHTML = "Location information is unavailable."
+            break;
+            case error.TIMEOUT:
+                alert("Time Out - Permintaan Untuk Mendapatkan Lokasi.");
+                //x.innerHTML = "The request to get user location timed out."
+            break;
+            case error.UNKNOWN_ERROR:
+                alert("Terjadi Kesalahan Yang Tidak Diketahui.");
+                //x.innerHTML = "An unknown error occurred."
+            break;
+        }
+    }
 
     // jalankan aksi saat tombol register disubmit
     $(".tombol-simpan").click(function () {
@@ -300,19 +356,56 @@
                     image: image
                 },
                 success: function (data) {
+                    var tdata = myTrim(data);
+                    var ists = tdata.substring(0, 8);
                     alert(data);
-                    document.getElementById('btn_home').click();
+                    if (ists=="berhasil") {
+                        document.getElementById('btn_home').click();
+                    }
+                    
                     // menjalankan fungsi update setelah kirim data selesai dilakukan 
                     //update()
                 }
             })            
             
-        }, 200);
+        }, 500);
 
     });
 
     
-
+    function myTrim(x) {
+        return x.replace(/^\s+|\s+$/gm,'');
+    }
+    
+    
+    function ShowIframeMapsAbsen(sKey) {
+        if (sKey=="0") {
+            var slatitude=document.getElementById('e_lat').placeholder;
+            var slongitude=document.getElementById('e_long').placeholder;
+        }else{
+            var slatitude=document.getElementById('e_lat').value;
+            var slongitude=document.getElementById('e_long').value;
+        }
+        
+        if (slatitude=="") {
+            $("#div_map").html("");
+            return false;
+        }
+        
+        $.ajax({
+            url: 'module/hrd/hrd_absen/peta_lokasiabsen.php?module=showiframemaps',
+            type: 'POST',
+            data: {
+                ulat: slatitude,
+                ulong: slongitude,
+            },
+            success: function (data) {
+                $("#div_map").html(data);
+            }
+        })   
+    }
+    
+    
     //fungsi update untuk menampilkan data
     function update() {
         $.ajax({
@@ -323,6 +416,7 @@
             }
         });
     }
+
 
 
 </script>

@@ -48,7 +48,7 @@
                                 
                                 <div class='form-group'>
                                     <div class='col-sm-12'>
-                                        <b>Pilih Report Dari</b> <input type="checkbox" id="chkbtnrptd" value="deselect" onClick="SelAllCheckBoxByNM('chkbtnrptd')" checked/>
+                                        <b>Pilih Report Dari</b> <span hidden><input type="checkbox" id="chkbtnrptd" value="deselect" onClick="SelAllCheckBoxByNM('chkbtnrptd')" checked/></span>
                                         <div class="form-group">
                                             <div id="kotak-multi3" class="jarak">
                                                 &nbsp; <input type=checkbox value='brethical' id='chkbox_rpt1' name='chkbox_rpt1' checked> BR Ethical<br/>
@@ -66,11 +66,13 @@
                                                 
                                                 &nbsp; <input type=checkbox value='pilkascab' id='chkbox_rpt15' name='chkbox_rpt15' checked> Kas Kecil Cabang<br/>
                                                 
-                                                &nbsp; <input type=checkbox value='pilslseth' id='chkbox_rpt13' name='chkbox_rpt13' checked> Sales Ethical<br/>
-                                                &nbsp; <input type=checkbox value='pilslsotc' id='chkbox_rpt14' name='chkbox_rpt14' checked> Sales OTC<br/>
+                                                <span>
+                                                &nbsp; <input type=checkbox value='pilslseth' id='chkbox_rpt13' name='chkbox_rpt13' > Sales Ethical<br/>
+                                                &nbsp; <input type=checkbox value='pilslsotc' id='chkbox_rpt14' name='chkbox_rpt14' > Sales OTC<br/>
                                                 
                                                 
                                                 &nbsp; <input type=checkbox value='pilsharebg' id='chkbox_rpt100' name='chkbox_rpt100' > Shared Budget HO<br/>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

@@ -272,12 +272,12 @@
 
                     $pnamafiles_img="kosong";
                     if (!file_exists($folderfotofileabs) AND !empty($nnamaimg)) {
-                        $pnamafiles_img="<img src='$folderfotofileabs' width='70px' height='75px' class='zoomimg' />";
+                        $pnamafiles_img="<img src='$folderfotofileabs' width='70px' height='75px' class='zoomimg' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs')\" />";
                     }
 
                     $pnamafiles_img_p="";
                     if (!file_exists($folderfotofileabs_p) AND !empty($nnamaimg_p)) {
-                        $pnamafiles_img_p="<img src='$folderfotofileabs_p' width='70px' height='75px' class='zoomimg' />";
+                        $pnamafiles_img_p="<img src='$folderfotofileabs_p' width='70px' height='75px' class='zoomimg' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs_p')\" />";
                     }
 
                     /*
@@ -349,13 +349,15 @@
     echo "</div>";
 ?>
 
+
+
 <style>
     .zoomimg {
       transition: transform .2s; /* Animation */
       margin: 0 auto;
     }
 
-    .zoomimg:hover {
+    .zoomimgXXX:hover {
         -webkit-transform:scale(3.5); /* Safari and Chrome */
         -moz-transform:scale(3.5); /* Firefox */
         -ms-transform:scale(3.5); /* IE 9 */
@@ -367,8 +369,29 @@
         position:relative;
         z-index: 999;
         
+        cursor: pointer;
+        
+    }
+
+    .zoomimg:hover {
+        cursor: pointer;
     }
 </style>
+
+<script>
+    
+    function ShowFormImages(sKey) {
+        $.ajax({
+            type:"post",
+            url:"module/hrd/hrd_rptabsenmasuk/form_images.php?module=showimagespoto",
+            data:"ukey="+sKey,
+            success:function(data){
+                $("#myModalImages").html(data);
+            }
+        });
+    }
+    
+</script>
 
 <?PHP
 hapusdata:

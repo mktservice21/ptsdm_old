@@ -232,10 +232,18 @@
                             echo "</div>";
 
                             echo "<div class='clearfix'></div>";
-
+                            
+                            /*
                             echo "<h3 style='margin-top:5px;'>";
                                 echo "<a href='#' class='btn btn-default btn-xs' style='color:#fff; border-color:#fff;'>&nbsp; &nbsp; </a>";
                             echo "</h3>";
+                             * 
+                             */
+                            
+                            echo "<div class='col-md-12'>";
+                                echo "<a href='#' class='btn btn-default btn-xs' style='color:#fff; border-color:#fff;'>&nbsp; &nbsp; </a>";
+                                echo "<a href='#' class='btn btn-default btn-xs' style='color:#fff; border-color:#fff;'>&nbsp; &nbsp; </a>";
+                            echo "</div>";
 
 
                         echo "</div>";
@@ -311,11 +319,22 @@
                             echo "</div>";
 
                             echo "<div class='clearfix'></div>";
-
+                            
+                            /*
                             echo "<h3 style='margin-top:5px;'>";
                                 //echo "<a href='#' class='btn btn-default btn-xs' onclick=\"initMap('$nlat', '$nlong', '$nnmkaryawan');\">Lihat Peta Lokasi</a>";
                                 echo "<a href='#' class='btn btn-default btn-xs' onclick=\"ShowIframeMaps('$nlat', '$nlong', '$nnmkaryawan');\">Lihat Peta Lokasi</a>";
                             echo "</h3>";
+                            */
+                            
+                            echo "<div class='col-md-12'>";
+                                echo "<a href='#' class='btn btn-default btn-xs' onclick=\"ShowIframeMaps('$nlat', '$nlong', '$nnmkaryawan');\">Peta Masuk</a>";
+                                if (empty($nlong_p) OR empty($nlong_p)) {
+                                    echo "<a href='#' class='btn btn-default btn-xs' style='color:#fff; border-color:#fff;'>&nbsp; &nbsp; </a>";
+                                }else{
+                                    echo "<a href='#' class='btn btn-default btn-xs' onclick=\"ShowIframeMaps('$nlat_p', '$nlong_p', '$nnmkaryawan');\">Peta Pulang</a>";
+                                }
+                            echo "</div>";
 
 
                         echo "</div>";

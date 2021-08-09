@@ -299,7 +299,10 @@
     function showError(error) {
         switch(error.code) {
             case error.PERMISSION_DENIED:
-                alert("Anda Memblokir Lokasi Untuk Situs MS");
+                alert("Anda Memblokir Lokasi Untuk Situs MS.\n\
+Silakan masuk ke Setting/Pengaturan, pilih Site Setting Klik Location,\n\
+Hapus ms.marvis.id dari daftar Block.\n\
+Hubungi Team Marketing Service untuk info lebih lanjut.");
                 //x.innerHTML = "User denied the request for Geolocation."
             break;
             case error.POSITION_UNAVAILABLE:

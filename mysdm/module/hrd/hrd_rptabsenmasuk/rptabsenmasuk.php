@@ -5,6 +5,7 @@
     $tgl_pertama = date('F Y', strtotime($hari_ini));
     
     $pkaryawanid = trim($_SESSION['IDCARD']);
+    $fkaryawan = trim($_SESSION['IDCARD']);
     $pnamauser = trim($_SESSION['NAMALENGKAP']);
     $fgroupid = trim($_SESSION['GROUP']);
     
@@ -86,7 +87,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                echo "Report Monthly Absensi";
+                echo "Report Visualisasi Absensi";
                 ?>
                 
             </h3>
@@ -130,7 +131,7 @@
                                 $query = "select karyawanId, nama From hrd.karyawan
                                     WHERE 1=1 ";
                                 $query .= " AND ( IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00' ) ";
-                                $query .= " AND jabatanId NOT IN ('12', '13', '15', '38') ";
+                                //$query .= " AND jabatanId NOT IN ('12', '13', '15', '38') ";
 
                                 $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
                                         . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
@@ -143,6 +144,7 @@
                                 }else{
                                     $query .= " AND karyawanId='$fkaryawan'";
                                 }
+                                $query .= " AND karyawanId IN (select DISTINCT IFNULL(karyawanId,'') FROM dbmaster.t_karyawan_posisi WHERE IFNULL(`ho`,'')='Y' AND IFNULL(`leader`,'')='Y')";
                                 $query .= " ORDER BY nama";
 
 
@@ -175,6 +177,7 @@
                                 }else{
                                     $query .= " AND karyawanId='$fkaryawan'";
                                 }
+                                $query .= " AND karyawanId IN (select DISTINCT IFNULL(karyawanId,'') FROM dbmaster.t_karyawan_posisi WHERE IFNULL(ho,'')='Y')";
                                 $query .= " ORDER BY nama";
                                 $tampil= mysqli_query($cnmy, $query);
                                 while ($row= mysqli_fetch_array($tampil)) {

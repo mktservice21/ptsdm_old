@@ -164,7 +164,20 @@
 
         
         
-        
+    $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
+        "Juni", "Juli", "Agustus", "September", 
+        "Oktober", "November", "Desember");
+
+    $hari_array = array(
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu'
+    );
+    
         
     echo "<div hidden class='row'>";
     
@@ -198,6 +211,8 @@
             $pbtn_tgl_warna=" btn btn-info ";
             if ($nlibur=="Y" OR $nliburcmasal=="Y") $pbtn_tgl_warna=" btn btn-danger ";
             
+            $xhari = $hari_array[(INT)date('w', strtotime($sel_tgl))];
+            
             $query = "select DISTINCT karyawanid, nama_karyawan from $tmp01 ORDER BY nama_karyawan, karyawanid";
             $tampil1=mysqli_query($cnmy, $query);
             while ($row1= mysqli_fetch_array($tampil1)) {
@@ -228,6 +243,7 @@
                             echo "</div>";
 
                             echo "<div class='icon'>";
+                                echo "<span  style='color:#000; font-weight:bold;'>$xhari</span>";
                                 echo "<a href='#' class='$pbtn_tgl_warna' >$ntglday</a>";
                             echo "</div>";
 
@@ -266,7 +282,9 @@
 
                     $ntglday= date("d", strtotime($ntgl));
                     $ntanggal= date("d/m/Y", strtotime($ntgl));
-
+                    
+                    $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+                    
                     $folderfotofileabs="images/foto_absen/".$nnamaimg;
                     $folderfotofileabs_p="images/foto_absen/".$nnamaimg_p;
 
@@ -315,6 +333,7 @@
                             echo "</div>";
 
                             echo "<div class='icon'>";
+                                echo "<span  style='color:#000; font-weight:bold;'>$xhari</span>";
                                 echo "<a href='#' class='$pbtn_tgl_warna' >$ntglday</a>";
                             echo "</div>";
 

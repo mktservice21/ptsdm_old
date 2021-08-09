@@ -12,7 +12,7 @@ switch($pactpilih){
         $aksi="eksekusi3.php";
         $hari_ini = date("Y-m-d");
         $pbulanpilih = date('F Y', strtotime($hari_ini));
-
+        
         $fkaryawan=$_SESSION['IDCARD'];
         $fjbtid=$_SESSION['JABATANID'];
         $fgroupid=$_SESSION['GROUP'];
@@ -95,7 +95,7 @@ switch($pactpilih){
                                                             $query = "select karyawanId, nama From hrd.karyawan
                                                                 WHERE 1=1 ";
                                                             $query .= " AND ( IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00' ) ";
-                                                            $query .= " AND jabatanId NOT IN ('12', '13', '15', '38') ";
+                                                            //$query .= " AND jabatanId NOT IN ('12', '13', '15', '38') ";
                                                             
                                                             $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
                                                                     . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
@@ -108,6 +108,7 @@ switch($pactpilih){
                                                             }else{
                                                                 $query .= " AND karyawanId='$fkaryawan'";
                                                             }
+                                                            $query .= " AND karyawanId IN (select DISTINCT IFNULL(karyawanId,'') FROM dbmaster.t_karyawan_posisi WHERE IFNULL(`ho`,'')='Y' AND IFNULL(`leader`,'')='Y')";
                                                             $query .= " ORDER BY nama";
 
 
@@ -142,6 +143,7 @@ switch($pactpilih){
                                                             }else{
                                                                 $query .= " AND karyawanId='$fkaryawan'";
                                                             }
+                                                            $query .= " AND karyawanId IN (select DISTINCT IFNULL(karyawanId,'') FROM dbmaster.t_karyawan_posisi WHERE IFNULL(ho,'')='Y')";
                                                             $query .= " ORDER BY nama";
 
 

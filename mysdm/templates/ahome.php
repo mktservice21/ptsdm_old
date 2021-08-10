@@ -45,7 +45,7 @@
     if ($pbolehabsen==true) {
         echo "<div class='row top_tiles'>";
             include "module/hrd/hrd_absen/absen_masuk.php";
-            //include "module/hrd/hrd_absen/absen_istirahat.php";
+            include "module/hrd/hrd_absen/absen_istirahat.php";
             include "module/hrd/hrd_absen/absen_pulang.php";
         echo "</div>";
     }

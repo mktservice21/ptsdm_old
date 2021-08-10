@@ -25,6 +25,32 @@
         
     }
     
+    
+    $pjambolehabsen="";
+    $pidstatus=$_SESSION['R_STATUSABS'];
+    if (empty($pidstatus)) $pidstatus="HO1";
+    $query = "select jam_boleh_absen FROM hrd.t_absen_status WHERE id_status='$pidstatus' AND kode_absen='1'";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $row= mysqli_fetch_array($tampil);
+        $pjambolehabsen=$row['jam_boleh_absen'];
+        
+        if (empty($pjambolehabsen)) $pjambolehabsen="07:30";
+    }
+    
+    $pjamabsen_g=date("H:i");
+    $pjamabsen="";
+    $query = "select CURRENT_DATE() as tglsekarang, DATE_FORMAT(CURRENT_TIME(),'%H:%i') as jamsekarang";
+    $tampil_j= mysqli_query($cnmy, $query);
+    $ketemu_j= mysqli_num_rows($tampil_j);
+    if ((INT)$ketemu_j>0) {
+        $jrow= mysqli_fetch_array($tampil_j);
+        $pjamabsen=$jrow['jamsekarang'];
+    }
+    
+    if (empty($pjamabsen)) $pjamabsen=$pjamabsen_g;
+    
 ?>
 
 <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
@@ -122,7 +148,11 @@
                                                     echo "";
                                                 }else{
                                                     if ($pkeypilih=="1") {
-                                                        echo "<button type='submit' class='tombol-simpan btn btn-info' id='ibuttonsave'>Absen Masuk</button>";
+                                                        if ($pjamabsen<$pjambolehabsen) {
+                                                            echo "<b>JAM MULAI ABSEN : $pjambolehabsen</b>";
+                                                        }else{
+                                                            echo "<button type='submit' class='tombol-simpan btn btn-info' id='ibuttonsave'>Absen Masuk</button>";
+                                                        }
                                                     }elseif ($pkeypilih=="2") {
                                                         echo "<button type='submit' class='tombol-simpan btn btn-info' id='ibuttonsave'>Absen Pulang</button>";
                                                     }

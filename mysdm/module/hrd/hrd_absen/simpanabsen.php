@@ -53,12 +53,36 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     $ptangga=date("d F Y");
     $pjam=date("H i s");
     
-    $ptglabsen=date("Y-m-d");
-    $pjamabsen=date("H:i");
+    $ptglabsen_g=date("Y-m-d");
+    $pjamabsen_g=date("H:i");
     
     
     include "../../../config/koneksimysqli.php";
     include "../../../config/fungsi_sql.php";
+    
+    
+    $ptglabsen="";
+    $pjamabsen="";
+    $query = "select CURRENT_DATE() as tglsekarang, DATE_FORMAT(CURRENT_TIME(),'%H:%i') as jamsekarang";
+    $tampil_j= mysqli_query($cnmy, $query);
+    $ketemu_j= mysqli_num_rows($tampil_j);
+    if ((INT)$ketemu_j>0) {
+        $jrow= mysqli_fetch_array($tampil_j);
+        $ptglabsen=$jrow['tglsekarang'];
+        $pjamabsen=$jrow['jamsekarang'];
+    }
+    
+    if (empty($pjamabsen)) $pjamabsen=$pjamabsen_g;
+    if (empty($ptglabsen)) $ptglabsen=$ptglabsen_g;
+    
+    if (empty($ptglabsen) OR empty($pjamabsen)) {
+        //echo "GAGAL...\n"."Tanggal atau Jam Absen Kosong...";
+        //exit;
+    }
+    
+    //echo "GAGAL... JAM : $pjamabsen, TGL : $ptglabsen"; exit;
+    
+    
     
     
     $pabsensiwfh=false;    
@@ -142,7 +166,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     
     if ($pkey=="2" OR $pkey=="3" OR $pkey=="4") {
-        $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='1' AND karyawanid='$pcardidabsen'";
+        $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='1' AND karyawanid='$pcardidabsen'";
         $tampil= mysqli_query($cnmy, $query);
         $ketemu= mysqli_num_rows($tampil);
         if ((INT)$ketemu==0) {
@@ -154,7 +178,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     
     if ($pkey=="3" OR $pkey=="4") {
-        $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='2' AND karyawanid='$pcardidabsen'";
+        $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='2' AND karyawanid='$pcardidabsen'";
         $tampil= mysqli_query($cnmy, $query);
         $ketemu= mysqli_num_rows($tampil);
         if ((INT)$ketemu>0) {
@@ -165,12 +189,12 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     }
     
     if ($pkey=="2") {
-        $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='3' AND karyawanid='$pcardidabsen'";
+        $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='3' AND karyawanid='$pcardidabsen'";
         $tampil= mysqli_query($cnmy, $query);
         $ketemu= mysqli_num_rows($tampil);
         if ((INT)$ketemu>0) {
             
-            $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='4' AND karyawanid='$pcardidabsen'";
+            $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='4' AND karyawanid='$pcardidabsen'";
             $tampil= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($tampil);
             
@@ -184,7 +208,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     }
     
     if ($pkey=="4") {
-        $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='3' AND karyawanid='$pcardidabsen'";
+        $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='3' AND karyawanid='$pcardidabsen'";
         $tampil= mysqli_query($cnmy, $query);
         $ketemu= mysqli_num_rows($tampil);
         if ((INT)$ketemu==0) {
@@ -196,7 +220,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     $psudahpernahabsen_masuk=false;
     $pkodesudahinput="";
-    $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='$pkey' AND karyawanid='$pcardidabsen'";
+    $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='$pkey' AND karyawanid='$pcardidabsen'";
     $tampil= mysqli_query($cnmy, $query);
     $ketemu= mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {
@@ -207,12 +231,12 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
             $psudahpernahabsen_masuk=true;
             if ($pkodesudahinput=="0") $pkodesudahinput="";
             
-            $query_ = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='2' AND karyawanid='$pcardidabsen'";
+            $query_ = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen IN ('2', '3', '4') AND karyawanid='$pcardidabsen'";
             $tampil_= mysqli_query($cnmy, $query_);
             $ketemu_= mysqli_num_rows($tampil_);
             if ((INT)$ketemu_>0) {
                 mysqli_close($cnmy);
-                echo "Absen Masuk tidak bisa diulang...\n"."Karena sudah absen pulang...";
+                echo "Absen Masuk tidak bisa diulang...\n"."Karena sudah absen Istirahat/Pulang...";
                 exit;
             }
             
@@ -228,7 +252,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     
     $psudahabsenmasuk_status="";
-    $query = "select * from hrd.t_absen WHERE tanggal='$ptglabsen' AND kode_absen='1' AND karyawanid='$pcardidabsen'";
+    $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='1' AND karyawanid='$pcardidabsen'";
     $tampil_= mysqli_query($cnmy, $query);
     $nrow= mysqli_fetch_array($tampil_);
     $psudahabsenmasuk_status=$nrow['l_status'];
@@ -245,7 +269,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     if ($psudahpernahabsen_masuk==true AND $pkey=="1" AND !empty($pkodesudahinput)) {
         
         
-        $query = "UPDATE hrd.t_absen SET jam='$pjamabsen', l_latitude='$plangitut', l_longitude='$plongitut', l_status='$plokasiabs', l_radius='$pradius_rds', l_jarak='$pjarakdarilokasi', keterangan='$pketabsen' WHERE idabsen='$pkodesudahinput' AND kode_absen='1' AND tanggal='$ptglabsen' AND karyawanid='$pcardidabsen' LIMIT 1";
+        $query = "UPDATE hrd.t_absen SET jam=DATE_FORMAT(CURRENT_TIME(),'%H:%i'), l_latitude='$plangitut', l_longitude='$plongitut', l_status='$plokasiabs', l_radius='$pradius_rds', l_jarak='$pjarakdarilokasi', keterangan='$pketabsen' WHERE idabsen='$pkodesudahinput' AND kode_absen='1' AND tanggal=CURRENT_DATE() AND karyawanid='$pcardidabsen' LIMIT 1";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
         $pkodeid=$pkodesudahinput;
@@ -253,7 +277,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     }else{
     
         $query = "INSERT INTO hrd.t_absen(kode_absen, karyawanid, tanggal, jam, l_latitude, l_longitude, l_status, l_radius, l_jarak, keterangan)VALUES"
-                . "('$pkey', '$pcardidabsen', '$ptglabsen', '$pjamabsen', '$plangitut', '$plongitut', '$plokasiabs', '$pradius_rds', '$pjarakdarilokasi', '$pketabsen')";
+                . "('$pkey', '$pcardidabsen', CURRENT_DATE(), DATE_FORMAT(CURRENT_TIME(),'%H:%i'), '$plangitut', '$plongitut', '$plokasiabs', '$pradius_rds', '$pjarakdarilokasi', '$pketabsen')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
         $pkodeid = mysqli_insert_id($cnmy);
@@ -262,7 +286,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     
     if (empty($pkodeid)) {
-        mysqli_query($cnmy, "DELETE FROM hrd.t_absen WHERE karyawanid='$pcardidabsen' AND tanggal='$ptglabsen' AND kode_absen='$pkey' LIMIT 1");
+        mysqli_query($cnmy, "DELETE FROM hrd.t_absen WHERE karyawanid='$pcardidabsen' AND tanggal=CURRENT_DATE() AND kode_absen='$pkey' LIMIT 1");
         mysqli_close($cnmy);
         echo "GAGAL";
         exit; 
@@ -288,14 +312,14 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     file_put_contents(UPLOAD_DIR.$pfile, $pdata);
     
     if ($psudahpernahabsen_masuk==true AND $pkey=="1" AND !empty($pkodesudahinput)) {
-        $query = "UPDATE dbimages2.img_absen SET nama='$pfile' WHERE idabsen='$pkodeid' AND kode_absen='$pkey' AND tanggal='$ptglabsen'  LIMIT 1";
+        $query = "UPDATE dbimages2.img_absen SET nama='$pfile' WHERE idabsen='$pkodeid' AND kode_absen='$pkey' AND tanggal=CURRENT_DATE()  LIMIT 1";
     }else{
         $query = "INSERT INTO dbimages2.img_absen(idabsen, kode_absen, tanggal, nama)VALUES"
-                . "('$pkodeid', '$pkey', '$ptglabsen', '$pfile')";//, gambar , '$pimg'
+                . "('$pkodeid', '$pkey', CURRENT_DATE(), '$pfile')";//, gambar , '$pimg'
     }
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy);
     if (!empty($erropesan)) {
-        mysqli_query($cnmy, "DELETE FROM hrd.t_absen WHERE karyawanid='$pcardidabsen' AND tanggal='$ptglabsen' AND kode_absen='$pkey' LIMIT 1");
+        mysqli_query($cnmy, "DELETE FROM hrd.t_absen WHERE karyawanid='$pcardidabsen' AND tanggal=CURRENT_DATE() AND kode_absen='$pkey' LIMIT 1");
         mysqli_close($cnmy);
         echo $erropesan; 
         exit; 
@@ -303,7 +327,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     
     
-    $pberhasil="berhasil\n"." Anda berhasil $pnamaabse, Tgl : $ptangga, Jam : $pjam";
+    $pberhasil="berhasil\n"." Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen";
     
     
 

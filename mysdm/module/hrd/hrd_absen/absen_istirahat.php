@@ -148,6 +148,8 @@ $plongitude_home="";
             data:"ukey="+sKey,
             success:function(data){
                 var tdata = myTrim(stext);
+                var ists = tdata.substring(0, 5);
+                
                 if (tdata=="t_234") {
                     alert("Tidak ada proses absen...\n\
 Karena anda belum absen masuk..."); return false;
@@ -164,16 +166,20 @@ Karena anda belum absen istirahat..."); return false;
 Tidak bisa diulang"); return false;
                 }else if (tdata=="t_lokasinot") {
                     alert("Tidak ada proses absen...\n\
-Lokasi Masuk dan absen ini tidak sesuai"); return false;
+Lokasi Masuk dan absen tidak sesuai"); return false;
                 }else if (tdata=="t_error") {
                     alert("GAGAL..."); return false;
                 }else{
-                    if (sKey=="3") {
-                        $("#div_istirahat").html(data);
-                    }else if (sKey=="4") {
-                        $("#div_sdhistirahat").html(data);
+                    if (ists=="GAGAL") {
+                        alert(stext); return false;
+                    }else{
+                        if (sKey=="3") {
+                            $("#div_istirahat").html(data);
+                        }else if (sKey=="4") {
+                            $("#div_sdhistirahat").html(data);
+                        }
+                        alert(stext);
                     }
-                    alert(stext);
                 }
             }
         });

@@ -31,7 +31,7 @@ if ($module=='hrdlokasirumah')
         $pradius=$_POST['e_radius'];
         $pidstatus=$_POST['cb_lokasists'];
         
-        if (empty($pradius)) $pradius="0.10";
+        if (empty($pradius)) $pradius="0.05";
         if (empty($pidstatus)) $pidstatus="HO1";
         
         if (empty($pkaryawanid) OR empty($platitude) OR empty($plongitude) OR empty($pradius)) {

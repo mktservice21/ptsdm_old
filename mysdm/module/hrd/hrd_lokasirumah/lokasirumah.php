@@ -12,7 +12,7 @@
     $psudahinput=false;
     $plangitude="";//-6.1910063
     $plongitude="";//106.8500943    -6.190690628090547, 106.85030691323897
-    $pradius=0.10;
+    $pradius="0.05";
     $pidstatus="HO1";
     $phidenpeta="hidden";
     

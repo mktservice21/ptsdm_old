@@ -33,9 +33,45 @@ $tmp03 =" dbtemp.tmprptabsen03_".$puserid."_$now ";
 $tmp04 =" dbtemp.tmprptabsen04_".$puserid."_$now ";
 
 
+$fkaryawan=$_SESSION['IDCARD'];
+$fjbtid=$_SESSION['JABATANID'];
+$fgroupid=$_SESSION['GROUP'];
+        
+$pleader=false;
+$patasantanpaleader=false;
+$query = "select karyawanId, leader from dbmaster.t_karyawan_posisi WHERE karyawanId='$fkaryawan'";
+$tampil= mysqli_query($cnmy, $query);
+$ketemu=mysqli_num_rows($tampil);
+if ((INT)$ketemu>0) {
+    $row= mysqli_fetch_array($tampil);
+    $nldr_=$row['leader'];
+
+    if ($nldr_=="Y") {
+        $pleader=true;
+        $patasantanpaleader=true;
+    }else{
+        $query_a = "select karyawanId FROM hrd.karyawan WHERE ( atasanId='$fkaryawan' OR atasanId2='$fkaryawan' ) "
+                . " AND ( IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00' ) "
+                . " AND IFNULL(aktif,'')<>'N'";
+        $tampil_a= mysqli_query($cnmy, $query_a);
+        $ketemu_a=mysqli_num_rows($tampil_a);
+        if ((INT)$ketemu_a>0) {
+            $patasantanpaleader=true;
+        }
+    }
+}
+
+$pbolehbukall=false;
+if ($fgroupid=="24" OR $fgroupid=="1" OR $fgroupid=="X57" OR $fgroupid=="47" OR $fgroupid=="29" OR $fgroupid=="46") {
+    $pbolehbukall=true;
+}
+        
+
+
 $prptsum = "";
 if (isset($_POST['chk_sum'])) $prptsum = $_POST['chk_sum'];
 
+$patasanid = $_POST['cb_atasan'];
 $pkryid = $_POST['cb_karyawan'];
 $pbln = $_POST['e_bulan'];
 $ptanggal = date('Y-m-01', strtotime($pbln));
@@ -59,7 +95,24 @@ $pnmjbtkarywanpl=$rowk['nama_jabatan'];
 
 $sql = "select id_status, karyawanid, kode_absen, tanggal, jam, l_status FROM hrd.t_absen "
         . " WHERE 1=1 ";
+
 if (!empty($pkryid)) $sql .=" AND karyawanid='$pkryid'";
+else{
+    if (!empty($patasanid)) {
+        $sql .=" AND karyawanid IN (select distinct IFNULL(karyawanid,'') FROM hrd.karyawan WHERE (atasanId='$patasanid' OR atasanId2='$patasanid') )";
+    }else{
+        if ($pbolehbukall == false) {
+            
+            if ($pleader==true OR $patasantanpaleader==true) {
+                $sql .=" AND karyawanid IN (select distinct IFNULL(karyawanid,'') FROM hrd.karyawan WHERE (atasanId='$fkaryawan' OR atasanId2='$fkaryawan') )";
+            }else{
+                $sql .=" AND karyawanid='$fkaryawan'";
+            }
+            
+        }
+    }
+}
+
 $sql .=" AND LEFT(tanggal,7)= '$pbulan'";
 $query = "create TEMPORARY table $tmp01 ($sql)";
 mysqli_query($cnmy, $query);
@@ -118,7 +171,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 //CUSTI MASAL
 
 $query = "SELECT DISTINCT b.tanggal FROM hrd.t_cuti0 as a "
-        . " JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti where a.id_jenis='00' "
+        . " JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti where a.id_jenis IN ('00', '12') "
         . " AND a.karyawanid IN ('ALL', 'ALLHO') AND IFNULL(a.stsnonaktif,'')<>'Y' "
         . " AND LEFT(b.tanggal,7)= '$pbulan'";
 $query = "create TEMPORARY table $tmp03 ($query)";

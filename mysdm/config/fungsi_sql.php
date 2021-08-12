@@ -661,5 +661,222 @@ function getDistanceBetween($latitude1, $longitude1, $latitude2, $longitude2, $u
 	return (round($distance,2)); 
 }
 
+
+function CariSelisihJamMenit($psts, $libur, $ptgl, $pmskawal, $mskpakhir) {
+    $pwaktuselisih="";
+    
+    if (empty($ptgl)) {
+        return "invalid";
+    }
+    
+    if ($psts=="3") {
+        if ( (INT)substr($mskpakhir,0,2)<=7 ) {
+            return "";
+        }elseif ( (INT)substr($mskpakhir,0,2)==8 && (INT)substr($mskpakhir,3,2)==0 ) {
+            return "";
+        }
+    }elseif ($psts=="1") {
+        
+        if ( !empty($pmskawal) && (INT)substr($pmskawal,0,2)<8 ) {
+            $pmskawal="08:00";
+        }
+
+        if ( !empty($mskpakhir) && (INT)substr($mskpakhir,0,2)>=17 && (INT)substr($pmskawal,0,2)<=17 ) {
+            $mskpakhir="17:00";
+        }
+        
+    }
+    
+    $pawal=$ptgl." ".$pmskawal;
+    $pakhir=$ptgl." ".$mskpakhir;
+
+    if (empty($pmskawal)) $pawal="";
+    if (empty($mskpakhir)) $pakhir="";
+    
+    if (empty($pawal) || empty($pakhir)) {
+        if ($libur=="Y") $pwaktuselisih="";
+        else $pwaktuselisih="invalid";
+
+        if (empty($pawal) && empty($pakhir)) $pwaktuselisih="";
+
+    }else{
+        
+        $pwaktu_awal_masuk=strtotime($pawal);
+        $pwaktu_awal_pulang=strtotime($pakhir);
+        
+        //Selisih dg hasil detik
+        $pselisih_    =$pwaktu_awal_pulang - $pwaktu_awal_masuk;
+        //membagi detik menjadi jam
+        $pjam_selisih    =floor($pselisih_ / (60 * 60));
+        //membagi sisa detik setelah dikurangi $pjam_selisih menjadi menit
+        $pmenit_selisih    =( $pselisih_ - $pjam_selisih * (60 * 60) ) / 60;
+
+        $pjam_selisih = str_pad($pjam_selisih, 2, '0', STR_PAD_LEFT);
+        $pmenit_selisih = str_pad($pmenit_selisih, 2, '0', STR_PAD_LEFT);
+
+        $pwaktuselisih=$pjam_selisih.":".$pmenit_selisih;
+
+    }   
+    
+    return $pwaktuselisih;
+    
+}
+
+function CariSelisihJamMenit01($psts, $libur, $ptgl, $pmskawal, $mskpakhir, $pistawal, $istpakhir) {
+    $pselisihmasuk="";
+    $pselisihist="";
+    $pkey=1;
+    if (empty($ptgl)) {
+        return "invalid";
+    }
+    
+    if ($psts=="2") {
+        $pawal=$ptgl." ".$pistawal;
+        $pakhir=$ptgl." ".$istpakhir;
+        
+        if (empty($pistawal)) $pawal="";
+        if (empty($istpakhir)) $pakhir="";
+        
+    }else{
+        
+        if (!empty($pmskawal) || !empty($mskpakhir)) {
+            if ( (INT)substr($pmskawal,0,2)<8 ) {
+                $pmskawal="08:00";
+            }
+
+            if ( (INT)substr($mskpakhir,0,2)>=17 && (INT)substr($pmskawal,0,2)<=17 ) {
+                $mskpakhir="17:00";
+            }
+        }
+        
+        $pawal=$ptgl." ".$pmskawal;
+        $pakhir=$ptgl." ".$mskpakhir;
+        
+        if (empty($pmskawal)) $pawal="";
+        if (empty($mskpakhir)) $pakhir="";
+    }
+    
+    
+    $pkey=1;
+    ulangselisih:
+        if (empty($pawal) || empty($pakhir)) {
+            if ($libur=="Y") $pwaktuselisih="";
+            else $pwaktuselisih="invalid";
+            
+            if ($pkey==1) {
+                if (empty($pawal) && empty($pakhir)) $pwaktuselisih="";
+                return $pwaktuselisih;
+            }else{
+                if (empty($pawal) && empty($pakhir)) $pwaktuselisih="";
+            }
+
+        }else{
+
+            $pwaktu_awal_masuk=strtotime($pawal);
+            $pwaktu_awal_pulang=strtotime($pakhir);
+
+            //Selisih dg hasil detik
+            $pselisih_    =$pwaktu_awal_pulang - $pwaktu_awal_masuk;
+            //membagi detik menjadi jam
+            $pjam_selisih    =floor($pselisih_ / (60 * 60));
+            //membagi sisa detik setelah dikurangi $pjam_selisih menjadi menit
+            $pmenit_selisih    =( $pselisih_ - $pjam_selisih * (60 * 60) ) / 60;
+
+            $pjam_selisih = str_pad($pjam_selisih, 2, '0', STR_PAD_LEFT);
+            $pmenit_selisih = str_pad($pmenit_selisih, 2, '0', STR_PAD_LEFT);
+
+            $pwaktuselisih=$pjam_selisih.":".$pmenit_selisih;
+
+            if ($pkey==1) $pselisihmasuk=$pwaktuselisih;
+            elseif ($pkey==2) {
+                $pselisihist=$pwaktuselisih;
+                if ($pselisihist=="invalid") $pselisihist="";
+            }elseif ($pkey=3){
+                return $pwaktuselisih;
+            }
+
+        }
+    
+        
+        if ($psts=="1" || $psts=="2") {
+            return $pwaktuselisih;
+        }else{
+
+            if ($pkey==1) {
+                if (empty($pselisihmasuk) || $pselisihmasuk=="invalid") return "";
+            }
+
+            //istirahatnya
+            $pawal=$ptgl." ".$pistawal;
+            $pakhir=$ptgl." ".$istpakhir;
+
+            if (empty($pistawal)) $pawal="";
+            if (empty($istpakhir)) $pakhir="";
+
+            if ($pkey==1 AND ( !empty($pistawal) AND !empty($istpakhir) ) ) {
+                $pkey=2;
+                goto ulangselisih;
+
+            }
+            
+            //return "$pselisihmasuk : $pselisihist";
+            //return "";
+            
+            
+            
+            if (empty($pselisihist) && $pselisihist<>"invalid"){
+                return "$pselisihmasuk";
+            }else{
+                $pmasuk_j=false;
+                $pkeluar_j=false;
+                
+                //$pmskawal="08:00"; $mskpakhir="13:00";
+                
+                $phasil="";
+                
+                if ( (INT)substr($pmskawal,0,2)<11 ) {
+                    $pmasuk_j=true;
+                }elseif ( (INT)substr($pmskawal,0,2)==11 ) {
+                    if ( (INT)substr($pmskawal,3,2)<=0 ) {
+                        $pmasuk_j=true;
+                    }
+                }
+                
+                if ($pmasuk_j==true) {
+                    
+                    if ( (INT)substr($mskpakhir,0,2)>=13 && (INT)substr($mskpakhir,3,2)>=0 ) {
+                        $pkeluar_j=true;
+                    }else{
+                        $pkeluar_j=false;
+                    }
+                    
+                }
+                
+                if ($pkeluar_j==false || $pmasuk_j==false) {
+                    
+                    return "$pselisihmasuk";
+                    //$phasil="tidak ada istirahat";
+                    
+                }else{
+                    
+                    //$phasil="$pselisihmasuk & $pselisihist";
+                    
+                    $pawal=$ptgl." ".$pselisihist;
+                    $pakhir=$ptgl." ".$pselisihmasuk;
+                    
+                    $pkey=3;
+                    goto ulangselisih;
+                    
+                    
+                }
+                
+                return $phasil;
+                
+            }
+            
+            
+        }
+}
+
 ?>
 

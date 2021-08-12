@@ -42,7 +42,7 @@
     $ptglakhir = date('t', strtotime($mytgl1));
     
     
-    $query = "select a.idabsen, a.karyawanid, b.nama as nama_karyawan, a.kode_absen, a.tanggal, a.jam, a.l_latitude, a.l_longitude "
+    $query = "select a.idabsen, a.karyawanid, b.nama as nama_karyawan, a.kode_absen, a.tanggal, a.jam, a.l_latitude, a.l_longitude, a.l_status "
             . " FROM hrd.t_absen as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
             . " WHERE "
             . " a.tanggal BETWEEN '$pbulan1' AND '$pbulan2' ";
@@ -245,6 +245,7 @@
                             echo "<div class='icon'>";
                                 echo "<span  style='color:#000; font-weight:bold;'>$xhari</span>";
                                 echo "<a href='#' class='$pbtn_tgl_warna' >$ntglday</a>";
+                                echo "<span><i style='font-size:15px; font-wight:bold;'>&nbsp;</i></span>";
                             echo "</div>";
 
                             echo "<div class='clearfix'></div>";
@@ -279,6 +280,8 @@
                     $nlat_p=$row['l_latitude_p'];
                     $nlong=$row['l_longitude'];
                     $nlong_p=$row['l_longitude_p'];
+                    
+                    $ntempatabsen=$row['l_status'];
 
                     $ntglday= date("d", strtotime($ntgl));
                     $ntanggal= date("d/m/Y", strtotime($ntgl));
@@ -335,6 +338,7 @@
                             echo "<div class='icon'>";
                                 echo "<span  style='color:#000; font-weight:bold;'>$xhari</span>";
                                 echo "<a href='#' class='$pbtn_tgl_warna' >$ntglday</a>";
+                                echo "<span><i style='font-size:15px; font-wight:bold;'>$ntempatabsen</i></span>";
                             echo "</div>";
 
                             echo "<div class='clearfix'></div>";

@@ -129,7 +129,7 @@
                                 <div class='x_content'>
 
 
-                                    <div class='col-md-6 col-xs-12'>
+                                    <div class='col-md-12 col-xs-12'>
                                         
                                         
                                         <div class='form-group'>
@@ -140,10 +140,11 @@
                                         </div>
                                         
                                         <div class='form-group'>
-                                            <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                            <div class='col-md-8'>
-                                                <a class='btn btn-default' id='btn_home' href="<?PHP echo "?module=home"; ?>">Home</a> &nbsp; &nbsp; &nbsp;
+                                            <label class='control-label col-md-4 col-sm-4 col-xs-4' for=''>&nbsp; <span class='required'></span></label>
+                                            <div class='col-md-12'>
+                                                
                                                 <?PHP
+                                                echo "<a class='btn btn-default btn-sm' id='btn_home' href='?module=home'>Home</a> &nbsp; ";
                                                 if ($psudahabsen==true) {
                                                     echo "";
                                                 }else{
@@ -151,10 +152,14 @@
                                                         if ($pjamabsen<$pjambolehabsen) {
                                                             echo "<b>JAM MULAI ABSEN : $pjambolehabsen</b>";
                                                         }else{
-                                                            echo "<button type='submit' class='tombol-simpan btn btn-info' id='ibuttonsave'>Absen Masuk</button>";
+                                                            echo "<button type='submit' class='tombol-simpan btn btn-info btn-sm' id='ibuttonsave'>Absen Masuk</button>";
+                                                            echo "&nbsp; ";
+                                                            echo "<button type='button' class='btn btn-success btn-sm' id='ibuttonreset' onclick='ResetLokasi()'>Reset Lokasi</button>";
                                                         }
                                                     }elseif ($pkeypilih=="2") {
-                                                        echo "<button type='submit' class='tombol-simpan btn btn-info' id='ibuttonsave'>Absen Pulang</button>";
+                                                        echo "<button type='submit' class='tombol-simpan btn btn-info btn-sm' id='ibuttonsave'>Absen Pulang</button>";
+                                                        echo "&nbsp; ";
+                                                        echo "<button type='button' class='btn btn-success btn-sm' id='ibuttonreset' onclick='ResetLokasi()'>Reset Lokasi</button>";
                                                     }
                                                 }
                                                 ?>
@@ -451,7 +456,16 @@ Hubungi Team Marketing Service untuk info lebih lanjut.");
     }
 
 
-
+    function ResetLokasi() {
+        getLocationPlaceholder();
+        //getLocation();
+        
+        setTimeout(function () {
+            ShowIframeMapsAbsen('0');
+        }, 500);
+        
+    }
+    
 </script>
 
 

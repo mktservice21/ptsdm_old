@@ -24,6 +24,38 @@ switch($pactpilih){
         $pfilterkaryawan="";
         $pfilterkaryawan2="";
         $pfilterkry="";
+        
+        
+        $pleader=false;
+        $patasantanpaleader=false;
+        $query = "select karyawanId, leader from dbmaster.t_karyawan_posisi WHERE karyawanId='$fkaryawan'";
+        $tampil= mysqli_query($cnmy, $query);
+        $ketemu=mysqli_num_rows($tampil);
+        if ((INT)$ketemu>0) {
+            $row= mysqli_fetch_array($tampil);
+            $nldr_=$row['leader'];
+            
+            if ($nldr_=="Y") {
+                $pleader=true;
+                $patasantanpaleader=true;
+            }else{
+                $query_a = "select karyawanId FROM hrd.karyawan WHERE ( atasanId='$fkaryawan' OR atasanId2='$fkaryawan' ) "
+                        . " AND ( IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00' ) "
+                        . " AND IFNULL(aktif,'')<>'N'";
+                $tampil_a= mysqli_query($cnmy, $query_a);
+                $ketemu_a=mysqli_num_rows($tampil_a);
+                if ((INT)$ketemu_a>0) {
+                    $patasantanpaleader=true;
+                }
+            }
+        }
+        
+        $pbolehbukall=false;
+        if ($fgroupid=="24" OR $fgroupid=="1" OR $fgroupid=="X57" OR $fgroupid=="47" OR $fgroupid=="29" OR $fgroupid=="46") {
+            $pbolehbukall=true;
+        }
+        
+        
 ?>
 
         <script>
@@ -46,6 +78,19 @@ switch($pactpilih){
                 }
 
             }
+            
+            function ShowDataKaryawanByAtasan() {
+                var eidatasan =document.getElementById('cb_atasan').value;
+                $.ajax({
+                    type:"post",
+                    url:"module/hrd/viewdatahrd.php?module=carikaryawanbyatasanall",
+                    data:"uidatasan="+eidatasan,
+                    success:function(data){
+                        $("#cb_karyawan").html(data);
+                    }
+                });
+            }
+            
         </script>
 
 
@@ -73,6 +118,46 @@ switch($pactpilih){
                                 <div class='x_panel'>
                                     <div class='x_content form-horizontal form-label-left'><br />
 
+                                        <div class='form-group'>
+                                            <div class='col-sm-12'>
+                                                <b>Atasan</b>
+                                                <div class="form-group">
+                                                    <select class='form-control' id="cb_atasan" name="cb_atasan" onchange="ShowDataKaryawanByAtasan()">
+                                                        <?PHP
+                                                            $query = "select a.karyawanId as karyawanid, a.nama as nama_karyawan From hrd.karyawan as a "
+                                                                    . " JOIN dbmaster.t_karyawan_posisi as b on a.karyawanId=b.karyawanId "
+                                                                    . " WHERE 1=1 ";
+                                                            $query .= " AND ( IFNULL(a.tglkeluar,'')='' OR IFNULL(a.tglkeluar,'0000-00-00')='0000-00-00' ) ";
+                                                            $query .= " AND IFNULL(b.`leader`,'')='Y' ";
+                                                            if ($pbolehbukall==true) {
+                                                            }else{
+                                                                $query .= " AND a.karyawanId='$fkaryawan'";
+                                                            }
+                                                            $query .= " ORDER BY a.nama";
+
+                                                            $tampil = mysqli_query($cnmy, $query);
+                                                            $ketemu= mysqli_num_rows($tampil);
+                                                            if ((INT)$ketemu<=0) {
+                                                                if ($pleader==false AND $patasantanpaleader==true)
+                                                                    echo "<option value='$fkaryawan' selected>$fnmkaryawan</option>";
+                                                                else
+                                                                    echo "<option value='' selected></option>";
+                                                            }else
+                                                                echo "<option value='' selected>-- All --</option>";
+                                                            while ($z= mysqli_fetch_array($tampil)) {
+                                                                $pkaryid=$z['karyawanid'];
+                                                                $pkarynm=$z['nama_karyawan'];
+                                                                $pkryid=(INT)$pkaryid;
+                                                                if ((INT)$ketemu==1)
+                                                                    echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                                else
+                                                                    echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                                            }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class='form-group'>
                                             <div class='col-sm-12'>
@@ -80,27 +165,40 @@ switch($pactpilih){
                                                 <div class="form-group">
                                                     <select class='form-control' id="cb_karyawan" name="cb_karyawan">
                                                         <?PHP
-                                                            $query = "select karyawanId, nama From hrd.karyawan
-                                                                WHERE 1=1 ";
-                                                            if ($fgroupid=="24" OR $fgroupid=="1" OR $fgroupid=="57" OR $fgroupid=="47" OR $fgroupid=="29" OR $fgroupid=="46") {
-                                                                echo "<option value='' selected>-- All --</option>";
-                                                                $query .= " AND nama NOT IN ('ACCOUNTING') AND karyawanId NOT IN ('0000002200', '0000002083')";
+                                                            $query = "select a.karyawanId as karyawanid, a.nama as nama_karyawan From hrd.karyawan as a "
+                                                                    . " JOIN dbmaster.t_karyawan_posisi as b on a.karyawanId=b.karyawanId "
+                                                                    . " WHERE 1=1 ";
+                                                            $query .= " AND ( IFNULL(a.tglkeluar,'')='' OR IFNULL(a.tglkeluar,'0000-00-00')='0000-00-00' ) ";
+                                                            $query .= " AND IFNULL(b.`ho`,'')='Y' ";
+                                                            if ($pbolehbukall==true) {
                                                             }else{
-                                                                $query .= " AND karyawanId='$fkaryawan'";
+                                                                if ($pleader==true OR $patasantanpaleader==true) {
+                                                                    $query .= " AND (a.karyawanId='$fkaryawan' OR a.atasanId='$fkaryawan' OR a.atasanId2='$fkaryawan' ) ";
+                                                                }else{
+                                                                    $query .= " AND a.karyawanId='$fkaryawan'";
+                                                                }
                                                             }
-                                                            $query .= " AND karyawanId IN (select DISTINCT IFNULL(karyawanId,'') FROM dbmaster.t_karyawan_posisi WHERE IFNULL(ho,'')='Y')";
-                                                            $query .= " ORDER BY nama";
+                                                            $query .= " ORDER BY a.nama";
 
 
                                                             $tampil = mysqli_query($cnmy, $query);
 
                                                             $ketemu= mysqli_num_rows($tampil);
+                                                            
+                                                            if ((INT)$ketemu>1) echo "<option value='' selected>-- All --</option>";
 
                                                             while ($z= mysqli_fetch_array($tampil)) {
-                                                                $pkaryid=$z['karyawanId'];
-                                                                $pkarynm=$z['nama'];
+                                                                $pkaryid=$z['karyawanid'];
+                                                                $pkarynm=$z['nama_karyawan'];
                                                                 $pkryid=(INT)$pkaryid;
-                                                                echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                                                if ((INT)$ketemu==1) {
+                                                                    echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                                }else{
+                                                                    //if ($pkaryid==$fkaryawan)
+                                                                    //    echo "<option value='$pkaryid' selected>$pkarynm ($pkryid)</option>";
+                                                                    //else
+                                                                        echo "<option value='$pkaryid'>$pkarynm ($pkryid)</option>";
+                                                                }
                                                             }
                                                         ?>
                                                     </select>
@@ -109,6 +207,7 @@ switch($pactpilih){
                                         </div>
 
 
+                                        
 
                                         <div class='form-group'>
                                             <div class='col-sm-12'>

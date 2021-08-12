@@ -199,9 +199,9 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
             $ketemu= mysqli_num_rows($tampil);
             
             if ((INT)$ketemu==0) {
-                mysqli_close($cnmy);
-                echo "Tidak ada proses absen...\n"."Karena anda belum absen masuk dari istirahat...";
-                exit;
+                //mysqli_close($cnmy);
+                //echo "Tidak ada proses absen...\n"."Karena anda belum absen masuk dari istirahat...";
+                //exit;
             }
             
         }
@@ -252,17 +252,21 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     
     $psudahabsenmasuk_status="";
-    $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='1' AND karyawanid='$pcardidabsen'";
-    $tampil_= mysqli_query($cnmy, $query);
-    $nrow= mysqli_fetch_array($tampil_);
-    $psudahabsenmasuk_status=$nrow['l_status'];
+    if ($pkey<>"1") {
+        
+        $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='1' AND karyawanid='$pcardidabsen'";
+        $tampil_= mysqli_query($cnmy, $query);
+        $nrow= mysqli_fetch_array($tampil_);
+        $psudahabsenmasuk_status=$nrow['l_status'];
 
-    if (!empty($psudahabsenmasuk_status)) {
-        if ($plokasiabs<>$psudahabsenmasuk_status) {
-            mysqli_close($cnmy);
-            echo "Tidak bisa absen pulang...\n"."Absen masuk anda $psudahabsenmasuk_status...";
-            exit;
+        if (!empty($psudahabsenmasuk_status)) {
+            if ($plokasiabs<>$psudahabsenmasuk_status) {
+                mysqli_close($cnmy);
+                echo "Tidak bisa absen pulang...\n"."Absen masuk anda $psudahabsenmasuk_status...";
+                exit;
+            }
         }
+        
     }
         
     

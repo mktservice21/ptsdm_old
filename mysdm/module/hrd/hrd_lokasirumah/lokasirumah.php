@@ -16,7 +16,7 @@
     $pidstatus="HO1";
     $phidenpeta="hidden";
     
-    $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pkaryawanid'";
+    $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pkaryawanid' AND IFNULL(aktif,'')='Y'";
     $tampil= mysqli_query($cnmy, $query);
     $ketemu= mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {

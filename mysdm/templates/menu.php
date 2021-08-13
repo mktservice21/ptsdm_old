@@ -56,6 +56,10 @@ if ($igru=="1") {
     //$pria .=" AND a.ID NOT IN ('115')";
 }
 
+//gsm
+if ($_SESSION['IDCARD']=="0000000159") {//0000002073', '0000000470
+    $pria_menuutama=" AND a.ID NOT IN ('521') ";
+}
 
 $pidmenu="";
 $pidsubmenu="";

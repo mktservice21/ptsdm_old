@@ -662,7 +662,7 @@ function getDistanceBetween($latitude1, $longitude1, $latitude2, $longitude2, $u
 }
 
 
-function CariSelisihJamMenit($psts, $libur, $ptgl, $pmskawal, $mskpakhir) {
+function CariSelisihJamMenit($psts, $libur, $ptgl, $pmskawal, $mskpakhir, $lambat) {
     $pwaktuselisih="";
     
     if (empty($ptgl)) {
@@ -670,19 +670,27 @@ function CariSelisihJamMenit($psts, $libur, $ptgl, $pmskawal, $mskpakhir) {
     }
     
     if ($psts=="3") {
+        //$pmskawal="08:15";
+        //$mskpakhir="08:15";
         if ( (INT)substr($mskpakhir,0,2)<=7 ) {
             return "";
         }elseif ( (INT)substr($mskpakhir,0,2)==8 && (INT)substr($mskpakhir,3,2)==0 ) {
             return "";
+        }else{
+            if ( (INT)substr($mskpakhir,0,2)==8 ) {
+                if ( (INT)substr($mskpakhir,3,2)<=(INT)$lambat ) {
+                    return "";
+                }
+            }
         }
     }elseif ($psts=="1") {
         
         if ( !empty($pmskawal) && (INT)substr($pmskawal,0,2)<8 ) {
-            $pmskawal="08:00";
+            //$pmskawal="08:00";
         }
 
         if ( !empty($mskpakhir) && (INT)substr($mskpakhir,0,2)>=17 && (INT)substr($pmskawal,0,2)<=17 ) {
-            $mskpakhir="17:00";
+            //$mskpakhir="17:00";
         }
         
     }

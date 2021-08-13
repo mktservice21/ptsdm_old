@@ -425,7 +425,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 $pselisih_ist=CariSelisihJamMenit("1", $pliburannone, $ntgl, $njamistirahat, $njammmst_ist, "");
                 $pselisih_telat=CariSelisihJamMenit("3", $pliburannone, $ntgl, $nterlambatsdm_jm, $njammasuk, $nterlambatsdm);
                 
-                if ($hari_ini==$ntgl && $pselisih_jam="invalid") $pselisih_jam="";
+                if ($hari_ini==$ntgl && $pselisih_jam=="invalid") $pselisih_jam="";
                 
                 if ( (!empty($pselisih_jam) && $pselisih_jam<>"invalid" && empty($njampulang)) ) {
                     if ((INT)substr($pselisih_jam,0,2)>=8) {

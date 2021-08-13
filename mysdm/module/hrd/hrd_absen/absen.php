@@ -144,7 +144,8 @@
                                             <div class='col-md-12'>
                                                 
                                                 <?PHP
-                                                echo "<a class='btn btn-default btn-sm' id='btn_home' href='?module=home'>Home</a> &nbsp; ";
+                                                echo "<a class='btn btn-default btn-sm' id='btn_home' href='?module=home'>Home</a>";
+                                                //echo "&nbsp; ";
                                                 if ($psudahabsen==true) {
                                                     echo "";
                                                 }else{
@@ -153,13 +154,13 @@
                                                             echo "<b>JAM MULAI ABSEN : $pjambolehabsen</b>";
                                                         }else{
                                                             echo "<button type='submit' class='tombol-simpan btn btn-info btn-sm' id='ibuttonsave'>Absen Masuk</button>";
-                                                            echo "&nbsp; ";
-                                                            echo "<button type='button' class='btn btn-success btn-sm' id='ibuttonreset' onclick='ResetLokasi()'>Reset Lokasi</button>";
+                                                            //echo "&nbsp; ";
+                                                            echo "<button type='button' class='btn btn-success btn-sm' id='ibuttonreset' onclick='ResetLokasi()'>Refresh Lokasi</button>";
                                                         }
                                                     }elseif ($pkeypilih=="2") {
                                                         echo "<button type='submit' class='tombol-simpan btn btn-info btn-sm' id='ibuttonsave'>Absen Pulang</button>";
-                                                        echo "&nbsp; ";
-                                                        echo "<button type='button' class='btn btn-success btn-sm' id='ibuttonreset' onclick='ResetLokasi()'>Reset Lokasi</button>";
+                                                        //echo "&nbsp; ";
+                                                        echo "<button type='button' class='btn btn-success btn-sm' id='ibuttonreset' onclick='ResetLokasi()'>Refresh Lokasi</button>";
                                                     }
                                                 }
                                                 ?>

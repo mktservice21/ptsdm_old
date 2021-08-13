@@ -5,6 +5,7 @@
 session_start();
 include "../../config/koneksimysqli.php";
 include "../../config/fungsi_sql.php";
+include "../../config/fungsi_ubahget_id.php";
 
 /// storing  request (ie, get/post) global array to a variable  
 $requestData= $_REQUEST;
@@ -35,14 +36,14 @@ $tgl1= date("Y-m", strtotime($tgl1));
 $tgl2= date("Y-m", strtotime($tgl2));
 //FORMAT(realisasi1,2,'de_DE') as 
 // getting total number records without any search
-$sql = "SELECT idrutin, DATE_FORMAT(tgl,'%d %M %Y') as tgl, DATE_FORMAT(bulan,'%M %Y') as bulan, DATE_FORMAT(periode1,'%d/%m/%Y') as periode1, "
+$sql = "SELECT idrutin, bulan as bln_pl, DATE_FORMAT(tgl,'%d %M %Y') as tgl, DATE_FORMAT(bulan,'%M %Y') as bulan, DATE_FORMAT(periode1,'%d/%m/%Y') as periode1, "
         . " DATE_FORMAT(periode2,'%d/%m/%Y') as periode2, "
         . " divisi, karyawanid, nama, areaid, nama_area, nama_area_o, FORMAT(jumlah,0,'de_DE') as jumlah, keterangan, "
         . " COA4, NAMA4, jabatanid, tgl_atasan1, tgl_atasan2, tgl_atasan3, tgl_atasan4, validate, fin, gbr_atasan1, gbr_atasan2 ";
 $sql.=" FROM dbmaster.v_brrutin0 ";
 
 
-$sql = "SELECT divisi, idrutin, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, DATE_FORMAT(bulan,'%M %Y') as bulan, DATE_FORMAT(periode1,'%d/%m/%Y') as periode1, "
+$sql = "SELECT divisi, idrutin, bulan as bln_pl, DATE_FORMAT(tgl,'%d/%m/%Y') as tgl, DATE_FORMAT(bulan,'%M %Y') as bulan, DATE_FORMAT(periode1,'%d/%m/%Y') as periode1, "
         . " DATE_FORMAT(periode2,'%d/%m/%Y') as periode2, "
         . " divisi, karyawanid, nama, nama_karyawan, areaid, FORMAT(jumlah,0,'de_DE') as jumlah, keterangan, jabatanid, atasan1, atasan2, tgl_atasan1, tgl_atasan2, tgl_atasan3, tgl_atasan4, tgl_fin ";
 $sql.=" FROM dbmaster.v_brrutin0_mydata ";
@@ -120,6 +121,12 @@ if ($_SESSION['LVLPOSISI']=="FF7") {
     }
 }
 
+//elsa
+if ($_SESSION['IDCARD']=="0000002329") {
+    $sql .=" and karyawanid  IN ('$_SESSION[IDCARD]', '0000000158') ";
+}
+
+
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
 $totalData = mysqli_num_rows($query);
 $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.
@@ -162,12 +169,28 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $jumlah = $row["jumlah"];
     $ket = $row["keterangan"];
     
+    $pjabatanid=$row['jabatanid'];
+    $pdivisi=$row['divisi'];
+    $ppblnpilih=$row['bln_pl'];
+    $ppblnpilih=date("Ymd", strtotime($ppblnpilih));
+    
     $edit="<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$idno'>Edit</a>";
     $hapus="<input type='button' class='btn btn-danger btn-xs' value='Hapus' onClick=\"ProsesData('hapus', '$idno')\">";
     $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
         . "onClick=\"window.open('eksekusi3.php?module=$_GET[module]&brid=$idno&iprint=print',"
         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
         . "Print</a>";
+    
+    
+    
+    if ($pdivisi=="HO" AND (int)$pjabatanid<>38 AND $ppblnpilih>="20210601") {
+        $pidnoget=encodeString($idno);
+        $print="<a title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+            . "onClick=\"window.open('eksekusi3.php?module=entrybrrutinho&brid=$pidnoget&iprint=print',"
+            . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+            . "Print</a>";
+    }
+    
     
     $t_ats1 = $row["tgl_atasan1"];
     $t_ats2 = $row["tgl_atasan2"];
@@ -176,7 +199,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $g_ats2 = getfieldcnmy("select gbr_atasan2 as lcfields from dbmaster.t_brrutin0 where idrutin='$idno'");
     $t_ats3 = $row["tgl_atasan3"];
     $t_ats4 = $row["tgl_atasan4"];
-    $pjabatanid=$row['jabatanid'];
+    
     $lvlpengajuan = getfieldcnmy("select LEVELPOSISI as lcfields from dbmaster.v_level_jabatan where jabatanId='$pjabatanid'");
     $allbutton="$edit $hapus $print";
     

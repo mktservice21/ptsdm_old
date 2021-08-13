@@ -364,11 +364,30 @@ if (isset($_GET['ca'])) {
                                         <select class='form-control input-sm' id='e_idkaryawan' name='e_idkaryawan' onchange="showDataKaryawan('tambahbaru', 'e_idkaryawan')">
                                             <?PHP
 											
-											//if ($_SESSION['DIVISI']=="OTC") $hanyakaryawanaktif_f="";
+                                            //if ($_SESSION['DIVISI']=="OTC") $hanyakaryawanaktif_f="";
 											
                                             //comboKaryawanAktifAll("", "pilihan", $idajukan, $_SESSION['STSADMIN'], $_SESSION['LVLPOSISI'], $fildiv, $_SESSION['IDCARD'], $jabatan_);
                                             //PilihKaryawanAktif($konek, $adapilihan, $ygdipilih, $hanyaygaktif, $stsadim, $divisi, $lvlposisi, $tampilkanlevelbawahan, $karyawan, $jabatan, $region, $cabang, $area, $hanyasatu)
-                                            PilihKaryawanAktif("", "-- Pilihan --", $idajukan, "$hanyakaryawanaktif_f", $_SESSION['STSADMIN'], $fildiv, $_SESSION['LVLPOSISI'], $tampilbawahan, $_SESSION['IDCARD'], $jabatan_, $_SESSION['AKSES_REGION'], $filkaryawncabang, "", $hanyasatukaryawan);
+                                            
+                                            
+                                            //elsa
+                                            if ($_SESSION['IDCARD']=="0000002329") {
+                                                $query = "select karyawanId as karyawanid, nama as nama_karyawan FROM hrd.karyawan WHERE "
+                                                        . " karyawanId IN ('0000000158', '$idajukan', '$_SESSION[IDCARD]')";
+                                                $tampil= mysqli_query($cnmy, $query);
+                                                while ($nrow=mysqli_fetch_array($tampil)){
+                                                    $k_idkry=$nrow['karyawanid'];
+                                                    $k_nmkry=$nrow['nama_karyawan'];
+                                                    
+                                                    if ($k_idkry==$idajukan)
+                                                        echo "<option value='$k_idkry' selected>$k_nmkry</option>";
+                                                    else
+                                                        echo "<option value='$k_idkry'>$k_nmkry</option>";
+                                                }
+                                            }else{
+                                                PilihKaryawanAktif("", "-- Pilihan --", $idajukan, "$hanyakaryawanaktif_f", $_SESSION['STSADMIN'], $fildiv, $_SESSION['LVLPOSISI'], $tampilbawahan, $_SESSION['IDCARD'], $jabatan_, $_SESSION['AKSES_REGION'], $filkaryawncabang, "", $hanyasatukaryawan);
+                                            }
+                                            
                                             ?>
                                         </select>
                                     </div>

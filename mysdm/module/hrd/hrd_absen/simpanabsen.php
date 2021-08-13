@@ -114,6 +114,22 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     $sdmlong=$row['sdm_longitude'];
     $sdmradius=$row['sdm_radius'];
     
+    //KHUSUS
+    $queryR = "select sdm_radius from hrd.sdm_lokasi_radius_ex WHERE karyawanid='$pcardidabsen'";
+    $tampilR= mysqli_query($cnmy, $queryR);
+    $ketemuR= mysqli_num_rows($tampilR);
+    if ((INT)$ketemuR>0) {
+        $nrow= mysqli_fetch_array($tampilR);
+        $nex_radius=$nrow['sdm_radius'];
+        if (empty($nex_radius)) $nex_radius=0;
+        
+        if ($nex_radius<>"0") {
+            $sdmradius=$nex_radius;
+        }
+        
+    }
+    //echo $sdmradius; exit;
+    
     if (empty($sdmlat)) $sdmlat=0;
     if (empty($sdmlong)) $sdmlong=0;
     if (empty($sdmradius)) $sdmradius=0;
@@ -250,7 +266,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
         
     }
     
-    
+    //cek Lokasi MASUK WFO atau WFH
     $psudahabsenmasuk_status="";
     if ($pkey<>"1") {
         

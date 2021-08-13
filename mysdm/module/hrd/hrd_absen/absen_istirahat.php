@@ -48,7 +48,7 @@ $plongitude_home="";
 </div>
 
 
-<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+<div hidden class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     <div id="div_sdhistirahat">
         <div class='tile-stats'>
             <div class='icon'><i class='glyphicon glyphicon-download'></i></div>

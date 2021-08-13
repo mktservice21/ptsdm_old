@@ -40,6 +40,7 @@
     $pseldeppili7="";
     $pseldeppili8="";
     
+    if ($fdivisi=="OTC") $ppilihdivi=$fdivisi;
     
     if (!empty($_SESSION['BGTUPDTHN'])) $ptahunpilih=$_SESSION['BGTUPDTHN'];
     if (!empty($_SESSION['BGTUPDDVL'])) $ppilihdivi=$_SESSION['BGTUPDDVL'];
@@ -212,8 +213,12 @@
                                     <div class='col-xs-5'>
                                         <select class='soflow' name='cb_divpilih' id='cb_divpilih' onchange="PilihDataCabang()">
                                             <?php
-                                            echo "<option value='ETH' $pseldivpili1>ETHICAL</option>";
-                                            echo "<option value='OT' $pseldivpili2>CHC</option>";
+                                            if ($fdivisi=="OTC") {
+                                                echo "<option value='OT' selected>CHC</option>";
+                                            }else{
+                                                echo "<option value='ETH' $pseldivpili1>ETHICAL</option>";
+                                                echo "<option value='OT' $pseldivpili2>CHC</option>";
+                                            }
                                             ?>
                                         </select>
                                     </div>
@@ -247,6 +252,9 @@
                                             $query .= " AND jabatanid NOT IN ('12', '37', '28')";
                                             $query .= " AND karyawanid NOT IN ('0000002200', '0000002083')";
                                             $query .= " AND karyawanid NOT IN ('0000000962', '0000001675')";
+                                            if ($fdivisi=="OTC") {
+                                                $query .= " AND divisiId IN ('OTC', 'CHC')";
+                                            }
                                             $query .= " ORDER BY nama";
                                             $tampil = mysqli_query($cnmy, $query);
                                             while ($z= mysqli_fetch_array($tampil)) {

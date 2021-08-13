@@ -108,6 +108,23 @@ if ($pact=="simpandataabsen") {
     $sdmlong=$row['sdm_longitude'];
     $sdmradius=$row['sdm_radius'];
     
+    //KHUSUS
+    $queryR = "select sdm_radius from hrd.sdm_lokasi_radius_ex WHERE karyawanid='$pcardidabsen'";
+    $tampilR= mysqli_query($cnmy, $queryR);
+    $ketemuR= mysqli_num_rows($tampilR);
+    if ((INT)$ketemuR>0) {
+        $nrow= mysqli_fetch_array($tampilR);
+        $nex_radius=$nrow['sdm_radius'];
+        if (empty($nex_radius)) $nex_radius=0;
+        
+        if ($nex_radius<>"0") {
+            $sdmradius=$nex_radius;
+        }
+        
+    }
+    //echo $sdmradius; exit;
+    
+    
     if (empty($sdmlat)) $sdmlat=0;
     if (empty($sdmlong)) $sdmlong=0;
     if (empty($sdmradius)) $sdmradius=0;
@@ -142,9 +159,21 @@ if ($pact=="simpandataabsen") {
     
     
     if ( ((DOUBLE)$pjarak_absen_wfo>(DOUBLE)$sdmradius) AND ((DOUBLE)$pjarak_absen_wfh>(DOUBLE)$a_radius) ) {
-        mysqli_close($cnmy);
-        echo "GAGAL...\n"."Lokasi ABSEN Tidak Sesuai...\n"."Jarak dari Kantor : ".$pjarak_absen_wfo." \n"."Jarak dari Rumah : ".$pjarak_absen_wfh." ";
-        exit;
+        //mysqli_close($cnmy);
+        //echo "GAGAL...\n"."Lokasi ABSEN Tidak Sesuai...\n"."Jarak dari Kantor : ".$pjarak_absen_wfo." \n"."Jarak dari Rumah : ".$pjarak_absen_wfh." ";
+        //exit;
+        
+        //// tambah pengecualian absen istirahat tgl 13 agustus 2021, jadi bisa absen istirahat dimana saja, lokasi tetap disimpan (sesuai meeting huspan & yakub)
+        if ($pkey=="3") {
+            
+        }else{
+        
+            mysqli_close($cnmy);
+            echo "GAGAL...\n"."Lokasi ABSEN Tidak Sesuai...\n"."Jarak dari Kantor : ".$pjarak_absen_wfo." \n"."Jarak dari Rumah : ".$pjarak_absen_wfh." ";
+            exit;
+        
+        }
+        
     }
     
     $pjarakdarilokasi=$pjarak_absen_wfh;
@@ -219,6 +248,7 @@ if ($pact=="simpandataabsen") {
         echo "t_ulang"; exit;
     }
     
+    //cek Lokasi MASUK WFO atau WFH
     $psudahabsenmasuk_status="";
     $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='1' AND karyawanid='$pcardidabsen'";
     $tampil_= mysqli_query($cnmy, $query);
@@ -227,9 +257,18 @@ if ($pact=="simpandataabsen") {
 
     if (!empty($psudahabsenmasuk_status)) {
         if ($plokasiabs<>$psudahabsenmasuk_status) {
-            mysqli_close($cnmy);
-            //echo "Tidak bisa absen...\n"."Absen masuk anda $psudahabsenmasuk_status..."; exit;
-            echo "t_lokasinot"; exit;
+            
+            //// tambah pengecualian absen istirahat tgl 13 agustus 2021, jadi bisa absen istirahat dimana saja, lokasi tetap disimpan (sesuai meeting huspan & yakub)
+            if ($pkey=="3") {
+
+            }else{
+                
+                mysqli_close($cnmy);
+                //echo "Tidak bisa absen...\n"."Absen masuk anda $psudahabsenmasuk_status..."; exit;
+                echo "t_lokasinot"; exit;
+                
+            }
+            
         }
     }
     

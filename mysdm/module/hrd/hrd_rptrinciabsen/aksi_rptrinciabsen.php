@@ -34,7 +34,7 @@ $tmp02 =" dbtemp.tmprptabsen02_".$puserid."_$now ";
 $tmp03 =" dbtemp.tmprptabsen03_".$puserid."_$now ";
 $tmp04 =" dbtemp.tmprptabsen04_".$puserid."_$now ";
 
-
+$hari_ini = date("Y-m-d");
 $pkryid = $_POST['cb_karyawan']; 
 $pbln = $_POST['e_bulan'];
 $ptanggal = date('Y-m-01', strtotime($pbln));
@@ -117,7 +117,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 //CUSTI MASAL
 
 $query = "SELECT DISTINCT b.tanggal FROM hrd.t_cuti0 as a "
-        . " JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti where a.id_jenis='00' "
+        . " JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti where a.id_jenis IN ('00', '12') "
         . " AND a.karyawanid IN ('ALL', 'ALLHO') AND IFNULL(a.stsnonaktif,'')<>'Y' "
         . " AND LEFT(b.tanggal,7)= '$pbulan'";
 $query = "create TEMPORARY table $tmp03 ($query)";
@@ -249,12 +249,13 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "ALTER TABLE $tmp03 ADD COLUMN jam_masuk VARCHAR(5), ADD COLUMN jam_istirahat VARCHAR(5), ADD COLUMN jam_masuk_ist VARCHAR(5), "
-        . " ADD COLUMN jam_pulang VARCHAR(5), ADD COLUMN ket_absen VARCHAR(100), ADD COLUMN keterangan VARCHAR(300), ADD COLUMN keterangan_p VARCHAR(300), ADD COLUMN l_status VARCHAR(100)";
+        . " ADD COLUMN jam_pulang VARCHAR(5), ADD COLUMN ket_absen VARCHAR(100), ADD COLUMN keterangan VARCHAR(300), ADD COLUMN keterangan_p VARCHAR(300), ADD COLUMN l_status VARCHAR(100), "
+        . " ADD COLUMN terlambat_sdm INT(4)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, jam, ket_absen FROM $tmp01 WHERE kode_absen='1') as b "
-        . " on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.jam_masuk=b.jam, a.ket_absen=b.ket_absen";
+$query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, jam, ket_absen, terlambat_sdm FROM $tmp01 WHERE kode_absen='1') as b "
+        . " on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.jam_masuk=b.jam, a.ket_absen=b.ket_absen, a.terlambat_sdm=b.terlambat_sdm";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 //keterangan
@@ -308,6 +309,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     <meta http-equiv="Pragma" content="no-cache">
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>
     <link rel="shortcut icon" href="images/icon.ico" />
+    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet"> 
     <style> .str{ mso-number-format:\@; } </style>
 </HEAD>
 <script>
@@ -339,10 +341,10 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         echo "<thead>";
             echo "<tr>";
                 echo "<th align='center' rowspan='2'><small>Tanggal</small></th>";
-                echo "<th align='center' colspan='7'><small>Absen</small></th>";
-                //echo "<th align='center' colspan='4'><small>Absen</small></th>";
+                echo "<th align='center' colspan='6'><small>Absen</small></th>";
                 echo "<th align='center' rowspan='2'><small>Durasi</small></th>";
                 echo "<th align='center' rowspan='2'><small>&nbsp;</small></th>";
+                echo "<th align='center' rowspan='2'><small>U.M</small></th>";
             echo "</tr>";
             
             echo "<tr>";
@@ -350,7 +352,6 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<th align='center'><small>Telat</small></th>";
                 echo "<th align='center'><small>Keterangan</small></th>";
                 echo "<th align='center'><small>Istirahat</small></th>";
-                echo "<th align='center'><small>Masuk Istirahat</small></th>";
                 echo "<th align='center'><small>Pulang</small></th>";
                 echo "<th align='center'><small>Keterangan</small></th>";
             echo "</tr>";
@@ -377,7 +378,13 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 $nketerangan_p=$row0['keterangan_p'];
                 $nket_abs=$row0['ket_absen'];
                 $nstatusabs=$row0['l_status'];
+                $nterlambatsdm=$row0['terlambat_sdm'];
                 
+                if (empty($nterlambatsdm)) $nterlambatsdm=0;
+                $nterlambatsdm_jm = "08:".str_pad($nterlambatsdm, 2, '0', STR_PAD_LEFT);
+                
+                
+                //$nstatusabs="WFO";$njampulang="13:30";
                 
                 $pselisih_jam="";
                 $pselisih_ist="";
@@ -387,57 +394,17 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 //0 = hitung selisih masuk, pulang dan istirahat, 1 = hitung hanya masuk dan pulang, 2 = hitung hanya istirahat, 3 = telat
                 //$pselisih_jam=CariSelisihJamMenit02("0", $pliburannone, $ntgl, $njammasuk, $njampulang, $njamistirahat, $njammmst_ist);
                 //$pselisih_jam=CariSelisihJamMenit01("0", $pliburannone, $ntgl, $njammasuk, $njampulang);
-                $pselisih_jam=CariSelisihJamMenit("1", $pliburannone, $ntgl, $njammasuk, $njampulang);
-                $pselisih_ist=CariSelisihJamMenit("1", $pliburannone, $ntgl, $njamistirahat, $njammmst_ist);
-                $pselisih_telat=CariSelisihJamMenit("3", $pliburannone, $ntgl, "08:00", $njammasuk);
+                $pselisih_jam=CariSelisihJamMenit("1", $pliburannone, $ntgl, $njammasuk, $njampulang, "");
+                $pselisih_ist=CariSelisihJamMenit("1", $pliburannone, $ntgl, $njamistirahat, $njammmst_ist, "");
+                $pselisih_telat=CariSelisihJamMenit("3", $pliburannone, $ntgl, $nterlambatsdm_jm, $njammasuk, $nterlambatsdm);
                 
-                if ( (!empty($pselisih_jam) && $pselisih_jam<>"invalid") ) {
+                if ($hari_ini==$ntgl && $pselisih_jam="invalid") $pselisih_jam="";
+                
+                if ( (!empty($pselisih_jam) && $pselisih_jam<>"invalid" && empty($njampulang)) ) {
                     if ((INT)substr($pselisih_jam,0,2)>=8) {
                         //$pselisih_jam="08:00";
                     }
                 }
-                /*
-                if ( (!empty($pselisih_jam) && $pselisih_jam<>"invalid") ) {
-                    
-                    if ( (INT)substr($pselisih_jam,0,2)>4 ) {
-                        if ( (empty($pselisih_ist) && $pselisih_ist<>"invalid") ) $pselisih_ist="01:00";
-                        
-                        //$pselisih_jam="09:00";
-                        //$pselisih_ist="01:00";
-                        
-                        $pjamnya_="0";
-                        $pmenitya_="0";
-                        
-                        $pjamnya_=(INT)substr($pselisih_jam,0,2)-(INT)substr($pselisih_ist,0,2);
-                        if ((INT)substr($pselisih_ist,3,2)<>0) {
-                            $pmenitya_=(INT)substr($pselisih_jam,3,2)-(INT)substr($pselisih_ist,3,2);
-                        }
-                        
-                        if ((INT)$pmenitya_<0) {
-                            //$pmenitya_=-1*(INT)$pmenitya_;
-                            //$pjamnya_=(INT)$pjamnya_-1;
-                        }
-                        
-                        $pjamnya_ = str_pad($pjamnya_, 2, '0', STR_PAD_LEFT);
-                        $pmenitya_ = str_pad($pmenitya_, 2, '0', STR_PAD_LEFT);
-                        
-                        $pselisih_jam =$pjamnya_.":".$pmenitya_;
-                        
-                        //$pselisih_jam .=" : ".$pselisih_ist;
-                        //$pselisih_jam=CariSelisihJamMenit("1", $pliburannone, $ntgl, $pselisih_jam, $pselisih_ist);
-                        
-                        if ((INT)substr($pselisih_jam,0,2)>=8) {
-                            $pselisih_jam="08:00";
-                        }
-                        
-                    }else{
-                        if ( (INT)substr($pselisih_jam,0,2)<0 ) {
-                            $pselisih_jam="00:".substr($pselisih_jam,3,2);
-                        }
-                    }
-                    
-                }
-                */
                 
                 
                 $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
@@ -466,17 +433,31 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     else $nketerangan_abs=$nketerangan.", ".$nketerangan_abs;
                 }
                 
+                //$nstatusabs="WFO";
+                //$pselisih_jam="05:01";
+                
+                $puangmakan="";
+                if ($nstatusabs=="WFO") {
+                    if (!empty($pselisih_jam) && $pselisih_jam<>"invalid") {
+                        
+                        if ((INT)substr($pselisih_jam,0,2)>=5) {
+                            $puangmakan="<a href=\"#/prediksi_uang_makan\"><i class=\"fa fa-money\"></i></a>";
+                        }
+                        
+                    }
+                }
+                
                 echo "<tr $pclasslibur>";
                 echo "<td nowrap>$pharitanggal</td>";
                 echo "<td nowrap $pclasslibur_rd>$njammasuk</td>";
                 echo "<td nowrap $pclasslibur_rd>$pselisih_telat</td>";
                 echo "<td nowrap >$nketerangan</td>";
                 echo "<td nowrap >$njamistirahat</td>";
-                echo "<td nowrap >$njammmst_ist</td>";
                 echo "<td nowrap >$njampulang</td>";
                 echo "<td nowrap >$nketerangan_p</td>";
                 echo "<td nowrap >$pselisih_jam</td>";
-                echo "<td nowrap >$nstatusabs</td>";
+                echo "<td nowrap >&nbsp; <b>$nstatusabs</b> &nbsp;</td>";
+                echo "<td nowrap >&nbsp; <b>$puangmakan</b> &nbsp;</td>";
                 echo "</tr>";
                 
                 $no++;

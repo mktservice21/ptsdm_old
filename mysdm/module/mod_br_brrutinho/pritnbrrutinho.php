@@ -63,7 +63,12 @@
                 $query .=" AND ( a.karyawanid='$pidcard' OR a.karyawanid IN $pfilterkrypilih ) ";
             }
         }else{
-            $query .=" AND (a.karyawanid='$pidcard' OR atasan4='$pidcard') ";
+            //elsa
+            if ($pidcard=="0000002329") {
+                $query .=" AND a.karyawanid IN ('$pidcard', '0000000158') ";
+            }else{
+                $query .=" AND (a.karyawanid='$pidcard' OR atasan4='$pidcard') ";
+            }
         }
     }
     $result = mysqli_query($cnmy, $query);

@@ -10,11 +10,12 @@ if (!isset($_SESSION['USERID'])) {
     exit;
 }
 
-
+$ppilformat=1;
 $ppilihrpt="";
 if (isset($_GET['ket'])) $ppilihrpt=$_GET['ket'];
 
 if ($ppilihrpt=="excel") {
+    $ppilformat=3;
     // Fungsi header dengan mengirimkan raw data excel
     header("Content-type: application/vnd-ms-excel");
     // Mendefinisikan nama file ekspor "hasil-export.xls"
@@ -46,15 +47,40 @@ $nthn = date('Y', strtotime($ptanggal));
 $pbulan = date('Y-m', strtotime($ptanggal));
 $pperiode = date('F Y', strtotime($ptanggal));
 
-
-$query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from hrd.karyawan as a 
+$ppilformat=1;
+$query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan, a.divisiId as divisiid from hrd.karyawan as a 
     LEFT join hrd.jabatan as b on a.jabatanId=b.jabatanId 
     where a.karyawanid='$pkryid'";
 $tampilk=mysqli_query($cnmy, $query);
 $rowk=mysqli_fetch_array($tampilk);
 $pnamakarywanpl=$rowk['nama'];
 $pnmjbtkarywanpl=$rowk['nama_jabatan'];
+$pidjbtkarywanpl=$rowk['jabatanid'];
+$piddivisipl=$rowk['divisiid'];
 
+$prupiah_um=0;
+//cari rp biaya rutin uang makan
+$query = "select rupiah, rupiah_otc from dbmaster.t_brrutin_rp_jbt WHERE jabatanid='$pidjbtkarywanpl' AND nobrid='04'";
+$tampilum=mysqli_query($cnmy, $query);
+$rowu=mysqli_fetch_array($tampilum);
+$pum_jbt=$rowu['rupiah'];
+$pum_jbt_otc=$rowu['rupiah_otc'];
+
+if (empty($pum_jbt)) $pum_jbt=0;
+if (empty($pum_jbt_otc)) $pum_jbt_otc=0;
+
+if ($piddivisipl=="OTC" AND (DOUBLE)$pum_jbt_otc>0) $pum_jbt=$pum_jbt_otc;
+
+
+$query = "select rupiah from dbmaster.t_brrutin_rp_person WHERE karyawanid='$pkryid' AND nobrid='04'";
+$tampilum2=mysqli_query($cnmy, $query);
+$rowu2=mysqli_fetch_array($tampilum2);
+$pum_person=$rowu2['rupiah'];
+
+if (empty($pum_person)) $pum_person=0;
+
+$prupiah_um=$pum_jbt;
+if ((DOUBLE)$pum_person>0) $prupiah_um=$pum_person;
 
 $sql = "select id_status, karyawanid, kode_absen, tanggal, jam, keterangan, l_status FROM hrd.t_absen "
         . " WHERE 1=1 ";
@@ -321,16 +347,15 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     <?PHP
     echo "<b>Report Detail Absensi</b><br/>";
     echo "<b>Periode : $pperiode</b><br/>";
+
+    echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
+    //echo "<b>Jabatan : $pnmjbtkarywanpl</b><br/>";
     
     echo "<b>Hari Kerja : $pjmlharikerjasdm</b><br/>";
     if ((INT)$pjmlcutimasal>0) {
         echo "<b>Cuti Massal : $pjmlcutimasal</b><br/>";
     }
     
-    if (!empty($pkryid)) {
-        //echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
-        //echo "<b>Jabatan : $pnmjbtkarywanpl</b><br/>";
-    }
     
     $printdate= date("d/m/Y H:i");
     echo "<i>view date : $printdate</i><br/>";
@@ -359,7 +384,9 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         echo "</thead>";
         
         echo "<tbody>";
-        
+            $pjmlwfo=0;
+            $pjmlwfo_ok=0;
+            $pjmlwfh=0;
             $no=1;//- INTERVAL '60' MINUTE
             $query = "select *, CASE WHEN IFNULL(jam_pulang,'')='' THEN '' ELSE LEFT(timediff(jam_pulang, jam_masuk),5) END as lamawaktu from $tmp03 order by nama_karyawan, karyawanid, tanggal";
             $tampil0=mysqli_query($cnmy, $query);
@@ -442,9 +469,13 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         
                         if ((INT)substr($pselisih_jam,0,2)>=5) {
                             $puangmakan="<a href=\"#/prediksi_uang_makan\"><i class=\"fa fa-money\"></i></a>";
+                            $pjmlwfo_ok++;
                         }
                         
                     }
+                    $pjmlwfo++;
+                }elseif ($nstatusabs=="WFH") {
+                    $pjmlwfh++;
                 }
                 
                 echo "<tr $pclasslibur>";
@@ -467,7 +498,18 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         
     echo "</table>";
     
-    echo "<br/><br/><br/><br/><br/>";
+    echo "<br/><hr/>";
+    
+    $ptotal_uangmakan=(DOUBLE)$pjmlwfo_ok * (DOUBLE)$prupiah_um;
+    
+    $prupiah_um=BuatFormatNumberRp($prupiah_um, $ppilformat);//1 OR 2 OR 3
+    $ptotal_uangmakan=BuatFormatNumberRp($ptotal_uangmakan, $ppilformat);//1 OR 2 OR 3
+    
+    echo "Total WFO : $pjmlwfo<br/>";
+    echo "Total WFH : $pjmlwfh<br/>";
+    echo "Prediksi Uang Makan Bulan $pperiode : $pjmlwfo_ok * $prupiah_um = $ptotal_uangmakan<br/>";
+    
+    echo "<br/><br/><br/><br/><br/><br/>";
     
     ?>
     

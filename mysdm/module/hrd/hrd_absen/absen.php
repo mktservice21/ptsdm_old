@@ -25,7 +25,8 @@
         
     }
     
-    
+    $pmobile_yes=$_SESSION['MOBILE'];
+	
     $pjambolehabsen="";
     $pidstatus=$_SESSION['R_STATUSABS'];
     if (empty($pidstatus)) $pidstatus="HO1";
@@ -88,40 +89,9 @@
                               id='d-form2' name='form1' data-parsley-validate class='form-horizontal form-label-left'  enctype='multipart/form-data'>
 
                             
-                                <div class='x_content'>
 
-
-                                    <div class='col-md-6 col-xs-12'>
-                                        
-                                        <div hidden class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                            <div class='col-md-8'>
-                                                <input type='text' id='e_key' name='e_key' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkeypilih; ?>' Readonly>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Latitude <span class='required'></span></label>
-                                            <div class='col-md-8'>
-                                                <input type='text' id='e_lat' name='e_lat' class='form-control col-md-7 col-xs-12' value='<?PHP echo $plangitude; ?>' Readonly>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Longitude <span class='required'></span></label>
-                                            <div class='col-md-8'>
-                                                <input type='text' id='e_long' name='e_long' class='form-control col-md-7 col-xs-12' value='<?PHP echo $plongitude; ?>' Readonly>
-                                            </div>
-                                        </div>
-                                        
-
-                                    </div>
-                                    
-                                    
-
-                                </div>
                             
-                                <div class='x_content'>
+                                <div class='x_content icamera'>
                                     <div id="my_camera"></div>
                                 </div>
                                 <div class='clearfix'></div>
@@ -174,15 +144,49 @@
 
                                 </div>
                             
+								<div id='div_map'>
+
+								</div>
+
+								
+                                <div class='x_content'>
+
+
+                                    <div class='col-md-6 col-xs-12'>
+                                        
+                                        <div hidden class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                            <div class='col-md-8'>
+                                                <input type='text' id='e_key' name='e_key' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkeypilih; ?>' Readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Latitude <span class='required'></span></label>
+                                            <div class='col-md-8'>
+                                                <input type='text' id='e_lat' name='e_lat' class='form-control col-md-7 col-xs-12' value='<?PHP echo $plangitude; ?>' Readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Longitude <span class='required'></span></label>
+                                            <div class='col-md-8'>
+                                                <input type='text' id='e_long' name='e_long' class='form-control col-md-7 col-xs-12' value='<?PHP echo $plongitude; ?>' Readonly>
+                                            </div>
+                                        </div>
+                                        
+
+                                    </div>
+                                    
+                                    
+
+                                </div>
+								
                             
-                            
+
 
                         </form>
                         
-                        <div id='div_map'>
-
-                        </div>
-
                     </div>
                     
                     
@@ -258,8 +262,10 @@
 <script language="JavaScript">
     // menampilkan kamera dengan menentukan ukuran, format dan kualitas 
     Webcam.set({
-        width: 320,
-        height: 240,
+        //width: 320,
+        //height: 240,
+		width: 460,
+		height: 380,
         image_format: 'jpeg',
         jpeg_quality: 100
     });
@@ -269,6 +275,17 @@
 
 </script>
 
+<?PHP
+if ($pmobile_yes=="Y") {
+?>
+<style>
+.icamera {
+	margin-left:-70px;
+}
+</style>
+<?PHP
+}
+?>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -353,11 +370,12 @@ Hubungi Team Marketing Service untuk info lebih lanjut.");
                 pText_="Apakah akan melakukan absen masuk dari istirahat...?";
             }
             
-            var r=confirm(pText_)
-            if (r==true) {
-            }else{
-                return false;
-            }
+			
+            //var r=confirm(pText_)
+            //if (r==true) {
+            //}else{
+            //    return false;
+            //}
             
             // membuat variabel image
             var image = '';

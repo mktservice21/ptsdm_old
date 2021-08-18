@@ -28,6 +28,7 @@
     $ppilihdivi="";
     $pseldivpili1="selected";
     $pseldivpili2="";
+    $pseldivpili3="";
     
     $pdepartemen="";
     $pseldeppili0="selected";
@@ -50,9 +51,15 @@
     if ($ppilihdivi=="OTC" OR $ppilihdivi=="OT" OR $ppilihdivi=="CHC") {
         $pseldivpili1="";
         $pseldivpili2="selected";
+        $pseldivpili3="";
+    }elseif ($ppilihdivi=="HO") {
+        $pseldivpili1="";
+        $pseldivpili2="";
+        $pseldivpili3="selected";
     }else{
         $pseldivpili1="selected";
         $pseldivpili2="";
+        $pseldivpili3="";
     }
     
     
@@ -262,6 +269,7 @@
                                             }else{
                                                 echo "<option value='ETH' $pseldivpili1>ETHICAL</option>";
                                                 echo "<option value='OT' $pseldivpili2>CHC</option>";
+                                                echo "<option value='HO' $pseldivpili3>HO</option>";
                                             }
                                             ?>
                                         </select>

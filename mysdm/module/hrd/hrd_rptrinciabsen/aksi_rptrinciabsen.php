@@ -106,7 +106,7 @@ $query = "UPDATE $tmp01 SET id_status='HO1' WHERE IFNULL(id_status,'')=''";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "UPDATE $tmp01 as a JOIN hrd.t_absen_status as b on a.kode_absen=b.kode_absen AND a.id_status=b.id_status SET a.jam_masuk_sdm=b.jam, "
+$query = "UPDATE $tmp01 as a JOIN hrd.t_absen_status as b on a.kode_absen=b.kode_absen AND a.id_status=b.id_status SET a.jam_masuk_sdm=CONCAT(LEFT(b.jam,3), LPAD(IFNULL(b.menit_terlambat,0), 2, '0') ), "
         . " a.terlambat_sdm=b.menit_terlambat";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
@@ -123,6 +123,9 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 $query = "UPDATE $tmp01 SET ket_absen='Tidak Absen' WHERE IFNULL(jam,'')=''";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+$query = "UPDATE $tmp01 SET jam='09:00' WHERE kode_absen='1'";
+//mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 $query = "UPDATE $tmp01 SET ket_absen="
         . " CASE WHEN jam='' THEN 'KOSONG' 
             ELSE
@@ -130,7 +133,17 @@ $query = "UPDATE $tmp01 SET ket_absen="
                 ELSE
                     CASE WHEN RIGHT(jam,2)>terlambat_sdm THEN 'TERLAMBAT'
                     ELSE
-			'TEPATWAKTU'
+                        CASE WHEN LEFT(jam,2)=LEFT(jam_masuk_sdm,2) THEN 
+                            CASE WHEN RIGHT(jam,2)>terlambat_sdm THEN 'TERLAMBAT'
+                            ELSE
+                                'TEPATWAKTU'
+                            END
+                        ELSE
+                            CASE WHEN LEFT(jam,2)>=LEFT(jam_masuk_sdm,2) THEN 'TERLAMBAT'
+                            ELSE
+                                'TEPATWAKTU'
+                            END
+                        END
                     END
                 END
             END";

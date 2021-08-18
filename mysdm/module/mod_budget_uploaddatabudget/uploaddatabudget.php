@@ -394,8 +394,14 @@
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                     <div class='col-md-4'>
-                                        <button type='button' class='btn btn-success' onclick="UploadDataKeServer('1')">Upload</button>
-                                        &nbsp;&nbsp;&nbsp;
+                                        <?PHP
+                                        if ($fgroupidcard=="1" OR $fgroupidcard=="24") {
+                                        ?>
+                                            <button type='button' class='btn btn-success' onclick="UploadDataKeServer('1')">Upload</button>
+                                            &nbsp;&nbsp;&nbsp;
+                                        <?PHP
+                                        }
+                                        ?>
                                         <button type='button' class='btn btn-info' onclick="UploadDataKeServer('2')">Tampilkan Data</button>
                                     </div>
                                 </div>

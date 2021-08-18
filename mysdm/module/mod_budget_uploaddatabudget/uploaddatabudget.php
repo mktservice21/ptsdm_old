@@ -39,6 +39,8 @@
     $pseldeppili6="";
     $pseldeppili7="";
     $pseldeppili8="";
+    $pseldeppili9="";
+    $pseldeppili10="";
     
     if ($fdivisi=="OTC") $ppilihdivi=$fdivisi;
     
@@ -70,6 +72,8 @@
         $pseldeppili6="";
         $pseldeppili7="";
         $pseldeppili8="";
+        $pseldeppili9="";
+        $pseldeppili10="";
     }elseif ($pdepartemen=="FIN") {
         $pseldeppili0="";
         $pseldeppili1="";
@@ -80,6 +84,8 @@
         $pseldeppili6="";
         $pseldeppili7="";
         $pseldeppili8="";
+        $pseldeppili9="";
+        $pseldeppili10="";
     }elseif ($pdepartemen=="MS") {
         $pseldeppili0="";
         $pseldeppili1="";
@@ -90,6 +96,8 @@
         $pseldeppili6="";
         $pseldeppili7="";
         $pseldeppili8="";
+        $pseldeppili9="";
+        $pseldeppili10="";
     }elseif ($pdepartemen=="IT") {
         $pseldeppili0="";
         $pseldeppili1="";
@@ -100,6 +108,8 @@
         $pseldeppili6="";
         $pseldeppili7="";
         $pseldeppili8="";
+        $pseldeppili9="";
+        $pseldeppili10="";
     }elseif ($pdepartemen=="AUDIT") {
         $pseldeppili0="";
         $pseldeppili1="";
@@ -110,6 +120,8 @@
         $pseldeppili6="";
         $pseldeppili7="";
         $pseldeppili8="";
+        $pseldeppili9="";
+        $pseldeppili10="";
     }elseif ($pdepartemen=="PCH") {
         $pseldeppili0="";
         $pseldeppili1="";
@@ -120,6 +132,8 @@
         $pseldeppili6="selected";
         $pseldeppili7="";
         $pseldeppili8="";
+        $pseldeppili9="";
+        $pseldeppili10="";
     }elseif ($pdepartemen=="BUSDV") {
         $pseldeppili0="";
         $pseldeppili1="";
@@ -130,6 +144,8 @@
         $pseldeppili6="";
         $pseldeppili7="selected";
         $pseldeppili8="";
+        $pseldeppili9="";
+        $pseldeppili10="";
     }elseif ($pdepartemen=="MKT") {
         $pseldeppili0="";
         $pseldeppili1="";
@@ -140,6 +156,32 @@
         $pseldeppili6="";
         $pseldeppili7="";
         $pseldeppili8="selected";
+        $pseldeppili9="";
+        $pseldeppili10="";
+    }elseif ($pdepartemen=="HRD") {
+        $pseldeppili0="";
+        $pseldeppili1="";
+        $pseldeppili2="";
+        $pseldeppili3="";
+        $pseldeppili4="";
+        $pseldeppili5="";
+        $pseldeppili6="";
+        $pseldeppili7="";
+        $pseldeppili8="";
+        $pseldeppili9="selected";
+        $pseldeppili10="";
+    }elseif ($pdepartemen=="COO") {
+        $pseldeppili0="";
+        $pseldeppili1="";
+        $pseldeppili2="";
+        $pseldeppili3="";
+        $pseldeppili4="";
+        $pseldeppili5="";
+        $pseldeppili6="";
+        $pseldeppili7="";
+        $pseldeppili8="";
+        $pseldeppili9="";
+        $pseldeppili10="selected";
     }else{
     
         $pseldeppili0="selected";
@@ -151,6 +193,8 @@
         $pseldeppili6="";
         $pseldeppili7="";
         $pseldeppili8="";
+        $pseldeppili9="";
+        $pseldeppili10="";
     
     }
     
@@ -286,6 +330,8 @@
                                             echo "<option value='PCH' $pseldeppili6>PURCHASING</option>";
                                             echo "<option value='BUSDV' $pseldeppili7>BUSSINESS DEVELOPMENT</option>";
                                             echo "<option value='MKT' $pseldeppili8>MARKETING</option>";
+                                            echo "<option value='HRD' $pseldeppili9>HRD</option>";
+                                            echo "<option value='COO' $pseldeppili10>COO</option>";
                                             ?>
                                         </select>
                                     </div>
@@ -450,7 +496,7 @@
                         }else{
                             
                             if (ekryid=="") {
-                                alert("karyawan masih kosong..."); return false;
+                                //alert("karyawan masih kosong..."); return false;
                             }
                             
                             if (enmfile=="") {

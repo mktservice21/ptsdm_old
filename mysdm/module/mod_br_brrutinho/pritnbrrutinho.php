@@ -375,6 +375,7 @@
                             $pnotenket="";
                             $alsaneditfin="";
                             if (!empty($palasaneditfin)) {
+                                $pnotenket="&nbsp; &nbsp; &nbsp; (".$palasaneditfin.")";
                             }else{
                                 if (!empty($pnotesdetail))
                                     $alsaneditfin=$pnotesdetail;

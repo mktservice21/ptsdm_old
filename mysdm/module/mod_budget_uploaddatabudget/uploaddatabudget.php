@@ -329,6 +329,19 @@
                                     <div class='col-xs-5'>
                                         <select class='soflow' name='cb_dept' id='cb_dept' onchange="">
                                             <?php
+                                            $query = "select iddep, nama_dep FROM dbmaster.t_department WHERE IFNULL(aktif,'')='Y' ";
+                                            $query .= " ORDER BY nama_dep";
+                                            $tampil = mysqli_query($cnmy, $query);
+                                            while ($z= mysqli_fetch_array($tampil)) {
+                                                $pdepid=$z['iddep'];
+                                                $pdepnm=$z['nama_dep'];
+                                                
+                                                if ($pdepid==$pdepartemen)
+                                                    echo "<option value='$pdepid' selected>$pdepnm</option>";
+                                                else
+                                                    echo "<option value='$pdepid'>$pdepnm</option>";
+                                            }
+                                            /*
                                             echo "<option value='' $pseldeppili0>--Pilihan--</option>";
                                             echo "<option value='SLS' $pseldeppili1>SALES</option>";
                                             echo "<option value='FIN' $pseldeppili2>FINANCE</option>";
@@ -340,6 +353,8 @@
                                             echo "<option value='MKT' $pseldeppili8>MARKETING</option>";
                                             echo "<option value='HRD' $pseldeppili9>HRD</option>";
                                             echo "<option value='COO' $pseldeppili10>COO</option>";
+                                             * 
+                                             */
                                             ?>
                                         </select>
                                     </div>

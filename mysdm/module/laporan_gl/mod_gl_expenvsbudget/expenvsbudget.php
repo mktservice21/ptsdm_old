@@ -42,12 +42,6 @@
 
                     <div class='col-md-12 col-sm-12 col-xs-12'>
                         <h2>
-                            <button type='button' class='btn btn-success' onclick="disp_confirm('')">Preview</button>
-                            <?PHP
-                            if ($pmobile!="Y") {
-                                echo "<button type='button' class='btn btn-danger' onclick=\"disp_confirm('excel')\">Excel</button>";
-                            }
-                            ?>
                             <a class='btn btn-default' href="<?PHP echo "?module=home"; ?>">Home</a>
                         </h2>
                         <div class='clearfix'></div>
@@ -95,67 +89,79 @@
                                 
                                 <div hidden id="n_divsls">
                                     
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Divisi <span class='required'></span></label>
-                                        <div class='col-xs-9'>
-                                            <select class='form-control' id="cb_pengajuan" name="cb_pengajuan" onchange="ShowDariPengajuan()">
-                                                <?PHP
-                                                echo "<option value='' selected>-- All --</option>";
-                                                echo "<option value='ETH' >ETHICAL</option>";
-                                                echo "<option value='OTC' >CHC</option>";
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Region <span class='required'></span></label>
-                                        <div class='col-xs-9'>
-                                            <select class='form-control' id="cb_region" name="cb_region" onchange="ShowDariRegion()">
-                                                <?PHP
-                                                echo "<option value='' selected>-- All Ethical & CHC --</option>";
-                                                echo "<option value='B_ETH' >Barat Ethical</option>";
-                                                echo "<option value='T_ETH' >Timur Ethical</option>";
-                                                echo "<option value='B_OTC' >Barat CHC</option>";
-                                                echo "<option value='T_OTC' >Timur CHC</option>";
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class='form-group'>
-                                        <div class='col-sm-12'>
-                                            <b>Cabang</b> <input type="checkbox" id="chkbtncab" value="deselect" onClick="SelAllCheckBox('chkbtncab', 'chkbox_cab[]')" checked/>
-                                            <div class="form-group">
-                                                <div id="kotak-multi3" class="jarak">
+                                    <div hidden id="n_divpengaju">
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Divisi <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                <select class='form-control' id="cb_pengajuan" name="cb_pengajuan" onchange="ShowDariPengajuan()">
                                                     <?PHP
-                                                        //echo "&nbsp; <input type=checkbox value='' name='chkbox_cab[]' checked> empty<br/>";
-
-                                                        $query_cab = "select iCabangId as icabangid, nama as nama_cabang, 'ETHICAL' as iket, region from mkt.icabang WHERE IFNULL(aktif,'')<>'N' ";
-                                                        $query_cab .= " AND LEFT(nama,5) NOT IN ('PEA -', 'OTC -') ";
-                                                        $query_cab .= " UNION ";
-                                                        $query_cab .= "select icabangid_o as icabangid, nama as nama_cabang, 'OTC' as iket, region from dbmaster.v_icabang_o WHERE IFNULL(aktif,'')<>'N' ";
-                                                        $query_cab = "SELECT * FROM ($query_cab) as ntabel";
-                                                        $query_cab .= " ORDER BY nama_cabang";
-
-                                                        $tampil = mysqli_query($cnmy, $query_cab);
-                                                        while ($row= mysqli_fetch_array($tampil)) {
-                                                            $ncabid=$row['icabangid'];
-                                                            $ncabnm=$row['nama_cabang'];
-                                                            $niket=$row['iket'];
-
-                                                            $nnmket=$niket;
-                                                            if ($niket=="OTC") $nnmket="CHC";
-                                                            
-                                                            $pnid_kode=$ncabid."_".$niket;
-
-                                                            echo "&nbsp; <input type=checkbox value='$pnid_kode' name='chkbox_cab[]' checked> $ncabnm - $nnmket<br/>";
-
-                                                        }
+                                                    echo "<option value='' selected>-- All --</option>";
+                                                    echo "<option value='ETH' >ETHICAL</option>";
+                                                    echo "<option value='OTC' >CHC</option>";
                                                     ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                    <div id="n_divregion">
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Region <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                <select class='form-control' id="cb_region" name="cb_region" onchange="ShowDariRegion()">
+                                                    <?PHP
+                                                    echo "<option value='' selected>-- All Ethical & CHC --</option>";
+                                                    echo "<option value='B_ETH' >Barat Ethical</option>";
+                                                    echo "<option value='T_ETH' >Timur Ethical</option>";
+                                                    echo "<option value='B_OTC' >Barat CHC</option>";
+                                                    echo "<option value='T_OTC' >Timur CHC</option>";
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                    <div id="n_divcabang">
+
+                                        <div class='form-group'>
+                                            <div class='col-sm-12'>
+                                                <b>Cabang</b> <input type="checkbox" id="chkbtncab" value="deselect" onClick="SelAllCheckBox('chkbtncab', 'chkbox_cab[]')" checked/>
+                                                <div class="form-group">
+                                                    <div id="kotak-multi3" class="jarak">
+                                                        <?PHP
+                                                            //echo "&nbsp; <input type=checkbox value='' name='chkbox_cab[]' checked> empty<br/>";
+
+                                                            $query_cab = "select iCabangId as icabangid, nama as nama_cabang, 'ETH' as iket, region from mkt.icabang WHERE IFNULL(aktif,'')<>'N' ";
+                                                            $query_cab .= " AND LEFT(nama,5) NOT IN ('PEA -', 'OTC -') ";
+                                                            $query_cab .= " UNION ";
+                                                            $query_cab .= "select icabangid_o as icabangid, nama as nama_cabang, 'OTC' as iket, region from dbmaster.v_icabang_o WHERE IFNULL(aktif,'')<>'N' ";
+                                                            $query_cab = "SELECT * FROM ($query_cab) as ntabel";
+                                                            $query_cab .= " ORDER BY nama_cabang";
+
+                                                            $tampil = mysqli_query($cnmy, $query_cab);
+                                                            while ($row= mysqli_fetch_array($tampil)) {
+                                                                $ncabid=$row['icabangid'];
+                                                                $ncabnm=$row['nama_cabang'];
+                                                                $niket=$row['iket'];
+
+                                                                $nnmket=$niket;
+                                                                if ($niket=="OTC") $nnmket="CHC";
+
+                                                                $pnid_kode=$ncabid."|".$niket;
+
+                                                                echo "&nbsp; <input type='checkbox' onClick=\"ShowCoaDariBudget()\" value='$pnid_kode' name='chkbox_cab[]' checked> $ncabnm - $nnmket<br/>";
+
+                                                            }
+                                                        ?>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                     </div>
                                     
                                 </div>
@@ -179,7 +185,7 @@
                                                     while ($z= mysqli_fetch_array($tampil)) {
                                                         $pcoa4=$z['COA4'];
                                                         $pnmcoa4=$z['NAMA4'];
-                                                        echo "&nbsp; <input type=checkbox value='$pcoa4' name='chkbox_coa[]' checked> $pcoa4 - $pnmcoa4<br/>";
+                                                        echo "&nbsp; <input type='checkbox' value='$pcoa4' name='chkbox_coa[]' checked> $pcoa4 - $pnmcoa4<br/>";
                                                     }
                                                 ?>
                                             </div>
@@ -189,7 +195,7 @@
                                 
                                 <div class='form-group'>
                                     <div class='col-sm-12'>
-                                        <b><input type="checkbox" value="c_allexp" id="c_allexp" name="c_allexp" checked> All Expen </b>
+                                        <b><input type="checkbox" value="c_allexp" id="c_allexp" name="c_allexp" checked> All Expense </b>
                                         <div class="form-group">
                                             &nbsp;
                                         </div>
@@ -205,10 +211,37 @@
                                     </div>
                                 </div>
                                 
+                                <!--
+                                <div class='form-group'>
+                                    <div class='col-sm-12'>
+                                        <b> &nbsp; </b>
+                                        <div class="form-group">
+                                            <?PHP
+                                            //if ($pmobile!="Y") {
+                                                //echo "<button type='button' class='btn btn-dark' onclick=\"proses_data_byuser('')\">Proses Data</button>";
+                                            //}
+                                            ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                -->
 
                             </div>
                         </div>           
                     </div>
+                    
+                    <div class='col-md-12 col-sm-12 col-xs-12'>
+                        <h2>
+                            <button type='button' class='btn btn-success' onclick="disp_confirm('')">Preview</button>
+                            <?PHP
+                            if ($pmobile!="Y") {
+                                echo "<button type='button' class='btn btn-danger' onclick=\"disp_confirm('excel')\">Excel</button>";
+                            }
+                            ?>
+                        </h2>
+                        <div class='clearfix'></div>
+                    </div>
+                    
 
                 </div>
             </div>
@@ -235,6 +268,14 @@
             }
             button.value = 'select';
         }
+        
+        if (nmbuton=="chkbtncab") {
+            $("#kotak-multi2").html("");
+            setTimeout(function () {
+                ShowCoaDariBudget();
+            }, 500);
+        }
+        
     }
     
     
@@ -254,13 +295,33 @@
     
     function ShowDariDepartemen() {
         var idep = document.getElementById('cb_dept').value;
-        if (idep=="SLS" || idep=="SLS01" || idep=="SLS02" || idep=="SLS03" || idep=="MKT" || idep=="MKT01" || idep=="MKT02" || idep=="MKT03") {
+        var ipengajuan = document.getElementById('cb_pengajuan').value;
+        
+        if (idep=="SLS" || idep=="SLS01" || idep=="SLS02" || idep=="MKT") {
             n_divsls.style.display = 'block';
+            n_divpengaju.style.display = 'block';
+            n_divcabang.style.display = 'block';
+            n_divregion.style.display = 'block';
+            
+            if (idep=="MKT" && ipengajuan=="OTC") n_divregion.style.display = 'none';
+            
+            if (idep=="SLS02") {
+                n_divregion.style.display = 'block';
+                n_divcabang.style.display = 'none';
+                n_divpengaju.style.display = 'none';
+            }
+            
         }else{
             n_divsls.style.display = 'none';
         }
         
-        ShowCoaDariBudget();
+        $("#kotak-multi3").html("");
+        ShowRegion();
+        ShowCabang();
+        $("#kotak-multi2").html("");
+        setTimeout(function () {
+            ShowCoaDariBudget();
+        }, 500);
     }
     
     function ShowCoaDariBudget() {
@@ -269,12 +330,32 @@
         
         document.getElementById('chkbtncoa').checked = 'FALSE';
         
+        document.getElementById('c_allexp').checked = 'FALSE';
+        document.getElementById('c_allexp').value = 'deselect';
+        
+        
         var idep = document.getElementById('cb_dept').value;
         var itahun = document.getElementById('e_tahun').value;
+        var ipengajuan = document.getElementById('cb_pengajuan').value;//divisi
+        var iregion = document.getElementById('cb_region').value;
+        
+        var nfiltercabdiv="";
+        var chk_arr =  document.getElementsByName('chkbox_cab[]');
+        var chklength = chk_arr.length;
+        for(k=0;k< chklength;k++)
+        {
+            if (chk_arr[k].checked == true) {
+                var icab = chk_arr[k].value;
+                
+                nfiltercabdiv=nfiltercabdiv+""+icab+",";
+            }
+        }
+        //alert(nfiltercabdiv);
+            
         $.ajax({
             type:"post",
             url:"module/laporan_gl/mod_gl_expenvsbudget/viewdataexpbgt.php?module=viewdatacoadep",
-            data:"udep="+idep+"&utahun="+itahun,
+            data:"udep="+idep+"&utahun="+itahun+"&upengajuan="+ipengajuan+"&uregion="+iregion+"&ucabdivisi="+nfiltercabdiv,
             success:function(data){
                 $("#kotak-multi2").html(data);
             }
@@ -282,21 +363,40 @@
     }
     
     function ShowDariPengajuan() {
+        
+        var idep = document.getElementById('cb_dept').value;
+        var ipengajuan = document.getElementById('cb_pengajuan').value;
+        
+        if (idep=="MKT" && ipengajuan=="OTC") n_divregion.style.display = 'none';
+        else n_divregion.style.display = 'block';
+        
+        
         $("#cb_region").html("<option value='' selected>-- All --</option>");
         ShowRegion();
         ShowCabang();
+        
+        $("#kotak-multi2").html("");
+        setTimeout(function () {
+            ShowCoaDariBudget();
+        }, 500);
     }
     
     function ShowDariRegion() {
         ShowCabang();
+        
+        $("#kotak-multi2").html("");
+        setTimeout(function () {
+            ShowCoaDariBudget();
+        }, 500);
     }
     
     function ShowRegion() {
+        var idep = document.getElementById('cb_dept').value;
         var ipengajuan = document.getElementById('cb_pengajuan').value;
         $.ajax({
             type:"post",
             url:"module/laporan_gl/mod_gl_expenvsbudget/viewdataexpbgt.php?module=viewdataregion",
-            data:"upengajuan="+ipengajuan,
+            data:"upengajuan="+ipengajuan+"&udep="+idep,
             success:function(data){
                 $("#cb_region").html(data);
             }
@@ -304,12 +404,13 @@
     }
     
     function ShowCabang() {
+        var idep = document.getElementById('cb_dept').value;
         var ipengajuan = document.getElementById('cb_pengajuan').value;
         var iregion = document.getElementById('cb_region').value;
         $.ajax({
             type:"post",
             url:"module/laporan_gl/mod_gl_expenvsbudget/viewdataexpbgt.php?module=viewdatacabang",
-            data:"upengajuan="+ipengajuan+"&uregion="+iregion,
+            data:"upengajuan="+ipengajuan+"&uregion="+iregion+"&udep="+idep,
             success:function(data){
                 $("#kotak-multi3").html(data);
             }

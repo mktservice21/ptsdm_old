@@ -384,6 +384,21 @@ if (isset($_GET['ca'])) {
                                                     else
                                                         echo "<option value='$k_idkry'>$k_nmkry</option>";
                                                 }
+                                            }elseif ($_SESSION['IDCARD']=="0000000143") {
+                                                echo "<option value='' selected>-- Pilihan --</option>";
+                                                $query = "select karyawanId as karyawanid, nama as nama_karyawan FROM hrd.karyawan WHERE 1=1 "
+                                                        . " AND karyawanid NOT IN ('0000000143', '0000002200', '0000002744')";
+                                                //$query .= " AND ( IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00' ) ";
+                                                $query .= " AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'TO -') ";
+                                                $query .= " AND LEFT(nama,6) NOT IN ('NN AM ') ";
+                                                $query .= " order by nama ";
+                                                $tampil= mysqli_query($cnmy, $query);
+                                                while ($nrow=mysqli_fetch_array($tampil)){
+                                                    $k_idkry=$nrow['karyawanid'];
+                                                    $k_nmkry=$nrow['nama_karyawan'];
+                                                    
+                                                    echo "<option value='$k_idkry'>$k_nmkry - $k_idkry</option>";
+                                                }
                                             }else{
                                                 PilihKaryawanAktif("", "-- Pilihan --", $idajukan, "$hanyakaryawanaktif_f", $_SESSION['STSADMIN'], $fildiv, $_SESSION['LVLPOSISI'], $tampilbawahan, $_SESSION['IDCARD'], $jabatan_, $_SESSION['AKSES_REGION'], $filkaryawncabang, "", $hanyasatukaryawan);
                                             }

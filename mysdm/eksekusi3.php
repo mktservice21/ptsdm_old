@@ -289,6 +289,18 @@
     }elseif ($_GET['module']=='sumcf'){
         include 'module/laporan_gl/mod_gl_sumcf/aksi_sumcf.php';
         
+    }elseif ($_GET['module']=='rekapotsbr'){
+        include 'module/laporan_gl/mod_gl_rekapots/aksi_rekapots.php';
+    }elseif ($_GET['module']=='rekapotsbrotc'){
+        include 'module/laporan_gl/mod_gl_rekapotsotc/aksi_rekapotsotc.php';    
+    }elseif ($_GET['module']=='rekapinsentifrekbank'){
+        include 'module/laporan/mod_rekap_insentif_rek/aksi_rekapinsentif.php';
+    }elseif ($_GET['module']=='lapbrpajak'){
+        include 'module/laporan_gl/mod_gl_rekapbrpajak/aksi_rekapbrpajak.php';
+    }elseif ($_GET['module']=='glrealbiayamktchccab'){
+        include 'module/laporan_gl/mod_gl_rbmchccab/aksi_rbmchccab.php';
+    }elseif ($_GET['module']=='expensevsbudget'){
+        include 'module/laporan_gl/mod_gl_expenvsbudget/aksi_expenvsbudget.php';
         
     }elseif ($_GET['module']=='spgrekapgaji'){
         include 'module/laporan/mod_spg_rekapgaji/aksi_spgrekapgaji.php';
@@ -373,17 +385,6 @@
         
     }elseif ($_GET['module']=='laporangajispgotc'){
         include 'module/mod_br_spdotc/rpt_gajispgotc.php';
-        
-    }elseif ($_GET['module']=='rekapotsbr'){
-        include 'module/laporan_gl/mod_gl_rekapots/aksi_rekapots.php';
-    }elseif ($_GET['module']=='rekapotsbrotc'){
-        include 'module/laporan_gl/mod_gl_rekapotsotc/aksi_rekapotsotc.php';
-        
-    }elseif ($_GET['module']=='rekapinsentifrekbank'){
-        include 'module/laporan/mod_rekap_insentif_rek/aksi_rekapinsentif.php';
-        
-    }elseif ($_GET['module']=='lapbrpajak'){
-        include 'module/laporan_gl/mod_gl_rekapbrpajak/aksi_rekapbrpajak.php';
         
     }elseif ($_GET['module']=='bukafilenya'){
         include 'bkf.php';
@@ -653,9 +654,6 @@
         
     }elseif ($_GET['module']=='viewmapttddkd'){
         include 'module/dkd/dkd_ttddkdvisit/ttddkdvisit_viewmap.php';
-        
-    }elseif ($_GET['module']=='glrealbiayamktchccab'){
-        include 'module/laporan_gl/mod_gl_rbmchccab/aksi_rbmchccab.php';
         
     }elseif ($_GET['module']=='slsreakpdatasales'){
         include 'module/sales/mod_lap_rekapsales/aksi_rekapdatasales.php';

@@ -1,6 +1,6 @@
 <?php
     //ini_set('memory_limit', '-1');
-    ini_set("memory_limit","512M");
+    ini_set("memory_limit","1G");
     ini_set('max_execution_time', 0);
     
 session_start();
@@ -14,16 +14,12 @@ if (empty($puser)) {
     $time = explode(' ', $time);
     $time = $time[1] + $time[0];
     $start = $time;
-
-    
     
     include "ceknamadist.php";
     
     $module=$_GET['module'];
     $act=$_GET['act'];
     $idmenu=$_GET['idmenu'];
-
-    
     
     
     $target_dir = "../../fileupload/";
@@ -46,7 +42,7 @@ if (empty($puser)) {
     
     $inputFileName = $target_dir.$filename;
     
-    //ubah juga diprosesdata_
+    //ubah juga yang di prosesdata_
     include "../../config/koneksimysqli_ms.php";
     $cnmy=$cnms;
     $dbname = "MKT";
@@ -55,7 +51,6 @@ if (empty($puser)) {
     if ($plogit_akses==true) {
         include "../../config/koneksimysqli_it.php";
     }
-    
     
     
     mysqli_query($cnmy, "DELETE FROM $dbname.combieth");
@@ -71,94 +66,126 @@ if (empty($puser)) {
     
     include("../../PHPExcel-1.8/Classes/PHPExcel/IOFactory.php");
     $objPHPExcel = PHPExcel_IOFactory::load($target_dir.$pnmfolder);
-    
+    unset($pinsert_data);//kosongkan array
+    $padasheetkosong=false;
     $jmlrec=0;
+    
     foreach ($objPHPExcel->getWorksheetIterator() as $worksheet){
         $totalrow = $worksheet->getHighestRow();
-        $pnamasheet = $worksheet->getTitle();//get nama sheet
         $jmlrec=0;
         
-        for($row=4; $row<=$totalrow; $row++){
-            $pfile0 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(0, $row)->getValue());
-            $pfile1 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(1, $row)->getValue());
-            $pfile2 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(2, $row)->getValue());
-            $pfile3 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(3, $row)->getValue());
-            $pfile4 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(4, $row)->getValue());
-            $pfile5 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(5, $row)->getValue());
-            $pfile6 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(6, $row)->getValue());
-            $pfile7 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(7, $row)->getValue());
-            $pfile8 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(8, $row)->getValue());
-            $pfile9 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(9, $row)->getValue());
-            $pfile10 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(10, $row)->getValue());
-            $pfile11 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(11, $row)->getValue());
-            $pfile12 = mysqli_real_escape_string($cnmy, $worksheet->getCellByColumnAndRow(12, $row)->getValue());
+        for($row=2; $row<=$totalrow; $row++){
             
-			/*
-			$pfile6="";
-            $data_tlg = $worksheet->getCellByColumnAndRow(6, $row);
-            if(!strtotime($data_tlg)) {
-                if(PHPExcel_Shared_Date::isDateTime($data_tlg)) {
-                    $cellValue = $worksheet->getCellByColumnAndRow(6, $row)->getValue();
-                    $dateValue = PHPExcel_Shared_Date::ExcelToPHP($cellValue);                     
-                    $pfile6     = date('Y-m-d',$dateValue);                     
-                } else {                        
-                    $pfile6     = date('Y-m-d',$pfile8);
-                }
-            }else{
-                $pfile6=date('Y-m-d', strtotime($pfile6));
-            }
-			*/
-			
+            $pidcab="CP";
+            $pnmcab="CP";
+            
+            $pfile0 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(0, $row)->getValue());
+            $pfile1 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(1, $row)->getValue());
+            $pfile2 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(2, $row)->getValue());
+            $pfile3 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(3, $row)->getValue());
+            $pfile4 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(4, $row)->getValue());
+            $pfile5 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(5, $row)->getValue());
+            $pfile6 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(6, $row)->getValue());
+            $pfile7 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(7, $row)->getValue());
+            $pfile8 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(8, $row)->getValue());
+            $pfile9 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(9, $row)->getValue());
+            $pfile10 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(10, $row)->getValue());
+            $pfile11 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(11, $row)->getValue());
+            $pfile12 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(12, $row)->getValue());
+            $pfile13 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(13, $row)->getValue());
+            $pfile14 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(14, $row)->getValue());
+            $pfile15 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(15, $row)->getValue());
+            $pfile16 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(16, $row)->getValue());
+            $pfile17 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(17, $row)->getValue());
+            $pfile18 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(18, $row)->getValue());
+            $pfile19 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(19, $row)->getValue());
+            $pfile20 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(20, $row)->getValue());
+            $pfile21 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(21, $row)->getValue());
+            $pfile22 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(22, $row)->getValue());
+            $pfile23 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(23, $row)->getValue());
+            $pfile24 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(24, $row)->getValue());
+            
             if (empty($pfile0) AND empty($pfile1) AND empty($pfile2) AND empty($pfile3) AND empty($pfile4) AND empty($pfile5)
-                     AND empty($pfile6) AND empty($pfile7) AND empty($pfile8) AND empty($pfile9) AND empty($pfile10) AND empty($pfile11) AND empty($pfile12)) {
+                    AND empty($pfile6) AND empty($pfile7) AND empty($pfile8) AND empty($pfile9) AND empty($pfile10) AND empty($pfile11) 
+                    AND empty($pfile12) AND empty($pfile13) AND empty($pfile14) AND empty($pfile15) AND empty($pfile16) AND empty($pfile17) 
+                    AND empty($pfile18) AND empty($pfile19) AND empty($pfile20) AND empty($pfile21) AND empty($pfile22) AND empty($pfile23)
+                    AND empty($pfile24)) {
                 continue;
             }
-
-            if (!empty($pfile1)) $pfile1 = str_replace("'", "", $pfile1);
-            if (!empty($pfile3)) $pfile3 = str_replace("'", " ", $pfile3);
-            if (!empty($pfile4)) $pfile4 = str_replace("'", " ", $pfile4);
-            if (!empty($pfile5)) $pfile5 = str_replace("'", " ", $pfile5);
-
-            if (!empty($pfile6)) $pfile6=date('Y-m-d', strtotime($pfile6));
-
-
-            if (!empty($pfile10)) $pfile10 = str_replace("*", "", $pfile10);
-            if (!empty($pfile12)) $pfile12 = str_replace("*", "", $pfile12);
-
-            if (!empty($pfile10)) $pfile10 = str_replace(" ", "", $pfile10);
-            if (!empty($pfile12)) $pfile12 = str_replace(" ", "", $pfile12);
-
-            if (!empty($pfile10)) $pfile10=str_replace(",","", $pfile10);
-            if (!empty($pfile12)) $pfile12=str_replace(",","", $pfile12);
-        
-        
-            //echo "$pfile6 <br/>";
+            
+            
+            if (!empty($pfile19)) {			
+                $excel_date = $pfile19; //here is that value 41621 or 41631
+                $unix_date = ($excel_date - 25569) * 86400;
+                $excel_date = 25569 + ($unix_date / 86400);
+                $unix_date = ($excel_date - 25569) * 86400;
+                $pfile19 = gmdate("Y-m-d", $unix_date);
+            }
 			
+            /*
+            $pfile19="";
+            $data_tlg = $worksheet->getCellByColumnAndRow(19, $row);
+            if(!strtotime($data_tlg)) {
+                if(PHPExcel_Shared_Date::isDateTime($data_tlg)) {
+                    $cellValue = $worksheet->getCellByColumnAndRow(19, $row)->getValue();
+                    $dateValue = PHPExcel_Shared_Date::ExcelToPHP($cellValue);                     
+                    $pfile19     = date('Y-m-d',$dateValue);
+                } else {                        
+                    $pfile19     = date('Y-m-d',$pfile19);
+                }
+            }else{
+                $pfile19 = mysqli_real_escape_string($cnms, $worksheet->getCellByColumnAndRow(19, $row)->getValue());
+                $pfile19=date('Y-m-d', strtotime($pfile19));
+				
+            }
+            */
+
+
+            //echo "$pfile19<br/>";
+		
+            
+            
+            //echo "KD BRG : $pfile2, NM BRG : $pfile3, KD CUST : $pfile17, NAMA : $pfile18, ALAMAT : $pfile23, KOTA : $pfile24, TGL. FAKTUR : $pfile19, NOFAKTUR : $pfile1, ID CAB : $pidcab, NAMA CAB : $pnmcab, QTY : $pfile5, SATUAN : $pfile4, HARGA : $pfile7,<br/>";
+            
             $query_jualcp = "INSERT INTO $dbname.combieth (`kd barang`, `Nama Barang`, `Kd customer`, `Nama`, "
                     . " `Alamat`, `Kota`, `Tanggal Faktur`, `Nomor Faktur`, `ID Cabang`, `Nama Cabang`, `Qty Sales`, `Satuan`, `Harga satuan`)values"
-                    . " ('$pfile0', '$pfile1', '$pfile2', '$pfile3', "
-                    . " '$pfile4', '$pfile5', '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12')";
-
-            //echo $query_jualcp; mysqli_close($cnmy); exit;
-            mysqli_query($cnmy, $query_jualcp);
-            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT combieth : $erropesan"; exit; }
+                    . " ('$pfile2', '$pfile3', '$pfile17', '$pfile18', "
+                    . " '$pfile23', '$pfile24', '$pfile19', '$pfile1', '$pidcab', '$pnmcab', '$pfile5', '$pfile4', '$pfile7')";
             
-            
-            //IT
-            if ($plogit_akses==true) {
-                mysqli_query($cnit, $query_jualcp);
-                $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT combieth : $erropesan"; exit; }
-            }
-            //END IT
-    
-    
-            //echo "$jmlrec. : $pfile0, $pfile1, $pfile2, $pfile3, $pfile4, $pfile5, $pfile6, $pfile7, $pfile8, $pfile9, $pfile10, $pfile11, $pfile12<br/>";
-            
-            
-            $jmlrec++;
+                      
+            $pinsert_data[] = "('$pfile2', '$pfile3', '$pfile17', '$pfile18', "
+                    . " '$pfile23', '$pfile24', '$pfile19', '$pfile1', '$pidcab', '$pnmcab', '$pfile5', '$pfile4', '$pfile7')";
+            $pbisasimpan=true;
+                        
+                        
         }
-    }
 
+    }
+    
+    
+    if ($pbisasimpan==true) {
+        
+        $query_ins_pil = "INSERT INTO $dbname.combieth (`kd barang`, `Nama Barang`, `Kd customer`, `Nama`, "
+                    . " `Alamat`, `Kota`, `Tanggal Faktur`, `Nomor Faktur`, `ID Cabang`, `Nama Cabang`, `Qty Sales`, `Satuan`, `Harga satuan`) values "
+                . " ".implode(', ', $pinsert_data);
+
+        mysqli_query($cnmy, $query_ins_pil);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT combieth : $erropesan"; exit; }
+        
+        $query_dlt = "delete from mkt.combieth WHERE IFNULL(`kd barang`,'')='' AND IFNULL(`Nama Barang`,'')='' AND IFNULL(`kd customer`,'')='' AND IFNULL(`Nama`,'')='' AND IFNULL(`Alamat`,'')='' AND IFNULL(`Tanggal Faktur`,'')='' AND IFNULL(`Nomor Faktur`,'')='' AND IFNULL(`Harga satuan`,'')=''";
+        mysqli_query($cnmy, $query_d); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE combieth : $erropesan"; exit; }
+        
+        //IT
+        if ($plogit_akses==true) {
+            mysqli_query($cnit, $query_ins_pil);
+            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT combieth : $erropesan"; exit; }
+            
+            mysqli_query($cnmy, $query_dlt); $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error DELETE combieth : $erropesan"; exit; }
+        }
+        //END IT
+        
+            
+    }
     
     
     $query = "select * from $dbname.combieth WHERE IFNULL(`Tanggal Faktur`,'')= '' OR IFNULL(`Tanggal Faktur`,'0000-00-00')= '0000-00-00' OR IFNULL(`Tanggal Faktur`,'1970-01-01')= '1970-01-01'";
@@ -169,6 +196,9 @@ if (empty($puser)) {
         echo "ERROR SIMPAN... ADA TANGGAL KOSONG.";
         exit;
     }
+    
+    
+    
     
     
     
@@ -326,5 +356,11 @@ if (empty($puser)) {
     
     
     mysqli_close($cnmy);
+    
+    //IT
+    if ($plogit_akses==true) {
+        mysqli_close($cnit);
+    }
+    //END IT
     
 ?>

@@ -549,7 +549,16 @@
     }elseif ($_GET['module']=='sumcf'){
         include 'module/laporan_gl/mod_gl_sumcf/sumcf.php';
         
-        
+    }elseif ($_GET['module']=='rekapotsbr'){
+        include 'module/laporan_gl/mod_gl_rekapots/rekapots.php';
+    }elseif ($_GET['module']=='rekapotsbrotc'){
+        include 'module/laporan_gl/mod_gl_rekapotsotc/rekapotsotc.php';
+    }elseif ($_GET['module']=='lapbrpajak'){
+        include 'module/laporan_gl/mod_gl_rekapbrpajak/rekapbrpajak.php';
+    }elseif ($_GET['module']=='glrealbiayamktchccab'){
+        include 'module/laporan_gl/mod_gl_rbmchccab/rbmchccab.php';
+    }elseif ($_GET['module']=='expensevsbudget'){
+        include 'module/laporan_gl/mod_gl_expenvsbudget/expenvsbudget.php';
         
         
     }elseif ($_GET['module']=='prosesdatatabel'){
@@ -634,12 +643,6 @@
         include 'module/mod_br_otsdsk_otc/otsd_sk.php';
         
 
-    }elseif ($_GET['module']=='rekapotsbr'){
-        include 'module/laporan_gl/mod_gl_rekapots/rekapots.php';
-    }elseif ($_GET['module']=='rekapotsbrotc'){
-        include 'module/laporan_gl/mod_gl_rekapotsotc/rekapotsotc.php';
-    }elseif ($_GET['module']=='lapbrpajak'){
-        include 'module/laporan_gl/mod_gl_rekapbrpajak/rekapbrpajak.php';
         
     }elseif ($_GET['module']=='rekapinsentifrekbank'){
         include 'module/laporan/mod_rekap_insentif_rek/rekapinsentif.php';
@@ -934,9 +937,6 @@
         include 'module/budget/bgt_spdbrethical/spdbrethical.php';
     }elseif ($_GET['module']=='brudcccabang'){
         include 'module/budget/bgt_brdcccabang/brdcccabang.php';
-        
-    }elseif ($_GET['module']=='glrealbiayamktchccab'){
-        include 'module/laporan_gl/mod_gl_rbmchccab/rbmchccab.php';
         
     }elseif ($_GET['module']=='slsreakpdatasales'){
         include 'module/sales/mod_lap_rekapsales/rekapdatasales.php';

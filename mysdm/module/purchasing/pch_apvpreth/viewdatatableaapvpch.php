@@ -417,7 +417,7 @@ echo "</div>";
                     <th width='50px'>Cabang</th>
                     <th width='50px'>Notes</th>
                     <th width='200px'>Barang</th>
-                    <th width='50px'>Satus Approve</th>
+                    <th width='50px'>Status Approve</th>
                 </tr>
             </thead>
             <tbody>

@@ -68,8 +68,6 @@
                     echo "Input $judul";
                 elseif ($_GET['act']=="editdata")
                     echo "Edit $judul";
-                elseif ($_GET['act']=="uploaddok")
-                    echo "Attach Image $judul";
                 else
                     echo "Data $judul";
                 ?>
@@ -176,7 +174,14 @@
                                                     $query_kry .=" ORDER BY nama";
                                                 }elseif ($pidjabatan=="38" OR empty($pfilterkaryawan)) {
                                                     $query_kry = "select karyawanId as karyawanid, nama as nama 
-                                                        FROM hrd.karyawan WHERE karyawanId='$pidkaryawan' ";
+                                                        FROM hrd.karyawan WHERE 1=1 ";
+														
+													if ($pidkaryawan=="0000002329") {
+														$query_kry .=" AND karyawanId IN ('0000002329', '0000000158')";
+													}else{
+														$query_kry .=" AND karyawanId='$pidkaryawan' ";
+													}
+													
                                                     $query_kry .=" ORDER BY nama";
                                                 }else{
                                                     $query_kry = "select karyawanId as karyawanid, nama as nama 
@@ -275,10 +280,6 @@
 
             case "editdata":
                 include "tambahpr.php";
-            break;
-        
-            case "uploaddok":
-                include "uploadpr.php";
             break;
         
         }

@@ -67,8 +67,8 @@ if ((INT)$ketemu>0) {
         $logpassword = encriptpasswordSSQl($ppassword, $ptglcreate);
 
         $query_log = "select karyawanId from dbmaster.t_karyawan_posisi WHERE pass='$logpassword'";
-        if ($pceknum==true) $query .=" karyawanId=$pusername ";
-        else $query .=" username='$pusername' ";
+        if ($pceknum==true) $query_log .=" AND karyawanId=$pusername ";
+        else $query_log .=" AND username='$pusername' ";
 
         $tampil_l=mysqli_query($cnmy, $query_log);
         $ketemu_l=mysqli_num_rows($tampil_l);
@@ -128,7 +128,7 @@ if ($pceknum==true AND $pberhasillogin==false) {
 }
     
 
-//echo "<br/>$pmessagelog<br/>";
+//echo "<br/>$pmessagelog<br/>";exit;
 
     
 if ($pberhasillogin==true) {

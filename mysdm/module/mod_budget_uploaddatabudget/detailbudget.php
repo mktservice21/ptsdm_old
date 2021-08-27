@@ -41,12 +41,12 @@
     
     
     
-    $query  = "SELECT a.bulan, a.div_pilih, a.departemen, a.karyawanid, a.icabangid, a.icabangid_o, a.kodeid, a.nm_id,  "
+    $query  = "SELECT a.bulan, a.divisi_pengajuan, a.iddep, a.karyawanid, a.icabangid, a.icabangid_o, a.kodeid, a.nm_id,  "
             . " a.coa4, b.NAMA4 as nama_coa4, a.jumlah "
             . " FROM dbmaster.t_budget_divisi as a "
             . " LEFT JOIN dbmaster.coa_level4 as b on a.coa4=b.COA4 "
-            . " WHERE YEAR(a.bulan)='$ptahunpilih' AND a.div_pilih='$pdivpilih' AND a.karyawanid='$pkryawanid' AND "
-            . " IFNULL(a.departemen,'')='$pdeptid' ";
+            . " WHERE YEAR(a.bulan)='$ptahunpilih' AND a.divisi_pengajuan='$pdivpilih' AND a.karyawanid='$pkryawanid' AND "
+            . " IFNULL(a.iddep,'')='$pdeptid' ";
     if (!empty($pcabid)) {
         if ($pdivpilih=="OTC" OR $pdivpilih=="OT" OR $pdivpilih=="CHC") {
             $query .=" AND icabangid_o='$pcabid'";

@@ -26,6 +26,53 @@
             $pspanhiden4=""; $pspanhiden2="hidden"; $pspanhiden5="hidden"; $pspanhiden6="hidden"; $pspanhiden12="hidden";
         }
     }
+    
+    
+    $psemuadep=false;
+    $pbolehpilihdep=false;
+    $ppilihlini_produk="";
+    $query = "select * from dbproses.maping_karyawan_dep WHERE karyawanid='$fkaryawan' AND iddep='ALL'";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $psemuadep=true;
+        $pbolehpilihdep=true;
+    }
+    
+    $query = "select * from dbproses.maping_karyawan_dep WHERE karyawanid='$fkaryawan'";
+    $tampil2= mysqli_query($cnmy, $query);
+    $ketemu2= mysqli_num_rows($tampil2);
+    if ((INT)$ketemu2>0) $pbolehpilihdep=true;
+    
+    
+    $query = "select DISTINCT divisi_pengajuan from dbproses.maping_karyawan_dep WHERE karyawanid='$fkaryawan' AND IFNULL(divisi_pengajuan,'')='ALL'";
+    $tampil= mysqli_query($cnmy, $query);
+    $ketemu= mysqli_num_rows($tampil);
+    if ((INT)$ketemu>0) {
+        $ppilihlini_produk="ALL";
+    }else{
+    
+        $query = "select DISTINCT divisi_pengajuan from dbproses.maping_karyawan_dep WHERE karyawanid='$fkaryawan' AND IFNULL(divisi_pengajuan,'') NOT IN ('ALL', '')";
+        $tampil= mysqli_query($cnmy, $query);
+        $ketemu= mysqli_num_rows($tampil);
+        $row= mysqli_fetch_array($tampil);
+        
+        $ppilihlini_produk=$row['divisi_pengajuan'];
+    
+    }
+    
+    
+    $pilihregion="";
+    if ($fjbtid=="05") {
+       $query = "select region FROm dbmaster.t_karyawan_posisi WHERE karyawanid='$fkaryawan'";
+        $tampil= mysqli_query($cnmy, $query);
+        $ketemu= mysqli_num_rows($tampil);
+        $row= mysqli_fetch_array($tampil);
+        $pilihregion=$row['region'];
+    }
+    
+    
+    
 ?>
 <div class="">
 
@@ -72,19 +119,78 @@
                                     <div class='col-xs-9'>
                                         <select class='form-control' id="cb_dept" name="cb_dept" onchange="ShowDariDepartemen()">
                                             <?PHP
-                                            echo "<option value='' selected>-- All --</option>";
-                                            $query = "select iddep, nama_dep from dbmaster.t_department WHERE aktif<>'N' ";
-                                            $query .=" ORDER BY nama_dep";
-                                            $tampil = mysqli_query($cnmy, $query);
-                                            while ($row= mysqli_fetch_array($tampil)) {
-                                                $niddep=$row['iddep'];
-                                                $nnmdep=$row['nama_dep'];
+                                            if ($pbolehpilihdep==false) {
+                                                echo "<option value='TIDAKADAHA' selected>-- Tidak Hak Akses --</option>";
+                                            }else{
                                                 
-                                                echo "<option value='$niddep' >$nnmdep</option>";
+                                                
+                                                $query = "select iddep, nama_dep from dbmaster.t_department WHERE aktif<>'N' ";
+                                                if ($psemuadep==false) {
+                                                    $query .=" AND iddep IN (select IFNULL(iddep,'') FROM dbproses.maping_karyawan_dep WHERE karyawanid='$fkaryawan')";
+                                                }
+                                                $query .=" ORDER BY nama_dep";
+                                                
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                $ketemu=mysqli_num_rows($tampil);
+                                                
+                                                if ((INT)$ketemu>1) echo "<option value='' selected>-- All --</option>";
+                                                
+                                                while ($row= mysqli_fetch_array($tampil)) {
+                                                    $niddep=$row['iddep'];
+                                                    $nnmdep=$row['nama_dep'];
+
+                                                    echo "<option value='$niddep' >$nnmdep</option>";
+                                                }
+                                                
                                             }
                                             ?>
                                         </select>
                                     </div>
+                                </div>
+                                
+                                <div hidden id="n_divslssm">
+
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SM <span class='required'></span></label>
+                                        <div class='col-xs-9'>
+                                            <select class='form-control' id="cb_karyawansm" name="cb_karyawansm" onchange="ShowDariKaryawanSM()">
+                                                <?PHP
+                                                
+                                                
+                                                
+                                                $query_kry = "SELECT karyawanId as karyawanid, nama as nama_karyawan FROM hrd.karyawan WHERE 1=1 ";
+                                                $query_kry .= " AND jabatanId IN ('20', '36')";
+                                                $query_kry .= " AND (IFNULL(tglkeluar,'')='' OR IFNULL(tglkeluar,'0000-00-00')='0000-00-00') AND IFNULL(aktif,'')<>'N' ";
+                                                $query_kry .= " AND LEFT(nama,5) NOT IN ('NN - ', 'NN - ')";
+                                                
+                                                if ($fjbtid=="36" OR $fdivisi=="OTC") {
+                                                    $query_kry .= " AND karyawanId='$fkaryawan' ";
+                                                }elseif ($fjbtid=="20") {
+                                                    $query_kry .= " AND karyawanId='$fkaryawan' ";
+                                                }elseif ($fjbtid=="05" AND !empty($pilihregion)) {
+                                                    $query_kry .= " AND karyawanId IN (select distinct IFNULL(karyawanid,'') from mkt.ism0 as a "
+                                                            . " JOIN mkt.icabang as b on a.icabangid=b.iCabangId WHERE region='$pilihregion') ";
+                                                    
+                                                    echo "<option value='' selected>-- All --</option>";
+                                                }else{
+                                                    echo "<option value='' selected>-- All --</option>";
+                                                }
+                                                
+                                                $query_kry .= " ORDER BY nama";
+
+                                                $tampil = mysqli_query($cnmy, $query_kry);
+                                                while ($row= mysqli_fetch_array($tampil)) {
+                                                    $nkryid=$row['karyawanid'];
+                                                    $nkrynm=$row['nama_karyawan'];
+
+                                                    echo "<option value='$nkryid' >$nkrynm</option>";
+
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                 </div>
                                 
                                 <div hidden id="n_divsls">
@@ -96,9 +202,47 @@
                                             <div class='col-xs-9'>
                                                 <select class='form-control' id="cb_pengajuan" name="cb_pengajuan" onchange="ShowDariPengajuan()">
                                                     <?PHP
-                                                    echo "<option value='' selected>-- All --</option>";
-                                                    echo "<option value='ETH' >ETHICAL</option>";
-                                                    echo "<option value='OTC' >CHC</option>";
+                                                    if ($fjbtid=="05" OR $fjbtid=="20" OR $fjbtid=="08" OR $fjbtid=="10" OR $fjbtid=="18" OR $fjbtid=="15") {
+                                                        echo "<option value='ETH' >ETHICAL</option>";
+                                                    }elseif ($fjbtid=="36" OR $fdivisi=="OTC") {
+                                                        echo "<option value='OTC' >CHC</option>";
+                                                    }else{
+                                                        echo "<option value='' selected>-- All --</option>";
+                                                        echo "<option value='ETH' >ETHICAL</option>";
+                                                        echo "<option value='OTC' >CHC</option>";
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                    <div hidden id="n_liniproduk">
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Lini Produk <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                <select class='form-control' id="cb_liniproduk" name="cb_liniproduk" onchange="ShowDariLiniProduk()">
+                                                    <?PHP
+                                                    
+                                                    if ($ppilihlini_produk=="OTC") {
+                                                        echo "<option value='OTC' >CHC</option>";
+                                                    }else{
+                                                        if ($fkaryawan=="0000000257") {
+                                                            echo "<option value='EAGLE' >EAGLE</option>";
+                                                        }elseif ($fkaryawan=="0000000910") {
+                                                            echo "<option value='PEACO' >PEACOCK</option>";
+                                                        }elseif ($fkaryawan=="0000000157") {
+                                                            echo "<option value='PIGEO' >PIGEON</option>";
+                                                        }else{
+                                                            echo "<option value='' selected>-- All --</option>";
+                                                            echo "<option value='EAGLE' >EAGLE</option>";
+                                                            echo "<option value='PEACO' >PEACOCK</option>";
+                                                            echo "<option value='PIGEO' >PIGEON</option>";
+                                                            echo "<option value='OTC' >CHC</option>";
+                                                        }
+                                                    }
                                                     ?>
                                                 </select>
                                             </div>
@@ -113,11 +257,17 @@
                                             <div class='col-xs-9'>
                                                 <select class='form-control' id="cb_region" name="cb_region" onchange="ShowDariRegion()">
                                                     <?PHP
-                                                    echo "<option value='' selected>-- All Ethical & CHC --</option>";
-                                                    echo "<option value='B_ETH' >Barat Ethical</option>";
-                                                    echo "<option value='T_ETH' >Timur Ethical</option>";
-                                                    echo "<option value='B_OTC' >Barat CHC</option>";
-                                                    echo "<option value='T_OTC' >Timur CHC</option>";
+                                                    $fjbtid="05"; $pilihregion="B";
+                                                    if ($fjbtid=="05" AND !empty($pilihregion)) {
+                                                        if ($pilihregion=="B") echo "<option value='B' >Barat</option>";
+                                                        elseif ($pilihregion=="T") echo "<option value='T' >Timur</option>";
+                                                    }else{
+                                                        echo "<option value='' selected>-- All Ethical & CHC --</option>";
+                                                        echo "<option value='B_ETH' >Barat Ethical</option>";
+                                                        echo "<option value='T_ETH' >Timur Ethical</option>";
+                                                        echo "<option value='B_OTC' >Barat CHC</option>";
+                                                        echo "<option value='T_OTC' >Timur CHC</option>";
+                                                    }
                                                     ?>
                                                 </select>
                                             </div>
@@ -195,16 +345,16 @@
                                 
                                 <div class='form-group'>
                                     <div class='col-sm-12'>
-                                        <b><input type="checkbox" value="c_allexp" id="c_allexp" name="c_allexp" checked> All Expense </b>
+                                        <b><input type="checkbox" value="allexpen" id="c_allexp" name="c_allexp" checked> All Expense </b>
                                         <div class="form-group">
                                             &nbsp;
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <div class='col-sm-12'>
-                                        <b><input type="checkbox" value="c_sum" id="chk_sum" name="chk_sum"> Summary </b>
+                                        <b><input type="checkbox" value="pilihsummary" id="chk_sum" name="chk_sum"> Summary </b>
                                         <div class="form-group">
                                             &nbsp;
                                         </div>
@@ -253,6 +403,11 @@
 
 
 <script>
+    
+    $(document).ready(function() {
+        ShowDariDepartemen();
+    } );
+    
     function SelAllCheckBox(nmbuton, data){
         var checkboxes = document.getElementsByName(data);
         var button = document.getElementById(nmbuton);
@@ -294,8 +449,16 @@
     
     
     function ShowDariDepartemen() {
+    
+        document.getElementById('chkbtncab').checked = 'FALSE';
+        document.getElementById('chkbtncab').value = 'deselect';
+        document.getElementById('chkbtncab').checked = 'FALSE';
+        
         var idep = document.getElementById('cb_dept').value;
         var ipengajuan = document.getElementById('cb_pengajuan').value;
+        
+        n_divslssm.style.display = 'none';
+        n_liniproduk.style.display = 'none';
         
         if (idep=="SLS" || idep=="SLS01" || idep=="SLS02" || idep=="MKT") {
             n_divsls.style.display = 'block';
@@ -315,6 +478,16 @@
             n_divsls.style.display = 'none';
         }
         
+        if (idep=="SLS03") {
+            n_divslssm.style.display = 'block';
+        }
+        
+        if (idep=="MKT") {
+            n_divpengaju.style.display = 'none';
+            n_liniproduk.style.display = 'block';
+            n_divregion.style.display = 'block';
+        }
+        
         $("#kotak-multi3").html("");
         ShowRegion();
         ShowCabang();
@@ -327,17 +500,18 @@
     function ShowCoaDariBudget() {
         document.getElementById('chkbtncoa').checked = 'FALSE';
         document.getElementById('chkbtncoa').value = 'deselect';
-        
         document.getElementById('chkbtncoa').checked = 'FALSE';
         
         document.getElementById('c_allexp').checked = 'FALSE';
-        document.getElementById('c_allexp').value = 'deselect';
+        document.getElementById('c_allexp').value = 'allexpen';
         
         
         var idep = document.getElementById('cb_dept').value;
         var itahun = document.getElementById('e_tahun').value;
         var ipengajuan = document.getElementById('cb_pengajuan').value;//divisi
         var iregion = document.getElementById('cb_region').value;
+        var ikrysm = document.getElementById('cb_karyawansm').value;
+        var ilproduk = document.getElementById('cb_liniproduk').value;
         
         var nfiltercabdiv="";
         var chk_arr =  document.getElementsByName('chkbox_cab[]');
@@ -354,12 +528,21 @@
             
         $.ajax({
             type:"post",
-            url:"module/laporan_gl/mod_gl_expenvsbudget/viewdataexpbgt.php?module=viewdatacoadep",
-            data:"udep="+idep+"&utahun="+itahun+"&upengajuan="+ipengajuan+"&uregion="+iregion+"&ucabdivisi="+nfiltercabdiv,
+            url:"module/laporan_gl/mod_gl_expenvsbudget/viewdataexpbgt.php?module=viewdatacoadepproses",
+            data:"udep="+idep+"&utahun="+itahun+"&upengajuan="+ipengajuan+"&uregion="+iregion+"&ucabdivisi="+nfiltercabdiv+"&ukrysm="+ikrysm+"&ulproduk="+ilproduk,
             success:function(data){
                 $("#kotak-multi2").html(data);
             }
         });
+    }
+    
+    function ShowDariKaryawanSM() {
+        
+        $("#kotak-multi2").html("");
+        setTimeout(function () {
+            ShowCoaDariBudget();
+        }, 500);
+        
     }
     
     function ShowDariPengajuan() {
@@ -381,6 +564,26 @@
         }, 500);
     }
     
+    
+    function ShowDariLiniProduk() {
+        var idep = document.getElementById('cb_dept').value;
+        var ilproduk = document.getElementById('cb_liniproduk').value;
+        
+        if (idep=="MKT" && ilproduk=="OTC") n_divregion.style.display = 'none';
+        else n_divregion.style.display = 'block';
+        
+        
+        $("#cb_region").html("<option value='' selected>-- All --</option>");
+        ShowRegion();
+        ShowCabang();
+        
+        $("#kotak-multi2").html("");
+        setTimeout(function () {
+            ShowCoaDariBudget();
+        }, 500);
+    }
+    
+    
     function ShowDariRegion() {
         ShowCabang();
         
@@ -393,10 +596,11 @@
     function ShowRegion() {
         var idep = document.getElementById('cb_dept').value;
         var ipengajuan = document.getElementById('cb_pengajuan').value;
+        var ilproduk = document.getElementById('cb_liniproduk').value;
         $.ajax({
             type:"post",
             url:"module/laporan_gl/mod_gl_expenvsbudget/viewdataexpbgt.php?module=viewdataregion",
-            data:"upengajuan="+ipengajuan+"&udep="+idep,
+            data:"upengajuan="+ipengajuan+"&udep="+idep+"&ulproduk="+ilproduk,
             success:function(data){
                 $("#cb_region").html(data);
             }
@@ -407,10 +611,11 @@
         var idep = document.getElementById('cb_dept').value;
         var ipengajuan = document.getElementById('cb_pengajuan').value;
         var iregion = document.getElementById('cb_region').value;
+        var ilproduk = document.getElementById('cb_liniproduk').value;
         $.ajax({
             type:"post",
             url:"module/laporan_gl/mod_gl_expenvsbudget/viewdataexpbgt.php?module=viewdatacabang",
-            data:"upengajuan="+ipengajuan+"&uregion="+iregion+"&udep="+idep,
+            data:"upengajuan="+ipengajuan+"&uregion="+iregion+"&udep="+idep+"&ulproduk="+ilproduk,
             success:function(data){
                 $("#kotak-multi3").html(data);
             }

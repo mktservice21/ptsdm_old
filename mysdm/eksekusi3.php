@@ -301,6 +301,8 @@
         include 'module/laporan_gl/mod_gl_rbmchccab/aksi_rbmchccab.php';
     }elseif ($_GET['module']=='expensevsbudget'){
         include 'module/laporan_gl/mod_gl_expenvsbudget/aksi_expenvsbudget.php';
+    }elseif ($_GET['module']=='demoexpensevsbudget'){
+        include 'module/laporan_gl/demo_mod_gl_expenvsbudget/aksi_expenvsbudget.php';
         
     }elseif ($_GET['module']=='spgrekapgaji'){
         include 'module/laporan/mod_spg_rekapgaji/aksi_spgrekapgaji.php';

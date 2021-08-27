@@ -143,7 +143,7 @@
     $query = "CREATE TABLE $tmp01 (
                 nourut MEDIUMINT NOT NULL AUTO_INCREMENT,
                 bulan date,
-                div_pilih varchar(5), departemen varchar(10), 
+                divisi_pengajuan varchar(5), iddep varchar(10), 
                 karyawanid VARCHAR(10) NOT NULL, icabangid VARCHAR(10), icabangid_o VARCHAR(10), 
                 kodeid VARCHAR(10), nm_id VARCHAR(150), coa4 VARCHAR(20), nama_coa4 VARCHAR(150), jumlah DECIMAL(20,2), 
                 saldoawal DECIMAL(20,2), jumlah_tambahan DECIMAL(20,2), keterangan VARCHAR(250),
@@ -245,6 +245,20 @@
                                                     <div class='col-xs-5'>
                                                         <select class='soflow' name='cb_dept' id='cb_dept' onchange="">
                                                             <?php
+                                                            
+                                                            $query = "select iddep, nama_dep FROM dbmaster.t_department WHERE IFNULL(aktif,'')='Y' ";
+                                                            $query .= " ORDER BY nama_dep";
+                                                            $tampil = mysqli_query($cnmy, $query);
+                                                            while ($z= mysqli_fetch_array($tampil)) {
+                                                                $pdepid=$z['iddep'];
+                                                                $pdepnm=$z['nama_dep'];
+
+                                                                if ($pdepid==$pdepartemen)
+                                                                    echo "<option value='$pdepid' selected>$pdepnm</option>";
+                                                                else
+                                                                    echo "<option value='$pdepid'>$pdepnm</option>";
+                                                            }
+                                                            /*
                                                             echo "<option value='' $pseldeppili0>--Pilihan--</option>";
                                                             echo "<option value='SLS' $pseldeppili1>SALES</option>";
                                                             echo "<option value='FIN' $pseldeppili2>FINANCE</option>";
@@ -254,6 +268,7 @@
                                                             echo "<option value='PCH' $pseldeppili6>PURCHASING</option>";
                                                             echo "<option value='BUSDV' $pseldeppili7>BUSSINESS DEVELOPMENT</option>";
                                                             echo "<option value='MKT' $pseldeppili8>MARKETING</option>";
+                                                            */
                                                             ?>
                                                         </select>
                                                     </div>
@@ -382,7 +397,7 @@
                                 
                                 if ($psimpandata==true) {
                                     
-                                    $query_detail="INSERT INTO $tmp01 (bulan, div_pilih, karyawanid, departemen, icabangid, icabangid_o, coa4, nama_coa4, nm_id, jumlah) VALUES ".implode(', ', $pinsert_data_detail);
+                                    $query_detail="INSERT INTO $tmp01 (bulan, divisi_pengajuan, karyawanid, iddep, icabangid, icabangid_o, coa4, nama_coa4, nm_id, jumlah) VALUES ".implode(', ', $pinsert_data_detail);
                                     $pinsertdetail = mysqli_query($cnmy, $query_detail);
                                     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT TABLE TEMP : $erropesan"; goto hapusdata; }
                                     
@@ -399,15 +414,15 @@
                                     if ($pdivisipilih=="OTC" OR $pdivisipilih=="OT" OR $pdivisipilih=="CHC") $pketicab="icabangid_o";
                                     
                                     $query_detail="DELETE FROM dbmaster.t_budget_divisi WHERE YEAR(bulan)='$ptahunpilih' "
-                                            . " AND div_pilih='$pdivisipilih' AND IFNULL(departemen,'')='$pdepartemen' "
+                                            . " AND divisi_pengajuan='$pdivisipilih' AND IFNULL(iddep,'')='$pdepartemen' "
                                             . " AND karyawanid='$pkaryawanid' AND IFNULL($pketicab,'')='$pcabangid'";
                                     $pinsertdetail = mysqli_query($cnmy, $query_detail);
                                     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE TABLE : $erropesan"; goto hapusdata; }
                                     
                                     mysqli_query($cnmy, "ALTER TABLE dbmaster.t_budget_divisi AUTO_INCREMENT = 1");
                                     
-                                    $query = "INSERT INTO dbmaster.t_budget_divisi (bulan, div_pilih, departemen, karyawanid, icabangid, icabangid_o, nm_id, coa4, jumlah, userid)"
-                                            . "SELECT bulan, div_pilih, departemen, karyawanid, icabangid, icabangid_o, nm_id, coa4, jumlah, '$puserid' as userid FROM $tmp01 "
+                                    $query = "INSERT INTO dbmaster.t_budget_divisi (bulan, divisi_pengajuan, iddep, karyawanid, icabangid, icabangid_o, nm_id, coa4, jumlah, userid)"
+                                            . "SELECT bulan, divisi_pengajuan, iddep, karyawanid, icabangid, icabangid_o, nm_id, coa4, jumlah, '$puserid' as userid FROM $tmp01 "
                                             . " ORDER BY coa4, bulan";
                                     mysqli_query($cnmy, $query);
                                     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT TABLE : $erropesan"; goto hapusdata; }

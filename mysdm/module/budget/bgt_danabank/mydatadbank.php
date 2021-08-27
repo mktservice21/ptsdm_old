@@ -137,7 +137,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget'>Edit</a>";
     $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapus('hapus', '$pidget')\">";
-    $phapus="";//hilangkan dulu, harusnya tidak ada hapus karena bisa merubah nobbk
+    //$phapus="";//hilangkan dulu, harusnya tidak ada hapus karena bisa merubah nobbk
     
     $nbtntrans="<button type='button' class='btn btn-info btn-xs' title='Transfer Ualng' data-toggle='modal' "
             . " data-target='#myModal' "
@@ -167,7 +167,8 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
         $phapus="";
     }
     
-    $pbutton="$pedit &nbsp; $phapus &nbsp; $nbtntrans";
+    //$pbutton="$pedit &nbsp; $phapus &nbsp; $nbtntrans";
+    $pbutton="$pedit &nbsp; $nbtntrans";
     
     
     $nestedData[] = $no;
@@ -182,6 +183,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $pjumlah2;
     $nestedData[] = $pketerangan;
     $nestedData[] = $pnmuser;
+    $nestedData[] = $phapus;
     
     
     

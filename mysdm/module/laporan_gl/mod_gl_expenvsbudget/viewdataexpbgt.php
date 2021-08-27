@@ -454,7 +454,7 @@ if ($pmodule=="viewdataregion") {
     $pregion=$_POST['uregion'];
     $pidkrysm=$_POST['ukrysm'];
     $pilproduk=$_POST['ulproduk'];
-    
+    $pjabatansm="";
     
     $ppilihsales=false;
     $ppilihsales_gsm=false;
@@ -471,6 +471,14 @@ if ($pmodule=="viewdataregion") {
     
     if ($pdept=="SLS03") {
         $ppilihsales_sm=true;
+        if (!empty($pidkrysm)) {
+            $query = "select jabatanId as jabatanid FROM hrd.karyawan WHERE karyawanId='$pidkrysm'";
+            $tampil= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($tampil);
+            $row= mysqli_fetch_array($tampil);
+            $pjabatansm=$row['jabatanid'];
+        }
+        
     }
     
     if ($pdept=="MKT") {
@@ -490,6 +498,12 @@ if ($pmodule=="viewdataregion") {
         
         $query_coa02="SELECT distinct COA4, NAMA4, DESKRIPSI4 FROM dbproses.proses_coa "
                 . " WHERE 1=1 AND tahun='$ptahun' ";
+        if ($psemuadep == true) {
+        }else{
+            $query_coa02 .=" AND divisi_pengajuan IN (select IFNULL(divisi_pengajuan,'') FROM dbproses.maping_karyawan_dep WHERE karyawanid='$fkaryawan') ";
+        }
+        
+        
         $query_coa02 .=" ORDER BY COA4, NAMA4";
         
         $query_coa=$query_coa02;
@@ -499,8 +513,51 @@ if ($pmodule=="viewdataregion") {
         $query_coa02="SELECT distinct COA4, NAMA4, DESKRIPSI4 FROM dbproses.proses_coa "
                 . " WHERE 1=1 AND tahun='$ptahun' ";
         $query_coa02 .=" AND iddep='$pdept' ";
-        $query_coa02 .=" ORDER BY COA4, NAMA4";
+        if ($ppilihsales == true) {
+            if (!empty($ppengajuan)) {
+                $query_coa02 .=" AND divisi_pengajuan='$ppengajuan' ";
+            }else{
+                if ($pregion=="B_ETH" OR $pregion=="T_ETH") {
+                    $query_coa02 .=" AND divisi_pengajuan='ETH' ";
+                }elseif ($pregion=="B_OTC" OR $pregion=="T_OTC") {
+                    $query_coa02 .=" AND divisi_pengajuan='OTC' ";
+                }else{
+                    if ($fjbtid=="36") {
+                        $query_coa02 .=" AND divisi_pengajuan='OTC' ";
+                    }elseif ($fjbtid=="20" OR $fjbtid=="05") {
+                        $query_coa02 .=" AND divisi_pengajuan='ETH' ";
+                    }
+                }
+            }
+        }elseif ($ppilihsales_sm == true) {
+            if (!empty($pidkrysm)) {
+                if ($pjabatansm=="36") {
+                    $query_coa02 .=" AND divisi_pengajuan='OTC' ";
+                }elseif ($pjabatansm=="20") {
+                    $query_coa02 .=" AND divisi_pengajuan='ETH' ";
+                }else{
+                    $query_coa02 .=" AND divisi_pengajuan IN (select IFNULL(divisi_pengajuan,'') FROM dbproses.maping_karyawan_dep WHERE karyawanid='$pidkrysm') ";
+                }
+            }else{
+                if ($fjbtid=="05" AND !empty($pilihregion)) {
+                    $query_coa02 .=" AND divisi_pengajuan='ETH' ";
+                }
+            }
+        }elseif ($ppilihmarketing==true) {
+            if (!empty($pilproduk)) {
+                if ($pilproduk=="OTC") $query_coa02 .=" AND divisi_pengajuan='$pilproduk' ";
+                else $query_coa02 .=" AND divisi_pengajuan='ETH' ";
+            }else{
+                if ($pregion=="B_ETH" OR $pregion=="T_ETH") {
+                    $query_coa02 .=" AND divisi_pengajuan='ETH' ";
+                }elseif ($pregion=="B_OTC" OR $pregion=="T_OTC") {
+                    $query_coa02 .=" AND divisi_pengajuan='OTC' ";
+                }
+            }
+        }
         
+        
+        $query_coa02 .=" ORDER BY COA4, NAMA4";
         
         $query_coa=$query_coa02;
     }

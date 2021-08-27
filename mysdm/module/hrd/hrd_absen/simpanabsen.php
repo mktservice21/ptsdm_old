@@ -347,7 +347,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     
     
-    $pberhasil="berhasil\n"." Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen";
+    $pberhasil="berhasil\n"."Status : $plokasiabs\n"."Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen";
     
     
 

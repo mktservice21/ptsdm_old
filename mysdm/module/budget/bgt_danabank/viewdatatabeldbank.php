@@ -60,7 +60,7 @@
                 { "orderable": false, "targets": 0 },
                 { "orderable": false, "targets": 1 },
                 { className: "text-right", "targets": [8,9] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }//nowrap
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }//nowrap
 
             ],
             "language": {
@@ -116,6 +116,7 @@
                     <th width='50px'>Kredit</th>
                     <th width='50px'>Keterangan</th>
                     <th width='50px'>User</th>
+                    <th width='50px'>&nbsp;</th>
                 </tr>
             </thead>
         </table>

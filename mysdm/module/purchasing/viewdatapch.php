@@ -163,7 +163,9 @@ if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
 //CARI DEPARTEMEN
 $pdepartmen="";
 if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC" OR $ppengajuanid=="ETH") {
-    $pdepartmen="MKT";
+    //$pdepartmen="MKT";
+    if ($pidjbtpl=="36") $pdepartmen="SLS03";
+    else $pdepartmen="SLS01";
 }else{
     if ($ppengajuanid=="HO") {
         $query = "select iddep FROM dbmaster.t_karyawan_dep WHERE karyawanid='$idajukan'";
@@ -176,6 +178,57 @@ if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC" OR $ppengajuanid=="ETH") {
 
 //END CARI DEPARTEMEN
 
+//CARI PENGECUALIAN
+$ppenecualianatasan=false;
+$query = "select * from dbpurchasing.t_karyawan_input_exc WHERE karyawanid='$idajukan'";
+$ptampilexc= mysqli_query($cnmy, $query);
+$ketemuexc= mysqli_num_rows($ptampilexc);
+if ((DOUBLE)$ketemuexc>0) {
+    $nexp= mysqli_fetch_array($ptampilexc);
+    $ppengajuanexp=$nexp['pengajuan'];
+    $pdepartmenexp=$nexp['iddep'];
+    $pdivisiidexp=$nexp['divisi'];
+    $patasanexp=$nexp['atasanid'];
+    
+    
+    if (!empty($patasanexp)) {
+        $query = "select nama from hrd.karyawan WHERE karyawanid='$patasanexp'";
+        $tmpkn= mysqli_query($cnmy, $query);
+        $tkn=mysqli_fetch_array($tmpkn);
+        $pnamaatasanexp=$tkn['nama'];
+    
+        $pkdspv="";
+        $pnamaspv="";
+        $pkddm="";
+        $pnamadm="";
+        $pkdsm="";
+        $pnamasm="";
+        $pkdgsm=$patasanexp;
+        $pnamagsm=$pnamaatasanexp;
+        
+    }
+    
+    
+    if (!empty($pdivisiidexp)) {
+        $pdivisilogin=$pdivisiidexp;
+        $pdivisiid=$pdivisiidexp;
+        
+        $pfildivisi="('$pdivisiidexp')";
+    }
+    
+    if (!empty($ppengajuanexp)) $pstatuslogin=$ppengajuanexp;
+    if (!empty($pdepartmenexp)) $pdepartmen=$pdepartmenexp;
+    
+    if ($pdivisiidexp=="OTC") {
+        $pcabangid="0000000007";
+    }else{
+        $pcabangid="0000000001";
+    }
+    
+    $ppenecualianatasan=true;
+}
+        
+//END CARI PENGECUALIAN
 
 //CARI AREA
 $pareaid="";
@@ -229,45 +282,6 @@ if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
 if ($ppengajuanid=="HO") {
     $pdivisiid="HO";
 }
-
-
-//CARI PENGECUALIAN
-$ppengajuanexp=""; $pdepartmenexp=""; $pdivisiidexp=""; $patasanexp=""; $pnamaatasanexp="";
-$ppenecualianatasan=false;
-$query = "select * from dbpurchasing.t_karyawan_input_exc WHERE karyawanid='$idajukan'";
-$ptampilexc= mysqli_query($cnmy, $query);
-$ketemuexc= mysqli_num_rows($ptampilexc);
-if ((DOUBLE)$ketemuexc>0) {
-    $nexp= mysqli_fetch_array($ptampilexc);
-    $ppengajuanexp=$nexp['pengajuan'];
-    $pdepartmenexp=$nexp['iddep'];
-    $pdivisiidexp=$nexp['divisi'];
-    $patasanexp=$nexp['atasanid'];
-    
-    
-    if (!empty($patasanexp)) {
-        $query = "select nama from hrd.karyawan WHERE karyawanid='$patasanexp'";
-        $tmpkn= mysqli_query($cnmy, $query);
-        $tkn=mysqli_fetch_array($tmpkn);
-        $pnamaatasanexp=$tkn['nama'];
-    
-        $pkdspv="";
-        $pnamaspv="";
-        $pkddm="";
-        $pnamadm="";
-        $pkdsm="";
-        $pnamasm="";
-        $pkdgsm=$patasanexp;
-        $pnamagsm=$pnamaatasanexp;
-        
-    }
-    
-    $ppenecualianatasan=true;
-}
-        
-//END CARI PENGECUALIAN
-
-
 ?>
     <div hidden class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
@@ -325,10 +339,13 @@ if ((DOUBLE)$ketemuexc>0) {
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang / Area <span class='required'></span></label>
         <div class='col-xs-5'>
-            <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="">
+            <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="ShowDataArea()">
                 <option value='' selected>-- Pilihan --</option>
                 <?PHP
-                if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
+				if ($idajukan=="0000001556") {
+					$query = "SELECT distinct icabangid_o as icabangid, nama as nama_cabang from dbmaster.v_icabang_o where aktif='Y' AND icabangid_o NOT IN ('JKT_MT', 'JKT_RETAIL') ";
+                    $query .=" Order by nama";
+                }elseif ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
                     $query = "select icabangid_o as icabangid, nama as nama_cabang from mkt.icabang_o WHERE 1=1 ";
                     if (!empty($pcabangid)) {
                         $query .= " AND icabangid_o='$pcabangid' ";
@@ -497,17 +514,8 @@ if ($ppengajuanid=="HO") {
 
 // END ATASAN
 
-$pnamagsmhos="GSM";
-if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
-    $pnamagsmhos="HOS";
-}elseif ($ppengajuanid=="HO") {
-    $pnamagsmhos="Atasan";
-}
-
-
 
 //CARI PENGECUALIAN
-$ppengajuanexp=""; $pdepartmenexp=""; $pdivisiidexp=""; $patasanexp=""; $pnamaatasanexp="";
 $ppenecualianatasan=false;
 $query = "select * from dbpurchasing.t_karyawan_input_exc WHERE karyawanid='$idajukan'";
 $ptampilexc= mysqli_query($cnmy, $query);
@@ -537,24 +545,39 @@ if ((DOUBLE)$ketemuexc>0) {
         
     }
     
+    
+    if (!empty($pdivisiidexp)) {
+        $pdivisilogin=$pdivisiidexp;
+        $pdivisiid=$pdivisiidexp;
+        
+        $pfildivisi="('$pdivisiidexp')";
+    }
+    
+    if (!empty($ppengajuanexp)) $pstatuslogin=$ppengajuanexp;
+    if (!empty($pdepartmenexp)) $pdepartmen=$pdepartmenexp;
+    
+    if ($pdivisiidexp=="OTC") {
+        $pcabangid="0000000007";
+    }else{
+        $pcabangid="0000000001";
+    }
+    
     $ppenecualianatasan=true;
 }
         
 //END CARI PENGECUALIAN
 
-if ($ppenecualianatasan==true) {
+$pnamagsmhos="GSM";
+if ($ppengajuanid=="OTC" OR $ppengajuanid=="CHC") {
+    $pnamagsmhos="HOS";
+}elseif ($ppengajuanid=="HO") {
     $pnamagsmhos="Atasan";
-    if (!empty($patasanexp)) {
-        $pkdspv="";
-        $pnamaspv="";
-        $pkddm="";
-        $pnamadm="";
-        $pkdsm="";
-        $pnamasm="";
-        $pkdgsm=$patasanexp;
-        $pnamagsm=$pnamaatasanexp;
-    }
 }
+if ($pidjbtpl=="05") {
+	$pnamagsmhos="Atasan";
+}
+
+
 ?>
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SPV / AM <span class='required'></span></label>
@@ -593,6 +616,7 @@ if ($ppenecualianatasan==true) {
     $idajukan=$_POST['ukry'];
     $pidjbt=$_POST['ujbt'];
     $pcabangid=$_POST['ucab'];
+	$pdivisi=$_POST['udivisi'];
     $pareaid="";
     
     include "../../config/koneksimysqli.php";
@@ -614,6 +638,12 @@ if ($ppenecualianatasan==true) {
                 . " AND IFNULL(aktif,'')<>'N' ";
         $query_area .=" ORDER BY nama, areaid";
     }
+	
+	if ($pdivisi=="OTC" OR $pdivisi=="CHC" OR $pdivisi=="OT") {
+        $query_area = "select areaid_o as areaid, nama as nama_area FROM mkt.iarea_o WHERE icabangid_o='$pcabangid' "
+                . " AND IFNULL(aktif,'')<>'N' ";
+        $query_area .=" ORDER BY nama, areaid_o";
+	}
     
     echo "<option value='' selected>-- Pilihan --</option>";
     if (!empty($query_area)) {
@@ -696,7 +726,16 @@ if ($ppenecualianatasan==true) {
         $query .= " ORDER BY nama";
     }else{
         $query = "select karyawanId as karyawanid, nama as nama_karyawan From hrd.karyawan WHERE 1=1 ";
-        $query .= " AND (karyawanid ='$pidcardpl' OR karyawanid ='$idajukan') ";
+        
+		if ($pidcardpl=="0000002329" AND $ppengajuanid=="ETH") {
+			if ($ppengajuanid=="ETH") {
+				$query .= " AND karyawanid IN ('$pidcardpl', '$idajukan', '0000000158') AND karyawanid<>'0000002329' ";
+			}else{
+				$query .= " AND karyawanid IN ('$pidcardpl', '$idajukan') ";
+			}
+		}else{
+			$query .= " AND (karyawanid ='$pidcardpl' OR karyawanid ='$idajukan') "; 
+		}
     }
 
     $tampil = mysqli_query($cnmy, $query);

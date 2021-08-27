@@ -202,7 +202,9 @@ if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
 //CARI DEPARTEMEN dan PENGAJUAN
 $pdepartmen="";
 if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC" OR $pstatuslogin=="ETH") {
-    $pdepartmen="MKT";
+    //$pdepartmen="MKT";
+    if ($pidjbtpl=="36") $pdepartmen="SLS03";
+    else $pdepartmen="SLS01";
 }else{
     if ($pstatuslogin=="HO") {
         $query = "select iddep FROM dbmaster.t_karyawan_dep WHERE karyawanid='$idajukan'";
@@ -625,12 +627,12 @@ if ($ppenecualianatasan==true) {
                                                     $query .= " OR karyawanId='$idajukan' ) ";
                                                     $query .= " ORDER BY nama";
                                                 }else{
-													$query = "select karyawanId as karyawanid, nama as nama_karyawan From hrd.karyawan WHERE 1=1 ";
-													if ($pidcardpl=="0000002329X") {
-														$query .= " AND karyawanid IN ('$pidcardpl', '$idajukan', '0000000158') ";
-													}else{
-														$query .= " AND (karyawanid ='$pidcardpl' OR karyawanid ='$idajukan') ";
-													}
+                                                    $query = "select karyawanId as karyawanid, nama as nama_karyawan From hrd.karyawan WHERE 1=1 ";
+                                                    if ($pidcardpl=="0000002329X") {
+                                                        $query .= " AND karyawanid IN ('$pidcardpl', '$idajukan', '0000000158') ";
+                                                    }else{
+                                                        $query .= " AND (karyawanid ='$pidcardpl' OR karyawanid ='$idajukan') ";
+                                                    }
                                                 }
                                                 
                                                 $tampil = mysqli_query($cnmy, $query);

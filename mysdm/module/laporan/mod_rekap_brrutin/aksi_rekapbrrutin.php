@@ -190,6 +190,7 @@
         $tglinput = date("Y-m-16", strtotime($tgl01));
     }
     
+    $padanodivisi=false;
     //cari no br / no divisi yang sudah di save
     if (empty($pnomorbr)) {
         $nnnodiv="";
@@ -211,7 +212,11 @@
             if (!empty($s['pnomor'])) { 
                 $pnomorbr= $s['pnomor'];
             }
+            
+            $padanodivisi=true;
+            
         }
+        
     }
     //end cari no br / no divisi yang sudah di save
     
@@ -238,6 +243,16 @@
     
     $query = "create temporary table $tmp02 ($query)"; 
     mysqli_query($cnit, $query);
+    
+    
+    if ($padanodivisi == true) {
+        
+        $query = "DELETE FROM $tmp02 WHERE idrutin NOT IN (select distinct IFNULL(a.bridinput,'') FROM dbmaster.t_suratdana_br1 as a JOIN "
+                . " dbmaster.t_suratdana_br as b on a.idinput=b.idinput WHERE b.nodivisi='$nnnodiv' AND IFNULL(b.stsnonaktif,'')<>'Y' AND "
+                . " b.divisi<>'OTC')";
+        mysqli_query($cnit, $query);
+        
+    }
     
     $query = "select karyawanid, sum(jumlah) as AMOUNT, CAST(''  AS char(10)) icabangid, CAST(''  AS char(10)) areaid, CAST(''  AS char(10)) divisi from $tmp02 Group by karyawanid";
     $query = "create temporary table $tmp03 ($query)";

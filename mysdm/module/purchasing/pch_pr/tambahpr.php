@@ -625,8 +625,12 @@ if ($ppenecualianatasan==true) {
                                                     $query .= " OR karyawanId='$idajukan' ) ";
                                                     $query .= " ORDER BY nama";
                                                 }else{
-                                                    $query = "select karyawanId as karyawanid, nama as nama_karyawan From hrd.karyawan WHERE 1=1 ";
-                                                    $query .= " AND (karyawanid ='$pidcardpl' OR karyawanid ='$idajukan') ";
+													$query = "select karyawanId as karyawanid, nama as nama_karyawan From hrd.karyawan WHERE 1=1 ";
+													if ($pidcardpl=="0000002329X") {
+														$query .= " AND karyawanid IN ('$pidcardpl', '$idajukan', '0000000158') ";
+													}else{
+														$query .= " AND (karyawanid ='$pidcardpl' OR karyawanid ='$idajukan') ";
+													}
                                                 }
                                                 
                                                 $tampil = mysqli_query($cnmy, $query);
@@ -712,7 +716,10 @@ if ($ppenecualianatasan==true) {
                                             <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="ShowDataArea()">
                                                 <option value='' selected>-- Pilihan --</option>
                                                 <?PHP
-                                                if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
+												if ($pidcardpl=="0000001556") {
+                                                    $query = "SELECT distinct icabangid_o as icabangid, nama as nama_cabang from dbmaster.v_icabang_o where aktif='Y' AND icabangid_o NOT IN ('JKT_MT', 'JKT_RETAIL') ";
+                                                    $query .=" Order by nama";
+												}elseif ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
                                                     $query = "select icabangid_o as icabangid, nama as nama_cabang from mkt.icabang_o WHERE 1=1 ";
                                                     if (!empty($pcabangid)) {
                                                         $query .= " AND icabangid_o='$pcabangid' ";
@@ -830,7 +837,12 @@ if ($ppenecualianatasan==true) {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                     <div class='col-xs-5'>
+										<?PHP
+										if ($pidcardpl=="0000001556") {
+										}else{
+										?>
                                         <input type="button" class='btn btn-warning btn-xs'  name="btn_refresh" id="btn_refresh" onclick="ShowDataAtasan()" value="Refresh Atasan.."><!--refresh_atasan()-->
+										<?PHP } ?>
                                     </div>
                                 </div>
                             
@@ -1293,10 +1305,12 @@ th {
         var ikry = document.getElementById('cb_karyawan').value;
         var ijbt = document.getElementById('e_jabatanid').value;
         var icab = document.getElementById('cb_cabang').value;
+		var idivisi = document.getElementById('cb_divisi').value;
+
         $.ajax({
             type:"post",
             url:"module/purchasing/viewdatapch.php?module=caridataarea",
-            data:"ukry="+ikry+"&ujbt="+ijbt+"&ucab="+icab,
+            data:"ukry="+ikry+"&ujbt="+ijbt+"&ucab="+icab+"&udivisi="+idivisi,
             beforeSend: function () {
                 document.getElementById("btn_simpan").disabled = true;
             },

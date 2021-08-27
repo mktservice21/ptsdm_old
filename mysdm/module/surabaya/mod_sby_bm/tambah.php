@@ -338,6 +338,26 @@ if ($_GET['act']=="editdata"){
                                                 else
                                                     echo "<option value='$nnicabid'>$nnicabnm - $nnicabid</option>";
                                             }
+                                            
+                                            if ($divisi=="OTC") {
+                                            }else{
+                                                $query = "select iCabangId as icabangid, nama as nama_cabang FROM MKT.icabang WHERE aktif<>'Y' ";
+                                                $query .= " AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -') ";
+                                                $query .= " ORDER BY nama";
+                                                
+                                                echo "<option value='' >-- Non Aktif --</option>";
+                                                
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $nnicabid=$z['icabangid'];
+                                                    $nnicabnm=$z['nama_cabang'];
+
+                                                    if ($nnicabid==$picabangid)
+                                                        echo "<option value='$nnicabid' selected>$nnicabnm - $nnicabid</option>";
+                                                    else
+                                                        echo "<option value='$nnicabid'>$nnicabnm - $nnicabid</option>";
+                                                }
+                                            }
                                             ?>
                                         </select>
                                     </div>
@@ -346,7 +366,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No. BBM <span class='required'></span></label>
-                                    <div class='col-xs-3'>
+                                    <div class='col-xs-4'>
                                         <input type='text' id='e_nobbm' name='e_nobbm' class='form-control col-md-7 col-xs-12' placeholder="BBM1500/<?PHP echo $tglnomor; ?>" value='<?PHP echo $nobbm; ?>'>
                                     </div>
                                 </div>
@@ -354,7 +374,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No. BBK <span class='required'></span></label>
-                                    <div class='col-xs-3'>
+                                    <div class='col-xs-4'>
                                         <input type='text' id='e_nobbk' name='e_nobbk' class='form-control col-md-7 col-xs-12' placeholder="BBK1500/<?PHP echo $tglnomor; ?>" value='<?PHP echo $nobbk; ?>'>
                                     </div>
                                 </div>
@@ -483,7 +503,7 @@ if ($_GET['act']=="editdata"){
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
-                                    <div class='col-xs-3'>
+                                    <div class='col-xs-6'>
                                         <input type='text' id='e_ket' name='e_ket' class='form-control col-md-7 col-xs-12' value='<?PHP echo $keterangan; ?>'>
                                     </div>
                                 </div>

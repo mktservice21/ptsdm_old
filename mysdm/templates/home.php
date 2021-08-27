@@ -559,6 +559,8 @@
         include 'module/laporan_gl/mod_gl_rbmchccab/rbmchccab.php';
     }elseif ($_GET['module']=='expensevsbudget'){
         include 'module/laporan_gl/mod_gl_expenvsbudget/expenvsbudget.php';
+    }elseif ($_GET['module']=='demoexpensevsbudget'){
+        include 'module/laporan_gl/demo_mod_gl_expenvsbudget/expenvsbudget.php';
         
         
     }elseif ($_GET['module']=='prosesdatatabel'){
@@ -882,6 +884,8 @@
         
     }elseif ($_GET['module']=='mstlistcustbaru'){
         include 'module/master/mst_listcustomernew/listcustomernew.php';
+    }elseif ($_GET['module']=='mstrkpcustbaru'){
+        include 'module/master/mst_rkpcustomernew/rkpcustomernew.php';
         
     }elseif ($_GET['module']=='dkdweeklyvisit'){
         include 'module/dkd/dkd_wekvisitplan/wekvisitplan.php';

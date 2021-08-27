@@ -246,7 +246,7 @@ if (empty($puser)) {
         
         $query_sst = "INSERT INTO $dbname.importsst (`Prinsipal`, `Cabang`, `Kode Produk`, `Nama Produk`, "
                 . " `Kode Pelanggan`, `Nama Pelanggan`, `Alamat`, `No Faktur`, `Tgl Dok`, `Unit`, `Harga`, "
-                . " `Bonus Faktur`, `Diskon Prinsipal`, `Diskon Cabang`, `Total HNA`, `BatchNo`, `asl_data`, `ExpDate`, acu, tgl_acu)values "
+                . " `Bonus Faktur`, `Diskon Prinsipal`, `Diskon Cabang`, `Total HNA`, `BatchNo`, `kriteria_retur`, `ExpDate`, acu, tgl_acu)values "
                 . " ".implode(', ', $pinsert_sst);
         mysqli_query($cnmy, $query_sst);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT importsst : $erropesan"; exit; }

@@ -496,7 +496,7 @@
     
     
     //SALES
-    $query = "select 'OTC' as divprodid, sum(`value`) as value_sales, 0 as value_target from dbmaster.sales_otc_local WHERE "
+    $query = "select 'OTC' as divprodid, sum(`value`) as value_sales, 0 as value_target from fe_it.otc_etl WHERE "
             . " YEAR(tgljual)='$ptahun' AND DATE_FORMAT(tgljual,'%Y-%m') <= '$pbulan' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1";
     $query = "create TEMPORARY table $tmp04 ($query)";
     mysqli_query($cnmy, $query);

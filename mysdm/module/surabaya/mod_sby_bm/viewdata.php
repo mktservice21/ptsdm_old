@@ -79,7 +79,29 @@ if ($_GET['module']=="viewcoadivisi"){
         else
             echo "<option value='$nnicabid'>$nnicabnm - $nnicabid</option>";
     }
-                                            
+               
+    if ($mydivisi=="OTC") {
+    }else{
+        
+        $query = "select iCabangId as icabangid, nama as nama_cabang FROM MKT.icabang WHERE aktif<>'Y' ";
+        $query .= " AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -') ";
+        $query .= " ORDER BY nama";
+        
+        echo "<option value='' >-- Non Aktif --</option>";
+    
+
+        $tampil = mysqli_query($cnmy, $query);
+        while ($z= mysqli_fetch_array($tampil)) {
+            $nnicabid=$z['icabangid'];
+            $nnicabnm=$z['nama_cabang'];
+
+            if ($nnicabid==$picabangid)
+                echo "<option value='$nnicabid' selected>$nnicabnm - $nnicabid</option>";
+            else
+                echo "<option value='$nnicabid'>$nnicabnm - $nnicabid</option>";
+        }
+        
+    }
     mysqli_close($cnmy);
 }elseif ($_GET['module']=="xxx"){
     

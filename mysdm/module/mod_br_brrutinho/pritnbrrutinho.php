@@ -155,6 +155,11 @@
         $data = base64_decode($data);
         $namagsm="img_".$pidrutin."GSMA_.png";
         file_put_contents('images/tanda_tangan_base64/'.$namagsm, $data);
+        
+        if ($pbulanpengajuan>='202108' AND $pjbtid=="05") {
+            $namapengaju=$namagsm;
+        }
+        
     }
     
     $namadir="";

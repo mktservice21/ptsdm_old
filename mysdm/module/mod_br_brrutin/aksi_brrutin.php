@@ -801,6 +801,11 @@ elseif ($module=='entrybrrutin')
     }
     
     
+    if ($pkaryawan=="0000002329") {
+        $query = "update $dbname.t_brrutin0 set atasan1='', tgl_atasan1=NOW(), atasan2='', tgl_atasan2=NOW(), atasan3='', tgl_atasan3=NOW(), atasan4='0000000158' WHERE idrutin='$kodenya' LIMIT 1";
+        mysqli_query($cnmy, $query);
+    }
+    
     if ($pkaryawan=="0000000159" OR $pkaryawan=="0000000158") {
         $query = "update $dbname.t_brrutin0 set dir='0000002403' WHERE idrutin='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);

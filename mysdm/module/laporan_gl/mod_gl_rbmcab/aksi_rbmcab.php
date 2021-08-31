@@ -323,6 +323,11 @@
     mysqli_query($cnit, $query);
     $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "select *, kredit as jumlah from $tmp01";
+    $query = "create  table dbtemp.tmptabb_ ($query)";
+    //mysqli_query($cnit, $query);
+    //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
     
     
     mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $tmp01");

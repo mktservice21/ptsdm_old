@@ -220,6 +220,10 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
                 //exit;
             }
             
+        }else{
+            mysqli_close($cnmy);
+            echo "Tidak ada proses absen...\n"."Karena anda belum absen istirahat...";
+            exit;
         }
     }
     
@@ -285,7 +289,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
         
     }
         
-    
+        
     if ($psudahpernahabsen_masuk==true AND $pkey=="1" AND !empty($pkodesudahinput)) {
         
         
@@ -350,7 +354,85 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     $pberhasil="berhasil\n"."Status : $plokasiabs\n"."Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen";
     
     
+    
+    
+    
+    $njadwalwfo="N";
+    $pdapatuangmakan=false;
+    $pjamkerja=0;
+    if ($pkey=="2") {
+        $pjamkerja_wfo=0;
+        $pjamkerja_wfh=0;
 
+        $query ="select jam_kerja_wfo_y, jam_kerja_wfo_n from hrd.t_absen_jam_kerja WHERE IFNULL(id_status,'')='HO1'";
+        $tampilw=mysqli_query($cnmy, $query);
+        $roww=mysqli_fetch_array($tampilw);
+        $pjamkerja_wfo=$roww['jam_kerja_wfo_y'];
+        $pjamkerja_wfh=$roww['jam_kerja_wfo_n'];
+
+        if (empty($pjamkerja_wfo)) $pjamkerja_wfo=0;
+        if (empty($pjamkerja_wfh)) $pjamkerja_wfh=0;
+        
+        $query ="select distinct jam_kerja_wfo FROM hrd.t_absen_jam_kerja_ex WHERE id_status='HO1' "
+                . " AND karyawanid IN ('', 'ALL', 'all', 'All', '$pcardidabsen') AND tanggal=CURRENT_DATE()";
+        $tampilw2=mysqli_query($cnmy, $query);
+        $ketemu2= mysqli_num_rows($tampilw2);
+        if ((INT)$ketemu2>0) {
+            $row2= mysqli_fetch_array($tampilw2);
+            $pjamkerja_wfo=$row2['jam_kerja_wfo'];
+            
+            if (empty($pjamkerja_wfo)) $pjamkerja_wfo=0;
+        }
+        
+        
+        
+        $query = "select a.karyawanId as karyawanid, a.lantai FROM dbmaster.t_karyawan_posisi as a "
+                . " JOIN (select tanggal, lantai from hrd.t_absen_jadwal_wfo WHERE tanggal=CURRENT_DATE()) as b "
+                . " on a.lantai=b.lantai WHERE a.karyawanid='$pcardidabsen'";
+        $tampil3=mysqli_query($cnmy, $query);
+        $ketemu3= mysqli_num_rows($tampil3);
+        if ((INT)$ketemu3>0) {
+            $row3=mysqli_fetch_array($tampil3);
+            $nn_kryid=$row3['karyawanid'];
+            if (!empty($nn_kryid)) {
+                $njadwalwfo="Y";
+            }
+        }
+        
+        
+        $query ="select jam, DATE_FORMAT(CURRENT_TIME(),'%H:%i') as jampulang, CURRENT_DATE() as tgl from hrd.t_absen WHERE kode_absen='1' AND tanggal=CURRENT_DATE() AND karyawanid='$pcardidabsen'";
+        $tampil=mysqli_query($cnmy, $query);
+        $row=mysqli_fetch_array($tampil);
+        $pjammasukkerja=$row['jam'];
+        $pjampulangkerja=$row['jampulang'];
+        $ntgl_cr=$row['tgl'];
+        $pliburannone="";
+        
+        $pselisih_jam=CariSelisihJamMenit("1", $pliburannone, $ntgl_cr, $pjammasukkerja, $pjampulangkerja, "");
+        if ($pselisih_jam=="invalid") $pselisih_jam="";
+        
+        if ($plokasiabs=="WFO" && !empty($pselisih_jam)) {
+            $pjamkerja=$pjamkerja_wfo;
+            if ($njadwalwfo == "N") $pjamkerja=$pjamkerja_wfh;
+            
+            if ((INT)substr($pselisih_jam,0,2)>=(INT)$pjamkerja) {
+                $pdapatuangmakan=true;
+            }
+        }
+        
+        //echo "Jadwal WFO";
+        if ($pdapatuangmakan==true) {
+            $pberhasil="xberhasil\n"."Status : $plokasiabs\n"."Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen\n"."Jam Kerja : $pselisih_jam, Dapat Uang Makan";
+        }else{
+            $pberhasil="xberhasil\n"."Status : $plokasiabs\n"."Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen\n"."Jam Kerja : $pselisih_jam, Tidak Dapat Uang Makan\n"."Minimal $pjamkerja Jam Kerja";
+        }
+        
+        echo $pberhasil;
+    }
+    //exit;//hilangkan
+    
+    
+    
     mysqli_close($cnmy);
 
     //$pberhasil="$pmodule | $pact = $pkey : $plangitut, $plongitut";

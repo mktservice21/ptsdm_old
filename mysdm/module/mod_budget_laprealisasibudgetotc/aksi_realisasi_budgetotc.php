@@ -107,7 +107,10 @@
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    
+    $query = "select *, kredit as jumlah from $tmp01";
+    $query = "create  table dbtemp.tmptaba_ ($query)";
+    //mysqli_query($cnmy, $query);
+    //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $query = "CREATE INDEX `norm1` ON $tmp01 (kodeinput,idinput,divisi,tgltrans,coa)";
@@ -421,6 +424,24 @@
         $query = "INSERT INTO $tmp03 (kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
                 . "SELECT '20' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('M')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+    //INVENTARIS
+        $query = "INSERT INTO $tmp03 (kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
+                . "SELECT '16' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') "
+                . " AND nkodeid in ('07') AND IFNULL(nsubkode,'')=''";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        mysqli_query($cnmy, "DELETE FROM $tmp01 WHERE kodeinput IN ('E') AND nkodeid in ('07') AND IFNULL(nsubkode,'')=''");
+        
+        
+    //BR OTC yang belum masuk .... HO dulu 21
+        $query = "INSERT INTO $tmp03 (kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
+                . "SELECT '20' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        mysqli_query($cnmy, "DELETE FROM $tmp01 WHERE kodeinput IN ('E')");
+        if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
         

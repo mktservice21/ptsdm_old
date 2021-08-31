@@ -499,10 +499,18 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         echo "<hr/><br/>";
 
 
-        echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
+        echo "<table id='tbltable' border='1' class='table customerTable' cellspacing='0' cellpadding='1'>";
             echo "<thead>";
                 echo "<tr>";
+                
+                    $pchkalljml="";
+                    if ($ppilihrpt=="excel") {
+                    }else{
+                        $pchkalljml="<input type='checkbox' id='chkbtnjml' value='deselect' onClick=\"SelAllCheckBox('chkbtnjml', 'chkbox_jumlah[]')\" checked/>";
+                    }
+                    
                     echo "<th align='center' rowspan='2'><small>No</small></th>";
+                    echo "<th align='center' rowspan='2'><small>$pchkalljml</small></th>";
                     echo "<th align='center' rowspan='2'><small>&nbsp;</small></th>";
                     echo "<th align='center' rowspan='2'><small>COA</small></th>";
                     
@@ -601,14 +609,17 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     $nnamacoa=$row['nama_coa'];
 
                     $ptomboljenis="";
+                    $pchkjumlah="";
                     if ($ppilihrpt=="excel") {
                     }else{
                         $ptomboljenis = "<button type='button' id='btn_jenis' name='btn_jenis' class='btn btn-dark btn-xs' onclick=\"LihatDataJenis('$ncoa')\"><i class=\"fa fa-archive\"></i> Jenis</button>";
+                        $pchkjumlah= "<input onClick=\"HitungJumlahDataTabel()\" type='checkbox' value='$ncoa' name='chkbox_jumlah[]' id='chkbox_jumlah[]' checked>";
                     }
-
+                    
 
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
+                    echo "<td nowrap>$pchkjumlah</td>";
                     echo "<td nowrap>$ptomboljenis</td>";
                     echo "<td nowrap>$ncoa - $nnamacoa</td>";
 
@@ -694,6 +705,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 
                 echo "<tr style='font-weight:bold;'>";
+                echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap>&nbsp;</td>";
                 echo "<td nowrap></td>";
                 echo "<td nowrap>Grand Total </td>";
@@ -913,6 +925,78 @@ if ($ppilihrpt=="excel") {
             });
         
         }
+        
+        
+        function SelAllCheckBox(nmbuton, data){
+            var checkboxes = document.getElementsByName(data);
+            var button = document.getElementById(nmbuton);
+
+            if(button.value == 'select'){
+                for (var i in checkboxes){
+                    checkboxes[i].checked = 'FALSE';
+                }
+                button.value = 'deselect'
+            }else{
+                for (var i in checkboxes){
+                    checkboxes[i].checked = '';
+                }
+                button.value = 'select';
+            }
+
+            HitungJumlahDataTabel();
+
+        }
+        
+        function HitungJumlahDataTabel() {
+            
+            var chk_arr =  document.getElementsByName('chkbox_jumlah[]');
+            var newchar = '';
+            var itotal1="0", itotal2="0";
+            var table = document.getElementById("tbltable");
+            var trows=table.rows.length;
+            var tawal="2";
+            var ichk="0";
+            var icol_pl1="4", icol_pl2="5", icol_pl3="6";
+            
+            var icol1="4";
+            for (var i=0; i<=13; i++) {
+                icol_pl1=parseInt(icol1)+i;
+                icol_pl2=parseInt(icol1)+i+1;
+                icol_pl3=parseInt(icol1)+i+2;
+                itotal1="0"; itotal2="0";
+                for(var r = tawal; r < trows - 1; r++)
+                {
+                    var ijml1=table.rows[r].cells[icol_pl1].innerHTML;
+                    if (ijml1=="") ijml1="0";
+                    ijml1 = ijml1.split(',').join(newchar);
+                    
+                    var ijml2=table.rows[r].cells[icol_pl2].innerHTML;
+                    if (ijml2=="") ijml2="0";
+                    ijml2 = ijml2.split(',').join(newchar);
+                    
+                    ichk=parseInt(r)-parseInt(tawal);
+                    if (chk_arr[ichk].checked == true) {
+                        itotal1=parseFloat(itotal1)+parseFloat(ijml1);
+                        itotal2=parseFloat(itotal2)+parseFloat(ijml2);
+                    }
+                }
+                
+                var iach="0";
+                if (parseFloat(itotal1)>0) {
+                    iach=(parseFloat(itotal2)/parseFloat(itotal1)*100).toFixed(2);
+                }
+                
+                table.rows[trows-1].cells[icol_pl1].innerHTML=itotal1.toLocaleString();
+                table.rows[trows-1].cells[icol_pl2].innerHTML=itotal2.toLocaleString();
+                table.rows[trows-1].cells[icol_pl3].innerHTML=iach;
+                
+                
+                icol1=parseInt(icol1)+2;
+            }
+            
+            
+        }
+
     </script>
     
 <?PHP

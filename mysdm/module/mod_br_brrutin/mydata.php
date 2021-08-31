@@ -300,6 +300,10 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
         $pisipajak="<button type='button' class='btn btn-primary btn-xs' data-toggle='modal' data-target='#myModal' onClick=\"TambahDataInputPajak('$idno')\">Pajak</button>";
     }
         
+    if ($pkaryawanid=="0000002329" AND empty($t_ats4)) {
+        $allbutton="$edit $hapus $print";
+    }
+    
     $nestedData[] = $no;
     $nestedData[] = "$allbutton $pisipajak";//." ".$printpdf
     $nestedData[] = $idno;

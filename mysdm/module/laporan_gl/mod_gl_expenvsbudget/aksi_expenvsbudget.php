@@ -957,9 +957,13 @@ if ($ppilihrpt=="excel") {
             var tawal="2";
             var ichk="0";
             var icol_pl1="4", icol_pl2="5", icol_pl3="6";
+            var icol_1="0", icol_2="0";
             
             var icol1="4";
             for (var i=0; i<=13; i++) {
+                icol_1=parseInt(icol1)-i-2;
+                icol_2=parseInt(icol1)-i-1;
+                
                 icol_pl1=parseInt(icol1)+i;
                 icol_pl2=parseInt(icol1)+i+1;
                 icol_pl3=parseInt(icol1)+i+2;
@@ -978,6 +982,20 @@ if ($ppilihrpt=="excel") {
                     if (chk_arr[ichk].checked == true) {
                         itotal1=parseFloat(itotal1)+parseFloat(ijml1);
                         itotal2=parseFloat(itotal2)+parseFloat(ijml2);
+                        
+                        table.rows[r].cells[icol_1].bgColor = "#FFF";
+                        table.rows[r].cells[icol_2].bgColor = "#FFF";
+                        
+                        table.rows[r].cells[icol_pl1].bgColor = "#FFF";
+                        table.rows[r].cells[icol_pl2].bgColor = "#FFF";
+                        table.rows[r].cells[icol_pl3].bgColor = "#FFF";
+                    }else{
+                        table.rows[r].cells[icol_1].bgColor = "#808080";
+                        table.rows[r].cells[icol_2].bgColor = "#808080";
+                        
+                        table.rows[r].cells[icol_pl1].bgColor = "#808080";
+                        table.rows[r].cells[icol_pl2].bgColor = "#808080";
+                        table.rows[r].cells[icol_pl3].bgColor = "#808080";
                     }
                 }
                 

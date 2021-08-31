@@ -608,6 +608,7 @@
     }
     
     function ShowCabang() {
+        var itahun = document.getElementById('e_tahun').value;
         var idep = document.getElementById('cb_dept').value;
         var ipengajuan = document.getElementById('cb_pengajuan').value;
         var iregion = document.getElementById('cb_region').value;
@@ -615,7 +616,7 @@
         $.ajax({
             type:"post",
             url:"module/laporan_gl/mod_gl_expenvsbudget/viewdataexpbgt.php?module=viewdatacabang",
-            data:"upengajuan="+ipengajuan+"&uregion="+iregion+"&udep="+idep+"&ulproduk="+ilproduk,
+            data:"utahun="+itahun+"&upengajuan="+ipengajuan+"&uregion="+iregion+"&udep="+idep+"&ulproduk="+ilproduk,
             success:function(data){
                 $("#kotak-multi3").html(data);
             }

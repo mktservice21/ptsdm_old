@@ -35,6 +35,20 @@ $tmp02 =" dbtemp.tmprptabsen02_".$puserid."_$now ";
 $tmp03 =" dbtemp.tmprptabsen03_".$puserid."_$now ";
 $tmp04 =" dbtemp.tmprptabsen04_".$puserid."_$now ";
 
+$pjamkerja_wfo=0;
+$pjamkerja_wfh=0;
+
+$query ="select jam_kerja_wfo_y, jam_kerja_wfo_n from hrd.t_absen_jam_kerja WHERE IFNULL(id_status,'')='HO1'";
+$tampilw=mysqli_query($cnmy, $query);
+$roww=mysqli_fetch_array($tampilw);
+$pjamkerja_wfo=$roww['jam_kerja_wfo_y'];
+$pjamkerja_wfh=$roww['jam_kerja_wfo_n'];
+
+if (empty($pjamkerja_wfo)) $pjamkerja_wfo=0;
+if (empty($pjamkerja_wfh)) $pjamkerja_wfh=0;
+
+
+
 $hari_ini = date("Y-m-d");
 $pkryid = $_POST['cb_karyawan']; 
 $pbln = $_POST['e_bulan'];
@@ -93,10 +107,13 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 
 $query = "ALTER TABLE $tmp01 ADD COLUMN nama_karyawan VARCHAR(100), ADD COLUMN nama_absen VARCHAR(100), ADD COLUMN cuti_masal VARCHAR(1) DEFAULT 'N', "
         . " ADD COLUMN libur VARCHAR(1) DEFAULT 'N', ADD COLUMN jam_masuk_sdm VARCHAR(5) DEFAULT '', ADD COLUMN terlambat_sdm INT(4) DEFAULT '0', "
-        . " ADD COLUMN ket_absen VARCHAR(100) DEFAULT ''";
+        . " ADD COLUMN ket_absen VARCHAR(100) DEFAULT '', ADD COLUMN lantai INT(4)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "UPDATE $tmp01 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId SET a.nama_karyawan=b.nama";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 as a JOIN dbmaster.t_karyawan_posisi as b on a.karyawanid=b.karyawanId SET a.lantai=b.lantai";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "UPDATE $tmp01 as a JOIN hrd.t_absen_kode as b on a.kode_absen=b.kode_absen SET a.nama_absen=b.nama_absen";
@@ -106,7 +123,7 @@ $query = "UPDATE $tmp01 SET id_status='HO1' WHERE IFNULL(id_status,'')=''";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "UPDATE $tmp01 as a JOIN hrd.t_absen_status as b on a.kode_absen=b.kode_absen AND a.id_status=b.id_status SET a.jam_masuk_sdm=CONCAT(LEFT(b.jam,3), LPAD(IFNULL(b.menit_terlambat,0), 2, '0') ), "
+$query = "UPDATE $tmp01 as a JOIN (select * from hrd.t_absen_status WHERE IFNULL(id_status,'')='HO1') as b on a.kode_absen=b.kode_absen AND a.id_status=b.id_status SET a.jam_masuk_sdm=CONCAT(LEFT(b.jam,3), LPAD(IFNULL(b.menit_terlambat,0), 2, '0') ), "
         . " a.terlambat_sdm=b.menit_terlambat";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
@@ -282,7 +299,7 @@ $query ="drop TEMPORARY table if EXISTS $tmp03";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query ="select distinct b.karyawanid, b.nama_karyawan, a.tanggal, a.libur, a.libur_cmasal FROM $tmp04 as a, $tmp01 as b";
+$query ="select distinct b.karyawanid, b.nama_karyawan, a.tanggal, a.libur, a.libur_cmasal, b.lantai FROM $tmp04 as a, $tmp01 as b";
 $query = "create TEMPORARY table $tmp03 ($query)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -321,7 +338,36 @@ $query = "UPDATE $tmp03 as a JOIN (select karyawanid, tanggal, jam FROM $tmp01 W
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
+$query = "ALTER TABLE $tmp03 ADD COLUMN j_wfo VARCHAR(1), ADD COLUMN ex_jamkerja VARCHAR(1), ADD COLUMN jam_kerja_wfo_ex INT(4)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 //END RINCIAN
+
+
+// EX JAM KERJA
+$query ="drop TEMPORARY table if EXISTS $tmp02";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query ="select distinct a.karyawanid, a.tanggal, a.jam_kerja_wfo FROM hrd.t_absen_jam_kerja_ex as a JOIN "
+        . " (select distinct tanggal FROM $tmp03) as b on a.tanggal=b.tanggal WHERE IFNULL(a.karyawanid,'') IN ('', 'ALL', 'all', 'All', '$pkryid') "
+        . " AND a.id_status='HO1'";
+$query = "create TEMPORARY table $tmp02 ($query)";
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp02 SET karyawanid='$pkryid' WHERE IFNULL(karyawanid,'') IN ('', 'ALL', 'all', 'All')";
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp03 as a JOIN $tmp02 as b on a.tanggal=b.tanggal AND IFNULL(a.karyawanid,'')=IFNULL(b.karyawanid,'') SET a.ex_jamkerja='Y', a.jam_kerja_wfo_ex=b.jam_kerja_wfo";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+// END EX JAM KERJA
+
+$query = "UPDATE $tmp03 as a JOIN hrd.t_absen_jadwal_wfo as b on a.tanggal=b.tanggal AND IFNULL(a.lantai,'')=IFNULL(b.lantai,'') SET a.j_wfo='Y'";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
 
 
 
@@ -420,6 +466,10 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 $nstatusabs=$row0['l_status'];
                 $nterlambatsdm=$row0['terlambat_sdm'];
                 
+                $njadwalwfo=$row0['j_wfo'];
+                $nexjamkerja=$row0['ex_jamkerja'];
+                $pex_jamkerja_wfo=$row0['jam_kerja_wfo_ex'];
+                
                 if (empty($nterlambatsdm)) $nterlambatsdm=0;
                 $nterlambatsdm_jm = "08:".str_pad($nterlambatsdm, 2, '0', STR_PAD_LEFT);
                 
@@ -480,7 +530,15 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 if ($nstatusabs=="WFO") {
                     if (!empty($pselisih_jam) && $pselisih_jam<>"invalid") {
                         
-                        if ((INT)substr($pselisih_jam,0,2)>=5) {
+                        if ($njadwalwfo=="Y") {
+                            if ($nexjamkerja=="Y") $pjamkerja=$pex_jamkerja_wfo;
+                            else $pjamkerja=$pjamkerja_wfo;
+                        }else{
+                            $pjamkerja=$pjamkerja_wfh;
+                        }
+                        
+                        
+                        if ((INT)substr($pselisih_jam,0,2)>=(INT)$pjamkerja) {
                             $puangmakan="<a href=\"#/prediksi_uang_makan\"><i class=\"fa fa-money\"></i></a>";
                             $pjmlwfo_ok++;
                         }

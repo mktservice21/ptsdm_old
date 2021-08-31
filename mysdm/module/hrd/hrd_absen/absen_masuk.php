@@ -6,11 +6,12 @@ $pkryjammasuk="00:00";
 if (isset($_SESSION['IDCARD']))     $pkaryawanabsmsk=$_SESSION['IDCARD'];
 if (isset($_SESSION['J_MASUK']))    $pkryjammasuk=$_SESSION['J_MASUK'];
 
-$query = "select idabsen, jam FROM hrd.t_absen WHERE karyawanid='$pkaryawanabsmsk' AND tanggal='$ptglnwoabsmsk' AND kode_absen='1'";
+$query = "select idabsen, jam, l_status FROM hrd.t_absen WHERE karyawanid='$pkaryawanabsmsk' AND tanggal='$ptglnwoabsmsk' AND kode_absen='1'";
 $tampilabsmsk=mysqli_query($cnmy, $query);
 $mrow= mysqli_fetch_array($tampilabsmsk);
 $pjmabsen=$mrow['jam'];
 $pidabsen=$mrow['idabsen'];
+$ntempatabsen=$mrow['l_status'];
 $pjammasukabs="<div class='count'>".$pjmabsen."</div>";
 if (empty($pjmabsen)) {
     $pjammasukabs="<div class='count' style='color:#C0C0C0'>$pkryjammasuk</div>";
@@ -34,9 +35,10 @@ if (!empty($pidabsen)) {
             if (!empty($pgambarabs)) {
                 $folderfotofileabs="images/foto_absen/".$pgambarabs;
                 if (!file_exists($folderfotofileabs)) {
-                    echo "Kosong";
+                    echo "$ntempatabsen";
                 }else{
                     echo "<img src='$folderfotofileabs' width='50px' height='50px' />";
+                    echo "<span><i style='font-size:15px; font-wight:bold;'>$ntempatabsen</i></span>";
                 }
             }else{
                 echo $iconasli;

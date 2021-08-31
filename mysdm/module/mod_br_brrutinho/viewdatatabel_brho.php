@@ -196,12 +196,14 @@
                         }else{
                             $pedit = "";
                             $phapus = "";
+                            $pttdedit = "";
                         }
                     }
                     
                     if (!empty($ptglfin)) {
                         $pedit = "";
                         $phapus = "";
+                        $pttdedit = "";
                     }
                     
                     $allbutton="$pedit $phapus $pprint";

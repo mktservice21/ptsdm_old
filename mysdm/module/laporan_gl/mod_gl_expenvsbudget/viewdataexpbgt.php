@@ -113,6 +113,7 @@ if ($pmodule=="viewdataregion") {
     
 }elseif ($pmodule=="viewdatacabang") {
     
+    $ptahun=$_POST['utahun'];
     $ppengajuan=$_POST['upengajuan'];
     $pregion=$_POST['uregion'];
     $pdept=$_POST['udep'];
@@ -147,15 +148,18 @@ if ($pmodule=="viewdataregion") {
     
     if ($ppilihmarketing==true) {
         if ($pilproduk=="OTC" || $pilproduk=="OT" || $pilproduk=="CHC"){
-            $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang WHERE divisi_pengajuan='OTC' AND IFNULL(sts,'')='PM' ";
+            $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang "
+                    . " WHERE tahun='$ptahun' AND divisi_pengajuan='OTC' AND IFNULL(sts,'')='PM' ";
             $query_cab .= " AND icabangid NOT IN ('JKT_MT', 'JKT_RETAIL', 'HO') ";
             $query_cab .= " ORDER BY nama_cabang";
         }else{
             if (!empty($pilproduk)) {
-                $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang WHERE divisi_pengajuan='ETH' $filter_region ";
+                $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang "
+                        . " WHERE tahun='$ptahun' AND divisi_pengajuan='ETH' $filter_region ";
                 $query_cab .= " ORDER BY nama_cabang";
             }else{
-                $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang WHERE 1=1 $filter_region ";
+                $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang "
+                        . " WHERE tahun='$ptahun' $filter_region ";
                 $query_cab .= " ORDER BY nama_cabang";
             }
         }
@@ -167,20 +171,23 @@ if ($pmodule=="viewdataregion") {
             //$query_cab .= " AND LEFT(nama,5) NOT IN ('PEA -', 'OTC -') ";
             //$query_cab .= " ORDER BY nama";
 
-            $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang WHERE divisi_pengajuan='ETH' $filter_region ";
+            $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang "
+                    . " WHERE tahun='$ptahun' AND divisi_pengajuan='ETH' $filter_region ";
             $query_cab .= " ORDER BY nama_cabang";
 
         }elseif ($ipengajuan=="OTC" || $ipengajuan=="OT" || $ipengajuan=="CHC"){
             if ($ppilihsales==true) {
                 //$query_cab .= "select icabangid_o as icabangid, nama as nama_cabang, 'OTC' as iket, region from mkt.icabang_o WHERE IFNULL(aktif,'')<>'N' $filter_region ";
-                $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang WHERE divisi_pengajuan='OTC' AND IFNULL(sts,'')='SLS' $filter_region ";
+                $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang "
+                        . " WHERE tahun='$ptahun' AND divisi_pengajuan='OTC' AND IFNULL(sts,'')='SLS' $filter_region ";
 
             }else{
                 //$query_cab .= "select icabangid_o as icabangid, nama as nama_cabang, 'OTC' as iket, region from dbmaster.v_icabang_o WHERE IFNULL(aktif,'')<>'N' $filter_region ";
                 //$query_cab .= "select cabangid_ho as icabangid, nama as nama_cabang, 'OTC' as iket, region from dbmaster.cabang_otc WHERE IFNULL(aktif,'')<>'N' $filter_region ";
                 //$query_cab .= " AND cabangid_ho NOT IN ('JKT_MT', 'JKT_RETAIL', 'HO') ";
 
-                $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang WHERE divisi_pengajuan='OTC' AND IFNULL(sts,'')='PM' ";
+                $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang "
+                        . " WHERE tahun='$ptahun' AND divisi_pengajuan='OTC' AND IFNULL(sts,'')='PM' ";
                 $query_cab .= " AND icabangid NOT IN ('JKT_MT', 'JKT_RETAIL', 'HO') ";
 
             }
@@ -202,7 +209,8 @@ if ($pmodule=="viewdataregion") {
             $query_cab .= " ORDER BY nama_cabang";
             */
 
-            $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang WHERE 1=1 $filter_region ";
+            $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang "
+                    . " WHERE tahun='$ptahun' $filter_region ";
             $query_cab .= " ORDER BY nama_cabang";
 
 
@@ -546,7 +554,7 @@ if ($pmodule=="viewdataregion") {
         }elseif ($ppilihmarketing==true) {
             if (!empty($pilproduk)) {
                 if ($pilproduk=="OTC") $query_coa02 .=" AND divisi_pengajuan='$pilproduk' ";
-                else $query_coa02 .=" AND divisi_pengajuan='ETH' ";
+                else $query_coa02 .=" AND divisi_pengajuan='ETH' AND divisi IN ('$pilproduk', 'CAN') ";
             }else{
                 if ($pregion=="B_ETH" OR $pregion=="T_ETH") {
                     $query_coa02 .=" AND divisi_pengajuan='ETH' ";

@@ -48,6 +48,16 @@ if ($pmodule=="cekdatasudahada") {
         if (!empty($nidrutin)) $bolehinput="GAGAL.... Periode yang dipilih Tidak bisa tersimpan. karena sudah ada inputan, dengan ID : $nidrutin";
     }
     
+    if (empty($pid)) {
+        $query_spd = "select * from dbmaster.t_suratdana_br WHERE IFNULL(stsnonaktif,'')<>'Y' AND kodeperiode='$pkdperiode' AND DATE_FORMAT(tglf,'%Y%m')='$pbulan' AND jenis_rpt='RTNETH'";
+        $tampil2= mysqli_query($cnmy, $query_spd);
+        $ketemu2= mysqli_num_rows($tampil2);
+        if ($ketemu2>0) {
+            $pbulan_ym= date("F Y", strtotime($pbln));
+            $bolehinput="GAGAL.... Periode ($pkdperiode) $pbulan_ym yang dipilih Sudah closing";
+        }
+    }
+    
     mysqli_close($cnmy);
     echo $bolehinput;
     

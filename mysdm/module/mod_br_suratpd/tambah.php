@@ -491,6 +491,16 @@ if ($_GET['act']=="editdata"){
         
         HitungTotalDariCekBox();
         
+        var inodiv =document.getElementById('e_nomordiv').value;
+        if (inodiv=="") {
+            alert("Nodivisi Kosong....\n\
+Klik ulang tombol Save...");
+            setTimeout(function () {
+                ShowNoBukti();
+            }, 100);
+            return false;
+        }
+                
         setTimeout(function () {
             disp_confirm_ext(pText_,ket)
         }, 500);

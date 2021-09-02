@@ -24,6 +24,13 @@ if (!empty($pidabsen)) {
     $pgambarabs=$rimg['nama'];
 }
 
+
+$query = "select CURRENT_TIME() as jamserver";
+$tampilabsjam=mysqli_query($cnmy, $query);
+$jrow= mysqli_fetch_array($tampilabsjam);
+$pjam_server=$jrow['jamserver'];
+
+
 ?>
 
 <div class='modal fade' id='myModalAbsen' role='dialog' class='no-print'></div>
@@ -50,7 +57,13 @@ if (!empty($pidabsen)) {
             <!--<button type='button' class='btn btn-default' id='ibuttonsave' data-toggle='modal' data-target='#myModalAbsen' onclick='ShowFormAbsen("2")'>Absen Masuk</button>-->
             <a href='?module=hrdabsenmasuk&act=absenpulang&idmenu=522&kriteria=Y' class='btn btn-default' id='ibuttonsave'>Absen Pulang</a>
         </h3>
-        <p>&nbsp;</p>
+        <?PHP
+        if (empty($pgambarabs)) {
+            echo "<p>Jam Server : $pjam_server</p>";
+        }else{
+            echo "<p>&nbsp;</p>";
+        }
+        ?>
     </div>
 </div>
 

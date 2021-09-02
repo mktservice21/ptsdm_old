@@ -96,7 +96,7 @@ session_start();
     
     
     
-    $query = "select FORMAT(a.jumlah,0) as jumlah, a.idca, a.idrutin, CASE WHEN IFNULL(a.kode,'')=2 THEN 'BIAYA LUAR KOTA' ELSE 'BIAYA RUTIN' END as nama_kode, "
+    $query = "select FORMAT(a.jumlah,0) as jumlah, a.idca, a.idrutin, a.kode, CASE WHEN IFNULL(a.kode,'')=2 THEN 'BIAYA LUAR KOTA' ELSE 'BIAYA RUTIN' END as nama_kode, "
             . " a.tgl, a.bulan, a.kodeperiode, a.periode1, a.periode2, "
             . " a.karyawanid, b.nama as nama_karyawan, a.jabatanid, a.divisi, a.divi, "
             . " CASE WHEN IFNULL(a.divisi,'')='OTC' THEN a.icabangid_o ELSE a.icabangid END as icabangid, "
@@ -491,6 +491,8 @@ echo "</div>";
                     $pidatasan3=$row1['atasan3'];
                     $pidatasan4=$row1['atasan4'];
                     $puserfin=$row1['fin'];
+                    $pkodepilih=$row1['kode'];
+                    $pdivisi=$row1['divisi'];
                     
                     
                     if ($ptglatasan1=="0000-00-00" OR $ptglatasan1=="0000-00-00 00:00:00") $ptglatasan1="";
@@ -518,6 +520,18 @@ echo "</div>";
                         . "onClick=\"window.open('eksekusi3.php?module=$npmdl&brid=$pidnoget&iprint=print',"
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                         . "$pidrutin</a>";
+                    
+                    if ($pkodepilih=="1") {
+                        if ($pdivisi=="HO" AND (int)$njabatanid<>38) {
+                            $pidnoget=encodeString($pidrutin);
+                            
+                            $pprint="<a title='Print / Cetak' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
+                                    . "onClick=\"window.open('eksekusi3.php?module=entrybrrutinho&brid=$pidnoget&iprint=print',"
+                                    . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                                    . "$pidrutin</a>";
+                            
+                        }
+                    }
                     
                     $ceklisnya = "<input type='checkbox' value='$pidrutin' name='chkbox_br[]' id='chkbox_br[$pidrutin]' class='cekbr'>";
                     

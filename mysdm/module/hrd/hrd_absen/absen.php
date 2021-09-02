@@ -52,6 +52,11 @@
     
     if (empty($pjamabsen)) $pjamabsen=$pjamabsen_g;
     
+    
+    $query = "select CURRENT_TIME() as jamserver";
+    $tampilabsjam=mysqli_query($cnmy, $query);
+    $jrow= mysqli_fetch_array($tampilabsjam);
+    $pjam_server=$jrow['jamserver'];
 ?>
 
 <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
@@ -62,7 +67,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                echo "$judul";
+                echo "$judul <small>(jam : $pjam_server)</small>";
                 ?>
             </h3>
             

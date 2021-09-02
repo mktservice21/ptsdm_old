@@ -14,6 +14,8 @@
         include 'module/mod_tools_backdbmysql/setbackup.php';
     }elseif ($_GET['module']=='leveljabatan'){
         include 'module/mod_tools_lvljabatan/lvljabatan.php';
+    }elseif ($_GET['module']=='tolsresetpass'){
+        include 'module/mod_tools_resetpass/resetpass.php';
         
         
         

@@ -55,7 +55,7 @@
             . " LEFT JOIN hrd.karyawan as e on a.atasan4=e.karyawanid "
             . " WHERE "
             . " a.idrutin='$pidrutin' ";
-    if ( $pidgroup=="26" ) {
+    if ( $pidgroup=="26" OR $pidgroup=="1" OR $pidgroup=="46") {
         
     }else{
         if ( ($pidgroup=="28" AND $pidcard=="0000000143") OR $pidgroup=="50" OR $pidgroup=="46" OR $pidgroup=="1" OR $pidgroup=="24" ) {

@@ -105,9 +105,9 @@
         . " and IFNULL(nkodeid_nama,'')='K'";
     $query .=" AND IFNULL(ishare,'')<>'Y' "; //pilih salah satu divisi <> 'HO' atau IFNULL(ishare,'')<>'Y'
     $query .=" AND IFNULL(divisi,'') NOT IN ('OTC', 'CHC', 'OT') ";
+    $query .=" AND IFNULL(CONCAT(idkodeinput,kodeinput),'') NOT IN ('BN00001849M', 'BN00001856M', 'BN00001857M') ";
     
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
     
     
     

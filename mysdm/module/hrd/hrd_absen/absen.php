@@ -67,7 +67,8 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                echo "$judul <small>(jam : $pjam_server)</small>";
+                //echo "$judul <small>(jam : $pjam_server)</small>";
+                echo "$judul ";
                 ?>
             </h3>
             

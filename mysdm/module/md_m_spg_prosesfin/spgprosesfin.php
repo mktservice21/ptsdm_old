@@ -3,9 +3,10 @@
     $tgl_pertama = date('F Y', strtotime($hari_ini));
     //include "config/koneksimysqli_it.php";
     $icabang="";
+    $ptipeinput="";
     if (!empty($_SESSION['SPGMSTPRSFCAB'])) $icabang=$_SESSION['SPGMSTPRSFCAB'];
     if (!empty($_SESSION['SPGMSTPRSFTGL'])) $tgl_pertama=$_SESSION['SPGMSTPRSFTGL'];
-    $ptipeinput = $_SESSION['SPGMSTPRSFTIPE'];
+    if (isset($_SESSION['SPGMSTPRSFTIPE'])) $ptipeinput = $_SESSION['SPGMSTPRSFTIPE'];
     if (empty($ptipeinput)) $ptipeinput = "A";
     
     $pbulan = date('Ym', strtotime($tgl_pertama));

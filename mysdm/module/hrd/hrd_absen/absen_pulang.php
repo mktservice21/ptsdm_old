@@ -59,7 +59,8 @@ $pjam_server=$jrow['jamserver'];
         </h3>
         <?PHP
         if (empty($pgambarabs)) {
-            echo "<p>Jam Server : $pjam_server</p>";
+            //echo "<p>Jam Server : $pjam_server</p>";
+            echo "<p>&nbsp;</p>";
         }else{
             echo "<p>&nbsp;</p>";
         }

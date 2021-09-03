@@ -1,3 +1,26 @@
+<?PHP
+$psudhpernahupdatepass="";
+$pnidmodule="";
+if (isset($_GET['module'])) $pnidmodule=$_GET['module'];
+if (isset($_SESSION['SUDAHUPDATEPASS'])) $psudhpernahupdatepass=$_SESSION['SUDAHUPDATEPASS'];
+if ( $pnidmodule=="tolsresetpass" ) {
+}else{
+    //$psudhpernahupdatepass="Y";//hilangkan
+    if ($psudhpernahupdatepass=="Y") {
+    }else{
+        
+        $pidkaryawan_pl_awal="";
+        if (isset($_SESSION['IDCARD'])) $pidkaryawan_pl_awal=$_SESSION['IDCARD'];
+        include "config/fungsi_ubahget_id.php";
+        $pidnoget=encodeString($pidkaryawan_pl_awal);
+        echo "<script>window.location = '?module=tolsresetpass&idmenu=530&nmun=530&act=editdata&sloginawal=awal&id=$pidnoget'</script>";
+        exit;
+        
+    }
+    
+}
+
+?>
 <div class="right_col" role="main">
     <?PHP
     if ($_GET['module']=="user"){
@@ -15,7 +38,9 @@
     }elseif ($_GET['module']=='leveljabatan'){
         include 'module/mod_tools_lvljabatan/lvljabatan.php';
     }elseif ($_GET['module']=='tolsresetpass'){
-        include 'module/mod_tools_resetpass/resetpass.php';
+        include 'module/tools/mod_tools_resetpass/resetpass.php';
+    }elseif ($_GET['module']=='karyawanpassworubah'){
+        include 'module/tools/mod_tools_resetpass/ubah_pass.php';
         
         
         

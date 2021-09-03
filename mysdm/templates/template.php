@@ -1,5 +1,5 @@
 <?PHP
-	date_default_timezone_set('Asia/Jakarta');
+    date_default_timezone_set('Asia/Jakarta');
     ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
     
@@ -328,7 +328,7 @@
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
                             <?PHP
-                                include "menu.php";
+                                include "menu_utama.php";
                             ?>
                         </div>
                     </div>
@@ -395,12 +395,24 @@
                                     
                                     
                                     if ($pbolehbukarept_tmp == true) {
-                                        echo "<li><a href='?module=mktrptdatacuti&idmenu=495&act=152&kriteria=Y'><span class=\"badge bg-red pull-right\">new</span><span>Report Cuti</span></a></li>";
+                                        //echo "<li><a href='?module=mktrptdatacuti&idmenu=495&act=152&kriteria=Y'><span class=\"badge bg-red pull-right\">&nbsp;</span><span>Report Cuti</span></a></li>";
+                                        echo "<li><a href='?module=mktrptdatacuti&idmenu=495&act=152&kriteria=Y'><i class=\"fa fa-moon-o pull-right\"></i><span>Report Cuti</span></a></li>";
                                     }
                                     
                                     //if ($pidgroup_tmp=="24" OR $pidgroup_tmp=="1") {
                                         echo "<li><a href=\"?module=gantiprofile&idmenu=00&act=profile\"><i class=\"fa fa-camera-retro pull-right\"></i> Foto Profile</a></li>";
                                     //}
+                                        
+                                    $psudhpernahupdatepass_="";
+                                    if (isset($_SESSION['SUDAHUPDATEPASS'])) $psudhpernahupdatepass_=$_SESSION['SUDAHUPDATEPASS'];
+                                    if ($psudhpernahupdatepass_=="Y") {
+                                        if ($pidgroup_tmp=="24" OR $pidgroup_tmp=="1") {
+                                            echo "<li><a href='?module=tolsresetpass&idmenu=530&act=530&kriteria=Y'><span class=\"badge bg-red pull-right\">new</span><span>Ubah Password</span></a></li>";
+                                        }else{
+                                            echo "<li><a href='?module=karyawanpassworubah&idmenu=99009&act=99009&kriteria=Y'><span class=\"badge bg-red pull-right\">new</span><span>Ubah Password</span></a></li>";
+                                        }
+                                    }
+                                    
                                     ?>
                                     
                                     <li><a href="logout.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>

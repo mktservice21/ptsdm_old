@@ -43,90 +43,134 @@ $pidkaryawan="";
 $logpassword="";
 $pmessagelog="";
 
-$query="SELECT karyawanId as karyawanid, username, slogin, pass, createdpw, exp_pass FROM dbmaster.t_karyawan_posisi WHERE ";
+
+$query="SELECT karyawanId as karyawanid FROM dbmaster.t_karyawan_posisi WHERE slogin='Y' AND IFNULL(pin_pass,'')<>'' AND "
+        . " IFNULL(tgl_pass,'') NOT IN ('', '0000-00-00 00:00:00') AND ";
 if ($pceknum==true) $query .=" karyawanId=$pusername ";
 else $query .=" username='$pusername' ";
+$tampil_p=mysqli_query($cnmy, $query);
+$ketemu_p=mysqli_num_rows($tampil_p);
+if ((INT)$ketemu_p>0) {
+    $psudahupdatepass=true;
+    
+    $query="SELECT karyawanId as karyawanid, username, slogin FROM dbmaster.t_karyawan_posisi WHERE "
+            . " slogin='Y' AND pin_pass='$ppassword' AND ";
+    if ($pceknum==true) $query .=" karyawanId=$pusername ";
+    else $query .=" username='$pusername' ";
 
-$tampil=mysqli_query($cnmy, $query);
-$ketemu=mysqli_num_rows($tampil);
-if ((INT)$ketemu>0) {
-    $row= mysqli_fetch_array($tampil);
-    $ploginposisi=$row['slogin'];
-    $pidkaryawan=$row['karyawanid'];
-    $ppasslog=$row['pass'];
-    $ptglcrt=$row['createdpw'];
-    $ptglexp=$row['exp_pass'];
+    $tampil_1=mysqli_query($cnmy, $query);
+    $ketemu_1=mysqli_num_rows($tampil_1);
+    if ((INT)$ketemu_1>0) {
+        $lrow= mysqli_fetch_array($tampil_1);
+        $ploginposisi=$lrow['slogin'];
+        $pidkaryawan=$lrow['karyawanid'];
 
-    if ($ploginposisi=="Y") $psudahupdatepass=true;
+        if ($ploginposisi=="Y") $psudahupdatepass=true;
+        $_SESSION['SUDAHUPDATEPASS']=$ploginposisi;
 
-    $ptglcreate="";
-    if (!empty($pidkaryawan) AND !empty($ppasslog) AND !empty($ptglcrt)) {
-        include "$_SESSION[FOLDERGL]/config/encriptpassword.php";
-        $ptglcreate = date("Ymd", strtotime($ptglcrt));
-
-        $logpassword = encriptpasswordSSQl($ppassword, $ptglcreate);
-
-        $query_log = "select karyawanId from dbmaster.t_karyawan_posisi WHERE pass='$logpassword'";
-        if ($pceknum==true) $query_log .=" AND karyawanId=$pusername ";
-        else $query_log .=" AND username='$pusername' ";
-
-        $tampil_l=mysqli_query($cnmy, $query_log);
-        $ketemu_l=mysqli_num_rows($tampil_l);
-        if ((INT)$ketemu_l>0) {
-            $pberhasilloginkhusus=true;
-            $pberhasillogin=true;
-            $pmessagelog="USER DAN PASSWORD <b style='color:red;'>BENER</b>";
-        }else{
-            $pmessagelog="USER DAN PASSWORD <b style='color:red;'>SALAH</b>";
-        }
+        $pberhasilloginkhusus=true;
+        $pberhasillogin=true;
+    }else{
+        //user dan password salah
+        $pmessagelog="USER DAN PASSWORD <b style='color:red;'>SALAH</b>";
+        mysqli_close($cnmy);
+        echo "<script>alert('user atau password anda tidak terdaftar'); window.location = 'index.php'</script>";
+        exit;
     }
-}else{
-    $pmessagelog="USER TIDAK DITEMUKAN";
-    $pberhasillogin=false;
+    
 }
 
-if ($pceknum==true AND $pberhasillogin==false) {
 
-    $query = "select karyawanId as karyawanid from hrd.karyawan WHERE karyawanId=$pusername";
+
+if ($psudahupdatepass==false){
+
+    $query="SELECT karyawanId as karyawanid, username, slogin, pass, createdpw, exp_pass FROM dbmaster.t_karyawan_posisi WHERE ";
+    if ($pceknum==true) $query .=" karyawanId=$pusername ";
+    else $query .=" username='$pusername' ";
+
     $tampil=mysqli_query($cnmy, $query);
     $ketemu=mysqli_num_rows($tampil);
     if ((INT)$ketemu>0) {
-
         $row= mysqli_fetch_array($tampil);
+        $ploginposisi=$row['slogin'];
         $pidkaryawan=$row['karyawanid'];
+        $ppasslog=$row['pass'];
+        $ptglcrt=$row['createdpw'];
+        $ptglexp=$row['exp_pass'];
 
-        $query_log = "select karyawanId from hrd.karyawan WHERE karyawanId=$pusername AND pin='$ppassword'";
-        $tampil_l=mysqli_query($cnmy, $query_log);
-        $ketemu_l=mysqli_num_rows($tampil_l);
-        if ((INT)$ketemu_l>0) {
-            $pberhasillogin=true;
-            $pmessagelog="HRD : USER DAN PASSWORD <b style='color:red;'>BENER</b>";
-        }else{
-            $pmessagelog="HRD : USER DAN PASSWORD <b style='color:red;'>SALAH</b>";
-        }
+        if ($ploginposisi=="Y") $psudahupdatepass=true;
+        $_SESSION['SUDAHUPDATEPASS']=$ploginposisi;
+        
+        $ptglcreate="";
+        if (!empty($pidkaryawan) AND !empty($ppasslog) AND !empty($ptglcrt)) {
+            include "$_SESSION[FOLDERGL]/config/encriptpassword.php";
+            $ptglcreate = date("Ymd", strtotime($ptglcrt));
 
+            $logpassword = encriptpasswordSSQl($ppassword, $ptglcreate);
 
-        if (!empty($pidkaryawan)) {
-            $query_ins="select karyawanId from dbmaster.t_karyawan_posisi WHERE karyawanId='$pidkaryawan'";
-            $tampil_ins=mysqli_query($cnmy, $query_ins);
-            $ketemu_ins=mysqli_num_rows($tampil_ins);
-            if ((INT)$ketemu_ins<=0) {
-                $query = "insert into dbmaster.t_karyawan_posisi (karyawanId, jabatanId, divisiId, "
-                        . " iCabangId, areaId, atasanId, aktif, divisi1, divisi2)"
-                        . " select karyawanId, jabatanId, divisiId, iCabangId, areaId, atasanId, "
-                        . " AKTIF, divisiId as divisi1, divisiId2 as divisi2 from hrd.karyawan WHERE karyawanId='$pidkaryawan'";
-                mysqli_query($cnmy, $query);
-                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+            $query_log = "select karyawanId from dbmaster.t_karyawan_posisi WHERE pass='$logpassword'";
+            if ($pceknum==true) $query_log .=" AND karyawanId=$pusername ";
+            else $query_log .=" AND username='$pusername' ";
 
-                $pmessagelog="berhasil tambah user...";
+            $tampil_l=mysqli_query($cnmy, $query_log);
+            $ketemu_l=mysqli_num_rows($tampil_l);
+            if ((INT)$ketemu_l>0) {
+                $pberhasilloginkhusus=true;
+                $pberhasillogin=true;
+                $pmessagelog="USER DAN PASSWORD <b style='color:red;'>BENER</b>";
+            }else{
+                $pmessagelog="USER DAN PASSWORD <b style='color:red;'>SALAH</b>";
             }
         }
-
-
+    }else{
+        $pmessagelog="USER TIDAK DITEMUKAN";
+        $pberhasillogin=false;
     }
 
-}
+    if ($pceknum==true AND $pberhasillogin==false) {
+
+        $query = "select karyawanId as karyawanid from hrd.karyawan WHERE karyawanId=$pusername";
+        $tampil=mysqli_query($cnmy, $query);
+        $ketemu=mysqli_num_rows($tampil);
+        if ((INT)$ketemu>0) {
+
+            $row= mysqli_fetch_array($tampil);
+            $pidkaryawan=$row['karyawanid'];
+
+            $query_log = "select karyawanId from hrd.karyawan WHERE karyawanId=$pusername AND pin='$ppassword'";
+            $tampil_l=mysqli_query($cnmy, $query_log);
+            $ketemu_l=mysqli_num_rows($tampil_l);
+            if ((INT)$ketemu_l>0) {
+                $pberhasillogin=true;
+                $pmessagelog="HRD : USER DAN PASSWORD <b style='color:red;'>BENER</b>";
+            }else{
+                $pmessagelog="HRD : USER DAN PASSWORD <b style='color:red;'>SALAH</b>";
+            }
+
+
+            if (!empty($pidkaryawan)) {
+                $query_ins="select karyawanId from dbmaster.t_karyawan_posisi WHERE karyawanId='$pidkaryawan'";
+                $tampil_ins=mysqli_query($cnmy, $query_ins);
+                $ketemu_ins=mysqli_num_rows($tampil_ins);
+                if ((INT)$ketemu_ins<=0) {
+                    $query = "insert into dbmaster.t_karyawan_posisi (karyawanId, jabatanId, divisiId, "
+                            . " iCabangId, areaId, atasanId, aktif, divisi1, divisi2)"
+                            . " select karyawanId, jabatanId, divisiId, iCabangId, areaId, atasanId, "
+                            . " AKTIF, divisiId as divisi1, divisiId2 as divisi2 from hrd.karyawan WHERE karyawanId='$pidkaryawan'";
+                    mysqli_query($cnmy, $query);
+                    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
+                    $pmessagelog="berhasil tambah user...";
+                }
+            }
+
+
+        }
+
+    }
     
+    
+}
 
 //echo "<br/>$pmessagelog<br/>";exit;
 
@@ -239,7 +283,7 @@ if ($pberhasillogin==true) {
     
     
     $query_u = "select karyawanId as karyawanid, ID_GROUP as id_group, `LEVEL` as `nlevel`, `ONLINE` as `conline`, AKHUSUS as akhusus "
-            . " from dbmaster.sdm_users WHERE karyawanId='$pidkaryawan'";
+            . " from dbmaster.t_karyawan_group WHERE karyawanId='$pidkaryawan'";
     $tampil_u=mysqli_query($cnmy, $query_u);
     $ketemu_u= mysqli_num_rows($tampil_u);
     if ((INT)$ketemu_u>0) {
@@ -512,10 +556,21 @@ if ($pberhasillogin==true) {
     
     mysqli_query($cnmy, "insert into dbmaster.sdm_users_log (KARYAWANID, SESSION_ID, AKTIF, MOBILE, JBROWSE, IPADD)values('$_SESSION[IDCARD]', '$sid_baru', 'Y', '$_SESSION[MOBILE]', '$pjnsbrospilih', '$puser_ipaddr')");
     //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
-    mysqli_query($cnmy, "UPDATE dbmaster.sdm_users SET ID_SESSION='$sid_baru', ONLINE='Y' WHERE (karyawanId='$pusername' or USERNAME='$pusername')");
+    mysqli_query($cnmy, "UPDATE dbmaster.t_karyawan_group SET ID_SESSION='$sid_baru', ONLINE='Y' WHERE (karyawanId='$pusername' or USERNAME='$pusername')");
     //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     mysqli_close($cnmy);
+    
+    
+    
+    //cek sudah pernah ubah pin atau password
+    if ($psudahupdatepass==false) {
+        //include "$_SESSION[FOLDERGL]/config/fungsi_ubahget_id.php";
+        //$pidnoget=encodeString($pidkaryawan);
+        //header('location:'.$_SESSION['FOLDERGL'].'/media.php?module=tolsresetpass&idmenu=530&nmun=530&act=editdata&sloginawal=awal&id='.$pidnoget);
+        //exit;
+    }
+    
     
     if ($ipilihmenu_atasan==true) {
         header('location:'.$_SESSION['FOLDERGL'].'/media.php?module=mstsesuaidatakry&idmenu=299&nmun=nmun&act=editdata&nlog=ilog&id='.$pidkaryawan);

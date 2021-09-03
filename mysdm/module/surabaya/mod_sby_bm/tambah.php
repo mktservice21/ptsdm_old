@@ -229,14 +229,14 @@ if ($_GET['act']=="editdata"){
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
-                                    <div class='col-md-4'>
+                                    <div class='col-md-4 col-sm-4 col-xs-7'>
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $idbr; ?>' Readonly>
                                     </div>
                                 </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal </label>
-                                    <div class='col-md-3'>
+                                    <div class='col-md-3 col-sm-3 col-xs-7'>
                                         <div class='input-group date' id='mytgl01'>
                                             <input type="text" class="form-control" id='e_tglberlaku' name='e_tglberlaku' autocomplete='off' required='required' placeholder='dd/MM/yyyy' data-inputmask="'mask': '99/99/9999'" value='<?PHP echo $tgl1; ?>'>
                                             <span class='input-group-addon'>
@@ -249,7 +249,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Divisi <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="ShowCOA('cb_divisi', 'cb_coa', 'cb_coa2');">
                                             <option value='' selected>-- Pilihan --</option>
                                             <?PHP
@@ -272,7 +272,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Yang Membuat <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_karyawan' name='cb_karyawan' onchange="">
                                             <option value='' selected>-- Pilihan --</option>
                                             <?PHP
@@ -310,7 +310,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Cabang <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="">
                                             <?PHP
                                             if ($divisi=="OTC") {
@@ -366,7 +366,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No. BBM <span class='required'></span></label>
-                                    <div class='col-xs-4'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <input type='text' id='e_nobbm' name='e_nobbm' class='form-control col-md-7 col-xs-12' placeholder="BBM1500/<?PHP echo $tglnomor; ?>" value='<?PHP echo $nobbm; ?>'>
                                     </div>
                                 </div>
@@ -374,7 +374,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No. BBK <span class='required'></span></label>
-                                    <div class='col-xs-4'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <input type='text' id='e_nobbk' name='e_nobbk' class='form-control col-md-7 col-xs-12' placeholder="BBK1500/<?PHP echo $tglnomor; ?>" value='<?PHP echo $nobbk; ?>'>
                                     </div>
                                 </div>
@@ -382,7 +382,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Biaya Untuk (Debit) <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_biayauntuk' name='cb_biayauntuk' onchange="">
                                             <option value='' selected>-- All --</option>
                                             <?PHP
@@ -405,7 +405,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_coa'>COA / Posting Debit <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                           <select class='form-control input-sm' id='cb_coa' name='cb_coa' data-live-search="true">
                                               <option value='' selected>-- Pilihan --</option>
                                               <?PHP 
@@ -435,7 +435,7 @@ if ($_GET['act']=="editdata"){
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
                                         Debit
                                     </label>
-                                    <div class='col-md-3'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <input type='text' id='e_jmldebit' name='e_jmldebit' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jumlahd; ?>'>
                                     </div>
                                 </div>
@@ -443,7 +443,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_divisi'>Biaya Untuk (Kredit) <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_biayauntukk' name='cb_biayauntukk' onchange="">
                                             <option value='' selected>-- All --</option>
                                             <?PHP
@@ -466,7 +466,7 @@ if ($_GET['act']=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>COA / Posting Kredit <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                           <select class='form-control input-sm' id='cb_coa2' name='cb_coa2' data-live-search="true">
                                               <option value='' selected>-- Pilihan --</option>
                                               <?PHP 
@@ -496,21 +496,21 @@ if ($_GET['act']=="editdata"){
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
                                         Kredit
                                     </label>
-                                    <div class='col-md-3'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <input type='text' id='e_jmlkredit' name='e_jmlkredit' autocomplete='off' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $jumlahk; ?>'>
                                     </div>
                                 </div>
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
-                                    <div class='col-xs-6'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <input type='text' id='e_ket' name='e_ket' class='form-control col-md-7 col-xs-12' value='<?PHP echo $keterangan; ?>'>
                                     </div>
                                 </div>
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
-                                    <div class='col-xs-9'>
+                                    <div class='col-md-9 col-sm-9 col-xs-12'>
                                         <div class="checkbox">
                                             <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
                                             <input type='button' value='Back' onclick='self.history.back()' class='btn btn-default'>

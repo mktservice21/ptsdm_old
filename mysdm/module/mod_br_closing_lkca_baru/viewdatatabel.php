@@ -4,32 +4,6 @@
 <link href="css/stylenew.css" rel="stylesheet" type="text/css" />
 <script src="js/inputmask.js"></script>
 
-<style>
-    #myBtn {
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        right: 30px;
-        z-index: 99;
-        font-size: 18px;
-        border: none;
-        outline: none;
-        background-color: red;
-        color: white;
-        cursor: pointer;
-        padding: 15px;
-        border-radius: 4px;
-        opacity: 0.5;
-    }
-
-    #myBtn:hover {
-        background-color: #555;
-    }
-</style>
-
-
-<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
-
 
 <?PHP
     ini_set("memory_limit","9000M");
@@ -439,7 +413,7 @@
     <div class='x_content'>
         
         <?PHP
-            $chkall = "<input type='checkbox' id='chkbtnbr' name='chkbtnbr' value='select' onClick=\"SelAllCheckBox('chkbtnbr', 'chkbox_br[]')\"/>";
+            $chkall = "<input type='checkbox' id='chkbtnbr' name='chkbtnbr' value='select' checked onClick=\"SelAllCheckBox('chkbtnbr', 'chkbox_br[]')\"/>";
             if ($stsreport=="C" OR $stsreport=="S") $chkall="";
         ?>
         <!-- <table id='datatablelkcacls' class='table table-striped table-bordered' width='100%'> -->
@@ -894,25 +868,6 @@
     
 </script>
 
-
-
-<script>
-    // When the user scrolls down 20px from the top of the document, show the button
-    window.onscroll = function() {scrollFunction()};
-    function scrollFunction() {
-      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        document.getElementById("myBtn").style.display = "block";
-      } else {
-        document.getElementById("myBtn").style.display = "none";
-      }
-    }
-
-    // When the user clicks on the button, scroll to the top of the document
-    function topFunction() {
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
-    }
-</script>
 
 <style>
     .divnone {

@@ -62,7 +62,7 @@ if ((INT)$ketemu>0) {
 }
 
 $pbolehbukall=false;
-if ($fgroupid=="24" OR $fgroupid=="1" OR $fgroupid=="X57" OR $fgroupid=="47" OR $fgroupid=="29" OR $fgroupid=="46") {
+if ($fgroupid=="24" OR $fgroupid=="1" OR $fgroupid=="X57" OR $fgroupid=="47" OR $fgroupid=="29" OR $fgroupid=="46" OR $fgroupid=="28") {
     $pbolehbukall=true;
 }
         

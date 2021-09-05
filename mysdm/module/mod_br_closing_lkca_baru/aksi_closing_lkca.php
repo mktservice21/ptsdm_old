@@ -169,9 +169,25 @@ elseif ($module=='closingbrlkca2')
     
     $query = "UPDATE $tmp01 a JOIN $tmp_01 b on a.karyawanid=b.karyawanid "
             . " SET a.ca1=b.ca1, a.kuranglebihca1=b.kuranglebihca1, a.selisih=b.selisih, a.jmltrans=b.jmltrans"; 
-    mysqli_query($cnit, $query);
-    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    //mysqli_query($cnit, $query);
+    //$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    
+/*	
+
+		$now=date("mdYhis");
+		$puserid=$_SESSION['USERID'];
+		$tmp00x =" dbtemp.DTBRRETRLCLS00x_".$puserid."_$now ";
+		
+		$query = "select * from $tmp01";
+		$query = "create  table $tmp00x ($query)"; 
+		mysqli_query($cnit, $query);
+		$erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+		echo "$tmp00x";
+		
+		exit;
+		
+*/
     
     
     $no_idgroup=1;

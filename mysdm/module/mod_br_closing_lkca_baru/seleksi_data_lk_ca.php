@@ -15,7 +15,7 @@
     
     $nfilterkaryawan="";
     if ($iproses_simpandata==true AND !empty($u_filterkaryawan)) {
-        $nfilterkaryawan=" AND karyawanid IN $u_filterkaryawan ";
+        //$nfilterkaryawan=" AND karyawanid IN $u_filterkaryawan ";
     }
     
     $now=date("mdYhis");

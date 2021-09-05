@@ -621,7 +621,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         }
 
                         echo "<td nowrap $pclasslibur_rd>$njammasuk</td>";
-                        echo "<td  $pclasslibur_rd>$nketerangan</td>";
+                        echo "<td  >$nketerangan</td>";
 
                         if (!empty($ngambar_p)) {
                             $folderfotofileabs_p=$folderfoto."".$ngambar_p;

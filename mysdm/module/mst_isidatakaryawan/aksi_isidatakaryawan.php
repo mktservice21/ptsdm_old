@@ -545,7 +545,7 @@ if ($module=='mstisidatakaryawan' AND ($act=="input" OR $act=="update"))
                 //mysqli_query($cnmy, $query);
                 //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
-                mysqli_query($cnmy, "call dbmaster.proses_insert_karyawan_dari_it('$pkodenya')");
+                //mysqli_query($cnmy, "call dbmaster.proses_insert_karyawan_dari_it('$pkodenya')");
         
             }
         }else{

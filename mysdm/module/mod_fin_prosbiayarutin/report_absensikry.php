@@ -612,7 +612,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         if (!empty($ngambar_m)) {
                             $folderfotofileabs_m=$folderfoto."".$ngambar_m;
                             if (file_exists($folderfotofileabs_m)) {
-                                echo "<td nowrap ><img src='$folderfotofileabs_m' class='zoomimg' width='50px' height='50px' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs_m')\" /></td>";
+                                echo "<td nowrap ><img src='$folderfotofileabs_m' class='zoomimg' width='90px' height='90px' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs_m')\" /></td>";
                             }else{
                                 echo "<td nowrap >&nbsp;</td>";
                             }
@@ -626,7 +626,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         if (!empty($ngambar_p)) {
                             $folderfotofileabs_p=$folderfoto."".$ngambar_p;
                             if (file_exists($folderfotofileabs_p)) {
-                                echo "<td nowrap ><img src='$folderfotofileabs_p' class='zoomimg' width='50px' height='50px' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs_p')\" /></td>";
+                                echo "<td nowrap ><img src='$folderfotofileabs_p' class='zoomimg' width='90px' height='90px' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs_p')\" /></td>";
                             }else{
                                 echo "<td nowrap >&nbsp;</td>";
                             }

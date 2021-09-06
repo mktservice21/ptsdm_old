@@ -38,7 +38,7 @@
         switch($_GET['act']){
             default:
                 
-                mysqli_query($cnmy, "CALL dbmaster.proses_data_karyawan_hrd()");
+                //mysqli_query($cnmy, "CALL dbmaster.proses_data_karyawan_hrd()");
                 
                 ?>
         

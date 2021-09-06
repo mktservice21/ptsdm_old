@@ -63,7 +63,7 @@
                                         
                                         $pinsel="('0000000002', '0000000003', '0000000005', '0000000010', '0000000011', "
                                                 . " '0000000021', '0000000031', '0000000006', '0000000016', '0000000030', "
-                                                . " '0000000028', '0000000015', '0000000018', '0000000025', '0000000033', '0000000023')";
+                                                . " '0000000028', '0000000015', '0000000018', '0000000025', '0000000033', '0000000023', '0000000035')";
                                         cComboDistibutorHanyaCnNew('', $pdistiidpil, $pinsel);
                                         ?>
                                     </select>
@@ -116,6 +116,8 @@
                                 AKFCekImportData();
                             } else if (eiddist=="0000000015" || eiddist=="15") {
                                 EPCekImportData();
+                            } else if (eiddist=="0000000035" || eiddist=="35") {
+                                LJFCekImportData();
                             } else if (eiddist=="0000000018" || eiddist=="18") {
                                 if (epilfolder=="") {
                                 }else{
@@ -170,6 +172,7 @@
                                 || eiddist=="0000000031" || eiddist=="31" 
                                 || eiddist=="0000000006" || eiddist=="6" 
                                 || eiddist=="0000000016" || eiddist=="16" 
+                                || eiddist=="0000000035" || eiddist=="35" 
                                 ) {
                             pText_="Pastikan File yang dipilih sesuai...?";
                         } else if (eiddist=="0000000005" || eiddist=="5") {
@@ -241,6 +244,7 @@
                         } else if (eiddist=="0000000021" || eiddist=="21" || eiddist=="0000000015" || eiddist=="15" 
                                  || eiddist=="0000000018" || eiddist=="18" 
                                  || eiddist=="0000000033" || eiddist=="33"  
+                                 || eiddist=="0000000035" || eiddist=="35"  
                                  ) {
                             CariDataDIV('AKF');
                         } else if (eiddist=="0000000028" || eiddist=="28" 
@@ -278,6 +282,8 @@
                             var nmodule="mpsviewdata";
                         }else if (idistpilih=="EP") {
                             var nmodule="epviewdata";
+                        }else if (idistpilih=="LJF") {
+                            var nmodule="ljfviewdata";
                         }else if (idistpilih=="GMP") {
                             var nmodule="gmpviewdata";
                         }else if (idistpilih=="MPS") {
@@ -493,6 +499,46 @@
                                 $.ajax({
                                     type:"post",
                                     url:"module/mst_import_sales/ep_cekimport.php?module="+module+"&idmenu="+idmenu+"&act="+iactpil,
+                                    data:"ubln="+ebln+"&uiddist="+eiddist+"&upilfolder="+epilfolder,
+                                    success:function(data){
+                                        $("#c-data").html(data);
+                                        $("#loading").html("");
+                                    }
+                                });
+                            }
+                            
+                        } else {
+                            //document.write("You pressed Cancel!")
+                            return 0;
+                        }
+        
+                    }
+                    
+                    function LJFCekImportData() {
+                        var ebln = document.getElementById("tgl1").value;
+                        var eiddist = document.getElementById("cb_distid").value;
+                        var epilfolder = document.getElementById("txtpilfoder").value;
+
+                        var myurl = window.location;
+                        var urlku = new URL(myurl);
+                        var module = urlku.searchParams.get("module");
+                        var idmenu = urlku.searchParams.get("idmenu");
+                        
+                        var iactpil="ljfcekimport";
+                        
+                        //alert(iactpil); return false
+                        
+                        pText_="Yakin akan melakukan import data, LJF...?";
+                        
+                        ok_ = 1;
+                        if (ok_) {
+                            var r=confirm(pText_)
+                            if (r==true) {
+                                
+                                $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
+                                $.ajax({
+                                    type:"post",
+                                    url:"module/mst_import_sales/ljf_cekimport.php?module="+module+"&idmenu="+idmenu+"&act="+iactpil,
                                     data:"ubln="+ebln+"&uiddist="+eiddist+"&upilfolder="+epilfolder,
                                     success:function(data){
                                         $("#c-data").html(data);
@@ -1015,6 +1061,9 @@
                         }else if (eiddist=="0000000015") {
                             nmfileprostotbl="prosesdata_ep_uploadtodist.php";
                             ket="EP";
+                        }else if (eiddist=="0000000035") {
+                            nmfileprostotbl="prosesdata_ljf_uploadtodist.php";
+                            ket="LJF";
                         }else if (eiddist=="0000000033") {
                             nmfileprostotbl="prosesdata_bcm_uploadtodist.php";
                             ket="BCM";

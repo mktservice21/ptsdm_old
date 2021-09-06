@@ -149,7 +149,7 @@ if ($pmodule=="sppviewdata" OR $pmodule=="sppcaridatafolder") {
     
     $ppildistnya=$_POST['upildistnya'];
     $prosesuploaddata_asli="";
-    if ($ppildistnya=="0000000021" OR $ppildistnya=="0000000015" OR $ppildistnya=="0000000033" OR $ppildistnya=="0000000018") {
+    if ($ppildistnya=="0000000021" OR $ppildistnya=="0000000015" OR $ppildistnya=="0000000033" OR $ppildistnya=="0000000018" OR $ppildistnya=="0000000035") {
         $prosesuploaddata_asli="ProsesDataUploadToTabelDist()";
     }
     

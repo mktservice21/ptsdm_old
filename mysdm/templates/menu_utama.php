@@ -108,8 +108,11 @@ if ($psudhpernahupdatepass=="Y" && $pbukamenuloginnya==true) {
                     while ($row= mysqli_fetch_array($tampil)) {
                         $pidmenu=$row['ID'];
                         $pjudulmenu=$row['JUDUL'];
+                        $pgbrmenu=$row['GAMBAR'];
 
                         $gbr="fa fa-desktop";
+                        if (!empty($pgbrmenu)) $gbr=$pgbrmenu;
+                        
                         echo "<li><a><i class='fa $gbr'></i> $pjudulmenu <span class='fa fa-chevron-down'></span></a>";
 
                             $query = "select DISTINCT a.`ID`, a.PARENT_ID, a.JUDUL, a.URUTAN, a.GAMBAR, a.KRITERIA, a.URL "

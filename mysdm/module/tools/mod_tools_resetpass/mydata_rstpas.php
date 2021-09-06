@@ -19,20 +19,29 @@ $columns = array(
 // datatable column index  => database column name
     0 =>'a.karyawanId',
     1 => 'a.karyawanId',
-    2=> 'a.nama',
-    3=> 'a.pin',
+    2=> 'CASE WHEN IFNULL(c.slogin,"")="Y" THEN c.pin_pass ELSE a.pin END',
+    3=> 'a.nama',
     4=> 'DATE_FORMAT(c.tgl_pass, "%Y%m%d")',
-    5=> 'b.nama',
-    6=> 'DATE_FORMAT(a.tglkeluar, "%Y%m%d")'
+    5=> 'd.USERNAME',
+    6=> 'b.nama',
+    7=> 'DATE_FORMAT(a.tglkeluar, "%Y%m%d")'
     
 );
 
 
+    $sqlX = "select a.karyawanId as karyawanid, a.pin, c.pin_pass, a.nama as nama_karyawan, "
+            . " a.jabatanId as jabatanid, b.nama as nama_jabatan, c.slogin, a.tglkeluar, c.tgl_pass "
+            . " from hrd.karyawan as a JOIN "
+            . " hrd.jabatan as b on a.jabatanId=b.jabatanId "
+            . " LEFT JOIN dbmaster.t_karyawan_posisi as c on a.karyawanId=c.karyawanId ";
+    
 $sql = "select a.karyawanId as karyawanid, a.pin, c.pin_pass, a.nama as nama_karyawan, "
-        . " a.jabatanId as jabatanid, b.nama as nama_jabatan, c.slogin, a.tglkeluar, c.tgl_pass "
-        . " from hrd.karyawan as a JOIN "
-        . " hrd.jabatan as b on a.jabatanId=b.jabatanId "
-        . " LEFT JOIN dbmaster.t_karyawan_posisi as c on a.karyawanId=c.karyawanId ";
+        . " a.jabatanId as jabatanid, b.nama as nama_jabatan, c.slogin, a.tglkeluar, c.tgl_pass, d.USERNAME as username from ("
+        . " select karyawanId, pin, nama, jabatanId, tglkeluar from hrd.karyawan "
+        . " UNION ALL select karyawanId, pin, nama, jabatanId, tglkeluar from dbmaster.t_karyawan_khusus"
+        . " ) as a LEFT JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId "
+        . " LEFT JOIN dbmaster.t_karyawan_posisi as c on a.karyawanid=c.karyawanId "
+        . " LEFT JOIN dbmaster.sdm_users as d on a.karyawanId=d.karyawanId ";
 $sql.=" WHERE 1=1 ";
 
 if ($fgroupidcard=="1" OR $fgroupidcard=="24") {
@@ -75,6 +84,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pslogin=$row['slogin'];
     $ptglkeluar=$row['tglkeluar'];
     $ptglpass=$row['tgl_pass'];
+    $pusername=$row['username'];
     
     $ppassword=$ppin;
     if ($pslogin=="Y") $ppassword=$ppass_pin;
@@ -103,9 +113,10 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $nestedData[] = $ptombol;
     $nestedData[] = $pkryid;
-    $nestedData[] = $pnmkaryawan;
     $nestedData[] = $ppassword;
+    $nestedData[] = $pnmkaryawan;
     $nestedData[] = $ptglpass;
+    $nestedData[] = $pusername;
     $nestedData[] = $pnmjabat;
     $nestedData[] = $ptglkeluar;
     

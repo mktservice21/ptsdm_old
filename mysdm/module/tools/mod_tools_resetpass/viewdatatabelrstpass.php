@@ -27,7 +27,7 @@
             "processing": true,
             "serverSide": true,
             //"stateSave": true,
-            "order": [[ 1, "desc" ]],
+            "order": [[ 1, "asc" ]],
             "lengthMenu": [[10, 50, 100, 10000000], [10, 50, 100, "All"]],
             "displayLength": 10,
             "columnDefs": [
@@ -37,7 +37,7 @@
                 { "orderable": true, "targets": 2 },
                 { "orderable": true, "targets": 4 },
                 //{ className: "text-right", "targets": [4] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6] }//nowrap
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7] }//nowrap
 
             ],
             "language": {
@@ -70,9 +70,10 @@
                 <tr>
                     <th width='50px'></th>
                     <th width='10px'>Karyawan ID</th>
-                    <th width='10px'>Nama</th>
                     <th width='200px'>PIN/Password</th>
+                    <th width='10px'>Nama</th>
                     <th width='40px'>Tgl. Ubah Pass</th>
+                    <th width='10px'>Username</th>
                     <th width='40px'>Jabatan</th>
                     <th width='40px'>Tgl. Keluar</th>
                 </tr>

@@ -1,4 +1,5 @@
 <?php
+include "config/fungsi_ubahget_id.php";
 
 $pidmodule=$_GET['module'];
 $pidmenu=$_GET['idmenu'];
@@ -10,8 +11,14 @@ $pidcard=$_SESSION['IDCARD'];
 $pidgroup=$_SESSION['GROUP'];
 
 $hari_ini = date("Y-m-d");
-//$pbln = date('F Y', strtotime($hari_ini));
-$pbln = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
+$ptglini = date("d");
+if ((INT)$ptglini<=10) {
+    $pbln = date('F Y', strtotime('-1 month', strtotime($hari_ini)));
+    //$pbln = date('F Y', strtotime($hari_ini));
+}else{
+    $pbln = date('F Y', strtotime($hari_ini));
+}
+$pnbln= date("Ym", strtotime($pbln));
 
 $mytglini="";
 $mytglini = getfield("select CURRENT_DATE as lcfields");
@@ -92,11 +99,15 @@ $pidnopol=$arow['nopol'];
 
 //$pidnopol = getfield("select nopol as lcfields from dbmaster.t_kendaraan_pemakai where karyawanid='$pkaryawanid' AND IFNULL(stsnonaktif,'')<>'Y' order by tglawal desc LIMIT 1");
 
+$pjmlwfh=0;
+$pjmlwfo=0;
+$pjmlwfo_val=0;
+$pjmlwfo_inv=0;
+
 $act="input";
 if ($pidact=="editdata"){
     $act="update";
 
-    include "config/fungsi_ubahget_id.php";
 
     $pidinput_ec=$_GET['id'];
     $pidrutin = decodeString($pidinput_ec);
@@ -134,6 +145,21 @@ if ($pidact=="editdata"){
     $ptotalsemua=$r['jumlah'];
     
     
+}else{
+    
+    //cari absensi
+    
+    include "cari_absen_karyawan_hochc.php";
+    $pjumlahabs = CariAbsensiByKaryawan("", $pkaryawanid, $pbln);
+
+    $pjmlwfh=$pjumlahabs[0];
+    $pjmlwfo=$pjumlahabs[1];
+    $pjmlwfo_val=$pjumlahabs[2];
+    $pjmlwfo_inv=$pjumlahabs[3];
+    
+    //echo "WFH : $pjmlwfh, WFO : $pjmlwfo, WFO val : $pjmlwfo_val, WFO inval: $pjmlwfo_inv<br/>";
+
+    //END cari absensi
 }
 
 ?>
@@ -175,6 +201,7 @@ if ($pidact=="editdata"){
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidrutin; ?>' Readonly>
                                         <input type='hidden' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='hidden' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
+                                        <input type='hidden' id='e_act' name='e_act' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidact; ?>' Readonly>
                                     </div>
                                 </div>
                                 
@@ -211,7 +238,7 @@ if ($pidact=="editdata"){
                                 <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Kode Periode <span class='required'></span></label>
                                     <div class='col-xs-7'>
-                                        <select class='form-control input-sm' id='e_periode' name='e_periode' onchange="showPeriode()">
+                                        <select class='form-control input-sm' id='e_periode' name='e_periode' onchange="showDariKodePeriode()">
                                             <?PHP
                                                 echo "<option value='1' selected>Periode 1</option>";
                                                 /*
@@ -301,11 +328,49 @@ if ($pidact=="editdata"){
                                 </div>
                                 
                                 
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Total Rp. <span class='required'></span></label>
-                                    <div class='col-md-4'>
-                                        <input type='text' id='e_totalsemua' name='e_totalsemua' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $ptotalsemua; ?>' readonly>
+                                <div id="div_jmlabs">
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                        <div class='col-md-4'>
+                                            <?PHP
+                                            $pkaryidcode=encodeString($pkaryawanid);
+                                            $bulan_pilih=encodeString($pnbln);
+                                            $pviewdataabsen = "<a class='btn btn-warning btn-xs' href='eksekusi3.php?module=showdataabsensi&i=$pkaryidcode&b=$bulan_pilih' target='_blank'>List Absensi</a>";
+                                            echo $pviewdataabsen;
+                                            ?>
+                                        </div>
                                     </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah WFH <span class='required'></span></label>
+                                        <div class='col-md-4'>
+                                            <input type='text' id='e_jmlwfh' name='e_jmlwfh' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlwfh; ?>' readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah WFO (Valid) <span class='required'></span></label>
+                                        <div class='col-md-4'>
+                                            <input type='hidden' id='e_jmlwfo' name='e_jmlwfo' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlwfo; ?>' readonly>
+                                            <input type='text' id='e_jmlwfoval' name='e_jmlwfoval' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlwfo_val; ?>' readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:red;">Jumlah WFO (Invalid) <span class='required'></span></label>
+                                        <div class='col-md-4'>
+                                            <input type='text' id='e_jmlwfoinv' name='e_jmlwfoinv' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlwfo_inv; ?>' readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Total Rp. <span class='required'></span></label>
+                                        <div class='col-md-4'>
+                                            <input type='text' id='e_totalsemua' name='e_totalsemua' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $ptotalsemua; ?>' readonly>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                                 
                                 
@@ -383,17 +448,26 @@ if ($pidact=="editdata"){
                             </style>
                             
                             
-                            <?PHP if ($pstsmobile=="Y") { ?>
-                                <br/>&nbsp;<div style="overflow-x:auto;">
-                                    <?PHP
-                                        include "module/mod_br_brrutinhodivchc/inputdetailmobilehodivchc.php";
-                                    ?>
-                                </div>
-                            <?PHP }else{
-                                include "module/mod_br_brrutinhodivchc/inputdetailbrhodivchc.php";
-                            }
+                            
+                            <?PHP
+                            echo "<br/>*) <b>sebelum mengisi detail, pastikan bulan dan kode periode sudah sesuai.</b><br/>";
+                            $ptomboldetail = "<input type='button' class='btn btn-info btn-xs' "
+                                    . " onclick=\"CariDataDariBulan()\" value='Klik disini jika detail atau absensinya tidak sesuai.' >";
+                            echo "$ptomboldetail";
                             ?>
                             
+                            <div id="div_detail">
+                                <?PHP if ($pstsmobile=="Y") { ?>
+                                    <br/>&nbsp;<div style="overflow-x:auto;">
+                                        <?PHP
+                                            include "module/mod_br_brrutinhodivchc/inputdetailmobilehodivchc.php";
+                                        ?>
+                                    </div>
+                                <?PHP }else{
+                                    include "module/mod_br_brrutinhodivchc/inputdetailbrhodivchc.php";
+                                }
+                                ?>
+                            </div>
                                 
                                 
                         </div>
@@ -467,6 +541,8 @@ if ($pidact=="editdata"){
             "bPaginate": false
         } );
         
+        //CariDataDariBulan();
+        
         $('#e_bulan').datepicker({
             showButtonPanel: true,
             changeMonth: true,
@@ -492,6 +568,7 @@ if ($pidact=="editdata"){
                 $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
                 showKodePeriode();
                 showPeriode();
+                CariDataDariBulan();
             },
 
             beforeShow: function() {
@@ -519,6 +596,14 @@ if ($pidact=="editdata"){
             }
         });
     }
+    
+    
+    function showDariKodePeriode() {
+        showPeriode();
+        CariDataDariBulan();
+    }
+    
+    
     function showPeriode() {
         var ikode = document.getElementById('e_periode').value;
         var ibulan = document.getElementById('e_bulan').value;
@@ -537,6 +622,56 @@ if ($pidact=="editdata"){
     
     
     
+    function CariDataDariBulan() {
+        $("#div_detail").html("");
+        $("#div_jmlabs").html("");
+        var ibulan = document.getElementById('e_bulan').value;
+        var ikry = document.getElementById('e_idkaryawan').value;
+        var ikode = document.getElementById('e_periode').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/mod_br_brrutinhodivchc/viewdatabrhodivchc.php?module=caridataabsentotal",
+            data:"ubulan="+ibulan+"&ukry="+ikry+"&ukode="+ikode,
+            success:function(data){
+                $("#div_jmlabs").html(data);
+                ShowDetailInputan();
+            }
+        });
+    }
+    
+    
+    function ShowDetailInputan() {
+        
+        var iid = document.getElementById('e_id').value;
+        var ikry = document.getElementById('e_idkaryawan').value;
+        var ijbt = document.getElementById('e_jabatanid').value;
+        var idivisi = document.getElementById('e_divisiid').value;
+        var iact = document.getElementById('e_act').value;
+        var ijmlwfh = document.getElementById('e_jmlwfh').value;
+        var ijmlwfo = document.getElementById('e_jmlwfo').value;
+        var ijmlwfo_val = document.getElementById('e_jmlwfoval').value;
+        var ijmlwfo_inv = document.getElementById('e_jmlwfoinv').value;
+        var itotal = document.getElementById('e_totalsemua').value;
+        
+        var ibulan = document.getElementById('e_bulan').value;
+        var ikode = document.getElementById('e_periode').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/mod_br_brrutinhodivchc/viewdatabrhodivchc.php?module=cariinputandetail",
+            data:"ubulan="+ibulan+"&ukode="+ikode+"&ukry="+ikry+
+                    "&uid="+iid+"&ujbt="+ijbt+"&udivisi="+idivisi+"&uact="+iact+
+                    "&ujmlwfh="+ijmlwfh+"&ujmlwfo="+ijmlwfo+"&ujmlwfo_val="+ijmlwfo_val+"&ujmlwfo_inv="+ijmlwfo_inv+
+                    "&utotal="+itotal,
+            success:function(data){
+                $("#div_detail").html(data);
+                HitungTotalJumlahRp();
+            }
+        });
+    }
+    
+    
     
     function disp_confirm(pText_, ket)  {
         
@@ -547,7 +682,8 @@ if ($pidact=="editdata"){
         var iperiode01 = document.getElementById('e_periode01').value;
         var iatasan = document.getElementById('e_atasan').value;
         var etotsem =document.getElementById('e_totalsemua').value;
-
+        var ep01 =document.getElementById('e_periode01').value;
+        var ep02 =document.getElementById('e_periode02').value;
 
         if (ikry=="") {
             alert("Pembuat masih kosong...");
@@ -582,7 +718,7 @@ if ($pidact=="editdata"){
         $.ajax({
             type:"post",
             url:"module/mod_br_brrutinhodivchc/viewdatabrhodivchc.php?module=cekdatasudahada",
-            data:"uid="+iid+"&ukry="+ikry+"&ubln="+ibln+"&ukdperiode="+ikdperiode,
+            data:"uid="+iid+"&ukry="+ikry+"&ubln="+ibln+"&ukdperiode="+ikdperiode+"&up01="+ep01+"&up02="+ep02,
             success:function(data){
                 //var tjml = data.length;
                 //alert(data);

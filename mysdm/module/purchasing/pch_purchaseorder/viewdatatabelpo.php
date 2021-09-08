@@ -96,15 +96,16 @@
             <tbody>
                 <?PHP
                 $no=1;
-                $query = "select distinct idpo from $tmp01 order by idpo DESC";
+                $query = "select distinct idpo, karyawanid_pr, nama_karyawan_pr from $tmp01 order by idpo DESC";
                 $tampil= mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     $pidpo=$row['idpo'];
+                    $pidkrypr_=$row['karyawanid_pr'];
                     $pidnoget=encodeString($pidpo);
                     
                     $pbelumlewat=false;
                     
-                    $query = "select * from $tmp01 WHERE idpo='$pidpo' order by idpo DESC";
+                    $query = "select * from $tmp01 WHERE idpo='$pidpo' AND karyawanid_pr='$pidkrypr_' order by idpo DESC";
                     $tampil1= mysqli_query($cnmy, $query);
                     while ($row1= mysqli_fetch_array($tampil1)) {
                         $ptgl=$row1['tanggal'];

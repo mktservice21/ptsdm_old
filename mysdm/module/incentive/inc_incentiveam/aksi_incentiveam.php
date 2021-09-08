@@ -38,7 +38,7 @@ $pnamakaryawan="";
 $pbln1 = date("Y-m-01", strtotime($tgl01));
 $pbln2 = date("Y-m-t", strtotime($tgl01));
 $pbulan = date("F Y", strtotime($tgl01));
-
+$pbln_pn = date("Y-m", strtotime($tgl01));
 
 $milliseconds = round(microtime(true) * 1000);
 $now=date("mdYhis");
@@ -50,8 +50,13 @@ $tmp04 ="dbtemp.tmprptincam04_".$puser."_$now$milliseconds";
 include("config/koneksimysqli_ms.php");
 
 
-$query = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a.icabangid, a.areaid, b.nama as nama_cabang, c.nama as nama_area from sls.ispv0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
+$queryXXX = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a.icabangid, a.areaid, b.nama as nama_cabang, c.nama as nama_area from sls.ispv0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
         . " sls.iarea as c on a.icabangid=c.icabangid AND a.areaid=c.areaid WHERE a.karyawanid='$pkaryawanid'";
+
+$query = "select DISTINCT a.am as karyawanid, a.divprodid as divisiid, a.divprodid, 'Y' as aktif, "
+        . " a.icabangid, a.areaid, b.nama as nama_cabang, c.nama as nama_area "
+        . " from ms.penempatan_marketing as a JOIN sls.icabang as b on a.icabangid=b.icabangid JOIN "
+        . " sls.iarea as c on a.icabangid=c.icabangid AND a.areaid=c.areaid WHERE a.am='$pkaryawanid' AND LEFT(bulan,7)='$pbln_pn'";
 $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 

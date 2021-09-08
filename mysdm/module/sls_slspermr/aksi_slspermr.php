@@ -46,6 +46,7 @@ $milliseconds = round(microtime(true) * 1000);
 $now=date("mdYhis");
 $tmp01 ="dbtemp.TEMPSLSMRD01_".$puser."_$now$milliseconds";
 $tmp02 ="dbtemp.TEMPSLSMRD02_".$puser."_$now$milliseconds";
+$tmp03 ="dbtemp.TEMPSLSMRD03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 
@@ -67,11 +68,28 @@ if ($pmyjabatanid=="15" OR $pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjab
     //$filterkategori=" AND IFNULL(kategoriproduk,'') = 'EXISTING' ";
 }
 
+$query = "select icabangid, areaid, divisiid FROM sls.imr0 WHERE karyawanid='$pmrpilih'";
+$query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
+mysqli_query($cnms, $query);
+$erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+$query = "ALTER TABLE $tmp03 ADD COLUMN iprodid varchar(10)";
+mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+if ($pprodmkl=="Y") {
+    
+    $query = "INSERT INTO $tmp03 (icabangid, areaid, divisiid, iprodid) SELECT "
+            . " DISTINCT icabangid, areaid, 'MAKLO' as divisiid, iprodid FROM sls.maklon_cabangarea WHERE CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(divprodid,'')) "
+            . " IN (SELECT DISTINCT CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(divisiid,'')) FROM sls.imr0 WHERE karyawanid='$pmrpilih')";
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }    
+}
+
 $query = "SELECT divprodid, iprodid, SUM(qty_sales) as qty_sales, sum(qty_target) as qty_target,"
         . " sum(value_sales) as value_sales, sum(value_target) as value_target, CAST(0 as DECIMAL(20,2)) as tach "
         . " FROM sls.sales WHERE DATE_FORMAT(bulan,'%Y%m')='$pbln1' $filterkategori AND "
         . " CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(divprodid,'')) IN "
-        . " (SELECT DISTINCT CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(divisiid,'')) FROM sls.imr0 WHERE karyawanid='$pmrpilih')";
+        . " (SELECT DISTINCT CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(divisiid,'')) FROM $tmp03)";
 if ($pprodoth=="Y") {
 }else{
     $query .= " AND iprodid NOT IN (select IFNULL(iprodid,'') iprodid from sls.othproduk WHERE divprodid='PEACO')";
@@ -86,6 +104,11 @@ $query .=" GROUP BY 1,2";
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+
+if ($pprodmkl=="Y") {
+    $query = "DELETE FROM $tmp01 WHERE iprodid NOT IN (select distinct IFNULL(iprodid,'') FROM $tmp03 WHERE IFNULL(iprodid,'')<>'') AND divprodid='MAKLO'";
+    mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }    
+}
 
 $query = "SELECT a.divprodid, a.iprodid, b.nama nmprod, a.qty_sales, a.qty_target, a.value_sales, a.value_target, a.tach FROM $tmp01 a LEFT JOIN sls.iproduk b on "
         . " a.iprodid=b.iprodid";
@@ -472,5 +495,6 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 hapusdata:
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp01");
     mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp02");
+    mysqli_query($cnms, "DROP TEMPORARY TABLE $tmp03");
     mysqli_close($cnms);
 ?>

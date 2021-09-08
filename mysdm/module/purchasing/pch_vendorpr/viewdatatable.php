@@ -101,7 +101,7 @@ session_start();
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     
-    $query = "ALTER TABLE $tmp01 ADD COLUMN ssudah VARCHAR(1), ADD COLUMN ssudahpo VARCHAR(1)";
+    $query = "ALTER TABLE $tmp01 ADD COLUMN ssudah VARCHAR(1), ADD COLUMN ssudahpo VARCHAR(1), ADD COLUMN idpo VARCHAR(50)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     if ($ppilihsts=="UNAPPROVE") {
         $query = "UPDATE $tmp01 SET ssudah='Y'";
@@ -113,10 +113,10 @@ session_start();
     }
     
     $query = "UPDATE $tmp01 as a JOIN "
-            . " (select cc.idpr, cc.idbarang, cc.idbarang_d, cc.idpr_d from dbpurchasing.t_po_transaksi_d as aa "
+            . " (select cc.idpr, cc.idbarang, cc.idbarang_d, cc.idpr_d, aa.idpo from dbpurchasing.t_po_transaksi_d as aa "
             . " JOIN dbpurchasing.t_po_transaksi as bb on aa.idpo=bb.idpo "
             . " JOIN dbpurchasing.t_pr_transaksi_po as cc on aa.idpr_po=cc.idpr_po WHERE IFNULL(bb.stsnonaktif,'')<>'Y') as b "
-            . " on IFNULL(a.idpr,'')=IFNULL(b.idpr,'') AND IFNULL(a.idpr_d,'')=IFNULL(b.idpr_d,'') SET a.ssudahpo='Y'";
+            . " on IFNULL(a.idpr,'')=IFNULL(b.idpr,'') AND IFNULL(a.idpr_d,'')=IFNULL(b.idpr_d,'') SET a.ssudahpo='Y', a.idpo=b.idpo";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
     
@@ -136,7 +136,7 @@ session_start();
                 . " join dbpurchasing.t_po_transaksi as d on c.idpo=d.idpo "
                 . " WHERE IFNULL(d.stsnonaktif,'')<>'Y'";
         mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     }
     
 ?>
@@ -194,6 +194,7 @@ session_start();
                         $pnotes=$row1['aktivitas'];
                         $puserinput=$row1['nama_user'];
                         $psudahisi=$row1['ssudah'];
+                        $ppoid=$row1['idpo'];
                         $pposudah=$row1['ssudahpo'];
                         $ptipeminta=$row1['idtipe'];
                         $pusrnamadetail=$row1['nmuserinput'];
@@ -272,7 +273,8 @@ session_start();
                         }
                         
                         if ($pposudah=="Y") {
-                            $ppilihan="SUDAH PO";
+                            //$ppilihan="SUDAH PO";
+                            $ppilihan=$ppoid;
                         }
                         
                         

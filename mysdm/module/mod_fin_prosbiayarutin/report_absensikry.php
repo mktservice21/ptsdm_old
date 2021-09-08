@@ -652,12 +652,16 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             echo "<br/><hr/>";
 
             $ptotal_uangmakan=(DOUBLE)$pjmlwfo_ok * (DOUBLE)$prupiah_um;
-
+            
+            $pwfo_inval=(INT)$pjmlwfo-(INT)$pjmlwfo_ok;
+            
             $prupiah_um=BuatFormatNumberRp($prupiah_um, $ppilformat);//1 OR 2 OR 3
             $ptotal_uangmakan=BuatFormatNumberRp($ptotal_uangmakan, $ppilformat);//1 OR 2 OR 3
-
-            echo "Total WFO : $pjmlwfo<br/>";
+            
             echo "Total WFH : $pjmlwfh<br/>";
+            echo "Total WFO (valid) : $pjmlwfo_ok<br/>";
+            echo "<span style='color:red;'>Total WFO (invalid) : $pwfo_inval</span><br/>";
+            
             echo "Prediksi Uang Makan Bulan $pperiode : $pjmlwfo_ok * $prupiah_um = $ptotal_uangmakan<br/>";
 
             echo "<br/><br/><br/><br/><br/><br/>";

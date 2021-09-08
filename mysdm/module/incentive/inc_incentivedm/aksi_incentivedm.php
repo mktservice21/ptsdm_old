@@ -38,7 +38,7 @@ $pnamakaryawan="";
 $pbln1 = date("Y-m-01", strtotime($tgl01));
 $pbln2 = date("Y-m-t", strtotime($tgl01));
 $pbulan = date("F Y", strtotime($tgl01));
-
+$pbln_pn = date("Y-m", strtotime($tgl01));
 
 $milliseconds = round(microtime(true) * 1000);
 $now=date("mdYhis");
@@ -50,8 +50,11 @@ $tmp04 ="dbtemp.tmprptincdm04_".$puser."_$now$milliseconds";
 include("config/koneksimysqli_ms.php");
 
 
-$query = "select a.karyawanid, a.aktif, a.icabangid, b.nama as nama_cabang from sls.idm0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid "
+$queryXXX = "select a.karyawanid, a.aktif, a.icabangid, b.nama as nama_cabang from sls.idm0 as a JOIN sls.icabang as b on a.icabangid=b.icabangid "
         . " WHERE a.karyawanid='$pkaryawanid'";
+
+$query = "select DISTINCT a.dm as karyawanid, 'Y' as aktif, a.icabangid, b.nama as nama_cabang from ms.penempatan_marketing as a JOIN sls.icabang as b on a.icabangid=b.icabangid "
+        . " WHERE a.dm='$pkaryawanid' AND LEFT(bulan,7)='$pbln_pn'";
 $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 

@@ -123,6 +123,114 @@ if ($pmodule=="cekdatasudahada") {
     //}
     
     echo "$bln1, $bln2";
+}elseif ($_GET['module']=="caridataabsentotal"){
+    
+    include "../../config/koneksimysqli.php";
+    include "../../config/fungsi_ubahget_id.php";
+    
+    $pkodeperiode=$_POST['ukode'];
+    $pbln=$_POST['ubulan'];
+    $pkaryawanid=$_POST['ukry'];
+    $pnbln =  date("Ym", strtotime($pbln));
+    
+    
+    $ptotalsemua=0;
+    $pjmlwfh=0;
+    $pjmlwfo=0;
+    $pjmlwfo_val=0;
+    $pjmlwfo_inv=0;
+
+    //cari absensi
+    
+    if ($pkodeperiode=="2") {
+        include "cari_absen_karyawan.php";
+        $pjumlahabs = CariAbsensiByKaryawan("inc", $pkaryawanid, $pbln);
+
+        $pjmlwfh=$pjumlahabs[0];
+        $pjmlwfo=$pjumlahabs[1];
+        $pjmlwfo_val=$pjumlahabs[2];
+        $pjmlwfo_inv=$pjumlahabs[3];
+    }
+    
+    //echo "WFH : $pjmlwfh, WFO : $pjmlwfo, WFO val : $pjmlwfo_val, WFO inval: $pjmlwfo_inv<br/>";
+
+    //END cari absensi
+    
+    ?>
+    <script src="js/inputmask.js"></script>
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+        <div class='col-md-4'>
+            <?PHP
+            $pkaryidcode=encodeString($pkaryawanid);
+            $bulan_pilih=encodeString($pnbln);
+            $pviewdataabsen = "<a class='btn btn-warning btn-xs' href='eksekusi3.php?module=showdataabsensi&i=$pkaryidcode&b=$bulan_pilih' target='_blank'>List Absensi</a>";
+            echo $pviewdataabsen;
+            ?>
+        </div>
+    </div>
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah WFH <span class='required'></span></label>
+        <div class='col-md-4'>
+            <input type='text' id='e_jmlwfh' name='e_jmlwfh' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlwfh; ?>' readonly>
+        </div>
+    </div>
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah WFO (Valid) <span class='required'></span></label>
+        <div class='col-md-4'>
+            <input type='hidden' id='e_jmlwfo' name='e_jmlwfo' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlwfo; ?>' readonly>
+            <input type='text' id='e_jmlwfoval' name='e_jmlwfoval' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlwfo_val; ?>' readonly>
+        </div>
+    </div>
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:red;">Jumlah WFO (Invalid) <span class='required'></span></label>
+        <div class='col-md-4'>
+            <input type='text' id='e_jmlwfoinv' name='e_jmlwfoinv' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjmlwfo_inv; ?>' readonly>
+        </div>
+    </div>
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Total Rp. <span class='required'></span></label>
+        <div class='col-md-4'>
+            <input type='text' id='e_totalsemua' name='e_totalsemua' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $ptotalsemua; ?>' readonly>
+        </div>
+    </div>
+
+    <?PHP
+    
+    mysqli_close($cnmy);
+    
+}elseif ($_GET['module']=="cariinputandetail"){
+    ?><script src="js/inputmask.js"></script><?PHP
+    include "../../config/koneksimysqli.php";
+    
+    $pstsmobile=$_SESSION['MOBILE'];
+    
+    
+    $pjabatanid =$_POST['ujbt'];
+    $pkaryawanid =$_POST['ukry'];
+    $pidrutin =$_POST['uid'];
+    $pdivisi =$_POST['udivisi'];
+    $pidact =$_POST['uact'];
+    
+    $ptotalsemua=$_POST['utotal'];
+    $pjmlwfh=$_POST['ujmlwfo'];
+    $pjmlwfo=$_POST['ujmlwfo'];
+    $pjmlwfo_val=$_POST['ujmlwfo_val'];
+    $pjmlwfo_inv=$_POST['ujmlwfo_inv'];
+    
+    if ($pstsmobile=="Y") {
+        echo "<br/>&nbsp;";
+        echo "<div style='overflow-x:auto;'>";
+            include "inputdetailmobileho.php";
+        echo "</div>";
+    }else{
+        include "inputdetailbrho.php";
+    }
+}elseif ($_GET['module']=="xxxx"){
 }
 
 ?>

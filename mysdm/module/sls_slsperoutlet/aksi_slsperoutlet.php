@@ -88,12 +88,13 @@ $filterarea="";
 if (!empty($parea)) $filterarea=" AND areaid='$parea' ";
 
 $filterdivisi="";
+$filterdivisi_2="";
 if (!empty($pdivisi)) $filterdivisi=" AND divprodid='$pdivisi' ";
+if (!empty($pdivisi)) $filterdivisi_2=" AND divprodid IN ('$pdivisi', 'MAKLO') ";
 
 $filterproduk="";
 if (!empty($pprod)) $filterproduk=" AND iprodid='$pprod' ";
 
-              
 if (empty($pdivisi)) {
     $query_cab="";
     if ($pmyjabatanid=="15") {
@@ -105,16 +106,28 @@ if (empty($pdivisi)) {
     if (!empty($query_cab)) {
         $piddivi_="";
         $filiddivisipil="";
+        $filiddivisipil_2="";
+        if ($pprodmkl=="Y") {
+            $filiddivisipil_2="'MAKLO',";
+        }
         $tampil= mysqli_query($cnms, $query_cab);
         while ($rs= mysqli_fetch_array($tampil)) {
             $piddivi_=$rs['divisiid'];
             if (strpos($filiddivisipil, $piddivi_)==false) $filiddivisipil .="'".$piddivi_."',";
+            if (strpos($filiddivisipil_2, $piddivi_)==false) $filiddivisipil_2 .="'".$piddivi_."',";
             
         }
         
         if (!empty($filiddivisipil)) {
             $filiddivisipil="(".substr($filiddivisipil, 0, -1).")";
             $filterdivisi=" AND divprodid IN $filiddivisipil ";
+            
+            $filiddivisipil_2="(".substr($filiddivisipil_2, 0, -1).")";
+            $filterdivisi_2=" AND divprodid IN $filiddivisipil_2 ";
+        }else{
+            if ( empty($filterdivisi) AND $pprodmkl=="Y" AND ($pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjabatanid=="15") ) {
+                $filterdivisi_2=" AND divprodid IN ('MAKLO') ";
+            }
         }
         
     }
@@ -145,6 +158,23 @@ if (empty($parea)) {
         
     }
 }
+
+
+
+if ( $pprodmkl=="Y" AND ($pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjabatanid=="15") ) {
+    
+    $pmaklonmram="";
+    $query = "select iprodid FROM sls.maklon_cabangarea WHERE 1=1 $filterdivisi $filterarea ";
+    $tampil2= mysqli_query($cnms, $query);
+    $rs2= mysqli_fetch_array($tampil2);
+    $piprodmkl=$rs2['iprodid'];
+    if (!empty($piprodmkl)) {
+        $pmaklonmram="Y";
+        $filterdivisi=$filterdivisi_2;
+    }
+    
+}
+
 
 $query = "select * from sls.mr_sales2 WHERE tgljual BETWEEN '$pbln1' AND '$pbln2' "
         . " AND icabangid='$pcab' $filterarea $filterdivisi $filterproduk ";

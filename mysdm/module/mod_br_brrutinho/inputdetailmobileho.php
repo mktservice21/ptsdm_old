@@ -71,6 +71,13 @@
     $tmp00 =" dbtemp.tmpinptbrtnhodt00_".$puserid."_$now ";
     $tmp01 =" dbtemp.tmpinptbrtnhodt01_".$puserid."_$now ";
     
+    $pabsenrutin=false;
+    $query = "SELECT absen_rutin FROM dbmaster.t_karyawan_posisi WHERE karyawanId='$pkaryawanid' AND IFNULL(ho,'')='Y' AND IFNULL(absen_rutin,'')='Y'";
+    $tampila=mysqli_query($cnmy, $query);
+    $ketemua=mysqli_num_rows($tampila);
+    
+    if ((INT)$ketemua>0) $pabsenrutin=true;
+    
     $query = "SELECT nobrid, nama, jumlah, qty as iqty, groupid FROM dbmaster.t_brid where kode=1 and aktif='Y' order by nobrid";
     $query = "create TEMPORARY table $tmp00 ($query)";
     mysqli_query($cnmy, $query);
@@ -122,6 +129,13 @@
     
     if ($pidact=="tambahbaru"){
         $query = "UPDATE $tmp00  SET rp=rp_perperson";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        
+        $query = "UPDATE $tmp00 SET qty='$pjmlwfo_val' WHERE nobrid='04'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        $query = "UPDATE $tmp00 SET rptotal=IFNULL(qty,0)*IFNULL(rp,0) WHERE nobrid='04'";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     }
 
@@ -221,9 +235,14 @@
             $prdonlytotal="Readonly";
         }
 
+        $preadonly_um="";
+        if ($pkodeidbr=="04" AND $pabsenrutin==true) {
+            $preadonly_um=" readonly ";
+        }
+                
         $pfldkilometer="<span><input type='text' size='10px' id='e_txtkm[$pkodeidbr]' name='e_txtkm[$pkodeidbr]'  class='input-sm inputmaskrp2' autocomplete='off' value='$pkm'><span>";
 
-        $pfldjmlrp="<input type='text' size='10px' id='e_txtjmlrp[$pkodeidbr]' name='e_txtjmlrp[$pkodeidbr]' onblur=\"HitungTotalNilai('e_txtjmlrp[$pkodeidbr]', 'e_txtnilairp[$pkodeidbr]', 'e_txttotalrp[$pkodeidbr]')\" class='input-sm inputmaskrp2' autocomplete='off' value='$prpjumlah'>";
+        $pfldjmlrp="<input type='text' size='10px' id='e_txtjmlrp[$pkodeidbr]' name='e_txtjmlrp[$pkodeidbr]' onblur=\"HitungTotalNilai('e_txtjmlrp[$pkodeidbr]', 'e_txtnilairp[$pkodeidbr]', 'e_txttotalrp[$pkodeidbr]')\" class='input-sm inputmaskrp2' autocomplete='off' value='$prpjumlah' $preadonly_um>";
         $pfldnilairp="<input type='text' size='10px' id='e_txtnilairp[$pkodeidbr]' name='e_txtnilairp[$pkodeidbr]' onblur=\"HitungTotalNilai('e_txtjmlrp[$pkodeidbr]', 'e_txtnilairp[$pkodeidbr]', 'e_txttotalrp[$pkodeidbr]')\" class='input-sm inputmaskrp2' autocomplete='off' value='$prpnilai' $pnilaireadonly>";
         $pfldtotalrp="<input type='text' size='10px' id='e_txttotalrp[$pkodeidbr]' name='e_txttotalrp[$pkodeidbr]' onblur='HitungTotalJumlahRp()' class='input-sm inputmaskrp2' autocomplete='off' value='$prptotal' $prdonlytotal>";
 

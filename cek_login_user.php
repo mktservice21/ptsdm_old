@@ -24,6 +24,7 @@ $_SESSION['MENUTAMBAHID']="";
 $_SESSION['IDSESI']="";
 $_SESSION['IDSESI_VPS']="";
 $_SESSION['SUDAHUPDATEPASS']="N";
+$_SESSION['IDADDRESS_SYS']="";
 
 
 $ipilihmenu_atasan=false;
@@ -525,7 +526,7 @@ if ($pberhasillogin==true) {
     $puser_ipaddr = getUserIP();
     if ($puser_ipaddr=="::1") $puser_ipaddr="";
     //echo $puser_ipaddr; mysqli_close($cnmy); exit;
-    
+    $_SESSION['IDADDRESS_SYS']=$puser_ipaddr;
     
     
     include "timeout.php";

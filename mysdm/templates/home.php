@@ -843,9 +843,17 @@ if ( $pnidmodule=="tolsresetpass" ) {
         include 'module/laporan/lap_kaskecilcab_rincian/lapkaskecilcabrinci.php';
         
     }elseif ($_GET['module']=='entrybrrutinho'){
-        include 'module/mod_br_brrutinho/brrutinho.php';
+        //include 'module/mod_br_brrutinho/brrutinho.php';
+        include 'module/budget/bgt_brrutinho/brrutinho.php';
+    }elseif ($_GET['module']=='entrybrrutinho2'){
+        //include 'module/budget/bgt_brrutinho/brrutinho.php';
+        
+        
     }elseif ($_GET['module']=='entrybrrutinhodivchc'){
-        include 'module/mod_br_brrutinhodivchc/brrutinhodivchc.php';
+        //include 'module/mod_br_brrutinhodivchc/brrutinhodivchc.php';
+        include 'module/budget/bgt_brrutinho/brrutinho.php';
+        
+        
     }elseif ($_GET['module']=='apvbrutinho'){
         include 'module/mod_apv_biayarutinho/apvbiayarutinho.php';
     }elseif ($_GET['module']=='laprincianbrrutinbykry'){

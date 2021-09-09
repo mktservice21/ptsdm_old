@@ -136,7 +136,7 @@ session_start();
                 . " join dbpurchasing.t_po_transaksi as d on c.idpo=d.idpo "
                 . " WHERE IFNULL(d.stsnonaktif,'')<>'Y'";
         mysqli_query($cnmy, $query);
-        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     }
     
 ?>
@@ -194,7 +194,7 @@ session_start();
                         $pnotes=$row1['aktivitas'];
                         $puserinput=$row1['nama_user'];
                         $psudahisi=$row1['ssudah'];
-                        $ppoid=$row1['idpo'];
+						$ppoid=$row1['idpo'];
                         $pposudah=$row1['ssudahpo'];
                         $ptipeminta=$row1['idtipe'];
                         $pusrnamadetail=$row1['nmuserinput'];
@@ -274,7 +274,7 @@ session_start();
                         
                         if ($pposudah=="Y") {
                             //$ppilihan="SUDAH PO";
-                            $ppilihan=$ppoid;
+							$ppilihan=$ppoid;
                         }
                         
                         

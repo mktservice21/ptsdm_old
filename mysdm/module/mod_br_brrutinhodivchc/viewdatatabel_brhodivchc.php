@@ -62,7 +62,7 @@
     $query = "SELECT userid, idrutin, tgl, bulan, periode1, periode2, "
             . " divisi, karyawanid, icabangid, areaid, jumlah, keterangan, "
             . " jabatanid, tgl_atasan1, tgl_atasan2, tgl_atasan3, tgl_atasan4, validate, fin, tgl_fin, nama_karyawan ";
-    $query .=" FROM dbmaster.t_brrutin0 WHERE IFNULL(stsnonaktif,'')<>'Y' AND "
+    $query .=" FROM dbmaster.t_brrutin0 WHERE IFNULL(stsnonaktif,'')<>'Y' AND kode='1' AND "
             . " ( (tgl BETWEEN '$ptgl1' AND '$ptgl2') OR (bulan BETWEEN '$ptgl1' AND '$ptgl2') ) ";
     $query .=" AND karyawanid='$pidcard' AND divisi='OTC' AND kode=1 ";
 

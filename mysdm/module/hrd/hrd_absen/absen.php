@@ -1,3 +1,38 @@
+<?PHP
+function getUserIPAddrAbshome()
+{
+    // Get real visitor IP behind CloudFlare network
+    if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+        $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+        $_SERVER['HTTP_CLIENT_IP'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+    }
+    $client  = @$_SERVER['HTTP_CLIENT_IP'];
+    $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+    $remote  = $_SERVER['REMOTE_ADDR'];
+
+    if(filter_var($client, FILTER_VALIDATE_IP))
+    {
+        $ip = $client;
+    }
+    elseif(filter_var($forward, FILTER_VALIDATE_IP))
+    {
+        $ip = $forward;
+    }
+    else
+    {
+        $ip = $remote;
+    }
+
+    return $ip;
+}
+
+$puser_ipaddr = getUserIPAddrAbshome();
+if ($puser_ipaddr=="::1") $puser_ipaddr="";
+$_SESSION['IDADDRESS_SYS']=$puser_ipaddr;
+
+?>
+
+
 <?PHP 
     date_default_timezone_set('Asia/Jakarta');
     //include "config/cek_akses_modul.php"; 
@@ -26,6 +61,7 @@
     }
     
     $pmobile_yes=$_SESSION['MOBILE'];
+	$pkaryawanid=$_SESSION['IDCARD'];
 	
     $pjambolehabsen="";
     $pidstatus=$_SESSION['R_STATUSABS'];
@@ -52,11 +88,25 @@
     
     if (empty($pjamabsen)) $pjamabsen=$pjamabsen_g;
     
+	
     
     $query = "select CURRENT_TIME() as jamserver";
     $tampilabsjam=mysqli_query($cnmy, $query);
     $jrow= mysqli_fetch_array($tampilabsjam);
     $pjam_server=$jrow['jamserver'];
+	
+	$pstslokasi="";
+	$pstslokhidden="hidden";
+	if ($pkaryawanid=="0000002262") {
+		$pstslokhidden="";
+		$pmyip_khusus=substr($puser_ipaddr,0,11);
+		if ($pmyip_khusus=="103.130.192") {
+			$pstslokasi="WFO";
+		}else{
+			$pstslokasi="WFH";
+		}
+	}
+	
 ?>
 
 <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
@@ -68,7 +118,7 @@
             <h3>
                 <?PHP
                 //echo "$judul <small>(jam : $pjam_server)</small>";
-                echo "$judul ";
+				echo "$judul ";
                 ?>
             </h3>
             
@@ -110,8 +160,15 @@
                                         
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
-                                            <div class='col-md-8'>
+                                            <div class='col-md-7 col-sm-7 col-xs-12'>
                                                 <textarea class='form-control' id="e_ketabsen" name='e_ketabsen' maxlength='300'><?PHP echo $pket_absen; ?></textarea>
+                                            </div>
+                                        </div>
+										
+                                        <div <?PHP echo $pstslokhidden; ?> class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Sts. Lokasi <span class='required'></span></label>
+                                            <div class='col-md-4 col-sm-4 col-xs-6'>
+                                                <input type='text' id='e_stslok' name='e_stslok' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pstslokasi; ?>' Readonly>
                                             </div>
                                         </div>
                                         
@@ -142,6 +199,8 @@
                                                 ?>
                                             </div>
                                         </div>
+										
+
                                         
 
                                     </div>

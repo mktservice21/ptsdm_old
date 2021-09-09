@@ -94,7 +94,7 @@
                                 var idmenu = urlku.searchParams.get("idmenu");
 
                                 //document.write("You pressed OK!")
-                                document.getElementById("d-form2").action = "module/purchasing/pch_barang/aksi_barang.php?module="+module+"&idmenu="+idmenu+"&act="+ket+"&kethapus="+"&ket="+ket+"&id="+noid;
+                                document.getElementById("d-form2").action = "module/purchasing/pch_barang/aksi_pchbarang.php?module="+module+"&idmenu="+idmenu+"&act="+ket+"&kethapus="+"&ket="+ket+"&id="+noid;
                                 document.getElementById("d-form2").submit();
                                 return 1;
                             }

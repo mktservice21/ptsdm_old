@@ -1,3 +1,6 @@
+<?PHP
+include "config/cek_akses_modul.php";
+?>
 <div class="">
 
     <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Report Raw Data Per Cabang</h3></div></div><div class="clearfix"></div>
@@ -202,9 +205,15 @@
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for='distibutor'>Region <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <select class='form-control' name='cbregion' id='cbregion' onchange="ShowDataCabangRegion()">
-                                                    <option value="" selected>--All--</option>
-                                                    <option value="B">Barat</option>
-                                                    <option value="T">Timur</option>
+                                                    <?PHP
+                                                    if ($pmyidcard=="0000001201" OR $pmyidcard=="0000001900" OR $pmyidcard=="0000001099" OR $pmyidcard=="0000002329") {
+                                                        echo "<option value='B'>Barat</option>";
+                                                    }else{
+                                                        echo "<option value='' selected>--All--</option>";
+                                                        echo "<option value='B'>Barat</option>";
+                                                        echo "<option value='T'>Timur</option>";
+                                                    }
+                                                    ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -217,11 +226,22 @@
                                                     <?PHP
                                                     //if ($pmyjabatanid!="15" AND $pmyjabatanid!="10" AND $pmyjabatanid!="18")  echo "<option value=''>--Pilih--</option>";
                                                     $pno=0;
-                                                    $query_pilih = "select iCabangId, nama, aktif from sls.icabang where "
-                                                            . " 1=1 AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -') $filtercabangbyadmin ";
-                                                    
+                                                    if ($pmyidcard=="0000001201" OR $pmyidcard=="0000001900") {
+                                                        $query_pilih = "SELECT iCabangId, nama, aktif FROM sls.icabang WHERE 1=1 "
+                                                                . " AND icabangid in (select distinct icabangid from sls.ism0 WHERE karyawanid='0000000017')";
+                                                    }elseif ($pmyidcard=="0000001099") {
+                                                        $query_pilih = "SELECT iCabangId, nama, aktif FROM sls.icabang WHERE 1=1 "
+                                                                . " AND icabangid in (select distinct icabangid from sls.ism0 WHERE karyawanid='0000000031')";
+                                                    }elseif ($pmyidcard=="0000002329") {
+                                                        $query_pilih = "select iCabangId, nama, aktif from sls.icabang where "
+                                                                . " 1=1 AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -') AND region='B' ";
+                                                    }else{
+                                                        $query_pilih = "select iCabangId, nama, aktif from sls.icabang where "
+                                                                . " 1=1 AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -') $filtercabangbyadmin ";
+                                                    }
                                                     $query =$query_pilih." AND aktif='Y' ";
                                                     $query .=" order by nama";
+                                                    
                                                     $tampil = mysqli_query($cnms, $query);
                                                     while ($rx= mysqli_fetch_array($tampil)) {
                                                         $nidcab=$rx['iCabangId'];

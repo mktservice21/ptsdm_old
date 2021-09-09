@@ -450,9 +450,9 @@ if ($pidact=="editdata"){
                             
                             
                             <?PHP
-                            echo "<br/>*) <b>sebelum mengisi detail, pastikan bulan dan kode periode sudah sesuai.</b><br/>";
+                            echo "<br/>*) <b>sebelum mengisi detail, pastikan bulan sudah sesuai.</b><br/>";
                             $ptomboldetail = "<input type='button' class='btn btn-info btn-xs' "
-                                    . " onclick=\"CariDataDariBulan()\" value='Klik disini jika detail atau absensinya tidak sesuai.' >";
+                                    . " onclick=\"CariDataDariBulan()\" value='Klik disini jika detail atau absensinya tidak muncul.' >";
                             echo "$ptomboldetail";
                             ?>
                             

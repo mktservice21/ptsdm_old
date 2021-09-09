@@ -24,12 +24,10 @@ if (!empty($pidabsen)) {
     $pgambarabs=$rimg['nama'];
 }
 
-
 $query = "select CURRENT_TIME() as jamserver";
 $tampilabsjam=mysqli_query($cnmy, $query);
 $jrow= mysqli_fetch_array($tampilabsjam);
 $pjam_server=$jrow['jamserver'];
-
 
 ?>
 
@@ -60,11 +58,12 @@ $pjam_server=$jrow['jamserver'];
         <?PHP
         if (empty($pgambarabs)) {
             //echo "<p>Jam Server : $pjam_server</p>";
-            echo "<p>&nbsp;</p>";
+			echo "<p>&nbsp;</p>";
         }else{
             echo "<p>&nbsp;</p>";
         }
         ?>
+        
     </div>
 </div>
 

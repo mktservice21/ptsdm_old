@@ -1,16 +1,54 @@
 <?php
+function getUserIPAddrAbs()
+{
+	// Get real visitor IP behind CloudFlare network
+	if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+			  $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+			  $_SERVER['HTTP_CLIENT_IP'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+	}
+	$client  = @$_SERVER['HTTP_CLIENT_IP'];
+	$forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+	$remote  = $_SERVER['REMOTE_ADDR'];
+
+	if(filter_var($client, FILTER_VALIDATE_IP))
+	{
+		$ip = $client;
+	}
+	elseif(filter_var($forward, FILTER_VALIDATE_IP))
+	{
+		$ip = $forward;
+	}
+	else
+	{
+		$ip = $remote;
+	}
+
+	return $ip;
+}
+
+
 date_default_timezone_set('Asia/Jakarta');
 ini_set("memory_limit","512M");
 ini_set('max_execution_time', 0);
-
+	
+	
 session_start();
 
+
+$puser_ipaddr = getUserIPAddrAbs();
+if ($puser_ipaddr=="::1") $puser_ipaddr="";
+$_SESSION['IDADDRESS_SYS']=$puser_ipaddr;
+	
+	
 $pcardidabsen="";
 if (isset($_SESSION['IDCARD'])) $pcardidabsen=$_SESSION['IDCARD'];
 
 if (empty($pcardidabsen)) {
     echo "Anda Harus Login Ulang... (GAGAL)"; exit;
 }
+
+$puser_ipaddr="";
+if (isset($_SESSION['IDADDRESS_SYS'])) $puser_ipaddr=$_SESSION['IDADDRESS_SYS'];
 
 $pmodule="";
 $pact="";
@@ -266,7 +304,7 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
             $pkodesudahinput=$row['idabsen'];
             $psudahpernahabsen_masuk=true;
             if ($pkodesudahinput=="0") $pkodesudahinput="";
-            
+			
         }else{
             
             mysqli_close($cnmy);
@@ -280,40 +318,57 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     //cek Lokasi MASUK WFO atau WFH
     $psudahabsenmasuk_status="";
     if ($pkey<>"1") {
-        
-        $query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='1' AND karyawanid='$pcardidabsen'";
-        $tampil_= mysqli_query($cnmy, $query);
-        $nrow= mysqli_fetch_array($tampil_);
-        $psudahabsenmasuk_status=$nrow['l_status'];
+		
+		if ($pcardidabsen=="0000002262") {
+		}else{
+			
+			$query = "select * from hrd.t_absen WHERE tanggal=CURRENT_DATE() AND kode_absen='1' AND karyawanid='$pcardidabsen'";
+			$tampil_= mysqli_query($cnmy, $query);
+			$nrow= mysqli_fetch_array($tampil_);
+			$psudahabsenmasuk_status=$nrow['l_status'];
 
-        if (!empty($psudahabsenmasuk_status)) {
-            if ($plokasiabs<>$psudahabsenmasuk_status) {
-                mysqli_close($cnmy);
-                echo "Tidak bisa absen pulang...\n"."Absen masuk anda $psudahabsenmasuk_status...";
-                exit;
-            }
-        }
+			if (!empty($psudahabsenmasuk_status)) {
+				if ($plokasiabs<>$psudahabsenmasuk_status) {
+					mysqli_close($cnmy);
+					echo "Tidak bisa absen pulang...\n"."Absen masuk anda $psudahabsenmasuk_status...";
+					exit;
+				}
+			}
+			
+		}
         
     }
         
-        
+	//NIKA (khusus)
+	if ($pcardidabsen=="0000002262") {
+		$pmyip_khusus=substr($puser_ipaddr,0,11);
+		if ($pmyip_khusus=="103.130.192") {
+			$plokasiabs="WFO";
+		}else{
+			$plokasiabs="WFH";
+		}
+		
+		//echo "GAGAL... TEST, $plokasiabs ($pmyip_khusus)"; exit;
+	}
+		
+    
     if ($psudahpernahabsen_masuk==true AND $pkey=="1" AND !empty($pkodesudahinput)) {
         
         
-        $query = "UPDATE hrd.t_absen SET jam=DATE_FORMAT(CURRENT_TIME(),'%H:%i'), l_latitude='$plangitut', l_longitude='$plongitut', l_status='$plokasiabs', l_radius='$pradius_rds', l_jarak='$pjarakdarilokasi', keterangan='$pketabsen' WHERE idabsen='$pkodesudahinput' "
-                . " AND kode_absen='1' AND tanggal=CURRENT_DATE() AND karyawanid='$pcardidabsen' LIMIT 1";
+        $query = "UPDATE hrd.t_absen SET jam=DATE_FORMAT(CURRENT_TIME(),'%H:%i'), l_latitude='$plangitut', l_longitude='$plongitut', l_status='$plokasiabs', l_radius='$pradius_rds', l_jarak='$pjarakdarilokasi', keterangan='$pketabsen' WHERE idabsen='$pkodesudahinput' AND 
+				kode_absen='1' AND tanggal=CURRENT_DATE() AND karyawanid='$pcardidabsen' LIMIT 1";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
         $pkodeid=$pkodesudahinput;
         
     }elseif ($psudahpernahabsen_masuk==true AND $pkey=="2" AND !empty($pkodesudahinput)) {
         
-        $query = "UPDATE hrd.t_absen SET jam=DATE_FORMAT(CURRENT_TIME(),'%H:%i'), l_latitude='$plangitut', l_longitude='$plongitut', l_status='$plokasiabs', l_radius='$pradius_rds', l_jarak='$pjarakdarilokasi', keterangan='$pketabsen' WHERE idabsen='$pkodesudahinput' "
-                . " AND kode_absen='2' AND tanggal=CURRENT_DATE() AND karyawanid='$pcardidabsen' LIMIT 1";
+        $query = "UPDATE hrd.t_absen SET jam=DATE_FORMAT(CURRENT_TIME(),'%H:%i'), l_latitude='$plangitut', l_longitude='$plongitut', l_status='$plokasiabs', l_radius='$pradius_rds', l_jarak='$pjarakdarilokasi', keterangan='$pketabsen' WHERE idabsen='$pkodesudahinput' AND "
+                . " kode_absen='2' AND tanggal=CURRENT_DATE() AND karyawanid='$pcardidabsen' LIMIT 1";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
         
         $pkodeid=$pkodesudahinput;
-        
+		
     }else{
     
         $query = "INSERT INTO hrd.t_absen(kode_absen, karyawanid, tanggal, jam, l_latitude, l_longitude, l_status, l_radius, l_jarak, keterangan)VALUES"
@@ -353,8 +408,8 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     if ($psudahpernahabsen_masuk==true AND $pkey=="1" AND !empty($pkodesudahinput)) {
         $query = "UPDATE dbimages2.img_absen SET nama='$pfile' WHERE idabsen='$pkodeid' AND kode_absen='$pkey' AND tanggal=CURRENT_DATE()  LIMIT 1";
-    }elseif ($psudahpernahabsen_masuk==true AND $pkey=="2" AND !empty($pkodesudahinput)) {
-        $query = "UPDATE dbimages2.img_absen SET nama='$pfile' WHERE idabsen='$pkodeid' AND kode_absen='2' AND tanggal=CURRENT_DATE()  LIMIT 1";
+	}elseif ($psudahpernahabsen_masuk==true AND $pkey=="2" AND !empty($pkodesudahinput)) {
+		$query = "UPDATE dbimages2.img_absen SET nama='$pfile' WHERE idabsen='$pkodeid' AND kode_absen='2' AND tanggal=CURRENT_DATE()  LIMIT 1";
     }else{
         $query = "INSERT INTO dbimages2.img_absen(idabsen, kode_absen, tanggal, nama)VALUES"
                 . "('$pkodeid', '$pkey', CURRENT_DATE(), '$pfile')";//, gambar , '$pimg'
@@ -371,10 +426,8 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
     
     $pberhasil="berhasil\n"."Status : $plokasiabs\n"."Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen";
     
-    
-    
-    
-    
+	
+	
     $njadwalwfo="N";
     $pdapatuangmakan=false;
     $pjamkerja=0;
@@ -440,17 +493,17 @@ if ($pmodule=="hrdabsenmasuk" AND ($pact=="absenmasuk" || $pact=="absenpulang"))
         
         //echo "Jadwal WFO";
         if ($pdapatuangmakan==true) {
-            $pberhasil="xberhasil\n"."Status : $plokasiabs\n"."Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen\n"."Jam Kerja : $pselisih_jam, Dapat Uang Makan";
+            $pberhasil="berhasil\n"."Status : $plokasiabs\n"."Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen\n"."Jam Kerja (Durasi) : $pselisih_jam, Dapat Uang Makan";
         }else{
-            $pberhasil="xberhasil\n"."Status : $plokasiabs\n"."Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen\n"."Jam Kerja : $pselisih_jam, Tidak Dapat Uang Makan\n"."Minimal $pjamkerja Jam Kerja";
+            $pberhasil="berhasil\n"."Status : $plokasiabs\n"."Anda berhasil $pnamaabse, Tgl : $ptglabsen, Jam : $pjamabsen\n"."Jam Kerja (Durasi) : $pselisih_jam, Tidak Dapat Uang Makan\n"."Minimal $pjamkerja Jam Kerja";
         }
         
-        echo $pberhasil;
+        //echo $pberhasil;
     }
     //exit;//hilangkan
+	
     
-    
-    
+
     mysqli_close($cnmy);
 
     //$pberhasil="$pmodule | $pact = $pkey : $plangitut, $plongitut";

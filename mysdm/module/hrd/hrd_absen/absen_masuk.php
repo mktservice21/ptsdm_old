@@ -38,7 +38,7 @@ if (!empty($pidabsen)) {
                     echo "$ntempatabsen";
                 }else{
                     echo "<img src='$folderfotofileabs' width='50px' height='50px' />";
-                    echo "<span><i style='font-size:15px; font-wight:bold;'>$ntempatabsen</i></span>";
+					echo "<span><i style='font-size:15px; font-wight:bold;'>$ntempatabsen</i></span>";
                 }
             }else{
                 echo $iconasli;

@@ -53,7 +53,7 @@ $ptgl1 = date('01/m/Y', strtotime('-1 month', strtotime($hari_ini)));
 $ptgl2 = date('t/m/Y', strtotime('-1 month', strtotime($hari_ini)));
 
 $pnbln= date("Ym", strtotime($pbln));
-$query = "select idrutin from dbmaster.t_brrutin0 WHERE karyawanid='$pidcard' AND DATE_FORMAT(bulan,'%Y%m')='$pnbln' AND kodeperiode='1'";
+$query = "select idrutin from dbmaster.t_brrutin0 WHERE kode='1' AND karyawanid='$pidcard' AND DATE_FORMAT(bulan,'%Y%m')='$pnbln' AND kodeperiode='1'";
 $tampilj= mysqli_query($cnmy, $query);
 $ketemuj= mysqli_num_rows($tampilj);
 if ((INT)$ketemuj>0) {
@@ -459,7 +459,7 @@ if ($pidact=="editdata"){
                             <?PHP
                             echo "<br/>*) <b>sebelum mengisi detail, pastikan bulan dan kode periode sudah sesuai.</b><br/>";
                             $ptomboldetail = "<input type='button' class='btn btn-info btn-xs' "
-                                    . " onclick=\"CariDataDariBulan()\" value='Klik disini jika detail atau absensinya tidak sesuai.' >";
+                                    . " onclick=\"CariDataDariBulan()\" value='Klik disini jika detail atau absensinya tidak muncul.' >";
                             echo "$ptomboldetail";
                             ?>
                             

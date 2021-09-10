@@ -16,7 +16,7 @@
     $pidcardapv=$_SESSION['IDCARD'];
     $pidcabang=$_POST['ucabang'];
     $pidarea=$_POST['uarea'];
-    $pbulanawal="202107"; //jangan lupa di aksi_listcustomernew.php ganti $bulaninput=
+    $pbulanawal="202108"; //jangan lupa di aksi_listcustomernew.php ganti $bulaninput=
 
     $_SESSION['LSTCUSTNEWICAB']=$pidcabang;
     $_SESSION['LSTCUSTNEWIARE']=$pidarea;

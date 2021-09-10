@@ -560,9 +560,12 @@
         include 'module/mod_br_monitoringks/aksi_brmonitoringks.php';
         
     }elseif ($_GET['module']=='entrybrrutinho'){
-        include 'module/mod_br_brrutinho/laporanbrrutinho.php';
+        //include 'module/mod_br_brrutinho/laporanbrrutinho.php';
+        include 'module/budget/bgt_brrutinho/laporanbrrutinho.php';
     }elseif ($_GET['module']=='entrybrrutinhodivchc'){
-        include 'module/mod_br_brrutinho/laporanbrrutinho.php';
+        //include 'module/mod_br_brrutinho/laporanbrrutinho.php';
+        include 'module/budget/bgt_brrutinho/laporanbrrutinho.php';
+        
     }elseif ($_GET['module']=='laprincianbrrutinbykry'){
         include 'module/laporan/mod_lap_rincianbrrutinkry/aksi_laprincianbrrutinkry.php';
         

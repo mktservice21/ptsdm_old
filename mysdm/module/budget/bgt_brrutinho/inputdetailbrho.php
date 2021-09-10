@@ -245,6 +245,10 @@
                     $preadonly_um=" readonly ";
                 }
                 
+                if ($pkodeidbr=="04"){
+                    $pnilaireadonly="Readonly";
+                }
+                
                 $pfldkilometer="<span $phiddentxt_km>KM : <input type='text' size='10px' id='e_txtkm[$pkodeidbr]' name='e_txtkm[$pkodeidbr]'  class='input-sm inputmaskrp2' autocomplete='off' value='$pkm'><span>";
                 
                 $pfldjmlrp="<input type='$phiddentxt' size='10px' id='e_txtjmlrp[$pkodeidbr]' name='e_txtjmlrp[$pkodeidbr]' onblur=\"HitungTotalNilai('e_txtjmlrp[$pkodeidbr]', 'e_txtnilairp[$pkodeidbr]', 'e_txttotalrp[$pkodeidbr]')\" class='input-sm inputmaskrp2' autocomplete='off' value='$prpjumlah' $preadonly_um>";

@@ -236,6 +236,7 @@ if ($pmodule=="cekdatasudahada") {
     $pkodeperiode=$_POST['ukode'];
     $pbln=$_POST['ubulan'];
     $pkaryawanid=$_POST['ukry'];
+    $pdivisi=$_POST['udivid'];
     $pnbln =  date("Ym", strtotime($pbln));
     
     $query = "select nama from hrd.karyawan WHERE karyawanid='$pkaryawanid'";
@@ -251,7 +252,7 @@ if ($pmodule=="cekdatasudahada") {
 
     //cari absensi
     
-    if ($pkodeperiode=="2") {
+    if ($pkodeperiode=="2" OR $pdivisi=="OTC") {
         include "cari_absen_karyawan.php";
         $pjumlahabs = CariAbsensiByKaryawan("inc", $pkaryawanid, $pbln);
 

@@ -126,13 +126,18 @@ if ($pmodule=='entrybrrutinho' OR $pmodule=='entrybrrutinhodivchc')
                 exit;
             }
         }
-
+        
+        $ppengajuan_divisi="ETH";
         $pdivisiid=$_POST['e_divisiid'];
         if (empty($pdivisiid)) {
             mysqli_close($cnmy);
             $pketeksekusi="Gagal Simpan, divisi tidak ada...";
             goto errorsimpan;
             exit;
+        }
+        
+        if ($pdivisiid=="OTC" OR $pdivisiid=="CHC" OR $pdivisiid=="OT") {
+            $ppengajuan_divisi="HO";
         }
         
         $pidkaryawan=$_POST['e_idkaryawan'];
@@ -456,10 +461,10 @@ if ($pmodule=='entrybrrutinho' OR $pmodule=='entrybrrutinhodivchc')
             
             $query="insert into dbmaster.t_brrutin0 (idrutin, karyawanid, icabangid, areaid, KODEWILAYAH, tgl, kode, "
                     . " bulan, kodeperiode, periode1, periode2, nama_karyawan, jabatanid, divisi, atasanid, atasan4, "
-                    . " keterangan, nopol, userid)values"
+                    . " keterangan, nopol, userid, divi)values"
                     . "('$kodenya', '$pidkaryawan', '$pidcabang', '$pareaid', '$pwilgabungan', Current_Date(), 1, "
                     . " '$pbln', '$pkdperiode', '$ptgl1', '$ptgl2', '$pnamakaryawan', '$pjbtid', '$pdivisiid', '$patasan', '$patasan4', "
-                    . " '$pnotes', '$pidnopol', '$pcardid')";
+                    . " '$pnotes', '$pidnopol', '$pcardid', '$ppengajuan_divisi')";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $pketeksekusi="error insert ke data rutin"; mysqli_close($cnmy); goto errorsimpan; }
 
@@ -493,6 +498,14 @@ if ($pmodule=='entrybrrutinho' OR $pmodule=='entrybrrutinhodivchc')
                 . " idrutin='$kodenya' LIMIT 1"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update data rutin"; goto errorsimpan; }
+        
+        
+        
+        if ($pdivisiid=="OTC" OR $pdivisiid=="CHC" OR $pdivisiid=="OT") {
+            $query = "UPDATE dbmaster.t_brrutin0 SET icabangid_o='$pidcabang', areaid_o='$pareaid' WHERE idrutin='$kodenya' LIMIT 1"; 
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update cabang chc data rutin"; goto errorsimpan; }
+        }
         
         
         if ($pact=="input") {

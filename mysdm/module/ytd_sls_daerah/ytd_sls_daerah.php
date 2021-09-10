@@ -78,13 +78,10 @@
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <select class='form-control' name='cb_region' id='cb_region' onchange="ShowDataCabangRegion()">
                                                     <?PHP
-                                                        if ($pmygroupid=="27"){
-                                                        }else{
-                                                            echo "<option value='' selected>--All--</option>";
-                                                        }
-                                                        if ($pmyidcard=="0000000158" OR $pmygroupid=="27") echo "<option value='B' selected>Barat</option>";
+                                                        if ($pmyidcard=="0000000158" OR $pmyidcard=="0000002329" OR $pmyidcard=="0000001099") echo "<option value='B' selected>Barat</option>";
                                                         elseif ($pmyidcard=="0000000159" OR $pmyidcard=="0000002073") echo "<option value='T' selected>Timur</option>";
                                                         else{
+                                                            echo "<option value='' selected>--All--</option>";
                                                             echo "<option value='B'>Barat</option><option value='T'>Timur</option>";
                                                         }
                                                     ?>
@@ -102,6 +99,8 @@
                                                     $query = "SELECT distinct idcabang, nama from ms.cbgytd WHERE "
                                                             . " aktif='Y' ";
                                                     if ($pmygroupid=="1" OR $pmygroupid=="24") {
+                                                    }elseif ($pmyidcard=="0000001099") {
+                                                        $query .=" AND id_sm='0000000031' ";
                                                     }else{
                                                         if ($pmyjabatanid=="20") $query .=" AND id_sm='$pmyidcard' ";
                                                         if ($pmyjabatanid=="08") $query .=" AND id_dm='$pmyidcard' ";

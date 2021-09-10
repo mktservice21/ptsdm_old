@@ -47,10 +47,10 @@
     else $pfilterkrypilih="('$pidcard')";
 
     $now=date("mdYhis");
-    $tmp01 =" dbtemp.TMPRTCAADMHO01_".$puserid."_$now ";
-    $tmp02 =" dbtemp.TMPRTCAADMHO02_".$puserid."_$now ";
-    $tmp03 =" dbtemp.TMPRTCAADMHO03_".$puserid."_$now ";
-    $tmp04 =" dbtemp.TMPRTCAADMHO04_".$puserid."_$now ";
+    $tmp01 =" dbtemp.tmprtnhochclst01_".$puserid."_$now ";
+    $tmp02 =" dbtemp.tmprtnhochclst02_".$puserid."_$now ";
+    $tmp03 =" dbtemp.tmprtnhochclst03_".$puserid."_$now ";
+    $tmp04 =" dbtemp.tmprtnhochclst04_".$puserid."_$now ";
     
     
     $query = "SELECT userid, idrutin, tgl, bulan, periode1, periode2, "

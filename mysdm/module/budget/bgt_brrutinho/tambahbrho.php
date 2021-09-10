@@ -166,7 +166,11 @@ if ($pidact=="editdata"){
     $pidnopol=$r['nopol'];
     
     $pkaryawanid=$r['karyawanid'];
-    $pkaryawannm = getfield("select nama as lcfields from hrd.karyawan where karyawanid='$pkaryawanid'");
+    $query_nm = "select nama from hrd.karyawan WHERE karyawanid='$pkaryawanid'";
+    $tampil_nm= mysqli_query($cnmy, $query_nm);
+    $kr= mysqli_fetch_array($tampil_nm);
+    $pkaryawannm=$kr['nama'];
+    
     
     $pkdperiode=$r['kodeperiode'];
     if ($pkdperiode==1) {
@@ -733,11 +737,12 @@ if ($pidact=="editdata"){
         var ibulan = document.getElementById('e_bulan').value;
         var ikry = document.getElementById('e_idkaryawan').value;
         var ikode = document.getElementById('e_periode').value;
+        var idivid = document.getElementById('e_divisiid').value;
         
         $.ajax({
             type:"post",
             url:"module/budget/bgt_brrutinho/viewdatabrho.php?module=caridataabsentotal",
-            data:"ubulan="+ibulan+"&ukry="+ikry+"&ukode="+ikode,
+            data:"ubulan="+ibulan+"&ukry="+ikry+"&ukode="+ikode+"&udivid="+idivid,
             success:function(data){
                 $("#div_jmlabs").html(data);
                 setTimeout(function () {

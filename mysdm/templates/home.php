@@ -845,8 +845,8 @@ if ( $pnidmodule=="tolsresetpass" ) {
     }elseif ($_GET['module']=='entrybrrutinho'){
         //include 'module/mod_br_brrutinho/brrutinho.php';
         include 'module/budget/bgt_brrutinho/brrutinho.php';
-    }elseif ($_GET['module']=='entrybrrutinho2'){
-        //include 'module/budget/bgt_brrutinho/brrutinho.php';
+    }elseif ($_GET['module']=='entrybrrutinadmcab'){
+        include 'module/budget/bgt_brrutin_admcab/brrutinadmincab.php';
         
         
     }elseif ($_GET['module']=='entrybrrutinhodivchc'){
@@ -990,6 +990,10 @@ if ( $pnidmodule=="tolsresetpass" ) {
         include 'module/hrd/hrd_lokasirumah/lokasirumah.php';
     }elseif ($_GET['module']=='hrdrptabsenmasuk'){
         include 'module/hrd/hrd_rptabsenmasuk/rptabsenmasuk.php';
+    }elseif ($_GET['module']=='hrddatalokasisdmkry'){
+        include 'module/hrd/hrd_lokasi/lokasi.php';
+    }elseif ($_GET['module']=='hrdisidataabsen'){
+        include 'module/hrd/hrd_isidataabsen/isidataabsen.php';
         
 
     }else{

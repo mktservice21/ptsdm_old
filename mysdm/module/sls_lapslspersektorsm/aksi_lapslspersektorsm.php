@@ -152,15 +152,17 @@
         $piarid=$row['areaid'];
         $picustid=$row['icustid'];
         
-        if (strpos($filtercabcus, $picabid.$piarid.$picustid)==false) $filtercabcus .="'".$picabid.$piarid.$picustid."',";        
+        //if (strpos($filtercabcus, $picabid.$piarid.$picustid)==false) $filtercabcus .="'".$picabid.$piarid.$picustid."',";        
+        if (strpos($filtercabcus, $picustid)==false) $filtercabcus .="'".$picustid."',";        
         
     }
     if (!empty($filtercabcus)) $filtercabcus="(".substr($filtercabcus, 0, -1).")";
     else $filtercabcus="('')";
     
     
-    //$query = "select * from sls.icust WHERE CONCAT(icabangid,areaid,IFNULL(icustid,'')) IN (select distinct CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(icustid,'')) FROM $tmp01)";
-    $query = "select * from sls.icust WHERE CONCAT(icabangid,areaid,IFNULL(icustid,'')) IN $filtercabcus";
+    ////$query = "select * from sls.icust WHERE CONCAT(icabangid,areaid,IFNULL(icustid,'')) IN (select distinct CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(icustid,'')) FROM $tmp01)";
+    //$query = "select * from sls.icust WHERE CONCAT(icabangid,areaid,IFNULL(icustid,'')) IN $filtercabcus";
+    $query = "select * from mkt.icust WHERE icustid IN $filtercabcus";
     $query = "create TEMPORARY table $tmp03 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -214,7 +216,7 @@
     
     
     $query = "select s.*, prd.nama nama_produk, ic.isektorid, ise.nama nama_sektor, ise.grp_pvt, ise.nama_pvt "
-            . " from $tmp01 s LEFT JOIN $tmp03 ic on s.icabangid = ic.iCabangId and s.areaid = ic.areaId and s.icustid = ic.iCustId "
+            . " from $tmp01 s LEFT JOIN $tmp03 ic on s.icustid = ic.iCustId "
             . " left join $tmp04 ise on ic.iSektorId = ise.iSektorId "
             . " JOIN $tmp05 prd on s.iprodid=prd.iprodid ";
     $query = "create TEMPORARY table $tmp06 ($query)"; 

@@ -303,6 +303,10 @@
         if ($pkodeidbr=="04" AND $pabsenrutin==true) {
             $preadonly_um=" readonly ";
         }
+        
+        if ($pkodeidbr=="04"){
+            $pnilaireadonly="Readonly";
+        }
                 
         $pfldkilometer="<span><input type='text' size='10px' id='e_txtkm[$pkodeidbr]' name='e_txtkm[$pkodeidbr]'  class='input-sm inputmaskrp2' autocomplete='off' value='$pkm'><span>";
 

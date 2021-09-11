@@ -1,5 +1,5 @@
 <?PHP
-    //include "config/cek_akses_modul.php";
+    include "config/cek_akses_modul.php";
     
     date_default_timezone_set('Asia/Jakarta'); 
     //ini_set("memory_limit","10G");

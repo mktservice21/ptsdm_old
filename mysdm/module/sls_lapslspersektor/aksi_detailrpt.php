@@ -151,7 +151,7 @@
     if (!empty($pidprod)) $query .= " AND iprodid='$pidprod'";
     if (!empty($piddist)) $query .= " AND distid='$piddist' ";
     $query .=" GROUP BY icabangid, areaid, icustid, iprodid ";
-    $query = "create  table $tmp01 ($query)"; 
+    $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -228,7 +228,7 @@
     }
     
     
-    $query = "select * from sls.icust WHERE CONCAT(icabangid,areaid,IFNULL(icustid,'')) "
+    $query = "select * from mkt.icust WHERE CONCAT(icabangid,areaid,IFNULL(icustid,'')) "
             . " IN (select distinct CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(icustid,'')) FROM $tmp01) $filidsektor";
     $query = "create TEMPORARY table $tmp03 ($query)"; 
     //mysqli_query($cnmy, $query);
@@ -236,9 +236,9 @@
     
     $query = "select distinct a.iCabangId, a.areaId, a.iCustId, b.nama, b.alamat1, b.alamat2, b.kodepos, b.contact, b.telp, b.fax, "
             . " b.iKotaId, b.kota, b.iSektorId, b.aktif, b.dispen, b.User1, b.oldFlag, b.scode, b.grp, b.grp_spp, b.istatus, b.iCustId_old "
-            . " from $tmp01 as a LEFT JOIN sls.icust as b on a.icabangid=b.iCabangId AND a.areaid=b.areaId AND a.icustid=b.iCustId "
+            . " from $tmp01 as a LEFT JOIN mkt.icust as b on a.icustid=b.iCustId "
             . " WHERE 1=1 $filidsektor_p";
-    $query = "create  table $tmp03 ($query)"; 
+    $query = "create TEMPORARY table $tmp03 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
@@ -258,13 +258,13 @@
             . " a.icustid, b.nama, b.alamat1, b.alamat2, b.kodepos, b.contact, b.telp, b.fax, b.ikotaid, b.kota, "
             . " $lcfieldpil, "
             . " sum(qty) as qty, sum(ttotal) as ttotal "
-            . " FROM $tmp03 b JOIN $tmp01 a on a.icabangid=b.icabangid AND a.areaid=b.areaid AND a.icustid=b.icustid "
-            . " LEFT JOIN sls.icabang c on b.icabangid=c.icabangid "
-            . " LEFT JOIN sls.iarea d on b.icabangid=d.icabangid AND b.areaid=d.areaid "
+            . " FROM $tmp03 b JOIN $tmp01 a on a.icustid=b.icustid "
+            . " LEFT JOIN sls.icabang c on a.icabangid=c.icabangid "
+            . " LEFT JOIN sls.iarea d on a.icabangid=d.icabangid AND a.areaid=d.areaid "
             . " LEFT JOIN sls.iproduk e on a.iprodid=e.iprodid "
             . " LEFT JOIN MKT.isektor ise on b.iSektorId = ise.iSektorId ";
     $query .= " GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18";
-    echo $query;
+    //echo $query;
     $query = "create TEMPORARY table $tmp04 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -281,7 +281,7 @@
     
     
     $query = "UPDATE $tmp04 a JOIN (select icabangid, areaid, icustid, sum(qty) as qty, sum(ttotal) as ttotal from $tmp01 GROUP BY 1,2,3) b on "
-            . " a.icabangid=b.icabangid AND a.areaid=b.areaid AND a.icustid=b.icustid SET "
+            . " a.icustid=b.icustid SET "
             . " a.qty=b.qty, a.ttotal=b.ttotal"; 
     //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     

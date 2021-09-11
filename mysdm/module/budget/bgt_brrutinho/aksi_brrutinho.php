@@ -159,7 +159,7 @@ if ($pmodule=='entrybrrutinho' OR $pmodule=='entrybrrutinhodivchc')
         $pareaid=$_POST['e_areaid'];
         $pidnopol=$_POST['e_nopolid'];
         
-        //$pjbtid=""; $pidkaryawan="0000002403";
+        
         if (empty($pjbtid)) {
             
             $query = "select karyawanId as karyawanid, nama, iCabangId as icabangid, areaId as areaid, jabatanId as jabatanid, divisiId as divisiid "

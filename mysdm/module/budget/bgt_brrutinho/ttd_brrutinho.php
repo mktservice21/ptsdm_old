@@ -196,6 +196,11 @@ function ReloadTandaTangan(){
             }
         }
         $.subscribe(pubsubprefix + 'image/png;base64', function(data) {
+            if (data=="") {
+                alert("Tanda tangan masih kosong,...\n\
+Ulangi Klik Tombol Save/Simpan.")
+                return false;
+            }
             disp_confirm("Simpan ?", "input", data);
         });
 }

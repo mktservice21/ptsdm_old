@@ -234,12 +234,14 @@
     }
     
     
-    $query = "select * from sls.icust WHERE CONCAT(icabangid,areaid,IFNULL(icustid,'')) "
-            . " IN (select distinct CONCAT(IFNULL(icabangid,''),IFNULL(areaid,''),IFNULL(icustid,'')) FROM $tmp01) $filidsektor";
+    $query = "select * from mkt.icust WHERE icustid "
+            . " IN (select distinct icustid FROM $tmp01) $filidsektor";
     $query = "create TEMPORARY table $tmp03 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "UPDATE $tmp03 as a JOIN $tmp01 as b on a.icustid=b.icustid SET a.icabangid=b.icabangid, a.areaid=b.areaid"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $lcfieldpil=" b.isektorid, ise.nama nama_sektor ";
@@ -254,9 +256,9 @@
             . " a.icustid, b.nama, b.alamat1, b.alamat2, b.kodepos, b.contact, b.telp, b.fax, b.ikotaid, b.kota, "
             . " $lcfieldpil, "
             . " sum(qty) as qty, sum(ttotal) as ttotal "
-            . " FROM $tmp03 b JOIN $tmp01 a on a.icabangid=b.icabangid AND a.areaid=b.areaid AND a.icustid=b.icustid "
-            . " LEFT JOIN sls.icabang c on b.icabangid=c.icabangid "
-            . " LEFT JOIN sls.iarea d on b.icabangid=d.icabangid AND b.areaid=d.areaid "
+            . " FROM $tmp03 b JOIN $tmp01 a on a.icustid=b.icustid "
+            . " LEFT JOIN sls.icabang c on a.icabangid=c.icabangid "
+            . " LEFT JOIN sls.iarea d on a.icabangid=d.icabangid AND a.areaid=d.areaid "
             . " LEFT JOIN sls.iproduk e on a.iprodid=e.iprodid "
             . " LEFT JOIN MKT.isektor ise on b.iSektorId = ise.iSektorId ";
     $query .= " GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18";

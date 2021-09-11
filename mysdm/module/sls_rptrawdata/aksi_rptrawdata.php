@@ -141,10 +141,8 @@
         LEFT JOIN sls.iarea ar 
         ON s.`icabangid` = ar.`icabangid` 
         AND s.`areaid` = ar.`areaid` 
-        LEFT JOIN sls.`icust` icu 
-        ON s.`icabangid` = icu.`iCabangId` 
-        AND s.`areaid` = icu.`areaId` 
-        AND s.`icustid` = icu.`iCustId` 
+        LEFT JOIN mkt.`icust` icu 
+        ON s.`icustid` = icu.`iCustId` 
         LEFT JOIN sls.`iproduk` ip 
         ON s.`iprodid` = ip.`iprodid`";
     $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";

@@ -183,7 +183,7 @@
                         }
                         ?>
                         
-                        <div class='x_title'>
+                        <div class='x_titleX'>
                             <h2><input class='btn btn-default' type=button value='Tambah Exception Lokasi SDM'
                                 onclick="window.location.href='<?PHP echo "?module=$pidmodule&idmenu=$pidmenu&act=tambahbaruexpkry"; ?>';">
                                 <small></small>

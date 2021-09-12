@@ -294,11 +294,17 @@
                     $pnamafiles_img="kosong";
                     if (!file_exists($folderfotofileabs) AND !empty($nnamaimg)) {
                         $pnamafiles_img="<img src='$folderfotofileabs' width='70px' height='75px' class='zoomimg' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs')\" />";
+                    }else{
+                        $folderfotofileabs_n="images/foto_absen/none_foto.png";
+                        $pnamafiles_img="<img src='$folderfotofileabs_n' width='70px' height='75px' class='zoomimg' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs')\" />";
                     }
 
                     $pnamafiles_img_p="";
                     if (!file_exists($folderfotofileabs_p) AND !empty($nnamaimg_p)) {
                         $pnamafiles_img_p="<img src='$folderfotofileabs_p' width='70px' height='75px' class='zoomimg' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs_p')\" />";
+                    }else{
+                        $folderfotofileabs_n="images/foto_absen/none_foto.png";
+                        $pnamafiles_img_p="<img src='$folderfotofileabs_n' width='70px' height='75px' class='zoomimg' data-toggle='modal' data-target='#myModalImages' onclick=\"ShowFormImages('$folderfotofileabs_p')\" />";
                     }
 
                     /*

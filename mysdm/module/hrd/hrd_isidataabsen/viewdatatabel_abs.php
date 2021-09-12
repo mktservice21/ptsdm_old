@@ -68,6 +68,7 @@
                     <th width='80px'>Jam</th>
                     <th width='30px'>Status</th>
                     <th width='30px'>Lokasi</th>
+                    <th width='30px'>Keterangan</th>
                 </tr>
             </thead>
             <tbody>
@@ -84,6 +85,7 @@
                     $njam=$row['jam'];
                     $nnmabsen=$row['nama_absen'];
                     $nstatus=$row['l_status'];
+                    $nket=$row['keterangan'];
                     
                     
                     $ntgl= date("d-m-Y", strtotime($ntgl));
@@ -99,6 +101,7 @@
                     echo "<td nowrap>$njam</td>";
                     echo "<td nowrap>$nnmabsen</td>";
                     echo "<td nowrap>$nstatus</td>";
+                    echo "<td >$nket</td>";
                     echo "</tr>";
                     
                     $no++;

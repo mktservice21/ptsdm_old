@@ -33,12 +33,13 @@
     $tmp03 =" dbtemp.tmplkshrddt03_".$puserid."_$now ";
     $tmp04 =" dbtemp.tmplkshrddt04_".$puserid."_$now ";
     
-    $query = "select karyawanid, aktif, id_status, a_latitude, a_longitude, a_radius from hrd.karyawan_absen WHERE IFNULL(aktif,'')='Y'";
+    $query = "select id, karyawanid, aktif, id_status, a_latitude, a_longitude, a_radius from hrd.karyawan_absen WHERE 1=1 ";
+    //$query .=" AND IFNULL(aktif,'')='Y'";
     $query = "create TEMPORARY table $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "ALTER TABLE $tmp01 ADD COLUMN itabel VARCHAR(15) DEFAULT '', ADD COLUMN id INT(4) DEFAULT '0', ADD COLUMN nama_karyawan VARCHAR(200), ADD COLUMN e_hilang VARCHAR(1) DEFAULT 'N'";
+    $query = "ALTER TABLE $tmp01 ADD COLUMN urutan INT(4) DEFAULT '0', ADD COLUMN itabel VARCHAR(15) DEFAULT '', ADD COLUMN nama_karyawan VARCHAR(200), ADD COLUMN e_hilang VARCHAR(1) DEFAULT 'N'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "UPDATE $tmp01 SET itabel='LOKASIWFH'";
@@ -53,8 +54,8 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "INSERT INTO $tmp01 (itabel, id, aktif, id_status, a_latitude, a_longitude, a_radius) select "
-            . " 'SDMLOKASI' as itabel, id, 'Y' as aktif, id_status, sdm_latitude, sdm_longitude, sdm_radius from hrd.sdm_lokasi";
+    $query = "INSERT INTO $tmp01 (itabel, id, aktif, id_status, a_latitude, a_longitude, a_radius, urutan) select "
+            . " 'SDMLOKASI' as itabel, id, 'Y' as aktif, id_status, sdm_latitude, sdm_longitude, sdm_radius, id as urutan from hrd.sdm_lokasi";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -93,11 +94,12 @@
             <tbody>
                 <?PHP
                 $query = "SELECT * FROM $tmp01 ";
-                $query .=" ORDER BY id DESC, nama_karyawan, karyawanid";
+                $query .=" ORDER BY urutan DESC, nama_karyawan, karyawanid";
                 $no=1;
                 $tampil=mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     $pidsdm=$row['id'];
+                    $pidurutan=$row['urutan'];
                     $pkaryawanid=$row['karyawanid'];
                     $pnmkaryawan=$row['nama_karyawan'];
                     $paktif=$row['aktif'];
@@ -109,6 +111,7 @@
                     $philang=$row['e_hilang'];
                     
                     $pedit="";
+                    $phapus="";
                     
                     $lokasistatus="";
                     if ($pststabel=="SDMLOKASI" AND $pidsts=="HO1") {
@@ -140,20 +143,28 @@
                             $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdataexpsdmkry&idmenu=$pidmenu&nmun=$pidmenu&id=$pidkry_&s=$pidakt_&n=$pidsts_'>Edit Radius</a>";
                     }elseif ($pststabel=="LOKASIWFH") {
                         $lokasistatus ="(lokasi wfh)";
-                        if ($philang=="Y") {
-                        }else{
+                            $pidnoget=encodeString($pidsdm);
                             $pidkry_=encodeString($pkaryawanid);
                             $pidsts_=encodeString($pidsts);
                             $pidakt_=encodeString($paktif);
-                            $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdatawfh&idmenu=$pidmenu&nmun=$pidmenu&id=$pidkry_&s=$pidakt_&n=$pidsts_'>Edit Radius</a>";
+                        $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdatawfh&idmenu=$pidmenu&nmun=$pidmenu&idnya=$pidnoget&id=$pidkry_&s=$pidakt_&n=$pidsts_'>Edit Radius</a>";
+                        if ($paktif=="Y") {
+                            $pnm_hapus="non aktifkan";
+                            $pket_aktif="N";
+                        }else{
+                            $pedit="";
+                            $pnm_hapus="aktifkan";
+                            $pket_aktif="Y";
                         }
+                        
+                        $phapus="<input type='button' class='btn btn-danger btn-xs' value='$pnm_hapus' onClick=\"ProsesDataAktifNon('hapuswfh', '$pidsdm', '$pket_aktif', '$pkaryawanid', '$pidsts', '$paktif')\">";
                     }
                     
                     $plihatpeta="<button type='button' class='tombol-simpan btn-xs btn-dark' id='ibuttontampil' onclick=\"ShowIframeMapsPerson('$plat', '$plong')\">Preview Maps</button>";
                     
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
-                    echo "<td nowrap>$pedit</td>";
+                    echo "<td nowrap>$pedit $phapus</td>";
                     echo "<td nowrap>$pnmkaryawan</td>";
                     echo "<td nowrap>$lokasistatus</td>";
                     echo "<td nowrap>$paktif</td>";
@@ -202,22 +213,12 @@
     } );
     
 
-    function ProsesDataHapus(ket, noid){
+    
+    function ProsesDataAktifNon(pText_, nId, iAktif, iKry, iSts, nAkt) {
         ok_ = 1;
         if (ok_) {
-            var r = confirm('Apakah akan melakukan proses '+ket+' ...?');
+            var r = confirm('Apakah akan melakukan proses Aktif/Nonaktifkan Lokasi ...?');
             if (r==true) {
-
-                var txt;
-                if (ket=="reject" || ket=="hapus" || ket=="pending") {
-                    var textket = prompt("Masukan alasan "+ket+" : ", "");
-                    if (textket == null || textket == "") {
-                        txt = textket;
-                    } else {
-                        txt = textket;
-                    }
-                }
-
 
                 //document.write("You pressed OK!")
                 var myurl = window.location;
@@ -225,7 +226,7 @@
                 var module = urlku.searchParams.get("module");
                 var idmenu = urlku.searchParams.get("idmenu");
                 
-                document.getElementById("d-form2").action = "module/hrd/hrd_lokasi/aksi_lokasi.php?module="+module+"&act=hapus&idmenu="+idmenu+"&kethapus="+txt+"&ket="+ket+"&id="+noid;
+                document.getElementById("d-form2").action = "module/hrd/hrd_lokasi/aksi_lokasi.php?module="+module+"&act=hapusakt&idmenu="+idmenu+"&istsaktif="+iAktif+"&idnya="+nId+"&idkry="+iKry+"&idsts="+iSts+"&faktif="+nAkt;
                 document.getElementById("d-form2").submit();
                 return 1;
             }
@@ -234,6 +235,7 @@
             return 0;
         }
     }
+    
 </script>
 
 <style>

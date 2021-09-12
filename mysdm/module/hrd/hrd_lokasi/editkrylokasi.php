@@ -13,6 +13,7 @@ $pidcard=$_SESSION['IDCARD'];
 $pidgroup=$_SESSION['GROUP'];
 
 $aksi="";
+$pidnya="";
 $pidrutin="";
 $pidsts="";
 $pidjkt="";
@@ -28,12 +29,14 @@ if ($pidact=="editdatawfh"){
     $pidinput_ec=$_GET['id'];
     $pidinput_ec02=$_GET['s'];
     $pidinput_ec03=$_GET['n']; //HO = sdmholok / CAB = sdmcablok
+    $pidinput_ec04=$_GET['idnya'];
     
+    $pidnya = decodeString($pidinput_ec04);
     $pidrutin = decodeString($pidinput_ec);
     $pidakt = decodeString($pidinput_ec02); // HO1, ....
     $pidsts = decodeString($pidinput_ec03); //HO = sdmholok / CAB = sdmcablok
     
-    $query = "select * from hrd.karyawan_absen WHERE karyawanid='$pidrutin' AND id_status='$pidsts' AND aktif='$pidakt'";
+    $query = "select * from hrd.karyawan_absen WHERE id='$pidnya' AND karyawanid='$pidrutin' AND id_status='$pidsts' AND aktif='$pidakt'";
     $edit= mysqli_query($cnmy, $query);
     
     $pketemu    = mysqli_num_rows($edit);
@@ -114,6 +117,7 @@ if ($pidact=="editdatawfh"){
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Karyawan <span class='required'></span></label>
                                     <div class='col-md-4 col-sm-4 col-xs-9'>
+                                        <input type='hidden' id='e_idnya' name='e_idnya' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidnya; ?>' Readonly>
                                         <input type='hidden' id='e_idkry' name='e_idkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidrutin; ?>' Readonly>
                                         <input type='text' id='e_nmkry' name='e_nmkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamakaryawan; ?>' Readonly>
                                         <input type='hidden' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>

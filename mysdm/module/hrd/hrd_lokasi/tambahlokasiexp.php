@@ -48,7 +48,7 @@ $act="inputkrysdmlokasiexp";
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Karyawan <span class='required'></span></label>
-                                    <div class='col-md-5 col-sm-5 col-xs-9'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <?PHP
                                             echo "<select class='form-control input-sm' id='e_idkry' name='e_idkry' onchange=''>";
                                             $query = "select a.karyawanid as karyawanid, a.nama as nama FROM hrd.karyawan as a JOIN "
@@ -76,7 +76,7 @@ $act="inputkrysdmlokasiexp";
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Status <span class='required'></span></label>
-                                    <div class='col-md-3 col-sm-3 col-xs-7'>
+                                    <div class='col-md-3 col-sm-3 col-xs-12'>
                                         <?PHP
                                             echo "<select class='form-control input-sm' id='e_idstatus' name='e_idstatus' onchange=''>";
                                             echo "<option value='HO1' selected>HO1</option>";
@@ -87,7 +87,7 @@ $act="inputkrysdmlokasiexp";
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Radius <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-7'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <input type='text' id='e_radius' name='e_radius' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pl_radius; ?>' >
                                     </div>
                                 </div>

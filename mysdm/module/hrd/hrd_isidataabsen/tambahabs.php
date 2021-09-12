@@ -95,7 +95,7 @@ if ($pidact=="editdata"){
                                 
                                 <div <?PHP echo $phidekry; ?> class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Karyawan <span class='required'></span></label>
-                                    <div class='col-md-5 col-sm-5 col-xs-9'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <?PHP
                                             echo "<select class='form-control input-sm' id='e_idkry' name='e_idkry' onchange=''>";
                                             $query = "select a.karyawanid as karyawanid, a.nama as nama FROM hrd.karyawan as a JOIN "
@@ -125,7 +125,7 @@ if ($pidact=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-7'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <div class='input-group date' id='tgl01'>
                                             <input type='text' id='tgl1' name='e_periode01' required='required' class='form-control input-sm' placeholder='tgl awal' value='<?PHP echo $ptanggal; ?>' placeholder='dd mmm yyyy' Readonly>
                                             <span class="input-group-addon">
@@ -137,14 +137,14 @@ if ($pidact=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jam <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-7'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <input type='text' id='e_jam' name='e_jam' class='form-control col-md-7 col-xs-12' placeholder="00:00" value='<?PHP echo $pl_jam; ?>' maxlength="5">
                                     </div>
                                 </div>
                                 
                                 <div <?PHP echo $phidekdabs; ?> class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Absen <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-9'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <?PHP
                                             echo "<select class='form-control input-sm' id='e_kdabsen' name='e_kdabsen' onchange=''>";
                                             $query = "select kode_absen, nama_absen FROM hrd.t_absen_kode ";
@@ -166,7 +166,7 @@ if ($pidact=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-9'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <?PHP
                                             echo "<select class='form-control input-sm' id='e_jenisabse' name='e_jenisabse' onchange=''>";
                                             echo "<option value='WFO' $pseljns01>WFO</option>";

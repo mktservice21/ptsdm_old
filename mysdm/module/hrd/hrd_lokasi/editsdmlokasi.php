@@ -75,7 +75,7 @@ if ($pidact=="editdatalsdm"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
-                                    <div class='col-md-2 col-sm-2 col-xs-7'>
+                                    <div class='col-md-2 col-sm-2 col-xs-12'>
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidrutin; ?>' Readonly>
                                         <input type='hidden' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='hidden' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
@@ -85,28 +85,28 @@ if ($pidact=="editdatalsdm"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Status <span class='required'></span></label>
-                                    <div class='col-md-3 col-sm-3 col-xs-7'>
+                                    <div class='col-md-3 col-sm-3 col-xs-12'>
                                         <input type='text' id='e_idstatus' name='e_idstatus' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidsts; ?>' Readonly>
                                     </div>
                                 </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Latitude <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-7'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <input type='text' id='e_lat' name='e_lat' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pl_lat; ?>' Readonly>
                                     </div>
                                 </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Longitude <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-7'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <input type='text' id='e_long' name='e_long' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pl_long; ?>' Readonly>
                                     </div>
                                 </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Radius <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-7'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <input type='text' id='e_radius' name='e_radius' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pl_radius; ?>' >
                                     </div>
                                 </div>

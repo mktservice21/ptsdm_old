@@ -261,7 +261,7 @@
             break;
 
             case "editdata":
-                include "tambahbrho.php";
+                include "tambahabs.php";
             break;
         
         }

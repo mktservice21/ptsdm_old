@@ -73,8 +73,8 @@
     
 
 
-
-    $query = "SELECT nama FROM MKT.icust WHERE icabangid='$icabangid_map' AND areaid='$areaid_map' AND icustid='$icustid_map'";
+//icabangid='$icabangid_map' AND areaid='$areaid_map' AND 
+    $query = "SELECT nama FROM MKT.icust WHERE icustid='$icustid_map'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
     $pnmicustsdm=$row['nama'];
@@ -112,12 +112,12 @@
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+    //a.icabangid=c.icabangid AND b.areaid=c.areaid AND 
     $query = "select a.nomsales, a.distid, ecabangid, a.ecustid, a.icabangid, b.areaid, a.icustid, c.nama as nmicust, "
             . " a.fakturid, a.tgl, b.iprodid, b.qty, b.src, d.nama as nama_cabang, e.nama as nama_area "
             . " from MKT.msales0 as a LEFT "
             . " JOIN MKT.msales1 as b on a.nomsales=b.nomsales "
-            . " LEFT JOIN MKT.icust as c on a.icabangid=c.icabangid AND b.areaid=c.areaid AND a.icustid=c.icustid "
+            . " LEFT JOIN MKT.icust as c on a.icustid=c.icustid "
             . " LEFT JOIN MKT.icabang as d on a.icabangid=d.icabangid "
             . " LEFT JOIN MKT.iarea as e on a.icabangid=e.icabangid AND b.areaid=e.areaid WHERE "
             . " a.distid='$piddist' and a.ecabangid='$pidecab' and a.fakturid='$pnmfilter' AND left(a.tgl,7)='$pbulan'";

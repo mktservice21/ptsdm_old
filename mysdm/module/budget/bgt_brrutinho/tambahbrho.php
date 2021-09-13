@@ -237,7 +237,7 @@ if ($pidact=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-7'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidrutin; ?>' Readonly>
                                         <input type='hidden' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='hidden' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
@@ -251,7 +251,7 @@ if ($pidact=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Yang Membuat <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-7'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <?PHP
                                         if ($puseradmin==true) {
                                             echo "<select class='form-control input-sm' id='e_idkaryawan' name='e_idkaryawan' onchange='ShowDariKaryawan()'>";
@@ -281,7 +281,7 @@ if ($pidact=="editdata"){
                                     
                                     <div hidden class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                        <div class='col-md-4 col-sm-4 col-xs-7'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             
                                             <input type='text' id='e_jabatanid' name='e_jabatanid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pjabatanid; ?>' Readonly>
                                             <input type='text' id='e_cabangid' name='e_cabangid' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcabang; ?>' Readonly>
@@ -297,7 +297,7 @@ if ($pidact=="editdata"){
                                     
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No Polisi Kendaraan <span class='required'></span></label>
-                                        <div class='col-md-4 col-sm-4 col-xs-7'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <input type='hidden' id='e_nopolidX' name='e_nopolidX' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidnopol; ?>' Readonly>
                                             
                                             <?PHP
@@ -329,7 +329,7 @@ if ($pidact=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bulan </label>
-                                    <div class='col-md-3 col-sm-4 col-xs-7'>
+                                    <div class='col-md-3 col-sm-4 col-xs-12'>
                                         <div class='input-group date' id='thnbln01x'>
                                             <input type='text' class='form-control' id='e_bulan' name='e_bulan' autocomplete='off' value='<?PHP echo $pbln; ?>' Readonly />
                                             <span class='input-group-addon'>
@@ -342,7 +342,7 @@ if ($pidact=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Kode Periode <span class='required'></span></label>
-                                    <div class='col-md-3 col-sm-4 col-xs-7'>
+                                    <div class='col-md-3 col-sm-4 col-xs-12'>
                                         <select class='form-control input-sm' id='e_periode' name='e_periode' onchange="showDariKodePeriode()">
                                             <?PHP
                                                 if ((int)$tglhariini > 20) {
@@ -361,7 +361,7 @@ if ($pidact=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='mytgl01'>Periode <span class='required'></span></label>
-                                    <div class='col-md-3 col-sm-4 col-xs-7'>
+                                    <div class='col-md-3 col-sm-4 col-xs-12'>
                                         <div class="form-group">
                                             <div class='input-group date' id='mytgl01'>
                                                 <input type='text' id='e_periode01' name='e_periode01' autocomplete='off' required='required' class='form-control' placeholder='dd/MM/yyyy' value='<?PHP echo $ptgl1; ?>' data-inputmask="'mask': '99/99/9999'" Readonly>
@@ -390,7 +390,7 @@ if ($pidact=="editdata"){
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Atasan <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-7'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <select class='form-control input-sm' id='e_atasan' name='e_atasan' onchange="">
                                             <?PHP
                                                 echo "<option value='' selected>-- Pilihan --</option>";

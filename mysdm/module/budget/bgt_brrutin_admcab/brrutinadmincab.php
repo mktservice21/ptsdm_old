@@ -205,9 +205,9 @@
                                     <select class='form-control' id="cb_karyawan" name="cb_karyawan">
                                         <?PHP
                                             //echo "<option value=''>--All--</option>";
-                                            if ($pidgroup=="1" OR $pidgroup=="24") {
+                                            if ($fgroupid=="1" OR $fgroupid=="24") {
                                                 $query_kry = "select karyawanId as karyawanid, nama as nama 
-                                                    FROM hrd.karyawan WHERE 1=1 AND jabatanId='38' ";
+                                                    FROM hrd.karyawan WHERE 1=1 AND jabatanId IN ('38', '15', '10', '18', '08', '20') ";
                                                 $query_kry .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
                                                 $query_kry .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
                                                         . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "

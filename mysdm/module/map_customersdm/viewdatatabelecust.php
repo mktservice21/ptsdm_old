@@ -41,7 +41,7 @@
         from MKT.icust as a LEFT JOIN MKT.isektor as b on a.iSektorId=b.iSektorId
         JOIN MKT.icabang as c on a.iCabangId=c.iCabangId
         JOIN MKT.iarea as d on a.iCabangId=d.iCabangId and a.areaId=d.areaId
-        LEFT JOIN MKT.ecust as e on a.iCabangId=e.iCabangId and a.areaId=e.areaId and a.iCustId=e.iCustId 
+        LEFT JOIN MKT.ecust as e on a.iCustId=e.iCustId 
         LEFT JOIN MKT.distrib0 as f on e.DistId=f.distid
         LEFT JOIN MKT.ecabang as g on e.DistId=g.distId and e.cabangid=g.ecabangid ";
     $sql.=" WHERE a.icabangid='$pidcabang' AND ifnull(a.aktif,'')<>'N' ";

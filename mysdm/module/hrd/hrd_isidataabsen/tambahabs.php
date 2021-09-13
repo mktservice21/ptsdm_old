@@ -62,7 +62,7 @@ if ($pidact=="editdata"){
     $ptglini=$ptanggal;
     $ptanggal = date('d F Y', strtotime($ptanggal));
     
-    if (!empty($pkaryawanid)) $phidekry="hidden";
+    //if (!empty($pkaryawanid)) $phidekry="hidden";
     if (!empty($pkodeabsen)) $phidekdabs="hidden";
 }
 ?>
@@ -101,6 +101,9 @@ if ($pidact=="editdata"){
                                             $query = "select a.karyawanid as karyawanid, a.nama as nama FROM hrd.karyawan as a JOIN "
                                                     . " dbmaster.t_karyawan_posisi as b on a.karyawanId=b.karyawanId WHERE 1=1 "
                                                     . " AND IFNULL(b.ho,'')='Y' ";
+                                            if ($pidact=="editdata"){
+                                                $query .=" AND a.karyawanid='$pkaryawanid' ";
+                                            }
                                             $query .=" ORDER BY a.nama";
                                             $tampilk=mysqli_query($cnmy, $query);
                                             while ($krow= mysqli_fetch_array($tampilk)) {

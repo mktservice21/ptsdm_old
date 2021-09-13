@@ -338,7 +338,7 @@
                 var module = urlku.searchParams.get("module");
                 var idmenu = urlku.searchParams.get("idmenu");
                 
-                document.getElementById("d-form2").action = "module/budget/bgt_brrutinho/aksi_brrutinho.php?module="+module+"&act=hapus&idmenu="+idmenu+"&kethapus="+txt+"&ket="+ket+"&id="+noid;
+                document.getElementById("d-form2").action = "module/budget/bgt_brrutin_admcab/aksi_brrutinadmincab.php?module="+module+"&act=hapus&idmenu="+idmenu+"&kethapus="+txt+"&ket="+ket+"&id="+noid;
                 document.getElementById("d-form2").submit();
                 return 1;
             }

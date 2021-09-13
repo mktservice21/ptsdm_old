@@ -201,12 +201,6 @@ if ($pmodule=='entrybrrutinadmcab')
         $pnotes=$_POST['e_ket'];
         $ptotalrp=$_POST['e_totalsemua'];
         
-        
-        $patasan=$_POST['e_atasan'];
-        $patasan1="";//$_POST['e_atasan'];
-        $patasan2="";//$_POST['e_atasan'];
-        $patasan3="";//$_POST['e_atasan'];
-        $patasan4=$_POST['e_atasan'];
     
         if (empty($pbln_c)) {
             mysqli_close($cnmy);
@@ -450,8 +444,59 @@ if ($pmodule=='entrybrrutinadmcab')
         }
         
         
+        $patasan="";
+        $pkdspv=$_POST['e_kdspv'];
+        $pkddm=$_POST['e_kddm'];
+        $pkdsm=$_POST['e_kdsm'];
+        $pkdgsm=$_POST['e_kdgsm'];
         
-        //echo "ID : $kodenya, $pdivisiid, $pjbtid, KRY : $pidkaryawan, Bln : ($pcari_bln) $pbln ($pkdperiode : $ptgl1 - $ptgl2)<br/>$pnotes, Atasan : $patasan, Rp. $ptotalrp<br/>ID CAB : $pidcabang, ID WIL : $pwilgabungan, area : $pareaid, nopol : $pidnopol<br/>A 1 : $patasan1, A 2 : $patasan2, A 3 : $patasan3, A 4 : $patasan4";
+        
+        if (!empty($pkdspv)) {
+            $query_kadm = "select karyawanId FROM dbmaster.t_karyawanadmin WHERE karyawanId='$pkdspv'";
+            $tampil_k= mysqli_query($cnmy, $query_kadm);
+            $ketemu_k= mysqli_num_rows($tampil_k);
+            if ((INT)$ketemu_k>0) $pkdspv="";
+            $ketemu_k=0;
+        }
+        
+        if (!empty($pkddm)) {
+            $query_kadm = "select karyawanId FROM dbmaster.t_karyawanadmin WHERE karyawanId='$pkddm'";
+            $tampil_k= mysqli_query($cnmy, $query_kadm);
+            $ketemu_k= mysqli_num_rows($tampil_k);
+            if ((INT)$ketemu_k>0) $pkddm="";
+            $ketemu_k=0;
+        }
+        
+        
+        
+        $pidatasan5="0000002403";
+        $pisitglspv=false;
+        $pisitgldm=false;
+        $pisitglsm=false;
+        $pisitglgsm=false;
+
+        //$pkdspv="";$pkddm="";$pkdsm="A";$pkdgsm="A";
+
+        if (empty($pkdspv)) {
+            $pisitglspv=true;
+            if (empty($pkddm)) {
+                $pisitgldm=true;
+                if (empty($pkdsm)) {
+                    $pisitglsm=true;
+                    if (empty($pkdgsm)) {
+                        $pisitglgsm=true;
+                    }
+                }
+            }
+        }
+        
+        if (!empty($pkdspv)) $patasan=$pkdspv;
+        elseif (!empty($pkddm)) $patasan=$pkddm;
+        elseif (!empty($pkdsm)) $patasan=$pkdsm;
+        elseif (!empty($pkdgsm)) $patasan=$pkdgsm;
+        
+        //echo "SPV : $pkdspv, DM : $pkddm, SM : $pkdsm, GSM : $pkdgsm<br/>";
+        //echo "ID : $kodenya, $pdivisiid, $pjbtid, KRY : $pidkaryawan, Bln : ($pcari_bln) $pbln ($pkdperiode : $ptgl1 - $ptgl2)<br/>$pnotes, Rp. $ptotalrp<br/>ID CAB : $pidcabang, ID WIL : $pwilgabungan, area : $pareaid, nopol : $pidnopol, atasan : $patasan<br/>";
         //echo "Total Jumlah : $ptotalrp, Total Rinci : $pttotal<br/>"; mysqli_close($cnmy); exit;
         
         //eksekusi 2
@@ -459,10 +504,10 @@ if ($pmodule=='entrybrrutinadmcab')
         if ($pact=="input") {
             
             $query="insert into dbmaster.t_brrutin0 (idrutin, karyawanid, icabangid, areaid, KODEWILAYAH, tgl, kode, "
-                    . " bulan, kodeperiode, periode1, periode2, nama_karyawan, jabatanid, divisi, atasanid, atasan4, "
+                    . " bulan, kodeperiode, periode1, periode2, nama_karyawan, jabatanid, divisi, atasanid, "
                     . " keterangan, nopol, userid, divi)values"
                     . "('$kodenya', '$pidkaryawan', '$pidcabang', '$pareaid', '$pwilgabungan', Current_Date(), 1, "
-                    . " '$pbln', '$pkdperiode', '$ptgl1', '$ptgl2', '$pnamakaryawan', '$pjbtid', '$pdivisiid', '$patasan', '$patasan4', "
+                    . " '$pbln', '$pkdperiode', '$ptgl1', '$ptgl2', '$pnamakaryawan', '$pjbtid', '$pdivisiid', '$patasan', "
                     . " '$pnotes', '$pidnopol', '$pcardid', '$ppengajuan_divisi')";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $pketeksekusi="error insert ke data rutin"; mysqli_close($cnmy); goto errorsimpan; }
@@ -499,14 +544,6 @@ if ($pmodule=='entrybrrutinadmcab')
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update data rutin"; goto errorsimpan; }
         
         
-        
-        if ($pdivisiid=="OTC" OR $pdivisiid=="CHC" OR $pdivisiid=="OT") {
-            $query = "UPDATE dbmaster.t_brrutin0 SET icabangid_o='$pidcabang', areaid_o='$pareaid' WHERE idrutin='$kodenya' LIMIT 1"; 
-            mysqli_query($cnmy, $query);
-            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update cabang chc data rutin"; goto errorsimpan; }
-        }
-        
-        
         if ($pact=="input") {
             $pimgttd=$_POST['txtgambar'];
             $query = "UPDATE dbmaster.t_brrutin0 SET gambar='$pimgttd'  WHERE idrutin='$kodenya' LIMIT 1"; 
@@ -514,24 +551,33 @@ if ($pmodule=='entrybrrutinadmcab')
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update tanda tangan 01"; goto errorsimpan; }
         }
         
-        //update ke atasan
-        $query = "UPDATE dbmaster.t_brrutin0 SET atasan1='', tgl_atasan1=NOW(), atasan2='', tgl_atasan2=NOW(), "
-                . " atasan3='', tgl_atasan3=NOW(), atasan4='$patasan4' WHERE "
-                . " idrutin='$kodenya' LIMIT 1";
-        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update tanda tangan 02"; goto errorsimpan; }
         
         
-        if ($pjbtid=="01" AND $pact=="input") {
-            $query = "UPDATE dbmaster.t_brrutin0 SET atasan4='$pidkaryawan', tgl_atasan4=NULL WHERE idrutin='$kodenya' LIMIT 1";
-            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update tanda tangan 03"; goto errorsimpan; }
+        
+        $query = "UPDATE dbmaster.t_brrutin0 SET atasan1='$pkdspv', atasan2='$pkddm', atasan3='$pkdsm', atasan4='$pkdgsm' WHERE idrutin='$kodenya' LIMIT 1";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update tanda tangan atasan 1,2,3,4"; goto errorsimpan; }
+        
+        if ($pisitglspv==true) {
+            $query = "UPDATE dbmaster.t_brrutin0 SET tgl_atasan1=NOW() WHERE idrutin='$kodenya' LIMIT 1";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update tanda tangan spv"; goto errorsimpan; }
         }
-        
-        if ($pidkaryawan=="0000001479X" AND $pact=="input") {
-            
-            //$query = "UPDATE dbmaster.t_brrutin0 SET atasan4='', tgl_atasan4=NOW() WHERE idrutin='$kodenya' LIMIT 1";
-            //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update tanda tangan 04"; goto errorsimpan; }
-            
+
+        if ($pisitgldm==true) {
+            $query = "UPDATE dbmaster.t_brrutin0 SET tgl_atasan2=NOW() WHERE idrutin='$kodenya' LIMIT 1";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update tanda tangan dm"; goto errorsimpan; }
         }
+
+        if ($pisitglsm==true) {
+            $query = "UPDATE dbmaster.t_brrutin0 SET tgl_atasan3=NOW() WHERE idrutin='$kodenya' LIMIT 1";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update tanda tangan sm"; goto errorsimpan; }
+        }
+
+        if ($pisitglgsm==true) {
+            $query = "UPDATE dbmaster.t_brrutin0 SET tgl_atasan4=NOW() WHERE idrutin='$kodenya' LIMIT 1";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { $phapusinduk="Y"; $pketeksekusi="error update tanda tangan gsm"; goto errorsimpan; }
+        }
+            
+            
         
         
         //detail rincian

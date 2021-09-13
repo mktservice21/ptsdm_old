@@ -50,6 +50,17 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "select * from $tmp01 WHERE kode_absen IN ('1')";
+    $query = "create TEMPORARY table $tmp02 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "UPDATE $tmp01 as a JOIN $tmp02 as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.l_status=b.l_status WHERE "
+            . " a.kode_absen IN ('3', '4')";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
     
     
 ?>
@@ -80,6 +91,7 @@
                 $tampil=mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
                     $pidabsen=$row['idabsen'];
+                    $pkodeabs=$row['kode_absen'];
                     $nnmkry=$row['nama_karyawan'];
                     $ntgl=$row['tanggal'];
                     $njam=$row['jam'];
@@ -92,6 +104,10 @@
                     
                     $pidnoget=encodeString($pidabsen);
                     $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidnoget'>Edit</a>";
+                    
+                    if ($pkodeabs=="3" OR $pkodeabs=="4") {
+                        $pedit="";
+                    }
                     
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";

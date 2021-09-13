@@ -224,6 +224,28 @@ switch($pactpilih){
                                         </div>
 
 
+                                        
+                                        <div class='form-group'>
+                                            <div class='col-sm-12'>
+                                                <b>Report By</b>
+                                                <div class="form-group">
+                                                    <select class='form-control' id="cb_rptby" name="cb_rptby">
+                                                        <?PHP
+                                                        if ($fgroupid=="28") {
+                                                            echo "<option value=''>All</option>";
+                                                            echo "<option value='valinval' selected>Valid / Invalid</option>";
+                                                        }else{
+                                                            echo "<option value='' selected>All</option>";
+                                                            echo "<option value='valinval'>Valid / Invalid</option>";
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        
                                         <div class='form-group'>
                                             <div class='col-sm-12'>
                                                 <b><input type="checkbox" value="c_sum" id="chk_sum" name="chk_sum"> Summary </b>

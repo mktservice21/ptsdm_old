@@ -225,7 +225,7 @@ function CariAbsensiByKaryawan($koneksi, $nkryid, $nbulan) {
 
     $pfilterkaryawanex=" ('', 'ALL', 'all', 'All', 'ALLHO', '$pkryid') ";
     $query ="select distinct a.karyawanid, a.tanggal, a.jam_kerja_wfo FROM hrd.t_absen_jam_kerja_ex as a JOIN "
-            . " (select distinct id_status, tanggal FROM $tmp01) as b on a.tanggal=b.tanggal WHERE "
+            . " (select distinct karyawanid, id_status, tanggal FROM $tmp01) as b on a.tanggal=b.tanggal AND a.karyawanid=b.karyawanid WHERE "
             . " IFNULL(a.karyawanid,'') IN $pfilterkaryawanex "
             . " AND a.id_status=b.id_status";
     $query = "create TEMPORARY table $tmp02 ($query)";

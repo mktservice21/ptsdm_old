@@ -243,9 +243,6 @@
                 $preadonly_um="";
                 if ($pkodeidbr=="04" AND $pabsenrutin==true) {
                     $preadonly_um=" readonly ";
-                }
-                
-                if ($pkodeidbr=="04"){
                     $pnilaireadonly="Readonly";
                 }
                 

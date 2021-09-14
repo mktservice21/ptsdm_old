@@ -140,7 +140,7 @@
     //INSENTIF
     $query = "SELECT CAST(null as DECIMAL(10,0)) as urutan, a.bulan, a.divisi, a.cabang icabangid, b.nama cabang, "
             . " a.jabatan, a.karyawanid, a.nama, a.region, a.jumlah, CAST('' as CHAR(50)) as nodivisi "
-            . " FROM fe_ms.incentiveperdivisi a "
+            . " FROM ms.incentiveperdivisi a "
             . " LEFT JOIN mkt.icabang b on a.cabang=b.iCabangId WHERE IFNULL(a.jumlah,0)<>0 AND "
             . " YEAR(a.bulan)='$ptahun' AND DATE_FORMAT(a.bulan,'%Y-%m')<='$pbulan' ";    
     $query = "create TEMPORARY table $tmp05 ($query)";

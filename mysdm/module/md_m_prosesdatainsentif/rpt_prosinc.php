@@ -106,7 +106,7 @@
         if ($pdivprod=="blank") $fildivisi=" AND IFNULL(a.divisi,'')=''";
         
         $query = "SELECT CAST(null as DECIMAL(10,0)) as urutan, a.bulan, a.divisi, a.cabang icabangid, b.nama cabang, "
-                . " a.jabatan, a.karyawanid, a.nama, a.region, a.jumlah FROM fe_ms.incentiveperdivisi a "
+                . " a.jabatan, a.karyawanid, a.nama, a.region, a.jumlah FROM ms.incentiveperdivisi a "
                 . " LEFT JOIN mkt.icabang b on a.cabang=b.iCabangId WHERE a.bulan='$ptgl1' $fildivisi $pfilterincfrom2";
         //echo $query; goto hapusdata;
         $query = "create  table $tmp01 ($query)";

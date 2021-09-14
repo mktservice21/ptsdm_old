@@ -630,7 +630,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             $query = "ALTER TABLE $tmp01 ADD COLUMN idpraktek INT(10) Unsigned, ADD COLUMN iddokter INT(10) Unsigned, ADD COLUMN outletid INT(10) Unsigned, add column nama_outlet varchar(200), add column nama_dokt varchar(200)";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
-            $query = "UPDATE $tmp01 as a JOIN (select karyawanid, dokterid, idapotik, iddokter, outletid FROM fe_ms.mapping_ks_dsu WHERE "
+            $query = "UPDATE $tmp01 as a JOIN (select karyawanid, dokterid, idapotik, iddokter, outletid FROM ms2.mapping_ks_dsu WHERE "
                     . " karyawanid='$pkaryawanid' and dokterid='$pdokterid') as b on a.idapotik=b.idapotik SET a.iddokter=b.iddokter, a.outletid=b.outletid";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
@@ -638,7 +638,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             $query = "ALTER TABLE $tmp02 ADD COLUMN idpraktek INT(10) Unsigned, ADD COLUMN iddokter INT(10) Unsigned, ADD COLUMN outletid INT(10) Unsigned, add column nama_outlet varchar(200), add column nama_dokt varchar(200)";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
-            $query = "UPDATE $tmp02 as a JOIN fe_ms.mapping_br_dsu as b on a.brid=b.brid SET a.iddokter=b.iddokter, a.outletid=b.outletid";
+            $query = "UPDATE $tmp02 as a JOIN ms2.mapping_br_dsu as b on a.brid=b.brid SET a.iddokter=b.iddokter, a.outletid=b.outletid";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
             echo "<div id='div_map' class='no-print'>";

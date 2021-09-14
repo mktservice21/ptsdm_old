@@ -14,7 +14,7 @@
     $iper1=$_GET['pper1'];
     $iper2=$_GET['pper2'];
     $icab=$_GET['pcb'];
-    $ismid=$_GET['psmid'];
+    $idmid=$_GET['pdmid'];
     $pdiv=$_GET['idiv'];
     $pval=$_GET['qval'];
     $pjns=$_GET['jns'];
@@ -28,7 +28,7 @@
         // Fungsi header dengan mengirimkan raw data excel
         header("Content-type: application/vnd-ms-excel");
         // Mendefinisikan nama file ekspor "hasil-export.xls"
-        header("Content-Disposition: attachment; filename=Rincian Laporan Sales Per Sektor SM.xls");
+        header("Content-Disposition: attachment; filename=Rincian Laporan Sales Per Sektor DM.xls");
     }
     
     
@@ -52,7 +52,7 @@
     $date1=date_create($pbulan1);
     $date2=date_create($pbulan2);
     $pidcabang=$_GET["pcb"];
-    $pidsm=$_GET["psmid"];
+    $piddm=$_GET["pdmid"];
     $pdivisiid=$_GET["idiv"];
     $pjenissektor=$_GET["jns"];
     $pplhothpea=$_GET["incpoth"];
@@ -87,7 +87,7 @@
     }
     
     $pnamaam_p="";
-        $query = "select nama from ms.karyawan where karyawanid='$pidsm'";
+        $query = "select nama from hrd.karyawan where karyawanid='$piddm'";
         $tampilv= mysqli_query($cnmy, $query);
         $nv= mysqli_fetch_array($tampilv);
         $pnamaam_p=$nv['nama'];
@@ -124,8 +124,8 @@
     $pidcard=$_SESSION['IDCARD'];
     $pjabatanid=$_SESSION['JABATANID'];
     
-    $query = "select a.* from sls.ism0 a JOIN sls.icabang b on a.icabangid=b.icabangid WHERE "
-            . " a.karyawanid='$pidsm'";
+    $query = "select a.* from sls.idm0 a JOIN sls.icabang b on a.icabangid=b.icabangid WHERE "
+            . " a.karyawanid='$piddm'";
     if (!empty($pidcabang)) $query .=" AND a.icabangid='$pidcabang' ";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -389,7 +389,7 @@
         echo "<table>";
         echo "<tr>";
             echo "<td>";
-                echo "<a class='btn button1' href='eksekusi3.php?module=$pmodule&act=input&idmenu=$pidmenu&ket=excel&ipilih=$ppilih&iprd=$pprod&pper1=$iper1&iprd=$pprod&pper2=$iper2&pper2=$iper2&pcb=$icab&psmid=$ismid&idiv=$pdiv&qval=$pval&jns=$pjns&incpoth=$pncpoth&niddist=$piddist' target='_blank'>EXCEL</a>";
+                echo "<a class='btn button1' href='eksekusi3.php?module=$pmodule&act=input&idmenu=$pidmenu&ket=excel&ipilih=$ppilih&iprd=$pprod&pper1=$iper1&iprd=$pprod&pper2=$iper2&pper2=$iper2&pcb=$icab&pdmid=$idmid&idiv=$pdiv&qval=$pval&jns=$pjns&incpoth=$pncpoth&niddist=$piddist' target='_blank'>EXCEL</a>";
             echo "</td>";
             echo "<td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</td>";
             echo "<td>";

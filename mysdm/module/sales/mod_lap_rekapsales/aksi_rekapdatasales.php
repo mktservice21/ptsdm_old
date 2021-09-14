@@ -42,7 +42,7 @@
     
     
     $query = "select divprodid, CONCAT(LEFT(bulan,7),'-01') as bulan, sum(value_sales) as value_sales "
-            . " from fe_ms.sales WHERE "
+            . " from sls.sales WHERE "
             . " bulan BETWEEN '$pbulan01' AND '$pbulan02' ";
     $query .=" GROUP BY 1,2";
     $query = "create temporary table $tmp01 ($query)";

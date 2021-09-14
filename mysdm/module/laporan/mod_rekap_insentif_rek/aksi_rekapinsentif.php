@@ -44,7 +44,7 @@
 
     
     $query = "SELECT CAST(null as DECIMAL(10,0)) as urutan, a.bulan, a.cabang icabangid, b.nama cabang, "
-            . " a.jabatan, a.karyawanid, a.nama, a.region, SUM(a.jumlah) as jumlah FROM fe_ms.incentiveperdivisi a "
+            . " a.jabatan, a.karyawanid, a.nama, a.region, SUM(a.jumlah) as jumlah FROM ms.incentiveperdivisi a "
             . " LEFT JOIN mkt.icabang b on a.cabang=b.iCabangId WHERE a.bulan='$ptgl1' $fildivisi ";
     if (!empty($pincfrom)) {
         $query .=" AND IFNULL(a.jenis2,'')='$pincfrom' ";

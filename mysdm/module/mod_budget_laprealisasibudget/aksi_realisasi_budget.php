@@ -308,7 +308,7 @@
     mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $tmp04");
     
     //SALES
-    $query = "select divprodid, sum(value_sales) as value_sales, sum(value_target) as value_target from fe_ms.sales WHERE YEAR(bulan)='$ptahun' AND DATE_FORMAT(bulan,'%Y-%m') <= '$pbulan' GROUP BY 1";
+    $query = "select divprodid, sum(value_sales) as value_sales, sum(value_target) as value_target from sls.sales WHERE YEAR(bulan)='$ptahun' AND DATE_FORMAT(bulan,'%Y-%m') <= '$pbulan' GROUP BY 1";
     $query = "create TEMPORARY table $tmp04 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

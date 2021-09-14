@@ -12,7 +12,7 @@
         // Fungsi header dengan mengirimkan raw data excel
         header("Content-type: application/vnd-ms-excel");
         // Mendefinisikan nama file ekspor "hasil-export.xls"
-        header("Content-Disposition: attachment; filename=Laporan Sales Per Sektor By SM.xls");
+        header("Content-Disposition: attachment; filename=Laporan Sales Per Sektor By DM.xls");
     }
     
     include("config/koneksimysqli_ms.php");
@@ -33,7 +33,7 @@
     $date1=date_create($pbulan1);
     $date2=date_create($pbulan2);
     $pidcabang=$_POST["cb_cabang"];
-    $pidsm=$_POST["cb_sm"];
+    $piddm=$_POST["cb_dm"];
     $pdivisiid=$_POST["cb_divisi"];
     $pjenissektor=$_POST["rd_rptny"];
     $ppilhqtyval=$_POST["rd_rptjns"];
@@ -56,7 +56,7 @@
     }
     
     $pnamaam_p="";
-        $query = "select nama from ms.karyawan where karyawanid='$pidsm'";
+        $query = "select nama from hrd.karyawan where karyawanid='$piddm'";
         $tampilv= mysqli_query($cnmy, $query);
         $nv= mysqli_fetch_array($tampilv);
         $pnamaam_p=$nv['nama'];
@@ -93,8 +93,8 @@
     $pidcard=$_SESSION['IDCARD'];
     $pjabatanid=$_SESSION['JABATANID'];
     
-    $query = "select a.* from sls.ism0 a JOIN sls.icabang b on a.icabangid=b.icabangid WHERE "
-            . " a.karyawanid='$pidsm'";
+    $query = "select a.* from sls.idm0 a JOIN sls.icabang b on a.icabangid=b.icabangid WHERE "
+            . " a.karyawanid='$piddm'";
     if (!empty($pidcabang)) $query .=" AND a.icabangid='$pidcabang' ";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnmy, $query);
@@ -394,7 +394,7 @@
 
 <HTML>
 <HEAD>
-    <title>Laporan Sales Per Sektor By SM</title>
+    <title>Laporan Sales Per Sektor By DM</title>
     <?PHP if ($ppilihrpt!="excel") { ?>
         <meta http-equiv="Expires" content="Mon, 01 Mei 2050 1:00:00 GMT">
         <meta http-equiv="Pragma" content="no-cache">
@@ -442,7 +442,7 @@
 
 <div id='n_content'>
     
-    <center><div class='h1judul'>Laporan Sales Per Sektor By SM</div></center>
+    <center><div class='h1judul'>Laporan Sales Per Sektor By DM</div></center>
     
     <div id="divjudul">
         <table class="tbljudul">
@@ -655,9 +655,9 @@
                     $plinkrpttot_valunit=$prtjumlah;
                     if ((double)$prtjumlah<>0) {
                         $prtjumlah=number_format($prtjumlah,0,",",",");
-                        $plinkrpttot_valunit="<a href='eksekusi3.php?module=detailsaleslappersektorsm&act=input&idmenu=$pidmenu&ket=bukan"
+                        $plinkrpttot_valunit="<a href='eksekusi3.php?module=detailsaleslappersektordm&act=input&idmenu=$pidmenu&ket=bukan"
                                 . "&ipilih=$pkosong&iprd=$pidprod&pper1=$pbulan1&pper2=$pbulan2"
-                                . "&pcb=$pidcabang&psmid=$pidsm&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
+                                . "&pcb=$pidcabang&pdmid=$piddm&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
                                 . " target='_blank'>$prtjumlah</a>";
                     }else{
                         $plinkrpttot_valunit=number_format($prtjumlah,0,",",",");
@@ -697,9 +697,9 @@
                         $plinkrpt_valunit=$prjumlah;
                         if ((double)$prjumlah<>0) {
                             $prjumlah=number_format($prjumlah,0,",",",");
-                            $plinkrpt_valunit="<a href='eksekusi3.php?module=detailsaleslappersektorsm&act=input&idmenu=$pidmenu&ket=bukan"
+                            $plinkrpt_valunit="<a href='eksekusi3.php?module=detailsaleslappersektordm&act=input&idmenu=$pidmenu&ket=bukan"
                                     . "&ipilih=$pidsektor&iprd=$pidprod&pper1=$pbulan1&pper2=$pbulan2"
-                                    . "&pcb=$pidcabang&psmid=$pidsm&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
+                                    . "&pcb=$pidcabang&pdmid=$piddm&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
                                     . " target='_blank'>$prjumlah</a>";
                         }else{
                             $plinkrpt_valunit=number_format($prjumlah,0,",",",");
@@ -759,9 +759,9 @@
                     $plinkrptgrp_valunit=$nvalue;
                     if ((double)$nvalue<>0) {
                         $nvalue=number_format($nvalue,0,",",",");
-                        $plinkrptgrp_valunit="<a href='eksekusi3.php?module=detailsaleslappersektorsm&act=input&idmenu=$pidmenu&ket=bukan"
+                        $plinkrptgrp_valunit="<a href='eksekusi3.php?module=detailsaleslappersektordm&act=input&idmenu=$pidmenu&ket=bukan"
                                 . "&ipilih=$pidsektor&iprd=$pkosong&pper1=$pbulan1&pper2=$pbulan2"
-                                . "&pcb=$pidcabang&psmid=$pidsm&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
+                                . "&pcb=$pidcabang&pdmid=$piddm&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
                                 . " target='_blank'>$nvalue</a>";
                     }else{
                         $plinkrptgrp_valunit=number_format($nvalue,0,",",",");
@@ -774,9 +774,9 @@
                 }
                 
                 $pkosong="";
-                $plinkrptgrp_valunit="<a href='eksekusi3.php?module=detailsaleslappersektorsm&act=input&idmenu=$pidmenu&ket=bukan"
+                $plinkrptgrp_valunit="<a href='eksekusi3.php?module=detailsaleslappersektordm&act=input&idmenu=$pidmenu&ket=bukan"
                         . "&ipilih=$pkosong&iprd=$pkosong&pper1=$pbulan1&pper2=$pbulan2"
-                        . "&pcb=$pidcabang&psmid=$pidsm&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
+                        . "&pcb=$pidcabang&pdmid=$piddm&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
                         . " target='_blank'>$pgtotalval</a>";
                 
                 echo "<td nowrap align='right'>$plinkrptgrp_valunit</td>";

@@ -58,7 +58,7 @@ if ((INT)$ketemud>0) {
     $npcabangid=$np['icabangid'];
     $npareaid=$np['areaid'];
 }else{
-    $query = "SELECT distinct iddokter, icabangid FROM fe_ms.mapping_br_dsu WHERE brid IN "
+    $query = "SELECT distinct iddokter, icabangid FROM ms2.mapping_br_dsu WHERE brid IN "
             . " (select distinct IFNULL(brId,'') as brid FROM hrd.br0 WHERE mrid='$pidkry' AND dokterId='$piddokt')";
     $tampild= mysqli_query($cnmy, $query);
     $ketemud= mysqli_num_rows($tampild);

@@ -52,13 +52,13 @@
         if (!empty($sr_id)) $filterkaryawan2=" AND karyawanid='$sr_id' ";
 
 
-        $query = "select distinct IFNULL(karyawanid,'') karyawanid from fe_ms.t_call_incentive WHERE (left(bulan,7)= '$periode1') $filterkaryawan2 $filterjabatan";
+        $query = "select distinct IFNULL(karyawanid,'') karyawanid from ms.t_call_incentive WHERE (left(bulan,7)= '$periode1') $filterkaryawan2 $filterjabatan";
         $query = "create TEMPORARY table $tmp04 ($query)"; 
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         
-        //$filtersudahproses=" AND srid NOT IN (select distinct IFNULL(karyawanid,'') FROM fe_ms.t_call_incentive WHERE (left(bulan,7)= '$periode1'))";
+        //$filtersudahproses=" AND srid NOT IN (select distinct IFNULL(karyawanid,'') FROM ms.t_call_incentive WHERE (left(bulan,7)= '$periode1'))";
         $filtersudahproses=" AND srid NOT IN (select distinct IFNULL(karyawanid,'') FROM $tmp04)";
         
         $query = "select * from hrd.persen_call WHERE (left(tgl,7)= '$periode1') $filterkaryawan $filterjabatan $filtersudahproses";

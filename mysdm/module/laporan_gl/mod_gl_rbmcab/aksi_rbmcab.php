@@ -411,7 +411,7 @@
         
     }else{
         
-        $query = "select icabangid, date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from fe_ms.sales WHERE YEAR(bulan)='$periode' ";// DATE_FORMAT(bulan,'%Y%m')='$npppperi'
+        $query = "select icabangid, date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from sls.sales WHERE YEAR(bulan)='$periode' ";// DATE_FORMAT(bulan,'%Y%m')='$npppperi'
         if ($pidgrouppil=="8") {
             $ppilregion="B";
             if ($picardid=="0000000159") $ppilregion="T";

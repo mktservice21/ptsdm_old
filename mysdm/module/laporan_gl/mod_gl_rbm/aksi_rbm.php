@@ -368,7 +368,7 @@
         
     }elseif ($ppildivisiid=="ETHICAL") {
         
-        $query = "select date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from fe_ms.sales WHERE YEAR(bulan)='$periode' ";
+        $query = "select date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from sls.sales WHERE YEAR(bulan)='$periode' ";
         
         if ($pidgrouppil=="8") {
             $ppilregion="B";
@@ -390,7 +390,7 @@
     }else{
         
     
-        $query = "select date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from fe_ms.sales WHERE YEAR(bulan)='$periode' GROUP BY 1,2";
+        $query = "select date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from sls.sales WHERE YEAR(bulan)='$periode' GROUP BY 1,2";
         $query = "create TEMPORARY table $tmp04 ($query)";
         mysqli_query($cnit, $query);
         $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

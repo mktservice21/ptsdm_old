@@ -475,6 +475,10 @@
         include 'module/sls_lapslspersektorsm/aksi_lapslspersektorsm.php';
     }elseif ($_GET['module']=='detailsaleslappersektorsm'){
         include 'module/sls_lapslspersektorsm/aksi_detailrptsm.php';
+    }elseif ($_GET['module']=='saleslappersektordm'){
+        include 'module/sls_lapslspersektordm/aksi_lapslspersektordm.php';
+    }elseif ($_GET['module']=='detaildetailsaleslappersektorsm'){
+        include 'module/sls_lapslspersektordm/aksi_detailrptdm.php';
         
         
     }elseif ($_GET['module']=='laptgtdaerahsmgsm'){

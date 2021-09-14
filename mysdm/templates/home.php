@@ -346,6 +346,8 @@ if ( $pnidmodule=="tolsresetpass" ) {
         include 'module/sls_lapslspersektorreg/lapslspersektorreg.php';
     }elseif ($_GET['module']=='saleslappersektorsm'){
         include 'module/sls_lapslspersektorsm/lapslspersektorsm.php';
+    }elseif ($_GET['module']=='saleslappersektordm'){
+        include 'module/sls_lapslspersektordm/lapslspersektordm.php';
     }elseif ($_GET['module']=='slsrptrawdatacab'){
         include 'module/sls_rptrawdata/rptrawdata.php';
     }elseif ($_GET['module']=='slsrptrowdatasektor'){

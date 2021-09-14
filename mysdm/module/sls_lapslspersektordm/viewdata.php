@@ -23,22 +23,27 @@ if ($pmodule=="caricabangdm") {
     
 
     
-    $query = "select iCabangId, nama from sls.icabang where "
-            . " aktif='Y' AND icabangid IN (select distinct IFNULL(icabangid,'') from sls.idm0 WHERE karyawanid='$filsm') ";
-    $query .=" order by nama";
+    $query = "select iCabangId, nama, aktif from sls.icabang where "
+            . " icabangid IN (select distinct IFNULL(icabangid,'') from sls.idm0 WHERE karyawanid='$filsm') ";//aktif='Y' AND 
+    $query .=" order by aktif DESC, nama";
     $tampil = mysqli_query($cnms, $query);
     $ketemu= mysqli_num_rows($tampil);
     
     if ((INT)$ketemu>1) echo "<option value=''>-- All --</option>";
-    elseif ((INT)$ketemu<=0) echo "<option value='nonecabang' selected>-- None --</option>";
+    elseif ((INT)$ketemu<=0) echo "<option value='nonecabang' selected></option>";
     while ($rx= mysqli_fetch_array($tampil)) {
         $nidcab=$rx['iCabangId'];
         $nnmcab=$rx['nama'];
+        $nnmaktif=$rx['aktif'];
+        
+        $namaaktif="Aktif";
+        if ($nnmaktif!="Y") $namaaktif="Non Aktif";
+                                                        
         if ($pidcabangpil==$nidcab)
-            echo "<option value='$nidcab' selected>$nnmcab</option>";
+            echo "<option value='$nidcab' selected>$nnmcab ($namaaktif)</option>";
         else {
-            if ((INT)$ketemu==1) echo "<option value='$nidcab' selected>$nnmcab</option>";
-            else echo "<option value='$nidcab'>$nnmcab</option>";
+            if ((INT)$ketemu==1) echo "<option value='$nidcab' selected>$nnmcab  ($namaaktif)</option>";
+            else echo "<option value='$nidcab'>$nnmcab  ($namaaktif)</option>";
         }
     }
     

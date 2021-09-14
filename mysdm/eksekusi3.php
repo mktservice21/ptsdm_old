@@ -477,7 +477,7 @@
         include 'module/sls_lapslspersektorsm/aksi_detailrptsm.php';
     }elseif ($_GET['module']=='saleslappersektordm'){
         include 'module/sls_lapslspersektordm/aksi_lapslspersektordm.php';
-    }elseif ($_GET['module']=='detaildetailsaleslappersektorsm'){
+    }elseif ($_GET['module']=='detailsaleslappersektordm'){
         include 'module/sls_lapslspersektordm/aksi_detailrptdm.php';
         
         

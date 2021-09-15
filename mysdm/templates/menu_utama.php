@@ -129,7 +129,7 @@ if ($psudhpernahupdatepass=="Y" && $pbukamenuloginnya==true) {
                             
                             if ($pmobile_menu=="N") $query .=" AND IFNULL(a.`S_MENU`,'')='' ";
 
-                            $query .=" ORDER BY a.URUTAN, a.`ID`";
+                            $query .=" ORDER BY a.JUDUL, a.URUTAN, a.`ID`";
 
                             $tampil2=mysqli_query($cnmy, $query);
                             $ketemu2=mysqli_num_rows($tampil2);
@@ -170,7 +170,7 @@ if ($psudhpernahupdatepass=="Y" && $pbukamenuloginnya==true) {
                                         $query .=" a.PARENT_ID='$pidmenu' AND b.ID_GROUP='$pgroupid_menu' ";
                                     }
                                     if (!empty($pmenu_notin_sub)) $query .=" AND a.`ID` NOT IN $pmenu_notin_sub ";
-                                    $query .=" ORDER BY a.`S_MENU`, a.URUTAN, a.`ID`";
+                                    $query .=" ORDER BY a.`S_MENU`, a.JUDUL, a.URUTAN, a.`ID`";
 
                                     $tampil3=mysqli_query($cnmy, $query);
                                     $ketemu3=mysqli_num_rows($tampil3);

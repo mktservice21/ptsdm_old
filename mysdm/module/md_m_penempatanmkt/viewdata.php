@@ -91,7 +91,7 @@ if ($_GET['module']=="viewdatacabang") {
                 . " OR ((IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR tglkeluar='')  AND jabatanId<>'08')";
     }
     
-    $query="select karyawanId, nama from ms.karyawan WHERE 1=1 $filtersts order by nama, karyawanId";
+    $query="select karyawanId, nama from hrd.karyawan WHERE 1=1 $filtersts order by nama, karyawanId";
 
     $tampil=mysqli_query($cnms, $query);
     echo "<option value=''>--Pilih--</option>";

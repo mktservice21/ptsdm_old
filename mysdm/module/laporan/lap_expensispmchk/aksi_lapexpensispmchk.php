@@ -157,11 +157,11 @@
     //SALES 
     $query = "select icabangid, areaid, icustid, iprodid, 
 		ecustid, distid, ecabangid, grp_sls, cabang, area, cabangytd, outlet, 
-		sektor, alokasi, produk, divprodid, fakturid, tgljual, qty, hna, `value` as rpsales FROM mkt.otc_etl WHERE 
+		sektor, alokasi, produk, divprodid, fakturid, tgljual, qty, hna, `value` as rpsales FROM fe_it.otc_etl WHERE 
                  DATE_FORMAT(tgljual,'%Y%m') BETWEEN '$pperiode1' AND '$pperiode2' AND divprodid <>'OTHER' and icabangid <> 22";
     
     $query = "select a.iprodid, b.nama namaproduk, c.GRP_FKIDEN, d.GRP_NAMESS, sum(a.`value`) as rpsales 
-            from MKT.otc_etl a 
+            from fe_it.otc_etl a 
             left JOIN MKT.iproduk b on a.iprodid=b.iprodid 
             left join MKT.T_OTC_GRPPRD_DETAIL c on b.iprodid=c.GRP_IDPROD
             left join MKT.T_OTC_GRPPRD d on c.GRP_FKIDEN = d.GRP_IDENTS WHERE 

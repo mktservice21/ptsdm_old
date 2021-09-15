@@ -127,9 +127,9 @@
                                                     }else{
                                                         $query_kry="";
                                                         if ($pmyjabatanid=="15") {
-                                                                $query_kry = "select b.karyawanId, b.nama from ms.karyawan b WHERE karyawanId='$pmyidcard' order by b.nama";
+                                                                $query_kry = "select b.karyawanId, b.nama from hrd.karyawan b WHERE karyawanId='$pmyidcard' order by b.nama";
                                                         }elseif ($pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjabatanid=="08" OR $pmyjabatanid=="20") {
-                                                            $query_kry = "select b.karyawanId, b.nama from ms.karyawan b WHERE b.karyawanid IN $filter_karyawan  ";
+                                                            $query_kry = "select b.karyawanId, b.nama from hrd.karyawan b WHERE b.karyawanid IN $filter_karyawan  ";
                                                             /*
                                                             $query_kry .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
                                                                         . " and LEFT(b.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
@@ -140,7 +140,7 @@
                                                             */
                                                             $query_kry .=" ORDER BY b.nama";
                                                         }else{
-                                                            $query_kry = "select b.karyawanId, b.nama from ms.karyawan b WHERE b.karyawanid IN $filter_karyawan  "
+                                                            $query_kry = "select b.karyawanId, b.nama from hrd.karyawan b WHERE b.karyawanid IN $filter_karyawan  "
                                                                         . " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
                                                                             /*
                                                             $query_kry .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "

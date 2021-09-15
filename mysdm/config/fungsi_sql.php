@@ -267,11 +267,11 @@ function CariDataKaryawanByCabJbt($ikryid, $ijbt, $iregion) {
     if ($pidjabatan=="38") {
         $query_cab ="SELECT icabangid as icabangid FROM hrd.rsm_auth WHERE karyawanid='$pidkaryawan'";
     }elseif ($pidjabatan=="20") {
-        $query_cab ="SELECT distinct icabangid as icabangid FROM MKT.ism0 WHERE karyawanid = '$pidkaryawan'";
+        $query_cab ="SELECT distinct icabangid as icabangid FROM sls.ism0 WHERE karyawanid = '$pidkaryawan'";
     }elseif ($pidjabatan=="08") {
-        $query_cab ="SELECT distinct icabangid as icabangid FROM MKT.idm0 WHERE karyawanid = '$pidkaryawan'";
+        $query_cab ="SELECT distinct icabangid as icabangid FROM sls.idm0 WHERE karyawanid = '$pidkaryawan'";
     }elseif ($pidjabatan=="10" OR $pidjabatan=="18") {
-        $query_cab ="SELECT distinct CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) as icabangid FROM MKT.ispv0 WHERE karyawanid = '$pidkaryawan'";
+        $query_cab ="SELECT distinct CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) as icabangid FROM sls.ispv0 WHERE karyawanid = '$pidkaryawan'";
     }elseif ($pidjabatan=="05") {
         $query_cab ="SELECT distinct icabangid as icabangid FROM MKT.icabang WHERE region = '$pidregion'";
     }
@@ -300,7 +300,7 @@ function CariDataKaryawanByCabJbt($ikryid, $ijbt, $iregion) {
         //SM
         if ($pidjabatan<>"20" AND $pidjabatan<>"08" AND $pidjabatan<>"10" AND $pidjabatan<>"18" AND $pidjabatan<>"15") {
 
-            $query ="SELECT distinct karyawanid as karyawanid FROM MKT.ism0 WHERE icabangid IN $pfiltercabpilih";
+            $query ="SELECT distinct karyawanid as karyawanid FROM sls.ism0 WHERE icabangid IN $pfiltercabpilih";
             $tampil= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($tampil);
             if ($ketemu>0) {
@@ -323,7 +323,7 @@ function CariDataKaryawanByCabJbt($ikryid, $ijbt, $iregion) {
         //DM
         if ($pidjabatan<>"08" AND $pidjabatan<>"10" AND $pidjabatan<>"18" AND $pidjabatan<>"15") {
 
-            $query ="SELECT distinct karyawanid as karyawanid FROM MKT.idm0 WHERE icabangid IN $pfiltercabpilih";
+            $query ="SELECT distinct karyawanid as karyawanid FROM sls.idm0 WHERE icabangid IN $pfiltercabpilih";
             $tampil= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($tampil);
             if ($ketemu>0) {
@@ -343,7 +343,7 @@ function CariDataKaryawanByCabJbt($ikryid, $ijbt, $iregion) {
         //SPV
         if ($pidjabatan<>"10" AND $pidjabatan<>"18" AND $pidjabatan<>"15") {
 
-            $query ="SELECT distinct karyawanid as karyawanid FROM MKT.ispv0 WHERE icabangid IN $pfiltercabpilih";
+            $query ="SELECT distinct karyawanid as karyawanid FROM sls.ispv0 WHERE icabangid IN $pfiltercabpilih";
             $tampil= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($tampil);
             if ($ketemu>0) {
@@ -365,9 +365,9 @@ function CariDataKaryawanByCabJbt($ikryid, $ijbt, $iregion) {
         //MR
         if ($pidjabatan<>"15") {
             if ($pidjabatan=="10" OR $pidjabatan=="18") {
-                $query ="SELECT distinct karyawanid as karyawanid FROM MKT.imr0 WHERE CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) IN $pfiltercabpilih";
+                $query ="SELECT distinct karyawanid as karyawanid FROM sls.imr0 WHERE CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) IN $pfiltercabpilih";
             }else{
-                $query ="SELECT distinct karyawanid as karyawanid FROM MKT.imr0 WHERE icabangid IN $pfiltercabpilih";
+                $query ="SELECT distinct karyawanid as karyawanid FROM sls.imr0 WHERE icabangid IN $pfiltercabpilih";
             }
             $tampil= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($tampil);
@@ -448,11 +448,11 @@ function CariDataKaryawanByCabJbt2($ikryid, $ijbt, $iregion) {
     if ($pidjabatan=="38") {
         $query_cab ="SELECT icabangid as icabangid FROM hrd.rsm_auth WHERE karyawanid='$pidkaryawan'";
     }elseif ($pidjabatan=="20") {
-        $query_cab ="SELECT distinct icabangid as icabangid FROM MKT.ism0 WHERE karyawanid = '$pidkaryawan'";
+        $query_cab ="SELECT distinct icabangid as icabangid FROM sls.ism0 WHERE karyawanid = '$pidkaryawan'";
     }elseif ($pidjabatan=="08") {
-        $query_cab ="SELECT distinct icabangid as icabangid FROM MKT.idm0 WHERE karyawanid = '$pidkaryawan'";
+        $query_cab ="SELECT distinct icabangid as icabangid FROM sls.idm0 WHERE karyawanid = '$pidkaryawan'";
     }elseif ($pidjabatan=="10" OR $pidjabatan=="18") {
-        $query_cab ="SELECT distinct CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) as icabangid FROM MKT.ispv0 WHERE karyawanid = '$pidkaryawan'";
+        $query_cab ="SELECT distinct CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) as icabangid FROM sls.ispv0 WHERE karyawanid = '$pidkaryawan'";
     }elseif ($pidjabatan=="05") {
         $query_cab ="SELECT distinct icabangid as icabangid FROM MKT.icabang WHERE region = '$pidregion'";
     }
@@ -481,7 +481,7 @@ function CariDataKaryawanByCabJbt2($ikryid, $ijbt, $iregion) {
         //SM
         if ($pidjabatan<>"20" AND $pidjabatan<>"08" AND $pidjabatan<>"10" AND $pidjabatan<>"18" AND $pidjabatan<>"15") {
 
-            $query ="SELECT distinct karyawanid as karyawanid FROM MKT.ism0 WHERE icabangid IN $pfiltercabpilih";
+            $query ="SELECT distinct karyawanid as karyawanid FROM sls.ism0 WHERE icabangid IN $pfiltercabpilih";
             $tampil= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($tampil);
             if ($ketemu>0) {
@@ -504,7 +504,7 @@ function CariDataKaryawanByCabJbt2($ikryid, $ijbt, $iregion) {
         //DM
         if ($pidjabatan<>"08" AND $pidjabatan<>"10" AND $pidjabatan<>"18" AND $pidjabatan<>"15") {
 
-            $query ="SELECT distinct karyawanid as karyawanid FROM MKT.idm0 WHERE icabangid IN $pfiltercabpilih";
+            $query ="SELECT distinct karyawanid as karyawanid FROM sls.idm0 WHERE icabangid IN $pfiltercabpilih";
             $tampil= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($tampil);
             if ($ketemu>0) {
@@ -524,7 +524,7 @@ function CariDataKaryawanByCabJbt2($ikryid, $ijbt, $iregion) {
         //SPV
         if ($pidjabatan<>"10" AND $pidjabatan<>"18" AND $pidjabatan<>"15") {
 
-            $query ="SELECT distinct karyawanid as karyawanid FROM MKT.ispv0 WHERE icabangid IN $pfiltercabpilih";
+            $query ="SELECT distinct karyawanid as karyawanid FROM sls.ispv0 WHERE icabangid IN $pfiltercabpilih";
             $tampil= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($tampil);
             if ($ketemu>0) {
@@ -546,9 +546,9 @@ function CariDataKaryawanByCabJbt2($ikryid, $ijbt, $iregion) {
         //MR
         if ($pidjabatan<>"15") {
             if ($pidjabatan=="10" OR $pidjabatan=="18") {
-                $query ="SELECT distinct karyawanid as karyawanid FROM MKT.imr0 WHERE CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) IN $pfiltercabpilih";
+                $query ="SELECT distinct karyawanid as karyawanid FROM sls.imr0 WHERE CONCAT(IFNULL(icabangid,''), IFNULL(areaid,''), IFNULL(divisiid,'')) IN $pfiltercabpilih";
             }else{
-                $query ="SELECT distinct karyawanid as karyawanid FROM MKT.imr0 WHERE icabangid IN $pfiltercabpilih";
+                $query ="SELECT distinct karyawanid as karyawanid FROM sls.imr0 WHERE icabangid IN $pfiltercabpilih";
             }
             $tampil= mysqli_query($cnmy, $query);
             $ketemu= mysqli_num_rows($tampil);

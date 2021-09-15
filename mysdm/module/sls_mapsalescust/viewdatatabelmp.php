@@ -35,7 +35,7 @@
     $picabidfil="";
     if ($pidjbtpl=="38" || (DOUBLE)$pidjbtpl==38) {
         $pcabangid="";
-        $query = "select distinct karyawanid as karyawanid, icabangid as icabangid from ms.rsm_auth where karyawanid='$psescardidid'";
+        $query = "select distinct karyawanid as karyawanid, icabangid as icabangid from hrd.rsm_auth where karyawanid='$psescardidid'";
         $tampil= mysqli_query($cnms, $query);
         while ($nro= mysqli_fetch_array($tampil)) {
             $pncab=$nro['icabangid'];

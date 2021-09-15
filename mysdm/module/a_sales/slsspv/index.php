@@ -19,7 +19,7 @@
     $filblnprod1=date_format($date,"Ym");
     
     require_once 'meekrodb.2.3.class.php';
-    $namaspv = DB::queryFirstField("SELECT nama FROM ms.karyawan WHERE karyawanId=%s", $idspv);
+    $namaspv = DB::queryFirstField("SELECT nama FROM hrd.karyawan WHERE karyawanId=%s", $idspv);
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -148,7 +148,7 @@
         $filterkaryawan="";
         if (!empty($sr_id)) $filterkaryawan=" AND a.karyawanid='$sr_id' ";
         
-        $query = "select a.id, a.karyawanid, nama, a.jabatanid, a.jumlah as tpersen from ms.t_call_incentive a JOIN ms.karyawan b on a.karyawanid=b.karyawanid"
+        $query = "select a.id, a.karyawanid, nama, a.jabatanid, a.jumlah as tpersen from ms.t_call_incentive a JOIN hrd.karyawan b on a.karyawanid=b.karyawanid"
                 . " WHERE DATE_FORMAT(bulan,'%Y-%m')='$periode1' $filterkaryawan $filterjabatan";
         $query = "create TEMPORARY table $tmp01 ($query)"; 
         mysqli_query($cnmy, $query);

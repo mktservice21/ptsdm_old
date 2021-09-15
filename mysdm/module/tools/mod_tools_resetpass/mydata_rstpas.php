@@ -24,24 +24,28 @@ $columns = array(
     4=> 'DATE_FORMAT(c.tgl_pass, "%Y%m%d")',
     5=> 'd.USERNAME',
     6=> 'b.nama',
-    7=> 'DATE_FORMAT(a.tglkeluar, "%Y%m%d")'
+    7=> 'f.nama',
+    8=> 'DATE_FORMAT(a.tglmasuk, "%Y%m%d")',
+    9=> 'DATE_FORMAT(a.tglkeluar, "%Y%m%d")'
     
 );
 
 
     $sqlX = "select a.karyawanId as karyawanid, a.pin, c.pin_pass, a.nama as nama_karyawan, "
-            . " a.jabatanId as jabatanid, b.nama as nama_jabatan, c.slogin, a.tglkeluar, c.tgl_pass "
+            . " a.jabatanId as jabatanid, b.nama as nama_jabatan, c.slogin, a.tglkeluar, c.tgl_pass, b.tempat "
             . " from hrd.karyawan as a JOIN "
             . " hrd.jabatan as b on a.jabatanId=b.jabatanId "
             . " LEFT JOIN dbmaster.t_karyawan_posisi as c on a.karyawanId=c.karyawanId ";
     
 $sql = "select a.karyawanId as karyawanid, a.pin, c.pin_pass, a.nama as nama_karyawan, "
-        . " a.jabatanId as jabatanid, b.nama as nama_jabatan, c.slogin, a.tglkeluar, c.tgl_pass, d.USERNAME as username from ("
-        . " select karyawanId, pin, nama, jabatanId, tglkeluar from hrd.karyawan "
-        . " UNION ALL select karyawanId, pin, nama, jabatanId, tglkeluar from dbmaster.t_karyawan_khusus"
+        . " a.jabatanId as jabatanid, b.nama as nama_jabatan, c.slogin, a.tglkeluar, a.tglmasuk, c.tgl_pass, d.USERNAME as username, a.tempat, "
+        . " a.icabangid, f.nama as nama_cabang from ("
+        . " select karyawanId, pin, nama, jabatanId, tglkeluar, tglmasuk, tempat, icabangid from hrd.karyawan "
+        . " UNION ALL select karyawanId, pin, nama, jabatanId, tglkeluar, tglmasuk, tempat, icabangid from dbmaster.t_karyawan_khusus "
         . " ) as a LEFT JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId "
         . " LEFT JOIN dbmaster.t_karyawan_posisi as c on a.karyawanid=c.karyawanId "
-        . " LEFT JOIN dbmaster.sdm_users as d on a.karyawanId=d.karyawanId ";
+        . " LEFT JOIN dbmaster.sdm_users as d on a.karyawanId=d.karyawanId "
+        . " LEFT JOIN mkt.icabang as f on a.icabangid=f.icabangid ";
 $sql.=" WHERE 1=1 ";
 
 if ($fgroupidcard=="1" OR $fgroupidcard=="24") {
@@ -57,6 +61,8 @@ $totalFiltered = $totalData;  // when there is no search parameter then total nu
 if( !empty($requestData['search']['value']) ) {   // if there is a search parameter, $requestData['search']['value'] contains search parameter
     $sql.=" AND ( a.karyawanId LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.nama LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.tempat LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR f.nama LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.jabatanId LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR b.nama LIKE '%".$requestData['search']['value']."%' )";
 }
@@ -82,12 +88,18 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pjabatid=$row['jabatanid'];
     $pnmjabat=$row['nama_jabatan'];
     $pslogin=$row['slogin'];
+    $ptglmasuk=$row['tglmasuk'];
     $ptglkeluar=$row['tglkeluar'];
     $ptglpass=$row['tgl_pass'];
     $pusername=$row['username'];
+    $ptempat=$row['tempat'];
+    $pnamacab=$row['nama_cabang'];
     
     $ppassword=$ppin;
     if ($pslogin=="Y") $ppassword=$ppass_pin;
+    
+    if ($ptglmasuk=="0000-00-00") $ptglmasuk="";
+    if (!empty($ptglmasuk)) $ptglmasuk = date('d/m/Y', strtotime($ptglmasuk));
     
     if ($ptglkeluar=="0000-00-00") $ptglkeluar="";
     if (!empty($ptglkeluar)) $ptglkeluar = date('d/m/Y', strtotime($ptglkeluar));
@@ -118,6 +130,8 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $ptglpass;
     $nestedData[] = $pusername;
     $nestedData[] = $pnmjabat;
+    $nestedData[] = $pnamacab;
+    $nestedData[] = $ptglmasuk;
     $nestedData[] = $ptglkeluar;
     
     $data[] = $nestedData;

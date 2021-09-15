@@ -38,7 +38,7 @@
     
     
     $query = "select distinct idrutin from dbmaster.t_brrutin_ca_close WHERE Year(bulan)='$ptahun'";
-    $query = "create temporary table $tmp05 ($query)";
+    $query = "create  table $tmp05 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -47,6 +47,7 @@
     $query = "select idrutin, bulan, karyawanid, nama_karyawan, divisi, icabangid, jumlah from dbmaster.t_brrutin0 WHERE 1=1 "
             . " AND kode='2' AND YEAR(bulan)='$ptahun' $pfilterjabatan AND idrutin IN "
             . " (select distinct IFNULL(idrutin,'') FROM $tmp05)";
+    echo $query;
     $query = "create temporary table $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

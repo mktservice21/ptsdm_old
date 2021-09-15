@@ -69,7 +69,7 @@ $queryXX = "select a.karyawanid, a.divisiid, a.divisiid as divprodid, a.aktif, a
 $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
-$query = "select nama as nama from ms.karyawan WHERE karyawanid='$pkaryawanid'";
+$query = "select nama as nama from hrd.karyawan WHERE karyawanid='$pkaryawanid'";
 $tampilk= mysqli_query($cnms, $query);
 $rowk= mysqli_fetch_array($tampilk);
 $pnamakaryawan=$rowk['nama'];

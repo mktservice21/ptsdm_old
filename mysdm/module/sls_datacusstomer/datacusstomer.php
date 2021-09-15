@@ -100,7 +100,7 @@
         }
         
         if ($pcaridarikry==true) {
-            $queryk = "select icabangid, areaId, divisiid from ms.karyawan where karyawanid='$pmyidcard'";
+            $queryk = "select icabangid, areaId, divisiid from hrd.karyawan where karyawanid='$pmyidcard'";
             $tampilk= mysqli_query($cnms, $queryk);
             $nk= mysqli_fetch_array($tampilk);
             if (!empty($nk['icabangid'])) {

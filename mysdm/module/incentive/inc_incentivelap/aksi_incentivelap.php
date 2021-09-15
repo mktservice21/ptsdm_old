@@ -154,7 +154,7 @@ $query = "DELETE FROM $tmp01 WHERE ifnull(karyawanid,'') IN ('', '000', '0')";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 
-//$query = "UPDATE $tmp01 as a JOIN ms.karyawan as b on a.karyawanid=b.karyawanid SET a.tglmasuk=b.tglmasuk";
+//$query = "UPDATE $tmp01 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid SET a.tglmasuk=b.tglmasuk";
 //mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 $query = "select 'MR' as sts, karyawanid, jenis, sales, `target`, ach, incentive 
@@ -184,7 +184,7 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
 
 
 $query = "select a.*, b.nama as nama_karyawan, b.tglmasuk, c.nama as nama_cabang, c.region   
-    FROM $tmp02 as a LEFT JOIN ms.karyawan as b on a.karyawanid=b.karyawanid 
+    FROM $tmp02 as a LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid 
     LEFT JOIN sls.icabang as c on a.icabangid=c.icabangid";
 $query = "CREATE TEMPORARY TABLE $tmp03 ($query)";
 mysqli_query($cnms, $query);

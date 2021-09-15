@@ -47,7 +47,7 @@ $(document).ready(function() {
     $tanggal=date_format($date,"Y-m-d");
 
     require_once 'meekrodb.2.3.class.php';
-    $namakry = DB::queryFirstField("SELECT nama FROM ms.karyawan WHERE karyawanId=%s", $idspv);
+    $namakry = DB::queryFirstField("SELECT nama FROM hrd.karyawan WHERE karyawanId=%s", $idspv);
     
     $thnbln=date_format($date,"F Y");
     $thnbln2=date('F Y', strtotime('-1 year', strtotime($tanggal)));

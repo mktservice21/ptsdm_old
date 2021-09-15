@@ -37,7 +37,7 @@
                 { "orderable": true, "targets": 2 },
                 { "orderable": true, "targets": 4 },
                 //{ className: "text-right", "targets": [4] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7] }//nowrap
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7,8,9] }//nowrap
 
             ],
             "language": {
@@ -75,6 +75,8 @@
                     <th width='40px'>Tgl. Ubah Pass</th>
                     <th width='10px'>Username</th>
                     <th width='40px'>Jabatan</th>
+                    <th width='40px'>Cabang</th>
+                    <th width='40px'>Tgl. Masuk</th>
                     <th width='40px'>Tgl. Keluar</th>
                 </tr>
             </thead>

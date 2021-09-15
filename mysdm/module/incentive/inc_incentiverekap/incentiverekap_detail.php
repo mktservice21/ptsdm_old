@@ -34,7 +34,7 @@ $query = "DELETE FROM $tmp01 WHERE IFNULL(incentive,0)=0";
 mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
 
 
-$query = "select a.*, b.nama as nama_karyawan from $tmp01 as a JOIN ms.karyawan as b on a.karyawanid=b.karyawanid";
+$query = "select a.*, b.nama as nama_karyawan from $tmp01 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid";
 $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
@@ -751,7 +751,7 @@ echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1'>";
 echo "<tr><th>Nama</th><th>Status Approve</th><th>Tgl. Approve</th></tr>";
 
 $query = "select a.karyawanid, b.nama, a.status as sts, date_format(a.sys_time,'%d/%m/%Y %H:%i:%s') as sys_time 
-    from ms.approve_insentif as a JOIN ms.karyawan as b on a.karyawanid=b.karyawanid 
+    from ms.approve_insentif as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid 
     WHERE LEFT(bulan,7)='$pfbln' ";
 if (!empty($pincfrom) AND $pincfrom<>"ALL") $query .=" AND a.sts_apv='$pincfrom' ";
 $query .=" order by a.sys_time";

@@ -61,7 +61,7 @@ if ($pincfrom=="GSM" OR $pincfrom=="ALL") {
 
 
 $query = "select a.sts, a.karyawanid, b.nama as nama_karyawan, sum(a.sales) as sales, sum(a.`target`) as `target`, 
-    sum(incentive) as incentive, CAST(0 as DECIMAL(20,2)) as ach FROM $tmp01 as a JOIN ms.karyawan as b on a.karyawanid=b.karyawanid";
+    sum(incentive) as incentive, CAST(0 as DECIMAL(20,2)) as ach FROM $tmp01 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid";
 $query .=" GROUP BY 1,2,3";
 $query = "CREATE TEMPORARY TABLE $tmp02 ($query)";
 mysqli_query($cnms, $query);
@@ -282,7 +282,7 @@ echo "<table id='dttable' border='1' cellspacing='0' cellpadding='1'>";
 echo "<tr><th>Nama</th><th>Status Approve</th><th>Tgl. Approve</th></tr>";
 
 $query = "select a.karyawanid, b.nama, a.status as sts, date_format(a.sys_time,'%d/%m/%Y %H:%i:%s') as sys_time 
-    from ms.approve_insentif as a JOIN ms.karyawan as b on a.karyawanid=b.karyawanid 
+    from ms.approve_insentif as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid 
     WHERE LEFT(bulan,7)='$pfbln' ";
 if (!empty($pincfrom) AND $pincfrom<>"ALL") $query .=" AND a.sts_apv='$pincfrom' ";
 $query .=" order by a.sys_time";

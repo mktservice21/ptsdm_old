@@ -38,7 +38,7 @@ $sql = "select a.id, a.tanggal, a.bulan1, a.bulan2, a.icabangid as icabangid, b.
     a.areaid, a.iddokter, a.idpraktek, a.divprodid, a.createdby as karyawanid, c.nama as nama_karyawan, 
     a.jenis_br, a.kode, a.jumlah, a.keterangan ";
 $sql.=" FROM ms2.br as a LEFT JOIN mkt.icabang as b on a.icabangid=b.icabangId "
-        . " LEFT JOIN ms.karyawan as c on LPAD(ifnull(a.createdby,0), 10, '0')=c.karyawanId ";
+        . " LEFT JOIN hrd.karyawan as c on LPAD(ifnull(a.createdby,0), 10, '0')=c.karyawanId ";
 $sql.=" WHERE 1=1 ";
 $sql.=" AND a.`kode` IN ('700-02-03', '700-04-03', '700-01-03') ";
 //$sql.=" AND a.icabangId='$pcabangid' ";

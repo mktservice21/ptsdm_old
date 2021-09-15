@@ -262,9 +262,9 @@
     $npppperi=$periode."12";
     
     if ($ppildivisiid=="OTC") {
-        $query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from MKT.otc_etl WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1,2,3";
+        $query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from fe_it.otc_etl WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1,2,3";
     }else{
-        $query = "select icabangid, date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from dbmaster.sales WHERE YEAR(bulan)='$periode' GROUP BY 1,2,3";// DATE_FORMAT(bulan,'%Y%m')='$npppperi'
+        $query = "select icabangid, date_format(bulan,'%Y-%m') bulan, divprodid, sum(value_sales) as rpsales from sls.sales WHERE YEAR(bulan)='$periode' GROUP BY 1,2,3";// DATE_FORMAT(bulan,'%Y%m')='$npppperi'
     }
     $query = "create TEMPORARY table $tmp04 ($query)";
     mysqli_query($cnit, $query);

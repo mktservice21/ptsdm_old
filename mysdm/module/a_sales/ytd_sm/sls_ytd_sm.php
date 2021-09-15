@@ -12,7 +12,7 @@ require_once 'meekrodb.2.3.class.php';
 //echo $bulan."<br>";
 //echo $region."<br>";
 //echo $cbgytd."<br>";
-$namasm = DB::queryFirstField("SELECT nama FROM ms.karyawan WHERE karyawanid=%s", $idsm);
+$namasm = DB::queryFirstField("SELECT nama FROM hrd.karyawan WHERE karyawanid=%s", $idsm);
 ?>
 
 <script>

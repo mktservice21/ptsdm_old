@@ -127,7 +127,7 @@
                             
                                 if ($fjbtid=="38" AND $fgrpid<>"24") {
                                     $query = "select DISTINCT a.icabangid as icabangid, a.nama as nama from MKT.icabang as a "
-                                            . " JOIN ms.rsm_auth as b on a.icabangid=b.icabangid WHERE 1=1 ";
+                                            . " JOIN hrd.rsm_auth as b on a.icabangid=b.icabangid WHERE 1=1 ";
                                     if ($fkaryawan=="0000001900X" OR $fkaryawan=="0000002298X") {
                                         $query .= " AND ( b.karyawanid='$fkaryawan' OR a.icabangid IN ('0000000101', '0000000094', '0000000002', '0000000025', '0000000084', '0000000108') ) ";
                                     }else{

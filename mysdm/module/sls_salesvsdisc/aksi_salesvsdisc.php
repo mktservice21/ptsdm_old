@@ -127,7 +127,7 @@
                 . " iprodid varchar(10), qty DECIMAL(20,2), hna DECIMAL(20,2), tvalue DECIMAL(20,2)";
         if ($piddivisi=="OTHER" OR $piddivisi=="OTHERS") {
             $query = "select CONCAT(LEFT(a.tgljual,8), '01') as bulan, a.distid, sum(a.`value`) as tvalue "
-                    . " from MKT.otc_etl as a "//JOIN MKT.icabang_o as c on a.icabangid=c.icabangid_o
+                    . " from fe_it.otc_etl as a "//JOIN MKT.icabang_o as c on a.icabangid=c.icabangid_o
                     . " where year(a.tgljual)='$pthn' AND a.divprodid ='OTHER' and a.icabangid <> 22 ";
             /*
             if (!empty($pidregion)) {
@@ -146,11 +146,18 @@
             //echo $query;
         }else{
             $query = "select CONCAT(LEFT(a.tgljual,8), '01') as bulan, a.distid, sum(`value`) as tvalue "
-                    . " from MKT.otc_etl as a "
+                    . " from fe_it.otc_etl as a "
                     . " where year(a.tgljual)='$pthn' AND a.divprodid <>'OTHER' and a.icabangid <> 22 ";
             if (!empty($pdistid)) {
                 $query .=" AND a.distid='$pdistid'";
             }
+            
+            if ($pjenisklaim=="R") {
+                $query .=" AND a.icabangid<>'0000000026'";
+            }elseif ($pjenisklaim=="O") {
+                $query .=" AND a.icabangid='0000000026'";
+            }
+            
             $query .= " GROUP BY 1,2";
             //echo $query;
         }

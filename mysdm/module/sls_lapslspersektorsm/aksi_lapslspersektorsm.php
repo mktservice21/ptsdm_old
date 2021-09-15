@@ -56,7 +56,7 @@
     }
     
     $pnamaam_p="";
-        $query = "select nama from ms.karyawan where karyawanid='$pidsm'";
+        $query = "select nama from hrd.karyawan where karyawanid='$pidsm'";
         $tampilv= mysqli_query($cnmy, $query);
         $nv= mysqli_fetch_array($tampilv);
         $pnamaam_p=$nv['nama'];

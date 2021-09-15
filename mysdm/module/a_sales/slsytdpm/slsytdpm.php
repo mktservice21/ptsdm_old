@@ -22,7 +22,7 @@ $filterregion = "";
 $filterdivisi = "";
 if (!empty($region)) $filterregion = " AND region='$region' ";
 if (!empty($divisi)) $filterdivisi = " AND divprodid='$divisi' ";
-$namakry = DB::queryFirstField("SELECT nama FROM ms.karyawan WHERE karyawanId=%s", $karyawanid);
+$namakry = DB::queryFirstField("SELECT nama FROM hrd.karyawan WHERE karyawanId=%s", $karyawanid);
 
 $namadivisi = "";
 

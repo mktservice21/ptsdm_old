@@ -17,7 +17,7 @@ if ($pilihdarims==true) {
     $now=date("mdYhis");
     $tmp00 =" dbtemp.TMPYTDDAR00_".$karyawanid."_$now ";
     
-    $namasm = DB::queryFirstField("SELECT nama FROM ms.karyawan WHERE karyawanid=%s", $idsm);
+    $namasm = DB::queryFirstField("SELECT nama FROM hrd.karyawan WHERE karyawanid=%s", $idsm);
     
     $query = "select * from sls.ytd where bulan='$bulan' and iddaerah IN (select DISTINCT idcabang from ms.cbgytd WHERE id_sm='$idsm')";
     $results1 = DB::query("CREATE TEMPORARY TABLE $tmp00 ($query)");
@@ -42,7 +42,7 @@ if ($pilihdarims==true) {
     //echo $bulan."<br>";
     //echo $region."<br>";
     //echo $cbgytd."<br>";
-    $namasm = DB::queryFirstField("SELECT nama FROM ms.karyawan WHERE karyawanid=%s", $idsm);
+    $namasm = DB::queryFirstField("SELECT nama FROM hrd.karyawan WHERE karyawanid=%s", $idsm);
 
     $now=date("mdYhis");
     $tmp00 =" dbtemp.TMPYTDSM00_".$karyawanid."_$now ";

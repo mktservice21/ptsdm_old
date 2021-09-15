@@ -15,16 +15,16 @@ if ($pmodule=="caricabangdm") {
     $pmyidcard=$_SESSION['IDCARD'];
     $pmyjabatanid=$_SESSION['JABATANID'];
                 
-    $pidsm=$_POST['usm'];
+    $piddm=$_POST['udm'];
     
-    $filsm=$pidsm;
-    if ($pmyjabatanid=="20" OR (DOUBLE)$pmyjabatanid==20) $filsm=$pmyidcard;
+    $fildm=$piddm;
+    if ($pmyjabatanid=="08" OR (DOUBLE)$pmyjabatanid==8) $filsm=$pmyidcard;
         
     
 
     
     $query = "select iCabangId, nama, aktif from sls.icabang where "
-            . " icabangid IN (select distinct IFNULL(icabangid,'') from sls.idm0 WHERE karyawanid='$filsm') ";//aktif='Y' AND 
+            . " icabangid IN (select distinct IFNULL(icabangid,'') from sls.idm0 WHERE karyawanid='$fildm') ";//aktif='Y' AND 
     $query .=" order by aktif DESC, nama";
     $tampil = mysqli_query($cnms, $query);
     $ketemu= mysqli_num_rows($tampil);

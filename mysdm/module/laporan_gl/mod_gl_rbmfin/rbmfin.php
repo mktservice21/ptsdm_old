@@ -219,7 +219,7 @@
                                                         }
                                                         echo "&nbsp; <input type=checkbox value='pilkascab' id='chkbox_rpt15' name='chkbox_rpt15' checked> Kas Kecil Cabang<br/>";
                                                     }else{
-                                                        if ($fgroupid=="28") {//marsis dan ria
+                                                        if ($fgroupid=="28" OR $fgroupid=="61") {//marsis dan ria
                                                             if ($fkaryawan=="0000000329") {//marsis
                                                                 echo "&nbsp; <input type=checkbox value='kaskecil' id='chkbox_rpt3' name='chkbox_rpt3' checked> Kas Kecil<br/>";
                                                                 echo "&nbsp; <input type=checkbox value='kaskecil' id='chkbox_rpt16' name='chkbox_rpt16' > Kasbon<br/>";

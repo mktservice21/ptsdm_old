@@ -94,36 +94,36 @@
                                                 <select class='form-control' name='cb_karyawan' id='cb_karyawan' onchange="">
                                                     <?PHP
                                                     if ($pidjabatan=="15") {
-                                                        $query_data = "select b.karyawanid as karyawanid, b.nama as nama from ms.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
+                                                        $query_data = "select b.karyawanid as karyawanid, b.nama as nama from hrd.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
                                                     }elseif ($pidjabatan=="18" OR $pidjabatan=="10") {
                                                         $query_data = "select distinct a.karyawanid as karyawanid, b.nama as nama 
                                                                 from sls.imr0 as a 
-                                                                JOIN sls.ispv0 as c on a.icabangid=c.icabangid and a.areaid=c.areaid and a.divisiid=c.divisiid join ms.karyawan as b 
+                                                                JOIN sls.ispv0 as c on a.icabangid=c.icabangid and a.areaid=c.areaid and a.divisiid=c.divisiid join hrd.karyawan as b 
                                                                 on a.karyawanid=b.karyawanId WHERE c.karyawanid='$pidkaryawan'";
                                                     }elseif ($pidjabatan=="08") {
                                                         $query_data = "select distinct a.karyawanid as karyawanid, b.nama as nama 
                                                                 from sls.imr0 as a 
-                                                                JOIN sls.idm0 as c on a.icabangid=c.icabangid join ms.karyawan as b 
+                                                                JOIN sls.idm0 as c on a.icabangid=c.icabangid join hrd.karyawan as b 
                                                                 on a.karyawanid=b.karyawanId WHERE c.karyawanid='$pidkaryawan'";
                                                     }elseif ($pidjabatan=="20") {
                                                         $query_data = "select distinct a.karyawanid as karyawanid, b.nama as nama 
                                                                 from sls.imr0 as a 
-                                                                JOIN sls.ism0 as c on a.icabangid=c.icabangid join ms.karyawan as b 
+                                                                JOIN sls.ism0 as c on a.icabangid=c.icabangid join hrd.karyawan as b 
                                                                 on a.karyawanid=b.karyawanId WHERE c.karyawanid='$pidkaryawan'";
                                                     }else{
                                                         if ($pidkaryawan=="0000000158") {
                                                             $query_data = "select distinct a.karyawanid as karyawanid, b.nama as nama 
-                                                                from sls.imr0 as a join ms.karyawan as b on a.karyawanid=b.karyawanid 
+                                                                from sls.imr0 as a join hrd.karyawan as b on a.karyawanid=b.karyawanid 
                                                                 JOIN sls.icabang as c on a.icabangid=c.icabangid WHERE c.region='B'";
                                                         }elseif ($pidkaryawan=="0000000159") {
                                                             $query_data = "select distinct a.karyawanid as karyawanid, b.nama as nama 
-                                                                from sls.imr0 as a join ms.karyawan as b on a.karyawanid=b.karyawanid 
+                                                                from sls.imr0 as a join hrd.karyawan as b on a.karyawanid=b.karyawanid 
                                                                 JOIN sls.icabang as c on a.icabangid=c.icabangid WHERE c.region='T'";
                                                         }else{
                                                             echo "<option value='' selected>--Pilih--</option>";
                                                             if ($pidgroup=="1" OR $pidgroup=="24") {
                                                                 $query_data = "select DISTINCT a.karyawanid as karyawanid, b.nama as nama "
-                                                                        . " from sls.imr0 as a JOIN ms.karyawan as b on a.karyawanid=b.karyawanid";
+                                                                        . " from sls.imr0 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid";
                                                             }
                                                         }
                                                     }

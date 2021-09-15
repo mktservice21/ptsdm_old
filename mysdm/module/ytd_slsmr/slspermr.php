@@ -76,22 +76,22 @@
                                                     <?PHP
                                                     echo "<option value=''>-- Pilih --</option>";
                                                     if ($pmyjabatanid=="15") {
-                                                        $query= "select b.karyawanid, b.nama from ms.karyawan b where karyawanid='$pmyidcard' ";
+                                                        $query= "select b.karyawanid, b.nama from hrd.karyawan b where karyawanid='$pmyidcard' ";
                                                     }elseif ($pmyjabatanid=="10" OR $pmyjabatanid=="18") {
-                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
+                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join hrd.karyawan b on a.karyawanid=b.karyawanid "
                                                                 . " join sls.ispv0 c on a.icabangid=c.icabangid and a.areaid=c.areaid "
                                                                 . " where c.karyawanid='$pmyidcard' ";
                                                     }elseif ($pmyjabatanid=="08") {
-                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
+                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join hrd.karyawan b on a.karyawanid=b.karyawanid "
                                                                 . " join sls.idm0 c on a.icabangid=c.icabangid "
                                                                 . " where c.karyawanid='$pmyidcard' ";
                                                     }elseif ($pmyjabatanid=="20") {
-                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
+                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join hrd.karyawan b on a.karyawanid=b.karyawanid "
                                                                 . " join sls.ism0 c on a.icabangid=c.icabangid "
                                                                 . " where c.karyawanid='$pmyidcard' ";
                                                     }else{
                                                         if ($pmyidcard=="0000000158" OR $pmyidcard=="0000000159") {
-                                                            $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
+                                                            $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join hrd.karyawan b on a.karyawanid=b.karyawanid "
                                                                     . " JOIN ms.icabang c on a.icabangid=c.icabangid where 1=1 ";
                                                             if ($pmyidcard=="0000000158") {
                                                                 $query .= " AND c.region='B' ";
@@ -99,7 +99,7 @@
                                                                 $query .= " AND c.region='T' ";
                                                             }
                                                         }else{
-                                                            $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join ms.karyawan b on a.karyawanid=b.karyawanid ";
+                                                            $query =" select DISTINCT a.karyawanid, b.nama from sls.imr0 a join hrd.karyawan b on a.karyawanid=b.karyawanid ";
                                                         }
                                                     }
                                                     $query .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.')  "

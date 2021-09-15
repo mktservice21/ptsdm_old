@@ -446,7 +446,7 @@
     
     <div id="divjudul">
         <table class="tbljudul">
-            <tr><td>SM</td><td>:</td><td><?PHP echo "$pnamaam_p"; ?></td></tr>
+            <tr><td>DM</td><td>:</td><td><?PHP echo "$pnamaam_p"; ?></td></tr>
             <tr><td>Cabang</td><td>:</td><td><?PHP echo "$pnamacabang_p"; ?></td></tr>
             <tr><td>Distributor</td><td>:</td><td><?PHP echo "$pnmdistirbutor"; ?></td></tr>
             <tr><td>Divisi</td><td>:</td><td><?PHP echo "$pnamadivisi_p"; ?></td></tr>

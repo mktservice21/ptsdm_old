@@ -50,7 +50,7 @@ $tmp03 ="dbtemp.TEMPSLSMRD03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 
-$query = "select nama from ms.karyawan where karyawanid='$pmrpilih'";
+$query = "select nama from hrd.karyawan where karyawanid='$pmrpilih'";
 $tampil= mysqli_query($cnms, $query);
 $rs= mysqli_fetch_array($tampil);
 $pnamakry=$rs['nama'];

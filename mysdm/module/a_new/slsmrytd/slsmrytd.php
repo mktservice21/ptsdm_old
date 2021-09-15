@@ -50,7 +50,7 @@ $(document).ready(function() {
     $date=date_create($bulan);
     $tanggal=date_format($date,"Y-m-d");
     
-    $namakry = DB::queryFirstField("SELECT nama FROM ms.karyawan WHERE karyawanId=%s", $idkaryawan);
+    $namakry = DB::queryFirstField("SELECT nama FROM hrd.karyawan WHERE karyawanId=%s", $idkaryawan);
     
     $thnbln=date_format($date,"F Y");
     $thnbln2=date('F Y', strtotime('-1 year', strtotime($tanggal)));

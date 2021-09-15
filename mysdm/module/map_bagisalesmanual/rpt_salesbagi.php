@@ -60,7 +60,7 @@ $query = "select a.nomsales, a.icabangid, b.areaid, a.icustid, a.distid, a.ecust
         from MKT.msales0 as a join MKT.msales1 as b on a.noMSales=b.noMsales
         WHERE a.distid='$pdistid' AND a.eCabangId='$pecabid' AND left(a.tgl,7)='$pbulan' ";
 if ($pidjbt=="38" AND $pidgrp<>"24") {
-    $query .=" AND ( a.icabangid IN (SELECT IFNULL(icabangid,'') FROM ms.rsm_auth WHERE karyawanid='$fkaryawanid') OR a.user1='$puser' ) ";
+    $query .=" AND ( a.icabangid IN (SELECT IFNULL(icabangid,'') FROM hrd.rsm_auth WHERE karyawanid='$fkaryawanid') OR a.user1='$puser' ) ";
 }
 if (!empty($pfakturid)) $query .=" AND a.fakturid='$pfakturid' ";
 
@@ -74,7 +74,7 @@ $query = "select a.*, b.nama as nama_cabang, c.nama as nama_area, d.nama as nama
     LEFT JOIN MKT.iarea as c on a.icabangid=c.iCabangId AND a.areaid=c.areaId 
     LEFT JOIN MKT.icust as d on a.icabangid=d.iCabangId AND a.areaid=d.areaId AND a.icustid=d.iCustId 
     JOIN MKT.ecust as e on a.distid=e.DistId AND a.ecabangid=e.cabangid AND a.ecustid=e.eCustId 
-    JOIN MKT.iproduk as f on a.iProdId=f.iProdId JOIN MKT.distrib0 as g on a.distid=g.distid LEFT JOIN ms.karyawan as h on a.user1=h.karyawanid";
+    JOIN MKT.iproduk as f on a.iProdId=f.iProdId JOIN MKT.distrib0 as g on a.distid=g.distid LEFT JOIN hrd.karyawan as h on a.user1=h.karyawanid";
 $query = "create TEMPORARY table $tmp02 ($query)"; 
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

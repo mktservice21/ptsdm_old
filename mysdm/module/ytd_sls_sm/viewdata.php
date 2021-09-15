@@ -27,7 +27,7 @@ if ($pmodule=="caricabangregion") {
         if (!empty($pidregion)) $filregion=" AND karyawanid in (select distinct IFNULL(id_sm,'') from ms.cbgytd where region ='$pidregion') ";
     }
     
-    $query = "select karyawanid, nama from ms.karyawan where 1=1 $filregion ";
+    $query = "select karyawanid, nama from hrd.karyawan where 1=1 $filregion ";
     if ($pmygroupid=="1" OR $pmygroupid=="24" OR $pmygroupid=="50") {
     }else{
         if ($pfilter==true) {

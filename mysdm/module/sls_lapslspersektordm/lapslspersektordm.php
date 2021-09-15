@@ -4,7 +4,7 @@ include "config/cek_akses_modul.php";
 
 <div class="">
 
-    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Sales Per Sektor By SM</h3></div></div><div class="clearfix"></div>
+    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Sales Per Sektor By DM</h3></div></div><div class="clearfix"></div>
     <!--row-->
     <div class="row">
         <?php
@@ -163,11 +163,11 @@ include "config/cek_akses_modul.php";
                 ?>
                 <script>
                     function disp_confirm(pText)  {
-                        var esm = document.getElementById("cb_dm").value;
+                        var edm = document.getElementById("cb_dm").value;
                         var eidcab = document.getElementById("cb_cabang").value;
                         
-                        if (esm=="") {
-                            alert("SM harus diisi...!!!");
+                        if (edm=="") {
+                            alert("DM harus diisi...!!!");
                             return false;
                         }
                         
@@ -464,12 +464,12 @@ include "config/cek_akses_modul.php";
                     }
                     
                     function ShowDataCabang() {
-                        var esm = document.getElementById("cb_dm").value;
+                        var edm = document.getElementById("cb_dm").value;
                         
                         $.ajax({
                             type:"post",
                             url:"module/sls_lapslspersektordm/viewdata.php?module=caricabangdm",
-                            data:"usm="+esm,
+                            data:"udm="+edm,
                             success:function(data){
                                 $("#cb_cabang").html(data);
                             }

@@ -110,7 +110,7 @@
                                                     }
                                                     
                                                     echo "<option value=''>-- Pilih --</option>";
-                                                    $query = "select karyawanid, nama from ms.karyawan where jabatanid='20' ";
+                                                    $query = "select karyawanid, nama from hrd.karyawan where jabatanid='20' ";
                                                     if ($pmygroupid=="1" OR $pmygroupid=="24") {
                                                     }else{
                                                         if ($pfilter==true) $query .=" AND karyawanid='$pmyidcard' ";

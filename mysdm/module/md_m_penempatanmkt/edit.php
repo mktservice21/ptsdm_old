@@ -60,11 +60,11 @@ if ($pnact=="editdatamr" OR $pnact=="editdataam" OR $pnact=="editdatadm" OR $pna
         from ms.penempatan_marketing a 
         LEFT JOIN sls.icabang b on a.icabangid=b.iCabangId 
         LEFT JOIN sls.iarea c on a.icabangid=c.iCabangId AND a.areaid=c.areaId 
-        LEFT JOIN ms.karyawan d on a.gsm=d.karyawanId 
-        LEFT JOIN ms.karyawan e on a.sm=e.karyawanId 
-        LEFT JOIN ms.karyawan f on a.am=f.karyawanId 
-        LEFT JOIN ms.karyawan g on a.mr=g.karyawanId 
-        LEFT JOIN ms.karyawan h on a.dm=h.karyawanId 
+        LEFT JOIN hrd.karyawan d on a.gsm=d.karyawanId 
+        LEFT JOIN hrd.karyawan e on a.sm=e.karyawanId 
+        LEFT JOIN hrd.karyawan f on a.am=f.karyawanId 
+        LEFT JOIN hrd.karyawan g on a.mr=g.karyawanId 
+        LEFT JOIN hrd.karyawan h on a.dm=h.karyawanId 
         WHERE a.id='$idbr'";
     $edit = mysqli_query($cnms, $query);
     $r    = mysqli_fetch_array($edit);
@@ -200,7 +200,7 @@ if ($pnact=="editdatamr" OR $pnact=="editdataam" OR $pnact=="editdatadm" OR $pna
                                             <select class='form-control input-sm' id='cb_mr' name='cb_mr' data-live-search="true">
                                                 <option value='' selected>-- Pilihan --</option>
                                                 <?PHP
-                                                $query="select karyawanId, nama from ms.karyawan WHERE "
+                                                $query="select karyawanId, nama from hrd.karyawan WHERE "
                                                         . " (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR tglkeluar='') "
                                                         . " AND (jabatanId='15' OR karyawanId='$pidmr') order by nama, karyawanId";
                                                 $tampil= mysqli_query($cnms, $query);
@@ -252,7 +252,7 @@ if ($pnact=="editdatamr" OR $pnact=="editdataam" OR $pnact=="editdatadm" OR $pna
                                             <select class='form-control input-sm' id='cb_am' name='cb_am' data-live-search="true">
                                                 <option value='' selected>-- Pilihan --</option>
                                                 <?PHP
-                                                $query="select karyawanId, nama from ms.karyawan WHERE "
+                                                $query="select karyawanId, nama from hrd.karyawan WHERE "
                                                         . " (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR tglkeluar='') "
                                                         . " AND (jabatanId IN ('10', '18') OR karyawanId='$pidam') order by nama, karyawanId";
                                                 $tampil= mysqli_query($cnms, $query);
@@ -305,7 +305,7 @@ if ($pnact=="editdatamr" OR $pnact=="editdataam" OR $pnact=="editdatadm" OR $pna
                                             <select class='form-control input-sm' id='cb_dm' name='cb_dm' data-live-search="true">
                                                 <option value='' selected>-- Pilihan --</option>
                                                 <?PHP
-                                                $query="select karyawanId, nama from ms.karyawan WHERE "
+                                                $query="select karyawanId, nama from hrd.karyawan WHERE "
                                                         . " (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR tglkeluar='') "
                                                         . " AND (jabatanId IN ('08') OR karyawanId='$piddm') order by nama, karyawanId";
                                                 $tampil= mysqli_query($cnms, $query);

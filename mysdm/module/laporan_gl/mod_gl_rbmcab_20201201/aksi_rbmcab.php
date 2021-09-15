@@ -304,7 +304,7 @@
     
     $npppperi=$periode."12";
     
-    if ($ppildivisiid=="OTC") { //mkt.otc_etl
+    if ($ppildivisiid=="OTC") { //fe_it.otc_etl
         //$query = "select icabangid, date_format(tgljual,'%Y-%m') bulan, 'OTC' as divprodid, sum(`value`) as rpsales from dbmaster.sales_otc_local WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22 GROUP BY 1,2,3";
         $query = "select * from dbmaster.sales_otc_local WHERE YEAR(tgljual)='$periode' AND divprodid <>'OTHER' and icabangid <> 22";
         $query = "create TEMPORARY table $tmp01 ($query)";

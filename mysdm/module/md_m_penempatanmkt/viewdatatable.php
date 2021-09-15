@@ -47,7 +47,7 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "select karyawanid, nama from ms.karyawan";
+    $query = "select karyawanid, nama from hrd.karyawan";
     $query = "create  table $tmp04 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

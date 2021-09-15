@@ -71,7 +71,7 @@ $(document).ready(function() {
     $date=date_create($bulan);
     $tanggal=date_format($date,"Y-m-d");
 
-    $namaspv = DB::queryFirstField("SELECT nama FROM ms.karyawan WHERE karyawanId=%s", $idspv);
+    $namaspv = DB::queryFirstField("SELECT nama FROM hrd.karyawan WHERE karyawanId=%s", $idspv);
     
     $thnbln=date_format($date,"F Y");
     $thnbln2=date('F Y', strtotime('-1 year', strtotime($tanggal)));

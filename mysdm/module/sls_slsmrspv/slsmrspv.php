@@ -114,12 +114,12 @@
                                                     <?PHP
                                                     echo "<option value=''>-- Pilih --</option>";
                                                     if ($pmyjabatanid=="10" OR $pmyjabatanid=="18") {
-                                                        $query= "select b.karyawanid, b.nama from ms.karyawan b where karyawanid='$pmyidcard' ";
+                                                        $query= "select b.karyawanid, b.nama from hrd.karyawan b where karyawanid='$pmyidcard' ";
                                                     }elseif ($pmyjabatanid=="08") {
-                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
+                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join hrd.karyawan b on a.karyawanid=b.karyawanid "
                                                                 . " JOIN sls.idm0 c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
                                                     }elseif ($pmyjabatanid=="20") {
-                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
+                                                        $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join hrd.karyawan b on a.karyawanid=b.karyawanid "
                                                                 . " JOIN sls.ism0 c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
                                                         /*
                                                         $query .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
@@ -132,11 +132,11 @@
                                                         $query .= " AND b.nama NOT IN ('ACCOUNTING')";
                                                     }else{
                                                         if ($pmygroupid<>"24" AND $pmyjabatanid=="38") {
-                                                            $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
-                                                                    . " JOIN ms.rsm_auth c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
+                                                            $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join hrd.karyawan b on a.karyawanid=b.karyawanid "
+                                                                    . " JOIN hrd.rsm_auth c on a.icabangid=c.icabangid where c.karyawanid='$pmyidcard' ";
                                                         }else{
                                                             if ($pmyidcard=="0000000158" OR $pmyidcard=="0000000159") {
-                                                                $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid "
+                                                                $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join hrd.karyawan b on a.karyawanid=b.karyawanid "
                                                                         . " JOIN sls.icabang c on a.icabangid=c.icabangid where 1=1 ";
                                                                 $query .=" AND LEFT(b.nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
                                                                         . " and LEFT(b.nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
@@ -150,7 +150,7 @@
                                                                     $query .= " AND c.region='T' ";
                                                                 }
                                                             }else{
-                                                                $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join ms.karyawan b on a.karyawanid=b.karyawanid ";
+                                                                $query =" select DISTINCT a.karyawanid, b.nama from sls.ispv0 a join hrd.karyawan b on a.karyawanid=b.karyawanid ";
                                                             }
                                                         }
                                                     }

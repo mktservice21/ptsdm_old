@@ -52,7 +52,7 @@
     $nr= mysqli_fetch_array($tampil);
     $pnamacabang_p=$nr['nama'];
     
-    $query = "select nama from ms.karyawan where karyawanid='$pidamkry'";
+    $query = "select nama from hrd.karyawan where karyawanid='$pidamkry'";
     $tampil= mysqli_query($cnmy, $query);
     $nr= mysqli_fetch_array($tampil);
     $pnamaam_p=$nr['nama'];

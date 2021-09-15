@@ -170,10 +170,10 @@
                 //insert ke br_otc
         $query = "INSERT INTO hrd.br_otc (brOtcId, icabangid_o, subpost, kodeid, tglbr, 
             keterangan1, jumlah, COA4, user1, lampiran, ca, via, lampiran2, ca2, via2,
-            ccyId, bralid, MODIFDATE, karyawanid)"
+            ccyId, bralid, MODIFDATE, karyawanid, p_spg)"
             . " SELECT brOtcId, icabangid_o, subpost, kodeid, tglbr, 
             keterangan1, jumlah, COA4, user1, lampiran, ca, via, lampiran2, ca2, via2,
-            ccyId, bralid, MODIFDATE, '$pidcard' as karyawanid FROM dbmaster.tmp_spg_trans_to_brotc";
+            ccyId, bralid, MODIFDATE, '$pidcard' as karyawanid, 'Y' as p_spg FROM dbmaster.tmp_spg_trans_to_brotc";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
@@ -214,7 +214,6 @@
         $query = "UPDATE dbmaster.t_spg_gaji_br0 a JOIN (select * from $tmp01 WHERE CONCAT(subpost,kodeid)='1093') b on a.icabangid=b.icabangid AND "
                 . " a.nodivisi=b.nodivisi AND a.idinput=b.idinput SET "
                 . " a.brotcid3=b.brOtcId WHERE DATE_FORMAT(a.periode,'%Y%m')='$pblnpilih' $fcabang AND a.icabangid NOT IN ('0000000007')";
-        echo $query;
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         

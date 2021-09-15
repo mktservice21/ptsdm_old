@@ -103,7 +103,7 @@ include "config/cek_akses_modul.php";
         }
         
         if ($pcaridarikry==true) {
-            $queryk = "select icabangid, areaId, divisiid from ms.karyawan where karyawanid='$pmyidcard'";
+            $queryk = "select icabangid, areaId, divisiid from hrd.karyawan where karyawanid='$pmyidcard'";
             $tampilk= mysqli_query($cnms, $queryk);
             $nk= mysqli_fetch_array($tampilk);
             if (!empty($nk['icabangid'])) {
@@ -215,12 +215,12 @@ include "config/cek_akses_modul.php";
                                                     <?PHP
                                                     echo "<option value='' selected>--Pilih--</option>";
                                                     if ($pmyidcard=="0000002329" OR $pmyidcard=="0000002073") {
-                                                        $query = "select DISTINCT a.karyawanid, b.nama from sls.ism0 a JOIN ms.karyawan b on a.karyawanid=b.karyawanid JOIN mkt.icabang as c on a.icabangid=c.icabangid WHERE 1=1 ";
+                                                        $query = "select DISTINCT a.karyawanid, b.nama from sls.ism0 a JOIN hrd.karyawan b on a.karyawanid=b.karyawanid JOIN mkt.icabang as c on a.icabangid=c.icabangid WHERE 1=1 ";
                                                         if ($pmyidcard=="0000002329") $query .=" And c.region='B' ";
                                                         elseif ($pmyidcard=="0000002073") $query .=" And c.region='T' ";
                                                         $query .= "order by b.nama ";
                                                     }else{
-                                                        $query = "select DISTINCT a.karyawanid, b.nama from sls.ism0 a JOIN ms.karyawan b on a.karyawanid=b.karyawanid WHERE 1=1 ";
+                                                        $query = "select DISTINCT a.karyawanid, b.nama from sls.ism0 a JOIN hrd.karyawan b on a.karyawanid=b.karyawanid WHERE 1=1 ";
                                                         if ($pmyjabatanid=="20" OR (DOUBLE)$pmyjabatanid==20) $query .= " AND a.karyawanid='$pmyidcard' ";
                                                         else{
                                                             if (!empty($pfiltercabpilih)) {

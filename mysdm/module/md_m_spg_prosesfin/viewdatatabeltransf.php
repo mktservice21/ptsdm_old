@@ -19,6 +19,8 @@
     $tmp01 =" dbtemp.tmpprsspgfinbrotc01_".$pidcard."_$now ";
     $tmp02 =" dbtemp.tmpprsspgfinbrotc02_".$pidcard."_$now ";
     $tmp03 =" dbtemp.tmpprsspgfinbrotc03_".$pidcard."_$now ";
+    $tmp04 =" dbtemp.tmpprsspgfinbrotc04_".$pidcard."_$now ";
+    $tmp05 =" dbtemp.tmpprsspgfinbrotc05_".$pidcard."_$now ";
     
     $pcabid=$_POST['ucabang'];
     $pnodivid=$_POST['unodiv'];
@@ -48,16 +50,35 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "select '' as brotcid, '' as brotcid2, '' as brotcid3, d.idinput, d.nodivisi, CONCAT(left(a.periode,7),'-01') as bulan, 
-        a.icabangid, c.nama as nama_cabang, b.igroup, b.igroup_nama, sum(a.rptotal) as jumlah  
+    $query = "select '' as brotcid, '' as brotcid2, '' as brotcid3, a.kodeid, d.idinput, d.nodivisi, CONCAT(left(a.periode,7),'-01') as bulan, 
+        a.icabangid, c.nama as nama_cabang, b.igroup, b.igroup_nama, sum(a.rptotal) as jumlah, sum(a.rptotal2) as jumlah2  
         from dbmaster.t_spg_gaji_br1 as a 
         JOIN dbmaster.t_spg_kode as b on a.kodeid=b.kodeid 
         JOIN mkt.icabang_o as c on a.icabangid=c.icabangid_o 
         JOIN $tmp00 as d on a.icabangid=d.icabangid AND left(a.periode,7)=left(d.periode,7)
         where left(a.periode,7)='$pbulan' ";
     if (!empty($fcabang)) $query .=" AND a.icabangid='$fcabang' ";
-    $query .=" Group by 1,2,3,4,5,6,7,8,9,10";
+    $query .=" Group by 1,2,3,4,5,6,7,8,9,10,11";
     
+    $query ="CREATE TEMPORARY TABLE $tmp04 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    //pisahkan yang bpjs
+    $query = "select bulan, icabangid, sum(jumlah2) as jumlah FROM $tmp04 WHERE kodeid='11' GROUP BY 1,2";
+    $query ="CREATE TEMPORARY TABLE $tmp05 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    //hapus bpjs
+    $query ="DELETE FROM $tmp04 WHERE igroup=3";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "SELECT brotcid, brotcid2, brotcid3, idinput, nodivisi, bulan, icabangid, nama_cabang, "
+            . " igroup, igroup_nama, sum(jumlah) as jumlah "
+            . " FROM $tmp04";
+    $query .=" Group by 1,2,3,4,5,6,7,8,9,10";
     $query ="CREATE TEMPORARY TABLE $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -76,7 +97,7 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query ="UPDATE $tmp03 as a JOIN (select bulan, icabangid, sum(jumlah) as jumlah FROM $tmp01 WHERE igroup IN ('3') GROUP BY 1,2) as b "
+    $query ="UPDATE $tmp03 as a JOIN (select bulan, icabangid, sum(jumlah) as jumlah FROM $tmp05 GROUP BY 1,2) as b "
             . " on a.icabangid=b.icabangid AND a.bulan=b.bulan SET a.jumlah=IFNULL(a.jumlah,0)-IFNULL(b.jumlah,0) WHERE igroup IN ('2')";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -686,4 +707,6 @@ hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
     mysqli_query($cnmy, "drop TEMPORARY table $tmp02");
     mysqli_query($cnmy, "drop TEMPORARY table $tmp03");
+    mysqli_query($cnmy, "drop TEMPORARY table $tmp04");
+    mysqli_query($cnmy, "drop TEMPORARY table $tmp05");
 ?>

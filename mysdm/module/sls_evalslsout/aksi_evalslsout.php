@@ -60,7 +60,7 @@ $pidareapl=(INT)$rs1['areaid'];
 
 
 
-$query = "select nama from ms.karyawan where karyawanid='$pmrpilih'";
+$query = "select nama from hrd.karyawan where karyawanid='$pmrpilih'";
 $tampil= mysqli_query($cnms, $query);
 $rs= mysqli_fetch_array($tampil);
 $pnamakry=$rs['nama'];

@@ -87,7 +87,7 @@ if (!empty($filterprodukexp)) {
 
 // END MECARI DATA DIVISI MAKLO
     
-$query = "select nama as nama from ms.karyawan WHERE karyawanid='$pkaryawanid'";
+$query = "select nama as nama from hrd.karyawan WHERE karyawanid='$pkaryawanid'";
 $tampilk= mysqli_query($cnms, $query);
 $rowk= mysqli_fetch_array($tampilk);
 $pnamakaryawan=$rowk['nama'];

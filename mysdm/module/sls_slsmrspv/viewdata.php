@@ -10,7 +10,7 @@ if ($pmodule=="cariareakaryawan") {
     
     $pmyidcard=$_POST['uidkry'];
     
-    $ptampil=mysqli_query($cnms, "select jabatanid from ms.karyawan where karyawanid='$pmyidcard'");
+    $ptampil=mysqli_query($cnms, "select jabatanid from hrd.karyawan where karyawanid='$pmyidcard'");
     $nro= mysqli_fetch_array($ptampil);
     $pmyjabatanid=$nro['jabatanid'];
     

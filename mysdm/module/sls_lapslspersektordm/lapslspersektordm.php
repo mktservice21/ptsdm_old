@@ -1,5 +1,5 @@
 <?PHP
-include "config/cek_akses_modul.php";
+//include "config/cek_akses_modul.php";
 ?>
 
 <div class="">
@@ -285,25 +285,36 @@ include "config/cek_akses_modul.php";
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <select class='form-control' name='cb_divisi' id='cb_divisi' onchange="">
                                                 <?PHP
-                                                
-                                                    if ($pjmldivisicover==1 AND $pmyjabatanid=="15") {
-                                                    }else{
-                                                        echo "<option value=''>-- All --</option>";
-                                                    }
                                                     
-                                                    $query="select DivProdId divisiId, nama from MKT.divprod where IFNULL(br,'')='Y' AND DivProdId NOT IN ('OTHER', 'OTC', 'HO', 'CAN') ";
-                                                    if (!empty($pfilterdivisipilih)) {
-                                                        if ($pmyjabatanid=="15") $query .=" AND DivProdId IN $pfilterdivisipilih ";
-                                                    }
-                                                    $query .=" order by divisiId";
-                                                    $tampil = mysqli_query($cnmy, $query);
-                                                    while ($rx= mysqli_fetch_array($tampil)) {
-                                                        $niddiv=$rx['divisiId'];
-                                                        $nnmdiv=$rx['nama'];
-                                                        if ($piddivisipil==$niddiv)
-                                                            echo "<option value='$niddiv' selected>$nnmdiv</option>";
-                                                        else
-                                                            echo "<option value='$niddiv'>$nnmdiv</option>";
+                                                    if ($pmyidcard=="0000000157"){
+                                                        echo "<option value='PIGEO' selected>PIGEON</option>";
+                                                        echo "<option value='MAKLO'>MAKLON</option>";
+                                                    }elseif ($pmyidcard=="0000000910"){
+                                                        echo "<option value='PEACO' selected>PEACOCK</option>";
+                                                    }elseif ($pmyidcard=="0000000257"){
+                                                        echo "<option value='EAGLE' selected>EAGLE</option>";
+                                                    }else{
+                                                        
+                                                        if ($pjmldivisicover==1 AND $pmyjabatanid=="15") {
+                                                        }else{
+                                                            echo "<option value=''>-- All --</option>";
+                                                        }
+                                                    
+                                                        $query="select DivProdId divisiId, nama from MKT.divprod where IFNULL(br,'')='Y' AND DivProdId NOT IN ('OTHER', 'OTC', 'HO', 'CAN') ";
+                                                        if (!empty($pfilterdivisipilih)) {
+                                                            if ($pmyjabatanid=="15") $query .=" AND DivProdId IN $pfilterdivisipilih ";
+                                                        }
+                                                        $query .=" order by divisiId";
+                                                        $tampil = mysqli_query($cnmy, $query);
+                                                        while ($rx= mysqli_fetch_array($tampil)) {
+                                                            $niddiv=$rx['divisiId'];
+                                                            $nnmdiv=$rx['nama'];
+                                                            if ($piddivisipil==$niddiv)
+                                                                echo "<option value='$niddiv' selected>$nnmdiv</option>";
+                                                            else
+                                                                echo "<option value='$niddiv'>$nnmdiv</option>";
+                                                        }
+                                                        
                                                     }
                                                 ?>
                                                 </select>

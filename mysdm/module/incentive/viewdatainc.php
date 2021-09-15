@@ -16,7 +16,7 @@ if ($pmodule=="viewdatamridkary") {
     $pbulan = date('Y-m', strtotime($pbln));
 
     if ($pidjabatan=="15") {
-        $query_data = "select b.karyawanid as karyawanid, b.nama as nama from ms.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
+        $query_data = "select b.karyawanid as karyawanid, b.nama as nama from hrd.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
     }else{
         if ($pidgroup=="1" OR $pidgroup=="24") {
             $query_data = "SELECT DISTINCT a.mr AS karyawanid, b.nama AS nama FROM ms.`penempatan_marketing` AS a 
@@ -76,7 +76,7 @@ if ($pmodule=="viewdatamridkary") {
     $pbulan = date('Y-m', strtotime($pbln));
 
     if ($pidjabatan=="18" OR $pidjabatan=="10") {
-        $query_data = "select b.karyawanid as karyawanid, b.nama as nama from ms.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
+        $query_data = "select b.karyawanid as karyawanid, b.nama as nama from hrd.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
     }else{
         if ($pidgroup=="1" OR $pidgroup=="24") {
             $query_data = "SELECT DISTINCT a.am AS karyawanid, b.nama AS nama FROM ms.`penempatan_marketing` AS a 
@@ -134,7 +134,7 @@ if ($pmodule=="viewdatamridkary") {
     $pbulan = date('Y-m', strtotime($pbln));
 
     if ($pidjabatan=="08") {
-        $query_data = "select b.karyawanid as karyawanid, b.nama as nama from ms.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
+        $query_data = "select b.karyawanid as karyawanid, b.nama as nama from hrd.karyawan as b WHERE b.karyawanid='$pidkaryawan' ";
     }else{
         if ($pidgroup=="1" OR $pidgroup=="24") {
             $query_data = "SELECT DISTINCT a.dm AS karyawanid, b.nama AS nama FROM ms.`penempatan_marketing` AS a 

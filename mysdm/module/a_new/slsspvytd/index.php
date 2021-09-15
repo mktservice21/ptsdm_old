@@ -26,7 +26,7 @@
     $filblnprod1=date_format($date,"Ym");
     
     
-    $namasm = DB::queryFirstField("SELECT nama FROM ms.karyawan WHERE karyawanId=%s", $idspv);
+    $namasm = DB::queryFirstField("SELECT nama FROM hrd.karyawan WHERE karyawanId=%s", $idspv);
 ?>
 <!DOCTYPE html>
 <html lang="en">

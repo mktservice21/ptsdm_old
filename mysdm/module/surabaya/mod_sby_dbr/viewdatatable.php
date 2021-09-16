@@ -226,7 +226,7 @@
                     <th width='10px'>No</th>
                     <th width='100px'></th>
                     <th width='100px'>No ID</th>
-                    <th width='100px'>M. Uang</th>
+                    <th width='30px'>Nama Realisasi</th>
                     <th width='30px'>Jumlah</th>
                     <th width='30px'>Jml. Realisasi</th>
                     <th width='30px'>Selisih</th>
@@ -237,7 +237,7 @@
                     <th width='30px'>Yang Membuat</th>
                     <th width='250px'>Dokter/Customer/Supplier</th>
                     <th width='30px'>No Slip</th>
-                    <th width='30px'>Realisasi</th>
+                    <th width='100px'>M. Uang</th>
                     <th width='30px'>Keterangan</th>
                     
                     <th width='30px'>Pajak</th>
@@ -343,7 +343,7 @@
                     echo "<td>$no</td>";
                     echo "<td>$btntrans $btnpajak</td>";
                     echo "<td>$pidbr</td>";
-                    echo "<td>$pccyid</td>";
+                    echo "<td>$pnmrealisasi</td>";
                     echo "<td>$pjumlah</td>";
                     echo "<td>$pjumlah1</td>";
                     echo "<td>$psisa</td>";
@@ -354,7 +354,7 @@
                     echo "<td>$pnmkaryawan</td>";
                     echo "<td>$pnmdokter</td>";
                     echo "<td>$pnoslip</td>";
-                    echo "<td>$pnmrealisasi</td>";
+                    echo "<td>$pccyid</td>";
                     echo "<td>$paktivitas</td>";
                     
                     echo "<td>$ppajak</td>";

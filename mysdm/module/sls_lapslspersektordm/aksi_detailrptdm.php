@@ -110,16 +110,16 @@
     
     $now=date("mdYhis");
     $puserid=$_SESSION['USERID'];
-    $tmp01 =" dbtemp.tmplapslssektor01_".$puserid."_$now ";
-    $tmp02 =" dbtemp.tmplapslssektor02_".$puserid."_$now ";
-    $tmp03 =" dbtemp.tmplapslssektor03_".$puserid."_$now ";
-    $tmp04 =" dbtemp.tmplapslssektor04_".$puserid."_$now ";
-    $tmp05 =" dbtemp.tmplapslssektor05_".$puserid."_$now ";
-    $tmp06 =" dbtemp.tmplapslssektor06_".$puserid."_$now ";
-    $tmp07 =" dbtemp.tmplapslssektor07_".$puserid."_$now ";
-    $tmp08 =" dbtemp.tmplapslssektor08_".$puserid."_$now ";
-    $tmp09 =" dbtemp.tmplapslssektor09_".$puserid."_$now ";
-    $tmp10 =" dbtemp.tmplapslssektor10_".$puserid."_$now ";
+    $tmp01 =" dbtemp.tmplapslssektordm01_".$puserid."_$now ";
+    $tmp02 =" dbtemp.tmplapslssektordm02_".$puserid."_$now ";
+    $tmp03 =" dbtemp.tmplapslssektordm03_".$puserid."_$now ";
+    $tmp04 =" dbtemp.tmplapslssektordm04_".$puserid."_$now ";
+    $tmp05 =" dbtemp.tmplapslssektordm05_".$puserid."_$now ";
+    $tmp06 =" dbtemp.tmplapslssektordm06_".$puserid."_$now ";
+    $tmp07 =" dbtemp.tmplapslssektordm07_".$puserid."_$now ";
+    $tmp08 =" dbtemp.tmplapslssektordm08_".$puserid."_$now ";
+    $tmp09 =" dbtemp.tmplapslssektordm09_".$puserid."_$now ";
+    $tmp10 =" dbtemp.tmplapslssektordm10_".$puserid."_$now ";
    
     $pidcard=$_SESSION['IDCARD'];
     $pjabatanid=$_SESSION['JABATANID'];

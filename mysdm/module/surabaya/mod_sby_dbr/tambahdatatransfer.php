@@ -13,6 +13,7 @@
     $ptglpilih2=$_POST['utgl2'];
     $pviapilih=$_POST['uvia'];
     $ppajakpilih=$_POST['upajak'];
+    $pnodivisi=$_POST['unodivisi'];
     
     
     
@@ -88,6 +89,13 @@
                                                 <input type='hidden' id='e_tgl2_p' name='e_tgl2_p' class='form-control col-md-7 col-xs-12' value='<?PHP echo $ptglpilih2; ?>' Readonly>
                                                 <input type='hidden' id='e_via_p' name='e_via_p' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pviapilih; ?>' Readonly>
                                                 <input type='hidden' id='e_pajak_p' name='e_pajak_p' class='form-control col-md-7 col-xs-12' value='<?PHP echo $ppajakpilih; ?>' Readonly>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No. Divisi <span class='required'></span></label>
+                                            <div class='col-md-4'>
+                                                <input type='text' id='e_nodivisi' name='e_nodivisi' autocomplete='off' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnodivisi; ?>' Readonly>
                                             </div>
                                         </div>
                                         

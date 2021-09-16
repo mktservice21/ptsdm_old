@@ -79,16 +79,16 @@
     
     $now=date("mdYhis");
     $puserid=$_SESSION['USERID'];
-    $tmp01 =" dbtemp.tmplapslssektor01_".$puserid."_$now ";
-    $tmp02 =" dbtemp.tmplapslssektor02_".$puserid."_$now ";
-    $tmp03 =" dbtemp.tmplapslssektor03_".$puserid."_$now ";
-    $tmp04 =" dbtemp.tmplapslssektor04_".$puserid."_$now ";
-    $tmp05 =" dbtemp.tmplapslssektor05_".$puserid."_$now ";
-    $tmp06 =" dbtemp.tmplapslssektor06_".$puserid."_$now ";
-    $tmp07 =" dbtemp.tmplapslssektor07_".$puserid."_$now ";
-    $tmp08 =" dbtemp.tmplapslssektor08_".$puserid."_$now ";
-    $tmp09 =" dbtemp.tmplapslssektor09_".$puserid."_$now ";
-    $tmp10 =" dbtemp.tmplapslssektor10_".$puserid."_$now ";
+    $tmp01 =" dbtemp.tmplapslssektorsm01_".$puserid."_$now ";
+    $tmp02 =" dbtemp.tmplapslssektorsm02_".$puserid."_$now ";
+    $tmp03 =" dbtemp.tmplapslssektorsm03_".$puserid."_$now ";
+    $tmp04 =" dbtemp.tmplapslssektorsm04_".$puserid."_$now ";
+    $tmp05 =" dbtemp.tmplapslssektorsm05_".$puserid."_$now ";
+    $tmp06 =" dbtemp.tmplapslssektorsm06_".$puserid."_$now ";
+    $tmp07 =" dbtemp.tmplapslssektorsm07_".$puserid."_$now ";
+    $tmp08 =" dbtemp.tmplapslssektorsm08_".$puserid."_$now ";
+    $tmp09 =" dbtemp.tmplapslssektorsm09_".$puserid."_$now ";
+    $tmp10 =" dbtemp.tmplapslssektorsm10_".$puserid."_$now ";
    
     $pidcard=$_SESSION['IDCARD'];
     $pjabatanid=$_SESSION['JABATANID'];
@@ -281,9 +281,9 @@
         /*
         //jangan lupa temp6 dan  temp7 dibuka di hapusdata
         if ($pjenissektor=="J")
-            $tmp07="dbtemp.tmplapslssektor07_1854_04222020112324";
+            $tmp07="dbtemp.tmplapslssektorsm07_1854_04222020112324";
         else
-            $tmp07="dbtemp.tmplapslssektor07_1854_04222020112352";
+            $tmp07="dbtemp.tmplapslssektorsm07_1854_04222020112352";
 
         */
     

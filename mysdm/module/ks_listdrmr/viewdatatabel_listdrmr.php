@@ -39,7 +39,7 @@
         left join hrd.karyawan as c on b.karyawanId=c.karyawanId 
         left join MKT.icabang as d on c.iCabangId=d.iCabangId 
         LEFT JOIN MKT.iarea as e on c.iCabangId=e.iCabangId and c.areaId=e.areaId
-        WHERE ( a.nama like '%$pnmdoktercari%' OR a.dokterid='$pnmdoktercari')";
+        WHERE ( a.nama like '%$pnmdoktercari%' OR a.dokterid like '%$pnmdoktercari%')";
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

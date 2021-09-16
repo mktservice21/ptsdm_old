@@ -254,7 +254,7 @@ if ($pmodule=="cekdatasudahada") {
     
     if ($pkodeperiode=="2" OR $pdivisi=="OTC") {
         include "cari_absen_karyawan.php";
-        $pjumlahabs = CariAbsensiByKaryawan("inc", $pkaryawanid, $pbln);
+        $pjumlahabs = CariAbsensiByKaryawan("inc", $pkaryawanid, $pbln, "1");
 
         $pjmlwfh=$pjumlahabs[0];
         $pjmlwfo=$pjumlahabs[1];
@@ -326,6 +326,7 @@ if ($pmodule=="cekdatasudahada") {
     $pidrutin =$_POST['uid'];
     $pdivisi =$_POST['udivisi'];
     $pidact =$_POST['uact'];
+    $pfromresresh ="Y";
     
     $ptotalsemua=$_POST['utotal'];
     $pjmlwfh=$_POST['ujmlwfo'];

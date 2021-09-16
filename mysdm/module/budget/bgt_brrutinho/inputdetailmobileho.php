@@ -182,11 +182,14 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     
-    $query = "UPDATE $tmp00 a JOIN $tmp01 b on a.nobrid=b.nobrid SET a.deskripsi=b.deskripsi, a.qty=b.qty, a.rp=b.rp, "
-            . " a.rptotal=b.rptotal, a.notes=b.notes, a.tgl1=b.tgl1, a.tgl2=b.tgl2, a.km=b.km, a.obat_untuk=b.obat_untuk, "
-            . " a.alasanedit_fin=b.alasanedit_fin, a.coa_kode=b.coa_kode";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    if ($pfromresresh=="Y") {
+    }else{
+        $query = "UPDATE $tmp00 a JOIN $tmp01 b on a.nobrid=b.nobrid SET a.deskripsi=b.deskripsi, a.qty=b.qty, a.rp=b.rp, "
+                . " a.rptotal=b.rptotal, a.notes=b.notes, a.tgl1=b.tgl1, a.tgl2=b.tgl2, a.km=b.km, a.obat_untuk=b.obat_untuk, "
+                . " a.alasanedit_fin=b.alasanedit_fin, a.coa_kode=b.coa_kode";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    }
     
     $query = "UPDATE $tmp00 a JOIN (select distinct nobrid, COA4 FROM dbmaster.posting_coa_rutin WHERE divisi='$pdivisi') as b "
             . " on a.nobrid=b.nobrid SET a.coa_kode=b.COA4 WHERE IFNULL(a.rptotal,0)=0";
@@ -194,7 +197,7 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     
-    if ($pidact=="tambahbaru"){
+    if ($pidact=="tambahbaru" OR $pfromresresh=="Y"){
         $query = "UPDATE $tmp00  SET rp=rp_perperson";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         

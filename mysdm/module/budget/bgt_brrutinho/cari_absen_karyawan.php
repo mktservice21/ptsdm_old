@@ -1,5 +1,5 @@
 <?php
-function CariAbsensiByKaryawan($koneksi, $nkryid, $nbulan) {
+function CariAbsensiByKaryawan($koneksi, $nkryid, $nbulan, $sKey) {
     date_default_timezone_set('Asia/Jakarta');
     ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
@@ -313,6 +313,18 @@ function CariAbsensiByKaryawan($koneksi, $nkryid, $nbulan) {
             . " a.jam_masuk_ist=b.jam";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    if ($sKey=="0") {
+        $query="drop table if EXISTS $tmp04";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto hapusdata; }
+    
+        $query = "select * from $tmp03 WHERE l_status='WFO'";
+        $query = "create table $tmp04 ($query)";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query="ALTER TABLE $tmp04 ADD COLUMN wfo_valid VARCHAR(1) DEFAULT 'N', ADD COLUMN j_durasi VARCHAR(5)";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto hapusdata; }
+    }
     
     $pjmlwfo=0;
     $pjmlwfo_ok=0;
@@ -411,6 +423,12 @@ function CariAbsensiByKaryawan($koneksi, $nkryid, $nbulan) {
                 if ((INT)substr($pselisih_jam,0,2)>=(INT)$pjamkerja) {
                     $puangmakan="<a href=\"#/prediksi_uang_makan\"><i class=\"fa fa-money\"></i></a>";
                     $pjmlwfo_ok++;
+                    
+                    if ($sKey=="0") {
+                        $query="UPDATE $tmp04 SET wfo_valid='Y', j_durasi='$pselisih_jam' WHERE tanggal='$ntgl' AND karyawanid='$nkryid' AND l_status='$nstatusabs'";
+                        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto hapusdata; }
+                    }
+                    
                 }
 
             }
@@ -444,7 +462,7 @@ function CariAbsensiByKaryawan($koneksi, $nkryid, $nbulan) {
         mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp04");
         mysqli_close($cnmy);
     
-    return array($l_jmlwfh, $l_jmlwfo, $l_jmlwfo_val, $l_jmlwfo_inv);
+    return array($l_jmlwfh, $l_jmlwfo, $l_jmlwfo_val, $l_jmlwfo_inv, $tmp04);
 }
 ?>
 

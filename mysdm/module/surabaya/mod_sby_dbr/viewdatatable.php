@@ -25,6 +25,7 @@
     $tmp03 =" dbtemp.RPTREKOTCF03_".$_SESSION['USERID']."_$now ";
     $tmp04 =" dbtemp.RPTREKOTCF04_".$_SESSION['USERID']."_$now ";
     $tmp05 =" dbtemp.RPTREKOTCF05_".$_SESSION['USERID']."_$now ";
+    $tmp06 =" dbtemp.RPTREKOTCF06_".$_SESSION['USERID']."_$now ";
     
     $f_via="";
     if ($pviasby=="Y") $f_via=" AND IFNULL(via,'')='Y' ";
@@ -61,8 +62,8 @@
         $query = "select distinct a.nomor, a.nodivisi, b.bridinput from dbmaster.t_suratdana_br a 
             JOIN dbmaster.t_suratdana_br1 b on a.idinput=b.idinput
             WHERE a.stsnonaktif<>'Y' 
-            AND b.bridinput IN (select distinct brid from $tmp03 WHERE divisi='OTC')
-            and a.divisi IN ('OTC') AND IFNULL(a.nomor,'')<>'' AND IFNULL(a.pilih,'')='Y'";
+            AND b.bridinput IN (select distinct brid from $tmp03 WHERE divprodid='OTC')
+            and a.divisi IN ('OTC') AND b.kodeinput in ('D')";// AND IFNULL(a.nomor,'')<>'' AND IFNULL(a.pilih,'')='Y'
         $query = "create TEMPORARY table $tmp04 ($query)";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapudata; }
@@ -102,8 +103,8 @@
         $query = "select distinct a.nomor, a.nodivisi, b.bridinput from dbmaster.t_suratdana_br a 
             JOIN dbmaster.t_suratdana_br1 b on a.idinput=b.idinput
             WHERE a.stsnonaktif<>'Y' 
-            AND b.bridinput IN (select distinct brId from $tmp03 WHERE divisi<>'OTC')
-            and a.divisi IN ('EAGLE') AND b.kodeinput='E'";
+            AND b.bridinput IN (select distinct brId from $tmp03)
+            AND b.kodeinput='E'";//and a.divisi IN ('EAGLE') 
         $query = "create TEMPORARY table $tmp04 ($query)";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapudata; }
@@ -136,8 +137,8 @@
         $query = "select distinct a.nomor, a.nodivisi, b.bridinput from dbmaster.t_suratdana_br a 
             JOIN dbmaster.t_suratdana_br1 b on a.idinput=b.idinput
             WHERE a.stsnonaktif<>'Y' 
-            AND b.bridinput IN (select distinct brId from $tmp03 WHERE divisi<>'OTC')
-            and a.divisi IN ('PIGEO', 'PEACO', 'HO', 'EAGLE') AND IFNULL(a.nomor,'')<>'' AND IFNULL(a.pilih,'')='Y'";
+            AND b.bridinput IN (select distinct brId from $tmp03 WHERE divprodid<>'OTC')
+            and a.divisi IN ('PIGEO', 'PEACO', 'HO', 'EAGLE') AND b.kodeinput IN ('A', 'B', 'C')";// AND IFNULL(a.nomor,'')<>'' AND IFNULL(a.pilih,'')='Y'
         $query = "create TEMPORARY table $tmp04 ($query)";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapudata; }
@@ -162,7 +163,55 @@
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapudata; }
         
         
+        $query = "ALTER table $tmp05 ADD COLUMN tgl_trans_via VARCHAR(200)";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapudata; }
+        
+        
     }
+    
+    
+    
+    $nm_tabel_pilih=" dbmaster.t_br0_via_sby ";
+    if ($pdivisi_pilih=="OTC") $nm_tabel_pilih=" dbmaster.t_br_otc_via_sby ";
+    if ($pdivisi_pilih=="KD") $nm_tabel_pilih=" dbmaster.t_klaim_via_sby ";
+
+    $query = "SELECT distinct bridinput, tgltransfersby FROM $nm_tabel_pilih WHERE IFNULL(tgltransfersby,'0000-00-00')<>'0000-00-00' "
+            . " AND IFNULL(tgltransfersby,'')<>'' AND "
+            . " bridinput IN (select distinct ifnull(brid,'') FROM $tmp05)";
+    $query = "create TEMPORARY table $tmp06 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapudata; }
+    
+    $query = "select distinct bridinput FROM $tmp06";
+    $tampil_= mysqli_query($cnmy, $query);
+    $pjmlawal= mysqli_num_rows($tampil_);
+    if ($pjmlawal>0) {
+        while ($row= mysqli_fetch_array($tampil_)) {
+            $npidbr=$row['bridinput'];
+            
+            $nt_transfertgl="";
+            $query2 = "select * FROM $tmp06 WHERE bridinput='$npidbr' ORDER BY tgltransfersby";
+            $tampil2_= mysqli_query($cnmy, $query2);
+            while ($row2= mysqli_fetch_array($tampil2_)) {
+                $ntgltranss=$row2['tgltransfersby'];
+                
+                if (!empty($ntgltranss)) $nt_transfertgl .= date("d/m/Y", strtotime($ntgltranss)).",";
+                
+            }
+            
+            if (!empty($nt_transfertgl)) {
+                $nt_transfertgl=substr($nt_transfertgl, 0, -1);
+                
+                $query = "UPDATE $tmp05 SET tgl_trans_via='$nt_transfertgl' WHERE brid='$npidbr'";
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapudata; }
+            }
+        }
+        
+        
+    }
+    
     
 ?>
 
@@ -227,6 +276,7 @@
                     $ptgltrans="";
                     if (!empty($row['tgltrans']) AND $row['tgltrans']<>"0000-00-00") $ptgltrans=date("d/m/Y", strtotime($row['tgltrans']));
                     
+                    $pn_tgltrans_sby=$row['tgl_trans_via'];
                     $pkaryawanid=$row['karyawanId'];
                     $pnmkaryawan=$row['nama_karyawan'];
                     $pkaryawanid2=$row['karyawanI2'];
@@ -281,7 +331,7 @@
                     
                     $btntrans="<button type='button' class='btn btn-info btn-xs' title='Isi Data Transfer' data-toggle='modal' "
                             . " data-target='#myModal' "
-                            . " onClick=\"getInputDataTransferSBY('$pdivisi_pilih', '$pidbr', '$mytgl1', '$mytgl2', '$pviasby', '$ppajak_')\">Transfer</button>";
+                            . " onClick=\"getInputDataTransferSBY('$pdivisi_pilih', '$pidbr', '$mytgl1', '$mytgl2', '$pviasby', '$ppajak_', '$pnodivisi')\">Transfer</button>";
                     
                     $btnpajak="<button type='button' class='btn btn-success btn-xs' title='Isi Data Pajak' data-toggle='modal' "
                             . " data-target='#myModal' "
@@ -300,7 +350,7 @@
                     echo "<td>$pcoa</td>";
                     echo "<td>$pnmcoa</td>";
                     echo "<td>$ptglbr</td>";
-                    echo "<td>$ptgltrans</td>";
+                    echo "<td>$pn_tgltrans_sby</td>";//$ptgltrans
                     echo "<td>$pnmkaryawan</td>";
                     echo "<td>$pnmdokter</td>";
                     echo "<td>$pnoslip</td>";
@@ -365,11 +415,11 @@
     } );
     
     
-    function getInputDataTransferSBY(ddivisi, didbr, tgl1, tgl2, via, pajak){
+    function getInputDataTransferSBY(ddivisi, didbr, tgl1, tgl2, via, pajak, nnodivisi){
         $.ajax({
             type:"post",
             url:"module/surabaya/mod_sby_dbr/tambahdatatransfer.php?module=tambahdatatransfer",
-            data:"udivisi="+ddivisi+"&uidbr="+didbr+"&utgl1="+tgl1+"&utgl2="+tgl2+"&uvia="+via+"&upajak="+pajak,
+            data:"udivisi="+ddivisi+"&uidbr="+didbr+"&utgl1="+tgl1+"&utgl2="+tgl2+"&uvia="+via+"&upajak="+pajak+"&unodivisi="+nnodivisi,
             success:function(data){
                 $("#myModal").html(data);
             }
@@ -416,4 +466,5 @@ hapudata:
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp03");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp04");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp05");
+    mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp06");
 ?>

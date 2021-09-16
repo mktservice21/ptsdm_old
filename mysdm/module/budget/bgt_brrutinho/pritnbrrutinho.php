@@ -33,20 +33,21 @@
     $gmrheight = "80px";
 
     $query = "select a.*, b.nama as nama_kry, c.nama as nama_cabang, d.nama as nama_area, "
-            . " e.nama as nama_atasan4 "
+            . " e.nama as nama_atasan4, f.absen_rutin "
             . " from dbmaster.t_brrutin0 as a "
             . " JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid "
             . " LEFT JOIN MKT.icabang as c on a.icabangid=c.icabangid "
             . " LEFT JOIN MKT.iarea as d on a.icabangid=d.icabangid AND a.areaid=d.areaid "
             . " LEFT JOIN hrd.karyawan as e on a.atasan4=e.karyawanid "
+            . " LEFT JOIN dbmaster.t_karyawan_posisi as f on a.karyawanid=f.karyawanId "
             . " WHERE a.kode='1' AND "
             . " a.idrutin='$pidrutin' ";
     $result = mysqli_query($cnmy, $query);
     $row = mysqli_fetch_array($result);
     
     
-    $pbulanpengajuan=$row['bulan'];
-    $pbulanpengajuan=date("Ym", strtotime($pbulanpengajuan));
+    $pblnpengajuan=$row['bulan'];
+    $pbulanpengajuan=date("Ym", strtotime($pblnpengajuan));
     
     $tglajukan=date("d-m-Y", strtotime($row['tgl']));
     $pkaryawanid=$row['karyawanid'];
@@ -56,6 +57,8 @@
     $pidarea=$row['areaid'];
     $pnmarea=$row['nama_area'];
     $pjbtid=$row['jabatanid'];
+    $phitungabs=$row['absen_rutin'];
+    $pkdoeperiode=$row['kodeperiode'];
     
     
     $phari1=date("w", strtotime($row['periode1']));
@@ -157,6 +160,21 @@
         }
         
     }
+    
+    
+    $tmp_tabel01="";
+    if ($phitungabs=="Y" AND $pkdoeperiode=="2") {
+        include "cari_absen_karyawan.php";
+        $pjumlahabs = CariAbsensiByKaryawan("", $pkaryawanid, $pblnpengajuan, "0");
+        $pjmlwfh=$pjumlahabs[0];
+        $pjmlwfo=$pjumlahabs[1];
+        $pjmlwfo_val=$pjumlahabs[2];
+        $pjmlwfo_inv=$pjumlahabs[3];
+        $tmp_tabel01=$pjumlahabs[4];
+    
+    }
+    
+    
 ?>
 
 <HTML>
@@ -219,19 +237,19 @@
             border: 1px solid #000;
         }
 
-        table.example_2 td, table.example_2 th {
+        table.example_2 td, table.example_3 th {
             border: 1px solid #000; /* No more visible border */
             height: 28px;
             transition: all 0.3s;  /* Simple transition for hover effect */
             padding: 5px;
         }
 
-        table.example_2 th {
+        table.example_2 th, table.example_3 th {
             background: #DFDFDF;  /* Darken header a bit */
             font-weight: bold;
         }
 
-        table.example_2 td {
+        table.example_2 td, table.example_3 td {
             background: #FAFAFA;
         }
 
@@ -280,6 +298,20 @@
         }
         h3 {
             font-size: 20px;
+        }
+        
+        
+        table.example_3 {
+            color: #000;
+            font-family: Helvetica, Arial, sans-serif;
+            border-collapse:
+            collapse; border-spacing: 0;
+            font-size: 11px;
+            border: 1px solid #000;
+            padding:5px;
+        }
+        table.example_3 td {
+            padding:5px;
         }
     </style>
 
@@ -471,6 +503,56 @@
         <?PHP
             echo "Note : $pketerangan";
             
+            
+            if (!empty($tmp_tabel01) && $phitungabs=="Y") {
+                //echo "<br/>$tmp_tabel01";
+                $query ="select tanggal, jam_masuk, keterangan, jam_pulang, keterangan_p, j_durasi from $tmp_tabel01 WHERE "
+                        . " IFNULL(wfo_valid,'')='N'";
+                $tampil = mysqli_query($cnmy, $query);
+                $ketemu= mysqli_num_rows($tampil);
+                if ((INT)$ketemu>0) {
+                    echo "<br/><span style='color:red;'>Data Absensi Invalid</span><br/>";
+                    echo "<table id='example_2' class='table-bordered example_3' border='1px'>";
+                    echo "<tr>";
+                    echo "<th nowrap>Tanggal</th>";
+                    echo "<th nowrap>Jam</th>";
+                    echo "<th nowrap>Durasi</th>";
+                    echo "<th nowrap width='200px'>Keterangan</th>";
+                    echo "<th nowrap width='100px'>Paraf</th>";
+                    echo "</tr>";
+                    while ($row=mysqli_fetch_array($tampil)) {
+                        $abstanggal=$row['tanggal'];
+                        $absjammasuk=$row['jam_masuk'];
+                        $absjampulang=$row['jam_pulang'];
+                        $absdurasi=$row['j_durasi'];
+                        $absket_masuk=$row['keterangan'];
+                        $absket_pulang=$row['keterangan_p'];
+                        
+                        $abstanggal = date('d/m/Y', strtotime($abstanggal));
+                        $abs_keterangan="";
+                        
+                        if (!empty($absket_masuk)) {
+                            $abs_keterangan=$absket_masuk;
+                            if (!empty($absket_pulang)) {
+                                $abs_keterangan=$absket_masuk.", ".$absket_pulang;
+                            }
+                        }else{
+                            if (!empty($absket_pulang)) $abs_keterangan=$absket_pulang;
+                        }
+                        
+                        echo "<tr>";
+                        echo "<td nowrap>$abstanggal</td>";
+                        echo "<td nowrap>$absjammasuk s/d. $absjampulang</td>";
+                        echo "<td nowrap>$absdurasi</td>";
+                        echo "<td nowrap>$abs_keterangan</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "</tr>";
+                    }
+                    
+                    echo "</table>";
+                }
+            }
+    
             if (!empty($ptglatasan4) AND ($puserid=="0000000143" OR $puserid=="0000000329")) {
                 echo "<br/><br/><b><u>Approve Manual (diinput Finance)</u></b>";
             }
@@ -523,5 +605,8 @@
 
 <?PHP
 hapusdata:
+    if (!empty($tmp_tabel01)) {
+        mysqli_query($cnmy, "drop table IF EXISTS $tmp_tabel01");
+    }
     mysqli_close($cnmy);
 ?>

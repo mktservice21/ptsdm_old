@@ -130,6 +130,7 @@ $tampiln= mysqli_query($cnmy, $query);
 $rown= mysqli_fetch_array($tampiln);
 $pidnopol=$rown['lcfields'];
 
+$pfromresresh ="N";
 
 $pjmlwfh=0;
 $pjmlwfo=0;
@@ -193,7 +194,7 @@ if ($pidact=="editdata"){
     //cari absensi
     
     include "cari_absen_karyawan.php";
-    $pjumlahabs = CariAbsensiByKaryawan("", $pkaryawanid, $pbln);
+    $pjumlahabs = CariAbsensiByKaryawan("", $pkaryawanid, $pbln, "1");
 
     $pjmlwfh=$pjumlahabs[0];
     $pjmlwfo=$pjumlahabs[1];

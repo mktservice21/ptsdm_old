@@ -188,6 +188,11 @@
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                         . "Print</a>";
                     
+                    $pprintabs_inv="<a title='Print / Cetak' href='#' class='btn btn-warning btn-xs' data-toggle='modal' "
+                        . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$pidnoget&iprint=absinvprint',"
+                        . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                        . "Absensi Invalid</a>";
+                    
                     
                     if (!empty($t_ats4)) {
                         if ($pjabatanid=="01" OR $pjabatanid=="34") {
@@ -205,7 +210,7 @@
                         $pttdedit = "";
                     }
                     
-                    $allbutton="$pedit $phapus $pprint";
+                    $allbutton="$pedit $phapus $pprint $pprintabs_inv";
                     
                     $warna="btn btn-success btn-xs";
                     if (!empty($pgbrbukti)) $warna="btn btn-danger btn-xs";

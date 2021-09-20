@@ -83,10 +83,13 @@ session_start();
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
-    $query = "Alter table $tmp01 ADD COLUMN pbukti VARCHAR(1)"; 
+    $query = "Alter table $tmp01 ADD COLUMN pbukti VARCHAR(1), ADD COLUMN absen_rutin VARCHAR(1) DEFAULT 'N'"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     $query = "UPDATE $tmp01 as a JOIN dbimages.img_brrutin1 as b on a.idrutin=b.idrutin SET a.pbukti='Y' WHERE IFNULL(b.idrutin,'')<>''"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+    
+    $query = "UPDATE $tmp01 as a JOIN dbmaster.t_karyawan_posisi as b on a.karyawanid=b.karyawanId SET a.absen_rutin=b.absen_rutin"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
     
@@ -159,6 +162,7 @@ session_start();
                     $ptgl02=$row1['periode2'];
                     $pketerangan=$row1['keterangan'];
                     $ppsudhbukti=$row1['pbukti'];
+                    $pabsrutin = $row1["absen_rutin"];
                     
                     $pjumlah=$row1['jumlah'];
                     
@@ -194,6 +198,12 @@ session_start();
                         . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                         . "$pnmkry</a>";
                     
+                    $pprintabs_inv="<a title='Print / Cetak' href='#' class='btn btn-warning btn-xs' data-toggle='modal' "
+                        . "onClick=\"window.open('eksekusi3.php?module=entrybrrutinho&brid=$pidnoget&iprint=absinvprint',"
+                        . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                        . "Absensi Invalid</a>";
+                    
+                    
                     $ceklisnya = "<input type='checkbox' value='$pidrutin' name='chkbox_br[]' id='chkbox_br[$pidrutin]' class='cekbr'>";
                     
                     
@@ -217,10 +227,14 @@ session_start();
                         $ceklisnya="";
                     }
                     
+                    if ($pabsrutin<>"Y") {
+                        $pprintabs_inv="";
+                    }
+                    
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$ceklisnya</td>";
-                    echo "<td nowrap>$pprint</td>";
+                    echo "<td nowrap>$pprint $pprintabs_inv</td>";
                     echo "<td nowrap align='right'>$pjumlah</td>";
                     echo "<td nowrap>$ptgl</td>";
                     echo "<td nowrap>$pperiode</td>";

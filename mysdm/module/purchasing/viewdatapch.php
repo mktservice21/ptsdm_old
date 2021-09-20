@@ -581,7 +581,7 @@ if ($pidjbtpl=="05") {
 ?>
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SPV / AM <span class='required'></span></label>
-        <div class='col-xs-3'>
+        <div class='col-md-3 col-sm-3 col-xs-12'>
             <input type='hidden' id='e_kdspv' name='e_kdspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdspv; ?>'>
             <input type='text' id='e_namaspv' name='e_namaspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamaspv; ?>'>
         </div>
@@ -589,7 +589,7 @@ if ($pidjbtpl=="05") {
 
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DM <span class='required'></span></label>
-        <div class='col-xs-3'>
+        <div class='col-md-3 col-sm-3 col-xs-12'>
             <input type='hidden' id='e_kddm' name='e_kddm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkddm; ?>'>
             <input type='text' id='e_namadm' name='e_namadm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadm; ?>'>
         </div>
@@ -597,7 +597,7 @@ if ($pidjbtpl=="05") {
 
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SM <span class='required'></span></label>
-        <div class='col-xs-3'>
+        <div class='col-md-3 col-sm-3 col-xs-12'>
             <input type='hidden' id='e_kdsm' name='e_kdsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdsm; ?>'>
             <input type='text' id='e_namasm' name='e_namasm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamasm; ?>'>
         </div>
@@ -605,7 +605,7 @@ if ($pidjbtpl=="05") {
 
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><?PHP echo $pnamagsmhos; ?> <span class='required'></span></label>
-        <div class='col-xs-3'>
+        <div class='col-md-3 col-sm-3 col-xs-12'>
             <input type='hidden' id='e_kdgsm' name='e_kdgsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdgsm; ?>'>
             <input type='text' id='e_namagsm' name='e_namagsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamagsm; ?>'>
         </div>

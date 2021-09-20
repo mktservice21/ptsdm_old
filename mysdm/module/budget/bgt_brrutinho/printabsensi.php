@@ -1,6 +1,21 @@
 <?php
     session_start();
     
+    $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
+        "Juni", "Juli", "Agustus", "September", 
+        "Oktober", "November", "Desember");
+
+    $hari_array = array(
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu'
+    );
+    
+    
     $pidcard="";
     if (isset($_SESSION['IDCARD'])) $pidcard=$_SESSION['IDCARD'];
     
@@ -304,9 +319,10 @@
         table.example_3 {
             color: #000;
             font-family: Helvetica, Arial, sans-serif;
+            width: 100%;
             border-collapse:
             collapse; border-spacing: 0;
-            font-size: 11px;
+            font-size: 14px;
             border: 1px solid #000;
             padding:5px;
         }
@@ -367,17 +383,24 @@
                     echo "<th nowrap width='100px'>Tanggal</th>";
                     echo "<th nowrap width='100px'>Jam</th>";
                     echo "<th nowrap width='100px'>Durasi</th>";
-                    echo "<th nowrap width='200px'>Keterangan</th>";
+                    echo "<th nowrap width='250px'>Keterangan</th>";
+                    echo "<th nowrap width='50px'>Paraf</th>";
                     echo "</tr>";
                     while ($row=mysqli_fetch_array($tampil)) {
-                        $abstanggal=$row['tanggal'];
+                        $ntgl=$row['tanggal'];
                         $absjammasuk=$row['jam_masuk'];
                         $absjampulang=$row['jam_pulang'];
                         $absdurasi=$row['j_durasi'];
                         $absket_masuk=$row['keterangan'];
                         $absket_pulang=$row['keterangan_p'];
                         
-                        $abstanggal = date('d/m/Y', strtotime($abstanggal));
+                        $abstanggal = date('d/m/Y', strtotime($ntgl));
+                        
+                        $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+                        $xtgl= date('d', strtotime($ntgl));
+                        $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
+                        $xthn= date('Y', strtotime($ntgl));
+                        
                         $abs_keterangan="";
                         
                         if (!empty($absket_masuk)) {
@@ -389,11 +412,14 @@
                             if (!empty($absket_pulang)) $abs_keterangan=$absket_pulang;
                         }
                         
-                        echo "<tr>";
-                        echo "<td nowrap>$abstanggal</td>";
+                        if (!empty($abs_keterangan)) $abs_keterangan .="<hr/>";
+                        
+                        echo "<tr valign='top'>";
+                        echo "<td nowrap>$xhari, $xtgl $xbulan $xthn</td>";
                         echo "<td nowrap>$absjammasuk s/d. $absjampulang</td>";
                         echo "<td nowrap>$absdurasi</td>";
-                        echo "<td nowrap>$abs_keterangan</td>";
+                        echo "<td >$abs_keterangan<br/>&nbsp;<br/>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
                         echo "</tr>";
                     }
                     
@@ -417,16 +443,25 @@
                 <?PHP
                     echo "<tr>";
                     
+                        
                         echo "<td align='center'>";
-                        echo "$pketperiksa04";
-                        if (!empty($namagsm)) {
-                            echo "<br/><img src='images/tanda_tangan_base64/$namagsm' height='$gmrheight'><br/>";
-                        }else{
-                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                        }
-                        echo "<b><u>$nmatasan4</u></b>";
-
+                        echo "&nbsp; &nbsp; &nbsp;";
+                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                        echo "<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>";
                         echo "</td>";
+                        
+                        echo "<td align='center'>";
+                        echo "&nbsp; &nbsp; &nbsp;";
+                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                        echo "<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>";
+                        echo "</td>";
+                        
+                        echo "<td align='center'>";
+                        echo "&nbsp; &nbsp; &nbsp;";
+                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                        echo "<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>";
+                        echo "</td>";
+                        
                     
                         echo "<td align='center'>";
                         echo "Yang Membuat :";

@@ -384,7 +384,7 @@
                     echo "<th nowrap width='100px'>Jam</th>";
                     echo "<th nowrap width='100px'>Durasi</th>";
                     echo "<th nowrap width='250px'>Keterangan</th>";
-                    echo "<th nowrap width='50px'>Paraf</th>";
+                    echo "<th nowrap width='50px'>Paraf Atasan</th>";
                     echo "</tr>";
                     while ($row=mysqli_fetch_array($tampil)) {
                         $ntgl=$row['tanggal'];

@@ -71,10 +71,13 @@
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "SELECT a.*, b.nama, c.nama nama_cabang, d.nama nama_area, CAST(0 as DECIMAL(20,2)) rptotal, CAST('' as CHAR(1)) as adabukti, CAST('' as CHAR(1)) as ssudah "
+    $query = "SELECT a.*, b.nama, c.nama nama_cabang, d.nama nama_area, "
+            . " CAST(0 as DECIMAL(20,2)) rptotal, CAST('' as CHAR(1)) as adabukti, CAST('' as CHAR(1)) as ssudah, "
+            . " e.absen_rutin "
             . " FROM $tmp01 a LEFT JOIN hrd.karyawan b on a.karyawanid=b.karyawanid "
             . " LEFT JOIN MKT.icabang c on a.icabangid=c.icabangid "
-            . " LEFT JOIN MKT.iarea d on a.icabangid=d.icabangid AND a.areaid=d.areaid";
+            . " LEFT JOIN MKT.iarea d on a.icabangid=d.icabangid AND a.areaid=d.areaid "
+            . " LEFT JOIN dbmaster.t_karyawan_posisi as e on a.karyawanid=e.karyawanId";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -143,6 +146,7 @@
                     $pket = $row["keterangan"];
                     $pgbrbukti = $row["adabukti"];
                     $psudahpros = $row["ssudah"]; //C = sudah closing LK dan CA
+                    $pabsrutin = $row["absen_rutin"];
                     
                     $pper1 = $row["periode1"];
                     $pper2 = $row["periode2"];
@@ -208,6 +212,10 @@
                         $pedit = "";
                         $phapus = "";
                         $pttdedit = "";
+                    }
+                    
+                    if ($pabsrutin<>"Y") {
+                        $pprintabs_inv="";
                     }
                     
                     $allbutton="$pedit $phapus $pprint $pprintabs_inv";

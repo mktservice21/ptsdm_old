@@ -166,8 +166,12 @@
                     br.gbr_atasan2,
                     ifnull(br.tgl_atasan3,'0000-00-00') tgl_atasan3,
                     br.gbr_atasan3,
+                    br.atasan4, 
                     ifnull(tgl_atasan4,'0000-00-00') tgl_atasan4,
                     br.gbr_atasan4,
+                    br.dir,
+                    ifnull(br.tgl_dir,'0000-00-00') tgl_dir,
+                    br.gbr_dir,
                     ifnull(br.tgl_fin,'0000-00-00') tgl_fin,
                     br.jabatanid, br.atasan4 
                     FROM dbmaster.t_brrutin0 AS br
@@ -238,6 +242,8 @@
                     $idno=$row['idrutin'];
                     $tglbuat = $row["tgl"];
 					
+                    $pdir=$row['dir'];
+                    $patasan4=$row['atasan4'];
                     $pkaryawan=$row['karyawanid'];
                     $nama = $row["nama"];
                     if ($_SESSION['KRYNONE']==$pkaryawan) $nama=$row["nama_karyawan"];
@@ -256,7 +262,7 @@
                     if ($pdivisi=="CAN") $pdivisi = "CANARY";
                     $cekbox = "<input type=checkbox value='$idno' name=chkbox_br[]>";
 					
-                    $paatasan4 = $row["atasan4"];
+                    //$paatasan4 = $row["atasan4"];
                     
                     $pidnoget=encodeString($idno);
 
@@ -277,6 +283,7 @@
                     $apv2="";
                     $apv3="";
                     $apv4="";
+                    $apvdir="";
                     $ptglfinapv="";
                     if (!empty($row["gbr_atasan1"]) AND $row["tgl_atasan1"] <> "0000-00-00") $apv1=date("d F Y, h:i:s", strtotime($row["tgl_atasan1"]));
                     if (!empty($row["gbr_atasan2"]) AND $row["tgl_atasan2"] <> "0000-00-00") $apv2=date("d F Y, h:i:s", strtotime($row["tgl_atasan2"]));
@@ -284,6 +291,8 @@
                     if (!empty($row["gbr_atasan4"]) AND $row["tgl_atasan4"] <> "0000-00-00") $apv4=date("d F Y, h:i:s", strtotime($row["tgl_atasan4"]));
 					
                     if (!empty($row["tgl_fin"]) AND $row["tgl_fin"] <> "0000-00-00") $ptglfinapv=date("d F Y, h:i:s", strtotime($row["tgl_fin"]));
+                    
+                    if (!empty($row["gbr_dir"]) AND $row["tgl_dir"] <> "0000-00-00") $apvdir=date("d F Y, h:i:s", strtotime($row["tgl_dir"]));
                     
                     $edit="";
                     if (strtoupper($cket)=="APPROVE") {
@@ -337,7 +346,7 @@
                     }
 					
                     if (strtoupper($cket)=="APPROVE") {
-                        if ($paatasan4=="0000002403") {
+                        if ($patasan4=="0000002403") {
                             //if (empty($apv4)) $cekbox="";
                         }
                     }
@@ -348,6 +357,20 @@
                         $bulan_pilih = date("Ym", strtotime($row["bulan"]));
                         $bulan_pilih=encodeString($bulan_pilih);
                         $pviewdataabsen = "<a class='btn btn-warning btn-xs' href='eksekusi3.php?module=showdataabsensi&i=$pkaryidcode&b=$bulan_pilih' target='_blank'>Absensi</a>";
+                        
+                        if ($patasan4<>"0000002403") {
+                            if (empty($apv4) AND (int)$pjabat<>38) {
+                                $cekbox="";
+                            }
+                        }else{
+                            
+                            if ($patasan4=="0000002403" OR $pdir=="0000002403") {
+                                if (empty($apvdir)) {
+                                    $cekbox="";
+                                }
+                            }
+                            
+                        }
                     }
 					
                     echo "<tr>";

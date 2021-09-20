@@ -6,6 +6,8 @@
         include "pritnbrrutinho.php";
     }elseif ($piprint=="lihatgambar") {
         include "lihatgambarho.php";
+    }elseif ($piprint=="absinvprint") {
+        include "printabsensi.php";
     }
 ?>
 

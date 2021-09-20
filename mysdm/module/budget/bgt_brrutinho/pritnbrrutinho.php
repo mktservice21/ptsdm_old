@@ -163,6 +163,7 @@
     
     
     $tmp_tabel01="";
+    /*
     if ($phitungabs=="Y" AND $pkdoeperiode=="2") {
         include "cari_absen_karyawan.php";
         $pjumlahabs = CariAbsensiByKaryawan("", $pkaryawanid, $pblnpengajuan, "0");
@@ -173,7 +174,7 @@
         $tmp_tabel01=$pjumlahabs[4];
     
     }
-    
+    */
     
 ?>
 
@@ -503,7 +504,7 @@
         <?PHP
             echo "Note : $pketerangan";
             
-            
+            /*
             if (!empty($tmp_tabel01) && $phitungabs=="Y") {
                 //echo "<br/>$tmp_tabel01";
                 $query ="select tanggal, jam_masuk, keterangan, jam_pulang, keterangan_p, j_durasi from $tmp_tabel01 WHERE "
@@ -553,6 +554,8 @@
                 }
             }
     
+            */
+            
             if (!empty($ptglatasan4) AND ($puserid=="0000000143" OR $puserid=="0000000329")) {
                 echo "<br/><br/><b><u>Approve Manual (diinput Finance)</u></b>";
             }

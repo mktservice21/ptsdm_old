@@ -533,7 +533,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
-                                    <div class='col-md-4'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidbr; ?>' Readonly>
                                         <input type='hidden' id='e_idcardlogin' name='e_idcardlogin' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcardpl; ?>' Readonly>
                                     </div>
@@ -541,7 +541,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tanggal </label>
-                                    <div class='col-md-3'>
+                                    <div class='col-md-3 col-sm-4 col-xs-12'>
                                         <div class='input-group date' id='mytgl01_'>
                                             <input type="text" class="form-control" id='e_tglberlaku' name='e_tglberlaku' autocomplete='off' required='required' placeholder='dd/MM/yyyy' data-inputmask="'mask': '99/99/9999'" value='<?PHP echo $ptglajukan; ?>' Readonly>
                                             <span class='input-group-addon'>
@@ -556,7 +556,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Tipe <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_tipeaju' name='cb_tipeaju' onchange="ShowDataTipe()" data-live-search="true">
                                             <?PHP
                                                 $query = "select idtipe as idtipe, nama_tipe as nama_tipe from dbpurchasing.t_pr_tipe WHERE IFNULL(aktif,'')<>'N'";
@@ -580,7 +580,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div  class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pengajuan <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_untuk' name='cb_untuk' onchange="ShowPengajuanUntuk()" data-live-search="true">
                                             <?PHP
                                             if ($pstatuslogin=="HO") {
@@ -604,7 +604,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Pembuat <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                           <select class='form-control input-sm' id='cb_karyawan' name='cb_karyawan' onchange="ShowDataKaryawan();" data-live-search="true">
                                               
                                               <?PHP 
@@ -668,7 +668,7 @@ if ($ppenecualianatasan==true) {
                                     
                                     <div  class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Divisi <span class='required'></span></label>
-                                        <div class='col-xs-5'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="">
                                                 <?PHP
                                                 if ($pdivisilogin=="OTC" OR $pdivisilogin=="CHC") {
@@ -714,7 +714,7 @@ if ($ppenecualianatasan==true) {
                                     
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang / Area <span class='required'></span></label>
-                                        <div class='col-xs-5'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="ShowDataArea()">
                                                 <option value='' selected>-- Pilihan --</option>
                                                 <?PHP
@@ -757,7 +757,7 @@ if ($ppenecualianatasan==true) {
                                     
                                     <div <?PHP echo $pbukaarea; ?> class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Area <span class='required'></span></label>
-                                        <div class='col-xs-5'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="">
                                                 <option value='' selected>-- Pilihan --</option>
                                                 <?PHP
@@ -796,7 +796,7 @@ if ($ppenecualianatasan==true) {
                                     
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Departemen <span class='required'></span></label>
-                                        <div class='col-xs-5'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <select class='form-control input-sm' id='cb_dept' name='cb_dept' onchange="">
                                                 <?PHP
                                                 if ($pstatuslogin=="OTC" OR $pstatuslogin=="CHC" OR $pstatuslogin=="ETH") {
@@ -829,7 +829,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Notes <span class='required'></span></label>
-                                    <div class='col-xs-6'>
+                                    <div class='col-md-6 col-sm-6 col-xs-12'>
                                         <input type='text' id='e_notes' name='e_notes' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pketerangan; ?>'>
                                     </div>
                                 </div>
@@ -838,7 +838,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
 										<?PHP
 										if ($pidcardpl=="0000001556") {
 										}else{
@@ -853,7 +853,7 @@ if ($ppenecualianatasan==true) {
                                     
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SPV / AM <span class='required'></span></label>
-                                        <div class='col-xs-3'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <input type='hidden' id='e_kdspv' name='e_kdspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdspv; ?>'>
                                             <input type='text' id='e_namaspv' name='e_namaspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamaspv; ?>'>
                                         </div>
@@ -861,7 +861,7 @@ if ($ppenecualianatasan==true) {
                                     
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DM <span class='required'></span></label>
-                                        <div class='col-xs-3'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <input type='hidden' id='e_kddm' name='e_kddm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkddm; ?>'>
                                             <input type='text' id='e_namadm' name='e_namadm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadm; ?>'>
                                         </div>
@@ -869,7 +869,7 @@ if ($ppenecualianatasan==true) {
                                     
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SM <span class='required'></span></label>
-                                        <div class='col-xs-3'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <input type='hidden' id='e_kdsm' name='e_kdsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdsm; ?>'>
                                             <input type='text' id='e_namasm' name='e_namasm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamasm; ?>'>
                                         </div>
@@ -877,7 +877,7 @@ if ($ppenecualianatasan==true) {
                                     
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><?PHP echo $pnamagsmhos; ?> <span class='required'></span></label>
-                                        <div class='col-xs-3'>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <input type='hidden' id='e_kdgsm' name='e_kdgsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdgsm; ?>'>
                                             <input type='text' id='e_namagsm' name='e_namagsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamagsm; ?>'>
                                         </div>
@@ -887,7 +887,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                    <div class='col-xs-9'>
+                                    <div class='col-md-12 col-sm-12 col-xs-12'>
                                         *) apabila atasan tidak sesuai, mohon untuk disesuaikan terlebih dahulu sebelum tekan tombol Simpan...
                                     </div>
                                 </div>
@@ -929,7 +929,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID Barang <span class='required'></span></label>
-                                    <div class='col-xs-3'>
+                                    <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <div class='input-group '>
                                         <span class='input-group-btn'>
                                             <button type='button' class='btn btn-primary' data-toggle='modal' data-target='#myModal' onClick="getDataBarang('e_idbrg', 'e_nmbrg', 'e_spek', 'e_hrgbrg')">Pilih!</button>
@@ -942,14 +942,14 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama Barang <span class='required'></span></label>
-                                    <div class='col-xs-9'>
+                                    <div class='col-md-9 col-sm-9 col-xs-12'>
                                         <input type='text' id='e_nmbrg' name='e_nmbrg' class='form-control col-md-7 col-xs-12' maxlength="150" onblur='CekBarangKode()' style="text-transform: uppercase">
                                     </div>
                                 </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Spesifikasi / Uraian <span class='required'></span></label>
-                                    <div class='col-xs-9'>
+                                    <div class='col-md-9 col-sm-9 col-xs-12'>
                                         <textarea class='form-control' id="e_spek" name='e_spek' maxlength="450"></textarea>
                                     </div>
                                 </div>
@@ -959,21 +959,21 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah <span class='required'></span></label>
-                                    <div class='col-xs-3'>
+                                    <div class='col-md-3 col-sm-9 col-xs-12'>
                                         <input type='text' id='e_jmlqty' name='e_jmlqty' class='form-control col-md-7 col-xs-12 inputmaskrp2'  >
                                     </div>
                                 </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Satuan <span class='required'></span></label>
-                                    <div class='col-xs-3'>
+                                    <div class='col-md-3 col-sm-9 col-xs-12'>
                                         <input type='text' id='e_satuanbrg' name='e_satuanbrg' class='form-control col-md-7 col-xs-12' onkeypress="return event.charCode < 48 || event.charCode  >57" style="text-transform: uppercase">
                                     </div>
                                 </div>
                                 
                                 <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Harga <span class='required'></span></label>
-                                    <div class='col-xs-3'>
+                                    <div class='col-md-4 col-sm-9 col-xs-12'>
                                         <input type='text' id='e_hrgbrg' name='e_hrgbrg' class='form-control col-md-7 col-xs-12 inputmaskrp2'  >
                                         *) harga estimasi, bisa dikosongkan...
                                     </div>
@@ -981,7 +981,7 @@ if ($ppenecualianatasan==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class='required'></span></label>
-                                    <div class='col-xs-9'>
+                                    <div class='col-md-9 col-sm-9 col-xs-12'>
                                         <textarea class='form-control' id="e_ketdetail" name='e_ketdetail' maxlength='300'></textarea>
                                     </div>
                                 </div>

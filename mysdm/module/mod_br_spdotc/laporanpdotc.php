@@ -52,7 +52,7 @@
     
     $query = "select a.brotcid, a.icabangid_o, b.nama nama_cabang, a.real1, a.bankreal1, a.norekreal1, "
             . " a.jumlah, a.realisasi, "
-            . " a.keterangan1, a.keterangan2, a.batal "
+            . " a.keterangan1, a.keterangan2, a.batal, a.alasan_batal "
             . " from hrd.br_otc a "
             . " LEFT JOIN MKT.icabang_o b on a.icabangid_o=b.icabangid_o WHERE "
             . " a.brotcid IN (select DISTINCT IFNULL(bridinput,'') FROM $tmp01)";
@@ -62,7 +62,7 @@
     
     $query = "select a.brotcid, a.icabangid_o, b.nama nama_cabang, a.real1, a.bankreal1, a.norekreal1, "
             . " a.jumlah, a.realisasi, "
-            . " a.keterangan1, a.keterangan2, 'Y' as batal "
+            . " a.keterangan1, a.keterangan2, 'Y' as batal, '' as alasan_batal  "
             . " from dbmaster.backup_br_otc a "
             . " LEFT JOIN MKT.icabang_o b on a.icabangid_o=b.icabangid_o WHERE "
             . " a.brotcid IN (select DISTINCT IFNULL(bridinput,'') FROM $tmp01)";
@@ -422,6 +422,7 @@
                 
                 $adadata=false;
                 $gtotal=0;
+                $gbatal_total=0;
                 $no=1;
                 
                 
@@ -435,6 +436,7 @@
                     $tampilk2 = mysqli_query($cnmy, $sql2);
                     $sudah="FALSE";
                     $jumlahsub=0;
+                    $btl_jumlahsub=0;
                     while ($rk2 = mysqli_fetch_array($tampilk2)) {
                         
                         $cabang=$rk2['icabangid_o'];
@@ -443,6 +445,8 @@
                         $realisasi=$rk2['real1'];
                         $norek=$rk2['norekreal1'];
                         $bankrek=$rk2['bankreal1'];
+                        $nbatalkan=$rk2['batal'];
+                        $nbatalkan_alasan=$rk2['alasan_batal'];
 
                         $ketbanknya="";
                         if (empty($bankrek) AND empty($norek))
@@ -459,8 +463,19 @@
                             $jumlahsub = (double)$jumlahsub+(DOUBLE)$prpjumlah;
                         }
 
+                        $pstylebatal="";
+                        if ($nbatalkan=="Y") {
+                            if (!empty($prpjumlah)) {
+                                $btl_jumlahsub = (double)$btl_jumlahsub+(DOUBLE)$prpjumlah;
+                            }
+                            $pstylebatal=" style='color:red;' ";
+                            if (!empty($nbatalkan_alasan)) {
+                                if (empty($keterangan)) $keterangan=$nbatalkan_alasan;
+                                else $keterangan .=" (".$nbatalkan_alasan.")";
+                            }
+                        }
                         
-                        echo "<tr>";
+                        echo "<tr $pstylebatal>";
                         echo "<td style='padding-left:5px;' nowrap>$nmcabang</td>";
                         echo "<td>$keterangan</td>";
                         echo "<td>$realisasi</td>";
@@ -484,6 +499,7 @@
                     }
                     
                     $gtotal=(double)$gtotal+(double)$jumlahsub;
+                    $gbatal_total=(double)$gbatal_total+(double)$btl_jumlahsub;
                     //subtotal
                     $jumlahnya=number_format($jumlahsub,0,",",",");
                     echo "<tr>";
@@ -510,6 +526,7 @@
                     $tampil2 = mysqli_query($cnmy, $sql2);
                     $sudah="FALSE";
                     $jumlahsub=0;
+                    $btl_jumlahsub=0;
                     while ($r2 = mysqli_fetch_array($tampil2)) {
                         $cabang=$r2['icabangid_o'];
                         $nmcabang=$r2['nama_cabang'];
@@ -517,6 +534,8 @@
                         $realisasi=$r2['real1'];
                         $norek=$r2['norekreal1'];
                         $bankrek=$r2['bankreal1'];
+                        $nbatalkan=$r2['batal'];
+                        $nbatalkan_alasan=$r2['alasan_batal'];
 
                         $ketbanknya="";
                         if (empty($bankrek) AND empty($norek))
@@ -533,8 +552,19 @@
                             $jumlahsub = (double)$jumlahsub+(DOUBLE)$prpjumlah;
                         }
 
+                        $pstylebatal="";
+                        if ($nbatalkan=="Y") {
+                            if (!empty($prpjumlah)) {
+                                $btl_jumlahsub = (double)$btl_jumlahsub+(DOUBLE)$prpjumlah;
+                            }
+                            $pstylebatal=" style='color:red;' ";
+                            if (!empty($nbatalkan_alasan)) {
+                                if (empty($keterangan)) $keterangan=$nbatalkan_alasan;
+                                else $keterangan .=" (".$nbatalkan_alasan.")";
+                            }
+                        }
                         
-                        echo "<tr>";
+                        echo "<tr $pstylebatal>";
                         echo "<td style='padding-left:5px;' nowrap>$nmcabang</td>";
                         echo "<td>$keterangan</td>";
                         echo "<td>$realisasi</td>";
@@ -558,6 +588,7 @@
                     }
                     
                     $gtotal=(double)$gtotal+(double)$jumlahsub;
+                    $gbatal_total=(double)$gbatal_total+(double)$btl_jumlahsub;
                     //subtotal
                     $jumlahnya=number_format($jumlahsub,0,",",",");
                     echo "<tr>";
@@ -570,7 +601,7 @@
                     
                 }
                 
-                
+                $pgrandtotal_all=$gtotal;
                 $gtotalnya=number_format($gtotal,0,",",",");
                 echo "<tr style='background-color:#ffcc99;'>";
                 echo "<td colspan=2></td>";
@@ -578,6 +609,17 @@
                 echo "<td align='right'><b>$gtotalnya</b></td>";
                 echo "<td>&nbsp;</td>";
                 echo "</tr>";
+                
+                if ((DOUBLE)$gbatal_total<>0) {
+                    $pgrandtotal_all=(DOUBLE)$pgrandtotal_all-(DOUBLE)$gbatal_total;
+                    $gtotal_real=number_format($pgrandtotal_all,0,",",",");
+                    echo "<tr style='background-color:#ffcc99;'>";
+                    echo "<td colspan=2></td>";
+                    echo "<td colspan=2 align='center'><b>REALISASI</b></td>";
+                    echo "<td align='right'><b>$gtotal_real</b></td>";
+                    echo "<td>&nbsp;</td>";
+                    echo "</tr>";
+                }
                 
                 
             ?>

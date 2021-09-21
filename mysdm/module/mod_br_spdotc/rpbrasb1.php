@@ -173,12 +173,12 @@
         $tmpbudgetreq02 =" dbtemp.DTBUDGETBRREKAPSBYOTC02_$_SESSION[IDCARD]$now ";
     
 	$query = "select * from dbmaster.t_suratdana_br1 WHERE idinput='$pidspd'";//echo"$query";
-        $sql = "create table $tmpbudgetreq02 ($query)";
+        $sql = "create TEMPORARY table $tmpbudgetreq02 ($query)";
         mysqli_query($cnmy, $sql);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
 	$query = "select * from hrd.br_otc where brOtcId IN (select distinct ifnull(bridinput, '') bridinput FROM $tmpbudgetreq02)";
-        $sql = "create table $tmpbudgetreq01 ($query)";
+        $sql = "create TEMPORARY  table $tmpbudgetreq01 ($query)";
         mysqli_query($cnmy, $sql);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
@@ -219,11 +219,26 @@
 		$no = $no + 1;	
 		$first_ = 1;
 	   while ( ($i<=$records) and ($noslip_ == $row['noslip']) ) {
-		echo "<tr>";
+               
+                $nbatalkan=$row['batal'];
+                $nbatalkan_alasan=$row['alasan_batal'];
+                
+                $pstylebatal="";
+                if ($nbatalkan=="Y") {
+                    $pstylebatal=" style='color:red;' ";
+                }
+                
+		echo "<tr $pstylebatal>";
 		$real1 = $row['real1'];
 		$icabangid_o = $row['icabangid_o'];
 		$keterangan1 = $row['keterangan1'];
 		$keterangan2 = $row['keterangan2'];
+                
+                if ($nbatalkan=="Y") {
+                    $keterangan2 .=" (".$nbatalkan_alasan.")";
+                }
+                
+                
                 if ($pperiodeby=="S") {
                     $jumlah = $row['realisasi'];
                 }else{
@@ -415,3 +430,10 @@ if (empty($_SESSION['srid'])) {
 
 </body>
 </html>
+
+<?PHP
+    hapusdata:
+        mysqli_query($cnmy, "drop temporary table $tmpbudgetreq01");
+        mysqli_query($cnmy, "drop temporary table $tmpbudgetreq02");
+        mysqli_close($cnmy);
+?>

@@ -81,6 +81,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pjumlah=$row['jumlah'];
     $pket=$row['keterangan'];
     
+    $ptanggal = date('d/m/Y', strtotime($ptgl));
     $pjumlah=number_format($pjumlah,0,",",",");
     
     $pnamajenis="";
@@ -111,7 +112,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $no;
     $nestedData[] = $ppilihan;
     $nestedData[] = $idno;
-    $nestedData[] = $ptgl;
+    $nestedData[] = $ptanggal;
     $nestedData[] = $pnamajenis;
     $nestedData[] = $pkodeid;
     $nestedData[] = $pnmkaryawan;

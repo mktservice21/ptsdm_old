@@ -196,90 +196,12 @@ function ReloadTandaTangan(){
             }
         }
         $.subscribe(pubsubprefix + 'image/png;base64', function(data) {
-            
-            
-            var iid = document.getElementById('e_id').value;
-            var ikry = document.getElementById('e_idcarduser').value;
-            var icabang = document.getElementById('cb_cabang').value;
-            var etotsem = document.getElementById('e_jmlusulan').value;
-            var ebank = document.getElementById('cb_bankreal').value;
-            var enmbank = document.getElementById('e_nmbankreal').value;
-            var enorek = document.getElementById('e_norekbankreal').value;
-            
-            var chkjns1=document.getElementById("chksesuai").checked;
-            
-            if (ikry=="") {
-                alert("Pembuat masih kosong...");
+            if (data=="") {
+                alert("Tanda tangan masih kosong,...\n\
+Ulangi Klik Tombol Save/Simpan.")
                 return false;
             }
-            
-            if (icabang=="") {
-                alert("Cabang masih kosong...");
-                return false;
-            }
-            
-            if (chkjns1==true) {
-            }else{
-                var inmreal = document.getElementById('e_nmrealasi').value;
-                if (inmreal=="") {
-                    alert("Nama relasi realisasi harus diisi...");
-                    return false;
-                }
-            }
-            
-            
-            if (ebank=="" || enmbank=="" || enorek=="") {
-                alert("Bank, Nama dan No Rekening harus diisi...");
-                return false;
-            }
-            
-            
-            if (etotsem=="") etotsem="0";
-            
-            if (parseFloat(etotsem)==0) {
-                alert("Jumlah Permintaan Masih Kosong....");
-                return 0;
-            }
-    
-            
-            $.ajax({
-                type:"post",
-                url:"module/budget/viewdatabgt.php?module=cekdatasudahada",
-                data:"uid="+iid+"&ukry="+ikry,
-                success:function(data){
-                    //var tjml = data.length;
-                    //alert(data);
-                    //return false;
-                    
-                    if (data=="boleh") {
-    
-                        //simpan data ke DB
-                        var cmt = confirm('pastikan tanda tangan terisi....!!! jika sudah terisi klik OK');
-                        if (cmt == false) {
-                            return false;
-                        }            
-
-                        var uttd = data;//gambarnya
-
-                        var myurl = window.location;
-                        var urlku = new URL(myurl);
-                        var module = urlku.searchParams.get("module");
-                        var idmenu = urlku.searchParams.get("idmenu");
-                        var act = urlku.searchParams.get("act");
-
-                        var ket="input";
-                        if (act=="editdata") ket="update";
-
-                        document.getElementById("form_data1").action = "module/budget/bgt_brdcccabang/aksi_brdcccabang.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
-                        document.getElementById("form_data1").submit();
-            
-                    }else{
-                        alert(data);
-                    }
-                }
-            });
-            
-            
+            disp_confirm("Simpan ?", "input", data);
         });
 }
 

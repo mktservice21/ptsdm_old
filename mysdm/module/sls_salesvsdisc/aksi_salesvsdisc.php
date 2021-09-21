@@ -129,13 +129,19 @@
             $query = "select CONCAT(LEFT(a.tgljual,8), '01') as bulan, a.distid, sum(a.`value`) as tvalue "
                     . " from fe_it.otc_etl as a "//JOIN MKT.icabang_o as c on a.icabangid=c.icabangid_o
                     . " where year(a.tgljual)='$pthn' AND a.divprodid ='OTHER' and a.icabangid <> 22 ";
-            /*
+            
             if (!empty($pidregion)) {
-                if ($pidregion=="BB") $query .=" AND c.region='B' ";
-                else $query .=" AND c.region='$pidregion' ";
+                
+                $filtericabang_region = " AND a.icabangid IN (select distinct IFNULL(icabangid_o,'') FROM mkt.icabang_o WHERE 1=1 ";
+                
+                if ($pidregion=="BB") $filtericabang_region .=" AND region='B' ";
+                else $filtericabang_region .=" AND region='$pidregion' ";
+                
+                $filtericabang_region .=") ";
+                $query .=" ".$filtericabang_region;
+                
             }
-             * 
-             */
+             
             if (!empty($pdistid)) {
                 $query .=" AND a.distid='$pdistid' ";
             }

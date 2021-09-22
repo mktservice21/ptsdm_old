@@ -102,7 +102,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     if ($pidgrpuser=="1" OR $pidgrpuser=="24") {
         
     }else{
-        $pedit="";
+        //$pedit="";
     }
     
     

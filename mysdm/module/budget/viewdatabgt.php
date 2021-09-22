@@ -655,7 +655,7 @@ if ($pmodule=="viewdatakrybuat") {
                     LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
                     JOIN ms2.masterdokter as g on a.iddokter=g.id 
                     LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
-                    WHERE d.icabangid='$pidcab' ";
+                    WHERE d.icabangid='$pidcab' AND IFNULL(a.deletedby,'')='' ";
                 if (!empty($piddokt)) $query .=" AND a.iddokter='$piddokt' ";
                 if (!empty($pidoutlet)) $query .=" AND a.outletId='$pidoutlet' ";
 

@@ -647,7 +647,7 @@ $pjabatanid = $row['jabatanId'];
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='cb_kode'>Kode <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <select class='soflow' id='cb_kode' name='cb_kode'>
+                                        <select class='soflow' id='cb_kode' name='cb_kode' onchange="showDariKode()">
                                             
                                             <?PHP
                                             if ($pact=="editdata") {
@@ -1081,6 +1081,15 @@ $pjabatanid = $row['jabatanId'];
                                 </div>
                                 
                                 
+                                <br/>
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">&nbsp; <span class='required'></span></label>
+                                    <div class='col-md-6 col-sm-6 col-xs-12'>
+                                        <span id="spn_kode" style="color:green; font-size:25px; font-weight:bold;">&nbsp; &nbsp; &nbsp; &nbsp; </span>
+                                    </div>
+                                </div>
+                                
+                                
                                 
                             </div>
                         </div>
@@ -1196,6 +1205,8 @@ $pjabatanid = $row['jabatanId'];
         //baru kalau salah delete aja
         if (idact=="tambahbaru") {
             showCOANya();
+        }else if (idact=="editdata") {
+            showDariKode();
         }
         //END baru kalau salah delete aja
         
@@ -1216,6 +1227,7 @@ $pjabatanid = $row['jabatanId'];
             
             
     function showCOANya(){
+        document.getElementById('spn_kode').value = "Kode : Kosong";
         var ediv = document.getElementById('cb_divisi').value;
         $.ajax({
             type:"post",
@@ -1229,6 +1241,7 @@ $pjabatanid = $row['jabatanId'];
     }
     
     function showKodeNyaNon(){
+        document.getElementById('spn_kode').value = "Kode : Kosong";
         var ediv = document.getElementById('cb_divisi').value;
         var ecoa = document.getElementById('cb_coa').value;
 
@@ -1237,9 +1250,26 @@ $pjabatanid = $row['jabatanId'];
             url:"module/mod_br_entrydcc/viewdata.php?module=viewdatacombokodenon",
             data:"udiv="+ediv+"&ucoa="+ecoa,
             success:function(data){
-            $("#cb_kode").html(data);
+                $("#cb_kode").html(data);
+                
+                var select = document.getElementById('cb_kode');
+                var option = select.options[select.selectedIndex];
+                if (option.value=="") {
+                    option.text="Kode : Kosong";
+                }
+                document.getElementById('spn_kode').innerText = option.text;
+                
             }
         });
+    }
+    
+    function showDariKode() {
+        var select = document.getElementById('cb_kode');
+        var option = select.options[select.selectedIndex];
+        if (option.value=="") {
+            option.text="Kode : Kosong";
+        }
+        document.getElementById('spn_kode').innerText = option.text;
     }
     
     function showYangMembuat() {

@@ -47,14 +47,14 @@ if ($_GET['module']=="gantitombol") {
     $pbpjssdmtot=0;
     
     $query="SELECT SUM(rptotal2) as rptotal2 from dbmaster.t_spg_gaji_br0 as a "
-            . " join dbmaster.t_spg_gaji_br1 as b on a.idbrspg=b.idbrspg WHERE a.idbrspg IN $pnoid AND b.kodeid ='10'";
+            . " join dbmaster.t_spg_gaji_br1 as b on a.idbrspg=b.idbrspg WHERE a.idbrspg IN $pnoid AND b.kodeid ='11'";
     $tampil= mysqli_query($cnmy, $query);
     $ketemu= mysqli_num_rows($tampil);
     if ($ketemu>0) {
         $tr= mysqli_fetch_array($tampil);
         if (!empty($tr['rptotal2'])) $pbpjssdmtot=$tr['rptotal2'];
     }
-    $totalinput=(DOUBLE)$totalinput+(DOUBLE)$pbpjssdmtot;
+    $totalinput=(DOUBLE)$totalinput-(DOUBLE)$pbpjssdmtot;
     
     echo $totalinput;
     

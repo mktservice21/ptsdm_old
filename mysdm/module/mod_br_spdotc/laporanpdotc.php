@@ -501,13 +501,21 @@
                     $gtotal=(double)$gtotal+(double)$jumlahsub;
                     $gbatal_total=(double)$gbatal_total+(double)$btl_jumlahsub;
                     //subtotal
-                    $jumlahnya=number_format($jumlahsub,0,",",",");
+                    if ((DOUBLE)$btl_jumlahsub<>0) {
+                        $jumlahnya=(DOUBLE)$jumlahsub-(DOUBLE)$btl_jumlahsub;
+                        $jumlahnya=number_format($jumlahnya,0,",",",");
+                    }else{
+                        $jumlahnya=number_format($jumlahsub,0,",",",");
+                    }
+                    
                     echo "<tr>";
                     echo "<td colspan=4></td>";
                     echo "<td align='right'><b>$jumlahnya</b></td>";
                     echo "<td>&nbsp;</td>";
                     echo "</tr>";
                     echo "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+                    
+                    
                     
                 }
                 
@@ -590,7 +598,13 @@
                     $gtotal=(double)$gtotal+(double)$jumlahsub;
                     $gbatal_total=(double)$gbatal_total+(double)$btl_jumlahsub;
                     //subtotal
-                    $jumlahnya=number_format($jumlahsub,0,",",",");
+                    if ((DOUBLE)$btl_jumlahsub<>0) {
+                        $jumlahnya=(DOUBLE)$jumlahsub-(DOUBLE)$btl_jumlahsub;
+                        $jumlahnya=number_format($jumlahnya,0,",",",");
+                    }else{
+                        $jumlahnya=number_format($jumlahsub,0,",",",");
+                    }
+                    
                     echo "<tr>";
                     echo "<td colspan=4></td>";
                     echo "<td align='right'><b>$jumlahnya</b></td>";

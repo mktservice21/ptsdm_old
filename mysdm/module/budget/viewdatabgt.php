@@ -618,13 +618,17 @@ if ($pmodule=="viewdatakrybuat") {
     
     include "../../config/koneksimysqli_ms.php";
     
+    $pact=$_GET['act'];
+    
     $pidjbt=$_SESSION['JABATANID']; 
     $pidcard=$_SESSION['IDCARD'];
+    $pidinput=$_POST['uidinput'];
     $pidcab=$_POST['uidcab'];
     $pidarea=$_POST['uidarea'];
     $piddokt=$_POST['uiddokt'];
     $pidoutlet=$_POST['uoutletid'];
     $pjmlminta=$_POST['ujumlah'];
+    $pketerangan=$_POST['uket'];
     $princitotal="";
     
     $pdivnonearea="";
@@ -639,14 +643,31 @@ if ($pmodule=="viewdatakrybuat") {
     if (!empty($piddokt)) $pdivnoneuser=" class='divnone' ";
     if (!empty($pidoutlet)) $pdivnonelokasi=" class='divnone' ";
     
+    if ($pidinput=="0") $pidinput="";
+    
+
+    
+    
     ?>
         <table id="dtabel" class="table table-bordered table-striped table-highlight">
             <?PHP
             
-                $query = "SELECT distinct a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
-                    b.jenis, b.type, c.Nama as nama_type, b.dispensing, 
-                    d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
-                    a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+                    $query = "SELECT distinct a.approve as approvepraktek, a.id as idpraktek, a.outletId as idoutlet, b.nama as nama_outlet, b.alamat,  
+                        b.jenis, b.type, c.Nama as nama_type, b.dispensing, 
+                        d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+                        a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+                        FROM ms2.tempatpraktek as a 
+                        JOIN ms2.outlet_master as b on a.outletId=b.id 
+                        LEFT JOIN ms2.outlet_type as c on b.type=c.id 
+                        JOIN ms2.outlet_customer as d on a.outletId=d.outletId 
+                        LEFT JOIN mkt.icabang as e on d.iCabangId=e.iCabangId 
+                        LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
+                        JOIN ms2.masterdokter as g on a.iddokter=g.id 
+                        LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
+                        WHERE d.icabangid='$pidcab' AND IFNULL(a.deletedby,'')='' ";
+                
+                $query = "SELECT distinct a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis,
+                    d.iCabangId as icabangid, e.nama as nama_cabang 
                     FROM ms2.tempatpraktek as a 
                     JOIN ms2.outlet_master as b on a.outletId=b.id 
                     LEFT JOIN ms2.outlet_type as c on b.type=c.id 
@@ -656,6 +677,7 @@ if ($pmodule=="viewdatakrybuat") {
                     JOIN ms2.masterdokter as g on a.iddokter=g.id 
                     LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
                     WHERE d.icabangid='$pidcab' AND IFNULL(a.deletedby,'')='' ";
+                
                 if (!empty($piddokt)) $query .=" AND a.iddokter='$piddokt' ";
                 if (!empty($pidoutlet)) $query .=" AND a.outletId='$pidoutlet' ";
 
@@ -682,9 +704,9 @@ if ($pmodule=="viewdatakrybuat") {
                     
                 echo "<thead>";
                     echo "<th class='divnone'>&nbsp;</th>";
-                    echo "<th $pdivnonearea>Area</th>";
+                    echo "<th class='divnone' $pdivnonearea>Area</th>";
                     echo "<th $pdivnoneuser>User</th>";
-                    echo "<th $pdivnonelokasi>Lokasi Praktek</th>";
+                    echo "<th class='divnone' $pdivnonelokasi>Lokasi Praktek</th>";
                     echo "<th $pdivnonejml>$pnamalbljumlah</th>";
                     echo "<th $pdivnonereal>Realisasi</th>";
                     echo "<th>Keterangan</th>";
@@ -692,31 +714,36 @@ if ($pmodule=="viewdatakrybuat") {
 
                 echo "<tbody>";
                     while ($row= mysqli_fetch_array($tampil)) {
-                        $npidpraktek=$row['idpraktek'];
+                        $npidpraktek=""; //$row['idpraktek'];
                         $npnmcab=$row['nama_cabang'];
-                        $npidarea=$row['areaid'];
-                        $npnmarea=$row['nama_area'];
-                        $npiddokt=$row['iddokter'];
-                        $npnmdokt=$row['nama_dokter'];
-                        $npidlokasiprkt=$row['idoutlet'];
-                        $npnmlokasiprkt=$row['nama_outlet'];
+                        $npidarea=""; //$row['areaid'];
+                        $npnmarea=""; //$row['nama_area'];
+                        $npiddokt=$row['iddokter']; $npidpraktek=$npiddokt;
+                        $npnmdokt=$row['nama_dokter']; 
+                        $npidlokasiprkt=""; //$row['idoutlet'];
+                        $npnmlokasiprkt=""; //$row['nama_outlet'];
                         
                         $pjumlahdetail="";
                         $prealdetail="";
-                        $pketerangan="";
                         
-                        if ((INT)$ketemu<=1) {
+                        if (!empty($pidinput) && $pact=="editdata") {
                             $pjumlahdetail=$pjmlminta;
                             $princitotal=$pjmlminta;
+                        }else{
+                            if ((INT)$ketemu<=1) {
+                                $pjumlahdetail=$pjmlminta;
+                                $princitotal=$pjmlminta;
+                            }
                         }
+                        
                         
                         $chkbox = "<input type='checkbox' id='chk_kodeid[$npidpraktek]' name='chk_kodeid[]' value='$npidpraktek' checked>";
                         
                         echo "<tr>";
                         echo "<td class='divnone'>$chkbox</td>";
-                        echo "<td nowrap $pdivnonearea>$npnmarea <input type='hidden' value='$npidarea' class='form-control' id='e_txtareaid[$npidpraktek]' name='e_txtareaid[$npidpraktek]' /></td>";
+                        echo "<td class='divnone' nowrap $pdivnonearea>$npnmarea <input type='hidden' value='$npidarea' class='form-control' id='e_txtareaid[$npidpraktek]' name='e_txtareaid[$npidpraktek]' /></td>";
                         echo "<td nowrap $pdivnoneuser>$npnmdokt <input type='hidden' value='$npiddokt' class='form-control' id='e_txtdoktid[$npidpraktek]' name='e_txtdoktid[$npidpraktek]' /></td>";
-                        echo "<td nowrap $pdivnonelokasi>$npnmlokasiprkt <input type='hidden' value='$npidlokasiprkt' class='form-control' id='e_txtotletid[$npidpraktek]' name='e_txtotletid[$npidpraktek]' /></td>";
+                        echo "<td class='divnone' nowrap $pdivnonelokasi>$npnmlokasiprkt <input type='hidden' value='$npidlokasiprkt' class='form-control' id='e_txtotletid[$npidpraktek]' name='e_txtotletid[$npidpraktek]' /></td>";
                         echo "<td $pdivnonejml><input type='text' value='$pjumlahdetail' onblur=\"HitungTotalJumlahRp()\" class='form-control inputmaskrp2' id='e_txtrp[$npidpraktek]' name='e_txtrp[$npidpraktek]' /></td>";
                         echo "<td $pdivnonereal><input type='text' value='$prealdetail' class='form-control inputmaskrp2' id='e_txtrealrp[$npidpraktek]' name='e_txtrealrp[$npidpraktek]' value='' /></td>";
                         echo "<td><input type='text' value='$pketerangan' class='form-control' id='e_txtket[$npidpraktek]' name='e_txtket[$npidpraktek]' /></td>";
@@ -729,9 +756,9 @@ if ($pmodule=="viewdatakrybuat") {
                     }
                     echo "<tr $pdivnonetr>";
                     echo "<td class='divnone'></td>";
-                    echo "<td nowrap $pdivnonearea></td>";
+                    echo "<td class='divnone' nowrap $pdivnonearea></td>";
                     echo "<td nowrap $pdivnoneuser></td>";
-                    echo "<td nowrap $pdivnonelokasi></td>";
+                    echo "<td class='divnone' nowrap $pdivnonelokasi></td>";
                     echo "<td $pdivnonejml><input type='text' value='$princitotal' id='e_jmlusulan2' name='e_jmlusulan2' class='form-control col-md-7 col-xs-12 inputmaskrp2' Readonly></td>";
                     echo "<td $pdivnonereal></td>";
                     echo "<td>&nbsp;</td>";

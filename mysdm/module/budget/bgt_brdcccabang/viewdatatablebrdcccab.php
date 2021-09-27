@@ -3,9 +3,11 @@
     
     $fgroupid=$_SESSION['GROUP'];
     $pcabangid=$_POST['ucabid'];
+    $pfiltercabang=$_POST['utxtcabid'];
     $_SESSION['DCCCABCAB']=$pcabangid;
     
     echo "<input type='hidden' name='cb_cabang' id='cb_cabang' value='$pcabangid'>";
+    echo "<span hidden><textarea id='txt_cabang' name='txt_cabang'>$pfiltercabang></textarea></span>";
     
 
 ?>
@@ -19,6 +21,7 @@
         var idmenu = urlku.searchParams.get("idmenu");
         var nmun = urlku.searchParams.get("nmun");
         var ecabid=document.getElementById('cb_cabang').value;
+        var etxtcabid=document.getElementById('txt_cabang').value;
         
         //alert(aksi); return false;
         var dataTable = $('#dtabelmstdr').DataTable( {
@@ -43,7 +46,7 @@
             "scrollX": true,
 
             "ajax":{
-                url :"module/budget/bgt_brdcccabang/mydata_brdcccab.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&ucabid="+ecabid, // json datasource
+                url :"module/budget/bgt_brdcccabang/mydata_brdcccab.php?module="+module+"&idmenu="+idmenu+"&nmun="+nmun+"&aksi="+aksi+"&ucabid="+ecabid+"&utxtcabid="+etxtcabid, // json datasource
                 type: "post",  // method  , by default get
                 //data:"ucabid="+ecabid,
                 error: function(){  // error handling

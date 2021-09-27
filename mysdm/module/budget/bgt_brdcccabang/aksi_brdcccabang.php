@@ -38,6 +38,8 @@ if ($module=='brudcccabang')
         
     }elseif ($act=="input" OR $act=="update") {
         
+        include "../../../config/koneksimysqli.php";
+        
         $pidjabatan=$_POST['e_idjbt'];
         $puseridlog=$_POST['e_idinputuser'];
         $pcardidlog=$_POST['e_idcarduser'];
@@ -53,10 +55,10 @@ if ($module=='brudcccabang')
         $now=date("mdYhis");
         $tmp00 =" dbtemp.tmpsimpandcccab00_".$puserid."_$now ";
         
-        include "../../../config/koneksimysqli_ms.php";
         
         $pgroupidinput=0;
         $kodenya=$_POST['e_id'];
+        $pkaryawaninput=$_POST['e_idkaryawan'];
         $ptglinput=$_POST['e_tglberlaku'];
         $pjenis=$_POST['cb_jenis'];
         $pdivisi=$_POST['cb_divisi'];
@@ -70,6 +72,8 @@ if ($module=='brudcccabang')
         $pbankid=$_POST['cb_bankreal'];
         $pbanknama=$_POST['e_nmbankreal'];
         $pnorekening=$_POST['e_norekbankreal'];
+        
+        if (empty($pkaryawaninput)) $pkaryawaninput=$pidcard;
         
         $pkodeakun="";
         $pkodecoa="";
@@ -153,7 +157,7 @@ if ($module=='brudcccabang')
         if ($psimpandata==true) {
             
             $query = "CREATE TEMPORARY TABLE $tmp00 ("
-                    . " igroup INT(10), tanggal date, jenis_br varchar(10), divprodid varchar(5), icabangid varchar(10), "
+                    . " idbr INT(10), igroup INT(10), tanggal date, jenis_br varchar(10), divprodid varchar(5), icabangid varchar(10), "
                     . " areaid varchar(10), iddokter INT(10), idpraktek INT(10), ccyid varchar(10), jumlah DECIMAL(20,2), "
                     . " keterangan VARCHAR(500), "
                     . " jenis_realisasi INT(4), nama_realisasi Varchar(100), bank varchar(20), nama_bank varchar(100), norek varchar(100), "
@@ -162,96 +166,150 @@ if ($module=='brudcccabang')
                     . " atasan3 varchar(10), tgl_atasan3 datetime, atasan4 varchar(10), tgl_atasan4 datetime, "
                     . " atasan5 varchar(10), tgl_atasan5 datetime "
                     . ")";
-            mysqli_query($cnms, $query); 
-            $erropesan = mysqli_error($cnms); if (!empty($erropesan)) {  goto errorsimpan; }
+            mysqli_query($cnmy, $query); 
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto errorsimpan; }
+            if ($act=="input") {
+                
+                $query = "select max(id) as nourut from ms2.br";
+                $tampil= mysqli_query($cnmy, $query);
+                $nrow= mysqli_fetch_array($tampil);
+                $pnomorurut=$nrow['nourut'];
+                if (empty($pnomorurut)) $pnomorurut=0;
+                $pnomorurut++;
+                
+                mysqli_query($cnmy, "ALTER TABLE $tmp00 MODIFY `idbr` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"); 
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto errorsimpan; }
+                
+                
+                mysqli_query($cnmy, "ALTER TABLE $tmp00 AUTO_INCREMENT = ".(INT)$pnomorurut); 
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto errorsimpan; }
+                
+                
+            }
             
             
             $query = "INSERT INTO $tmp00 (tanggal, jenis_br, divprodid, icabangid, areaid, iddokter, idpraktek, "
                     . " ccyid, jumlah, keterangan, jenis_realisasi, nama_realisasi, bank, nama_bank, norek, "
                     . " kodeid, coa) VALUES ".implode(', ', $pinsert_data_detail);
-            mysqli_query($cnms, $query);
-            $erropesan = mysqli_error($cnms); if (!empty($erropesan)) {  goto errorsimpan; }
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto errorsimpan; }
             
             
             if ($act=="input") {
                 $pimgttd=$_POST['txtgambar'];
                 $query = "update $tmp00 set gambar='$pimgttd'";
-                mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) {  goto errorsimpan; }
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto errorsimpan; }
             }
             
             
             
             $query = "UPDATE $tmp00 SET atasan1='$pkdspv', atasan2='$pkddm', atasan3='$pkdsm', atasan4='$pkdgsm'";
-            mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) {  goto errorsimpan; }
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto errorsimpan; }
 
             if ($pisitglspv==true) {
                 $query = "UPDATE $tmp00 SET tgl_atasan1=NOW()";
-                mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) {  goto errorsimpan; }
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto errorsimpan; }
             }
 
             if ($pisitgldm==true) {
                 $query = "UPDATE $tmp00 SET tgl_atasan2=NOW()";
-                mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { goto errorsimpan;  }
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
             }
 
             if ($pisitglsm==true) {
                 $query = "UPDATE $tmp00 SET tgl_atasan3=NOW()";
-                mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { goto errorsimpan;  }
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
             }
 
             if ($pisitglgsm==true) {
                 $query = "UPDATE $tmp00 SET tgl_atasan4=NOW()";
-                mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { goto errorsimpan;  }
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
             }
             
             if ($pidjabatan=="05" OR $pidjabatan=="22" OR $pidjabatan=="06") {
                 $query = "UPDATE $tmp00 SET tgl_atasan1=NOW(), tgl_atasan2=NOW(), tgl_atasan3=NOW(), tgl_atasan4=NOW(), atasan5='$pidatasan5'";
-                mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { goto errorsimpan;  }
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
             }
             
             
             if ($act=="input") {
+                
                 $query = "select max(igroup) as igroup from ms2.br";
-                $tampil= mysqli_query($cnms, $query);
+                $tampil= mysqli_query($cnmy, $query);
                 $nrow= mysqli_fetch_array($tampil);
                 $pgroupidinput=$nrow['igroup'];
                 if (empty($pgroupidinput)) $pgroupidinput=0;
-                $pgroupidinput++;   
+                $pgroupidinput++;
+            
+                
+                $query = "UPDATE $tmp00 SET igroup='$pgroupidinput'";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
+                
+                $query = "INSERT INTO ms2.br (id, jenis_br, icabangid, areaid, tanggal, iddokter, idpraktek, divprodid, kode, COA4, "
+                        . " keterangan, ccyId, jumlah, jenis_realisasi, nama_realisasi, bank, norek, "
+                        . " igroup, "
+                        . " approvedby_dm, approveddate_dm, approvedby_sm, approveddate_sm, "
+                        . " approvedby_gsm, approveddate_gsm, "
+                        . " createdby, createddate) SELECT "
+                        . " idbr, jenis_br, icabangid, areaid, tanggal, iddokter, idpraktek, divprodid, kodeid, coa, "
+                        . " keterangan, ccyid, jumlah, jenis_realisasi, nama_realisasi, bank, norek, "
+                        . " igroup, "
+                        . " atasan2, tgl_atasan2, atasan3, tgl_atasan3, "
+                        . " atasan4, tgl_atasan4, "
+                        . " '$pkaryawaninput' as createdby, NOW() as createddate FROM $tmp00";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
+                
+                $query = "INSERT INTO ms2.br_sign (id_br, created) select idbr, gambar FROM $tmp00";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); 
+                if (!empty($erropesan)) {
+                    $query = "DELETE FROM ms2.br WHERE id IN "
+                            . " (select distinct IFNULL(idbr,'') FROM $tmp00) AND createdby='$pidcard' AND LEFT(createddate,10)=CURRENT_DATE()";
+                    mysqli_query($cnmy, $query);
+                    goto errorsimpan;
+                }
+                
+                
+                
+            }else{
+                if (empty($kodenya) OR $kodenya=="0") {
+                    goto errorsimpan;
+                }
+                
+                
+                $query="UPDATE $tmp00 SET idbr='$kodenya'";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
+                
+                $query = "UPDATE ms2.br as a JOIN $tmp00 as b on a.id=b.idbr SET "
+                        . " a.jenis_br=b.jenis_br, a.icabangid=b.icabangid, a.areaid=b.areaid,  "
+                        . " a.iddokter=b.iddokter, a.divprodid=b.divprodid, a.kode=b.kodeid, "
+                        . " a.COA4=b.coa, a.keterangan=b.keterangan, a.ccyId=b.ccyId, a.jumlah=b.jumlah, "
+                        . " a.jenis_realisasi=b.jenis_realisasi, a.nama_realisasi=b.nama_realisasi, "
+                        . " a.bank=b.bank, a.norek=b.norek, "
+                        . " a.approvedby_dm=b.atasan2, a.approveddate_dm=b.tgl_atasan2, "
+                        . " a.approvedby_sm=b.atasan3, a.approveddate_sm=b.tgl_atasan3,"
+                        . " a.approvedby_gsm=b.atasan4, a.approveddate_gsm=b.tgl_atasan4, "
+                        . " a.updatedby='$pidcard', a.updateddate=NOW() WHERE a.id='$kodenya'";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
+                
+                
             }
             
-            $query = "UPDATE $tmp00 SET igroup='$pgroupidinput'";
-            mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { goto errorsimpan;  }
-            
-            
-            $query = "INSERT INTO ms2.br (jenis_br, icabangid, areaid, tanggal, iddokter, idpraktek, divprodid, kode, COA4, "
-                    . " keterangan, ccyId, jumlah, jenis_realisasi, nama_realisasi, bank, norek, "
-                    . " igroup, "
-                    . " approvedby_dm, approveddate_dm, approvedby_sm, approveddate_sm, "
-                    . " approvedby_gsm, approveddate_gsm, "
-                    . " createdby, createddate) SELECT "
-                    . " jenis_br, icabangid, areaid, tanggal, iddokter, idpraktek, divprodid, kodeid, coa, "
-                    . " keterangan, ccyid, jumlah, jenis_realisasi, nama_realisasi, bank, norek, "
-                    . " igroup, "
-                    . " atasan2, tgl_atasan2, atasan3, tgl_atasan3, "
-                    . " atasan4, tgl_atasan4, "
-                    . " '$pidcard' as createdby, NOW() as createddate FROM $tmp00";
-            mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { goto errorsimpan;  }
             
         }
         
         
         
-        mysqli_query($cnms, "DROP TEMPORARY TABLE IF EXISTS $tmp00");
-        mysqli_close($cnms);
+        mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $tmp00");
+        mysqli_close($cnmy);
         header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasil');
         exit;
         
         
         errorsimpan:
             echo $erropesan;
-            mysqli_query($cnms, "DROP TEMPORARY TABLE IF EXISTS $tmp00");
-            mysqli_close($cnms);
-            //header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=error&iderror='.$erropesan);
+            mysqli_query($cnmy, "DROP TEMPORARY TABLE IF EXISTS $tmp00");
+            mysqli_close($cnmy);
+            header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=error&iderror='.$erropesan);
             exit;
             
         

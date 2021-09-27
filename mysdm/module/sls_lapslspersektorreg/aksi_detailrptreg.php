@@ -38,6 +38,7 @@
     
     $printdate= date("d/m/Y");
     
+    $pidgroup=$_SESSION['GROUP'];
     $karyawanid=$_SESSION['IDCARD'];
     $ptgl1=$_GET['pper1'];
     $ptgl2=$_GET['pper2'];
@@ -278,8 +279,8 @@
             . " a.qty=b.qty, a.ttotal=b.ttotal"; 
     //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "DELETE FROM $tmp04 WHERE IFNULL(qty,0)=0 AND IFNULL(ttotal,0)=0";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    //$query = "DELETE FROM $tmp04 WHERE IFNULL(qty,0)=0 AND IFNULL(ttotal,0)=0";
+    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
 ?>
 
@@ -342,7 +343,34 @@
               background-color: #e7e7e7;
               color: #000;
             }
+            
+            .btn_1 {
+              background-color: #cc6600;
+              border: none;
+              color: white;
+              padding: 3px 8px;
+              text-align: center;
+              text-decoration: none;
+              display: inline-block;
+              font-size: 11px;
+              margin: 2px 1px;
+              cursor: pointer;
+              box-shadow: 0 5px 5px 0 rgba(0,0,0,0.2), 0 3px 7px 0 rgba(0,0,0,0.19);
+            }
+            .btn_1:hover {
+                background-color: #ffff99;
+              color: #000;
+            }
+            
             .button1 {background-color: #4CAF50;}
+            
+            @media print
+            {    
+                .no-print, .no-print *
+                {
+                    display: none !important;
+                }
+            }
         </style>
         
     <?PHP } ?>
@@ -351,7 +379,8 @@
 
 <BODY>
     
-    
+<div class='modal fade' id='myModal' role='dialog' class='no-print'></div>
+
 <div id='n_content'>
     
     <center><div class='h1judul'>Rincian Laporan Sales Per Sektor</div></center>
@@ -387,7 +416,7 @@
         echo "<table>";
         echo "<tr>";
             echo "<td>";
-                echo "<a class='btn button1' href='eksekusi3.php?module=$pmodule&act=input&idmenu=$pidmenu&ket=excel&ipilih=$ppilih&iprd=$pprod&pper1=$iper1&iprd=$pprod&pper2=$iper2&pper2=$iper2&pcb=$icab&pregi=$iregi&idiv=$pdiv&qval=$pval&jns=$pjns&incpoth=$pncpoth&niddist=$piddist' target='_blank'>EXCEL</a>";
+                echo "<a class='no-print btn button1' href='eksekusi3.php?module=$pmodule&act=input&idmenu=$pidmenu&ket=excel&ipilih=$ppilih&iprd=$pprod&pper1=$iper1&iprd=$pprod&pper2=$iper2&pper2=$iper2&pcb=$icab&pregi=$iregi&idiv=$pdiv&qval=$pval&jns=$pjns&incpoth=$pncpoth&niddist=$piddist' target='_blank'>EXCEL</a>";
             echo "</td>";
             echo "<td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</td>";
             echo "<td>";
@@ -468,11 +497,20 @@
                     $ptval=number_format($ptval,0,",",",");
 
                     $prjumlah=number_format($prjumlah,0,",",",");
-
+                    
+                    
+                    $ptombolubahsektor="<span id='spn_ki' class='no-print'><button type='button' class='no-print btn_1 btn-info btn-xs' data-toggle='modal' "
+                            . " data-target='#myModal' onClick=\"TampilUbahSektorCust('$pidcust')\">Update Sektor</button></span>";
+                    if ($ppilihrpt=="excel" OR ($pidgroup <> "1" AND $pidgroup <> "24" AND $pidgroup <> "33") ) {
+                        $ptombolubahsektor="";
+                    }else{
+                        
+                    }
+                    
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$pnmarea</td>";
-                    echo "<td nowrap>$pidcust</td>";
+                    echo "<td nowrap>$pidcust $ptombolubahsektor</td>";
                     echo "<td nowrap>$pnmcust</td>";
                     echo "<td nowrap>$palamat1</td>";
                     echo "<td nowrap>$palamat2</td>";
@@ -558,6 +596,39 @@
     
 </div>
     
+
+    <?PHP
+        if ($ppilihrpt=="excel" OR ($pidgroup <> "1" AND $pidgroup <> "24" AND $pidgroup <> "33") ) {
+        }else{
+            ?>
+            <!-- jQuery -->
+            <script src="vendors/jquery/dist/jquery.min.js"></script>
+            <!-- Bootstrap -->
+            <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+
+            <!-- Custom Theme Scripts -->
+            <script src="build/js/custom.min.js"></script>
+            
+            <script>
+                function TampilUbahSektorCust(eid){
+                    $.ajax({
+                        type:"post",
+                        url:"module/sls_lapslspersektor/update_sektorcust.php?module=viewdatacust",
+                        data:"uid="+eid,
+                        success:function(data){
+                            $("#myModal").html(data);
+                        }
+                    });
+                }
+            </script>
+            
+            
+            <?PHP
+        }
+    ?>
+    
+            
+
     <?PHP if ($ppilihrpt!="excel") { ?>
         <style>
             #myBtn {

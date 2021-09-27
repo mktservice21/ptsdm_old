@@ -34,6 +34,8 @@
     $now=date("mdYhis");
     $tmp01 =" dbtemp.tmpcustsdm01_".$puserid."_$now ";
     $tmp02 =" dbtemp.tmpcustsdm02_".$puserid."_$now ";
+    $tmp03 =" dbtemp.tmpcustsdm03_".$puserid."_$now ";
+    $tmp04 =" dbtemp.tmpcustsdm04_".$puserid."_$now ";
     
     $sql = "select a.icabangid, a.icustid, a.areaid, a.nama, a.alamat1, a.alamat2, a.kota, a.kodepos, a.telp, a.isektorid, a.aktif, a.dispen, a.user1, a.grp,
         b.nama as nama_sektor, c.nama as nama_cabang, d.nama as nama_area, e.nama as nama_ecust, e.ecustid,
@@ -47,11 +49,48 @@
     $sql.=" WHERE a.icabangid='$pidcabang' AND ifnull(a.aktif,'')<>'N' ";
     if (!empty($pidarea)) $sql.=" AND a.areaId='$pidarea' ";
     if (!empty($pnmfilter)) $sql.=" AND a.nama like '%$pnmfilter%' ";
-    
     $query = "create TEMPORARY table $tmp01 ($sql)"; 
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
+    
+    /*
+    //cari dari data sales
+    $query = "select distinct a.icabangid, a.icustid, a.areaid, b.nama, b.alamat1, b.alamat2, "
+            . " b.kota, b.kodepos, b.telp, b.isektorid, b.aktif, b.dispen, b.user1, b.grp "
+            . " from mkt.mr_sales2 as a JOIN mkt.icust as b on a.icustid=b.icustid "
+            . " where a.icabangid='$pidcabang'";
+    if (!empty($pidarea)) $query.=" AND a.areaId='$pidarea' ";
+    if (!empty($pnmfilter)) $query.=" AND b.nama like '%$pnmfilter%' ";
+    $query.=" AND a.icustid NOT IN (select distinct IFNULL(icustid,'') FROM $tmp01)";
+    
+    $query = "create TEMPORARY table $tmp02 ($query)"; 
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "select a.*, b.nama as nama_sektor, "
+            . " c.nama as nama_cabang, d.nama as nama_area, e.nama as nama_ecust, e.ecustid, "
+            . " f.nama as nama_dist, e.DistId, e.CabangId, g.nama as nama_ecabang  "
+            . " from $tmp02 as a LEFT JOIN MKT.isektor as b on a.iSektorId=b.iSektorId "
+            . " JOIN MKT.icabang as c on a.iCabangId=c.iCabangId "
+            . " JOIN MKT.iarea as d on a.iCabangId=d.iCabangId and a.areaId=d.areaId "
+            . " LEFT JOIN MKT.ecust as e on a.iCustId=e.iCustId "
+            . " LEFT JOIN MKT.distrib0 as f on e.DistId=f.distid "
+            . " LEFT JOIN MKT.ecabang as g on e.DistId=g.distId and e.cabangid=g.ecabangid";
+    $query = "create TEMPORARY table $tmp03 ($query)"; 
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    //insert dari data sales
+    $sql = "INSERT INTO $tmp01 (icabangid, icustid, areaid, nama, alamat1, alamat2, kota, kodepos, telp, "
+            . " isektorid, aktif, dispen, user1, grp, nama_sektor, nama_cabang, nama_area, "
+            . " nama_ecust, ecustid, nama_dist, DistId, CabangId, nama_ecabang) "
+            . " select icabangid, icustid, areaid, nama, alamat1, alamat2, kota, kodepos, telp, "
+            . " isektorid, aktif, dispen, user1, grp, nama_sektor, nama_cabang, nama_area, "
+            . " nama_ecust, ecustid, nama_dist, DistId, CabangId, nama_ecabang FROM $tmp03";
+    //mysqli_query($cnms, $sql);
+    //$erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    */
 ?>
 
 
@@ -285,6 +324,8 @@
 hapusdata:
     mysqli_query($cnms, "drop TEMPORARY table $tmp01");
     mysqli_query($cnms, "drop TEMPORARY table $tmp02");
+    mysqli_query($cnms, "drop TEMPORARY table $tmp03");
+    mysqli_query($cnms, "drop TEMPORARY table $tmp04");
     
     mysqli_close($cnms);
 ?>

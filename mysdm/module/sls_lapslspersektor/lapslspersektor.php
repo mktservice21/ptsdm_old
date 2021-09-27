@@ -4,7 +4,7 @@ include "config/cek_akses_modul.php";
 
 <div class="">
 
-    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Sales Per Sektor</h3></div></div><div class="clearfix"></div>
+    <div class="col-md-12 col-sm-12 col-xs-12"><div class="title_left"><h3>Laporan Sales Per Sektor By AM</h3></div></div><div class="clearfix"></div>
     <!--row-->
     <div class="row">
         <?php
@@ -16,6 +16,7 @@ include "config/cek_akses_modul.php";
 		
         $pmyidcard=$_SESSION['IDCARD'];
         $pmyjabatanid=$_SESSION['JABATANID'];
+        $pmygroupid=$_SESSION['GROUP'];
         //$pmyidcard="0000000649";
         //$pmyjabatanid="08";
         
@@ -218,16 +219,20 @@ include "config/cek_akses_modul.php";
                                                     
                                                     $query = "select iCabangId, nama, aktif from sls.icabang where 1=1 ";
                                                     $query .=" AND aktif='Y' ";
-                                                    if ($pmyidcard=="0000000158" OR $pmyidcard=="0000002329" OR $pmyidcard=="0000000159" OR $pmyidcard=="0000002073") {
-                                                        if ($pmyidcard=="0000000158" OR $pmyidcard=="0000002329") $query .=" And region='B' ";
-                                                        elseif ($pmyidcard=="0000000159" OR $pmyidcard=="0000002073") $query .=" And region='T' ";
+                                                    if ($pmygroupid=="1" OR $pmygroupid=="24") {
+                                                        
                                                     }else{
-                                                    
-                                                        if(!empty($pfilterregionpilih)) $query .=" AND region IN $pfilterregionpilih ";
-                                                        if (!empty($pfiltercabpilih)) {
-                                                            if ($pmyjabatanid=="15" OR $pmyjabatanid=="38" OR $pmyjabatanid=="39" OR $pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjabatanid=="08" OR $pmyjabatanid=="20") $query .=" AND iCabangId IN $pfiltercabpilih ";
-                                                        }
+                                                        if ($pmyidcard=="0000000158" OR $pmyidcard=="0000002329" OR $pmyidcard=="0000000159" OR $pmyidcard=="0000002073") {
+                                                            if ($pmyidcard=="0000000158" OR $pmyidcard=="0000002329") $query .=" And region='B' ";
+                                                            elseif ($pmyidcard=="0000000159" OR $pmyidcard=="0000002073") $query .=" And region='T' ";
+                                                        }else{
 
+                                                            if(!empty($pfilterregionpilih)) $query .=" AND region IN $pfilterregionpilih ";
+                                                            if (!empty($pfiltercabpilih)) {
+                                                                if ($pmyjabatanid=="15" OR $pmyjabatanid=="38" OR $pmyjabatanid=="39" OR $pmyjabatanid=="10" OR $pmyjabatanid=="18" OR $pmyjabatanid=="08" OR $pmyjabatanid=="20") $query .=" AND iCabangId IN $pfiltercabpilih ";
+                                                            }
+
+                                                        }
                                                     }
                                                     $query .=" order by aktif DESC, nama";
                                                     $tampil = mysqli_query($cnms, $query);

@@ -80,12 +80,13 @@
                     function KlikDataTabel() {
                         var eaksi = "module/budget/bgt_brdcccabang/aksi_brdcccabang.php";
                         var ecabid=document.getElementById('cb_cabang').value;
+                        var etxtcabid=document.getElementById('txt_cabang').value;
 
                         $("#loading").html("<center><img src='images/loading.gif' width='50px'/></center>");
                         $.ajax({
                             type:"post",
                             url:"module/budget/bgt_brdcccabang/viewdatatablebrdcccab.php?module=viewdata",
-                            data:"ucabid="+ecabid+"&uaksi="+eaksi,
+                            data:"ucabid="+ecabid+"&utxtcabid="+etxtcabid+"&uaksi="+eaksi,
                             success:function(data){
                                 $("#c-data").html(data);
                                 $("#loading").html("");
@@ -96,6 +97,49 @@
                 </script>
 
                 <?PHP
+                $query_cab="";
+                if ($pidjabatan=="10" OR $pidjabatan=="18") {
+                    $query_cab = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                        FROM mkt.ispv0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                        WHERE a.karyawanid='$pidkaryawan'";
+                        $query_cab .=" order by b.nama, a.icabangid";
+                }elseif ($pidjabatan=="08") {
+                    $query_cab = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                        FROM mkt.idm0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                        WHERE a.karyawanid='$pidkaryawan'";
+                        $query_cab .=" order by b.nama, a.icabangid";
+                }elseif ($pidjabatan=="20") {
+                    $query_cab = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                        FROM mkt.ism0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                        WHERE a.karyawanid='$pidkaryawan'";
+                        $query_cab .=" order by b.nama, a.icabangid";
+                }elseif ($pidjabatan=="05") {
+                    $pfregion="XXX";
+                    if ((INT)$pidkaryawan==158) $pfregion="B";
+                    elseif ((INT)$pidkaryawan==159) $pfregion="T";
+
+                    $query_cab = "select icabangid as icabangid, nama as nama_cabang from 
+                        MKT.icabang WHERE region='$pfregion' AND IFNULL(aktif,'')<>'N' ";
+                    $query_cab .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -') ";
+                    $query_cab .=" order by nama, icabangid";
+                }
+                
+                $pfiltercabang="";
+                if (!empty($query_cab)) {
+                    $tampil= mysqli_query($cnmy, $query_cab);
+                    while ($row= mysqli_fetch_array($tampil)) {
+                        $nidcab=$row['icabangid'];
+                        $nnmcab=$row['nama_cabang'];
+                        $nidcab_=(INT)$nidcab;
+                        
+                        $pfiltercabang .=$nidcab.",";
+
+                    }
+                    
+                    if (!empty($pfiltercabang)) $pfiltercabang=substr($pfiltercabang, 0, -1);
+                }
+                //echo $pfiltercabang;
+                
                 $hari_ini = date("Y-m-d");
                 $tgl_pertama = date('01 F Y', strtotime($hari_ini));
                 ?>
@@ -146,6 +190,8 @@
                         <div class='col-sm-2'>
                             Cabang
                             <div class="form-group">
+                                <span hidden><textarea id="txt_cabang" name="txt_cabang"><?PHP echo $pfiltercabang; ?></textarea></span>
+                                
                                 <select class='form-control' id="cb_cabang" name="cb_cabang" onchange="">
                                     <?PHP
                                         if ($pidgroup=="1" OR $pidgroup=="24") {

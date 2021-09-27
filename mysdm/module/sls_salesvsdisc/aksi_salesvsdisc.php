@@ -85,7 +85,7 @@
     if ($pidregion=="B") $ppilihregion="Barat";
     if ($pidregion=="BB") $ppilihregion="Barat";
     if ($pidregion=="T") $ppilihregion="Timur";
-    if ($piddivisi=="OTC" OR $piddivisi=="CHC" OR $piddivisi=="OTHER" OR $piddivisi=="OTHERS") $ppilihregion="All Region";
+    if ($piddivisi=="OTC" OR $piddivisi=="CHC") $ppilihregion="All Region";// OR $piddivisi=="OTHER" OR $piddivisi=="OTHERS"
     
     $pketstsdic="Termasuk PPN & PPH";
     if ($pstsdiscount=="S") $pketstsdic="Sebelum PPN & PPH";

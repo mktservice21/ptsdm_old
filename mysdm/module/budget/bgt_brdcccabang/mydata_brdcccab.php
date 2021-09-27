@@ -8,7 +8,7 @@ $cnmy=$cnms;
 
 $pidgrpuser=$_SESSION['GROUP'];
 $fkaryawan=$_SESSION['IDCARD'];
-$fjbtid=$_SESSION['JABATANID'];
+$pidjabatan=$_SESSION['JABATANID'];
 
 
 /// storing  request (ie, get/post) global array to a variable  
@@ -32,6 +32,22 @@ if (isset($_GET['ucabid'])) {
     $pcabangid=$_GET['ucabid'];
 }
 
+$ptxtcabangid="";
+$pfiltercabang="";
+if (isset($_GET['utxtcabid'])) {
+    $ptxtcabangid=$_GET['utxtcabid'];
+    if (empty($pcabangid) AND !empty($ptxtcabangid)) {
+        
+        $tags_cab = explode(',',$ptxtcabangid);
+
+        foreach($tags_cab as $nidcab) {    
+            $pfiltercabang .="'".$nidcab."',";
+        }
+        
+        if (!empty($pfiltercabang)) $pfiltercabang="(".substr($pfiltercabang, 0, -1).")";
+    }
+}
+
 //FORMAT(realisasi1,2,'de_DE') as 
 // getting total number records without any search
 $sql = "select a.id, a.tanggal, a.bulan1, a.bulan2, a.icabangid as icabangid, b.nama as nama_cabang, 
@@ -41,7 +57,13 @@ $sql.=" FROM ms2.br as a LEFT JOIN mkt.icabang as b on a.icabangid=b.icabangId "
         . " LEFT JOIN hrd.karyawan as c on LPAD(ifnull(a.createdby,0), 10, '0')=c.karyawanId ";
 $sql.=" WHERE 1=1 ";
 $sql.=" AND a.`kode` IN ('700-02-03', '700-04-03', '700-01-03') ";
-//$sql.=" AND a.icabangId='$pcabangid' ";
+
+if (!empty($pcabangid)) $sql.=" AND a.icabangId='$pcabangid' ";
+else{
+    if (!empty($pfiltercabang) AND ($pidjabatan=="10" OR $pidjabatan=="18" OR $pidjabatan=="08" OR $pidjabatan=="20" OR $pidjabatan=="05") ) {
+        $sql.=" AND a.icabangId IN $pfiltercabang ";
+    }
+}
 
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
 $totalData = mysqli_num_rows($query);

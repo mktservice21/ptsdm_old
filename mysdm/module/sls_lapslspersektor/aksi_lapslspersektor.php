@@ -769,7 +769,8 @@
     ?>
     
     
-    <br/>
+    
+        <span class="" style="float: right; font-size: 12px;"><b>klik qty untuk melihat rincian data customer per sektor</b></span><br/>
         <table id='mydatatable12' class='table table-striped table-bordered' border="1px solid black">
         <thead>
         <tr>
@@ -779,15 +780,24 @@
         </thead>
         <tbody>
             <?PHP
-            $query = "select nama_sektor, count(distinct icustid) as jml from $tmp06 GROUP BY 1;";
+            $query = "select isektorid, nama_sektor, count(distinct icustid) as jml from $tmp06 GROUP BY 1,2";
             $tampil= mysqli_query($cnmy, $query);
             while ($row= mysqli_fetch_array($tampil)) {
                 $pnama_s=$row['nama_sektor'];
                 $pjml_s=$row['jml'];
                 
+                $pidsektor=$row['isektorid'];
+                $plinkrptgrp_valunit=$pjml_s;
+                if ((INT)$pjml_s>0) {
+                    $plinkrptgrp_valunit="<a href='eksekusi3.php?module=detailsaleslappersektor&act=input&idmenu=$pidmenu&ket=bukan"
+                            . "&ipilih=$pidsektor&iprd=$pkosong&pper1=$pbulan1&pper2=$pbulan2"
+                            . "&pcb=$pidcabang&pkry=$pidamkry&idiv=$pdivisiid&qval=$ppilhqtyval&jns=$pjenissektor&incpoth=$pplhothpea&niddist=$piddist' "
+                            . " target='_blank'>$pjml_s</a>";
+                }
+                
                 echo "<tr>";
                 echo "<td nowrap>$pnama_s</td>";
-                echo "<td nowrap align='right'>$pjml_s</td>";
+                echo "<td nowrap align='right'>$plinkrptgrp_valunit</td>";
                 echo "</tr>";
             }
             ?>

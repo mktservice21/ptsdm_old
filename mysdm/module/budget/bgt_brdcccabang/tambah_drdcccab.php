@@ -27,7 +27,7 @@ $pnamalengkap=$_SESSION['NAMALENGKAP'];
     $pidjbt="15";
     $pidgroup="7";
     
-
+    
     $pidcard="0000000615";
     $pnamalengkap="HAMBALI";
     $pidjbt="10";
@@ -169,7 +169,8 @@ $filtercabang="";
 //END CARI CABANG
 
 
-
+$pidpengaju=$pidcard;
+$pnmpengaju=$pnamalengkap;
 $pidinput="";
 $piddivisi="";
 $gsdsudoktit="";
@@ -202,18 +203,67 @@ if ($pidact=="editdata"){
     $pidinput_ec=$_GET['id'];
     $pidinput = decodeString($pidinput_ec);
     
-    //$edit = mysqli_query($cnmy, "SELECT * FROM  WHERE ='$pidinput'");
-    //$jmlrw0=mysqli_num_rows($edit);
+    $edit = mysqli_query($cnmy, "SELECT * FROM ms2.br WHERE id='$pidinput'");
+    $jmlrw0=mysqli_num_rows($edit);
+    $row= mysqli_fetch_array($edit);
+    
+    $pidpengaju=$row['createdby'];
+    $ptglinput=$row['tanggal'];
+    $pjenis=$row['jenis_br'];
+    $pidcabang=$row['icabangid'];
+    $pareaid=$row['areaid'];
+    $gsdsudoktit=$row['iddokter'];
+    $gsouteltid=$row['idpraktek'];
+    $rjnsrealisasi=$row['jenis_realisasi'];
+    $pbankrealisasi=$row['bank'];
+    $pnmbankreal=$row['nama_realisasi'];
+    $pnorekbankreal=$row['norek'];
+    
+    $pjumlah=$row['jumlah'];
+    $pketerangan=$row['keterangan'];
+    
+    $ptglajukan = date('d/m/Y', strtotime($ptglinput));
+    
+    $pkddm=$row['approvedby_dm'];
+    $pkdsm=$row['approvedby_sm'];
+    $pkdgsm=$row['approvedby_gsm'];
+    
+    $query = "select nama as nama_dm from hrd.karyawan where karyawanId='$pkddm'";
+    $tampil=mysqli_query($cnmy, $query); $row1= mysqli_fetch_array($tampil);
+    $pnamadm=$row1['nama_dm'];
+    
+    $query = "select nama as nama_sm from hrd.karyawan where karyawanId='$pkdsm'";
+    $tampil=mysqli_query($cnmy, $query); $row1= mysqli_fetch_array($tampil);
+    $pnamasm=$row1['nama_sm'];
+    
+    $query = "select nama as nama_gsm from hrd.karyawan where karyawanId='$pkdgsm'";
+    $tampil=mysqli_query($cnmy, $query); $row1= mysqli_fetch_array($tampil);
+    $pnamagsm=$row1['nama_gsm'];
+    
+    
+    
+    $query = "select nama from hrd.karyawan where karyawanId='$pidpengaju'";
+    $tampil=mysqli_query($cnmy, $query);
+    $row1= mysqli_fetch_array($tampil);
+    $pnmpengaju=$row1['nama'];
     
 }
 
-if ($pjenis=="Y") {
+if ($pjenis=="ADVANCE") {
     $pjenis1="selected";
     $pjenis2="";
 }else{
     $pjenis1="";
     $pjenis2="selected";    
 }
+
+$pchkjenisreal1="";
+$pchkjenisreal2="checked";
+if ($rjnsrealisasi=="1") {
+    $pchkjenisreal1="checked";
+    $pchkjenisreal2="";    
+}
+
 
 $phiddenatasan1="";
 $phiddenatasan2="hidden";
@@ -283,7 +333,8 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama <span class='required'></span></label>
                                     <div class='col-md-6 col-sm-6 col-xs-12'>
-                                        <input type='text' id='e_namauser' name='e_namauser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamalengkap; ?>' Readonly>
+                                        <input type='text' id='e_idkaryawan' name='e_idkaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidpengaju; ?>' Readonly>
+                                        <input type='text' id='e_namakaryawan' name='e_namakaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmpengaju; ?>' Readonly>
                                     </div>
                                 </div>
                                 
@@ -330,38 +381,43 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang <span class='required'></span></label>
                                     <div class='col-md-6 col-sm-6 col-xs-12'>
                                           <select class='form-control input-sm' id='cb_cabang' name='cb_cabang' onchange="ShowDataCabang()" data-live-search="true">
-                                            <?PHP 
-                                                if ($pidgroup=="1" OR $pidgroup=="24") {
-                                                    $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE IFNULL(aktif,'')<>'N' ";
-                                                    $query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
-                                                    $query .=" order by nama, iCabangId";
+                                            <?PHP
+                                                if ($pidact=="editdata"){
+                                                    $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE icabangid='$pidcabang' ";
                                                 }else{
-                                                    if ($pidjbt=="10" OR $pidjbt=="18") {
-                                                        $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
-                                                            FROM mkt.ispv0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
-                                                            WHERE a.karyawanid='$pidcard'";
-                                                            $query .=" order by b.nama, a.icabangid";
-                                                    }elseif ($pidjbt=="08") {
-                                                        $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
-                                                            FROM mkt.idm0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
-                                                            WHERE a.karyawanid='$pidcard'";
-                                                            $query .=" order by b.nama, a.icabangid";
-                                                    }elseif ($pidjbt=="20") {
-                                                        $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
-                                                            FROM mkt.ism0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
-                                                            WHERE a.karyawanid='$pidcard'";
-                                                            $query .=" order by b.nama, a.icabangid";
+                                                    echo "<option value='' selected>-- Pilih --</option>";
+                                                    
+                                                    if ($pidgroup=="1" OR $pidgroup=="24") {
+                                                        $query = "select iCabangId as icabangid, nama as nama_cabang from mkt.icabang WHERE IFNULL(aktif,'')<>'N' ";
+                                                        $query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
+                                                        $query .=" order by nama, iCabangId";
                                                     }else{
-                                                        $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
-                                                            FROM mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
-                                                            WHERE a.karyawanid='$pidcard'";
-                                                            $query .=" order by b.nama, a.icabangid";
+                                                        if ($pidjbt=="10" OR $pidjbt=="18") {
+                                                            $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                                FROM mkt.ispv0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                                WHERE a.karyawanid='$pidcard'";
+                                                                $query .=" order by b.nama, a.icabangid";
+                                                        }elseif ($pidjbt=="08") {
+                                                            $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                                FROM mkt.idm0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                                WHERE a.karyawanid='$pidcard'";
+                                                                $query .=" order by b.nama, a.icabangid";
+                                                        }elseif ($pidjbt=="20") {
+                                                            $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                                FROM mkt.ism0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                                WHERE a.karyawanid='$pidcard'";
+                                                                $query .=" order by b.nama, a.icabangid";
+                                                        }else{
+                                                            $query = "select distinct a.icabangid as icabangid, b.nama as nama_cabang 
+                                                                FROM mkt.imr0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId 
+                                                                WHERE a.karyawanid='$pidcard'";
+                                                                $query .=" order by b.nama, a.icabangid";
+                                                        }
                                                     }
                                                 }
                                                 $tampilket= mysqli_query($cnmy, $query);
                                                 $ketemu=mysqli_num_rows($tampilket);
                                                 //if ((INT)$ketemu<=0) 
-                                                    echo "<option value='' selected>-- Pilih --</option>";
                                                 while ($du= mysqli_fetch_array($tampilket)) {
                                                     $nidcab=$du['icabangid'];
                                                     $nnmcab=$du['nama_cabang'];
@@ -380,7 +436,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                     </div>
                                 </div>
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Area <span class='required'></span></label>
                                     <div class='col-md-6 col-sm-6 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_area' name='cb_area' onchange="ShowDariArea()">
@@ -433,24 +489,32 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                     <div class='col-md-9 col-sm-9 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_dokt' name='cb_dokt' onchange="ShowDariUser()">
                                             <?PHP
-                                                echo "<option value='' selected>-- Pilih --</option>";
+                                                
+                                                
                                                 if (!empty($pidcabang)) {
                                                     
-                                                    $query = "SELECT DISTINCT d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
-                                                        a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
-                                                        FROM ms2.tempatpraktek as a 
-                                                        JOIN ms2.outlet_master as b on a.outletId=b.id 
-                                                        LEFT JOIN ms2.outlet_type as c on b.type=c.id 
-                                                        JOIN ms2.outlet_customer as d on a.outletId=d.outletId 
-                                                        LEFT JOIN mkt.icabang as e on d.iCabangId=e.iCabangId 
-                                                        LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
-                                                        JOIN ms2.masterdokter as g on a.iddokter=g.id 
-                                                        LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
-                                                        WHERE d.icabangid='$pidcabang' ";
-                                                    if (!empty($pareaid)) {
-                                                        $query .=" AND d.areaid='$pareaid' ";
+                                                    if ($pidact=="editdata"){
+                                                        $query = "select id as iddokter, namalengkap as nama_dokter FROM ms2.masterdokter WHERE id='$gsdsudoktit'";
+                                                    }else{
+                                                        
+                                                        echo "<option value='' selected>-- Pilih --</option>";
+                                                        
+                                                        $query = "SELECT DISTINCT d.iCabangId as icabangid, e.nama as nama_cabang, d.areaId as areaid, f.Nama as nama_area, 
+                                                            a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis  
+                                                            FROM ms2.tempatpraktek as a 
+                                                            JOIN ms2.outlet_master as b on a.outletId=b.id 
+                                                            LEFT JOIN ms2.outlet_type as c on b.type=c.id 
+                                                            JOIN ms2.outlet_customer as d on a.outletId=d.outletId 
+                                                            LEFT JOIN mkt.icabang as e on d.iCabangId=e.iCabangId 
+                                                            LEFT JOIN mkt.iarea as f on d.iCabangId=f.iCabangId and d.areaId=f.areaId 
+                                                            JOIN ms2.masterdokter as g on a.iddokter=g.id 
+                                                            LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
+                                                            WHERE d.icabangid='$pidcabang' ";
+                                                        if (!empty($pareaid)) {
+                                                            $query .=" AND d.areaid='$pareaid' ";
+                                                        }
+                                                        $query .=" ORDER BY g.namalengkap, a.iddokter";
                                                     }
-                                                    $query .=" ORDER BY g.namalengkap, a.iddokter";
                                                     $tampil= mysqli_query($cnms, $query);
                                                     while ($row= mysqli_fetch_array($tampil)) {
                                                         $pniddokt=$row['iddokter'];
@@ -462,6 +526,8 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                                             echo "<option value='$pniddokt' >$pnnmdokt - ($pniddokt)</option>";
                                                     }
     
+                                                }else{
+                                                    echo "<option value='' selected>-- Pilih --</option>";
                                                 }
                                             ?>
                                         </select>
@@ -469,7 +535,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                     </div>
                                 </div>
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Lokasi Praktek <span class='required'></span></label>
                                     <div class='col-md-9 col-sm-9 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_outlet' name='cb_outlet' onchange="ShowDariLokasiPraktek()">
@@ -525,9 +591,16 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
 
                                 
                                 <div hidden class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah <span class='required'></span></label>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jumlah <span class=''></span></label>
                                     <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <input type='text' id='e_jmlusulan' name='e_jmlusulan' class='form-control col-md-7 col-xs-12 inputmaskrp2' value='<?PHP echo $pjumlah; ?>' onblur='CariDataDariJumlahUsul()'>
+                                    </div>
+                                </div>
+                                
+                                <div hidden class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Keterangan <span class=''></span></label>
+                                    <div class='col-md-6 col-sm-6 col-xs-12'>
+                                        <input type='text' id='e_keterangan' name='e_keterangan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pketerangan; ?>'>
                                     </div>
                                 </div>
                                 
@@ -561,7 +634,7 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                                 Relasi (istri /suami /anak /dsb.)
                                                 <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
-                                                <input type='text' id='e_nmrealasi' name='e_nmrealasi' class='form-control col-md-7 col-xs-12' value="<?PHP echo $prelasijenis; ?>" >
+                                                <input type='text' id='e_nmrealasi' name='e_nmrealasi' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pnmbankreal; ?>" >
                                             </div>
                                         </div>
                                     </div>
@@ -759,6 +832,12 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                  //ShowDataArea();
                  //ShowDataListDokter();
              }, 200);
+        }else if (iact=="editdata") {
+            CekDataRealisasi();
+            
+             setTimeout(function () {
+                 ShowDataListDokter();
+             }, 200);
         }
        
         $('#cbln01').on('change dp.change', function(e){
@@ -819,19 +898,27 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
     
     
     function ShowDataListDokter() {
+        var eidinput =document.getElementById('e_id').value;
         var eidcab =document.getElementById('cb_cabang').value;
         var eidarea =document.getElementById('cb_area').value;
         var eiddokt =document.getElementById('cb_dokt').value;
         var eoutletid =document.getElementById('cb_outlet').value;
         var ejumlah =document.getElementById('e_jmlusulan').value;
+        var eket =document.getElementById('e_keterangan').value;
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var iact = urlku.searchParams.get("act");
         
         //if (eidarea=="") {
         //    $("#d_tabeluser").html("");
         //}else{
             $.ajax({
                 type:"post",
-                url:"module/budget/viewdatabgt.php?module=viewlistdokter",
-                data:"uidcab="+eidcab+"&uidarea="+eidarea+"&uiddokt="+eiddokt+"&uoutletid="+eoutletid+"&ujumlah="+ejumlah,
+                url:"module/budget/viewdatabgt.php?module=viewlistdokter&act="+iact,
+                data:"uidinput="+eidinput+"&uidcab="+eidcab+"&uidarea="+eidarea+"&uiddokt="+eiddokt+"&uoutletid="+eoutletid+"&ujumlah="+ejumlah+"&uket="+eket,
                 success:function(data){
                     $("#d_tabeluser").html(data);
                 }

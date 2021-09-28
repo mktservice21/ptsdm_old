@@ -13,6 +13,10 @@ if ($psudhpernahupdatepass=="Y") {
 
 <?PHP
 
+$pbolehakses_mu="N";
+if (isset($_SESSION['AKSES_MU'])) {
+    if ($_SESSION['AKSES_MU']=="Y") $pbolehakses_mu="Y";
+}
 
 
 if ($psudhpernahupdatepass=="Y" && $pbukamenuloginnya==true) {
@@ -28,7 +32,12 @@ if ($psudhpernahupdatepass=="Y" && $pbukamenuloginnya==true) {
         $pmenu_notin_menu="";
         $pmenu_notin_sub="";
         if ($pidcard_menu=="0000000159") {
-            $pmenu_notin_menu=" ('521') ";
+            if ($pbolehakses_mu=="N") $pmenu_notin_menu=" ('521', '377') ";
+            else $pmenu_notin_menu=" ('521') ";
+        }else{
+            if ($pbolehakses_mu=="N") {
+                $pmenu_notin_menu=" ('377') ";
+            }
         }
 
         $pgroupid_menu=$_SESSION['GROUP'];

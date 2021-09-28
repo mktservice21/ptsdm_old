@@ -90,6 +90,10 @@ if (!empty($_SESSION['AKSES_JABATAN'])) {
     $sql .= " AND (jabatanid in ($_SESSION[AKSES_JABATAN]) OR karyawanid='$_SESSION[IDCARD]')";
 }
 
+if ($_SESSION['IDCARD']=="0000002329") {
+    $sql .=" and karyawanid IN ('$_SESSION[IDCARD]', '0000000158') ";
+}
+
 $query=mysqli_query($cnmy, $sql) or die("mydata.php: get data");
 $totalData = mysqli_num_rows($query);
 $totalFiltered = $totalData;  // when there is no search parameter then total number rows = total number filtered rows.

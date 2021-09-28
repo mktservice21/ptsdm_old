@@ -153,7 +153,7 @@
                         . " a.divisi, a.icabangid, c.nama as nama_cabang, a.areaid, d.nama as nama_area, a.keterangan, "
                         . " a.tgl_atasan1, a.tgl_atasan2, a.tgl_atasan3, a.tgl_atasan4, a.tgl_dir, a.tgl_fin, "
                         . " a.atasan1, a.atasan2, a.atasan3, a.atasan4, a.dir, a.fin, "
-                        . " a.nama_karyawan, a.userid, a.jabatanid "
+                        . " a.nama_karyawan, a.userid, a.jabatanid, a.gbr_atasan4 "
                         . " FROM dbmaster.t_brrutin0 as a LEFT JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
                         . " LEFT JOIN mkt.icabang as c on a.icabangid=c.iCabangId "
                         . " LEFT JOIN mkt.iarea as d on a.icabangid=d.iCabangId AND a.areaid=d.areaId "

@@ -111,6 +111,27 @@
                                     </div>
                                 </div>
                                 
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12'>Jenis &nbsp;<input type="checkbox" id="chkjenisobat" value="deselect" onClick="SelAllCheckBox('chkjenisobat', 'chkbox_jnsobat[]')" checked/><span class='required'></span></label>
+                                    <div class='col-md-9 col-sm-9 col-xs-12'>
+                                        <div id="kotak-multi2" class="jarak">
+                                        <?PHP
+                                            $query = "select a.* from dbmaster.t_brid a WHERE a.kode='1' ";
+                                            $query .= " ORDER BY a.postingid, a.nobrid";
+                                            $tampil = mysqli_query($cnmy, $query);
+                                            while ($z= mysqli_fetch_array($tampil)) {
+                                                $pnobrid=$z['nobrid'];
+                                                $pnmbrid=$z['nama'];
+                                                echo "&nbsp; <input type=checkbox value='$pnobrid' name='chkbox_jnsobat[]' checked> $pnobrid - $pnmbrid<br/>";
+                                            }
+                                        ?>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                
                             </div>
                         </div>           
                     </div>

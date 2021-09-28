@@ -17,10 +17,11 @@
     $ptahun=$_POST['tahun'];
     
     $now=date("mdYhis");
-    $tmp01 =" dbtemp.DBRROTCPBLL01_".$_SESSION['IDCARD']."_$now ";
-    $tmp02 =" dbtemp.DBRROTCPBLL02_".$_SESSION['IDCARD']."_$now ";
-    $tmp03 =" dbtemp.DBRROTCPBLL03_".$_SESSION['IDCARD']."_$now ";
-    $tmp04 =" dbtemp.DBRROTCPBLL04_".$_SESSION['IDCARD']."_$now ";
+    $tmp01 =" dbtemp.tmprptrtnthnall01_".$_SESSION['IDCARD']."_$now ";
+    $tmp02 =" dbtemp.tmprptrtnthnall02_".$_SESSION['IDCARD']."_$now ";
+    $tmp03 =" dbtemp.tmprptrtnthnall03_".$_SESSION['IDCARD']."_$now ";
+    $tmp04 =" dbtemp.tmprptrtnthnall04_".$_SESSION['IDCARD']."_$now ";
+    $tmp05 =" dbtemp.tmprptrtnthnall05_".$_SESSION['IDCARD']."_$now ";
     
     
     $pfilterjabatan=('');
@@ -29,24 +30,64 @@
         $pfilterjabatan=PilCekBox($pfilterjabatan);
     }
     if (strpos($pfilterjabatan, "emptypilih")>0) {
-        $pfilterjabatan=" and (jabatanid in $pfilterjabatan OR IFNULL(jabatanid,'')='')";
+        $pfilterjabatan=" and (a.jabatanid in $pfilterjabatan OR IFNULL(a.jabatanid,'')='')";
     }else{
-        $pfilterjabatan=" and jabatanid in $pfilterjabatan ";
+        $pfilterjabatan=" and a.jabatanid in $pfilterjabatan ";
+    }
+    
+    $filterjenis=('');
+    if (!empty($_POST['chkbox_jnsobat'])){
+        $filterjenis=$_POST['chkbox_jnsobat'];
+        $filterjenis=PilCekBoxAndEmpty($filterjenis);
     }
     
     
-    $query = "select idrutin, bulan, karyawanid, nama_karyawan, divisi, icabangid, jumlah from dbmaster.t_brrutin0 WHERE IFNULL(stsnonaktif,'')<>'Y' "
-            . " AND kode='1' AND ifnull(tgl_fin,'') <> '' AND ifnull(tgl_fin,'0000-00-00') <> '0000-00-00' AND YEAR(bulan)='$ptahun' $pfilterjabatan ";
+    $query = "select a.idrutin, a.bulan, a.karyawanid, a.nama_karyawan, a.divisi, a.icabangid, b.rptotal as jumlah "
+            . " from dbmaster.t_brrutin0 as a JOIN dbmaster.t_brrutin1 as b on a.idrutin=b.idrutin "
+            . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' "
+            . " AND a.kode='1' AND ifnull(a.tgl_fin,'') <> '' AND ifnull(a.tgl_fin,'0000-00-00') <> '0000-00-00' "
+            . " AND ifnull(a.tgl_fin,'0000-00-00 00:00:00') <> '0000-00-00 00:00:00' "
+            . " AND YEAR(a.bulan)='$ptahun' $pfilterjabatan AND b.nobrid in $filterjenis AND a.divisi<>'OTC'";
     $query = "create temporary table $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "create temporary table $tmp05 (select distinct idrutin from $tmp01)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+        $query = "INSERT INTO $tmp01"
+                . " select a.idrutin, a.bulan, a.karyawanid, a.nama_karyawan, a.divisi, a.icabangid_o, b.rptotal as jumlah "
+                . " from dbmaster.t_brrutin0 as a JOIN dbmaster.t_brrutin1 as b on a.idrutin=b.idrutin "
+                . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' "
+                . " AND a.kode='1' "
+                . " AND YEAR(a.bulan)='$ptahun' $pfilterjabatan AND b.nobrid in $filterjenis AND a.divisi='OTC' "
+                . " AND a.idrutin NOT IN (select distinct IFNULL(idrutin,'') FROM $tmp05)";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "DROP TEMPORARY TABLE $tmp05";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    goto hapusdata;
+    $query = "select DISTINCT bridinput from dbmaster.t_suratdana_br as a "
+            . " JOIN dbmaster.t_suratdana_br1 as b on a.idinput=b.idinput "
+            . " where a.jenis_rpt IN ('RTNETH', 'RTNOTC') AND ifnull(a.stsnonaktif,'')<>''";
+    $query = "create temporary table $tmp05 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    //$query = "DELETE FROM $tmp01 WHERE idrutin NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp05)";
+    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    
     
     $query = "select a.*, b.nama from $tmp01 a JOIN hrd.karyawan b on a.karyawanid=b.karyawanid";
     $query = "create temporary table $tmp02 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "UPDATE $tmp02 a set a.nama=a.nama_karyawan, karyawanid=idrutin WHERE karyawanid='$_SESSION[KRYNONE]'";
+    $query = "UPDATE $tmp02 a set a.nama=a.nama_karyawan, karyawanid=idrutin WHERE karyawanid IN ('$_SESSION[KRYNONE]', '0000002200', '0000002083')";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -113,6 +154,10 @@
 
         return $pjumlah_;
     }
+    
+    $query = "UPDATE $tmp04 SET region=''";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
 ?>
 
 <html>
@@ -183,7 +228,7 @@
             <thead>
                 <tr>
                     <th width='60px'>NAMA</th>
-                    <th width='60px'>CABANG</th>
+                    <th width='60px' class='divnone'>CABANG</th>
                     <th width='30px'>Jan</th>
                     <th width='30px'>Feb</th>
                     <th width='30px'>Mar</th>
@@ -215,15 +260,15 @@
                     $pregion=$row1['region'];
                     $pnmregion="BARAT";
                     if ($pregion=="T") $pnmregion="TIMUR";
-                    
+                    /*
                     echo "<tr style='background:yellow;'>";
                     echo "<td nowrap><b>$pnmregion</b></td>";
-                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap class='divnone'>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td>";
                     echo "</tr>";
-                    
+                    */
                     $no=1;
                     
                     
@@ -283,7 +328,7 @@
 
                         echo "<tr>";
                         echo "<td nowrap>$pnama</td>";
-                        echo "<td nowrap>$pnmcabang</td>";
+                        echo "<td nowrap class='divnone'>$pnmcabang</td>";
                         echo "<td nowrap>$pjan</td>";
                         echo "<td nowrap>$pfeb</td>";
                         echo "<td nowrap>$pmar</td>";
@@ -304,7 +349,7 @@
                     
                     echo "<tr>";
                     echo "<td nowrap>&nbsp;</td>";
-                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap class='divnone'>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td><td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td>";
@@ -342,7 +387,7 @@
                 */
                 echo "<tr>";
                 echo "<td nowrap>TOTAL</td>";
-                echo "<td nowrap></td>";
+                echo "<td nowrap class='divnone'></td>";
                 echo "<td nowrap>$n_tot1</td>";
                 echo "<td nowrap>$n_tot2</td>";
                 echo "<td nowrap>$n_tot3</td>";
@@ -542,6 +587,7 @@ hapusdata:
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp02");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp03");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp04");
+    mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp05");
     
     mysqli_close($cnmy);
 ?>

@@ -515,6 +515,10 @@ echo "</div>";
                         $npmdl="entrybrrutin";
                     }
                     
+                    if ($pkodepilih=="2") {
+                        $npmdl = "entrybrluarkota";
+                    }
+                    
                     
                     $pprint="<a title='Detail / Print' href='#' class='btn btn-dark btn-xs' data-toggle='modal' "
                         . "onClick=\"window.open('eksekusi3.php?module=$npmdl&brid=$pidnoget&iprint=print',"

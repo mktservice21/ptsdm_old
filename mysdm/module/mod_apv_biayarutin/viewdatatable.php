@@ -104,6 +104,8 @@
                 $atasannya = "";
                 $tglatasannya = "";
                 $tglatasannya_atas = "";
+                $tglatasannya_atas_nm = "";
+                $tglatasannya_atas_nm_2 = "";
                 $tglatasannya_bawah = "";
                 $tglatasannya1 = "";
                 $filterapv = "";
@@ -114,6 +116,8 @@
                     $atasannya = "atasan1";
                     $tglatasannya = "tgl_atasan1";
                         $tglatasannya_atas = "tgl_atasan2";
+                        $tglatasannya_atas_nm = "atasan2";
+                        $tglatasannya_atas_nm_2 = "tgl_atasan3";
                 }elseif ($lvlposisi=="FF3") {
                     $atasannya = "atasan2";
                     $tglatasannya = "tgl_atasan2";
@@ -123,7 +127,7 @@
                     $atasannya = "atasan3";
                     $tglatasannya = "tgl_atasan3";
                         $tglatasannya_bawah = "tgl_atasan2";
-                        $tglatasannya_atas = "tgl_atasan4";
+                        $tglatasannya_atas = "tgl_atasan4";;
                 }elseif ($lvlposisi=="FF5" OR $lvlposisi=="FF7") {
                     $tglatasannya = "tgl_atasan4";
                         $tglatasannya_bawah = "tgl_atasan3";
@@ -155,7 +159,11 @@
                 if (!empty($atasannya)) $filterbawahan = " $atasannya='$karyawan'"; //bawahan
                 if (!empty($tglatasannya)) $tglatasannya = "ifnull($tglatasannya,'')"; //tanggal approve
                 if (!empty($tglatasannya_bawah)) $tglatasannya_bawah = " AND ifnull($tglatasannya_bawah,'')<>'' "; //tanggal approve palingatas
-                if (!empty($tglatasannya_atas)) $tglatasannya_atas = " AND ifnull($tglatasannya_atas,'')='' "; //tanggal approve palingatas
+                if (!empty($tglatasannya_atas_nm)) {
+                    if (!empty($tglatasannya_atas)) $tglatasannya_atas = " AND ( ifnull($tglatasannya_atas,'')='' OR IFNULL($tglatasannya_atas_nm,'')='' ) AND ifnull($tglatasannya_atas_nm_2,'')='' ";
+                }else{
+                    if (!empty($tglatasannya_atas)) $tglatasannya_atas = " AND ifnull($tglatasannya_atas,'')='' "; //tanggal approve palingatas
+                }
                 
                 
                 if (strtoupper($cket)=="APPROVE") {

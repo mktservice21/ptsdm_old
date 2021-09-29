@@ -8,8 +8,9 @@ $cnmy=$cnms;
 
 $pidgrpuser=$_SESSION['GROUP'];
 $fkaryawan=$_SESSION['IDCARD'];
+$fuserid=$_SESSION['USERID'];
 $pidjabatan=$_SESSION['JABATANID'];
-
+$pmodule=$_GET['module'];
 
 /// storing  request (ie, get/post) global array to a variable  
 $requestData= $_REQUEST;
@@ -19,12 +20,12 @@ $columns = array(
     0 =>'a.id',
     1 =>'a.id',
     2 => 'a.id',
-    3=> 'a.id',
-    4=> 'a.id',
-    5=> 'a.id',
-    6=> 'a.id',
-    7=> 'a.id',
-    8=> 'a.id'
+    3=> 'a.tanggal',
+    4=> 'a.jenis_br',
+    5=> 'd.namalengkap',
+    6=> 'c.nama',
+    7=> 'a.jumlah',
+    8=> 'a.keterangan'
 );
 
 $pcabangid="";
@@ -51,12 +52,17 @@ if (isset($_GET['utxtcabid'])) {
 //FORMAT(realisasi1,2,'de_DE') as 
 // getting total number records without any search
 $sql = "select a.id, a.tanggal, a.bulan1, a.bulan2, a.icabangid as icabangid, b.nama as nama_cabang, 
-    a.areaid, a.iddokter, a.idpraktek, a.divprodid, a.createdby as karyawanid, c.nama as nama_karyawan, 
-    a.jenis_br, a.kode, a.jumlah, a.keterangan ";
+    a.areaid, a.iddokter, d.namalengkap as nama_dokter, a.idpraktek, a.divprodid, a.createdby as karyawanid, c.nama as nama_karyawan, 
+    a.jenis_br, a.kode, a.jumlah, a.keterangan, a.approvedby_dm, a.approveddate_dm, a.rejecteddate_dm,
+    a.approvedby_sm, a.approveddate_sm, a.rejecteddate_sm, 
+    a.approvedby_gsm, a.approveddate_gsm, a.rejecteddate_gsm ";
 $sql.=" FROM ms2.br as a LEFT JOIN mkt.icabang as b on a.icabangid=b.icabangId "
-        . " LEFT JOIN hrd.karyawan as c on LPAD(ifnull(a.createdby,0), 10, '0')=c.karyawanId ";
+        . " LEFT JOIN hrd.karyawan as c on LPAD(ifnull(a.createdby,0), 10, '0')=c.karyawanId "
+        . " JOIN ms2.masterdokter as d on a.iddokter=d.id ";
 $sql.=" WHERE 1=1 ";
-$sql.=" AND a.`kode` IN ('700-02-03', '700-04-03', '700-01-03') ";
+//$sql.=" AND a.`kode` IN ('700-02-03', '700-04-03', '700-01-03') ";
+$sql.=" AND ( a.`kode` IN ('3', '4') OR a.createdby IN ('$fkaryawan', '$fuserid') )";
+$sql.=" AND  a.`kode` NOT IN ('1', '2') ";
 
 if (!empty($pcabangid)) $sql.=" AND a.icabangId='$pcabangid' ";
 else{
@@ -102,6 +108,28 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pkodeid=$row['kode'];
     $pjumlah=$row['jumlah'];
     $pket=$row['keterangan'];
+    $pnmdokter=$row['nama_dokter'];
+    
+    
+    $preject2=$row['rejecteddate_dm'];
+    $patasan2=$row['approvedby_dm'];
+    $ptglatasan2=$row['approveddate_dm'];
+    $preject3=$row['rejecteddate_sm'];
+    $patasan3=$row['approvedby_sm'];
+    $ptglatasan3=$row['approveddate_sm'];
+    $preject4=$row['rejecteddate_gsm'];
+    $patasan4=$row['approvedby_gsm'];
+    $ptglatasan4=$row['approveddate_gsm'];
+    
+    if (empty($patasan2)) $ptglatasan2="";
+    if ($ptglatasan2=="0000-00-00 00:00:00" OR $ptglatasan2=="0000-00-00") $ptglatasan2="";
+    if ($ptglatasan3=="0000-00-00 00:00:00" OR $ptglatasan3=="0000-00-00") $ptglatasan3="";
+    if ($ptglatasan4=="0000-00-00 00:00:00" OR $ptglatasan4=="0000-00-00") $ptglatasan4="";
+    
+    if ($preject2=="0000-00-00 00:00:00" OR $preject2=="0000-00-00") $preject2="";
+    if ($preject3=="0000-00-00 00:00:00" OR $preject3=="0000-00-00") $preject3="";
+    if ($preject4=="0000-00-00 00:00:00" OR $preject4=="0000-00-00") $preject4="";
+    
     
     $ptanggal = date('d/m/Y', strtotime($ptgl));
     $pjumlah=number_format($pjumlah,0,",",",");
@@ -119,6 +147,11 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pedit="<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$pidget'>Edit</a>";
     $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$idno')\">";
     
+    $print="<a style='font-size:11px;' title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+        . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$pidget&iprint=print',"
+        . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+        . "Print</a>";
+                    
     $phapus = "";
     
     if ($pidgrpuser=="1" OR $pidgrpuser=="24") {
@@ -128,7 +161,41 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     }
     
     
-    $ppilihan="$pedit $phapus";
+    if (!empty($ptglatasan2)) {
+        $pedit="Approved DM";
+        $phapus = "";
+    }
+    
+    if (!empty($ptglatasan3)) {
+        $pedit="Approved SM";
+        $phapus = "";
+    }
+    
+    if (!empty($ptglatasan4)) {
+        $pedit="Approved GSM";
+        $phapus = "";
+    }
+    
+    if (!empty($preject2)) {
+        $pedit="Reject DM";
+        $phapus = "";
+        $print = "";
+    }
+    
+    if (!empty($preject3)) {
+        $pedit="Reject SM";
+        $phapus = "";
+        $print = "";
+    }
+    
+    if (!empty($preject4)) {
+        $pedit="Reject GSM";
+        $phapus = "";
+        $print = "";
+    }
+    
+    
+    $ppilihan="$pedit $phapus $print";
     
     
     $nestedData[] = $no;
@@ -136,7 +203,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $idno;
     $nestedData[] = $ptanggal;
     $nestedData[] = $pnamajenis;
-    $nestedData[] = $pkodeid;
+    $nestedData[] = $pnmdokter;
     $nestedData[] = $pnmkaryawan;
     $nestedData[] = $pjumlah;
     $nestedData[] = $pket;

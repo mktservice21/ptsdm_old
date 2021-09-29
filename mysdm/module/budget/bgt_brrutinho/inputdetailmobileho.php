@@ -196,6 +196,9 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
+    if ($pidact=="tambahbaru" AND $pfromresresh<>"Y"){
+        $pjmlwfo_val="0";
+    }
     
     if ($pidact=="tambahbaru" OR $pfromresresh=="Y"){
         $query = "UPDATE $tmp00  SET rp=rp_perperson";

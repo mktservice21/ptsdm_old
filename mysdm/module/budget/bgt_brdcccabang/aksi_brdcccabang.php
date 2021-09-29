@@ -72,10 +72,11 @@ if ($module=='brudcccabang')
         $pbankid=$_POST['cb_bankreal'];
         $pbanknama=$_POST['e_nmbankreal'];
         $pnorekening=$_POST['e_norekbankreal'];
+        $pkodesccdss=$_POST['cb_dssdcc'];
         
         if (empty($pkaryawaninput)) $pkaryawaninput=$pidcard;
         
-        $pkodeakun="";
+        $pkodeakun="";//ganti $pkodesccdss
         $pkodecoa="";
         if ($pdivisi=="EAGLE") {
             $pkodeakun="700-02-03";
@@ -121,7 +122,7 @@ if ($module=='brudcccabang')
             }
         }
         
-        //echo "$kodenya : $pkodeakun, $pkodecoa, $ptanggal, $pjenis, $pdivisi, $pcabang, $parea, $pdoktid, $plokprak, $pjmlusul, $pjenisreal, $pnmreal, $pbankid, $pbanknama, $pnorekening<br/>";
+        //echo "$kodenya : $pkodeakun - $pkodesccdss, $pkodecoa, $ptanggal, $pjenis, $pdivisi, $pcabang, $parea, $pdoktid, $plokprak, $pjmlusul, $pjenisreal, $pnmreal, $pbankid, $pbanknama, $pnorekening<br/>";
         
         unset($pinsert_data_detail);//kosongkan array
         $psimpandata=false;
@@ -147,7 +148,7 @@ if ($module=='brudcccabang')
                         . " '$pnareaid', '$pndoktid', '$pnlokprak', "
                         . " '$pccyid', '$pnjumlah', '$pnket', "
                         . " '$pjenisreal', '$pnmreal', '$pbankid', '$pbanknama', '$pnorekening', "
-                        . " '$pkodeakun', '$pkodecoa')";
+                        . " '$pkodesccdss', '$pkodecoa')";
 
                 $psimpandata=true;
             }
@@ -197,6 +198,7 @@ if ($module=='brudcccabang')
             
             if ($act=="input") {
                 $pimgttd=$_POST['txtgambar'];
+                if (!empty($pimgttd)) $pimgttd="data:".$pimgttd;
                 $query = "update $tmp00 set gambar='$pimgttd'";
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) {  goto errorsimpan; }
             }

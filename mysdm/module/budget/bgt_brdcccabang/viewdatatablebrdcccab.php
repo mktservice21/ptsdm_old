@@ -91,7 +91,7 @@
                     <th width='20px'>ID</th>
                     <th width='20px'>Tanggal</th>
                     <th width='30px'>Jenis</th>
-                    <th width='30px'>Kode</th>
+                    <th width='30px'>User</th>
                     <th width='50px'>Yg. Membuat</th>
                     <th width='50px'>Jumlah</th>
                     <th width='50px'>Keterangan</th>

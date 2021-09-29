@@ -25,6 +25,9 @@ $_SESSION['IDSESI']="";
 $_SESSION['IDSESI_VPS']="";
 $_SESSION['SUDAHUPDATEPASS']="N";
 $_SESSION['IDADDRESS_SYS']="";
+$_SESSION['AKSES_MU']="N";
+$_SESSION['F_SALES']="N";
+$_SESSION['F_ICABANGID']="";
 
 
 $ipilihmenu_atasan=false;
@@ -472,6 +475,69 @@ if ($pberhasillogin==true) {
         }
     }
     //END CEK FOTO IMG
+    
+    
+    $pcabang_aksesid="";
+    $pfieldsls="";
+    $query_cab="";
+    if ( $_SESSION['JABATANID']=="15" OR $_SESSION['JABATANID']=="10" OR $_SESSION['JABATANID']=="18" OR $_SESSION['JABATANID']=="08" OR $_SESSION['JABATANID']=="20" OR $_SESSION['JABATANID']=="05" ) {
+        $_SESSION['F_SALES']="Y";
+        
+        if ($_SESSION['JABATANID'] == "15") {
+            $pfieldsls="mr";
+            $query_cab = "select DISTINCT a.iCabangid as icabangid FROM sls.imr0 as a JOIN mkt.icabang as b on a.iCabangId=b.iCabangId WHERE a.karyawanid='$pidkaryawan' AND IFNULL(b.aktif,'')<>'N'";
+        }elseif ($_SESSION['JABATANID'] == "10" OR $_SESSION['JABATANID'] == "18") {
+            $pfieldsls="am";
+            if ($_SESSION['JABATANID'] == "18") {
+                $pfieldsls="spv";
+            }
+            $query_cab = "select DISTINCT a.iCabangid as icabangid FROM sls.ispv0 as a JOIN mkt.icabang as b on a.iCabangId=b.iCabangId WHERE a.karyawanid='$pidkaryawan' AND IFNULL(b.aktif,'')<>'N'";
+        }elseif ($_SESSION['JABATANID'] == "08") {
+            $pfieldsls="dm";
+            $query_cab = "select DISTINCT a.iCabangid as icabangid FROM sls.idm0 as a JOIN mkt.icabang as b on a.iCabangId=b.iCabangId WHERE a.karyawanid='$pidkaryawan' AND IFNULL(b.aktif,'')<>'N'";
+        }
+        
+        if (!empty($query_cab)) {
+            $tampilc=mysqli_query($cnmy, $query_cab);
+            $rcb= mysqli_fetch_array($tampilc);
+            $pcabang_aksesid=$rcb['icabangid'];
+            $_SESSION['F_ICABANGID']=$pcabang_aksesid;
+            
+            if (!empty($pfieldsls)) {
+                $query = "select $pfieldsls as sts_kry from dbmaster.hak_akses WHERE icabangid='$pcabang_aksesid' AND IFNULL($pfieldsls,'')='Y'";
+                $tampilc=mysqli_query($cnmy, $query);
+                $rcb= mysqli_fetch_array($tampilc);
+                $paksesid=$rcb['sts_kry'];
+                
+                if ($paksesid=="Y") $_SESSION['AKSES_MU']="Y";
+            }
+            
+        }else{
+            
+            if ( $_SESSION['JABATANID']=="20") {
+                $query_ak = "select a.sm as sts_kry from dbmaster.hak_akses as a JOIN mkt.icabang as b on a.icabangid=b.icabangid "
+                        . " JOIN sls.ism0 as c on a.icabangid=c.icabangid "
+                        . " WHERE IFNULL(a.sm,'')='Y' AND c.karyawanid='$pidkaryawan' AND IFNULL(b.aktif,'')<>'N'";
+            }elseif ( $_SESSION['JABATANID']=="05") {
+                $p_reg=$_SESSION['REGION'];
+                $query_ak = "select a.gsm as sts_kry from dbmaster.hak_akses as a JOIN mkt.icabang as b on a.icabangid=b.icabangid "
+                        . " WHERE IFNULL(a.gsm,'')='Y' AND b.region='$p_reg' AND IFNULL(b.aktif,'')<>'N'";
+            }
+            
+            if (!empty($query_ak)) {
+                $tampilc=mysqli_query($cnmy, $query_ak);
+                $rcb= mysqli_fetch_array($tampilc);
+                $paksesid=$rcb['sts_kry'];
+
+                if ($paksesid=="Y") $_SESSION['AKSES_MU']="Y";
+            }
+                
+        }
+        
+        
+    }else{
+        $_SESSION['AKSES_MU']="Y";
+    }
     
     
     $home_pilspv=$_SESSION['PIDSPV'];

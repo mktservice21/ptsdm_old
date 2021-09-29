@@ -119,33 +119,51 @@ if ($pmodule=="cekdatasudahada") {
     
     if ($pkdperiode==1) {
         if ($pdivisi=="OTC") {
-            $periode1= date("Y-m-d", strtotime($bulan));
+            $periode1= date("Y-m-01", strtotime($bulan));
             $periode2= date("Y-m-t", strtotime($bulan));
         }else{
             $periode1= date("Y-m-d", strtotime($bulan));
             $periode2= date("Y-m-15", strtotime($bulan));
         }
     }elseif ($pkdperiode==2) {
-        include "../../../config/koneksimysqli.php";
-        
-        $query = "select idrutin from dbmaster.t_brrutin0 WHERE kode='1' AND karyawanid='$pkry' AND DATE_FORMAT(bulan,'%Y%m')='$pnbln' AND kodeperiode='1'";
-        $tampil= mysqli_query($cnmy, $query);
-        $ketemu= mysqli_num_rows($tampil);
-        mysqli_close($cnmy);
-        if ((INT)$ketemu>0) {
-            $periode1= date("Y-m-16", strtotime($bulan));
+        if ($pdivisi=="OTC") {
+            $periode1= date("Y-m-01", strtotime($bulan));
             $periode2= date("Y-m-t", strtotime($bulan));
         }else{
+            include "../../../config/koneksimysqli.php";
+
+            $query = "select idrutin from dbmaster.t_brrutin0 WHERE kode='1' AND karyawanid='$pkry' AND DATE_FORMAT(bulan,'%Y%m')='$pnbln' AND kodeperiode='1' AND IFNULL(stsnonaktif,'')<>'Y'";
+            $tampil= mysqli_query($cnmy, $query);
+            $ketemu= mysqli_num_rows($tampil);
+            mysqli_close($cnmy);
+            if ((INT)$ketemu>0) {
+                $periode1= date("Y-m-16", strtotime($bulan));
+                $periode2= date("Y-m-t", strtotime($bulan));
+            }else{
+                $periode1= date("Y-m-01", strtotime($bulan));
+                $periode2= date("Y-m-t", strtotime($bulan));
+            }
+        }
+        
+    }else{
+        if ($pdivisi=="OTC") {
             $periode1= date("Y-m-01", strtotime($bulan));
             $periode2= date("Y-m-t", strtotime($bulan));
         }
-        
     }
     
     $bln1=""; $bln2="";
     if (!empty($pkdperiode)) {
         $bln1= date("d/m/Y", strtotime($periode1));
         $bln2= date("d/m/Y", strtotime($periode2));
+    }else{
+        if ($pdivisi=="OTC") {
+            $periode1= date("Y-m-01", strtotime($bulan));
+            $periode2= date("Y-m-t", strtotime($bulan));
+            
+            $bln1= date("d/m/Y", strtotime($periode1));
+            $bln2= date("d/m/Y", strtotime($periode2));
+        }
     }
     echo "$bln1, $bln2"; exit;
     

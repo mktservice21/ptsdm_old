@@ -523,6 +523,8 @@ if ($pmodule=="viewdatakrybuat") {
 }elseif ($pmodule=="viewdatadokter") {
     include "../../config/koneksimysqli_ms.php";
     
+    $pidjbt=$_SESSION['JABATANID'];
+    $pidcard=$_SESSION['IDCARD'];
     $pidcab=$_POST['uidcab'];
     $pidarea=$_POST['uidarea'];
     $pidoutlet=$_POST['uoutletid'];
@@ -541,6 +543,13 @@ if ($pmodule=="viewdatakrybuat") {
         LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
         WHERE d.icabangid='$pidcab' ";
     if (!empty($pidarea)) $query .=" AND d.areaid='$pidarea' ";
+    else{
+        if ($pidjbt=="15") {
+            $query .=" AND d.areaid IN (select DISTINCT areaId FROM sls.imr0 WHERE karyawanid='$pidcard' AND iCabangId='$pidcab') ";
+        }elseif ($pidjbt=="10" OR $pidjbt=="18") {
+            $query .=" AND d.areaid IN (select DISTINCT areaId FROM sls.ispv0 WHERE karyawanid='$pidcard' AND iCabangId='$pidcab') ";
+        }
+    }
     if (!empty($pidoutlet)) $query .=" AND a.outletId='$pidoutlet' ";
     $query .=" ORDER BY g.namalengkap, a.iddokter";
     $tampil= mysqli_query($cnms, $query);
@@ -556,7 +565,7 @@ if ($pmodule=="viewdatakrybuat") {
 }elseif ($pmodule=="viewdataoutlet") {
     include "../../config/koneksimysqli_ms.php";
     
-    $pidjbt=$_SESSION['JABATANID']; 
+    $pidjbt=$_SESSION['JABATANID'];
     $pidcard=$_SESSION['IDCARD'];
     $pidcab=$_POST['uidcab'];
     $pidarea=$_POST['uidarea'];
@@ -666,8 +675,7 @@ if ($pmodule=="viewdatakrybuat") {
                         LEFT JOIN ms2.lookup as h on g.spesialis=h.id 
                         WHERE d.icabangid='$pidcab' AND IFNULL(a.deletedby,'')='' ";
                 
-                $query = "SELECT distinct a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis,
-                    d.iCabangId as icabangid, e.nama as nama_cabang 
+                $query = "SELECT distinct a.iddokter, g.namalengkap as nama_dokter, g.spesialis, h.nama as nama_spesialis 
                     FROM ms2.tempatpraktek as a 
                     JOIN ms2.outlet_master as b on a.outletId=b.id 
                     LEFT JOIN ms2.outlet_type as c on b.type=c.id 
@@ -715,7 +723,7 @@ if ($pmodule=="viewdatakrybuat") {
                 echo "<tbody>";
                     while ($row= mysqli_fetch_array($tampil)) {
                         $npidpraktek=""; //$row['idpraktek'];
-                        $npnmcab=$row['nama_cabang'];
+                        $npnmcab="";//$row['nama_cabang'];
                         $npidarea=""; //$row['areaid'];
                         $npnmarea=""; //$row['nama_area'];
                         $npiddokt=$row['iddokter']; $npidpraktek=$npiddokt;

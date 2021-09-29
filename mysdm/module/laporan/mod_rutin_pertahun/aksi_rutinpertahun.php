@@ -22,6 +22,7 @@
     $tmp03 =" dbtemp.tmprptrtnthnall03_".$_SESSION['IDCARD']."_$now ";
     $tmp04 =" dbtemp.tmprptrtnthnall04_".$_SESSION['IDCARD']."_$now ";
     $tmp05 =" dbtemp.tmprptrtnthnall05_".$_SESSION['IDCARD']."_$now ";
+    $tmp06 =" dbtemp.tmprptrtnthnall06_".$_SESSION['IDCARD']."_$now ";
     
     
     $pfilterjabatan=('');
@@ -41,20 +42,39 @@
         $filterjenis=PilCekBoxAndEmpty($filterjenis);
     }
     
+    $query = "select DISTINCT bridinput from dbmaster.t_suratdana_br as a "
+            . " JOIN dbmaster.t_suratdana_br1 as b on a.idinput=b.idinput "
+            . " where a.jenis_rpt IN ('RTNETH') AND ifnull(a.stsnonaktif,'')<>''";//, 'RTNOTC'
+    $query = "create temporary table $tmp05 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
     
     $query = "select a.idrutin, a.bulan, a.karyawanid, a.nama_karyawan, a.divisi, a.icabangid, b.rptotal as jumlah "
             . " from dbmaster.t_brrutin0 as a JOIN dbmaster.t_brrutin1 as b on a.idrutin=b.idrutin "
             . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' "
             . " AND a.kode='1' AND ifnull(a.tgl_fin,'') <> '' AND ifnull(a.tgl_fin,'0000-00-00') <> '0000-00-00' "
             . " AND ifnull(a.tgl_fin,'0000-00-00 00:00:00') <> '0000-00-00 00:00:00' "
-            . " AND YEAR(a.bulan)='$ptahun' $pfilterjabatan AND b.nobrid in $filterjenis AND a.divisi<>'OTC'";
-    $query = "create temporary table $tmp01 ($query)";
+            . " AND YEAR(a.bulan)='$ptahun' $pfilterjabatan AND b.nobrid in $filterjenis AND a.divisi<>'OTC' ";
+    $query = "create temporary table $tmp06 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "create temporary table $tmp05 (select distinct idrutin from $tmp01)";
+    
+    $query = "select a.* FROM $tmp06 as a JOIN $tmp05 as b on a.idrutin=b.bridinput";
+    //$query = "select a.* FROM $tmp06 as a";
+    $query = "create  table $tmp01 ($query)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    
+    
+        $query = "DROP TEMPORARY TABLE $tmp05";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "create temporary table $tmp05 (select distinct idrutin from $tmp01)";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+        //OTC CHC
         $query = "INSERT INTO $tmp01"
                 . " select a.idrutin, a.bulan, a.karyawanid, a.nama_karyawan, a.divisi, a.icabangid_o, b.rptotal as jumlah "
                 . " from dbmaster.t_brrutin0 as a JOIN dbmaster.t_brrutin1 as b on a.idrutin=b.idrutin "
@@ -62,23 +82,23 @@
                 . " AND a.kode='1' "
                 . " AND YEAR(a.bulan)='$ptahun' $pfilterjabatan AND b.nobrid in $filterjenis AND a.divisi='OTC' "
                 . " AND a.idrutin NOT IN (select distinct IFNULL(idrutin,'') FROM $tmp05)";
-        mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        //mysqli_query($cnmy, $query);
+        //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
         $query = "DROP TEMPORARY TABLE $tmp05";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    goto hapusdata;
+        
+    
+        
     $query = "select DISTINCT bridinput from dbmaster.t_suratdana_br as a "
             . " JOIN dbmaster.t_suratdana_br1 as b on a.idinput=b.idinput "
-            . " where a.jenis_rpt IN ('RTNETH', 'RTNOTC') AND ifnull(a.stsnonaktif,'')<>''";
+            . " where a.jenis_rpt IN ('RTNETH') AND ifnull(a.stsnonaktif,'')<>''";//, 'RTNOTC'
     $query = "create temporary table $tmp05 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    
-    //$query = "DELETE FROM $tmp01 WHERE idrutin NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp05)";
-    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+     
+    echo $tmp01;
+    goto hapusdata;
     
     
     
@@ -588,6 +608,7 @@ hapusdata:
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp03");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp04");
     mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp05");
+    mysqli_query($cnmy, "DROP TEMPORARY TABLE $tmp06");
     
     mysqli_close($cnmy);
 ?>

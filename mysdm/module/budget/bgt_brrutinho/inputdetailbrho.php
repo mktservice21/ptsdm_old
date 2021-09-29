@@ -131,6 +131,10 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
+    if ($pidact=="tambahbaru" AND $pabsenrutin==false){
+        $pjmlwfo_val="0";
+    }
+    
     if ($pidact=="tambahbaru" OR $pfromresresh=="Y"){
         $query = "UPDATE $tmp00  SET rp=rp_perperson";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
@@ -142,7 +146,6 @@
         $query = "UPDATE $tmp00 SET rptotal=IFNULL(qty,0)*IFNULL(rp,0) WHERE nobrid='04'";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     }
-    
     
 ?>
 <div class='tbldata'>

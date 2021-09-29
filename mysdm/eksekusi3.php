@@ -683,6 +683,9 @@
     }elseif ($_GET['module']=='showdataabsensi'){
         include 'module/mod_fin_prosbiayarutin/report_absensikry.php';
         
+    }elseif ($_GET['module']=='brudcccabang'){
+        include 'module/budget/bgt_brdcccabang/laporanbrdcccab.php';
+        
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';
         

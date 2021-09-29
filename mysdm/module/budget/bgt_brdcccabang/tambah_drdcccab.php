@@ -190,7 +190,12 @@ $prelasijenis="";
 $pbankrealisasi="";
 $pnmbankreal="";
 $pnorekbankreal="";
-        
+
+$ppilihdesds="";
+$ppilihdcds0="";
+$ppilihdcds1="selected";
+$ppilihdcds2="";
+
 
 
 $pidcabang="";
@@ -218,6 +223,7 @@ if ($pidact=="editdata"){
     $pbankrealisasi=$row['bank'];
     $pnmbankreal=$row['nama_realisasi'];
     $pnorekbankreal=$row['norek'];
+    $ppilihdesds=$row['kode'];
     
     $pjumlah=$row['jumlah'];
     $pketerangan=$row['keterangan'];
@@ -275,6 +281,16 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
         $phiddenatasan1="hidden";
         $phiddenatasan2="";
     }
+}
+
+if ($ppilihdesds=="3") {
+    $ppilihdcds0="";
+    $ppilihdcds1="selected";
+    $ppilihdcds2="";    
+}elseif ($ppilihdesds=="4") {
+    $ppilihdcds0="";
+    $ppilihdcds1="";
+    $ppilihdcds2="selected";
 }
 ?>
 <div class="">
@@ -335,6 +351,24 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
                                     <div class='col-md-6 col-sm-6 col-xs-12'>
                                         <input type='text' id='e_idkaryawan' name='e_idkaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidpengaju; ?>' Readonly>
                                         <input type='text' id='e_namakaryawan' name='e_namakaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmpengaju; ?>' Readonly>
+                                    </div>
+                                </div>
+                                
+                                <div hidden class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DCC/DSS <span class='required'></span></label>
+                                    <div class='col-md-6 col-sm-6 col-xs-12'>
+                                          <select class='form-control input-sm' id='cb_dssdcc' name='cb_dssdcc' onchange="" data-live-search="true">
+                                            <?PHP
+                                                if ($ppilihdcds0=="selected") {
+                                                    echo "<option value='' $ppilihdcds0></option>";
+                                                    echo "<option value='3' $ppilihdcds1>DCC</option>";
+                                                    //echo "<option value='4' $ppilihdcds2>DSS</option>";
+                                                }else{
+                                                    echo "<option value='3' $ppilihdcds1>DCC</option>";
+                                                    //echo "<option value='4' $ppilihdcds2>DSS</option>";
+                                                }
+                                            ?>
+                                          </select>
                                     </div>
                                 </div>
                                 
@@ -1046,11 +1080,17 @@ if ($pidjbt=="05" OR $pidjbt=="22" OR $pidjbt=="06") {
         var ebank = document.getElementById('cb_bankreal').value;
         var enmbank = document.getElementById('e_nmbankreal').value;
         var enorek = document.getElementById('e_norekbankreal').value;
+        var idssdcc = document.getElementById('cb_dssdcc').value;
         
         var chkjns1=document.getElementById("chksesuai").checked;
 
         if (ikry=="") {
             alert("Pembuat masih kosong...");
+            return false;
+        }
+
+        if (idssdcc=="") {
+            alert("Pilihan DCC / DSS masih kosong...");
             return false;
         }
 

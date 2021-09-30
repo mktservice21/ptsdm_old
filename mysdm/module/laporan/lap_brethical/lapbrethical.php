@@ -117,7 +117,7 @@
                                         
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
-                                                <button type='button' class='btn btn-info btn-xs' onclick='HapusDataDokter()'>Dokter</button> <span class='required'></span>
+                                                <button type='button' class='btn btn-info btn-xs' onclick='HapusDataDokter()'>User</button> <span class='required'></span>
                                                 <span class='required'></span></label>
                                             <div class='col-xs-9'>
                                                 <div class='input-group '>

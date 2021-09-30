@@ -240,7 +240,7 @@
             <th align="center">Akun</th>
             <th align="center">Perkiraan</th>
             <th align="center">Yg. Membuat</th>
-            <th align="center">Dokter</th>
+            <th align="center">User</th>
             <th align="center">No. Slip</th>
             <th align="center">Jumlah</th>
             <th align="center">Jml. Realisasi</th>

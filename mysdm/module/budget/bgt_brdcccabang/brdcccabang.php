@@ -22,6 +22,8 @@
                     echo "Input $judul";
                 elseif ($pact=="editdata")
                     echo "Edit $judul";
+                elseif ($pact=="jmlrealisasi")
+                    echo "Isi Realisasi $judul";
                 else
                     echo "$judul";
                 ?>
@@ -283,6 +285,10 @@
 
             case "editdata":
                 include "tambah_drdcccab.php";
+            break;
+
+            case "jmlrealisasi":
+                include "real_drdcccab.php";
             break;
 
         }

@@ -754,7 +754,8 @@ if ($pmodule=="viewdatakrybuat") {
                         echo "<td class='divnone' nowrap $pdivnonelokasi>$npnmlokasiprkt <input type='hidden' value='$npidlokasiprkt' class='form-control' id='e_txtotletid[$npidpraktek]' name='e_txtotletid[$npidpraktek]' /></td>";
                         echo "<td $pdivnonejml><input type='text' value='$pjumlahdetail' onblur=\"HitungTotalJumlahRp()\" class='form-control inputmaskrp2' id='e_txtrp[$npidpraktek]' name='e_txtrp[$npidpraktek]' /></td>";
                         echo "<td $pdivnonereal><input type='text' value='$prealdetail' class='form-control inputmaskrp2' id='e_txtrealrp[$npidpraktek]' name='e_txtrealrp[$npidpraktek]' value='' /></td>";
-                        echo "<td><input type='text' value='$pketerangan' class='form-control' id='e_txtket[$npidpraktek]' name='e_txtket[$npidpraktek]' /></td>";
+                        //echo "<td><input type='text' value='$pketerangan' class='form-control' id='e_txtket[$npidpraktek]' name='e_txtket[$npidpraktek]' /></td>";
+                        echo "<td><textarea class='form-control' id='e_txtket[$npidpraktek]' name='e_txtket[$npidpraktek]'>$pketerangan</textarea></td>";
                         echo "</tr>";
                     }
                     

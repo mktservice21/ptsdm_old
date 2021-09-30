@@ -63,7 +63,7 @@
     
     $query = "select a.* FROM $tmp06 as a JOIN $tmp05 as b on a.idrutin=b.bridinput";
     //$query = "select a.* FROM $tmp06 as a";
-    $query = "create  table $tmp01 ($query)";
+    $query = "create temporary table $tmp01 ($query)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
@@ -100,83 +100,6 @@
     echo $tmp01;
     goto hapusdata;
     
-    
-    
-    $query = "select a.*, b.nama from $tmp01 a JOIN hrd.karyawan b on a.karyawanid=b.karyawanid";
-    $query = "create temporary table $tmp02 ($query)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    $query = "UPDATE $tmp02 a set a.nama=a.nama_karyawan, karyawanid=idrutin WHERE karyawanid IN ('$_SESSION[KRYNONE]', '0000002200', '0000002083')";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    $query = "select distinct divisi, karyawanid, nama from $tmp02";
-    $query = "create temporary table $tmp03 ($query)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    
-    $n_filed_add="";
-    for($xi=1;$xi<=12;$xi++) {
-        $n_filed_add .=" ADD COLUMN bln_".$xi." DECIMAL(20,2),";
-    }
-    $n_filed_add .=" ADD COLUMN vtotal DECIMAL(20,2)";
-    
-    $query = "ALTER TABLE $tmp03 $n_filed_add";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    for($xi=1;$xi<=12;$xi++) {
-        $fbulan=$ptahun."0".$xi;
-        if ((double)$xi >=10) $fbulan=$ptahun."".$xi;
-        $n_filed_add = "bln_".$xi;
-        
-        $query = "UPDATE $tmp03 a SET a.$n_filed_add=IFNULL((select sum(jumlah) jumlah FROM $tmp02 b WHERE a.divisi=b.divisi AND a.karyawanid=b.karyawanid AND DATE_FORMAT(bulan,'%Y%m')='$fbulan'),0)";
-        mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        
-        $query="DELETE FROM $tmp02 WHERE DATE_FORMAT(bulan,'%Y%m')='$fbulan'";
-        mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        
-    }
-    
-    $query = "UPDATE $tmp03 SET vtotal=bln_1+bln_2+bln_3+bln_4+bln_5+bln_6+bln_7+bln_8+bln_9+bln_10+bln_11+bln_12";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-     
-        
-    $query = "ALTER TABLE $tmp03 ADD COLUMN icabangid CHAR(10)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-        
-    $query = "UPDATE $tmp03 a SET a.icabangid=(select icabangid from $tmp01 b WHERE a.karyawanid=b.karyawanid AND IFNULL(b.icabangid,'')<>'' LIMIT 1)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    //update cabang other
-    $query = "UPDATE $tmp03 a SET a.icabangid=(select icabangid from $tmp01 b WHERE a.karyawanid=b.idrutin AND IFNULL(b.icabangid,'')<>'' LIMIT 1) WHERE IFNULL(a.icabangid,'')=''";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    
-    $query = "select a.*, b.nama nama_cabang, b.region from $tmp03 a LEFT JOIN MKT.icabang b on a.icabangid=b.icabangid";
-    $query = "create temporary table $tmp04 ($query)";
-    mysqli_query($cnmy, $query);
-    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
-    
-    function format_num_khusus($n_grp, $jumlah_rp) {
-        $pjumlah_=$jumlah_rp;
-        if ($n_grp=="28") $pjumlah_=number_format($jumlah_rp,0,".",".");
-        else $pjumlah_=number_format($jumlah_rp,0,",",",");
-
-        return $pjumlah_;
-    }
-    
-    $query = "UPDATE $tmp04 SET region=''";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
 ?>
 

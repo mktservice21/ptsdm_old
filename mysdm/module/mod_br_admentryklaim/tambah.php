@@ -881,6 +881,7 @@ if ($pact=="editdata"){
         KosongkanDataCabang();
         ShowAktivitas();
         ShowNamaRealisasi();
+        ShowDataPPH();
     }
     
     function ShowDataDariPengajuan() {
@@ -893,9 +894,22 @@ if ($pact=="editdata"){
         ShowNamaRealisasi();
         TentukanPeriode();
         ShowAktivitas();
+        ShowDataPPH();
     }
 
-
+    function ShowDataPPH() {
+        var eregion=document.getElementById('cb_region').value;
+        if (eregion=="T") {
+            document.getElementById('e_jmlpph').value="2";
+        }else{
+            var edistid=document.getElementById('e_iddist').value;
+            if (edistid=="0000000002" || edistid=="0000000031") {
+                document.getElementById('e_jmlpph').value="0";
+            }else{
+                document.getElementById('e_jmlpph').value="2";
+            }
+        }
+    }
     
     function ShowAktivitas() {
         var eregion=document.getElementById('cb_region').value;

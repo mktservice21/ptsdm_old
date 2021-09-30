@@ -35,8 +35,9 @@
                 { "visible": false },
                 { "orderable": false, "targets": 0 },
                 { "orderable": false, "targets": 1 },
-                //{ className: "text-right", "targets": [7] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6] }//nowrap
+                { "orderable": false, "targets": 2 },
+                { className: "text-right", "targets": [8,9] },//right
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5,6,7,8,9] }//nowrap
 
             ],
             "language": {
@@ -88,12 +89,14 @@
                 <tr>
                     <th width='5px'>No</th>
                     <th width='50px'></th>
+                    <th width='50px'></th>
                     <th width='20px'>ID</th>
                     <th width='20px'>Tanggal</th>
                     <th width='30px'>Jenis</th>
                     <th width='30px'>User</th>
                     <th width='50px'>Yg. Membuat</th>
                     <th width='50px'>Jumlah</th>
+                    <th width='50px'>Jml. Real</th>
                     <th width='50px'>Keterangan</th>
                 </tr>
             </thead>

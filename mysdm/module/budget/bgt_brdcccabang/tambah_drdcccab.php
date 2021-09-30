@@ -195,7 +195,7 @@ $ppilihdesds="";
 $ppilihdcds0="";
 $ppilihdcds1="selected";
 $ppilihdcds2="";
-
+$pidbrpros="";
 
 
 $pidcabang="";
@@ -212,6 +212,7 @@ if ($pidact=="editdata"){
     $jmlrw0=mysqli_num_rows($edit);
     $row= mysqli_fetch_array($edit);
     
+    $pidbrpros=$row['brid_proses'];
     $pidpengaju=$row['createdby'];
     $ptglinput=$row['tanggal'];
     $pjenis=$row['jenis_br'];
@@ -253,6 +254,15 @@ if ($pidact=="editdata"){
     $row1= mysqli_fetch_array($tampil);
     $pnmpengaju=$row1['nama'];
     
+    //sudah proses finance
+    if (!empty($pidbrpros)) {
+        $query = "select brId from hrd.br0 where brId='$pidbrpros' AND IFNULL(batal,'')<>'Y' AND IFNULL(retur,'')<>'Y' AND brId NOT IN "
+                . " (select distinct IFNULL(brId,'') as brid FROM hrd.br0_reject)";
+        $tampilb=mysqli_query($cnmy, $query);
+        $ketemub= mysqli_num_rows($tampilb);
+        if ((INT)$ketemub<=0) $pidbrpros="";
+    }
+    
 }
 
 if ($pjenis=="ADVANCE") {
@@ -293,6 +303,9 @@ if ($ppilihdesds=="3") {
     $ppilihdcds2="selected";
 }
 ?>
+
+<script> window.onload = function() { document.getElementById("e_tglberlaku").focus(); } </script>
+
 <div class="">
 
     
@@ -349,7 +362,7 @@ if ($ppilihdesds=="3") {
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama <span class='required'></span></label>
                                     <div class='col-md-6 col-sm-6 col-xs-12'>
-                                        <input type='text' id='e_idkaryawan' name='e_idkaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidpengaju; ?>' Readonly>
+                                        <input type='hidden' id='e_idkaryawan' name='e_idkaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidpengaju; ?>' Readonly>
                                         <input type='text' id='e_namakaryawan' name='e_namakaryawan' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmpengaju; ?>' Readonly>
                                     </div>
                                 </div>
@@ -657,7 +670,7 @@ if ($ppilihdesds=="3") {
                                         <div class='col-md-9 col-sm-9 col-xs-12'>
                                             <div style="margin-bottom:2px;">
                                                 <input type="radio" id="chksesuai" name="rb_jenisreal" value="1" <?PHP echo $pchkjenisreal1; ?> onclick="CekDataRealisasi()"> Sesuai Nama User &nbsp;
-                                                <input type="radio" id="chkrelasi" name="rb_jenisreal" value="0" <?PHP echo $pchkjenisreal2; ?> onclick="CekDataRealisasi()"> Relasi User &nbsp;
+                                                <input type="radio" id="chkrelasi" name="rb_jenisreal" value="0" <?PHP echo $pchkjenisreal2; ?> onclick="CekDataRealisasi()"> Lain Lain &nbsp;
                                             </div>
                                         </div>
                                     </div>
@@ -665,7 +678,7 @@ if ($ppilihdesds=="3") {
                                     <div id="n_jnsrelasi">
                                         <div class='form-group'>
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
-                                                Relasi (istri /suami /anak /dsb.)
+                                                Nama Realisasi
                                                 <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <input type='text' id='e_nmrealasi' name='e_nmrealasi' class='form-control col-md-7 col-xs-12' value="<?PHP echo $pnmbankreal; ?>" >
@@ -817,7 +830,11 @@ if ($ppilihdesds=="3") {
                             <?PHP
                             if (empty($sudahapv)) {
                                 if ($pidact=="editdata" ) {
-                                    ?><button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button><?PHP
+                                    if (!empty($pidbrpros)) {
+                                        echo "Proses Finance...";
+                                    }else{
+                                        ?><button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button><?PHP
+                                    }
                                 }else{
                                 echo "<div class='col-sm-5'>";
                                 include "module/budget/bgt_brdcccabang/ttd_brdcccabang.php";
@@ -1157,7 +1174,7 @@ if ($ppilihdesds=="3") {
                     var cmt = confirm(iket_save);
                     if (cmt == false) {
                         return false;
-                    }  
+                    }
                         
                     //alert(tconfrm_d);
                     var uttd = data_img;//gambarnya

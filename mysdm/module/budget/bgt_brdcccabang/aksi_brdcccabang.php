@@ -314,7 +314,46 @@ if ($module=='brudcccabang')
             header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=error&iderror='.$erropesan);
             exit;
             
+    }elseif ($act=="realisasiupdate") {
+        include "../../../config/koneksimysqli.php";
         
+        $pidjabatan=$_POST['e_idjbt'];
+        $puseridlog=$_POST['e_idinputuser'];
+        $pcardidlog=$_POST['e_idcarduser'];
+        if (empty($pcardidlog)) $pcardidlog=$pidcard;
+        if (empty($puserid)) $puserid=$puseridlog;
+        if (empty($pidcard)) $pidcard=$pcardidlog;
+        
+        if (empty($pcardidlog)) {
+            echo "ANDA HARUS LOGIN ULANG...";
+            exit;
+        }
+        
+        $kodenya=$_POST['e_id'];
+        $pkaryawaninput=$_POST['e_idkaryawan'];
+        $ptglinput=$_POST['e_tglberlaku'];
+        
+        $pnjmlreal=$_POST['e_jmlreal'];
+            
+        if (empty($pnjmlreal)) $pnjmlreal=0;
+        $pnjmlreal=str_replace(",","", $pnjmlreal);
+            
+        if (empty($kodenya)) {
+            $erropesan="GAGAL";
+            goto errorsimpan;
+        }
+        
+        $query = "UPDATE ms2.br SET jumlah1='$pnjmlreal', realisasiby='$pcardidlog', realisasidate=NOW() WHERE id='$kodenya' LIMIT 1";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { goto errorsimpan;  }
+        
+        
+        mysqli_close($cnmy);
+        header('location:../../../media.php?module='.$module.'&idmenu='.$idmenu.'&act=berhasil');
+        exit;
+        
+    }else{
+        $erropesan="GAGAL";
+        goto errorsimpan;
     }
 }
 

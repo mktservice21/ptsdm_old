@@ -45,6 +45,8 @@
     $pkaryawanid=$row['createdby'];
     $pjenisbr=$row['jenis_br'];
     $piduser=$row['iddokter'];
+    $pjumlah=$row['jumlah'];
+    $pjumlahreal=$row['jumlah1'];
     $pnmrealisasi=$row['nama_realisasi'];
     $pnomerrek=$row['norek'];
     $pidbank=$row['bank'];
@@ -55,6 +57,9 @@
         if (!empty($pketerangan)) $pketerangan .=" (".$pnotes.")";
         else $pketerangan=$pnotes;
     }
+    
+    $pjumlah=number_format($pjumlah,0,",",",");
+    $pjumlahreal=number_format($pjumlahreal,0,",",",");
     
     $preject2=$row['rejecteddate_dm'];
     $pidatasan2=$row['approvedby_dm'];
@@ -385,6 +390,7 @@
                     echo "<tr><td>NAMA</td><td>:</td> <td nowrap>$pnamakry</td></tr>";
                     echo "<tr><td>JENIS</td><td>:</td> <td nowrap>$pnamajenis</td></tr>";
                     echo "<tr><td>USER</td><td>:</td> <td nowrap>$pnamauser</td></tr>";
+                    echo "<tr><td>JUMLAH</td><td>:</td> <td nowrap>$pjumlah</td></tr>";
                     echo "<tr><td>REALISASI</td><td>:</td> <td nowrap>$pnmrealisasi</td></tr>";
                     echo "<tr><td>&nbsp;</td><td>:</td> <td nowrap>$pnamabank ($pnomerrek)</td></tr>";
                     echo "<tr><td>KETERANGAN</td><td>:</td> <td nowrap>$pketerangan</td></tr>";

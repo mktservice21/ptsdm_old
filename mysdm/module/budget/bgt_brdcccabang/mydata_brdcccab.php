@@ -20,12 +20,14 @@ $columns = array(
     0 =>'a.id',
     1 =>'a.id',
     2 => 'a.id',
-    3=> 'a.tanggal',
-    4=> 'a.jenis_br',
-    5=> 'd.namalengkap',
-    6=> 'c.nama',
-    7=> 'a.jumlah',
-    8=> 'a.keterangan'
+    3 => 'a.id',
+    4=> 'a.tanggal',
+    5=> 'a.jenis_br',
+    6=> 'd.namalengkap',
+    7=> 'c.nama',
+    8=> 'a.jumlah',
+    9=> 'a.jumlah1',
+    10=> 'a.keterangan'
 );
 
 $pcabangid="";
@@ -51,9 +53,9 @@ if (isset($_GET['utxtcabid'])) {
 
 //FORMAT(realisasi1,2,'de_DE') as 
 // getting total number records without any search
-$sql = "select a.id, a.tanggal, a.bulan1, a.bulan2, a.icabangid as icabangid, b.nama as nama_cabang, 
+$sql = "select a.id, a.brid_proses, a.tanggal, a.bulan1, a.bulan2, a.icabangid as icabangid, b.nama as nama_cabang, 
     a.areaid, a.iddokter, d.namalengkap as nama_dokter, a.idpraktek, a.divprodid, a.createdby as karyawanid, c.nama as nama_karyawan, 
-    a.jenis_br, a.kode, a.jumlah, a.keterangan, a.approvedby_dm, a.approveddate_dm, a.rejecteddate_dm,
+    a.jenis_br, a.kode, a.jumlah, a.jumlah1, a.keterangan, a.approvedby_dm, a.approveddate_dm, a.rejecteddate_dm,
     a.approvedby_sm, a.approveddate_sm, a.rejecteddate_sm, 
     a.approvedby_gsm, a.approveddate_gsm, a.rejecteddate_gsm ";
 $sql.=" FROM ms2.br as a LEFT JOIN mkt.icabang as b on a.icabangid=b.icabangId "
@@ -96,6 +98,7 @@ $no=1;
 while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData=array();
     $idno=$row['id'];
+    $pidbrpros=$row['brid_proses'];
     
     $ptgl=$row['tanggal'];
     $picabid=$row['icabangid'];
@@ -107,6 +110,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pjenisbr=$row['jenis_br'];
     $pkodeid=$row['kode'];
     $pjumlah=$row['jumlah'];
+    $pjumlahreal=$row['jumlah1'];
     $pket=$row['keterangan'];
     $pnmdokter=$row['nama_dokter'];
     
@@ -133,6 +137,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $ptanggal = date('d/m/Y', strtotime($ptgl));
     $pjumlah=number_format($pjumlah,0,",",",");
+    $pjumlahreal=number_format($pjumlahreal,0,",",",");
     
     $pnamajenis="";
     if ($pjenisbr=="ADVANCE") {
@@ -143,7 +148,7 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $pidget=encodeString($idno);
     
-    
+    $prealjumlah="<a class='btn btn-warning btn-xs' href='?module=$_GET[module]&act=jmlrealisasi&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$pidget'>Realisasi</a>";
     $pedit="<a class='btn btn-success btn-xs' href='?module=$_GET[module]&act=editdata&idmenu=$_GET[idmenu]&nmun=$_GET[nmun]&id=$pidget'>Edit</a>";
     $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesData('hapus', '$idno')\">";
     
@@ -160,6 +165,16 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
         //$pedit="";
     }
     
+    if (empty($pidbrpros)) {
+        $prealjumlah = "";
+    }else{
+        $phapus = "";
+    }
+    
+    if ($pjenisbr=="PCM") {
+    }else{
+        $prealjumlah = "";
+    }
     
     if (!empty($ptglatasan2)) {
         $pedit="Approved DM";
@@ -180,18 +195,21 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
         $pedit="Reject DM";
         $phapus = "";
         $print = "";
+        $prealjumlah = "";
     }
     
     if (!empty($preject3)) {
         $pedit="Reject SM";
         $phapus = "";
         $print = "";
+        $prealjumlah = "";
     }
     
     if (!empty($preject4)) {
         $pedit="Reject GSM";
         $phapus = "";
         $print = "";
+        $prealjumlah = "";
     }
     
     
@@ -200,12 +218,14 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     $nestedData[] = $no;
     $nestedData[] = $ppilihan;
+    $nestedData[] = $prealjumlah;
     $nestedData[] = $idno;
     $nestedData[] = $ptanggal;
     $nestedData[] = $pnamajenis;
     $nestedData[] = $pnmdokter;
     $nestedData[] = $pnmkaryawan;
     $nestedData[] = $pjumlah;
+    $nestedData[] = $pjumlahreal;
     $nestedData[] = $pket;
 
     $data[] = $nestedData;

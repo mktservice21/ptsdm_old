@@ -903,7 +903,7 @@ if ($pact=="editdata"){
             document.getElementById('e_jmlpph').value="2";
         }else{
             var edistid=document.getElementById('e_iddist').value;
-            if (edistid=="0000000002" || edistid=="0000000031") {
+            if (edistid=="0000000002" || edistid=="0000000031" || edistid=="0000000015" || edistid=="0000000017") {
                 document.getElementById('e_jmlpph').value="0";
             }else{
                 document.getElementById('e_jmlpph').value="2";

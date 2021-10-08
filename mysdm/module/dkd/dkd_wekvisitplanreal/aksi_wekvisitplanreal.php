@@ -72,7 +72,10 @@ if ($module=='dkdrealisasiplan')
         
         
         $ptgl=$_POST['e_periode1'];
-        $pjenis=$_POST['cb_jv'];
+        $ppilihttdfoto=$_POST['opt_ttd'];
+        //$pjenis=$_POST['cb_jv'];
+        $pjenis="";
+        if (isset($_POST['chk_jv'])) $pjenis=$_POST['chk_jv'];
         $pcabid=$_POST['cb_cabid'];
         $pdokterid=$_POST['cb_doktid'];
         $pketdokt=$_POST['e_ketdetail'];
@@ -102,16 +105,109 @@ if ($module=='dkdrealisasiplan')
         }
         
         
+        $pkdspv=$_POST['e_kdspv'];
+        $pkddm=$_POST['e_kddm'];
+        $pkdsm=$_POST['e_kdsm'];
+        $pkdgsm=$_POST['e_kdgsm'];
+    
+        
+        $pisitglspv=false;
+        $pisitgldm=false;
+        $pisitglsm=false;
+        $pisitglgsm=false;
 
+        //$pkdspv="";$pkddm="";$pkdsm="A";$pkdgsm="A";
+
+        if (empty($pkdspv)) {
+            $pisitglspv=true;
+            if (empty($pkddm)) {
+                $pisitgldm=true;
+                if (empty($pkdsm)) {
+                    $pisitglsm=true;
+                    if (empty($pkdgsm)) {
+                        $pisitglgsm=true;
+                    }
+                }
+            }
+        }
+        
+        
         if ($act=="dailyinput") {
-
+            
+            
+            
             $query = "INSERT INTO hrd.dkd_new_real1 (tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid)
                 VALUES
                 ('$ptanggal', '$pkaryawanid', '$pjenis', '$pdokterid', '$pketdokt', '$psaran', '$pidjabatan')";
-            mysqli_query($cnmy, $query); 
+            mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
             $kodenya = mysqli_insert_id($cnmy);
+            
+            
+            $query = "UPDATE hrd.dkd_new_real1 SET atasan1='$pkdspv', atasan2='$pkddm', atasan3='$pkdsm', atasan4='$pkdgsm' WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+
+
+            if ($pisitglspv==true) {
+                $query = "UPDATE hrd.dkd_new_real1 SET tgl_atasan1=NOW() WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
+
+            if ($pisitgldm==true) {
+                $query = "UPDATE hrd.dkd_new_real1 SET tgl_atasan2=NOW() WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
+
+            if ($pisitglsm==true) {
+                $query = "UPDATE hrd.dkd_new_real1 SET tgl_atasan3=NOW() WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
+
+            if ($pisitglgsm==true) {
+                $query = "UPDATE hrd.dkd_new_real1 SET tgl_atasan4=NOW() WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            }
+            
+            $pimgttd="";
+            $pimgfoto="";
+            if ($ppilihttdfoto=="ttd_by") {
+                
+                //mendefinisikan folder
+                define('UPLOAD_DIR', '../../../images/foto_user_ttd/');
+                
+                $pimgttd=$_POST['txtgambar'];
+                $pdata="data:".$pimgttd;
+                $pdata=str_replace(' ','+',$pdata);
+                list($type, $pdata) = explode(';', $pdata);
+                list(, $pdata)      = explode(',', $pdata);
+                $pdata = base64_decode($pdata);
+                
+                $pfile       = "ttd_".$kodenya."_".uniqid() . '.png';
+                
+                if (file_exists(UPLOAD_DIR.$pfile)) {
+                    
+                    $query="DELETE FROM hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
+                    mysqli_query($cnmy, $query);
+                    
+                    mysqli_close($cnmy);
+                    echo "nama file foto sudah ada...";
+                    exit; 
+                }
+                
+                file_put_contents(UPLOAD_DIR.$pfile, $pdata);
+                
+                //user_foto
+                $query="UPDATE hrd.dkd_new_real1 SET user_tandatangan='$pfile' WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                
+                
+            }elseif ($ppilihttdfoto=="foto_by") {
+                
+            }
+            
+            
 
         }elseif ($act=="dailyupdate") {
             

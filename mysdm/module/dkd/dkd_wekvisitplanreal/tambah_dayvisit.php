@@ -27,26 +27,6 @@ $pnamalengkap=$_SESSION['NAMALENGKAP'];
 $pcabid_pl=$_SESSION['RLWEKPLNCAB'];
 
 
-    $query ="SELECT a.karyawanid, b.nama nama_karyawan, a.spv, c.nama nama_spv, 
-        a.dm, d.nama nama_dm, a.sm, e.nama nama_sm, a.gsm, f.nama nama_gsm, 
-        a.icabangid as icabangid, a.areaid as areaid, a.jabatanid as jabatanid 
-        FROM dbmaster.t_karyawan_posisi a 
-        LEFT JOIN hrd.karyawan b on a.karyawanId=b.karyawanId 
-        LEFT JOIN hrd.karyawan c on a.spv=c.karyawanId 
-        LEFT JOIN hrd.karyawan d on a.dm=d.karyawanId 
-        LEFT JOIN hrd.karyawan e on a.sm=e.karyawanId 
-        LEFT JOIN hrd.karyawan f on a.gsm=f.karyawanId WHERE a.karyawanid='$pidcard'";
-    $ptampil= mysqli_query($cnmy, $query);
-    $nrs= mysqli_fetch_array($ptampil);
-    $pkdspv=$nrs['spv'];
-    $pnamaspv=$nrs['nama_spv'];
-    $pkddm=$nrs['dm'];
-    $pnamadm=$nrs['nama_dm'];
-    $pkdsm=$nrs['sm'];
-    $pnamasm=$nrs['nama_sm'];
-    $pkdgsm=$nrs['gsm'];
-    $pnamagsm=$nrs['nama_gsm'];
-    
 
 $pidinput="";
 
@@ -159,7 +139,7 @@ $pnamajabatan=$nr['nama'];
                                 </div>
                                 
                                 
-                                <div hidden class='form-group'>
+                                <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Join Visit <span class='required'></span></label>
                                     <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <select class='form-control' name='cb_jv' id='cb_jv' onchange="">
@@ -168,15 +148,6 @@ $pnamajabatan=$nr['nama'];
                                             echo "<option value='JV'>Y</option>";
                                             ?>
                                         </select>
-                                    </div>
-                                </div>
-                                
-                                <div  class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
-                                    <div class='col-md-4 col-sm-4 col-xs-12'>
-                                        <?php
-                                        echo "<label><input type='checkbox' class='js-switch' id='chk_jv' name='chk_jv' value='JV'> Join Visit</label>";
-                                        ?>
                                     </div>
                                 </div>
 
@@ -281,42 +252,11 @@ $pnamajabatan=$nr['nama'];
                                     </div>
                                 </div>
                                 
-                                <div  class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
-                                    <div class='col-md-7 col-sm-7 col-xs-12'>
-                                        <?php
-                                        //echo "<label><input type='checkbox' class='js-switch' id='chk_ttdfoto' name='chk_ttdfoto' value='byttd' onclick=\"ShowFromChkTtdFoto()\" checked> <span id='lbl_ttdfoto'>Tanda Tangan</span></label>";
-                                        echo "<input type='radio' class='' name='opt_ttd' id='opt_ttdfoto' value='ttd_by' checked  onclick=\"ShowFromChkTtdFoto()\" /> Tanda Tangan";
-                                        echo "&nbsp; &nbsp; ";
-                                        echo "<input type='radio' class='' name='opt_ttd' id='opt_ttdfoto' value='foto_by'  onclick=\"ShowFromChkTtdFoto()\" /> Foto";
-                                        ?>
-                                    </div>
-                                </div>
-                                
-                                <div hidden class='form-group'>
+                                <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                     <div class='col-md-9 col-sm-9 col-xs-12'>
-                                        <button type='button' class='btn btn-success' onclick='disp_confirm_("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
+                                        <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
                                     </div>
-                                </div>
-                                
-                                <div id='div_ttd'>
-                                    
-                                    <div class='col-md-12 col-sm-12 col-xs-12'>
-                                        <h2>
-                                            <?PHP
-                                                echo "<div class='col-md-12 col-sm-12 col-xs-12'>";
-                                                    include "module/dkd/dkd_wekvisitplanreal/ttd_realisasiplan.php";
-                                                echo "</div>";
-                                            ?>
-                                        </h2>
-                                        <div class='clearfix'></div>
-                                    </div>
-                                    
-                                </div>
-                                
-                                <div hidden id='div_foto'>
-                                    
                                 </div>
 
                             </div>
@@ -410,44 +350,6 @@ $pnamajabatan=$nr['nama'];
 
                                 </div>
 
-                                
-                                <div  id="div_atasan">
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SPV / AM <span class='required'></span></label>
-                                        <div class='col-md-6 col-sm-6 col-xs-12'>
-                                            <input type='hidden' id='e_kdspv' name='e_kdspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdspv; ?>' Readonly>
-                                            <input type='text' id='e_namaspv' name='e_namaspv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamaspv; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DM <span class='required'></span></label>
-                                        <div class='col-md-6 col-sm-6 col-xs-12'>
-                                            <input type='hidden' id='e_kddm' name='e_kddm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkddm; ?>' Readonly>
-                                            <input type='text' id='e_namadm' name='e_namadm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadm; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SM <span class='required'></span></label>
-                                        <div class='col-md-6 col-sm-6 col-xs-12'>
-                                            <input type='hidden' id='e_kdsm' name='e_kdsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdsm; ?>' Readonly>
-                                            <input type='text' id='e_namasm' name='e_namasm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamasm; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>GSM <span class='required'></span></label>
-                                        <div class='col-md-6 col-sm-6 col-xs-12'>
-                                            <input type='hidden' id='e_kdgsm' name='e_kdgsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkdgsm; ?>' Readonly>
-                                            <input type='text' id='e_namagsm' name='e_namagsm' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamagsm; ?>' Readonly>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                
-                                
                             </div>
                         </div>
                     </div>
@@ -472,24 +374,68 @@ $pnamajabatan=$nr['nama'];
 
 <script>
     
-    function ShowFromChkTtdFoto(){
-        // Get the checkbox
-        var checkBox = document.getElementById("opt_ttdfoto");
+    function disp_confirm(pText_,ket)  {
+        var iid = document.getElementById('e_id').value;
+        var idoktid = document.getElementById('cb_doktid').value;
+        var itgl = document.getElementById('e_periode1').value;
+        var ikaryawan = document.getElementById('e_idcarduser').value;
+        var iketdetail = document.getElementById('e_ketdetail').value;
+        var isaran = document.getElementById('e_saran').value;
         
-        //$("#div_ttdfoto").html("");
-        if (checkBox.checked == true){
-            //document.getElementById("lbl_ttdfoto").innerHTML ="Tanda Tangan";
-            div_ttd.style.display = 'block';
-            div_foto.style.display = 'none';
-        } else {
-            //document.getElementById("lbl_ttdfoto").innerHTML ="Foto";
-            div_ttd.style.display = 'none';
-            div_foto.style.display = 'block';
+        
+        if (idoktid=="") {
+            alert("dokter kosong...");
+            return false;
         }
-         
-    }
-    
+        
+        if (iketdetail=="") {
+            alert("notes masih kosong...");
+            return false;
+        }
+        
+        if (isaran=="") {
+            alert("saran masih kosong...");
+            return false;
+        }
 
+        $.ajax({
+            type:"post",
+            url:"module/dkd/viewdatadkd.php?module=cekdatasudahadarealvisit",
+            data:"uid="+iid+"&utgl="+itgl+"&ukaryawan="+ikaryawan+"&uidoktid="+idoktid,
+            success:function(data){
+                //var tjml = data.length;
+                //alert(data);
+                //return false;
+
+                if (data=="boleh") {
+
+                    ok_ = 1;
+                    if (ok_) {
+                        var r=confirm(pText_)
+                        if (r==true) {
+                            var myurl = window.location;
+                            var urlku = new URL(myurl);
+                            var module = urlku.searchParams.get("module");
+                            var idmenu = urlku.searchParams.get("idmenu");
+                            //document.write("You pressed OK!")
+                            document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
+                            document.getElementById("form_data1").submit();
+                            return 1;
+                        }
+                    } else {
+                        //document.write("You pressed Cancel!")
+                        return 0;
+                    }
+
+                }else{
+                    alert(data);
+                }
+            }
+        });
+        
+        
+        
+    }
     
     function ShowDataDokter(sKey, incab, indokt){
         var eidcan =document.getElementById('cb_cabid').value;
@@ -528,144 +474,6 @@ $pnamajabatan=$nr['nama'];
             return 0;
         }
     }
-    
-    function disp_confirm(pText_, ket, data_img) {
-        var iid = document.getElementById('e_id').value;
-        var idoktid = document.getElementById('cb_doktid').value;
-        var itgl = document.getElementById('e_periode1').value;
-        var ikaryawan = document.getElementById('e_idcarduser').value;
-        var iketdetail = document.getElementById('e_ketdetail').value;
-        var isaran = document.getElementById('e_saran').value;
-        
-        if (idoktid=="") {
-            alert("user kosong...");
-            return false;
-        }
-        
-        if (iketdetail=="") {
-            alert("notes masih kosong...");
-            return false;
-        }
-        
-        if (isaran=="") {
-            alert("saran masih kosong...");
-            return false;
-        }
-        
-        
-        $.ajax({
-            type:"post",
-            url:"module/dkd/viewdatadkd.php?module=cekdatasudahadarealvisit",
-            data:"uid="+iid+"&utgl="+itgl+"&ukaryawan="+ikaryawan+"&uidoktid="+idoktid,
-            success:function(data){
-                //var tjml = data.length;
-                //alert(data);
-                //return false;
-
-                if (data=="boleh") {
-                    
-                    
-                    var RBox = document.getElementById("opt_ttdfoto");
-                    if (RBox.checked == true){
-                        pText_="Pastikan Tanda Tangan Terisi...";
-                    } else {
-                    }
-                    
-                    ok_ = 1;
-                    if (ok_) {
-                        var r=confirm(pText_)
-                        if (r==true) {
-                            var myurl = window.location;
-                            var urlku = new URL(myurl);
-                            var module = urlku.searchParams.get("module");
-                            var idmenu = urlku.searchParams.get("idmenu");
-                            
-                            var uttd = data_img;//gambarnya
-                            
-                            //document.write("You pressed OK!")
-                            document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
-                            document.getElementById("form_data1").submit();
-                            return 1;
-                        }
-                    } else {
-                        //document.write("You pressed Cancel!")
-                        return 0;
-                    }
-
-                }else{
-                    alert(data);
-                }
-            }
-        });
-        
-        
-        
-    }
-    
-    function disp_confirm_(pText_,ket)  {
-        var iid = document.getElementById('e_id').value;
-        var idoktid = document.getElementById('cb_doktid').value;
-        var itgl = document.getElementById('e_periode1').value;
-        var ikaryawan = document.getElementById('e_idcarduser').value;
-        var iketdetail = document.getElementById('e_ketdetail').value;
-        var isaran = document.getElementById('e_saran').value;
-        
-        
-        if (idoktid=="") {
-            alert("user kosong...");
-            return false;
-        }
-        
-        if (iketdetail=="") {
-            alert("notes masih kosong...");
-            return false;
-        }
-        
-        if (isaran=="") {
-            alert("saran masih kosong...");
-            return false;
-        }
-
-        $.ajax({
-            type:"post",
-            url:"module/dkd/viewdatadkd.php?module=cekdatasudahadarealvisit",
-            data:"uid="+iid+"&utgl="+itgl+"&ukaryawan="+ikaryawan+"&uidoktid="+idoktid,
-            success:function(data){
-                //var tjml = data.length;
-                //alert(data);
-                //return false;
-
-                if (data=="boleh") {
-
-                    ok_ = 1;
-                    if (ok_) {
-                        var r=confirm(pText_)
-                        if (r==true) {
-                            var myurl = window.location;
-                            var urlku = new URL(myurl);
-                            var module = urlku.searchParams.get("module");
-                            var idmenu = urlku.searchParams.get("idmenu");
-                            //document.write("You pressed OK!")
-                            document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
-                            document.getElementById("form_data1").submit();
-                            return 1;
-                        }
-                    } else {
-                        //document.write("You pressed Cancel!")
-                        return 0;
-                    }
-
-                }else{
-                    alert(data);
-                }
-            }
-        });
-        
-        
-        
-    }
-    
-    
 </script>
 
 
@@ -742,7 +550,7 @@ th {
 }
 </style>
 
-
+<script src="vendors/jquery/dist/jquery.min.js"></script>
 <link href="module/dkd/select2.min.css" rel="stylesheet" type="text/css" />
 <script src="module/dkd/select2.min.js"></script>
 <script>

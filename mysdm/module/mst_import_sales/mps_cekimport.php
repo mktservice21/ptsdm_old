@@ -1,4 +1,4 @@
-<?php
+<?php    
     //ini_set('memory_limit', '-1');
     ini_set("memory_limit","512M");
     ini_set('max_execution_time', 0);
@@ -57,8 +57,6 @@ if (empty($puser)) {
         include "../../config/koneksimysqli_it.php";
     }
     
-    
-    
     mysqli_query($cnmy, "DELETE FROM $dbname.import_mulyaraya");
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error DELETE import_mulyaraya : $erropesan"; exit; }
     
@@ -77,10 +75,10 @@ if (empty($puser)) {
     $jmlrec=0;
     foreach ($Reader as $Key => $Row) {
         // import data excel mulai baris ke-2 (karena ada header pada baris 1)
-        if ($Key <= 3) continue;
+        if ($Key <= 1) continue;
         
-        $pfile0="";
-        if (isset($Row[0])) $pfile0=trim($Row[0]);
+        
+        $pfile0=trim($Row[0]);
         $pfile1=trim($Row[1]);
         $pfile2=trim($Row[2]);
         $pfile3=trim($Row[3]);
@@ -92,89 +90,116 @@ if (empty($puser)) {
         $pfile9=trim($Row[9]);
         $pfile10=trim($Row[10]);
         $pfile11=trim($Row[11]);
+        $pfile12=trim($Row[12]);
+        $pfile13=trim($Row[13]);
+        
         
         if (empty($pfile0) AND empty($pfile1) AND empty($pfile2) AND empty($pfile3) AND empty($pfile4) AND empty($pfile5)
-                 AND empty($pfile6) AND empty($pfile7) AND empty($pfile8) AND empty($pfile9) AND empty($pfile10) AND empty($pfile11)) {
+                 AND empty($pfile6) AND empty($pfile7) AND empty($pfile8) AND empty($pfile9) AND empty($pfile10) AND empty($pfile11) AND empty($pfile12) AND empty($pfile13)) {
             continue;
         }
-        
-        if (!empty($pfile2)) $pfile2 = str_replace("'", "", $pfile2);
+		
+		
+        if (!empty($pfile2)) $pfile2 = str_replace("'", " ", $pfile2);
         if (!empty($pfile3)) $pfile3 = str_replace("'", " ", $pfile3);
+        if (!empty($pfile4)) $pfile4 = str_replace("'", " ", $pfile4);
         if (!empty($pfile7)) $pfile7 = str_replace("'", " ", $pfile7);
         if (!empty($pfile8)) $pfile8 = str_replace("'", " ", $pfile8);
-        if (!empty($pfile9)) $pfile9 = str_replace("*", "", $pfile9);
-        if (!empty($pfile10)) $pfile10 = str_replace("*", "", $pfile10);
+        
         if (!empty($pfile11)) $pfile11 = str_replace("*", "", $pfile11);
-        
-        if (!empty($pfile9)) $pfile9 = str_replace(" ", "", $pfile9);
-        if (!empty($pfile10)) $pfile10 = str_replace(" ", "", $pfile10);
         if (!empty($pfile11)) $pfile11 = str_replace(" ", "", $pfile11);
-            
-        if (!empty($pfile4)) $pfile4=date('Y-m-d', strtotime($pfile4));
-        
-        if (!empty($pfile9)) $pfile9=str_replace(",","", $pfile9);
-        if (!empty($pfile10)) $pfile10=str_replace(",","", $pfile10);
         if (!empty($pfile11)) $pfile11=str_replace(",","", $pfile11);
         
+        if (!empty($pfile12)) $pfile12 = str_replace("*", "", $pfile12);
+        if (!empty($pfile12)) $pfile12 = str_replace(" ", "", $pfile12);
+        if (!empty($pfile12)) $pfile12=str_replace(",","", $pfile12);
+        
+        //if (!empty($pfile1)) $pfile1=date('Y-m-d', strtotime($pfile1));
         
         
         
-        $pfile1=trim($pfile1);
+        //$pfile1=trim($pfile1);
         $pfile2=trim($pfile2);
         $pfile3=trim($pfile3);
+        $pfile4=trim($pfile4);
         $pfile5=trim($pfile5);
         $pfile6=trim($pfile6);
         $pfile7=trim($pfile7);
         $pfile8=trim($pfile8);
         $pfile9=trim($pfile9);
         $pfile10=trim($pfile10);
-        $pfile11=trim($pfile11);
         
         
-        //type
-        $mkode=trim(substr($pfile6,0,3));
-        if ($mkode=="SDE" OR $mkode=="sde" OR ucwords($mkode)=="SDE") {
-            $pfile12="Ethical";
-        }else{
-            $pfile12="OTC";
-        }
+        $pfile1=str_replace("/","-", $pfile1);
+        $pfile1=date('Y-m-d', strtotime($pfile1));
         
-        
-			$pfile20="";//NODPL
-			
-			//untuk promo
-			if ($pfile6=="01524") {
-				if (empty($pfile10)) $pfile10==0;
-				if (empty($pfile9)) $pfile9==0;
-				if ((DOUBLE)$pfile10<>0) {
-					$pfile10=(DOUBLE)$pfile10/3;
-					$pfile9=(DOUBLE)$pfile9*3;
-					$pfile20="promo 3in1 glikoderm lumineux";
-				}
-			}
-			
-			
-        $query = "INSERT INTO $dbname.import_mulyaraya (cust, `nama customer`, Tanggal, `No.Faktur`, "
-                . " Kode, `nama barang`, satuan, kwantum, harga, total, type, nodpl)values"
-                . " ('$pfile2', '$pfile3', '$pfile4', '$pfile5', "
-                . " '$pfile6', '$pfile7', '$pfile8', '$pfile9', '$pfile10', '$pfile11', '$pfile12', '$pfile20')";
+                /*
+                $data_tlg = $worksheet->getCellByColumnAndRow(1, $row);
+                if(!strtotime($data_tlg)) {
+                    if(PHPExcel_Shared_Date::isDateTime($data_tlg)) {
+                        $cellValue = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                        $dateValue = PHPExcel_Shared_Date::ExcelToPHP($cellValue);                     
+                        $pfile1     = date('Y-m-d',$dateValue);                     
+                    } else {                        
+                        $pfile1     = date('Y-m-d',$pfile1);
+                    }
+                }else{
+                    $pfile1=date('Y-m-d', strtotime($pfile1));
+                }
+                */
 
-        //echo $query; mysqli_close($cnmy); exit;
-        mysqli_query($cnmy, $query);
-        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT import_mulyaraya : $erropesan"; exit; }
-         
-        //echo "$jmlrec. : $pfile0, $pfile1, $pfile2, $pfile3, $pfile4, $pfile5, $pfile6, $pfile7, $pfile8, $pfile9, $pfile10, $pfile11<br/>";
-        
-        $jmlrec++;
-        
-        //IT
-        if ($plogit_akses==true) {
-            mysqli_query($cnit, $query);
-            $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT import_mulyaraya : $erropesan"; exit; }
-        }
-        //END IT
+
+                //type
+                $mkode=trim(substr($pfile9,0,3));
+                if ($mkode=="SDE" OR $mkode=="sde" OR ucwords($mkode)=="SDE") {
+                    $pfile_tipe="Ethical";
+                }else{
+                    $pfile_tipe="OTC";
+                }
+
+                $pfile_nodpl="";//NODPL
+
+                //untuk promo
+                if ($pfile9=="01524") {
+                    if (empty($pfile13)) $pfile13==0;
+                    if (empty($pfile11)) $pfile11==0;
+                    if ((DOUBLE)$pfile13<>0) {
+                        $pfile13=(DOUBLE)$pfile13/3;
+                        $pfile11=(DOUBLE)$pfile11*3;
+                        $pfile_nodpl="promo 3in1 glikoderm lumineux";
+                    }
+                }
+
+                $ptotal_=(DOUBLE)$pfile11*(DOUBLE)$pfile13;
+
+
+
+                //echo "bukti : $pfile0, tgl : $pfile1, total : $ptotal_, kdbrg : $pfile9, qty : $pfile11, hrg : $pfile13, divisi : $pfile_tipe, cust : $pfile4, nmcust : $pfile5<br/>";
+                
+                
+                $query = "INSERT INTO $dbname.import_mulyaraya (cust, `nama customer`, Tanggal, `No.Faktur`, "
+                        . " Kode, `nama barang`, satuan, kwantum, harga, total, type, nodpl)values"
+                        . " ('$pfile4', '$pfile5', '$pfile1', '$pfile0', "
+                        . " '$pfile9', '$pfile10', '$pfile12', '$pfile11', '$pfile13', '$ptotal_', '$pfile_tipe', '$pfile_nodpl')";
+
+                //echo $query; mysqli_close($cnmy); exit;
+                mysqli_query($cnmy, $query);
+                $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { mysqli_close($cnmy); echo "Error INSERT import_mulyaraya : $erropesan"; exit; }
+
+                $jmlrec++;
+
+                //IT
+                if ($plogit_akses==true) {
+                    mysqli_query($cnit, $query);
+                    $erropesan = mysqli_error($cnit); if (!empty($erropesan)) { mysqli_close($cnit); echo "IT... Error INSERT import_mulyaraya : $erropesan"; exit; }
+                }
+                //END IT
+		
+		
+
         
     }
+    
     
     mysqli_query($cnmy, "DELETE FROM $dbname.import_mulyaraya WHERE IFNULL(cust,'')='' AND IFNULL(`nama customer`,'')='' AND IFNULL(Tanggal,'')='' AND IFNULL(kode,'')=''");
 	

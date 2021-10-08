@@ -162,7 +162,7 @@ switch($pactpilih){
 
         <div class="">
 
-            <div class="page-title"><div class="title_left"><h3>Report Daily Plan & Realisasi</h3></div></div><div class="clearfix"></div>
+            <div class="page-title"><div class="title_left"><h3>Report Weekly Realisasi</h3></div></div><div class="clearfix"></div>
 
             <div class="row">
 
@@ -318,7 +318,7 @@ switch($pactpilih){
                                                                 $ptglpilih = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih)));
                                                                 $p_tgl = date('d', strtotime($ptglpilih));
 
-                                                                echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih'> $p_tgl &nbsp; &nbsp; ";
+                                                                echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih' checked> $p_tgl &nbsp; &nbsp; ";
                                                             }
                                                         ?>
                                                     </div>

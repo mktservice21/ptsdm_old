@@ -534,5 +534,114 @@ if ($pmodule=="cekdatasudahada") {
     }
     
     mysqli_close($cnms);
+}elseif ($pmodule=="viewfotocamera") {
+    
+    ?>
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+        <div class='col-md-12 col-sm-12 col-xs-12'>
+
+            <div class="column is-four-fifths">
+
+                <video autoplay id="video" class='i_video' style='height:500px;'></video>
+
+                <!--
+                <button class="button is-hidden" id="btnPlay">
+                        <span class="icon is-small"><i class="fas fa-play"></i></span>
+                </button>
+
+                <button class="button" id="btnPause">
+                        <span class="icon is-small"><i class="fas fa-pause"></i></span>
+                </button>
+                -->
+                <a class='btn btn-dark btn-xs' id='btnPlay'>Play</a>
+                <a class='btn btn-warning btn-xs' id='btnPause'>Pause</a>
+                <a class='btn btn-info btn-xs' id='btnScreenshot'>screenshot</a> &nbsp;
+                <a class='btn btn-success btn-xs' id='btnChangeCamera'>Switch camera</a>
+
+            </div>
+            <br/>&nbsp;
+            <div>*) klik tombol <b style="color:blue; font-size:18px;">screenshot</b> untuk mengambil foto sebelum klik button save</div>
+
+        </div>
+    </div>
+
+    <br/>&nbsp;
+    <span hidden><textarea id='txt_arss' name='txt_arss'></textarea></span>
+    <div class="column"><div id="screenshots" style='width:100px;'></div></div>
+    <canvas hidden class="is-hidden" id="canvas"></canvas>
+    <br/>&nbsp;
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+        <div class='col-md-9 col-sm-9 col-xs-12'>
+            <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "dailyinput", "txt_arss")'>Save</button>
+        </div>
+    </div>
+    <br/>&nbsp;
+    
+    <script src="module/dkd/script_cm.js"></script>
+    <?PHP
+    
+}elseif ($pmodule=="showimagespotottd") {
+    
+
+    $fttd=$_POST['uttd'];
+    $fimage=$_POST['uimg'];
+    if ($fttd=="Y") {
+        $ffolderfile="images/user_ttd/";
+    }else{
+        $ffolderfile="images/user_foto/";
+    }
+
+    ?>
+
+
+    <div class='modal-dialog modal-lg'>
+        <!-- Modal content-->
+        <div class='modal-content'>
+
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <h4 class='modal-title'>TTD / Foto</h4>
+            </div>
+            <br/>
+            <div class="">
+
+                <div class="row">
+
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+
+                        <div class="x_panel">
+
+                            <div class="x_content">
+                                <div class="dashboard-widget-content">
+                                    <form id="form">
+
+                                        <div class='form-group'>
+                                            <center>
+                                            <?PHP
+                                            //echo "$ffolderfile/$fimage";
+                                            echo "<img src='$ffolderfile/$fimage' width='310px' height='390px' />";
+                                            ?>
+                                            </center>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <?PHP
+    
+}elseif ($pmodule=="xxxx") {
 }
 ?>

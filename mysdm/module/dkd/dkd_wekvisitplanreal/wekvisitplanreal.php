@@ -17,7 +17,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                $judul="Daily Visit - Realisasi";
+                $judul="Realisasi - Daily Visit";
                 if ($pact=="tambahbaru")
                     echo "$judul";
                 elseif ($pact=="editdata")
@@ -88,7 +88,7 @@
         switch($pact){
             default:
                 if ($pidgroup=="1" OR $pidgroup=="24") {
-                    
+                    include "tambah_dayvisit_foto.php";
                 }else{
                     include "tambah_dayvisit.php";
                 }

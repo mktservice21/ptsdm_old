@@ -464,7 +464,7 @@
                             
                         }
                         
-                        if ($pjabatanid=="05" OR $pjabatanid=="22" OR $pjabatanid=="06") {
+                        if ($pjabatanid=="05" OR $pjabatanid=="22" OR $pjabatanid=="06" OR $pjabatanid=="34") {
                             echo "<td align='center' nowrap>";
                             echo "Menyetujui :";
                             if (!empty($namaceo)) {

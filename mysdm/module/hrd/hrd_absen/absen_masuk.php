@@ -24,6 +24,10 @@ if (!empty($pidabsen)) {
     $rimg= mysqli_fetch_array($tampilabsimg);
     $pgambarabs=$rimg['nama'];
 }
+
+if ($_SESSION['IDCARD']=="0000000976") {
+    $ntempatabsen="";
+}
 ?>
 <div class='modal fade' id='myModalAbsen' role='dialog' class='no-print'></div>
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -38,14 +42,14 @@ if (!empty($pidabsen)) {
                     echo "$ntempatabsen";
                 }else{
                     echo "<img src='$folderfotofileabs' width='50px' height='50px' />";
-					echo "<span><i style='font-size:15px; font-wight:bold;'>$ntempatabsen</i></span>";
+                    echo "<span><i style='font-size:15px; font-wight:bold;'>$ntempatabsen</i></span>";
                 }
             }else{
                 echo $iconasli;
             }
             ?>
         </div>
-        <?PHP echo $pjammasukabs; ?>
+        <?PHP echo "$pjammasukabs"; ?>
         <h3>
             <!--<button type='button' class='btn btn-default' id='ibuttonsave' data-toggle='modal' data-target='#myModalAbsen' onclick='ShowFormAbsen("1")'>Absen Masuk</button>-->
             <a href='?module=hrdabsenmasuk&act=absenmasuk&idmenu=522&kriteria=Y' class='btn btn-default' id='ibuttonsave'>Absen Masuk</a>

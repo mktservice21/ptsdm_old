@@ -44,6 +44,8 @@
         $nkaryawanid=$rx['karyawanid'];
         $nkryapv1=$rx['apv1'];
         $nkryapv2=$rx['apv2'];
+        $npjenisrpt=$rx['jenis_rpt'];
+        $npilihspd=$rx['pilih'];
 		
 			$tgljakukannya=$rx['tgl'];
 			if ($tgljakukannya=="0000-00-00") $tgljakukannya="";
@@ -194,8 +196,10 @@
 	$header1_ = add_space('Tgl.Transfer',10);
 	$header4_ = add_space('Posting',30);
 	$header2_ = add_space('Keterangan',150);
+        $header5_ = add_space('Realisasi',30);
 	$header3_ = add_space('Jumlah',10);
-	echo '<table border="1" cellspacing="0" cellpadding="1">';
+	//echo '<table border="1" cellspacing="0" cellpadding="1">';
+        echo "<table id='datatable2' class='table table-striped table-bordered example_2' border='1px solid black'>";
 	echo "<tr>\n";
 		
 	echo "<th>No</th>";
@@ -203,6 +207,7 @@
 	echo '<th align="center">'.$header1_."</th>";
 	//echo '<th align="center">'.$header4_."</th>";
 	echo '<th align="center">'.$header2_."</th>";
+	echo '<th align="center">'.$header5_."</th>";
 	echo '<th align="center">'.$header3_."</th>";
 	echo "</tr>";
 
@@ -273,7 +278,7 @@
 		$gtotal = $gtotal + $jumlah;
 		
 		if ($first_) {
-			echo "<td><small>$no</small></td>";
+			echo "<td>$no</td>";
 			$first_ = 0;
 		} else {
 			echo "<td><small>&nbsp;</small></td>";
@@ -282,28 +287,30 @@
 		if ($noslip_=='') {
 			echo "<td align=center><small>&nbsp;</small></td>";
 		} else {
-			echo "<td align=center nowrap><small>$noslip_</small></td>";
+			echo "<td align=center nowrap>$noslip_</td>";
 		}
                 
                 if ($periode2=="00--0000") {
                     $periode2="";
                 }
-		echo "<td align=center><small>$periode2</small></td>";
+		echo "<td align=center>$periode2</td>";
 	//	echo "<td align=center><small>$nama_al</small></td>";
-		echo "<td align=left><small><b>$real1</b> - $keterangan1 $keterangan2</small></td>";
-		echo '<td align="right"><small>'.number_format($jumlah,0)."</small></td>";
+		echo "<td align=left>$keterangan1</td>";
+		echo "<td align=left><b>$real1</b></td>";
+		echo '<td align="right">'.number_format($jumlah,0)."</td>";
 		echo "</tr>";
 
 		  $row = mysqli_fetch_array($result);
 		  $i++;
 	}// break per bulan
 		
-		echo "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align='right'><small><b>Sub Total </td>";
-		echo "<td align=right><b><small>".number_format($total,0)."</b></td></tr>";
+		echo "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align='right'><b>Sub Total </td>";
+		echo "<td align=right><b>".number_format($total,0)."</b></td></tr>";
 		echo "<tr><td colspan=6>&nbsp;</td></tr>";
 	}// eof  i<= num_results
 		echo "<tr>";
 		echo "<td>&nbsp;</td><td>&nbsp;</td>";
+		echo "<td>&nbsp;</td>";
 		echo "<td>&nbsp;</td>";
 		echo "<td align=right><b>Grand Total :</td>";
 		echo "<td align=right><b>".number_format($gtotal,0)."</b></td>";
@@ -355,15 +362,17 @@
                                 else
                                     echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                                 echo "<b>$nnama_ss_mktdir</b></td>";
-
-
-                    echo "<td align='center'>";
-                    echo "Disetujui,";
-                    if (!empty($namapengaju_ttd2))
-                        echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd2' height='$gmrheight'><br/>";
-                    else
-                        echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
-                    echo "<b>IRA BUDISUSETYO</b></td>";
+                                
+                    if ($npilihspd=="N") {//$npjenisrpt
+                    }else{
+                        echo "<td align='center'>";
+                        echo "Disetujui,";
+                        if (!empty($namapengaju_ttd2))
+                            echo "<br/><img src='images/tanda_tangan_base64/$namapengaju_ttd2' height='$gmrheight'><br/>";
+                        else
+                            echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
+                        echo "<b>IRA BUDISUSETYO</b></td>";
+                    }
                 //}
                 
             echo "</tr>";
@@ -437,3 +446,97 @@ if (empty($_SESSION['srid'])) {
         mysqli_query($cnmy, "drop temporary table $tmpbudgetreq02");
         mysqli_close($cnmy);
 ?>
+
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 13px;
+            border: 0px solid #000;
+        }
+        table.example_2 {
+            color: #000;
+            font-family: Helvetica, Arial, sans-serif;
+            width: 100%;
+            border-collapse:
+            collapse; border-spacing: 0;
+            font-size: 11px;
+            border: 1px solid #000;
+        }
+
+        table.example_2 td, table.example_3 th {
+            border: 1px solid #000; /* No more visible border */
+            height: 28px;
+            transition: all 0.3s;  /* Simple transition for hover effect */
+            padding: 5px;
+        }
+
+        table.example_2 th, table.example_3 th {
+            background: #DFDFDF;  /* Darken header a bit */
+            font-weight: bold;
+        }
+
+        table.example_2 td, table.example_3 td {
+            background: #FAFAFA;
+        }
+
+        /* Cells in even rows (2,4,6...) are one color */
+        tr:nth-child(even) td { background: #F1F1F1; }
+
+        /* Cells in odd rows (1,3,5...) are another (excludes header cells)  */
+        tr:nth-child(odd) td { background: #FEFEFE; }
+
+        tr td:hover.biasa { background: #666; color: #FFF; }
+        tr td:hover.left { background: #ccccff; color: #000; }
+
+        tr td.center1, td.center2 { text-align: center; }
+
+        tr td:hover.center1 { background: #666; color: #FFF; text-align: center; }
+        tr td:hover.center2 { background: #ccccff; color: #000; text-align: center; }
+        /* Hover cell effect! */
+
+        table {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 11px;
+        }
+        table.tjudul {
+            font-size: 13px;
+            width: 97%;
+        }
+
+
+        #kotakjudul {
+            border: 0px solid #000;
+            width:100%;
+            height: 1.3cm;
+        }
+        #isikiri {
+            float   : left;
+            width   : 49%;
+            border-left: 0px solid #000;
+        }
+        #isikanan {
+            text-align: right;
+            float   : right;
+            width   : 49%;
+        }
+        h2 {
+            font-size: 15px;
+        }
+        h3 {
+            font-size: 20px;
+        }
+        
+        
+        table.example_3 {
+            color: #000;
+            font-family: Helvetica, Arial, sans-serif;
+            border-collapse:
+            collapse; border-spacing: 0;
+            font-size: 11px;
+            border: 1px solid #000;
+            padding:5px;
+        }
+        table.example_3 td {
+            padding:5px;
+        }
+    </style>

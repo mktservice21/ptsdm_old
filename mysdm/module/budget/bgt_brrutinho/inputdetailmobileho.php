@@ -196,7 +196,7 @@
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
     
-    if ($pidact=="tambahbaru" AND $pfromresresh<>"Y"){
+    if ($pidact=="tambahbaru" AND $pabsenrutin==false){
         $pjmlwfo_val="0";
     }
     

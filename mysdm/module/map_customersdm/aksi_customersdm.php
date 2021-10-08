@@ -34,13 +34,13 @@ if ($module=='mapcustomersdm' AND $act=='hapusmaping')
         
         
         if (!empty($kodenya)) {
-            $query = "select * from MKT.ecust WHERE icabangid='$pidcab' AND areaid='$pidarea' and icustid='$pidcust'";
+            $query = "select * from MKT.ecust WHERE icabangid='$pidcab' and icustid='$pidcust'";
             $ketemu=mysqli_num_rows(mysqli_query($cnms, $query));
             if (empty($ketemu)) $ketemu=0;
             
             //echo "$ketemu"; exit;
             $query = "UPDATE MKT.ecust SET icabangid='', areaid='', icustid='',
-                      user1='".$pcardid."' WHERE icabangid='$pidcab' AND areaid='$pidarea' and icustid='$pidcust' LIMIT $ketemu";
+                      user1='".$pcardid."' WHERE icabangid='$pidcab' and icustid='$pidcust' LIMIT $ketemu";
             $result = mysqli_query($cnms, $query);
             $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; exit; }
         }
@@ -152,7 +152,7 @@ elseif ($module=='mapcustomersdm' AND ($act=='input' OR $act=='update'))
                   fax='".$pfax."',
                   contact='".$pkontak."',
                   grp='".$pgrp."',
-                  user1='".$pcardid."' WHERE icabangid='".$pidcab."' AND areaid='".$pidarea."' AND icustid='".$kodenya."' LIMIT 1";
+                  user1='".$pcardid."' WHERE icabangid='".$pidcab."' AND icustid='".$kodenya."' LIMIT 1";
         $result = mysqli_query($cnms, $query);
         $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; exit; }
     }

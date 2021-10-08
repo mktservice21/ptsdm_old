@@ -105,7 +105,8 @@ $pnamajabatan=$nr['nama'];
 
 ?>
 <div class="">
-
+    
+    <div class='modal fade' id='myModalImages' role='dialog' class='no-print'></div>
     
     <!--row-->
     <div class="row">
@@ -286,20 +287,17 @@ $pnamajabatan=$nr['nama'];
                                     <div class='col-md-7 col-sm-7 col-xs-12'>
                                         <?php
                                         //echo "<label><input type='checkbox' class='js-switch' id='chk_ttdfoto' name='chk_ttdfoto' value='byttd' onclick=\"ShowFromChkTtdFoto()\" checked> <span id='lbl_ttdfoto'>Tanda Tangan</span></label>";
-                                        echo "<input type='radio' class='' name='opt_ttd' id='opt_ttdfoto' value='ttd_by' checked  onclick=\"ShowFromChkTtdFoto()\" /> Tanda Tangan";
+                                        echo "<input type='radio' class='' name='opt_ttd' id='opt_ttdfoto' value='ttd_by' checked  onclick=\"ShowFromChkTtdFoto()\" /> Tanda Tangan (User)";
                                         echo "&nbsp; &nbsp; ";
                                         echo "<input type='radio' class='' name='opt_ttd' id='opt_ttdfoto' value='foto_by'  onclick=\"ShowFromChkTtdFoto()\" /> Foto";
                                         ?>
                                     </div>
-                                </div>
-                                
-                                <div hidden class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                    <div class='col-md-9 col-sm-9 col-xs-12'>
-                                        <button type='button' class='btn btn-success' onclick='disp_confirm_("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
-                                    </div>
-                                </div>
-                                
+                                </div>				
+
+                            </div>
+                        </div>
+						
+						
                                 <div id='div_ttd'>
                                     
                                     <div class='col-md-12 col-sm-12 col-xs-12'>
@@ -314,13 +312,14 @@ $pnamajabatan=$nr['nama'];
                                     </div>
                                     
                                 </div>
-                                
+						
+						
                                 <div hidden id='div_foto'>
                                     
                                 </div>
-
-                            </div>
-                        </div>
+						
+					
+						
                     </div>
                     
                     
@@ -365,6 +364,15 @@ $pnamajabatan=$nr['nama'];
                                                         $pnotes=$nrd['notes'];
                                                         $psaran=$nrd['saran'];
                                                         $pkaryawanid=$nrd['karyawanid'];
+                                                        $pfttd=$nrd['user_tandatangan'];
+                                                        $pffoto=$nrd['user_foto'];
+                                                        
+                                                        $pittd="Y";
+                                                        $pimages_pl=$pfttd;
+                                                        if (!empty($pffoto)) {
+                                                            $pimages_pl=$pffoto;
+                                                            $pittd="N";
+                                                        }
                                                         
                                                         $pnmjenis="";
                                                         //$pnmjenis='N';
@@ -378,6 +386,10 @@ $pnamajabatan=$nr['nama'];
                                                         $pnmdokt_=$pnmdokt."(".$pgelardokt.") ".$pspesdokt;
                                                         
                                                         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapusDokt('hapusdailydokt', '$pkaryawanid', '$ntgl', '$pdokterid')\">";
+                                                        if (empty($pimages_pl)) $pviewuser="$pnmdokt_ - $pdokterid";
+                                                        else {
+                                                            $pviewuser="<input type='button' value='$pnmdokt_ - $pdokterid' class='btn btn-info btn-xs' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\">";
+                                                        }
                                                         
                                                         $njammenitdetik = date('H:i:s', strtotime($ntglinput));
                                                         $ntanggal = date('l d F Y', strtotime($ntglinput));
@@ -390,7 +402,7 @@ $pnamajabatan=$nr['nama'];
                                                         echo "<tr>";
                                                         echo "<td nowrap>$xhari, $xtgl $xbulan $xthn $njammenitdetik</td>";
                                                         echo "<td nowrap>$pnmjenis</td>";
-                                                        echo "<td nowrap>$pnmdokt_ - $pdokterid</td>";
+                                                        echo "<td nowrap>$pviewuser</td>";
                                                         echo "<td >$pnotes</td>";
                                                         echo "<td >$psaran</td>";
                                                         //echo "<td >$phapus</td>";
@@ -475,7 +487,7 @@ $pnamajabatan=$nr['nama'];
     function ShowFromChkTtdFoto(){
         // Get the checkbox
         var checkBox = document.getElementById("opt_ttdfoto");
-        
+        $("#div_foto").html("");
         //$("#div_ttdfoto").html("");
         if (checkBox.checked == true){
             //document.getElementById("lbl_ttdfoto").innerHTML ="Tanda Tangan";
@@ -485,6 +497,16 @@ $pnamajabatan=$nr['nama'];
             //document.getElementById("lbl_ttdfoto").innerHTML ="Foto";
             div_ttd.style.display = 'none';
             div_foto.style.display = 'block';
+            
+            $.ajax({
+                type:"post",
+                url:"module/dkd/viewdatadkd.php?module=viewfotocamera",
+                data:"uviewcm=okecamera",
+                success:function(data){
+                    $("#div_foto").html(data);
+                }
+            });
+            
         }
          
     }
@@ -519,7 +541,7 @@ $pnamajabatan=$nr['nama'];
                 var idmenu = urlku.searchParams.get("idmenu");
 
                 //document.write("You pressed OK!")
-                document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&idmenu="+idmenu+"&ket=hapus&act="+ket+"&ukryid="+kryid+"&utgl="+tgl+"&udokt="+doktid;
+                document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal_foto.php?module="+module+"&idmenu="+idmenu+"&ket=hapus&act="+ket+"&ukryid="+kryid+"&utgl="+tgl+"&udokt="+doktid;
                 document.getElementById("form_data1").submit();
                 return 1;
             }
@@ -536,6 +558,10 @@ $pnamajabatan=$nr['nama'];
         var ikaryawan = document.getElementById('e_idcarduser').value;
         var iketdetail = document.getElementById('e_ketdetail').value;
         var isaran = document.getElementById('e_saran').value;
+        var RBox = document.getElementById("opt_ttdfoto");
+        
+        var select_usr = document.getElementById('cb_doktid');
+        var option_usr = select_usr.options[select_usr.selectedIndex];
         
         if (idoktid=="") {
             alert("user kosong...");
@@ -552,6 +578,14 @@ $pnamajabatan=$nr['nama'];
             return false;
         }
         
+        if (RBox.checked == true){
+        } else {
+            var ifoto = document.getElementById(data_img).value;
+            if (ifoto=="") {
+                alert("Foto belum discreenshot...");
+                return false;
+            }
+        }
         
         $.ajax({
             type:"post",
@@ -565,11 +599,14 @@ $pnamajabatan=$nr['nama'];
                 if (data=="boleh") {
                     
                     
-                    var RBox = document.getElementById("opt_ttdfoto");
+                    
                     if (RBox.checked == true){
                         pText_="Pastikan Tanda Tangan Terisi...";
                     } else {
+                        pText_="Pastikan Foto Sudah discreenshot...";
                     }
+                    pText_=pText_+"\n\
+Nama User : "+option_usr.text;
                     
                     ok_ = 1;
                     if (ok_) {
@@ -583,7 +620,7 @@ $pnamajabatan=$nr['nama'];
                             var uttd = data_img;//gambarnya
                             
                             //document.write("You pressed OK!")
-                            document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
+                            document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal_foto.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
                             document.getElementById("form_data1").submit();
                             return 1;
                         }
@@ -602,69 +639,16 @@ $pnamajabatan=$nr['nama'];
         
     }
     
-    function disp_confirm_(pText_,ket)  {
-        var iid = document.getElementById('e_id').value;
-        var idoktid = document.getElementById('cb_doktid').value;
-        var itgl = document.getElementById('e_periode1').value;
-        var ikaryawan = document.getElementById('e_idcarduser').value;
-        var iketdetail = document.getElementById('e_ketdetail').value;
-        var isaran = document.getElementById('e_saran').value;
-        
-        
-        if (idoktid=="") {
-            alert("user kosong...");
-            return false;
-        }
-        
-        if (iketdetail=="") {
-            alert("notes masih kosong...");
-            return false;
-        }
-        
-        if (isaran=="") {
-            alert("saran masih kosong...");
-            return false;
-        }
-
+    function ShowDataFotoTTD(ittd, img_data) {
         $.ajax({
             type:"post",
-            url:"module/dkd/viewdatadkd.php?module=cekdatasudahadarealvisit",
-            data:"uid="+iid+"&utgl="+itgl+"&ukaryawan="+ikaryawan+"&uidoktid="+idoktid,
+            url:"module/dkd/viewdatadkd.php?module=showimagespotottd",
+            data:"uttd="+ittd+"&uimg="+img_data,
             success:function(data){
-                //var tjml = data.length;
-                //alert(data);
-                //return false;
-
-                if (data=="boleh") {
-
-                    ok_ = 1;
-                    if (ok_) {
-                        var r=confirm(pText_)
-                        if (r==true) {
-                            var myurl = window.location;
-                            var urlku = new URL(myurl);
-                            var module = urlku.searchParams.get("module");
-                            var idmenu = urlku.searchParams.get("idmenu");
-                            //document.write("You pressed OK!")
-                            document.getElementById("form_data1").action = "module/dkd/dkd_wekvisitplanreal/aksi_wekvisitplanreal.php?module="+module+"&act="+ket+"&idmenu="+idmenu;
-                            document.getElementById("form_data1").submit();
-                            return 1;
-                        }
-                    } else {
-                        //document.write("You pressed Cancel!")
-                        return 0;
-                    }
-
-                }else{
-                    alert(data);
-                }
+                $("#myModalImages").html(data);
             }
         });
-        
-        
-        
     }
-    
     
 </script>
 

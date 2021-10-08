@@ -11,6 +11,8 @@ if (empty($puser)) {
     exit;
 }
 
+$pidcard=$_SESSION['IDCARD'];
+
 $ppilihrpt=$_GET['ket'];
 if ($ppilihrpt=="excel") {
     // Fungsi header dengan mengirimkan raw data excel
@@ -91,19 +93,33 @@ $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; g
 
 
 
-
-$query = "SELECT a.fakturid, b.region, a.icabangid, b.nama nama_cabang, a.areaid, c.nama nama_area, a.icustid, d.nama nama_customer, "
-        . " d.iSektorId, e.nama nama_sektor, a.divprodid, i.eprodid, a.iprodid, f.nama nama_produk, "
-        . " a.distid, g.nama nama_dist, a.tgljual, "
-        . " a.hna, sum(a.qty) as qty, sum(IFNULL(a.hna,0)*IFNULL(a.qty,0)) as tvalue "
-        . " FROM $tmp01 a "
-        . " LEFT JOIN mkt.icabang b on a.icabangid=b.icabangid "
-        . " LEFT JOIN mkt.iarea c on a.icabangid=c.icabangid and b.icabangid=c.icabangid and a.areaid=c.areaid "
-        . " LEFT JOIN mkt.icust d on a.icabangid=d.iCabangId and a.icustid=d.iCustId "
-        . " LEFT JOIN MKT.isektor e on d.iSektorId=e.iSektorId "
-        . " LEFT JOIN mkt.iproduk f on a.iprodid=f.iprodid "
-        . " LEFT JOIN mkt.distrib0 g on a.distid=g.Distid "
-        . " LEFT JOIN mkt.eproduk i on f.iprodid=i.iprodid AND a.distid=i.DistId WHERE 1=1";
+if ($pidcard=="0000000266" OR $pidcard=="0000000144"){
+    
+    $query = "SELECT a.fakturid, b.region, a.icabangid, b.nama nama_cabang, a.areaid, c.nama nama_area, a.icustid, d.nama nama_customer, "
+            . " d.iSektorId, e.nama nama_sektor, a.divprodid, i.eprodid, a.iprodid, f.nama nama_produk, "
+            . " a.distid, g.nama nama_dist, a.tgljual, "
+            . " a.hna, sum(a.qty) as qty, sum(IFNULL(a.hna,0)*IFNULL(a.qty,0)) as tvalue "
+            . " FROM $tmp01 a "
+            . " LEFT JOIN mkt.icabang b on a.icabangid=b.icabangid "
+            . " LEFT JOIN mkt.iarea c on a.icabangid=c.icabangid and b.icabangid=c.icabangid and a.areaid=c.areaid "
+            . " LEFT JOIN mkt.icust d on a.icabangid=d.iCabangId and a.icustid=d.iCustId "
+            . " LEFT JOIN MKT.isektor e on d.iSektorId=e.iSektorId "
+            . " LEFT JOIN mkt.iproduk f on a.iprodid=f.iprodid "
+            . " LEFT JOIN mkt.distrib0 g on a.distid=g.Distid "
+            . " LEFT JOIN mkt.eproduk i on f.iprodid=i.iprodid AND a.distid=i.DistId WHERE 1=1";
+}else{
+    $query = "SELECT a.fakturid, b.region, a.icabangid, b.nama nama_cabang, a.areaid, c.nama nama_area, a.icustid, d.nama nama_customer, "
+            . " d.iSektorId, e.nama nama_sektor, a.divprodid, a.iprodid as eprodid, a.iprodid, f.nama nama_produk, "
+            . " a.distid, g.nama nama_dist, a.tgljual, "
+            . " a.hna, sum(a.qty) as qty, sum(IFNULL(a.hna,0)*IFNULL(a.qty,0)) as tvalue "
+            . " FROM $tmp01 a "
+            . " LEFT JOIN mkt.icabang b on a.icabangid=b.icabangid "
+            . " LEFT JOIN mkt.iarea c on a.icabangid=c.icabangid and b.icabangid=c.icabangid and a.areaid=c.areaid "
+            . " LEFT JOIN mkt.icust d on a.icabangid=d.iCabangId and a.icustid=d.iCustId "
+            . " LEFT JOIN MKT.isektor e on d.iSektorId=e.iSektorId "
+            . " LEFT JOIN mkt.iproduk f on a.iprodid=f.iprodid "
+            . " LEFT JOIN mkt.distrib0 g on a.distid=g.Distid WHERE 1=1";
+}
 if (!empty($pkdsektor)) {
     $query .=" AND d.iSektorId='$pkdsektor' ";
 }

@@ -220,7 +220,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 <HTML>
 <HEAD>
-  <TITLE>Report Daily Plan & Realisasi</TITLE>
+  <TITLE>Report Weekly Realisasi</TITLE>
     <meta http-equiv="Expires" content="Mon, 01 Jan 2030 1:00:00 GMT">
     <meta http-equiv="Pragma" content="no-cache">
     <?php header("Cache-Control: no-cache, must-revalidate"); ?>
@@ -247,7 +247,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
     <?PHP
 
-    echo "<b>Report Daily Plan & Realisasi</b><br/>";
+    echo "<b>Report Weekly Realisasi</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
     echo "<b>Jabatan : $pnamajabatan</b><br/>";
     echo "<hr/><br/>";
@@ -401,18 +401,18 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         echo "<tr>";
         
             echo "<th align='left' rowspan='2'><small>Tanggal</small></th>";
-            echo "<th align='cener' colspan='2'><small>Plan</small></th>";
-            echo "<th align='cener' colspan='5'><small>Realisasi</small></th>";
+            echo "<th align='cener' colspan='1'><small>Plan</small></th>";
+            echo "<th align='cener' colspan='4'><small>Realisasi</small></th>";
             
         echo "</tr>";
         
         echo "<tr>";
         
-            echo "<th align='left'><small>Jenis</small></th>";
+            //echo "<th align='left'><small>Jenis</small></th>";
             echo "<th align='left'><small>User</small></th>";
             
             echo "<th align='left'><small>Jam</small></th>";
-            echo "<th align='left'><small>Jenis</small></th>";
+            //echo "<th align='left'><small>Jenis</small></th>";
             echo "<th align='left'><small>User</small></th>";
             echo "<th align='left'><small>&nbsp;</small></th>";
             echo "<th align='left'><small>&nbsp;</small></th>";
@@ -493,9 +493,14 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                             $pnmjenis="";
                             $pnmdokt_="";
                         }
+                        
+                        if (!empty($pnmjenis)) {
+                            $pnmdokt_="($pnmjenis) ".$pnmdokt_;
+                        }
+                        
                         echo "<tr>";
                         echo "<td nowrap>$ppilihtgl</td>";
-                        echo "<td >$pnmjenis</td>";
+                        //echo "<td >$pnmjenis</td>";
                         echo "<td nowrap>$pnmdokt_</td>";
                         //echo "<td >$nnotes</td>";
                         
@@ -504,7 +509,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         $ketemu2=mysqli_num_rows($tampil2);
                         if ((INT)$ketemu2<=0) {
                             echo "<td nowrap></td>";
-                            echo "<td nowrap></td>";
+                            //echo "<td nowrap></td>";
                             echo "<td nowrap></td>";
                             echo "<td ></td>";
                             echo "<td >$plihatkomen</td>";
@@ -566,8 +571,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                     echo "<td nowrap>&nbsp;</td>";
                                     //echo "<td >&nbsp;</td>";
                                 }
+                                if (!empty($pnmjenis)) {
+                                    $pnmdokt_="($pnmjenis) ".$pnmdokt_;
+                                }
                                 echo "<td nowrap>$pjam</td>";
-                                echo "<td nowrap>$pnmjenis</td>";
+                                //echo "<td nowrap>$pnmjenis</td>";
                                 echo "<td nowrap>$pnmdokt_</td>";
                                 echo "<td >$plihatnotes</td>";
                                 echo "<td >$plihatkomen</td>";
@@ -584,8 +592,12 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         echo "<td nowrap>&nbsp;</td>";
                         //echo "<td >&nbsp;</td>";
 
+                        if (!empty($pnmjenis)) {
+                            $pnmdokt_="($pnmjenis) ".$pnmdokt_;
+                        }
+                                
                         echo "<td nowrap>$pjam</td>";
-                        echo "<td nowrap>$pnmjenis</td>";
+                        //echo "<td nowrap>$pnmjenis</td>";
                         echo "<td nowrap>$pnmdokt_</td>";
                         echo "<td >$plihatnotes</td>";
                         echo "<td >$plihatkomen</td>";

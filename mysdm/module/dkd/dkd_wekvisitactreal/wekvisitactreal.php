@@ -17,7 +17,7 @@
         <div class="title_left">
             <h3>
                 <?PHP
-                $judul="Daily Activity - Realisasi";
+                $judul="Realisasi - Daily Activity";
                 if ($pact=="tambahbaru")
                     echo "$judul";
                 elseif ($pact=="editdata")

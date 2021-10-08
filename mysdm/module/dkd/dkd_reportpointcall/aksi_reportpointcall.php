@@ -510,8 +510,17 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             echo "POINT BULAN (POINT SESUAI JABATAN * JUMLAH HARI KERJA) = $jpoint<br/>";
             echo "POINT AKTIVITAS MINUS (TOTAL POINT AKTIVITAS LEBIH KECIL 0) = $totpoint1<br/>";
             echo "POINT AKTIVITAS PLUS (TOTAL POINT AKTIVITAS LEBIH BESAR 0) = $totpoint2<br/>";
-            echo "<b>SUMMARY = (TOTAL CALL + POINT AKTIVITAS PLUS) / (POINT BULAN - POINT AKTIVITAS MINUS) * 100</b><br/>";
-            echo "<b>".round($summary_,2)."% = ($totcall + $totpoint2) / ($jpoint - $totpoint1) * 100 "."</b><br/>";
+            echo "<b>(TOTAL CALL + POINT AKTIVITAS PLUS) / (POINT BULAN - POINT AKTIVITAS MINUS) * 100 = SUMMARY</b><br/>";
+            //echo "<b>($totcall + $totpoint2) / ($jpoint - $totpoint1) * 100 "." = <br/>".round($summary_,2)."%</b><br/>";
+            echo "<b>($totcall + $totpoint2) / ($jpoint - $totpoint1) * 100 "." = </b><br/>";
+            
+            $pwarnasumary=" style='color:green; font-size:150px;' ";
+            $psumarynya=round($summary_,2);
+            if ((DOUBLE)$psumarynya<80) {
+                $pwarnasumary=" style='color:red; font-size:150px;' ";
+            }
+            
+            echo "<center><span $pwarnasumary><b>$psumarynya %</b></span></center>";
     echo "</div>";
     
     echo "<br/><br/><br/><br/><br/>";

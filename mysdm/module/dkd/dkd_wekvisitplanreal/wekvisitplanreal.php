@@ -87,8 +87,11 @@
         $aksi="eksekusi3.php";
         switch($pact){
             default:
-                
-                include "tambah_dayvisit.php";
+                if ($pidgroup=="1" OR $pidgroup=="24") {
+                    
+                }else{
+                    include "tambah_dayvisit.php";
+                }
                 
             break;
 

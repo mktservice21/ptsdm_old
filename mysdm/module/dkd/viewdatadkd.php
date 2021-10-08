@@ -192,7 +192,7 @@ if ($pmodule=="cekdatasudahada") {
         $ptglpilih = date('Y-m-d', strtotime('+1 days', strtotime($ptglpilih)));
         $p_tgl = date('d', strtotime($ptglpilih));
         
-        echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih'> $p_tgl &nbsp; &nbsp; ";
+        echo "<input type='checkbox' name='chktgl[]' value='$ptglpilih' checked> $p_tgl &nbsp; &nbsp; ";
     }
 }elseif ($pmodule=="viewdatakomentar") {
     

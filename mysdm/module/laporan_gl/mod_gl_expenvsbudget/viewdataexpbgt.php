@@ -21,9 +21,24 @@ $pmobile=$_SESSION['MOBILE'];
 if ($pmodule=="viewdataregion") {
     
     include "../../../config/koneksimysqli.php";
+    
+    $ppengajuan=$_POST['upengajuan'];
+    $pdept=$_POST['udep'];
+    $pilproduk=$_POST['ulproduk'];
+    
+    
+    
     $pilihregion="";
-    if ($fjbtid=="05") {
-        $query = "select region FROM dbmaster.t_karyawan_posisi WHERE karyawanid='$fkaryawan'";
+    if ($fjbtid=="05" OR $fjbtid=="20" OR $fjbtid=="08") {
+        if ($fjbtid=="05") {
+            $query = "select region FROM dbmaster.t_karyawan_posisi WHERE karyawanid='$fkaryawan'";
+        }elseif ($fjbtid=="20") {
+            $query = "select distinct b.region from sls.ism0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId where IFNULL(b.region,'')<>'' AND "
+                    . " a.karyawanid='$fkaryawan'";
+        }elseif ($fjbtid=="08") {
+            $query = "select distinct b.region from sls.idm0 as a JOIN mkt.icabang as b on a.icabangid=b.iCabangId where IFNULL(b.region,'')<>'' AND "
+                    . " a.karyawanid='$fkaryawan'";
+        }
         $tampil= mysqli_query($cnmy, $query);
         $ketemu= mysqli_num_rows($tampil);
         $row= mysqli_fetch_array($tampil);
@@ -32,10 +47,6 @@ if ($pmodule=="viewdataregion") {
     
     mysqli_close($cnmy);
     
-    
-    $ppengajuan=$_POST['upengajuan'];
-    $pdept=$_POST['udep'];
-    $pilproduk=$_POST['ulproduk'];
     
     
     $ppilihsales=false;
@@ -55,7 +66,7 @@ if ($pmodule=="viewdataregion") {
     }
     
     
-    if ($fjbtid=="05" AND !empty($pilihregion)) {
+    if ( ($fjbtid=="05" OR $fjbtid=="20" OR $fjbtid=="08") AND !empty($pilihregion)) {
         
         if ($pilihregion=="B") echo "<option value='B' >Barat</option>";
         elseif ($pilihregion=="T") echo "<option value='T' >Timur</option>";
@@ -171,9 +182,19 @@ if ($pmodule=="viewdataregion") {
             //$query_cab .= " AND LEFT(nama,5) NOT IN ('PEA -', 'OTC -') ";
             //$query_cab .= " ORDER BY nama";
 
-            $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang "
-                    . " WHERE tahun='$ptahun' AND divisi_pengajuan='ETH' $filter_region ";
-            $query_cab .= " ORDER BY nama_cabang";
+            if ($fjbtid=="20") {
+                $query_cab = "select distinct b.icabangid, b.nama_cabang, b.divisi_pengajuan as iket, b.region from sls.ism0 as a JOIN dbproses.proses_cabang as b on a.icabangid=b.iCabangId where b.divisi_pengajuan='ETH' "
+                        . " AND a.karyawanid='$fkaryawan'";
+                $query_cab .= " ORDER BY b.nama_cabang";
+            }elseif ($fjbtid=="08") {
+                $query_cab = "select distinct b.icabangid, b.nama_cabang, b.divisi_pengajuan as iket, b.region from sls.idm0 as a JOIN dbproses.proses_cabang as b on a.icabangid=b.iCabangId where b.divisi_pengajuan='ETH' "
+                        . " AND a.karyawanid='$fkaryawan'";
+                $query_cab .= " ORDER BY b.nama_cabang";
+            }else{
+                $query_cab = "select icabangid, nama_cabang, divisi_pengajuan as iket, region FROM dbproses.proses_cabang "
+                        . " WHERE tahun='$ptahun' AND divisi_pengajuan='ETH' $filter_region ";
+                $query_cab .= " ORDER BY nama_cabang";
+            }
 
         }elseif ($ipengajuan=="OTC" || $ipengajuan=="OT" || $ipengajuan=="CHC"){
             if ($ppilihsales==true) {

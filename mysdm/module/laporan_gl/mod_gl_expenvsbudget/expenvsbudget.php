@@ -71,6 +71,10 @@
         $pilihregion=$row['region'];
     }
     
+    if ($fjbtid=="08") {
+        $psemuadep=false;
+        $pbolehpilihdep=true;
+    }
     
     
 ?>
@@ -125,8 +129,12 @@
                                                 
                                                 
                                                 $query = "select iddep, nama_dep from dbmaster.t_department WHERE aktif<>'N' ";
-                                                if ($psemuadep==false) {
-                                                    $query .=" AND iddep IN (select IFNULL(iddep,'') FROM dbproses.maping_karyawan_dep WHERE karyawanid='$fkaryawan')";
+                                                if ($fjbtid=="08") {
+                                                    $query .=" AND iddep='SLS01' ";
+                                                }else{
+                                                    if ($psemuadep==false) {
+                                                        $query .=" AND iddep IN (select IFNULL(iddep,'') FROM dbproses.maping_karyawan_dep WHERE karyawanid='$fkaryawan')";
+                                                    }
                                                 }
                                                 $query .=" ORDER BY nama_dep";
                                                 

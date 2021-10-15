@@ -12,12 +12,16 @@ if ($pmodule=="viewcoadivisichk"){
     $mydivisi = $_POST['udivi'];
     $fil = " AND c.DIVISI2 = '$mydivisi'";
     
-    if ($fgroupid=="28") {
+    if ($fgroupid=="28" OR $fgroupid=="61") {
         if (empty($mydivisi)) {
             $fil = " AND c.DIVISI2 NOT IN ('CHC', 'OTC')";
         }
     }else{
         if (empty($mydivisi)) $fil = " ";
+    }
+    
+    if ($mydivisi=="ETH") {
+        //$fil = " AND c.DIVISI2 NOT IN ('CHC', 'OTC')";
     }
     
     $query = "select a.COA4, a.NAMA4 from dbmaster.coa_level4 a 

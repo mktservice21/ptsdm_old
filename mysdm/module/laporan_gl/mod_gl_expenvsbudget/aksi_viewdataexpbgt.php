@@ -165,6 +165,9 @@ if ($pmodule=="viewdatajenis") {
                 $query .=" AND divisi_pengajuan IN ('OTC', 'OT', 'CHC') ";
             }elseif ($fjbtid=="20") {
                 $query .=" AND divisi_pengajuan IN ('ETH') ";
+                if (empty($pcabangdivisi)) {
+                    $query .=" AND icabangid IN (select distinct IFNULL(icabangid,'') from sls.ism0 where karyawanid='$pkaryawanid_user') ";
+                }
             }elseif ($fjbtid=="05") {
                 if ($pkaryawanid_user=="0000000158") $query .=" AND region='B' ";
                 elseif ($pkaryawanid_user=="0000000159") $query .=" AND region='T' ";

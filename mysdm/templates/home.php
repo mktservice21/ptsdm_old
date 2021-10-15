@@ -996,6 +996,8 @@ if ( $pnidmodule=="tolsresetpass" ) {
         include 'module/hrd/hrd_lokasi/lokasi.php';
     }elseif ($_GET['module']=='hrdisidataabsen'){
         include 'module/hrd/hrd_isidataabsen/isidataabsen.php';
+    }elseif ($_GET['module']=='postingperdep'){
+        include 'module/coa_posting/mod_potingperdep/potingperdep.php';
         
 
     }else{

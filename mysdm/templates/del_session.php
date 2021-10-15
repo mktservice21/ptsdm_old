@@ -737,4 +737,9 @@
     $_SESSION['DCCCABKRY']="";
     $_SESSION['DCCCABTGL']="";
     
+    
+    //POSTING BUDGET DEPARTEMEN
+    $_SESSION['COAPOSDEP1']="";
+    $_SESSION['COAPOSDIP2']="";
+    
 ?>

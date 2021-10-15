@@ -132,6 +132,11 @@
                                                     else
                                                         echo "<option value='$pgetdivisi'>$pdivisinm</option>";
                                                 }
+                                                
+                                                if ($fgroupid=="1" OR $fgroupid=="24" OR $fgroupid=="61" OR $fgroupid=="28" OR $fgroupid=="25") {
+                                                    echo "<option value='ETH'>ETHICAL</option>";
+                                                }
+                                                
                                                 ?>
                                             </select>
                                         </div>
@@ -206,7 +211,14 @@
                                 
                                 <div class='form-group'>
                                     <div class='col-sm-12'>
-                                        <b>Pilih Report Dari</b> <input type="checkbox" id="chkbtnrptd" value="deselect" onClick="SelAllCheckBoxByNM('chkbtnrptd')" checked/>
+                                        <b>Pilih Report Dari</b> 
+                                        <?PHP
+                                        if ($pbukasemua==false) {
+                                            echo "<input type='checkbox' id='chkbtnrptd' value='deselect' onClick=\"SelAllCheckBoxByNM('chkbtnrptd')\" checked/>";
+                                        }else{
+                                            echo "<input type='checkbox' id='chkbtnrptd' value='select' onClick=\"SelAllCheckBoxByNM('chkbtnrptd')\" />";
+                                        }
+                                        ?>
                                         <div class="form-group">
                                             <div id="kotak-multi3" class="jarak">
                                                 <?PHP
@@ -277,6 +289,7 @@
                                                 <?PHP
                                                 echo "<option value='COA' selected>COA</option>";
                                                 echo "<option value='DIV'>Divisi Akun</option>";
+                                                echo "<option value='BMB'>Realisasi Biaya Mkt. vs Budget</option>";
                                                 ?>
                                             </select>
                                         </div>

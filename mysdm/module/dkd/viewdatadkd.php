@@ -566,10 +566,12 @@ if ($pmodule=="cekdatasudahada") {
         </div>
     </div>
 
-    <br/>&nbsp;
+    
     <span hidden><textarea id='txt_arss' name='txt_arss'></textarea></span>
     <div class="column"><div id="screenshots" style='width:100px;'></div></div>
     <canvas hidden class="is-hidden" id="canvas"></canvas>
+    
+    <!--
     <br/>&nbsp;
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
@@ -577,10 +579,26 @@ if ($pmodule=="cekdatasudahada") {
             <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "dailyinput", "txt_arss")'>Save</button>
         </div>
     </div>
-    <br/>&nbsp;
+    <br/>&nbsp;   
+    -->
     
     <script src="module/dkd/script_cm.js"></script>
     <?PHP
+    
+}elseif ($pmodule=="viewfotocamera2") {
+    
+?>
+    <div>*) Sebelum klik tombol save, pastikan foto sudah di <b>screenshot</b></div>
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+        <div class='col-md-9 col-sm-9 col-xs-12'>
+            <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "dailyinput", "txt_arss")'>Save</button>
+        </div>
+    </div>
+    
+    <br/>&nbsp;
+    
+<?PHP
     
 }elseif ($pmodule=="showimagespotottd") {
     

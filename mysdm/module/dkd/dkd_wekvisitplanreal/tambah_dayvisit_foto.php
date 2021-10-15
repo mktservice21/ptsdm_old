@@ -133,6 +133,11 @@ $pnamajabatan=$nr['nama'];
                     <!--kiri-->
                     <div class='col-md-6 col-xs-12'>
                         
+                        <div hidden id='div_foto'>
+
+                        </div>
+                        <div class='clearfix'></div>
+                        
                         <div class='x_panel'>
                             <div class='x_content form-horizontal form-label-left'>
 
@@ -143,6 +148,18 @@ $pnamajabatan=$nr['nama'];
                                         <input type='text' id='e_idinputuser' name='e_idinputuser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piduser; ?>' Readonly>
                                         <input type='text' id='e_idcarduser' name='e_idcarduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidcard; ?>' Readonly>
                                         <input type='text' id='e_idjbt' name='e_idjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidjbt; ?>' Readonly>
+                                    </div>
+                                </div>
+                                
+                                <div  class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
+                                    <div class='col-md-7 col-sm-7 col-xs-12'>
+                                        <?php
+                                        //echo "<label><input type='checkbox' class='js-switch' id='chk_ttdfoto' name='chk_ttdfoto' value='byttd' onclick=\"ShowFromChkTtdFoto()\" checked> <span id='lbl_ttdfoto'>Tanda Tangan</span></label>";
+                                        echo "<input type='radio' class='' name='opt_ttd' id='opt_ttdfoto' value='ttd_by' checked  onclick=\"ShowFromChkTtdFoto()\" /> Tanda Tangan (User)";
+                                        echo "&nbsp; &nbsp; ";
+                                        echo "<input type='radio' class='' name='opt_ttd' id='opt_ttdfoto' value='foto_by'  onclick=\"ShowFromChkTtdFoto()\" /> Foto";
+                                        ?>
                                     </div>
                                 </div>
 
@@ -282,41 +299,30 @@ $pnamajabatan=$nr['nama'];
                                     </div>
                                 </div>
                                 
-                                <div  class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
-                                    <div class='col-md-7 col-sm-7 col-xs-12'>
-                                        <?php
-                                        //echo "<label><input type='checkbox' class='js-switch' id='chk_ttdfoto' name='chk_ttdfoto' value='byttd' onclick=\"ShowFromChkTtdFoto()\" checked> <span id='lbl_ttdfoto'>Tanda Tangan</span></label>";
-                                        echo "<input type='radio' class='' name='opt_ttd' id='opt_ttdfoto' value='ttd_by' checked  onclick=\"ShowFromChkTtdFoto()\" /> Tanda Tangan (User)";
-                                        echo "&nbsp; &nbsp; ";
-                                        echo "<input type='radio' class='' name='opt_ttd' id='opt_ttdfoto' value='foto_by'  onclick=\"ShowFromChkTtdFoto()\" /> Foto";
-                                        ?>
-                                    </div>
-                                </div>				
 
                             </div>
                         </div>
 						
 						
-                                <div id='div_ttd'>
-                                    
-                                    <div class='col-md-12 col-sm-12 col-xs-12'>
-                                        <h2>
-                                            <?PHP
-                                                echo "<div class='col-md-12 col-sm-12 col-xs-12'>";
-                                                    include "module/dkd/dkd_wekvisitplanreal/ttd_realisasiplan.php";
-                                                echo "</div>";
-                                            ?>
-                                        </h2>
-                                        <div class='clearfix'></div>
-                                    </div>
-                                    
+                            <div id='div_ttd'>
+
+                                <div class='col-md-12 col-sm-12 col-xs-12'>
+                                    <h2>
+                                        <?PHP
+                                            echo "<div class='col-md-12 col-sm-12 col-xs-12'>";
+                                                include "module/dkd/dkd_wekvisitplanreal/ttd_realisasiplan.php";
+                                            echo "</div>";
+                                        ?>
+                                    </h2>
+                                    <div class='clearfix'></div>
                                 </div>
-						
-						
-                                <div hidden id='div_foto'>
-                                    
-                                </div>
+
+                            </div>
+
+
+                            <div hidden id='div_foto2'>
+
+                            </div>
 						
 					
 						
@@ -336,6 +342,7 @@ $pnamajabatan=$nr['nama'];
                                         <table id='dtabel' class='table table-striped table-bordered' width='100%'>
                                             <thead>
                                                 <tr>
+                                                    <th width='5px' align='center'></th>
                                                     <th width='5px' align='center'>Tanggal</th>
                                                     <th width='5px' align='center'>Jenis</th>
                                                     <th width='200px' align='center'>Nama User</th>
@@ -369,9 +376,11 @@ $pnamajabatan=$nr['nama'];
                                                         
                                                         $pittd="Y";
                                                         $pimages_pl=$pfttd;
+                                                        $ffolderfile="images/user_ttd/";
                                                         if (!empty($pffoto)) {
                                                             $pimages_pl=$pffoto;
                                                             $pittd="N";
+                                                            $ffolderfile="images/user_foto/";
                                                         }
                                                         
                                                         $pnmjenis="";
@@ -399,7 +408,14 @@ $pnamajabatan=$nr['nama'];
                                                         $xbulan = $bulan_array[(INT)date('m', strtotime($ntglinput))];
                                                         $xthn= date('Y', strtotime($ntglinput));
                 
+                                                        
+                                                        
                                                         echo "<tr>";
+                                                        if (!empty($pimages_pl)) {
+                                                            echo "<td nowrap><img src='$ffolderfile/$pimages_pl' width='20px' height='30px' /></td>";
+                                                        }else{
+                                                            echo "<td nowrap>&nbsp;</td>";
+                                                        }
                                                         echo "<td nowrap>$xhari, $xtgl $xbulan $xthn $njammenitdetik</td>";
                                                         echo "<td nowrap>$pnmjenis</td>";
                                                         echo "<td nowrap>$pviewuser</td>";
@@ -488,15 +504,19 @@ $pnamajabatan=$nr['nama'];
         // Get the checkbox
         var checkBox = document.getElementById("opt_ttdfoto");
         $("#div_foto").html("");
+        $("#div_foto2").html("");
         //$("#div_ttdfoto").html("");
         if (checkBox.checked == true){
             //document.getElementById("lbl_ttdfoto").innerHTML ="Tanda Tangan";
             div_ttd.style.display = 'block';
             div_foto.style.display = 'none';
+            div_foto2.style.display = 'none';
+            location.reload();
         } else {
             //document.getElementById("lbl_ttdfoto").innerHTML ="Foto";
             div_ttd.style.display = 'none';
             div_foto.style.display = 'block';
+            div_foto2.style.display = 'block';
             
             $.ajax({
                 type:"post",
@@ -504,6 +524,15 @@ $pnamajabatan=$nr['nama'];
                 data:"uviewcm=okecamera",
                 success:function(data){
                     $("#div_foto").html(data);
+                }
+            });
+            
+            $.ajax({
+                type:"post",
+                url:"module/dkd/viewdatadkd.php?module=viewfotocamera2",
+                data:"uviewcm=okecamera",
+                success:function(data){
+                    $("#div_foto2").html(data);
                 }
             });
             

@@ -686,6 +686,9 @@
     }elseif ($_GET['module']=='brudcccabang'){
         include 'module/budget/bgt_brdcccabang/laporanbrdcccab.php';
         
+    }elseif ($_GET['module']=='postingperdep'){
+        include 'module/coa_posting/mod_potingperdep/potingperdep_rpt.php';
+        
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';
         

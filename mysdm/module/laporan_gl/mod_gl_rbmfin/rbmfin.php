@@ -103,9 +103,24 @@
                                 
                                 <div class='form-group'>
                                     <div class='col-sm-12'>
+                                        <b>Report Type</b>
+                                        <div class="form-group">
+                                            <select class='form-control' id="cb_rpttype" name="cb_rpttype" onchange="ShowDataDivisiTipeRpt()">
+                                                <?PHP
+                                                echo "<option value='COA' selected>COA</option>";
+                                                echo "<option value='DIV'>Divisi Akun</option>";
+                                                echo "<option value='BMB'>Sub Posting Transaksi</option>";
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
+                                    <div class='col-sm-12'>
                                         <b>Divisi</b>
                                         <div class="form-group">
-                                            <select class='form-control' id="cb_divisip" name="cb_divisip" onchange="ShowCOA('cb_divisip', 'kotak-multi2');">
+                                            <select class='form-control' id="cb_divisip" name="cb_divisip" onchange="">
                                                 <?PHP
                                                 $query = "select DivProdId from MKT.divprod WHERE br='Y' AND DivProdId<>'OTHER' ";
                                                 if ($pbukdivisiall==false) {
@@ -143,68 +158,26 @@
                                     </div>
                                 </div>
                                 
+                                
                                 <div class='form-group'>
                                     <div class='col-sm-12'>
-                                        <b>COA</b> <input type="checkbox" id="chkbtncoa" value="deselect" onClick="SelAllCheckBox('chkbtncoa', 'chkbox_coa[]')" checked/>
+                                        <b>COA</b>
                                         <div class="form-group">
-                                            <div id="kotak-multi2" class="jarak">
+                                            <select class='form-control s2' id="cb_coa" name="cb_coa[]" onchange="" multiple="multiple">
                                                 <?PHP
-                                                    echo "&nbsp; <input type=checkbox value='' name='chkbox_coa[]' checked> empty<br/>";
-                                                    $query = "select a.COA4, a.NAMA4 from dbmaster.coa_level4 a 
-                                                        join dbmaster.coa_level3 as b on a.COA3=b.COA3 
-                                                        join dbmaster.coa_level2 as c on b.COA2=c.COA2 WHERE 1=1 ";
+                                                $query = "select COA4, NAMA4 from dbmaster.coa_level4 ";
+                                                $query .=" order by COA4";
+                                                $tampil = mysqli_query($cnmy, $query);
+                                                //echo "<option value='' selected>All</option>";
+                                                while ($z= mysqli_fetch_array($tampil)) {
+                                                    $pcoaid=$z['COA4'];
+                                                    $pcoanm=$z['NAMA4'];
                                                     
-                                                    if (!empty($ppilihdivisi)) {
-                                                        if ($ppilihdivisi=="OTC" OR $ppilihdivisi=="CHC") $query .= " AND c.DIVISI2 IN ('OTC', 'CHC') ";
-                                                        else $query .= " AND c.DIVISI2='$ppilihdivisi' ";
-                                                    }
-                                                    
-                                                    if ($pnot_otc == true) {
-                                                        $query .= " AND IFNULL(c.DIVISI2,'') NOT IN ('OTC', 'CHC') ";
-                                                    }
-                                                    
-                                                    $query .= " AND IFNULL(c.DIVISI2,'') NOT IN ('', 'OTHER', 'OTHERS') ";
-                                                    
-                                                    $query .= " ORDER BY a.COA4";
-                                                    $tampil = mysqli_query($cnmy, $query);
-                                                    while ($z= mysqli_fetch_array($tampil)) {
-                                                        $pcoa4=$z['COA4'];
-                                                        $pnmcoa4=$z['NAMA4'];
-                                                        echo "&nbsp; <input type=checkbox value='$pcoa4' name='chkbox_coa[]' checked> $pcoa4 - $pnmcoa4<br/>";
-                                                    }
-                                                    
-                                                    //HO
-                                                    if ($ppilihdivisi=="OTC" OR $ppilihdivisi=="CHC") {
-                                                        echo "<br/>";
-                                                        $query = "select a.COA4, a.NAMA4 from dbmaster.coa_level4 a 
-                                                            join dbmaster.coa_level3 as b on a.COA3=b.COA3 
-                                                            join dbmaster.coa_level2 as c on b.COA2=c.COA2 WHERE 1=1 ";
-                                                        $query .= " AND IFNULL(c.DIVISI2,'') IN ('HO') ";
-                                                        echo "<br/>";
-                                                        $query .= " ORDER BY a.COA4";
-                                                        $tampil = mysqli_query($cnmy, $query);
-                                                        while ($z= mysqli_fetch_array($tampil)) {
-                                                            $pcoa4=$z['COA4'];
-                                                            $pnmcoa4=$z['NAMA4'];
-                                                            echo "&nbsp; <input type=checkbox value='$pcoa4' name='chkbox_coa[]' checked> $pcoa4 - $pnmcoa4 (OTHER)<br/>";
-                                                        }
-                                                    }
-                                                    
-                                                    //other
-                                                    $query = "select a.COA4, a.NAMA4 from dbmaster.coa_level4 a 
-                                                        join dbmaster.coa_level3 as b on a.COA3=b.COA3 
-                                                        join dbmaster.coa_level2 as c on b.COA2=c.COA2 WHERE 1=1 ";
-                                                    $query .= " AND IFNULL(c.DIVISI2,'') IN ('', 'OTHER', 'OTHERS') ";
-                                                    echo "<br/>";
-                                                    $query .= " ORDER BY a.COA4";
-                                                    $tampil = mysqli_query($cnmy, $query);
-                                                    while ($z= mysqli_fetch_array($tampil)) {
-                                                        $pcoa4=$z['COA4'];
-                                                        $pnmcoa4=$z['NAMA4'];
-                                                        echo "&nbsp; <input type=checkbox value='$pcoa4' name='chkbox_coa[]' checked> $pcoa4 - $pnmcoa4 (OTHER)<br/>";
-                                                    }
+                                                    echo "<option value='$pcoaid'>$pcoaid - $pcoanm</option>";
+                                                }
+                                                
                                                 ?>
-                                            </div>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -279,23 +252,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-
-                                <div class='form-group'>
-                                    <div class='col-sm-12'>
-                                        <b>Report Type</b>
-                                        <div class="form-group">
-                                            <select class='form-control' id="cb_rpttype" name="cb_rpttype" onchange="">
-                                                <?PHP
-                                                echo "<option value='COA' selected>COA</option>";
-                                                echo "<option value='DIV'>Divisi Akun</option>";
-                                                echo "<option value='BMB'>Realisasi Biaya Mkt. vs Budget</option>";
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
 
 
                             </div>
@@ -483,4 +439,27 @@
             }
         });
     }
+    
+    function ShowDataDivisiTipeRpt() {
+        var icar = "";
+        var itipe = document.getElementById('cb_rpttype').value;
+        $.ajax({
+            type:"post",
+            url:"module/laporan_gl/mod_gl_rbmfin/viewdata.php?module=viewdivisibytipe",
+            data:"umr="+icar+"&utipe="+itipe,
+            success:function(data){
+                $("#cb_divisip").html(data);
+            }
+        });
+    }
+</script>
+
+<!--<script src="vendors/jquery/dist/jquery.min.js"></script>-->
+<link href="module/dkd/select2.min.css" rel="stylesheet" type="text/css" />
+<script src="module/dkd/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.s2, .s3').select2();
+    });
 </script>

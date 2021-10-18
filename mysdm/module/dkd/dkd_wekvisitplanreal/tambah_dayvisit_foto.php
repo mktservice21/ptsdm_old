@@ -612,6 +612,13 @@ $pnamajabatan=$nr['nama'];
         
         if (RBox.checked == true){
         } else {
+            
+            var ifotoarea=document.getElementById('txt_arss').value;
+            if (ifotoarea=="") {
+                document.getElementById('btnScreenshot').click();
+            }else{
+            }
+        
             var ifoto = document.getElementById(data_img).value;
             if (ifoto=="") {
                 alert("Foto belum discreenshot...");
@@ -680,6 +687,11 @@ Nama User : "+option_usr.text;
                 $("#myModalImages").html(data);
             }
         });
+    }
+    
+    function reset_foto() {
+        document.getElementById('txt_arss').value="";
+        $("#screenshots").html("");
     }
     
 </script>

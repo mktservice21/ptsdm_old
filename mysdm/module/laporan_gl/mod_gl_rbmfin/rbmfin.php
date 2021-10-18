@@ -110,6 +110,7 @@
                                                 echo "<option value='COA' selected>COA</option>";
                                                 echo "<option value='DIV'>Divisi Akun</option>";
                                                 echo "<option value='BMB'>Sub Posting Transaksi</option>";
+                                                //echo "<option value='RAW'>Raw Data</option>";
                                                 ?>
                                             </select>
                                         </div>

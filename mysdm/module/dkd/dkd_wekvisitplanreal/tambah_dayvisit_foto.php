@@ -133,9 +133,30 @@ $pnamajabatan=$nr['nama'];
                     <!--kiri-->
                     <div class='col-md-6 col-xs-12'>
                         
+                        
+                        <div id='div_ttd'>
+
+                            <div class='col-md-12 col-sm-12 col-xs-12'>
+                                <h2>
+                                    <?PHP
+                                        echo "<div class='col-md-12 col-sm-12 col-xs-12'>";
+                                            include "module/dkd/dkd_wekvisitplanreal/ttd_realisasiplan.php";
+                                        echo "</div>";
+                                    ?>
+                                </h2>
+                                <div class='clearfix'></div>
+                            </div>
+
+                        </div>
+                        
                         <div hidden id='div_foto'>
 
                         </div>
+                        
+                        <div hidden id='div_foto2'>
+
+                        </div>
+                        
                         <div class='clearfix'></div>
                         
                         <div class='x_panel'>
@@ -304,25 +325,7 @@ $pnamajabatan=$nr['nama'];
                         </div>
 						
 						
-                            <div id='div_ttd'>
 
-                                <div class='col-md-12 col-sm-12 col-xs-12'>
-                                    <h2>
-                                        <?PHP
-                                            echo "<div class='col-md-12 col-sm-12 col-xs-12'>";
-                                                include "module/dkd/dkd_wekvisitplanreal/ttd_realisasiplan.php";
-                                            echo "</div>";
-                                        ?>
-                                    </h2>
-                                    <div class='clearfix'></div>
-                                </div>
-
-                            </div>
-
-
-                            <div hidden id='div_foto2'>
-
-                            </div>
 						
 					
 						

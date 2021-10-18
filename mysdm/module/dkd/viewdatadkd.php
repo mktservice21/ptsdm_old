@@ -588,7 +588,7 @@ if ($pmodule=="cekdatasudahada") {
 }elseif ($pmodule=="viewfotocamera2") {
     
 ?>
-    <div>*) Sebelum klik tombol save, pastikan foto sudah di <b>screenshot</b></div>
+    <!--<div>*) Sebelum klik tombol save, pastikan foto sudah di <b>screenshot</b></div>-->
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
         <div class='col-md-9 col-sm-9 col-xs-12'>

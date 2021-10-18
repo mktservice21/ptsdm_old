@@ -592,7 +592,8 @@ if ($pmodule=="cekdatasudahada") {
     <div class='form-group'>
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
         <div class='col-md-9 col-sm-9 col-xs-12'>
-            <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "dailyinput", "txt_arss")'>Save</button>
+            <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "dailyinput", "txt_arss")'>Save</button> &nbsp; &nbsp;
+            <button type='button' class='btn btn-warnig' onclick='reset_foto()'>Reset Foto</button>
         </div>
     </div>
     

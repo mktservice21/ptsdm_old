@@ -25,6 +25,7 @@
     $pidgrouppil=$_SESSION['GROUP'];
     $picardid=$_SESSION['IDCARD'];
     $puserid=$_SESSION['USERID'];
+    $pidsession=$_SESSION['IDSESI'];
     
     $ppilformat="1";
     if (($picardid=="0000000143" OR $picardid=="0000000329") AND $ppilihrpt=="excel") {
@@ -210,7 +211,22 @@
     $tmp04 =" dbtemp.tmpprosbmpil04_".$puserid."_$now ";
     $tmp05 =" dbtemp.tmpprosbmpil05_".$puserid."_$now ";
 
-
+    
+    
+    if ($prptpilihtype=="RAW") {
+        $query = "DELETE FROM dbproses.tmp_rawdata_expenses WHERE DATE_FORMAT(tgl_now, '%Y-%m-%d')<CURRENT_DATE()";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        $query = "DELETE FROM dbproses.tmp_rawdata_expenses WHERE DATE_FORMAT(tgl_now, '%Y-%m-%d')=CURRENT_DATE() AND userid_login='$picardid' AND session_id='$pidsession'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+        
+        $query = "ALTER TABLE dbproses.tmp_rawdata_expenses AUTO_INCREMENT=1";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    }
+    
+    
+    
                     $query ="SELECT noidauto, tahun, periode, hapus_nodiv_kosong, kodeinput, idkodeinput as idinput, nobrid_r, nobrid_n, idkodeinput, divisi, tglinput, tgltrans, "
                         . " karyawanid, nama_karyawan, dokterid, dokter_nama, noslip, nmrealisasi, keterangan, dpp, ppn, pph, tglfp, "
                         . " idinput_pd, nodivisi, debit, kredit, saldo, jumlah1, jumlah2, "
@@ -339,7 +355,26 @@
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-        if ($prptpilihtype=="BMB" AND $ppildivisiid<>"OTC") {
+        if ($prptpilihtype=="RAW") {
+            
+            $query = "INSERT INTO dbproses.tmp_rawdata_expenses"
+                    . " (session_id, userid_login, "
+                    . " kodeinput, idkodeinput, tanggal, "
+                    . " divisi, coa1, nama_coa1, coa2, nama_coa2, coa3, nama_coa3, coa4, nama_coa4, "
+                    . " jumlah) "
+                    . " SELECT '$pidsession' as session_id, '$picardid' as userid_login, "
+                    . " kodeinput, idkodeinput, tgltarikan, "
+                    . " divisi, coa1, nama_coa1, coa2, nama_coa2, coa3, nama_coa3, coa, nama_coa, "
+                    . " kredit FROM $tmp01";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            //$query = "create table $tmp04 (select * from $tmp00)";
+            //mysqli_query($cnmy, $query);
+            //echo "$tmp04";
+            
+            goto hapusdata;
+            
+        }elseif ($prptpilihtype=="BMB" AND $ppildivisiid<>"OTC") {
             
             
             //hapus yang PCM
@@ -618,6 +653,7 @@
     
             $filtgajispg=""; $filtinsentif=""; $filtsponsor=""; $filtsewadisp=""; $filtentertain=""; $filtpromat=""; $filtiklan=""; $filtevent="";
             $filtrafaksi=""; $filtklaimdisc=""; $filtpromotcost=""; $filtlistingfe=""; $filtfrontline=""; $filthoteltiket=""; $filtinventaris="";
+            $filtrpetykes="";
             $query = "select distinct kodeid, kode_akun, kode_akun_sub from dbmaster.t_budget_kode_otc_d order by kodeid";
             $tampil=mysqli_query($cnmy, $query);
             while ($row= mysqli_fetch_array($tampil)) {
@@ -657,6 +693,8 @@
                     $filthoteltiket .="'".$pkodeandsub."',";
                 }elseif ($pkodeidp=="16") {
                     $filtinventaris .="'".$pkodeandsub."',";
+                }elseif ($pkodeidp=="19") {
+                    $filtrpetykes .="'".$pkodeandsub."',";
                 }
 
             }
@@ -705,6 +743,9 @@
 
             if (!empty($filtinventaris)) $filtinventaris="(".substr($filtinventaris, 0, -1).")";
             else $filtinventaris="('')";
+            
+            if (!empty($filtrpetykes)) $filtrpetykes="(".substr($filtrpetykes, 0, -1).")";
+            else $filtrpetykes="('')";
 
 
             //echo "$filtgajispg<br/>$filtinsentif</br>$filtsponsor<br/>$filtsewadisp<br/>$filtentertain<br/>$filtpromat<br/>$filtiklan<br/>$filtevent<br/>$filtrafaksi<br/>$filtklaimdisc</br/>$filtpromotcost<br/>$filtlistingfe<br/>$filtfrontline<br/>$filthoteltiket<br/>$filtinventaris<br/>";
@@ -815,7 +856,7 @@
 
             //PROMOTION COST 18 
             $query = "INSERT INTO $tmp03 (bulan, kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
-                    . "SELECT tgltarikan as bulan, '17' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
+                    . "SELECT tgltarikan as bulan, '18' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
                     . " CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filtpromotcost";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
@@ -849,9 +890,9 @@
             mysqli_query($cnmy, "DELETE FROM $tmp01 WHERE kodeinput IN ('E') AND CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filthoteltiket");
             if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-            //inventaris 15
+            //inventaris 16
             $query = "INSERT INTO $tmp03 (bulan, kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
-                    . "SELECT tgltarikan as bulan, '15' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
+                    . "SELECT tgltarikan as bulan, '16' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
                     . " CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filtinventaris";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
@@ -900,7 +941,18 @@
                 mysqli_query($cnmy, "DELETE FROM $tmp01 WHERE kodeinput IN ('E') AND nkodeid in ('07') AND IFNULL(nsubkode,'')=''");
 
 
-            //BR OTC yang belum masuk .... HO dulu 21
+                
+            //pety cash 19 kas kecil
+            $query = "INSERT INTO $tmp03 (bulan, kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
+                    . "SELECT tgltarikan as bulan, '19' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
+                    . " CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filtrpetykes";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+            mysqli_query($cnmy, "DELETE FROM $tmp01 WHERE kodeinput IN ('E') AND CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filtrpetykes");
+            if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
+            
+            //BR OTC yang belum masuk .... HO dulu 20
                 $query = "INSERT INTO $tmp03 (bulan, kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
                         . "SELECT tgltarikan as bulan, '20' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E')";
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -1420,6 +1472,152 @@
             ?>
         </tbody>
     </table>
+    
+    <?PHP
+        if ($prptpilihtype=="BMB" AND $ppildivisiid<>"OTC") {
+            echo "<br/><br/><br/>";
+            
+            
+            $jfilterkodenotin="";
+            
+            echo "<br/>Mapping Budget Request Ethical</br>";
+            echo "<table  id='mydatatable1' class='table table-striped table-bordered' width='100%' border='1px solid black'>";
+            
+            echo "<thead>";
+            echo "<tr>";
+                echo "<th nowrap>Keterangan</th>";
+                echo "<th nowrap>Subposting</th>";
+            echo "</tr>";
+            echo "</thead>";
+            
+            echo "<tbody>";
+            
+            $query = "select a.kodeid, b.keterangan, a.kode_akun, c.nama from dbmaster.t_budget_kode_d as a "
+                    . " JOIN dbmaster.t_budget_realisasi_lap as b on a.kodeid=b.kodeid "
+                    . " join hrd.br_kode as c on a.kode_akun=c.kodeid "
+                    . " order by a.kodeid, a.kode_akun";
+            $tampil=mysqli_query($cnmy, $query);
+            while ($row= mysqli_fetch_array($tampil)) {
+                $jkodeid=$row['kodeid'];
+                $jketerangan=$row['keterangan'];
+                $jidkode=$row['kode_akun'];
+                $jnmkode=$row['nama'];
+                
+                $jfilterkodenotin .="'".$jidkode."',";
+                
+                echo "<tr>";
+                echo "<td nowrap>$jkodeid - $jketerangan</td>";
+                echo "<td nowrap>$jidkode - $jnmkode</td>";
+                echo "</tr>";
+                
+            }
+            
+            if (!empty($jfilterkodenotin)) {
+                $jfilterkodenotin="(".substr($jfilterkodenotin, 0, -1).")";
+                
+                $query = "select kodeid, nama from hrd.br_kode where IFNULL(br,'')='Y' AND kodeid NOT IN $jfilterkodenotin "
+                        . " ORDER BY kodeid, nama";
+                $tampil2=mysqli_query($cnmy, $query);
+                while ($row2= mysqli_fetch_array($tampil2)) {
+                    $jketerangan="Yang Belum Masuk Mapping, Masuk ke HO (1. HEAD OFFICE)";
+                    $jidkode=$row2['kodeid'];
+                    $jnmkode=$row2['nama'];
+                    
+                    echo "<tr>";
+                    echo "<td nowrap>$jketerangan</td>";
+                    echo "<td nowrap>$jidkode - $jnmkode</td>";
+                    echo "</tr>";
+                    
+                }
+                
+            }
+            
+            
+            echo "</tbody>";
+            echo "</table>";
+            
+            
+        }elseif ($prptpilihtype=="BMB" AND $ppildivisiid=="OTC") {
+            echo "<br/><br/><br/>";
+            
+            
+            $jfilterkodenotin="";
+            
+            echo "<br/>Mapping Budget Request CHC</br>";
+            echo "<table  id='mydatatable1' class='table table-striped table-bordered' width='100%' border='1px solid black'>";
+            
+            echo "<thead>";
+            echo "<tr>";
+                echo "<th nowrap>Keterangan</th>";
+                echo "<th nowrap>Posting</th>";
+                echo "<th nowrap>Subposting</th>";
+            echo "</tr>";
+            echo "</thead>";
+            
+            echo "<tbody>";
+            
+            $query = "select a.kodeid, b.keterangan, a.kode_akun, c.nmsubpost, a.kode_akun_sub, d.nama "
+                    . " from dbmaster.t_budget_kode_otc_d as a join dbmaster.t_budget_realisasi_lap_otc as b "
+                    . " on a.kodeid=b.kodeid join (select distinct subpost, nmsubpost from hrd.brkd_otc) as c "
+                    . " on a.kode_akun=c.subpost left join hrd.brkd_otc as d on a.kode_akun_sub=d.kodeid "
+                . " order by a.kodeid";
+            $tampil=mysqli_query($cnmy, $query);
+            while ($row= mysqli_fetch_array($tampil)) {
+                $jkodeid=$row['kodeid'];
+                $jketerangan=$row['keterangan'];
+                $jsubpostkd=$row['kode_akun'];
+                $jsubpostnm=$row['nmsubpost'];
+                $jidkode=$row['kode_akun_sub'];
+                $jnmkode=$row['nama'];
+                
+                $pkodeandsub=$jsubpostkd."".$jidkode;
+                
+                if ($jsubpostkd=="01" OR $jsubpostkd=="02" OR $jsubpostkd=="08") {
+                }else{
+                    $jfilterkodenotin .="'".$pkodeandsub."',";
+                }
+                
+                echo "<tr>";
+                echo "<td nowrap>$jkodeid - $jketerangan</td>";
+                echo "<td nowrap>$jsubpostkd - $jsubpostnm</td>";
+                echo "<td nowrap>$jidkode - $jnmkode</td>";
+                echo "</tr>";
+                
+            }
+            
+            if (!empty($jfilterkodenotin)) {
+                $jfilterkodenotin="(".substr($jfilterkodenotin, 0, -1).")";
+                
+                $query = "select subpost, nmsubpost, kodeid, nama from hrd.brkd_otc where ifnull(aktif,'')='Y' and subpost not in ('08', '01', '02') "
+                        . " AND concat(subpost, kodeid) NOT IN $jfilterkodenotin "
+                        . " ORDER BY nmsubpost, nama";
+                $tampil2=mysqli_query($cnmy, $query);
+                while ($row2= mysqli_fetch_array($tampil2)) {
+                    $jketerangan="Yang Belum Masuk Mapping, Masuk ke HO (V. HO)";
+                    $jsubpostkd=$row2['subpost'];
+                    $jsubpostnm=$row2['nmsubpost'];
+                    $jidkode=$row2['kodeid'];
+                    $jnmkode=$row2['nama'];
+                    
+                    echo "<tr>";
+                    echo "<td nowrap>$jketerangan</td>";
+                    echo "<td nowrap>$jsubpostkd - $jsubpostnm</td>";
+                    echo "<td nowrap>$jidkode - $jnmkode</td>";
+                    echo "</tr>";
+                    
+                }
+            }
+            
+            
+            echo "</tbody>";
+            echo "</table>";
+            
+            
+            
+        }
+        
+    ?>
+    
     
     <?PHP
     }elseif ($prptpilihtype=="DIV") {

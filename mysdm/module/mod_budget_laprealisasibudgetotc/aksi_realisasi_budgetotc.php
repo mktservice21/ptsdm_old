@@ -154,6 +154,7 @@
     
     $filtgajispg=""; $filtinsentif=""; $filtsponsor=""; $filtsewadisp=""; $filtentertain=""; $filtpromat=""; $filtiklan=""; $filtevent="";
     $filtrafaksi=""; $filtklaimdisc=""; $filtpromotcost=""; $filtlistingfe=""; $filtfrontline=""; $filthoteltiket=""; $filtinventaris="";
+    $filtrpetykes="";
     $query = "select distinct kodeid, kode_akun, kode_akun_sub from dbmaster.t_budget_kode_otc_d order by kodeid";
     $tampil=mysqli_query($cnmy, $query);
     while ($row= mysqli_fetch_array($tampil)) {
@@ -193,6 +194,8 @@
             $filthoteltiket .="'".$pkodeandsub."',";
         }elseif ($pkodeidp=="16") {
             $filtinventaris .="'".$pkodeandsub."',";
+        }elseif ($pkodeidp=="19") {
+            $filtrpetykes .="'".$pkodeandsub."',";
         }
         
     }
@@ -241,6 +244,9 @@
     
     if (!empty($filtinventaris)) $filtinventaris="(".substr($filtinventaris, 0, -1).")";
     else $filtinventaris="('')";
+    
+    if (!empty($filtrpetykes)) $filtrpetykes="(".substr($filtrpetykes, 0, -1).")";
+    else $filtrpetykes="('')";
    
     
     //echo "$filtgajispg<br/>$filtinsentif</br>$filtsponsor<br/>$filtsewadisp<br/>$filtentertain<br/>$filtpromat<br/>$filtiklan<br/>$filtevent<br/>$filtrafaksi<br/>$filtklaimdisc</br/>$filtpromotcost<br/>$filtlistingfe<br/>$filtfrontline<br/>$filthoteltiket<br/>$filtinventaris<br/>";
@@ -350,7 +356,7 @@
     
     //PROMOTION COST 18 
     $query = "INSERT INTO $tmp03 (kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
-            . "SELECT '17' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
+            . "SELECT '18' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
             . " CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filtpromotcost";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -384,9 +390,9 @@
     mysqli_query($cnmy, "DELETE FROM $tmp01 WHERE kodeinput IN ('E') AND CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filthoteltiket");
     if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    //inventaris 15
+    //inventaris 16
     $query = "INSERT INTO $tmp03 (kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
-            . "SELECT '15' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
+            . "SELECT '16' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
             . " CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filtinventaris";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
@@ -435,7 +441,17 @@
         mysqli_query($cnmy, "DELETE FROM $tmp01 WHERE kodeinput IN ('E') AND nkodeid in ('07') AND IFNULL(nsubkode,'')=''");
         
         
-    //BR OTC yang belum masuk .... HO dulu 21
+    //pety cash 19 kas kecil
+    $query = "INSERT INTO $tmp03 (kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
+            . "SELECT '19' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E') AND "
+            . " CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filtrpetykes";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    mysqli_query($cnmy, "DELETE FROM $tmp01 WHERE kodeinput IN ('E') AND CONCAT(IFNULL(nkodeid,''),IFNULL(nsubkode,'')) IN $filtrpetykes");
+    if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    //BR OTC yang belum masuk .... HO dulu 20
         $query = "INSERT INTO $tmp03 (kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit)"
                 . "SELECT '20' as kodeid, kodeinput, divisi, idkodeinput, nkodeid, coa, nama_coa, kredit FROM $tmp01 WHERE kodeinput IN ('E')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

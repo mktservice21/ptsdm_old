@@ -521,7 +521,8 @@ if ($pmodule=="cekdatasudahada") {
     echo "<option value='' selected></option>";
     if ($pprofesi == "Dokter" OR $pprofesi == "Profesor") {
 
-        $query = "select `id`, `spesialis` from dr.`spesialis_dokter` WHERE IFNULL(aktif,'')<>'N' Order By spesialis";
+        //$query = "select `id`, `spesialis` from dr.`spesialis_dokter` WHERE IFNULL(aktif,'')<>'N' Order By spesialis";
+        $query = "select `id`, `nama` as spesialis from ms2.`lookup` WHERE IFNULL(`type`,'')='spesialis' Order By nama";
         $tampil=mysqli_query($cnms, $query);
         while ($row=mysqli_fetch_array($tampil)) {
             $pnidsp=$row['id'];
@@ -543,7 +544,7 @@ if ($pmodule=="cekdatasudahada") {
 
             <div class="column is-four-fifths">
 
-                <video autoplay id="video" class='i_video' style='height:500px;'></video>
+                <center><video autoplay id="video" class='i_video' style='height:500px;'></video></center>
 
                 <!--
                 <button class="button is-hidden" id="btnPlay">
@@ -554,10 +555,13 @@ if ($pmodule=="cekdatasudahada") {
                         <span class="icon is-small"><i class="fas fa-pause"></i></span>
                 </button>
                 -->
+                <br/>
+                <span hidden>
                 <a class='btn btn-dark btn-xs' id='btnPlay'>Play</a>
                 <a class='btn btn-warning btn-xs' id='btnPause'>Pause</a>
-                <a class='btn btn-info btn-xs' id='btnScreenshot'>screenshot</a> &nbsp;
-                <a class='btn btn-success btn-xs' id='btnChangeCamera'>Switch camera</a>
+                </span>
+                <a class='btn btn-info' id='btnScreenshot'>screenshot</a> &nbsp;
+                <a class='btn btn-success' id='btnChangeCamera'>Switch camera</a>
 
             </div>
             <br/>&nbsp;
@@ -593,7 +597,7 @@ if ($pmodule=="cekdatasudahada") {
         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
         <div class='col-md-9 col-sm-9 col-xs-12'>
             <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "dailyinput", "txt_arss")'>Save</button> &nbsp; &nbsp;
-            <button type='button' class='btn btn-warnig' onclick='reset_foto()'>Reset Foto</button>
+            <button type='button' class='btn btn-default' onclick='reset_foto()'>Reset Foto</button>
         </div>
     </div>
     

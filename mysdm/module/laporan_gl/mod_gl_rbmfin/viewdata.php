@@ -21,6 +21,7 @@ if ($pmodule=="viewdivisibytipe"){
         echo "<option value='ETH' selected>ETHICAL</option>";
         echo "<option value='OTC'>CHC</option>";
         echo "<option value='HO'>HO</option>";
+        echo "<option value='CAN'>CANARY</option>";
         echo "<option value='EAGLE'>EAGLE</option>";
         echo "<option value='PEACO'>PEACOCK</option>";
         echo "<option value='PIGEO'>PIGEON</option>";

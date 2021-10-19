@@ -90,7 +90,8 @@
                 if ($pidgroup=="1" OR $pidgroup=="24") {
                     include "tambah_dayvisit_foto.php";
                 }else{
-                    include "tambah_dayvisit.php";
+                    include "tambah_dayvisit_foto.php";
+                    //include "tambah_dayvisit.php";
                 }
                 
             break;

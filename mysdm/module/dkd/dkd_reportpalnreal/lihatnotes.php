@@ -122,6 +122,13 @@ $psaran= $row['saran'];
                                                 <textarea class='form-control' id="e_saran" name='e_saran' maxlength='300' readonly><?PHP echo $psaran; ?></textarea>
                                             </div>
                                         </div>
+                                        
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                            <div class='col-md-4'>
+                                                <button type='button' id='btnakv' class='btn btn-info add-aktv' onclick=''>Approve</button>
+                                            </div>
+                                        </div>
 
                                     </div>
 

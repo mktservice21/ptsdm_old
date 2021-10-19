@@ -19,6 +19,7 @@ $pnohp="";
 $pidspesial="";
 $pprofesi="Lain-Lain";
 
+$preadnm="";
 $act="input";
 if ($pidact=="editdata"){
     $act="update";
@@ -27,6 +28,8 @@ if ($pidact=="editdata"){
     
     $pidinput_ec=$_GET['id'];
     $pidinput = decodeString($pidinput_ec);
+    
+    $preadnm=" readonly ";
     
     $sql = "select * from dr.masterdokter WHERE id='$pidinput'";
     $edit = mysqli_query($cnmy, $sql);
@@ -154,8 +157,11 @@ if ($pidact=="editdata"){
                                     <div class='col-xs-4'>
                                           <select class='form-control input-sm' id='cb_profesi' name='cb_profesi' onchange="ShowDataSpesial()" data-live-search="true">
                                             <?PHP
-                                            
-                                            $query = "select `id`, `profesi` from dr.profesi_dokter WHERE IFNULL(aktif,'')<>'N' Order By profesi";
+                                            if ($pidact=="editdata"){
+                                                $query = "select `id`, `profesi` from dr.profesi_dokter WHERE profesi='$pprofesi'";
+                                            }else{
+                                                $query = "select `id`, `profesi` from dr.profesi_dokter WHERE IFNULL(aktif,'')<>'N' Order By profesi";
+                                            }
                                             $tampil=mysqli_query($cnms, $query);
                                             while ($row=mysqli_fetch_array($tampil)) {
                                                 $pnidprof=$row['id'];
@@ -174,7 +180,7 @@ if ($pidact=="editdata"){
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama Lengkap <span class='required'></span></label>
                                     <div class='col-md-4'>
-                                        <input type='text' id='e_namadokt' name='e_namadokt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadokt; ?>' maxlength="40">
+                                        <input type='text' id='e_namadokt' name='e_namadokt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadokt; ?>' maxlength="40" <?PHP echo $preadnm; ?>>
                                     </div>
                                 </div>
                                 
@@ -186,7 +192,7 @@ if ($pidact=="editdata"){
                                             echo "<option value='' selected></option>";
                                             if ($pprofesi == "Dokter" OR $pprofesi == "Profesor") {
                                                 
-                                                $query = "select `id`, `spesialis` from dr.`spesialis_dokter` WHERE IFNULL(aktif,'')<>'N' Order By spesialis";
+                                                $query = "select `id`, `nama` as spesialis from ms2.`lookup` WHERE IFNULL(`type`,'')='spesialis' Order By nama";
                                                 $tampil=mysqli_query($cnms, $query);
                                                 while ($row=mysqli_fetch_array($tampil)) {
                                                     $pnidsp=$row['id'];
@@ -265,6 +271,8 @@ function disp_confirm(pText_,ket)  {
     var igelar = document.getElementById('cb_gelar').value;
     var inama = document.getElementById('e_namadokt').value;
     var inohp = document.getElementById('e_nohp').value;
+    var ispesial = document.getElementById('cb_spesial').value;
+    var iprofesi = document.getElementById('cb_profesi').value;
     
     if (icabang=="") {
         alert("cabang masih kosong...");
@@ -272,8 +280,15 @@ function disp_confirm(pText_,ket)  {
     }
     
     if (inama=="") {
-        alert("nama apotik masih kosong...");
+        alert("nama masih kosong...");
         return false;
+    }
+    
+    if (iprofesi=="Dokter") {
+        if (ispesial=="") {
+            alert("spesialis masih kosong...");
+            return false;
+        }
     }
     
     ok_ = 1;

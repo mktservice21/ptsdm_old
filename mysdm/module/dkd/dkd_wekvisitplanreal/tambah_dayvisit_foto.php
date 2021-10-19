@@ -58,6 +58,12 @@ $pnewdate = strtotime ( 'monday 0 week' , strtotime ( $pdate ) ) ;
 $tgl_pertama = date('d F Y');
 $tglnow = date('Y-m-d');
 
+
+$now_xhari = $hari_array[(INT)date('w', strtotime($tglnow))];
+$now_xtgl= date('d', strtotime($tglnow));
+$now_xbulan = $bulan_array[(INT)date('m', strtotime($tglnow))];
+$now_xthn= date('Y', strtotime($tglnow));
+                                                        
 $ppketstatus="000";//blank
 $paktivitas="";
 $pcompl="";
@@ -136,7 +142,7 @@ $pnamajabatan=$nr['nama'];
                         
                         <div id='div_ttd'>
 
-                            <div class='col-md-12 col-sm-12 col-xs-12'>
+                            <div class='col-md-12 col-sm-7 col-xs-12'>
                                 <h2>
                                     <?PHP
                                         echo "<div class='col-md-12 col-sm-12 col-xs-12'>";
@@ -149,13 +155,17 @@ $pnamajabatan=$nr['nama'];
 
                         </div>
                         
+                        
+                        
                         <div hidden id='div_foto'>
 
                         </div>
-                        
+
                         <div hidden id='div_foto2'>
 
                         </div>
+                            
+                        
                         
                         <div class='clearfix'></div>
                         
@@ -309,14 +319,14 @@ $pnamajabatan=$nr['nama'];
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Notes <span class='required'></span></label>
                                     <div class='col-md-9 col-sm-9 col-xs-12'>
-                                        <textarea class='form-control' id="e_ketdetail" name='e_ketdetail' maxlength='300'></textarea>
+                                        <textarea class='form-control' id="e_ketdetail" name='e_ketdetail' maxlength='300' rows="7"></textarea>
                                     </div>
                                 </div>
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Saran <span class='required'></span></label>
                                     <div class='col-md-9 col-sm-9 col-xs-12'>
-                                        <textarea class='form-control' id="e_saran" name='e_saran' maxlength='300'></textarea>
+                                        <textarea class='form-control' id="e_saran" name='e_saran' maxlength='300' rows="7"></textarea>
                                     </div>
                                 </div>
                                 
@@ -345,19 +355,19 @@ $pnamajabatan=$nr['nama'];
                                         <table id='dtabel' class='table table-striped table-bordered' width='100%'>
                                             <thead>
                                                 <tr>
-                                                    <th width='5px' align='center'></th>
-                                                    <th width='5px' align='center'>Tanggal</th>
+                                                    <th width='5px' align='center' colspan="2"><?PHP echo "$now_xhari, $now_xtgl $now_xbulan $now_xthn"; ?></th>
+                                                    <!--
                                                     <th width='5px' align='center'>Jenis</th>
                                                     <th width='200px' align='center'>Nama User</th>
                                                     <th width='200px' align='center'>Notes</th>
                                                     <th width='200px' align='center'>Saran</th>
+                                                    -->
                                                 </tr>
                                             </thead>
                                             <tbody class='inputdata'>
                                             <?PHP
-                                                $nnjmlrc=0;
+                                                    $nnjmlrc=0;
                                                 
-                                                    
                                                     $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis, b.icabangid FROM hrd.dkd_new_real1 as a
                                                         LEFT JOIN dr.masterdokter as b on a.dokterid=b.id 
                                                          WHERE a.tanggal='$tglnow' and a.karyawanid='$pidcard' Order by a.tglinput";
@@ -398,9 +408,10 @@ $pnamajabatan=$nr['nama'];
                                                         $pnmdokt_=$pnmdokt."(".$pgelardokt.") ".$pspesdokt;
                                                         
                                                         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapusDokt('hapusdailydokt', '$pkaryawanid', '$ntgl', '$pdokterid')\">";
-                                                        if (empty($pimages_pl)) $pviewuser="$pnmdokt_ - $pdokterid";
+                                                        if (empty($pimages_pl)) $pviewuser="<b>$pnmdokt_ - $pdokterid</b>";
                                                         else {
-                                                            $pviewuser="<input type='button' value='$pnmdokt_ - $pdokterid' class='btn btn-info btn-xs' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\">";
+                                                            $pviewuser="<b>$pnmdokt_ - $pdokterid</b>";
+                                                            //$pviewuser="<input type='button' value='$pnmdokt_ - $pdokterid' class='btn btn-info btn-xs' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\">";
                                                         }
                                                         
                                                         $njammenitdetik = date('H:i:s', strtotime($ntglinput));
@@ -415,15 +426,22 @@ $pnamajabatan=$nr['nama'];
                                                         
                                                         echo "<tr>";
                                                         if (!empty($pimages_pl)) {
-                                                            echo "<td nowrap><img src='$ffolderfile/$pimages_pl' width='20px' height='30px' /></td>";
+                                                            echo "<td nowrap><img class='img_ttdfoto' src='$ffolderfile/$pimages_pl' width='20px' height='30px' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\" /></td>";
                                                         }else{
                                                             echo "<td nowrap>&nbsp;</td>";
                                                         }
+                                                        echo "<td nowrap>";
+                                                        echo "- $njammenitdetik";
+                                                        if (!empty($pnmjenis)) echo "<br/>- $pnmjenis";
+                                                        echo "<br/>- $pviewuser";
+                                                        echo "</td>";
+                                                        /*
                                                         echo "<td nowrap>$xhari, $xtgl $xbulan $xthn $njammenitdetik</td>";
                                                         echo "<td nowrap>$pnmjenis</td>";
                                                         echo "<td nowrap>$pviewuser</td>";
                                                         echo "<td >$pnotes</td>";
                                                         echo "<td >$psaran</td>";
+                                                        */
                                                         //echo "<td >$phapus</td>";
                                                         echo "</tr>";
 
@@ -730,6 +748,9 @@ Nama User : "+option_usr.text;
     .disabledDiv {
         pointer-events: none;
         opacity: 0.4;
+    }
+    .img_ttdfoto:hover {
+        cursor:pointer;
     }
 </style>
 

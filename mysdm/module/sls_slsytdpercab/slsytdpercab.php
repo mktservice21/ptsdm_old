@@ -161,15 +161,21 @@
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for='distibutor'>Region <span class='required'></span></label>
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <select class='form-control' name='cb_region' id='cb_region' onchange="ShowDataCabangRegion()">
-													<?PHP
-													if ($_SESSION['IDCARD']=="0000000175") {
-														echo "<option value=''>--Pilihan--</option>";
-													}else{
-													?>
-                                                    <option value="" selected>--All--</option>
-                                                    <option value="B">Barat</option>
-                                                    <option value="T">Timur</option>
-													<?PHP } ?>
+                                                    <?PHP
+                                                    if ($_SESSION['IDCARD']=="0000000175") {
+                                                            echo "<option value='T'>Timur</option>";
+                                                    }else{
+                                                        if ($_SESSION['IDCARD']=="0000000158" OR $_SESSION['IDCARD']=="0000002329") {
+                                                            echo "<option value='B'>Barat</option>";
+                                                        }elseif ($_SESSION['IDCARD']=="0000000159") {
+                                                            echo "<option value='T'>Timur</option>";
+                                                        }else{
+                                                            echo "<option value='' selected>--Pilihan--</option>";
+                                                            echo "<option value='B'>Barat</option>";
+                                                            echo "<option value='T'>Timur</option>";
+                                                        }
+                                                    }
+                                                    ?>
                                                 </select>
                                             </div>
                                         </div>

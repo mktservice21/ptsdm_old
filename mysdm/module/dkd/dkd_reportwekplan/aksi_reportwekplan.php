@@ -250,7 +250,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 
 
-    echo "<br/><b>Visist</b><br/>";
+    echo "<br/><b>Visit</b><br/>";
     $totcall=0;
     $totpoint1=0;
     $totpoint2=0;

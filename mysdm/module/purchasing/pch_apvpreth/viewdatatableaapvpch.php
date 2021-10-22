@@ -8,6 +8,7 @@ session_start();
     }
     
     $pidgroup=$_SESSION['GROUP'];
+    $pdivisi_pl = $_SESSION['DIVISI'];
     
     include "../../../config/koneksimysqli.php";
     
@@ -113,7 +114,11 @@ session_start();
     if ($pmodule=="pchapvprbychc") {
         $query .= " AND a.pengajuan IN ('OTC', 'CHC') ";
     }elseif ($pmodule=="pchapvprbyho") {
-        $query .= " AND a.pengajuan IN ('HO') ";
+        if ($pdivisi_pl=="OTC") {
+            $query .= " AND a.pengajuan IN ('HO', 'CHC', 'OTC') ";
+        }else{
+            $query .= " AND a.pengajuan IN ('HO') ";
+        }
     }elseif ($pmodule=="pchapvprbycoo") {
         
     }else{
@@ -248,6 +253,10 @@ session_start();
         }
         //
     }
+    
+  
+    $query = "UPDATE $tmp01 as a JOIN mkt.icabang_o as b on a.icabangid=b.icabangid_o SET a.nama_cabang=b.nama WHERE (divisi='OTC' OR pengajuan in ('OTC', 'CHC'))";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
     $query = "UPDATE $tmp01 as a JOIN dbpurchasing.t_pr_transaksi_po as b on a.idpr=b.idpr SET a.sudahisivendor='Y' WHERE IFNULL(b.aktif,'')='Y'";

@@ -47,20 +47,27 @@
             . " from dbmaster.posting_akun_dep as a "
             . " join dbmaster.posting_akun as b on a.postingid=b.postingid WHERE IFNULL(b.aktif,'')<>'N' "
             . " AND a.iddep='$pdepid_pl' ";
-    if (!empty($pdivisi_pl)) {
-        $query .=" AND a.divisi='$pdivisi_pl' ";
+    
+    if ($pdepid_pl=="MKT" AND !empty($pdivisi_pl) AND $pdivisi_pl<>"HO" AND $pdivisi_pl<>"OTC") {
+        $query .=" AND a.divisi in ('$pdivisi_pl', 'HO') ";
+    }else{
+        if (!empty($pdivisi_pl)) {
+            $query .=" AND a.divisi='$pdivisi_pl' ";
+        }
     }
+    
     if ($ppengajuan_pl=="ETH") {
         $query .=" AND a.divisi NOT IN ('OTC') ";
     }elseif ($ppengajuan_pl=="OTC") {
-        $query .=" AND a.divisi='$ppengajuan_pl' ";
+        $query .=" AND a.divisi IN ('$ppengajuan_pl', 'OTHER') ";
     }
+    
     $query = "create TEMPORARY table $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "ALTER table $tmp01 ADD COLUMN nama_group VARCHAR(200), ADD COLUMN nama_kodeid VARCHAR(200), ADD COLUMN coa4 VARCHAR(50), ADD COLUMN nama_coa VARCHAR(300)";
+    $query = "ALTER table $tmp01 ADD COLUMN nama_group VARCHAR(200), ADD COLUMN nama_kodeid VARCHAR(200), ADD COLUMN coa4 VARCHAR(50), ADD COLUMN nama_coa VARCHAR(300), ADD COLUMN nmgroup_dep varchar(100)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "UPDATE $tmp01 as a JOIN (select distinct igroup, posting_nama from dbmaster.posting_akun) as b on a.igroup=b.igroup "
@@ -93,14 +100,18 @@
             . " a.deskripsi=CASE WHEN b.kode='1' THEN 'BIAYA - RUTIN' 
                     ELSE CASE WHEN b.kode='2' THEN 'BIAYA - LUAR KOTA' 
                     ELSE CASE WHEN b.kode='3' THEN 'BIAYA - CASH ADVANCE' 
-                    ELSE CASE WHEN b.kode='4' THEN 'BIAYA - KONTRAKAN RUMAH' 
+                    ELSE CASE WHEN b.kode='4' THEN 'BIAYA - MUTASI' 
                     ELSE CASE WHEN b.kode='5' THEN 'BIAYA - SERVICE KENDARAAN'
                     ELSE a.deskripsi 
                     END END END END END "
             . " WHERE LEFT(a.postingid,3)='04-'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "UPDATE $tmp01 SET nama_kodeid='Entertaint User' WHERE postingid='04-000037' AND kodeid='26'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    //$query = "UPDATE $tmp01 as a JOIN dbmaster.t_department as b on a.iddep=b.iddep SET a.nmgroup_dep=b.nama_group";
+    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
 ?>
 

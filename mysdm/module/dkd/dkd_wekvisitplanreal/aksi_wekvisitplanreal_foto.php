@@ -135,7 +135,7 @@ if ($module=='dkdrealisasiplan')
         if ($act=="dailyinput") {
             
             
-            
+                    
             $query = "INSERT INTO hrd.dkd_new_real1 (tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid)
                 VALUES
                 ('$ptanggal', '$pkaryawanid', '$pjenis', '$pdokterid', '$pketdokt', '$psaran', '$pidjabatan')";
@@ -147,7 +147,7 @@ if ($module=='dkdrealisasiplan')
             
             $query = "UPDATE hrd.dkd_new_real1 SET atasan1='$pkdspv', atasan2='$pkddm', atasan3='$pkdsm', atasan4='$pkdgsm' WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-
+            
 
             if ($pisitglspv==true) {
                 $query = "UPDATE hrd.dkd_new_real1 SET tgl_atasan1=NOW() WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
@@ -223,7 +223,136 @@ if ($module=='dkdrealisasiplan')
                 mysqli_query($cnmy, $query);
                 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
                 
+                    
+                    // ======================================
                 
+                    $pjv_spv="";
+                    $pjv_dm="";
+                    $pjv_sm="";
+                    $pjv_gsm="";
+                    $pjv_with="";
+
+                    if ($pjenis=="JV") {
+                        if (isset($_POST['chk_jv_spv'])) $pjv_spv=$_POST['chk_jv_spv'];
+                        if (isset($_POST['chk_jv_dm'])) $pjv_dm=$_POST['chk_jv_dm'];
+                        if (isset($_POST['chk_jv_sm'])) $pjv_sm=$_POST['chk_jv_sm'];
+                        if (isset($_POST['chk_jv_gsm'])) $pjv_gsm=$_POST['chk_jv_gsm'];
+                    }
+                    if ($pidjabatan=="10" OR $pidjabatan=="18") {
+                        $pjv_spv="";
+                    }elseif ($pidjabatan=="08") {
+                        $pjv_spv="";
+                        $pjv_dm="";
+                    }elseif ($pidjabatan=="20") {
+                        $pjv_spv="";
+                        $pjv_dm="";
+                        $pjv_sm="";
+                    }elseif ($pidjabatan=="05") {
+                        $pjv_spv="";
+                        $pjv_dm="";
+                        $pjv_sm="";
+                        $pjv_gsm="";
+                    }
+                    
+                    if (!empty($pjv_spv)) $pjv_with .=$pjv_spv.",";
+                    if (!empty($pjv_dm))  $pjv_with .=$pjv_dm.",";
+                    if (!empty($pjv_sm)) $pjv_with .=$pjv_sm.",";
+                    if (!empty($pjv_gsm)) $pjv_with .=$pjv_gsm.",";
+                    
+                    if (!empty($pjv_with)) $pjv_with=substr($pjv_with, 0, -1);
+                    
+                    
+                    $pbolehsimpan_jvspv=false;
+                    $pbolehsimpan_jvdm=false;
+                    $pbolehsimpan_jvsm=false;
+                    $pbolehsimpan_jvgsm=false;
+
+                    if (!empty($pjv_spv)) {
+                        $query = "select tanggal from hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pjv_spv' AND dokterid='$pdokterid'";
+                        $tampild=mysqli_query($cnmy, $query);
+                        $ketemud=mysqli_fetch_array($tampild);
+                        if ($ketemud>0) {
+                            $query_ = "UPDATE hrd.dkd_new_real1 SET from_jv='$kodenya', jenis='JV' WHERE tanggal='$ptanggal' AND karyawanid='$pjv_spv' AND dokterid='$pdokterid' AND ifnull(from_jv,'') IN ('', '0') LIMIT 1";
+                            mysqli_query($cnmy, $query_); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                        }else{
+                            $pbolehsimpan_jvspv=true;
+                        }
+                    }
+
+                    if (!empty($pjv_dm)) {
+                        $query = "select tanggal from hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pjv_dm' AND dokterid='$pdokterid'";
+                        $tampild=mysqli_query($cnmy, $query);
+                        $ketemud=mysqli_fetch_array($tampild);
+                        if ($ketemud>0) {
+                            $query_ = "UPDATE hrd.dkd_new_real1 SET from_jv='$kodenya', jenis='JV' WHERE tanggal='$ptanggal' AND karyawanid='$pjv_dm' AND dokterid='$pdokterid' AND ifnull(from_jv,'') IN ('', '0') LIMIT 1";
+                            mysqli_query($cnmy, $query_); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                        }else{
+                            $pbolehsimpan_jvdm=true;
+                        }
+                    }
+
+                    if (!empty($pjv_sm)) {
+                        $query = "select tanggal from hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pjv_sm' AND dokterid='$pdokterid'";
+                        $tampild=mysqli_query($cnmy, $query);
+                        $ketemud=mysqli_fetch_array($tampild);
+                        if ($ketemud>0) {
+                            $query_ = "UPDATE hrd.dkd_new_real1 SET from_jv='$kodenya', jenis='JV' WHERE tanggal='$ptanggal' AND karyawanid='$pjv_sm' AND dokterid='$pdokterid' AND ifnull(from_jv,'') IN ('', '0') LIMIT 1";
+                            mysqli_query($cnmy, $query_); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                        }else{
+                            $pbolehsimpan_jvsm=true;
+                        }
+                    }
+
+                    if (!empty($pjv_gsm)) {
+                        $query = "select tanggal from hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pjv_gsm' AND dokterid='$pdokterid'";
+                        $tampild=mysqli_query($cnmy, $query);
+                        $ketemud=mysqli_fetch_array($tampild);
+                        if ($ketemud>0) {
+                            $query_ = "UPDATE hrd.dkd_new_real1 SET from_jv='$kodenya', jenis='JV' WHERE tanggal='$ptanggal' AND karyawanid='$pjv_gsm' AND dokterid='$pdokterid' AND ifnull(from_jv,'') IN ('', '0') LIMIT 1";
+                            mysqli_query($cnmy, $query_); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                        }else{
+                            $pbolehsimpan_jvgsm=true;
+                        }
+                    }
+                    
+                    // ======================================
+                    
+            $query = "UPDATE hrd.dkd_new_real1 SET jv_with='$pjv_with' WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' AND nourut='$kodenya' LIMIT 1";
+            mysqli_query($cnmy, $query);
+            
+                    // ======================================
+                    
+                    if ($pbolehsimpan_jvspv==true) {
+                        $query = "INSERT INTO hrd.dkd_new_real1 (user_tandatangan, user_foto, from_jv, tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid, tgl_atasan1, atasan2, tgl_atasan2)"
+                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_spv' as karyawanid, jenis, dokterid, notes, saran, jabatanid, NOW() as tgl_atasan1, atasan2, CASE WHEN IFNULL(atasan2,'')='' THEN NOW() ELSE NULL END as tgl_atasan2 "
+                                . " FROM hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' LIMIT 1";
+                        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                    }
+                    
+                    if ($pbolehsimpan_jvdm==true) {
+                        $query = "INSERT INTO hrd.dkd_new_real1 (user_tandatangan, user_foto, from_jv, tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid, tgl_atasan1, tgl_atasan2, atasan3)"
+                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_dm' as karyawanid, jenis, dokterid, notes, saran, jabatanid, NOW() as tgl_atasan1, NOW() as tgl_atasan2, atasan3 "
+                                . " FROM hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' LIMIT 1";
+                        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                    }
+                    
+                    if ($pbolehsimpan_jvsm==true) {
+                        $query = "INSERT INTO hrd.dkd_new_real1 (user_tandatangan, user_foto, from_jv, tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid, tgl_atasan1, tgl_atasan2, atasan3, tgl_atasan3, atasan4)"
+                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_sm' as karyawanid, jenis, dokterid, notes, saran, jabatanid, NOW() as tgl_atasan1, NOW() as tgl_atasan2, atasan3, NOW() as tgl_atasan3, atasan4 "
+                                . " FROM hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' LIMIT 1";
+                        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                    }
+                    
+                    if ($pbolehsimpan_jvgsm==true) {
+                        $query = "INSERT INTO hrd.dkd_new_real1 (user_tandatangan, user_foto, from_jv, tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid, tgl_atasan1, tgl_atasan2, atasan3, tgl_atasan3, atasan4, tgl_atasan4)"
+                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_gsm' as karyawanid, jenis, dokterid, notes, saran, jabatanid, NOW() as tgl_atasan1, NOW() as tgl_atasan2, atasan3, NOW() as tgl_atasan3, atasan4, NOW() as tgl_atasan4 "
+                                . " FROM hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' LIMIT 1";
+                        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+                    }
+                    
+                    
+                    
+                    
             }elseif ($ppilihttdfoto=="xxx") {
                 
             }

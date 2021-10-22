@@ -246,19 +246,32 @@ function CariDataSPGGajiTJ($bulan, $pidcabang, $pnoid, $status, $periodeins) {
         
         
         // perhitungan proporsional
-            //RUMUS SEBELUM JULY 2021
-            $query= "UPDATE $tmp01 SET ngaji=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(gaji,0), "
-                    . " ntunjangan=IFNULL(tot_tujangan,0), "
-                    . " umakan=IFNULL(umakan,0), "
-                    . " tmakan=IFNULL(tmakan,0), "
-                    . " sewakendaraan=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(sewakendaraan,0), "
-                    . " pulsa=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(pulsa,0), "
-                    . " bbm=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(bbm,0), "
-                    . " parkir=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(parkir,0) "
-                    . " WHERE ( ( IFNULL(nhk,0) + IFNULL(jml_uc,0) ) < IFNULL(njmlharisistem,0) )";
-            
-            
-            //RUMUS >= JULY 2021, SESUAI SURAT DAN EMAIL 26 07 2021
+		
+		
+			//RUMUS SEBELUM JULY 2021
+			$query= "UPDATE $tmp01 SET ngaji=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(gaji,0), "
+					. " ntunjangan=IFNULL(tot_tujangan,0), "
+					. " umakan=IFNULL(umakan,0), "
+					. " tmakan=IFNULL(tmakan,0), "
+					. " sewakendaraan=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(sewakendaraan,0), "
+					. " pulsa=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(pulsa,0), "
+					. " bbm=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(bbm,0), "
+					. " parkir=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(parkir,0) "
+					. " WHERE ( ( IFNULL(nhk,0) + IFNULL(jml_uc,0) ) < IFNULL(njmlharisistem,0) )";
+
+        
+		
+		//ASPR 1.	Biaya Sewa Kendaraan 2.	Uang Pulsa 3.	BBM  4.	Parkir
+		//dihitung FULL per 22 OKTOBER 2021, email UTAMI
+
+        $query= "UPDATE $tmp01 SET ntunjangan=IFNULL(tot_tujangan,0) WHERE jabatid IN ('003')";
+        mysqli_query($cnmy, $query);
+        $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+
+		//======================================
+		
+		
+            //RUMUS >= JULY 2021, SESUAI SURAT DAN EMAIL 26 07 2021 - SELAIN ASPR 
         $query= "UPDATE $tmp01 SET "
                 . " ntunjangan=IFNULL(tot_tujangan,0), "
                 . " umakan=IFNULL(umakan,0), "
@@ -267,8 +280,8 @@ function CariDataSPGGajiTJ($bulan, $pidcabang, $pnoid, $status, $periodeins) {
                 . " pulsa=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(pulsa,0), "
                 . " bbm=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(bbm,0), "
                 . " parkir=( (IFNULL(nhk,0) + IFNULL(jml_uc,0) )/IFNULL(njmlharisistem,0))*IFNULL(parkir,0) "
-                . " WHERE ( ( IFNULL(nhk,0) + IFNULL(jml_uc,0) ) < IFNULL(njmlharisistem,0) )";
-        
+                . " WHERE ( ( IFNULL(nhk,0) + IFNULL(jml_uc,0) ) < IFNULL(njmlharisistem,0) ) AND jabatid NOT IN ('003')";
+        // hilangkan AND jabatid NOT IN ('003') per 22 oktober 2021
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
@@ -278,7 +291,10 @@ function CariDataSPGGajiTJ($bulan, $pidcabang, $pnoid, $status, $periodeins) {
         
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
-        
+		
+		
+		
+		
         mysqli_query($cnmy, "UPDATE $tmp01 SET ntunjangan=IFNULL(sewakendaraan,0)+IFNULL(pulsa,0)+IFNULL(bbm,0)+IFNULL(parkir,0)");
         
         

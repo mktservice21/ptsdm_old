@@ -167,7 +167,7 @@ if ($pmodule=="cekdatasudahada") {
     $tampilket= mysqli_query($cnmy, $query);
     $ketemu=mysqli_num_rows($tampilket);
     //if ((INT)$ketemu<=0) 
-        echo "<option value='' selected>-- Pilih --</option>";
+    echo "<option value='' selected>-- Pilih --</option>";
     while ($du= mysqli_fetch_array($tampilket)) {
         $niddokt=$du['iddokter'];
         $nnmdokt=$du['namalengkap'];
@@ -176,10 +176,12 @@ if ($pmodule=="cekdatasudahada") {
         
         if (!empty($pnmdokt)) $pnmdokt=rtrim($pnmdokt, ',');
         
+        if (!empty($ngelar)) $nnmdokt =$nnmdokt." ($ngelar)";
+        
         if ($niddokt==$pdoktpilih)
-            echo "<option value='$niddokt' selected>$nnmdokt ($ngelar), $nspesial - $niddokt</option>";
+            echo "<option value='$niddokt' selected>$nnmdokt, $nspesial - $niddokt</option>";
         else
-            echo "<option value='$niddokt'>$nnmdokt ($ngelar), $nspesial - $niddokt</option>";
+            echo "<option value='$niddokt'>$nnmdokt, $nspesial - $niddokt</option>";
 
     }
     mysqli_close($cnmy);

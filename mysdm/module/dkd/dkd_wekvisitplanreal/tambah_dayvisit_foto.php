@@ -224,10 +224,35 @@ $pnamajabatan=$nr['nama'];
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
                                     <div class='col-md-4 col-sm-4 col-xs-12'>
                                         <?php
-                                        echo "<label><input type='checkbox' class='js-switch' id='chk_jv' name='chk_jv' value='JV'> Join Visit</label>";
+                                        echo "<label><input type='checkbox' class='js-switch' id='chk_jv' name='chk_jv' value='JV' onchange=\"ShowJV(this)\"> Join Visit</label>";
                                         ?>
                                     </div>
                                 </div>
+                                
+                                <?PHP
+
+                                echo "<div hidden id='div_jv'>";
+                                    echo "<div class='form-group'>";
+                                        echo "<label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>";
+                                        echo "<div class='col-md-7 col-sm-7 col-xs-12'>";
+                                            if ($pidjbt=="15" OR $pidjbt=="10" OR $pidjbt=="18" OR $pidjbt=="20") {
+                                                if (!empty($pkdspv) AND $pkdspv<>$pidcard) {
+                                                    echo "<label><input type='checkbox' class='js-switch' id='chk_jv_spv' name='chk_jv_spv' value='$pkdspv'> $pnamaspv</label>";
+                                                }
+                                                if (!empty($pkddm) AND $pkddm<>$pidcard) {
+                                                    echo "<label><input type='checkbox' class='js-switch' id='chk_jv_dm' name='chk_jv_dm' value='$pkddm'> $pnamadm</label>";
+                                                }
+                                                if (!empty($pkdsm) AND $pkdsm<>$pidcard) {
+                                                    echo "<label><input type='checkbox' class='js-switch' id='chk_jv_sm' name='chk_jv_sm' value='$pkdsm'> $pnamasm</label>";
+                                                }
+                                                if (!empty($pkdgsm) AND $pkdgsm<>$pidcard) {
+                                                    echo "<label><input type='checkbox' class='js-switch' id='chk_jv_gsm' name='chk_jv_gsm' value='$pkdgsm'> $pnamagsm</label>";
+                                                }
+                                            }
+                                        echo "</div>";
+                                    echo "</div>";
+                                echo "</div>";
+                                ?>
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Cabang <span class='required'></span></label>
@@ -306,8 +331,10 @@ $pnamajabatan=$nr['nama'];
                                                 $nspesial=$du['spesialis'];
                                                 
                                                 if (!empty($pnmdokt)) $pnmdokt=rtrim($pnmdokt, ',');
-
-                                                echo "<option value='$niddokt'>$nnmdokt ($ngelar), $nspesial - $niddokt</option>";
+                                                
+                                                if (!empty($ngelar)) $nnmdokt =$nnmdokt." ($ngelar)";
+                                                
+                                                echo "<option value='$niddokt'>$nnmdokt, $nspesial - $niddokt</option>";
 
                                             }
                                             ?>
@@ -368,6 +395,10 @@ $pnamajabatan=$nr['nama'];
                                             <?PHP
                                                     $nnjmlrc=0;
                                                 
+                                                    $puserid=$_SESSION['USERID'];
+                                                    $now=date("mdYhis");
+                                                    $tmp01 =" dbtemp.tmpdkdrlinptt01_".$puserid."_$now ";
+        
                                                     $query = "SELECT a.*, b.namalengkap as nama_dokter, b.gelar, b.spesialis, b.icabangid FROM hrd.dkd_new_real1 as a
                                                         LEFT JOIN dr.masterdokter as b on a.dokterid=b.id 
                                                          WHERE a.tanggal='$tglnow' and a.karyawanid='$pidcard' Order by a.tglinput";
@@ -404,8 +435,11 @@ $pnamajabatan=$nr['nama'];
                                                             if (empty($pjenis)) $pnmjenis="Visit";
                                                             else $pnmjenis="Others";
                                                         }
-
-                                                        $pnmdokt_=$pnmdokt."(".$pgelardokt.") ".$pspesdokt;
+                                                        
+                                                        if (!empty($pgelardokt))
+                                                            $pnmdokt_=$pnmdokt."(".$pgelardokt.") - ".$pspesdokt;
+                                                        else
+                                                            $pnmdokt_=$pnmdokt." - ".$pspesdokt;
                                                         
                                                         $phapus="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"ProsesDataHapusDokt('hapusdailydokt', '$pkaryawanid', '$ntgl', '$pdokterid')\">";
                                                         if (empty($pimages_pl)) $pviewuser="<b>$pnmdokt_ - $pdokterid</b>";
@@ -520,6 +554,14 @@ $pnamajabatan=$nr['nama'];
 
 
 <script>
+    
+    function ShowJV(chkjv) {
+        if (chkjv.checked==true) {
+            div_jv.style.display = 'block';
+        }else{
+            div_jv.style.display = 'none';
+        }
+    }
     
     function ShowFromChkTtdFoto(){
         // Get the checkbox

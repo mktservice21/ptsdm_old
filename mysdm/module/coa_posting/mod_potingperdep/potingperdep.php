@@ -188,9 +188,9 @@
                                         <?PHP
                                             echo "<option value=''>--Pilih--</option>";
                                             
-                                            $query_dep = "select iddep, nama_dep, aktif from dbmaster.t_department WHERE 1=1 ";
+                                            $query_dep = "select iddep, nama_dep, aktif, igroup, nama_group from dbmaster.t_department WHERE 1=1 ";
                                             $query_dep .=" AND IFNULL(aktif,'')<>'N'";
-                                            $query_dep .=" ORDER BY nama_dep";
+                                            $query_dep .=" ORDER BY IFNULL(nama_group,''), nama_dep";
                                             
                                             if (!empty($query_dep)) {
                                                 $tampil = mysqli_query($cnmy, $query_dep);
@@ -200,7 +200,13 @@
                                                 while ($z= mysqli_fetch_array($tampil)) {
                                                     $pdepid=$z['iddep'];
                                                     $pdepnm=$z['nama_dep'];
-
+                                                    $pdepgrpid=$z['igroup'];
+                                                    $pdepgrpnm=$z['nama_group'];
+                                                    
+                                                    if (!empty($pdepgrpnm) AND $pdepgrpid=="1") {
+                                                        $pdepnm .=" - (".$pdepgrpnm.")";
+                                                    }
+                                                    
                                                     if ($pdepid==$fdepartid)
                                                         echo "<option value='$pdepid' selected>$pdepnm</option>";
                                                     else
@@ -224,7 +230,7 @@
                                             $query .=" ORDER BY nama";
                                             $tampil = mysqli_query($cnmy, $query);
                                             $ketemu= mysqli_num_rows($tampil);
-                                            echo "<option value='' selected>-- Pilih --</option>";
+                                            echo "<option value='' selected>-- All --</option>";
                                             
                                             while ($z= mysqli_fetch_array($tampil)) {
                                                 $pdivisiid=$z['divisi'];

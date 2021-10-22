@@ -378,12 +378,12 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
         
         echo "<tr>";
             echo "<td $pcolor1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-            echo "<td>visit belum relisasi</td>";
+            echo "<td>plan belum relisasi</td>";
         echo "</tr>";
         
         echo "<tr>";
             echo "<td $pcolor2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-            echo "<td>visit sudah relisasi</td>";
+            echo "<td>plan sudah relisasi</td>";
         echo "</tr>";
         
         echo "<tr>";

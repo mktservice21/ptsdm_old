@@ -179,7 +179,7 @@
         mysqli_query($cnmy, $sql);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
         
-	$query = "select * from hrd.br_otc where brOtcId IN (select distinct ifnull(bridinput, '') bridinput FROM $tmpbudgetreq02)";
+	$query = "select * from hrd.br_otc where brOtcId IN (select distinct ifnull(bridinput, '') bridinput FROM $tmpbudgetreq02) AND IFNULL(noslip,'')<>''";
         $sql = "create TEMPORARY  table $tmpbudgetreq01 ($query)";
         mysqli_query($cnmy, $sql);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }

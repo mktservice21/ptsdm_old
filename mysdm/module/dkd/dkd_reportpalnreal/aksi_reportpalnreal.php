@@ -460,8 +460,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     
                     $pjam="";
                     if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
+                    if (!empty($ngelar))
+                        $pnmdokt_=$nnamalengkap." (".$ngelar.") - ".$nspesialis." - ".$ndoktid;
+                    else
+                        $pnmdokt_=$nnamalengkap." - ".$nspesialis." - ".$ndoktid;
                     
-                    $pnmdokt_=$nnamalengkap." (".$ngelar.") ".$nspesialis." - ".$ndoktid;
                     $pnmjenis="";
                     if ($njenis=="JV") $pnmjenis="Join Visit";
                     elseif ($njenis=="EC") $pnmjenis="Extra Call";
@@ -535,7 +538,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 $pjam="";
                                 if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
                                 
-                                $pnmdokt_=$nnamalengkap." (".$ngelar.") ".$nspesialis." - ".$ndoktid;
+                                if (!empty($ngelar))
+                                    $pnmdokt_=$nnamalengkap." (".$ngelar.") - ".$nspesialis." - ".$ndoktid;
+                                else
+                                    $pnmdokt_=$nnamalengkap." - ".$nspesialis." - ".$ndoktid;
+                                
                                 $pnmjenis="";
                                 if ($njenis=="JV") $pnmjenis="Join Visit";
                                 elseif ($njenis=="EC") $pnmjenis="Extra Call";

@@ -1000,7 +1000,7 @@ if (isset($_GET['ca'])) {
                                 if ($_GET['act']=="editdata" AND !isset($_GET['ca'])) {
                                     ?><button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button><?PHP
                                 }else{
-                                echo "<div class='col-sm-5'>";
+                                echo "<div class='col-md-5 col-sm-5 col-xs-12'>";
                                 include "module/mod_br_brrutin/ttd_biayarutin.php";
                                 echo "</div>";
                                 }

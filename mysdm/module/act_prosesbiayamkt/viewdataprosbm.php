@@ -80,43 +80,62 @@
     $ppilishadbgt_nmpros="";
     
     
-    //BR ETHICAL A
+    //BR ETHICAL A / 1
     if (!empty($pbreth)) {
         $query ="CALL dbmaster.proses_q_br0('$ptahun')";//
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        $query ="CALL dbproses.1_proses_gl_br0('$ptahun')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
         
         $pbreth_nmpros="Proses Budget Request (BR) Ethical";
         $padaygdisimpan=true;
     }
     
-    //klaimdiscount B
+    //klaimdiscount B / 6
     if (!empty($pklaim)) {
         $query ="CALL dbmaster.proses_q_klaim('$ptahun')";//
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        
+        $query ="CALL dbproses.8_proses_gl_klaim_disc('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
         
         $pklaim_nmpros="Proses Klaim Discount Distributor";
         $padaygdisimpan=true;
     }
     
-    //KAS KASBON C & D
+    //KAS KASBON C & D / 7 & 8
     if (!empty($pkas)) {
         $query ="CALL dbmaster.proses_q_kas_kasbon('$ptahun')";//
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        $query ="CALL dbproses.9_proses_gl_kaskecil_kasbon('$ptahun')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
         
         $pkas_nmpros="Proses Kas Kecil dan Kas Bon";
         $padaygdisimpan=true;
     }
     
-    //BROTC E
+    //BROTC E = 2 dan 3 spg (tp tiga ditutup dulu)
     if (!empty($pbrotc)) {
         $query ="CALL dbmaster.proses_q_br_otc('$ptahun')";//
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        
+        $query ="CALL dbproses.2_proses_gl_br_otc('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        //$query ="CALL dbproses.3_proses_gl_spg_otc('$ptahun')";
+        //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
         
         $pbrotc_nmpros="Proses BR OTC";
         $padaygdisimpan=true;
     }
     
-    //rutin
+    //rutin / 5
     if (!empty($prutin)) {
         $query ="CALL dbmaster.proses_q_rutin_eth('$ptahun')";//
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
@@ -124,11 +143,19 @@
         $query ="CALL dbmaster.proses_q_rutin_otc('$ptahun')";//
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
         
+        
+        $query ="CALL dbproses.6_proses_gl_rutin_eth('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        $query ="CALL dbproses.7_proses_gl_rutin_otc('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        
         $prutin_nmpros="Proses Biaya Rutin";
         $padaygdisimpan=true;
     }
     
-    //LUAR KOTA
+    //LUAR KOTA / 4
     if (!empty($pblk)) {
         $query ="CALL dbmaster.proses_q_lk_eth('$ptahun')";//
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
@@ -136,13 +163,24 @@
         $query ="CALL dbmaster.proses_q_lk_otc('$ptahun')";//
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
         
+        
+        $query ="CALL dbproses.4_proses_gl_lk_eth('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        $query ="CALL dbproses.5_proses_gl_lk_otc('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        
         $pblk_nmpros="Proses Biaya Luar Kota";
         $padaygdisimpan=true;
     }
     
-    //BM biaya marketing surabaya I & J
+    //BM biaya marketing surabaya I & J / 9 / 10
     if (!empty($pbmsby)) {
         $query ="CALL dbmaster.proses_q_biaya_sby('$ptahun')";//
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        $query ="CALL dbproses.10_proses_gl_biaya_sby('$ptahun')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
         
         $pbmsby_nmpros="Proses Biaya Marketing By Surabaya";
@@ -154,40 +192,61 @@
         $query ="CALL dbmaster.proses_q_insentif_eth('$ptahun')";//
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
         
+        $query ="CALL dbproses.11_proses_gl_insentif_eth('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
         $ppilinsen_nmpros="Proses Insentif Ethical";
         $padaygdisimpan=true;
     }
     
-    //BANK L M N O P
+    //BANK L M N O P / 50 51 52 53 54
     if (!empty($ppilbank)) {
         $query ="CALL dbmaster.proses_q_bank('$ptahun')";//
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        $query ="CALL dbproses.15_01proses_gl_bank('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        $query ="CALL dbproses.15_02proses_gl_bank('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
         
         $ppilbank_nmpros="Proses Bank";
         $padaygdisimpan=true;
     }
     
-    //SEWA KONTRAKAN RUMAH U
+    //SEWA KONTRAKAN RUMAH U / 12
     if (!empty($psewakontrak)) {
         $query ="CALL dbmaster.proses_q_sewakontrakan('$ptahun')";//
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        
+        $query ="CALL dbproses.12_proses_gl_sewakontrakan('$ptahun')";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
         
         $psewakontrak_nmpros="Proses Sewa Kontrakan Ruman";
         $padaygdisimpan=true;
     }
     
-    //SERVICE KENDARAAN V
+    //SERVICE KENDARAAN V / 13
     if (!empty($pserviceken)) {
         $query ="CALL dbmaster.proses_q_servicekendaraan('$ptahun')";//
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        $query ="CALL dbproses.13_proses_gl_servicekendaraan('$ptahun')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
         
         $pserviceken_nmpros="Proses Service Kendaraan";
         $padaygdisimpan=true;
     }
     
-    //KAS KECIL CABANG X
+    //KAS KECIL CABANG X / 14
     if (!empty($ppilihproskascab)) {
         $query ="CALL dbmaster.proses_q_kaskecilcabang('$ptahun')";//
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
+        
+        $query ="CALL dbproses.14_proses_gl_kaskecilcabang('$ptahun')";
         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto queryfunction; }
         
         $pserviceken_nmpros="Proses Kas Kecil Cabang";

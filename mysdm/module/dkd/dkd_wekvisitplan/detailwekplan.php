@@ -109,7 +109,10 @@ $naktivitas=$row['aktivitas'];
             if ($pjenis=="JV") $pnmjenis='Join Visit';
             elseif ($pjenis=="EC") $pnmjenis='Extra Call';
 
-            $pnmdokt_=$pnmdokt." (".$pgelardokt.") ".$pspesdokt;
+            if (!empty($pgelardokt))
+                $pnmdokt_=$pnmdokt." (".$pgelardokt.") - ".$pspesdokt;
+            else
+                $pnmdokt_=$pnmdokt." - ".$pspesdokt;
 
             echo "<tr>";
             echo "<td nowrap>$no</td>";

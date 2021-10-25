@@ -138,7 +138,7 @@ $pcabangid="";
         $pnamadm="";
     }
 
-    if ($pcabangid=="00000000114") {
+    if ($pcabangid=="00000000114X") {
         $pkdspv="";
         $pnamaspv="";
         $pkddm="";
@@ -168,6 +168,21 @@ $pnewdate = strtotime ( 'monday 0 week' , strtotime ( $pdate ) ) ;
 $tgl_pertama = date ( 'd F Y' , $pnewdate );
 
 $ptgledit=$tgl_pertama;
+
+
+$query = "select CURRENT_DATE() as tglnow";
+$tampilt=mysqli_query($cnmy, $query);
+$pketemut= mysqli_num_rows($tampilt);
+if ((INT)$pketemut>0) {
+    $trow=mysqli_fetch_array($tampilt);
+    $t_tglnow=$trow['tglnow'];
+    if ($t_tglnow=="0000-00-00") $t_tglnow="";
+    if (!empty($t_tglnow)) {
+        $pweekDay = date('w', strtotime($t_tglnow));
+    }else $pweekDay = date('w', strtotime($hari_ini));
+}else{
+    $pweekDay = date('w', strtotime($hari_ini));
+}
 
 $ppketstatus="000";//blank
 $paktivitas="";
@@ -326,7 +341,7 @@ $pnamajabatan=$nr['nama'];
                                         </div>
                                     </div>
 
-                                    <div class='form-group'>
+                                    <div hidden class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Compl <span class='required'></span></label>
                                         <div class='col-xs-8'>
                                             <input type='text' id='e_compl' name='e_compl' class='form-control col-md-7 col-xs-12' maxlength="150" value='<?PHP echo $pcompl; ?>'>
@@ -374,7 +389,7 @@ $pnamajabatan=$nr['nama'];
                                                     <th width='10px' align='center' class='divnone'></th><!--class='divnone' -->
                                                     <th width='5px' align='center'>&nbsp;</th>
                                                     <th width='5px' align='center'>Keperluan</th>
-                                                    <th width='200px' align='center'>Compl.</th>
+                                                    <th width='200px' align='center' class='divnone'>Compl.</th>
                                                     <th width='200px' align='center'>Aktivitas</th>
                                                 </tr>
                                             </thead>
@@ -408,7 +423,7 @@ $pnamajabatan=$nr['nama'];
                                                         echo "<td><button type='button' class='btn btn-warning btn-xs' onclick=\"EditDataAkv('chkbox_akvbr[]', '$nnjmlrcakv')\">Edit</button></td>";
                                                         
                                                         echo "<td nowrap>$pnmket<input type='hidden' id='m_nmket[$nnjmlrcakv]' name='m_nmket[$nnjmlrcakv]' value='$pnmket'></td>";
-                                                        echo "<td nowrap>$pcompl<input type='hidden' id='m_compl[$nnjmlrcakv]' name='m_compl[$nnjmlrcakv]' value='$pcompl'></td>";
+                                                        echo "<td nowrap class='divnone'>$pcompl<input type='hidden' id='m_compl[$nnjmlrcakv]' name='m_compl[$nnjmlrcakv]' value='$pcompl'></td>";
                                                         echo "<td >$paktivitas<span hidden><textarea class='form-control' id='txt_akv[$nnjmlrcakv]' name='txt_akv[$nnjmlrcakv]'>$paktivitas</textarea></span></td>";
                                                         echo "</tr>";
                                                         
@@ -803,7 +818,7 @@ $pnamajabatan=$nr['nama'];
             markup += "<td><button type='button' class='btn btn-warning btn-xs' onclick=\"EditDataAkv('chkbox_akvbr[]', '"+i_idjmlrec+"')\">Edit</button></td>";
             
             markup += "<td nowrap>" + i_nmket + "<input type='hidden' id='m_nmket["+i_idjmlrec+"]' name='m_nmket["+i_idjmlrec+"]' value='"+i_nmket+"'></td>";
-            markup += "<td nowrap>" + i_compl + "<input type='hidden' id='m_compl["+i_idjmlrec+"]' name='m_compl["+i_idjmlrec+"]' value='"+i_compl+"'></td>";
+            markup += "<td nowrap class='divnone'>" + i_compl + "<input type='hidden' id='m_compl["+i_idjmlrec+"]' name='m_compl["+i_idjmlrec+"]' value='"+i_compl+"'></td>";
             markup += "<td >" + i_akv + "<span hidden><textarea class='form-control' id='txt_akv["+i_idjmlrec+"]' name='txt_akv["+i_idjmlrec+"]'>"+i_akv+"</textarea></span></td>";
             markup += "</tr>";
             $("table tbody.inputdatatbl").append(markup);
@@ -1161,8 +1176,16 @@ th {
             ShowAktivitas(1);
         }//else{
             var dateToday = new Date();
-            var dayToday = dateToday.getDay();
-            var setMinDate=8-dayToday;
+			
+            var dayToday = "0";
+            dayToday = dateToday.getDay();
+            var setMinDate=8-parseInt(dayToday);
+            
+            <?PHP
+            if ((INT)$pweekDay==0) {
+                ?> setMinDate=1-parseInt(dayToday); <?PHP
+            }
+            ?>
 
             $('#e_periode1').datepicker({
                 changeMonth: true,

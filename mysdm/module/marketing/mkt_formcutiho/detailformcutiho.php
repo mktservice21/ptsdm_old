@@ -241,6 +241,13 @@
     }
     
     if (!empty($pnamacab)) $pnamacab=substr($pnamacab, 0, -2);
+    
+    if (!empty($ptglinput)) $ptglinput = date('d F Y H:i:s', strtotime($ptglinput));
+    if (!empty($pptglatasan1)) $pptglatasan1 = date('d F Y H:i:s', strtotime($pptglatasan1));
+    if (!empty($pptglatasan2)) $pptglatasan2 = date('d F Y H:i:s', strtotime($pptglatasan2));
+    if (!empty($pptglatasan3)) $pptglatasan3 = date('d F Y H:i:s', strtotime($pptglatasan3));
+    if (!empty($pptglatasan4)) $pptglatasan4 = date('d F Y H:i:s', strtotime($pptglatasan4));
+    if (!empty($pptglatasan5)) $pptglatasan5 = date('d F Y H:i:s', strtotime($pptglatasan5));
 ?>
 
 <HTML>
@@ -352,6 +359,7 @@
                         echo "Yang Membuat :";
                         if (!empty($namapengaju)) {
                             echo "<br/><img src='images/tanda_tangan_base64/$namapengaju' height='$gmrheight'><br/>";
+                            if (!empty($ptglinput)) echo "<small><i>$ptglinput</i></small><br>";
                         }else{
                             echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                         }
@@ -365,6 +373,7 @@
                             echo "Menyetujui :";
                             if (!empty($namagsm)) {
                                 echo "<br/><img src='images/tanda_tangan_base64/$namagsm' height='$gmrheight'><br/>";
+                                if (!empty($pptglatasan4)) echo "<small><i>$pptglatasan4</i></small><br>";
                             }else{
                                 echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                             }
@@ -381,6 +390,7 @@
                             echo "Menyetujui :";
                             if (!empty($namaceo)) {
                                 echo "<br/><img src='images/tanda_tangan_base64/$namaceo' height='$gmrheight'><br/>";
+                                if (!empty($pptglatasan5)) echo "<small><i>$pptglatasan5</i></small><br>";
                             }else{
                                 echo "<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;";
                             }

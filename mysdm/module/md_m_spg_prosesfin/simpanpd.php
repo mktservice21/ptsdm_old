@@ -90,6 +90,17 @@ if ($_GET['module']=="simpan") {
             if (!empty($tr['jumlah'])) $pjumlah=$tr['jumlah'];
         }
         
+        $pbpjssdmtot=0;
+        $query="SELECT SUM(rptotal2) as rptotal2 from dbmaster.t_spg_gaji_br0 as a "
+                . " join dbmaster.t_spg_gaji_br1 as b on a.idbrspg=b.idbrspg WHERE a.idbrspg IN $pnoid AND b.kodeid ='11'";
+        $tampil= mysqli_query($cnmy, $query);
+        $ketemu= mysqli_num_rows($tampil);
+        if ($ketemu>0) {
+            $tr= mysqli_fetch_array($tampil);
+            if (!empty($tr['rptotal2'])) $pbpjssdmtot=$tr['rptotal2'];
+        }
+        
+        $pjumlah=(DOUBLE)$pjumlah-(DOUBLE)$pbpjssdmtot;
         
         if ((DOUBLE)$pjumlah>0) {
             $query = "INSERT INTO $dbname.t_suratdana_br (idinput, divisi, kodeid, subkode, nomor, tgl, nodivisi, jumlah, "

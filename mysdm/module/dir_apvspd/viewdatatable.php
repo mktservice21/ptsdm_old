@@ -72,6 +72,7 @@
                     $pkaryawanid=$row['karyawanid'];
                     $pjenisrpt=$row["jenis_rpt"];
                     $pketpilih=RTRIM($row["keterangan"]);
+                    $pnomorspd=$row["nomor"];
                     
                     
                     $pmystsyginput="";
@@ -204,6 +205,12 @@
                         
                     }elseif ($pses_idcard=="0000000367"){// ibu farida
                         if (!empty($apvdir2)) $cekbox="";
+                    }
+                    
+                    if ($noteket=="UNAPPROVE") {
+                        if (!empty($pnomorspd)) {
+                            $cekbox="";
+                        }
                     }
                     
                     echo "<tr>";

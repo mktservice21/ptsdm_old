@@ -17,6 +17,9 @@
     $ajsnobr="";
     $pketerangan="";
     $pdivisi="HO";
+    
+    $pjenisbrowser="";
+    if (isset($_SESSION['BROWSERPAKAI'])) $pjenisbrowser=$_SESSION['BROWSERPAKAI'];
 ?>
 
 
@@ -117,7 +120,7 @@
                                             <div class='form-group'>
                                                 <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No BR/Divisi <span class='required'></span></label>
                                                 <div class='col-md-4'>
-                                                    <select class='form-control input-sm' id='cb_nodivisi' name='cb_nodivisi'>
+                                                    <select class='form-control input-sm s2' id='cb_nodivisi' name='cb_nodivisi'>
                                                         <option value='' selected>-- Pilihan --</option>
                                                         <?PHP
                                                         $query = "select divisi, year(tgl) tgl, nodivisi, SUM(jumlah) jumlah from dbmaster.t_suratdana_br WHERE IFNULL(stsnonaktif,'')<>'Y' "
@@ -289,6 +292,21 @@
         </div>
     </div>
 </div>
+
+
+<?PHP
+if ($pjenisbrowser=="GC") {
+?>
+    <link href="module/dkd/select2.min.css" rel="stylesheet" type="text/css" />
+    <script src="module/dkd/select2.min.js"></script>
+    <script>
+    $(document).ready(function() {
+            $('.s2').select2();
+        });
+    </script>
+<?PHP
+}
+?>
 
 <!-- jquery.inputmask -->
 <script src="vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>

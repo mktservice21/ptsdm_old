@@ -105,7 +105,7 @@ if ($pmodule=="spdklaimdisc" AND $pketpilih=="dataklaimdisc") {
         $query .= " AND a.klaimId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp03 WHERE IFNULL(sinput,'')<>'Y') ";
     }else{
         $query .= " AND $ftypetgl ";
-        $query .= " AND a.klaimId NOT IN (select DISTINCT IFNULL(klaimId,'') FROM hrd.klaim_reject) ";
+        $query .= " AND a.klaimId NOT IN (select DISTINCT IFNULL(klaimId,'') FROM hrd.klaim_reject) AND IFNULL(a.batal,'')<>'Y' ";
         $query .= " AND a.klaimId NOT IN (select distinct IFNULL(bridinput,'') FROM $tmp00)";
     }
     

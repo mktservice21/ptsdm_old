@@ -76,6 +76,19 @@
             . " on IFNULL(a.idpr,'')=IFNULL(b.idpr,'') SET a.ssudah='Y'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
     
+    $query = "ALTER TABLE $tmp01 ADD COLUMN ssudah_rpf VARCHAR(1) DEFAULT 'N', ADD COLUMN ssudah_po VARCHAR(1) DEFAULT 'N', ADD COLUMN idprpo VARCHAR(50), ADD COLUMN id_po VARCHAR(50)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 as a JOIN dbpurchasing.t_pr_transaksi_po as b on a.idpr=b.idpr AND a.idpr_d=b.idpr_d SET a.ssudah_rpf='Y', a.idprpo=b.idpr_po WHERE IFNULL(b.aktif,'')<>'N'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 as a JOIN dbpurchasing.t_po_transaksi_d as b on a.idprpo=b.idpr_po "
+            . " JOIN dbpurchasing.t_po_transaksi as c on b.idpo=c.idpo SET a.ssudah_po='Y', a.id_po=b.idpo WHERE "
+            . " IFNULL(c.stsnonaktif,'')<>'Y'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }
+    
+    
+    
 ?>
 
 
@@ -130,6 +143,9 @@
                         $pnmdept=$row1['nama_dep'];
                         $pdivid=$row1['divisi'];
                         $psudah=$row1['ssudah'];
+                        $psudahrfq=$row1['ssudah_rpf'];
+                        $psudahpo=$row1['ssudah_po'];
+                        $ppoid=$row1['id_po'];
                         
                         $pjml=$row1['jml'];
                         $pharga=$row1['rp_pr'];
@@ -216,6 +232,16 @@
                             $ppilihan="$print";
                         }
                         
+                        $pwarnarfq_po="";
+                        if ($psudahrfq=="Y") {
+                            $pstatuspch="Proses RFQ";
+                            $pwarnarfq_po=" style='color:orange; font-weight:bold;' ";
+                        }
+                        
+                        if ($psudahpo=="Y") {
+                            $pstatuspch="Sudah PO ($ppoid)";
+                            $pwarnarfq_po=" style='color:green; font-weight:bold;' ";
+                        }
                         
                         echo "<tr>";
                         if ($pbelumlewat==false) {
@@ -235,8 +261,8 @@
                             echo "<td nowrap>&nbsp;</td>";
                             echo "<td nowrap>&nbsp;</td>";
                         }
-                        echo "<td nowrap>$pnmbarang</td>";
-                        echo "<td >$pspesifikasi</td>";
+                        echo "<td nowrap $pwarnarfq_po>$pnmbarang</td>";
+                        echo "<td $pwarnarfq_po>$pspesifikasi</td>";
                         echo "<td >$pketerangan</td>";
                         echo "<td nowrap align='right'>$pjml</td>";
                         echo "<td nowrap>$psatuan</td>";

@@ -28,7 +28,7 @@
             . " a.aktivitas1 as aktivitas1, a.aktivitas2 as aktivitas2, a.ketkuranglebih, "
             . " a.karyawanid, c.nama nama_karyawan, b.gambar, "
             . " b.atasan4, e.nama nama_atasan4, b.tgl_atasan4, b.gbr_atasan4, "
-            . " b.atasan5, f.nama nama_atasan5, b.tgl_atasan5, b.gbr_atasan5, a.jenisklaim "
+            . " b.atasan5, f.nama nama_atasan5, b.tgl_atasan5, b.gbr_atasan5, a.jenisklaim, a.batal, a.alasan_batal "
             . " from hrd.klaim as a "
             . " LEFT JOIN dbttd.klaim_ttd b on a.klaimid=b.klaimid "
             . " LEFT JOIN hrd.karyawan c on a.karyawanid=c.karyawanid "
@@ -99,6 +99,9 @@
     $pketerangan=$row['aktivitas1'];
     $pketerangan2=$row['aktivitas2'];
     $pketerangankl=$row['ketkuranglebih'];
+    
+    $pbatalbr= $row["batal"];
+    $pbatalalasan= $row["alasan_batal"];
     
     $pnamarealisasi="";
     $pnamadistributor=$row['nama_distributor'];
@@ -327,6 +330,11 @@
                 echo "BUDGET REQUEST";
             ?>
         </h3>
+        <?PHP
+            if ($pbatalbr=="Y") {
+                echo "<br/><span style='color:red;'>BATAL ($pbatalalasan)</span>";
+            }
+        ?>
     </center>
     <hr/>
     <div id="kotakjudul">

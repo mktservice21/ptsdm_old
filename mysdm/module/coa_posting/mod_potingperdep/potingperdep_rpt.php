@@ -62,14 +62,21 @@ $tmp04 =" dbtemp.tmpdtpstdep04_".$puserid."_$now ";
             . " from dbmaster.posting_akun_dep as a "
             . " join dbmaster.posting_akun as b on a.postingid=b.postingid WHERE IFNULL(b.aktif,'')<>'N' "
             . " AND a.iddep='$pdepid_pl' ";
-    if (!empty($pdivisi_pl)) {
-        $query .=" AND a.divisi='$pdivisi_pl' ";
+    
+    if ($pdepid_pl=="MKT" AND !empty($pdivisi_pl) AND $pdivisi_pl<>"HO" AND $pdivisi_pl<>"OTC") {
+        $query .=" AND a.divisi in ('$pdivisi_pl', 'HO') ";
+    }else{
+        if (!empty($pdivisi_pl)) {
+            $query .=" AND a.divisi='$pdivisi_pl' ";
+        }
     }
+    
     if ($ppengajuan_pl=="ETH") {
         $query .=" AND a.divisi NOT IN ('OTC') ";
     }elseif ($ppengajuan_pl=="OTC") {
-        $query .=" AND a.divisi='$ppengajuan_pl' ";
+        $query .=" AND a.divisi IN ('$ppengajuan_pl', 'OTHER') ";
     }
+    
     $query = "create TEMPORARY table $tmp01 ($query)";
     mysqli_query($cnmy, $query);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

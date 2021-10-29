@@ -191,8 +191,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 $pfilterkaryawanex=" ('', 'ALL', 'all', 'All', 'ALLHO', '$pkryid') ";
 $query ="select distinct a.karyawanid, a.tanggal, a.jam_kerja_wfo FROM hrd.t_absen_jam_kerja_ex as a JOIN "
         . " (select distinct karyawanid, id_status, tanggal FROM $tmp01) as b on a.tanggal=b.tanggal AND a.karyawanid=b.karyawanid WHERE "
-        . " IFNULL(a.karyawanid,'') IN $pfilterkaryawanex "
-        . " AND a.id_status=b.id_status";
+        . " 1=1 "
+        . " AND a.id_status=b.id_status";//IFNULL(a.karyawanid,'') IN $pfilterkaryawanex
 $query = "create TEMPORARY table $tmp02 ($query)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }

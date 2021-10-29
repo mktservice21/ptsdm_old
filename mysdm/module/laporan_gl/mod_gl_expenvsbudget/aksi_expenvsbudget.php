@@ -68,8 +68,10 @@ $tmp06 =" dbtemp.tmpprosbgtexp06_".$puserid."_$now ";
         $row= mysqli_fetch_array($tampil);
         $pilihregion=$row['region'];
     }
-    
-    
+
+$preporttipe="";
+if (isset($_POST['opt_rpttipe'])) $preporttipe = $_POST['opt_rpttipe'];
+
 $ptahun = $_POST['e_tahun'];
 $piddep = $_POST['cb_dept'];
 $pidpengajuan = $_POST['cb_pengajuan'];
@@ -275,11 +277,15 @@ if ($ppilihsales == true OR $ppilihmarketing == true) {
 
 }
 
-//echo "$filtercabang <br/> $filterdivisi<br/>";
-       
+//echo "$preporttipe <br/> $filterdivisi<br/>";
 
-$query = "SELECT tipe, bulan, coa4, SUM(jumlah) as jumlah FROM dbproses.proses_budget_expenses WHERE "
-        . " tahun='$ptahun' ";
+
+if ($preporttipe=="transaksi" OR $preporttipe=="posting") {
+    $query = "SELECT * FROM dbproses.proses_expenses WHERE Year(tanggal)='$ptahun' AND IFNULL(biaya,'')<>'N' ";
+}else{
+    $query = "SELECT tipe, bulan, coa4, SUM(jumlah) as jumlah FROM dbproses.proses_budget_expenses WHERE tahun='$ptahun' ";
+}
+
 if (!empty($piddep)) $query .=" AND iddep='$piddep' ";
 else{
     
@@ -323,24 +329,6 @@ if ($ppilihsales == true) {
     }
 }elseif ($ppilihmarketing == true) {
     
-    /*
-    if (!empty($pidpengajuan)) {
-        $query .=" AND divisi_pengajuan='$pidpengajuan' ";
-    }
-    
-    if ($pidpengajuan=="ETH") {
-        //if (!empty($filtercabang)) $query .=" AND icabangid IN $filtercabang ";
-    }elseif ($pidpengajuan=="OTC" OR $pidpengajuan=="OT" OR $pidpengajuan=="CHC") {
-        if (!empty($filtercabang)) $query .=" AND icabangid IN $filtercabang ";
-    }
-    */
-    
-    //if ($pliniproduk=="EAGLE") $query .=" AND karyawanid='0000000257' ";
-    //elseif ($pliniproduk=="PEACO") $query .=" AND karyawanid='0000000910' ";
-    //elseif ($pliniproduk=="PIGEO") $query .=" AND karyawanid='0000000157' ";
-    //elseif ($pliniproduk=="OT" OR $pliniproduk=="OTC" OR $pliniproduk=="CHC") $query .=" AND karyawanid='0000001556' ";
-    
-    
     if ($pliniproduk=="EAGLE") $query .=" AND ( karyawanid='0000000257' OR (divisi_pengajuan='ETH' AND iddep='MKT') ) ";
     elseif ($pliniproduk=="PEACO") $query .=" AND ( karyawanid='0000000910' OR (divisi_pengajuan='ETH' AND iddep='MKT') ) ";
     elseif ($pliniproduk=="PIGEO") $query .=" AND ( karyawanid='0000000157' OR (divisi_pengajuan='ETH' AND iddep='MKT') ) ";
@@ -357,51 +345,104 @@ if ($ppilihsales == true) {
     }
 }
 
-$query .="GROUP BY 1,2,3";
-$query = "create TEMPORARY table $tmp01 ($query)";
-mysqli_query($cnmy, $query);
-$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-
-$query = "SELECT DISTINCT coa4 FROM $tmp01";
-$query = "create TEMPORARY table $tmp02 ($query)";
-mysqli_query($cnmy, $query);
-$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-$nadd_filed="";
-
-for ($ix=1;$ix<=12;$ix++) {
-    $nadd_filed .=" ADD COLUMN b".$ix." DECIMAL(20,2), ADD COLUMN e".$ix." DECIMAL(20,2), ";
-}
-$nadd_filed .=" ADD COLUMN b_total DECIMAL(20,2), ADD COLUMN e_total DECIMAL(20,2)";
-$query = "ALTER table $tmp02 $nadd_filed ";
-mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-for ($ix=1;$ix<=12;$ix++) {
-    $b_field="b".$ix;
-    $e_field="e".$ix;
+if ($preporttipe=="transaksi" OR $preporttipe=="posting") {
     
-    $n_bln = str_pad($ix, 2, '0', STR_PAD_LEFT);
+    $query = "create TEMPORARY table $tmp01 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $nbulan=$ptahun."-".$n_bln;
     
-    $query = "UPDATE $tmp02 as a JOIN (SELECT coa4, LEFT(bulan,7) as bulan, SUM(jumlah) as jumlah FROM $tmp01 WHERE LEFT(bulan,7)='$nbulan' AND tipe='BUDGET' GROUP BY 1,2) as b "
-            . " on a.coa4=b.coa4 SET a.".$b_field."=b.jumlah";
+    $query = "select kodeinput, keterangan_proses, divisi, idkodeinput, tanggal, tglinput, tgltrans, bulan, "
+            . " periode1, periode2, karyawanid, nama_pengaju as nama_karyawan, icabangid, distid, dokterid, nama_realisasi, keterangan1, SUM(jumlah) as jumlah "
+            . " FROM $tmp01 ";
+    $query .="GROUP BY kodeinput, keterangan_proses, divisi, idkodeinput, tanggal, tglinput, tgltrans, bulan, "
+            . " periode1, periode2, karyawanid, nama_pengaju, icabangid, distid, dokterid, nama_realisasi, keterangan1";
+    $query = "create TEMPORARY table $tmp02 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "ALTER TABLE $tmp02 ADD COLUMN nama_cabang VARCHAR(200), ADD COLUMN nama_dokter VARCHAR(200)";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
-    $query = "UPDATE $tmp02 as a JOIN (SELECT coa4, LEFT(bulan,7) as bulan, SUM(jumlah) as jumlah FROM $tmp01 WHERE LEFT(bulan,7)='$nbulan' AND tipe='EXPENSES' GROUP BY 1,2) as b "
-            . " on a.coa4=b.coa4 SET ".$e_field."=b.jumlah";
+    $query = "UPDATE $tmp02 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId SET a.nama_karyawan=b.nama WHERE "
+            . " IFNULL(a.karyawanid,'') NOT IN ('', '0000002083', '0000002200')";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
+    //ethical
+    $query = "UPDATE $tmp02 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid SET a.nama_cabang=b.nama WHERE "
+            . " IFNULL(a.icabangid,'') NOT IN ('') and a.divisi NOT IN ('OTC')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    //chc
+    $query = "UPDATE $tmp02 as a JOIN mkt.icabang_o as b on a.icabangid=b.icabangid_o SET a.nama_cabang=b.nama WHERE "
+            . " IFNULL(a.icabangid,'') NOT IN ('') and a.divisi IN ('OTC')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    //BR Ethical
+    $query = "UPDATE $tmp02 as a JOIN hrd.dokter as b on a.dokterid=b.dokterid SET a.nama_dokter=b.nama WHERE "
+            . " IFNULL(a.dokterid,'') NOT IN ('')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    //BR Ethical
+    $query = "UPDATE $tmp02 as a JOIN sls.distrib0 as b on a.distid=b.distid SET a.nama_dokter=b.nama WHERE "
+            . " IFNULL(a.distid,'') NOT IN ('') AND IFNULL(nama_dokter,'')=''";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    
+}else{
+    
+    $query .="GROUP BY 1,2,3";
+
+    $query = "create TEMPORARY table $tmp01 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+    $query = "SELECT DISTINCT coa4 FROM $tmp01";
+    $query = "create TEMPORARY table $tmp02 ($query)";
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+    $nadd_filed="";
+
+    for ($ix=1;$ix<=12;$ix++) {
+        $nadd_filed .=" ADD COLUMN b".$ix." DECIMAL(20,2), ADD COLUMN e".$ix." DECIMAL(20,2), ";
+    }
+    $nadd_filed .=" ADD COLUMN b_total DECIMAL(20,2), ADD COLUMN e_total DECIMAL(20,2)";
+    $query = "ALTER table $tmp02 $nadd_filed ";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    for ($ix=1;$ix<=12;$ix++) {
+        $b_field="b".$ix;
+        $e_field="e".$ix;
+
+        $n_bln = str_pad($ix, 2, '0', STR_PAD_LEFT);
+
+        $nbulan=$ptahun."-".$n_bln;
+
+        $query = "UPDATE $tmp02 as a JOIN (SELECT coa4, LEFT(bulan,7) as bulan, SUM(jumlah) as jumlah FROM $tmp01 WHERE LEFT(bulan,7)='$nbulan' AND tipe='BUDGET' GROUP BY 1,2) as b "
+                . " on a.coa4=b.coa4 SET a.".$b_field."=b.jumlah";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+        $query = "UPDATE $tmp02 as a JOIN (SELECT coa4, LEFT(bulan,7) as bulan, SUM(jumlah) as jumlah FROM $tmp01 WHERE LEFT(bulan,7)='$nbulan' AND tipe='EXPENSES' GROUP BY 1,2) as b "
+                . " on a.coa4=b.coa4 SET ".$e_field."=b.jumlah";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+    }
+
+    $query = "ALTER table $tmp02 ADD COLUMN nama_coa VARCHAR(200)";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query = "UPDATE $tmp02 as a JOIN dbmaster.coa_level4 as b on a.coa4=b.COA4 SET a.nama_coa=b.NAMA4";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 }
 
-$query = "ALTER table $tmp02 ADD COLUMN nama_coa VARCHAR(200)";
-mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-$query = "UPDATE $tmp02 as a JOIN dbmaster.coa_level4 as b on a.coa4=b.COA4 SET a.nama_coa=b.NAMA4";
-mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 ?>
 
@@ -438,48 +479,18 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     
     echo "<div id='div_konten'>";
         
-        if ($ppilihrpt=="excel") {
-        }else{
-            
-            echo "<div hidden id='n_form'>";
-
-                echo "<form method='POST' action='aksi_cari_databudgetexp.php' id='d-form3' name='form3' data-parsley-validate class='form-horizontal form-label-left'>";
-                    
-                    echo "<input type='text' id='e_tahun' name='e_tahun' value='$ptahun' Readonly>";
-                    echo "<input type='text' id='cb_dept' name='cb_dept' value='$piddep' Readonly>";
-                    echo "<input type='text' id='cb_nmdept' name='cb_nmdept' value='$pnamadep' Readonly>";
-                    echo "<input type='text' id='cb_karyawansm' name='cb_karyawansm' value='$pidkrysm' Readonly>";
-                    echo "<input type='text' id='cb_liniproduk' name='cb_liniproduk' value='$pliniproduk' Readonly>";
-                    echo "<input type='text' id='cb_pengajuan' name='cb_pengajuan' value='$pidpengajuan' Readonly>";// ETH, OTC, HO
-                    echo "<input type='text' id='cb_region' name='cb_region' value='$pregion' Readonly>";
-                    echo "<textarea id='txt_namacabang' name='txt_namacabang'>$filternamacabang</textarea>";// ETH, OTC
-                    echo "<textarea id='txt_cabangiddivisi' name='txt_cabangiddivisi'>$pcabangdivisi2</textarea>";// ETH, OTC
-                    echo "<textarea id='txt_cabangid' name='txt_cabangid'>$filtercabang2</textarea>";// ETH, OTC
-                    echo "<textarea id='txt_divisicb' name='txt_divisicb'>$filterdivisi2</textarea>";// ETH, OTC
-                    echo "<textarea id='txt_coa' name='txt_coa'>$filter_coa2</textarea>";// ETH, OTC
-                    echo "<input type='text' id='txt_pilsales' name='txt_pilsales' value='$ppilihsales' Readonly>";
-                    echo "<input type='text' id='txt_pilsalesgsm' name='txt_pilsalesgsm' value='$ppilihsales_gsm' Readonly>";
-                    echo "<input type='text' id='txt_pilsalessm' name='txt_pilsalessm' value='$ppilihsales_sm' Readonly>";
-                    echo "<input type='text' id='txt_pilmkt' name='txt_pilmkt' value='$ppilihmarketing' Readonly>";
-
-                echo "</form>";
-
-            echo "</div>";
-            
-        }
     
-        
         echo "<b>Report Expense VS Budget</b><br/>";
         echo "<b>Tahun : $ptahun</b><br/>";
-        
+
         if (!empty($pnamadep)) {
             echo "<b>Departemen : $pnamadep</b><br/>";
         }else{
             echo "<b>Departemen : All</b><br/>";
         }
-        
+
         if ($ppilihsales == true OR $ppilihmarketing == true) {
-            
+
             if (!empty($filternamacabang)) {
                 echo "<small>$filternamacabang</small><br/>";
             }else{
@@ -492,165 +503,335 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<b>Region : $pnamaregion</b><br/>";
             }
         }
-        
+
         if (!empty($pilih_allexp)) {
             echo "<br/><small>$pilih_allexp</small>";
         }
-        
+
         $printdate= date("d/m/Y H:i");
         echo "<br/><i><small>view date : $printdate</small></i><br/>";
 
         echo "<hr/><br/>";
-
-
-        echo "<table id='tbltable' border='1' class='table customerTable' cellspacing='0' cellpadding='1'>";
-            echo "<thead>";
-                echo "<tr>";
+            
+            
+        if ($preporttipe=="transaksi" OR $preporttipe=="posting") {
+            
+            
+            echo "<table id='tbltable' border='1' class='table customerTable' cellspacing='0' cellpadding='1'>";
+                echo "<thead>";
+                    echo "<tr>";
+                        echo "<th align='center'><small>Divisi</small></th>";
+                        echo "<th align='center'><small>ID</small></th>";
+                        echo "<th align='center'><small>Tgl. Input</small></th>";
+                        echo "<th align='center'><small>Tgl. Transfer</small></th>";
+                    echo "</tr>";
+                echo "</thead>";
+                echo "<tbody>";
                 
-                    $pchkalljml="";
-                    if ($ppilihrpt=="excel") {
-                    }else{
-                        $pchkalljml="<input type='checkbox' id='chkbtnjml' value='deselect' onClick=\"SelAllCheckBox('chkbtnjml', 'chkbox_jumlah[]')\" checked/>";
+                    $query = "select distinct IFNULL(kodeinput,'') as kodeinput, IFNULL(keterangan_proses,'') as keterangan_proses FROM $tmp02 ORDER BY 1,2";
+                    $tampil=mysqli_query($cnmy, $query);
+                    while ($row=mysqli_fetch_array($tampil)) {
+                        $nkodeinput=$row['kodeinput'];
+                        $nnamainput=$row['keterangan_proses'];
+                        
+                        echo "<tr>";
+                        echo "<td nowrap colspan='2'>$nnamainput</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "<td nowrap>&nbsp;</td>";
+                        echo "</tr>";
+                        
+                        $query = "select * FROM $tmp02 WHERE kodeinput='$nkodeinput' AND IFNULL(keterangan_proses,'')='$nnamainput' ORDER BY 1";
+                        $tampil2=mysqli_query($cnmy, $query);
+                        while ($row2=mysqli_fetch_array($tampil2)) {
+                            $ndivisiid=$row2['divisi'];
+                            $nidkodeinput=$row2['idkodeinput'];
+                            $ntglinput=$row2['tglinput'];
+                            $ntgltrans=$row2['tgltrans'];
+                            
+                            $nnmdivisi=$ndivisiid;
+                            if ($ndivisiid=="CAN" OR $ndivisiid=="CANAR") $nnmdivisi="CANARY";
+                            elseif ($ndivisiid=="PEACO") $nnmdivisi="PEACOCK";
+                            elseif ($ndivisiid=="PIGEO") $nnmdivisi="PIGEON";
+                            elseif ($ndivisiid=="OTC") $nnmdivisi="CHC";
+                            
+                            echo "<tr>";
+                            echo "<td nowrap>$nnmdivisi</td>";
+                            echo "<td nowrap>$nidkodeinput</td>";
+                            echo "<td nowrap>$ntglinput</td>";
+                            echo "<td nowrap>$ntgltrans</td>";
+                            echo "</tr>";
+                            
+                        }
+                        
                     }
                     
-                    echo "<th align='center' rowspan='2'><small>No</small></th>";
-                    echo "<th align='center' rowspan='2'><small>$pchkalljml</small></th>";
-                    echo "<th align='center' rowspan='2'><small>&nbsp;</small></th>";
-                    echo "<th align='center' rowspan='2'><small>COA</small></th>";
-                    
-                    echo "<th align='center' colspan='3'><small>Total</small></th>";
-                    
-                    echo "<th align='center' colspan='3'><small>Januari</small></th>";
-                    echo "<th align='center' colspan='3'><small>Februari</small></th>";
-                    echo "<th align='center' colspan='3'><small>Maret</small></th>";
-                    echo "<th align='center' colspan='3'><small>April</small></th>";
-                    echo "<th align='center' colspan='3'><small>Mei</small></th>";
-                    echo "<th align='center' colspan='3'><small>Juni</small></th>";
-                    echo "<th align='center' colspan='3'><small>Juli</small></th>";
-                    echo "<th align='center' colspan='3'><small>Agustus</small></th>";
-                    echo "<th align='center' colspan='3'><small>September</small></th>";
-                    echo "<th align='center' colspan='3'><small>Oktober</small></th>";
-                    echo "<th align='center' colspan='3'><small>November</small></th>";
-                    echo "<th align='center' colspan='3'><small>Desember</small></th>";
+                echo "</tbody>";
+            echo "</table>";
+            
+            
+        }else{
+            
+            
+            
+            if ($ppilihrpt=="excel") {
+            }else{
 
-                echo "</tr>";
+                echo "<div hidden id='n_form'>";
 
-                echo "<tr>";
+                    echo "<form method='POST' action='aksi_cari_databudgetexp.php' id='d-form3' name='form3' data-parsley-validate class='form-horizontal form-label-left'>";
 
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
+                        echo "<input type='text' id='e_tahun' name='e_tahun' value='$ptahun' Readonly>";
+                        echo "<input type='text' id='cb_dept' name='cb_dept' value='$piddep' Readonly>";
+                        echo "<input type='text' id='cb_nmdept' name='cb_nmdept' value='$pnamadep' Readonly>";
+                        echo "<input type='text' id='cb_karyawansm' name='cb_karyawansm' value='$pidkrysm' Readonly>";
+                        echo "<input type='text' id='cb_liniproduk' name='cb_liniproduk' value='$pliniproduk' Readonly>";
+                        echo "<input type='text' id='cb_pengajuan' name='cb_pengajuan' value='$pidpengajuan' Readonly>";// ETH, OTC, HO
+                        echo "<input type='text' id='cb_region' name='cb_region' value='$pregion' Readonly>";
+                        echo "<textarea id='txt_namacabang' name='txt_namacabang'>$filternamacabang</textarea>";// ETH, OTC
+                        echo "<textarea id='txt_cabangiddivisi' name='txt_cabangiddivisi'>$pcabangdivisi2</textarea>";// ETH, OTC
+                        echo "<textarea id='txt_cabangid' name='txt_cabangid'>$filtercabang2</textarea>";// ETH, OTC
+                        echo "<textarea id='txt_divisicb' name='txt_divisicb'>$filterdivisi2</textarea>";// ETH, OTC
+                        echo "<textarea id='txt_coa' name='txt_coa'>$filter_coa2</textarea>";// ETH, OTC
+                        echo "<input type='text' id='txt_pilsales' name='txt_pilsales' value='$ppilihsales' Readonly>";
+                        echo "<input type='text' id='txt_pilsalesgsm' name='txt_pilsalesgsm' value='$ppilihsales_gsm' Readonly>";
+                        echo "<input type='text' id='txt_pilsalessm' name='txt_pilsalessm' value='$ppilihsales_sm' Readonly>";
+                        echo "<input type='text' id='txt_pilmkt' name='txt_pilmkt' value='$ppilihmarketing' Readonly>";
 
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
+                    echo "</form>";
 
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
+                echo "</div>";
 
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
+            }
+            
+        
+        
+            echo "<table id='tbltable' border='1' class='table customerTable' cellspacing='0' cellpadding='1'>";
+                echo "<thead>";
+                    echo "<tr>";
 
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
+                        $pchkalljml="";
+                        if ($ppilihrpt=="excel") {
+                        }else{
+                            $pchkalljml="<input type='checkbox' id='chkbtnjml' value='deselect' onClick=\"SelAllCheckBox('chkbtnjml', 'chkbox_jumlah[]')\" checked/>";
+                        }
 
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
+                        echo "<th align='center' rowspan='2'><small>No</small></th>";
+                        echo "<th align='center' rowspan='2'><small>$pchkalljml</small></th>";
+                        echo "<th align='center' rowspan='2'><small>&nbsp;</small></th>";
+                        echo "<th align='center' rowspan='2'><small>COA</small></th>";
 
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
+                        echo "<th align='center' colspan='3'><small>Total</small></th>";
 
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
+                        echo "<th align='center' colspan='3'><small>Januari</small></th>";
+                        echo "<th align='center' colspan='3'><small>Februari</small></th>";
+                        echo "<th align='center' colspan='3'><small>Maret</small></th>";
+                        echo "<th align='center' colspan='3'><small>April</small></th>";
+                        echo "<th align='center' colspan='3'><small>Mei</small></th>";
+                        echo "<th align='center' colspan='3'><small>Juni</small></th>";
+                        echo "<th align='center' colspan='3'><small>Juli</small></th>";
+                        echo "<th align='center' colspan='3'><small>Agustus</small></th>";
+                        echo "<th align='center' colspan='3'><small>September</small></th>";
+                        echo "<th align='center' colspan='3'><small>Oktober</small></th>";
+                        echo "<th align='center' colspan='3'><small>November</small></th>";
+                        echo "<th align='center' colspan='3'><small>Desember</small></th>";
 
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
-
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
-
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
-
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
-
-                    echo "<th align='center' class='th2'><small>Budget</small></th>";
-                    echo "<th align='center' class='th2'><small>Expenses</small></th>";
-                    echo "<th align='center' class='th2'><small>%</small></th>";
-
-                echo "</tr>";
-
-            echo "</thead>";
-
-            echo "<tbody>";
-
-
-                for ($ix=1;$ix<=12;$ix++) {
-                    $nb_subtotal[$ix]=0;
-                    $ne_subtotal[$ix]=0;
-
-                    $nb_grndtotal[$ix]=0;
-                    $ne_grndtotal[$ix]=0;
-                }
-
-
-                $no=1;
-                $query = "select * from $tmp02 ORDER BY coa4, nama_coa";
-                $tampil= mysqli_query($cnmy, $query);
-                while ($row= mysqli_fetch_array($tampil)) {
-                    $ncoa=$row['coa4'];
-                    $nnamacoa=$row['nama_coa'];
-
-                    $ptomboljenis="";
-                    $pchkjumlah="";
-                    if ($ppilihrpt=="excel") {
-                    }else{
-                        $ptomboljenis = "<button type='button' id='btn_jenis' name='btn_jenis' class='btn btn-dark btn-xs' onclick=\"LihatDataJenis('$ncoa')\"><i class=\"fa fa-archive\"></i> Jenis</button>";
-                        $pchkjumlah= "<input onClick=\"HitungJumlahDataTabel()\" type='checkbox' value='$ncoa' name='chkbox_jumlah[]' id='chkbox_jumlah[]' checked>";
-                    }
-                    
+                    echo "</tr>";
 
                     echo "<tr>";
-                    echo "<td nowrap>$no</td>";
-                    echo "<td nowrap>$pchkjumlah</td>";
-                    echo "<td nowrap>$ptomboljenis</td>";
-                    echo "<td nowrap>$ncoa - $nnamacoa</td>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                        echo "<th align='center' class='th2'><small>Budget</small></th>";
+                        echo "<th align='center' class='th2'><small>Expenses</small></th>";
+                        echo "<th align='center' class='th2'><small>%</small></th>";
+
+                    echo "</tr>";
+
+                echo "</thead>";
+
+                echo "<tbody>";
+
+
+                    for ($ix=1;$ix<=12;$ix++) {
+                        $nb_subtotal[$ix]=0;
+                        $ne_subtotal[$ix]=0;
+
+                        $nb_grndtotal[$ix]=0;
+                        $ne_grndtotal[$ix]=0;
+                    }
+
+
+                    $no=1;
+                    $query = "select * from $tmp02 ORDER BY coa4, nama_coa";
+                    $tampil= mysqli_query($cnmy, $query);
+                    while ($row= mysqli_fetch_array($tampil)) {
+                        $ncoa=$row['coa4'];
+                        $nnamacoa=$row['nama_coa'];
+
+                        $ptomboljenis="";
+                        $pchkjumlah="";
+                        if ($ppilihrpt=="excel") {
+                        }else{
+                            $ptomboljenis = "<button type='button' id='btn_jenis' name='btn_jenis' class='btn btn-dark btn-xs' onclick=\"LihatDataJenis('$ncoa')\"><i class=\"fa fa-archive\"></i> Jenis</button>";
+                            $pchkjumlah= "<input onClick=\"HitungJumlahDataTabel()\" type='checkbox' value='$ncoa' name='chkbox_jumlah[]' id='chkbox_jumlah[]' checked>";
+                        }
+
+
+                        echo "<tr>";
+                        echo "<td nowrap>$no</td>";
+                        echo "<td nowrap>$pchkjumlah</td>";
+                        echo "<td nowrap>$ptomboljenis</td>";
+                        echo "<td nowrap>$ncoa - $nnamacoa</td>";
+
+                        $pb_totalsub=0;
+                        $pe_totalsub=0;
+
+                        for ($ix=1;$ix<=12;$ix++) {
+                            $b_field="b".$ix;
+                            $e_field="e".$ix;
+
+                            $nbudgetrp=$row[$b_field];
+                            $nexpensesrp=$row[$e_field];
+
+                            if (empty($nbudgetrp)) $nbudgetrp=0;
+                            if (empty($nexpensesrp)) $nexpensesrp=0;
+
+
+                            $nb_subtotal[$ix]=(DOUBLE)$nb_subtotal[$ix]+(DOUBLE)$nbudgetrp;
+                            $ne_subtotal[$ix]=(DOUBLE)$ne_subtotal[$ix]+(DOUBLE)$nexpensesrp;
+
+                            $nb_grndtotal[$ix]=(DOUBLE)$nb_grndtotal[$ix]+(DOUBLE)$nbudgetrp;
+                            $ne_grndtotal[$ix]=(DOUBLE)$ne_grndtotal[$ix]+(DOUBLE)$nexpensesrp;
+
+                            $pb_totalsub=(DOUBLE)$pb_totalsub+(DOUBLE)$nbudgetrp;
+                            $pe_totalsub=(DOUBLE)$pe_totalsub+(DOUBLE)$nexpensesrp;
+
+                        }
+
+                        if (empty($pb_totalsub)) $pb_totalsub=0;
+                        if (empty($pe_totalsub)) $pe_totalsub=0;
+
+                        $nach=0;
+                        if ((DOUBLE)$pb_totalsub<>0) {
+                            $nach=(DOUBLE)$pe_totalsub/(DOUBLE)$pb_totalsub*100;
+                        }
+
+                        if (empty($nach)) $nach=0;
+
+                        $pb_totalsub=BuatFormatNumberRp($pb_totalsub, $ppilformat);//1 OR 2 OR 3
+                        $pe_totalsub=BuatFormatNumberRp($pe_totalsub, $ppilformat);//1 OR 2 OR 3
+
+                        $nach=ROUND($nach,2);
+
+                        echo "<td nowrap align='right' style='font-weight:bold;'>$pb_totalsub</td>";
+                        echo "<td nowrap align='right' style='font-weight:bold;'>$pe_totalsub</td>";
+                        echo "<td nowrap align='right' style='font-weight:bold;'>$nach</td>";
+
+
+
+                        for ($ix=1;$ix<=12;$ix++) {
+                            $b_field="b".$ix;
+                            $e_field="e".$ix;
+
+                            $nbudgetrp=$row[$b_field];
+                            $nexpensesrp=$row[$e_field];
+
+                            if (empty($nbudgetrp)) $nbudgetrp=0;
+                            if (empty($nexpensesrp)) $nexpensesrp=0;
+
+                            $nach=0;
+                            if ((DOUBLE)$nbudgetrp<>0) {
+                                $nach=(DOUBLE)$nexpensesrp/(DOUBLE)$nbudgetrp*100;
+                            }
+
+                            if (empty($nach)) $nach=0;
+
+                            $nbudgetrp=BuatFormatNumberRp($nbudgetrp, $ppilformat);//1 OR 2 OR 3
+                            $nexpensesrp=BuatFormatNumberRp($nexpensesrp, $ppilformat);//1 OR 2 OR 3
+
+                            $nach=ROUND($nach,2);
+
+                            echo "<td nowrap align='right'>$nbudgetrp</td>";
+                            echo "<td nowrap align='right'>$nexpensesrp</td>";
+                            echo "<td nowrap align='right' style='font-weight:bold;'>$nach</td>";
+
+                        }
+
+                        echo "</tr>";
+
+                        $no++;
+
+                    }
+
+
+                    echo "<tr style='font-weight:bold;'>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap>&nbsp;</td>";
+                    echo "<td nowrap></td>";
+                    echo "<td nowrap>Grand Total </td>";
 
                     $pb_totalsub=0;
                     $pe_totalsub=0;
 
                     for ($ix=1;$ix<=12;$ix++) {
-                        $b_field="b".$ix;
-                        $e_field="e".$ix;
-
-                        $nbudgetrp=$row[$b_field];
-                        $nexpensesrp=$row[$e_field];
+                        $nbudgetrp=$nb_subtotal[$ix];
+                        $nexpensesrp=$ne_subtotal[$ix];
 
                         if (empty($nbudgetrp)) $nbudgetrp=0;
                         if (empty($nexpensesrp)) $nexpensesrp=0;
 
-
-                        $nb_subtotal[$ix]=(DOUBLE)$nb_subtotal[$ix]+(DOUBLE)$nbudgetrp;
-                        $ne_subtotal[$ix]=(DOUBLE)$ne_subtotal[$ix]+(DOUBLE)$nexpensesrp;
-
-                        $nb_grndtotal[$ix]=(DOUBLE)$nb_grndtotal[$ix]+(DOUBLE)$nbudgetrp;
-                        $ne_grndtotal[$ix]=(DOUBLE)$ne_grndtotal[$ix]+(DOUBLE)$nexpensesrp;
-
                         $pb_totalsub=(DOUBLE)$pb_totalsub+(DOUBLE)$nbudgetrp;
                         $pe_totalsub=(DOUBLE)$pe_totalsub+(DOUBLE)$nexpensesrp;
 
+
                     }
+
 
                     if (empty($pb_totalsub)) $pb_totalsub=0;
                     if (empty($pe_totalsub)) $pe_totalsub=0;
@@ -671,14 +852,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     echo "<td nowrap align='right' style='font-weight:bold;'>$pe_totalsub</td>";
                     echo "<td nowrap align='right' style='font-weight:bold;'>$nach</td>";
 
-                    
-                    
+                    $pb_totalsub=0;
+                    $pe_totalsub=0;
                     for ($ix=1;$ix<=12;$ix++) {
-                        $b_field="b".$ix;
-                        $e_field="e".$ix;
-
-                        $nbudgetrp=$row[$b_field];
-                        $nexpensesrp=$row[$e_field];
+                        $nbudgetrp=$nb_subtotal[$ix];
+                        $nexpensesrp=$ne_subtotal[$ix];
 
                         if (empty($nbudgetrp)) $nbudgetrp=0;
                         if (empty($nexpensesrp)) $nexpensesrp=0;
@@ -697,117 +875,41 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
                         echo "<td nowrap align='right'>$nbudgetrp</td>";
                         echo "<td nowrap align='right'>$nexpensesrp</td>";
-                        echo "<td nowrap align='right' style='font-weight:bold;'>$nach</td>";
+                        echo "<td nowrap align='right'>$nach</td>";
 
                     }
-                    
+
+
                     echo "</tr>";
 
-                    $no++;
-
-                }
 
 
-                echo "<tr style='font-weight:bold;'>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap>&nbsp;</td>";
-                echo "<td nowrap></td>";
-                echo "<td nowrap>Grand Total </td>";
-
-                $pb_totalsub=0;
-                $pe_totalsub=0;
-
-                for ($ix=1;$ix<=12;$ix++) {
-                    $nbudgetrp=$nb_subtotal[$ix];
-                    $nexpensesrp=$ne_subtotal[$ix];
-
-                    if (empty($nbudgetrp)) $nbudgetrp=0;
-                    if (empty($nexpensesrp)) $nexpensesrp=0;
-
-                    $pb_totalsub=(DOUBLE)$pb_totalsub+(DOUBLE)$nbudgetrp;
-                    $pe_totalsub=(DOUBLE)$pe_totalsub+(DOUBLE)$nexpensesrp;
+                echo "</tbody>";
 
 
-                }
-
-
-                if (empty($pb_totalsub)) $pb_totalsub=0;
-                if (empty($pe_totalsub)) $pe_totalsub=0;
-
-                $nach=0;
-                if ((DOUBLE)$pb_totalsub<>0) {
-                    $nach=(DOUBLE)$pe_totalsub/(DOUBLE)$pb_totalsub*100;
-                }
-
-                if (empty($nach)) $nach=0;
-
-                $pb_totalsub=BuatFormatNumberRp($pb_totalsub, $ppilformat);//1 OR 2 OR 3
-                $pe_totalsub=BuatFormatNumberRp($pe_totalsub, $ppilformat);//1 OR 2 OR 3
-
-                $nach=ROUND($nach,2);
-
-                echo "<td nowrap align='right' style='font-weight:bold;'>$pb_totalsub</td>";
-                echo "<td nowrap align='right' style='font-weight:bold;'>$pe_totalsub</td>";
-                echo "<td nowrap align='right' style='font-weight:bold;'>$nach</td>";
-
-                $pb_totalsub=0;
-                $pe_totalsub=0;
-                for ($ix=1;$ix<=12;$ix++) {
-                    $nbudgetrp=$nb_subtotal[$ix];
-                    $nexpensesrp=$ne_subtotal[$ix];
-
-                    if (empty($nbudgetrp)) $nbudgetrp=0;
-                    if (empty($nexpensesrp)) $nexpensesrp=0;
-
-                    $nach=0;
-                    if ((DOUBLE)$nbudgetrp<>0) {
-                        $nach=(DOUBLE)$nexpensesrp/(DOUBLE)$nbudgetrp*100;
-                    }
-
-                    if (empty($nach)) $nach=0;
-
-                    $nbudgetrp=BuatFormatNumberRp($nbudgetrp, $ppilformat);//1 OR 2 OR 3
-                    $nexpensesrp=BuatFormatNumberRp($nexpensesrp, $ppilformat);//1 OR 2 OR 3
-
-                    $nach=ROUND($nach,2);
-
-                    echo "<td nowrap align='right'>$nbudgetrp</td>";
-                    echo "<td nowrap align='right'>$nexpensesrp</td>";
-                    echo "<td nowrap align='right'>$nach</td>";
-
-                }
-                
-                
-                echo "</tr>";
-
-
-
-            echo "</tbody>";
-
-
-        echo "</table>";
-
-
-        echo "<br/>&nbsp;<br/>&nbsp;";
-        
-        // DETAIL JENIS
-        echo "<div id='div-jenis'>";
-        
+            echo "</table>";
             
-        
-        echo "</div>";
-        // END DETAIL JENIS
-        
-        echo "<br/>&nbsp;<br/>&nbsp;";
-        
-        // DETAIL
-        echo "<div id='div-detail'>";
-        
-            
-        
-        echo "</div>";
-        // END DETAIL
-        
+            echo "<br/>&nbsp;<br/>&nbsp;";
+
+            // DETAIL JENIS
+            echo "<div id='div-jenis'>";
+
+
+
+            echo "</div>";
+            // END DETAIL JENIS
+
+            echo "<br/>&nbsp;<br/>&nbsp;";
+
+            // DETAIL
+            echo "<div id='div-detail'>";
+
+
+
+            echo "</div>";
+            // END DETAIL
+
+        }
         
         
         echo "<br/>&nbsp;<br/>&nbsp;";

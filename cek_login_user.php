@@ -28,6 +28,7 @@ $_SESSION['IDADDRESS_SYS']="";
 $_SESSION['AKSES_MU']="N";
 $_SESSION['F_SALES']="N";
 $_SESSION['F_ICABANGID']="";
+$_SESSION['BROWSERPAKAI']="";
 
 
 $ipilihmenu_atasan=false;
@@ -588,6 +589,7 @@ if ($pberhasillogin==true) {
     //$yourbrowser= "Your browser: " . $ua['singkatan'] . " " . $ua['name'] . " " . $ua['version'] . " on " .$ua['platform'] . " reports: <br >" . $ua['userAgent'];
     $pjnsbrospilih=$ua['singkatan'];
     //print_r($pjnsbrospilih); mysqli_close($cnmy); exit;
+    $_SESSION['BROWSERPAKAI']=$pjnsbrospilih;
 	
     $puser_ipaddr = getUserIP();
     if ($puser_ipaddr=="::1") $puser_ipaddr="";

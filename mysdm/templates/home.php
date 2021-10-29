@@ -588,6 +588,8 @@ if ( $pnidmodule=="tolsresetpass" ) {
         include 'module/laporan_gl/mod_gl_rbmchccab/rbmchccab.php';
     }elseif ($_GET['module']=='expensevsbudget'){
         include 'module/laporan_gl/mod_gl_expenvsbudget/expenvsbudget.php';
+    }elseif ($_GET['module']=='expensevsbudgetcab'){
+        include 'module/laporan_gl/mod_gl_expenvsbudgetcab/expenvsbudgetcab.php';
     }elseif ($_GET['module']=='demoexpensevsbudget'){
         include 'module/laporan_gl/demo_mod_gl_expenvsbudget/expenvsbudget.php';
         
@@ -998,6 +1000,8 @@ if ( $pnidmodule=="tolsresetpass" ) {
         include 'module/hrd/hrd_isidataabsen/isidataabsen.php';
     }elseif ($_GET['module']=='postingperdep'){
         include 'module/coa_posting/mod_potingperdep/potingperdep.php';
+    }elseif ($_GET['module']=='reportporgresbr'){
+        include 'module/laporan_gl/mod_progresexpen/progresexpen.php';
         
 
     }else{

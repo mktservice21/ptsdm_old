@@ -134,7 +134,7 @@
             . " a.karyawanid, c.nama as nama_karyawan, a.distid as dokterid, b.nama as nama_dokter, "
             . " a.jumlah, a.realisasi1, a.noslip, "
             . " a.tgl, a.tgltrans, a.tglrpsby, "
-            . " a.aktivitas1, a.aktivitas2 ";
+            . " a.aktivitas1, a.aktivitas2, a.batal as ibatal, a.alasan_batal ";
     
     $query = $query_data." FROM hrd.klaim as a LEFT JOIN MKT.distrib0 b on a.distid=b.distid "
             . " LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId "
@@ -160,6 +160,9 @@
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
     $query = "UPDATE $tmp03 as a JOIN hrd.klaim_reject as b on a.brid=b.klaimId SET a.batal='Y'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        
+    $query = "UPDATE $tmp03 SET batal='Y' WHERE IFNULL(ibatal,'')='Y'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
         
     $query = "select a.*, b.amount, b.jml_adj, b.ketadj1, b.ketadj2, b.urutan, b.trans_ke "
@@ -462,6 +465,7 @@
                         $paktivitas2= $row2['aktivitas2'];
                         $pnamarealisasi= $row2['realisasi1'];
                         $pjumlah=$row2['jumlah'];
+                        $pbatalalasan=$row2['alasan_batal'];
                         
                         $pstsrealisasi="";
                         $pnamacabang="";
@@ -481,14 +485,20 @@
                         if ($pstsbatal=="Y") {
                             $stl_batal="style='color:red;'";
                             
-                            if (!empty($paktivitas1)) $paktivitas1 = "BATAL - ".$paktivitas1;
-                            elseif (empty($paktivitas1)) $paktivitas1 = "BATAL";
+                            if (!empty($pbatalalasan)) {
+                                if (!empty($paktivitas1)) $paktivitas1 = "BATAL ($pbatalalasan) - ".$paktivitas1;
+                                elseif (empty($paktivitas1)) $paktivitas1 = "BATAL ($pbatalalasan)";
+                            }else{
+                                if (!empty($paktivitas1)) $paktivitas1 = "BATAL - ".$paktivitas1;
+                                elseif (empty($paktivitas1)) $paktivitas1 = "BATAL";
+                            }
                             
                             $psubtotalbatal=(DOUBLE)$psubtotalbatal+(DOUBLE)$pjumlah;
                             $pgrandtotalbatal=(DOUBLE)$pgrandtotalbatal+(DOUBLE)$pjumlah;
                         }else{
                             $psubtotalaktif=(DOUBLE)$psubtotalaktif+(DOUBLE)$pjumlah;
                             $pgrandtotalaktif=(DOUBLE)$pgrandtotalaktif+(DOUBLE)$pjumlah;
+                            $pbatalalasan="";
                         }
                         
                         

@@ -28,6 +28,8 @@ switch($pactpilih){
         $flvlposisi=$_SESSION['LVLPOSISI'];
         $fdivisi=$_SESSION['DIVISI'];
         $ppilihancabang="";
+        
+        $philangkan_nonkry=true;
 
         $pfilterkaryawan="";
         $pfilterkaryawan2="";
@@ -253,6 +255,13 @@ switch($pactpilih){
                                                                 }
                                                             }
 
+                                                            if ($philangkan_nonkry==true) {
+                                                                $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
+                                                                        . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "
+                                                                        . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
+                                                                        . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
+                                                                        . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                                                            }
                                                             $query .= " ORDER BY nama";
 
 

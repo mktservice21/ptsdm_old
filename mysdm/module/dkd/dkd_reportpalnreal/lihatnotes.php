@@ -46,11 +46,11 @@ $hari_ini=date_create($hari_ini);
 
 
 if ((INT)$pweekDay==1 OR (INT)$pweekDay==2 OR (INT)$pweekDay==3) {
-    date_sub($hari_ini,date_interval_create_from_date_string("5 days"));
+    date_sub($hari_ini,date_interval_create_from_date_string("3 days"));//5
 }elseif ((INT)$pweekDay==4 OR (INT)$pweekDay==5 OR (INT)$pweekDay==6) {
     date_sub($hari_ini,date_interval_create_from_date_string("3 days"));
 }elseif ((INT)$pweekDay==0) {
-    date_sub($hari_ini,date_interval_create_from_date_string("4 days"));
+    date_sub($hari_ini,date_interval_create_from_date_string("3 days"));//4
 }else{
     date_sub($hari_ini,date_interval_create_from_date_string("0 days"));
 }

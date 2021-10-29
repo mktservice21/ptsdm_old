@@ -174,7 +174,7 @@
     
 
     $query = "select klaimid, bulan, karyawanid, user1, distid, region, jumlah, ppn_rp, pph_rp from hrd.klaim WHERE "
-            . " YEAR(bulan)='$pthn' AND klaimId not in (SELECT DISTINCT ifnull(klaimId,'') from hrd.klaim_reject)";
+            . " YEAR(bulan)='$pthn' AND klaimId not in (SELECT DISTINCT ifnull(klaimId,'') from hrd.klaim_reject) AND IFNULL(batal,'')<>'Y' ";
     if (!empty($pdistid)) {
         $query .=" AND distid='$pdistid'";
     }

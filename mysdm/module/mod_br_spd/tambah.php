@@ -187,9 +187,9 @@ if ($pilihperiodetipe=="S") $ptupeper4="selected";
                                             <?PHP
                                             $query = "select DivProdId from MKT.divprod WHERE br='Y' ";
                                             if ($pidkaryawan=="0000000566") {
-                                                $query .=" AND DivProdId IN ('EAGLE', 'PEACO', 'PIGEO') ";
+                                                $query .=" AND DivProdId IN ('EAGLE', 'PEACO', 'PIGEO', 'HO') ";
                                             }elseif ($pidkaryawan=="0000001043") {
-                                                $query .=" AND DivProdId IN ('EAGLE') ";
+                                                $query .=" AND DivProdId IN ('EAGLE', 'HO') ";
                                             }
                                             $query .=" order by DivProdId";
                                             $tampil = mysqli_query($cnmy, $query);

@@ -142,14 +142,14 @@ $pnamajabatan=$nr['nama'];
                         
                         <div id='div_ttd'>
 
-                            <div class='col-md-12 col-sm-7 col-xs-12'>
-                                <h2>
+                            <div class='col-md-12 col-sm-12 col-xs-12'>
+                                
                                     <?PHP
-                                        echo "<div class='col-md-12 col-sm-12 col-xs-12'>";
+                                        //echo "<div class='col-md-12 col-sm-12 col-xs-12'>";
                                             include "module/dkd/dkd_wekvisitplanreal/ttd_realisasiplan.php";
-                                        echo "</div>";
+                                        //echo "</div>";
                                     ?>
-                                </h2>
+                                
                                 <div class='clearfix'></div>
                             </div>
 

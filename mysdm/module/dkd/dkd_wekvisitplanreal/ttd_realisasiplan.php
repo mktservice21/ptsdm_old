@@ -116,9 +116,14 @@ function ReloadTandaTangan(){
         // This is the part where jSignature is initialized.
         //var $sigdiv = $("#signature").jSignature({'UndoButton':true})
         //var $sigdiv = $("#signature").jSignature({ 'UndoButton': true, 'width': 370, 'height': 400 })
+        
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+        var iwidth=parseInt(windowWidth)-120;
+        
         <?PHP
         if(mobile_device_detect(true,true,true,true,false,false)) {
-            ?> var $sigdiv = $("#signature").jSignature({ 'UndoButton': true, 'width': 220, 'height': 260 }) <?PHP
+            ?> var $sigdiv = $("#signature").jSignature({ 'UndoButton': true, 'width': iwidth, 'height': 350 }) <?PHP
         }else{
             ?> var $sigdiv = $("#signature").jSignature({ 'UndoButton': true, 'width': 370, 'height': 400 }) <?PHP
         }

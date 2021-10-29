@@ -70,7 +70,8 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $sql = "select c.nourut, c.idinput, c.karyawanid, e.nama as namakaryawan, e.jabatanid, c.tanggal, c.tglinput, 
-    c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes 
+    c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes,
+    c.atasan1, c.tgl_atasan1, c.atasan2, c.tgl_atasan2, c.atasan3, c.tgl_atasan3, c.atasan4, c.tgl_atasan4 
     FROM hrd.dkd_new1 as c JOIN dr.masterdokter as d on c.dokterid=d.id LEFT JOIN hrd.karyawan as e on c.karyawanid=e.karyawanId 
     WHERE c.karyawanid='$pkryid' ";
 if (!empty($ftglfilter)) {
@@ -103,7 +104,8 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 
 
 $sql = "select a.nourut, a.karyawanid, c.nama as namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
-    a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran 
+    a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran, 
+    a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, a.atasan3, a.tgl_atasan3, a.atasan4, a.tgl_atasan4 
     FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
     WHERE a.karyawanid='$pkryid' ";
@@ -141,9 +143,12 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 
 $query = "INSERT INTO $tmp02 (karyawanid, jabatanid, tanggal, 
-    jenis, dokterid, namalengkap, gelar, spesialis) SELECT"
+    jenis, dokterid, namalengkap, gelar, spesialis, 
+    atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3, atasan4, tgl_atasan4) SELECT"
         . " karyawanid, jabatanid, tanggal, "
-        . " jenis, dokterid, namalengkap, gelar, spesialis FROM $tmp04 WHERE CONCAT(karyawanid, tanggal, dokterid) NOT IN "
+        . " jenis, dokterid, namalengkap, gelar, spesialis, "
+        . " atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3, atasan4, tgl_atasan4 "
+        . " FROM $tmp04 WHERE CONCAT(karyawanid, tanggal, dokterid) NOT IN "
         . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal, dokterid),'') FROM $tmp05 WHERE IFNULL(jenis,'') NOT IN ('JV'))";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
@@ -395,6 +400,10 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
     
     echo "<br/>";
+    echo "<b><u>Keterangan :</u> </b><br/>(-) warna merah menandakan kunjungan yang belum diapprove atasan.<br/>
+        (-) warna hijau, sudah diapprove.<br/>
+        (-) sebagai atasan, untuk approve silakan <b>lihat notes</b> lalu klik tombol <b>Approve</b> (Per masing-masing kunjungan)";
+    echo "<br/>";
 
     echo "<br/><b>Visit</b><br/>";
     echo "<table id='tbltable' border='1' cellspacing='0' cellpadding='1'>";
@@ -456,8 +465,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     $ngelar=$row0['gelar'];
                     $nspesialis=$row0['spesialis'];
                     $ntglinput=$row0['tglinput'];
-                    
-                    
+
+
                     $pjam="";
                     if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
                     if (!empty($ngelar))
@@ -535,6 +544,30 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 $ntglinput=$row2['tglinput'];
                                 
                                 
+                                
+                                $njabatanid=$row2['jabatanid'];
+                                $natasan1=$row2['atasan1'];
+                                $natasan2=$row2['atasan2'];
+                                $natasan3=$row2['atasan3'];
+                                $natasan4=$row2['atasan4'];
+
+                                $ntglatasan1=$row2['tgl_atasan1'];
+                                $ntglatasan2=$row2['tgl_atasan2'];
+                                $ntglatasan3=$row2['tgl_atasan3'];
+                                $ntglatasan4=$row2['tgl_atasan4'];
+
+
+                                if ($ntglatasan1=="0000-00-00" OR $ntglatasan1=="0000-00-00 00:00:00") $ntglatasan1="";
+                                if ($ntglatasan2=="0000-00-00" OR $ntglatasan2=="0000-00-00 00:00:00") $ntglatasan2="";
+                                if ($ntglatasan3=="0000-00-00" OR $ntglatasan3=="0000-00-00 00:00:00") $ntglatasan3="";
+                                if ($ntglatasan4=="0000-00-00" OR $ntglatasan4=="0000-00-00 00:00:00") $ntglatasan4="";
+
+
+                                if (!empty($ntglatasan1)) $ntglatasan1 = date('d F Y H:i:s', strtotime($ntglatasan1));
+                                if (!empty($ntglatasan2)) $ntglatasan2 = date('d F Y H:i:s', strtotime($ntglatasan2));
+                                if (!empty($ntglatasan3)) $ntglatasan3 = date('d F Y H:i:s', strtotime($ntglatasan3));
+                                if (!empty($ntglatasan4)) $ntglatasan4 = date('d F Y H:i:s', strtotime($ntglatasan4));
+                    
                                 $pjam="";
                                 if (!empty($ntglinput)) $pjam = date('H:i', strtotime($ntglinput));
                                 
@@ -571,6 +604,28 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 $plihatkomen="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
                                         . " data-target='#myModal' onClick=\"LiatKomentar('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
                                 
+                                
+                                $pwarnaapv=" style='color:red;' ";
+                                if ($njabatanid=="15") {//$ntglatasan1
+                                    if (!empty($natasan1) AND !empty($ntglatasan1)) {
+                                        $pwarnaapv=" style='color:green;' ";
+                                    }else{
+                                        if (!empty($ntglatasan2)) $pwarnaapv=" style='color:green;' ";
+                                    }
+                                }elseif ($njabatanid=="10" OR $njabatanid=="18") {
+                                    if (!empty($natasan2) AND !empty($ntglatasan2)) {
+                                        $pwarnaapv=" style='color:green;' ";
+                                    }else{
+                                        if (!empty($ntglatasan3)) $pwarnaapv=" style='color:green;' ";
+                                    }
+                                }elseif ($njabatanid=="08") {
+                                    if (!empty($ntglatasan3)) $pwarnaapv=" style='color:green;' ";
+                                }elseif ($njabatanid=="20") {
+                                    if (!empty($ntglatasan4)) $pwarnaapv=" style='color:green;' ";
+                                }elseif ($njabatanid=="05") {
+
+                                }
+                        
                                 if ($ifirst==true) {
                                     echo "<tr>";
                                     echo "<td nowrap>$ppilihtgl</td>";
@@ -583,7 +638,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 }
                                 echo "<td nowrap>$pjam</td>";
                                 //echo "<td nowrap>$pnmjenis</td>";
-                                echo "<td nowrap>$pnmdokt_</td>";
+                                echo "<td nowrap $pwarnaapv>$pnmdokt_</td>";
                                 echo "<td >$plihatnotes</td>";
                                 echo "<td >$plihatkomen</td>";
 

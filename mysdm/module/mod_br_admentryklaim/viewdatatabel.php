@@ -107,7 +107,7 @@
 	k.KODEWILAYAH,
 	wil.nama nama_wilayah,
 	k.pengajuan, k.nama_pengusaha, k.noseri, k.tgl_fp, 
-    k.jenisklaim 
+    k.jenisklaim, k.batal, k.alasan_batal   
         FROM
 	$tmp01 k
 	LEFT JOIN hrd.karyawan kr ON k.karyawanid = kr.karyawanId
@@ -180,6 +180,7 @@
                     <th width='50px'>Noseri</th>
                     <th width='50px'>Tgl FP</th>
                     <th>&nbsp;</th>
+                    <th>&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -214,6 +215,8 @@
                     $ptglfp= $row["tgl_fp"];
                     
                     $puserid1= $row["user1"];
+                    $pbatalbr= $row["batal"];
+                    $pbatalalasan= $row["alasan_batal"];
                     
                     $plink = "<a href='#' data-toggle=\"tooltip\" data-placement=\"top\" title=".$pklaimid.">".$ptlg."</a>";
                     
@@ -291,8 +294,16 @@
                     if ($pjenisklaim=="S") $pnamajenisklm="SDM ONLINE";
                     elseif ($pjenisklaim=="D") $pnamajenisklm="SKS ONLINE";
 
+                    $pcolorbatal="";
+                    if ($pbatalbr=="Y") {
+                        $pdataedit="";
+                        $peditttdpl="";
+                        $pcolorbatal=" style='color:red;' ";
+                    }else{
+                        $pbatalalasan="";
+                    }
 
-                    echo "<tr>";
+                    echo "<tr $pcolorbatal>";
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$pchkbox</td>";
                     echo "<td nowrap>$pedit $pprint $ppajak $pdataedit $phapus</td>";
@@ -315,6 +326,7 @@
                     echo "<td nowrap>$pnoseri</td>";
                     echo "<td nowrap>$ptglfp</td>";
                     echo "<td nowrap>$peditttdpl</td>";
+                    echo "<td nowrap>$pbatalalasan</td>";
                     echo "</tr>";
                     
                     $no++;

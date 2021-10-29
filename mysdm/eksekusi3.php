@@ -301,6 +301,8 @@
         include 'module/laporan_gl/mod_gl_rbmchccab/aksi_rbmchccab.php';
     }elseif ($_GET['module']=='expensevsbudget'){
         include 'module/laporan_gl/mod_gl_expenvsbudget/aksi_expenvsbudget.php';
+    }elseif ($_GET['module']=='expensevsbudgetcab'){
+        include 'module/laporan_gl/mod_gl_expenvsbudgetcab/aksi_expenvsbudgetcab.php';
     }elseif ($_GET['module']=='demoexpensevsbudget'){
         include 'module/laporan_gl/demo_mod_gl_expenvsbudget/aksi_expenvsbudget.php';
         
@@ -688,6 +690,9 @@
         
     }elseif ($_GET['module']=='postingperdep'){
         include 'module/coa_posting/mod_potingperdep/potingperdep_rpt.php';
+        
+    }elseif ($_GET['module']=='reportporgresbr'){
+        include 'module/laporan_gl/mod_progresexpen/aksi_progresexpen.php';
         
     }elseif ($_GET['module']=='eksekusifileelastik'){
         //include 'module/mst_import_sales/aksi_importelastik.php';

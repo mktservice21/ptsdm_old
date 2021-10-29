@@ -13,6 +13,8 @@
   const btnPause = document.querySelector("#btnPause");
   const btnScreenshot = document.querySelector("#btnScreenshot");
   const btnChangeCamera = document.querySelector("#btnChangeCamera");
+  const btnScreenshot_2 = document.querySelector("#btnScreenshot_2");
+  const btnChangeCamera_2 = document.querySelector("#btnChangeCamera_2");
   const screenshotsContainer = document.querySelector("#screenshots");
   const canvas = document.querySelector("#canvas");
   const devicesSelect = document.querySelector("#devicesSelect");
@@ -85,6 +87,31 @@
 
   // switch camera
   btnChangeCamera.addEventListener("click", function () {
+	document.getElementById("txt_arss").value="";
+    useFrontCamera = !useFrontCamera;
+    initializeCamera();
+  });
+
+
+  // take screenshot 2
+  btnScreenshot_2.addEventListener("click", function () {
+	
+	$("#screenshots").html("");
+	$("#canvas").html("");
+	document.getElementById("txt_arss").value="";
+	
+    const img = document.createElement("img");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0);
+    img.src = canvas.toDataURL("image/png");
+	document.getElementById("txt_arss").value=img.src;
+    screenshotsContainer.prepend(img);
+	
+  });
+  
+  // switch camera 2
+  btnChangeCamera_2.addEventListener("click", function () {
 	document.getElementById("txt_arss").value="";
     useFrontCamera = !useFrontCamera;
     initializeCamera();

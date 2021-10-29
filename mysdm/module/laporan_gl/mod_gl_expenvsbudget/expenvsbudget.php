@@ -119,6 +119,20 @@
                                 </div>
                                 
                                 <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Report By <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <?php
+                                            //echo "<label><input type='checkbox' class='js-switch' id='chk_posting' name='chk_posting' value='POSTING'> Report By Posting</label>";
+                                            echo "<input type='radio' class='' name='opt_rpttipe' id='opt_rpttipe' value='coa' checked /> COA";
+                                            echo "&nbsp; &nbsp; ";
+                                            echo "<input type='radio' class='' name='opt_rpttipe' id='opt_rpttipe' value='posting' /> Posting";
+                                            echo "&nbsp; &nbsp; ";
+                                            echo "<input type='radio' class='' name='opt_rpttipe' id='opt_rpttipe' value='transaksi' /> Transaksi BR";
+                                        ?>
+                                    </div>
+                                </div>
+                                
+                                <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Departemen <span class='required'></span></label>
                                     <div class='col-xs-9'>
                                         <select class='form-control' id="cb_dept" name="cb_dept" onchange="ShowDariDepartemen()">

@@ -92,7 +92,7 @@
             . " aktivitas1, realisasi1 nmrealisasi, jumlah, dpp, ppn_rp, pph_rp, tgl_fp, pengajuan divpengajuan,"
             . " region, bulan, periode1, periode2 "
             . " FROM hrd.klaim WHERE 1=1 $filterdist AND"
-            . " klaimId not in (SELECT DISTINCT ifnull(klaimId,'') from hrd.klaim_reject) AND ";
+            . " klaimId not in (SELECT DISTINCT ifnull(klaimId,'') from hrd.klaim_reject) AND IFNULL(batal,'')<>'Y' AND ";
     if ($ptypetgl=="2") $query .= " tgl BETWEEN '$pperiode1' AND '$pperiode2' ";
     else $query .= " tgltrans BETWEEN '$pperiode1' AND '$pperiode2' ";
     if ($pgroupid=="40" OR $pgroupid=="43") {

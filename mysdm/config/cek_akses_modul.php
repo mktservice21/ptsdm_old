@@ -10,7 +10,7 @@
     if ($pnpidgroup_=="1") {
     }else{
         if ($pnpidmenu_=="115"){//khusus sedang dalam perbaikan
-            //echo "Anda Tidak Berhat Dengan Menu INI...";
+            //echo "Anda Tidak Berhak Dengan Menu INI...";
             //exit;
         }
     }
@@ -28,7 +28,7 @@
         $nptampil_= mysqli_query($cnmy, $query);
         $ketemupilgrp= mysqli_num_rows($nptampil_);
         if ((DOUBLE)$ketemupilgrp==0) {
-            echo "Anda Tidak Berhat Dengan Menu INI...";
+            echo "Anda Tidak Berhak Dengan Menu INI...";
             exit;
         }
         

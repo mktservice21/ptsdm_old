@@ -75,7 +75,7 @@
                                                 $query .=" AND karyawanId NOT IN (select distinct karyawanId from dbmaster.t_karyawanadmin)";
                                                 $query .=" order by nama";
                                                 
-                                                $query = "select b.karyawanid, b.nama from hrd.karyawan b WHERE b.aktif='Y' and (IFNULL(b.tglkeluar,'')='' OR IFNULL(b.tglkeluar,'0000-00-00')='0000-00-00') ";
+                                                $query = "select b.karyawanid, b.nama from hrd.karyawan b WHERE 1=1 ";//b.aktif='Y' and (IFNULL(b.tglkeluar,'')='' OR IFNULL(b.tglkeluar,'0000-00-00')='0000-00-00')
                                                 $query .= " AND b.divisiId='OTC' ";
                                                 //$query .= " AND b.karyawanid NOT IN ('0000001272', '0000000432', '0000000992') ";
                                                 $query .=" AND b.karyawanId Not In (select distinct karyawanId from dbmaster.t_karyawanadmin) ";

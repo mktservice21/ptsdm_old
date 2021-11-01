@@ -323,29 +323,53 @@ if ($module=='dkdrealisasiplan')
                     // ======================================
                     
                     if ($pbolehsimpan_jvspv==true) {
+                        $query_kr = "select jabatanId as jabatanid from hrd.karyawan WHERE karyawanid='$pjv_spv'";
+                        $tampilkr=mysqli_query($cnmy, $query_kr);
+                        $rowkr= mysqli_fetch_array($tampilkr);
+                        $pjbtkry_spv=$rowkr['jabatanid'];
+                                
+                        
                         $query = "INSERT INTO hrd.dkd_new_real1 (user_tandatangan, user_foto, from_jv, tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid, tgl_atasan1, atasan2, tgl_atasan2)"
-                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_spv' as karyawanid, jenis, dokterid, notes, saran, jabatanid, NOW() as tgl_atasan1, atasan2, CASE WHEN IFNULL(atasan2,'')='' THEN NOW() ELSE NULL END as tgl_atasan2 "
+                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_spv' as karyawanid, jenis, dokterid, notes, saran, '$pjbtkry_spv' as jabatanid, NOW() as tgl_atasan1, atasan2, CASE WHEN IFNULL(atasan2,'')='' THEN NOW() ELSE NULL END as tgl_atasan2 "
                                 . " FROM hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' LIMIT 1";
                         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
                     }
                     
                     if ($pbolehsimpan_jvdm==true) {
+                        $query_kr = "select jabatanId as jabatanid from hrd.karyawan WHERE karyawanid='$pjv_dm'";
+                        $tampilkr=mysqli_query($cnmy, $query_kr);
+                        $rowkr= mysqli_fetch_array($tampilkr);
+                        $pjbtkry_dm=$rowkr['jabatanid'];
+                        
+                        
                         $query = "INSERT INTO hrd.dkd_new_real1 (user_tandatangan, user_foto, from_jv, tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid, tgl_atasan1, tgl_atasan2, atasan3)"
-                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_dm' as karyawanid, jenis, dokterid, notes, saran, jabatanid, NOW() as tgl_atasan1, NOW() as tgl_atasan2, atasan3 "
+                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_dm' as karyawanid, jenis, dokterid, notes, saran, '$pjbtkry_dm' as jabatanid, NOW() as tgl_atasan1, NOW() as tgl_atasan2, atasan3 "
                                 . " FROM hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' LIMIT 1";
                         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
                     }
                     
                     if ($pbolehsimpan_jvsm==true) {
+                        $query_kr = "select jabatanId as jabatanid from hrd.karyawan WHERE karyawanid='$pjv_sm'";
+                        $tampilkr=mysqli_query($cnmy, $query_kr);
+                        $rowkr= mysqli_fetch_array($tampilkr);
+                        $pjbtkry_sm=$rowkr['jabatanid'];
+                        
+                        
                         $query = "INSERT INTO hrd.dkd_new_real1 (user_tandatangan, user_foto, from_jv, tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid, tgl_atasan1, tgl_atasan2, atasan3, tgl_atasan3, atasan4)"
-                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_sm' as karyawanid, jenis, dokterid, notes, saran, jabatanid, NOW() as tgl_atasan1, NOW() as tgl_atasan2, atasan3, NOW() as tgl_atasan3, atasan4 "
+                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_sm' as karyawanid, jenis, dokterid, notes, saran, '$pjbtkry_sm' as jabatanid, NOW() as tgl_atasan1, NOW() as tgl_atasan2, atasan3, NOW() as tgl_atasan3, atasan4 "
                                 . " FROM hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' LIMIT 1";
                         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
                     }
                     
                     if ($pbolehsimpan_jvgsm==true) {
+                        $query_kr = "select jabatanId as jabatanid from hrd.karyawan WHERE karyawanid='$pjv_gsm'";
+                        $tampilkr=mysqli_query($cnmy, $query_kr);
+                        $rowkr= mysqli_fetch_array($tampilkr);
+                        $pjbtkry_gsm=$rowkr['jabatanid'];
+                        
+                        
                         $query = "INSERT INTO hrd.dkd_new_real1 (user_tandatangan, user_foto, from_jv, tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid, tgl_atasan1, tgl_atasan2, atasan3, tgl_atasan3, atasan4, tgl_atasan4)"
-                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_gsm' as karyawanid, jenis, dokterid, notes, saran, jabatanid, NOW() as tgl_atasan1, NOW() as tgl_atasan2, atasan3, NOW() as tgl_atasan3, atasan4, NOW() as tgl_atasan4 "
+                                . " select user_tandatangan, user_foto, '$kodenya' as from_jv, tanggal, '$pjv_gsm' as karyawanid, jenis, dokterid, notes, saran, '$pjbtkry_gsm' as jabatanid, NOW() as tgl_atasan1, NOW() as tgl_atasan2, atasan3, NOW() as tgl_atasan3, atasan4, NOW() as tgl_atasan4 "
                                 . " FROM hrd.dkd_new_real1 WHERE tanggal='$ptanggal' AND karyawanid='$pkaryawanid' AND dokterid='$pdokterid' LIMIT 1";
                         mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
                     }

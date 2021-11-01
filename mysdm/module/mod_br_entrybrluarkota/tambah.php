@@ -155,6 +155,7 @@ if (isset($_GET['ca'])) {
         $r    = mysqli_fetch_array($edit);
         $idklaim=$r['idrutin'];
         $tglberlku = date('F Y', strtotime($r['bulan']));
+        $blnpilihuc = date('Y-m', strtotime($r['bulan']));
         $tgl1 = date('d/m/Y', strtotime($r['periode1']));
         $tgl2 = date('d/m/Y', strtotime($r['periode2']));
         $idajukan=$r['karyawanid']; 

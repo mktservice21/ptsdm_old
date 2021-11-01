@@ -40,20 +40,10 @@ $pbulan = date('Y-m', strtotime($ptanggal));
 $pperiode = date('F Y', strtotime($ptanggal));
 
 
-$query = "select a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from hrd.karyawan as a 
-    LEFT join hrd.jabatan as b on a.jabatanId=b.jabatanId 
-    where a.karyawanid='$pkryid'";
-$tampilk=mysqli_query($cnmy, $query);
-$rowk=mysqli_fetch_array($tampilk);
-$pnamakarywanpl=$rowk['nama'];
-$pjabatanid=$rowk['jabatanid'];
-$pnmjbtkarywanpl=$rowk['nama_jabatan'];
-
-
-//PLAN
+//REALISASI
 $sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
     b.pointMR, b.pointSpv, b.pointDM 
-    FROM hrd.dkd_new0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
+    FROM hrd.dkd_new_real0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
     WHERE a.karyawanid='$pkryid'";
 $sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
 $query = "create TEMPORARY table $tmp01 ($sql)"; 
@@ -61,101 +51,208 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, 
-    a.jenis, a.dokterid, b.namalengkap, b.gelar, b.spesialis 
-    FROM hrd.dkd_new1 as a 
-    LEFT JOIN dr.masterdokter as b on a.dokterid=b.id
-    WHERE a.karyawanid='$pkryid'";
-$sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
-$query = "create TEMPORARY table $tmp02 ($sql)"; 
+$query = "select DISTINCT a.idcuti as idinput, a.karyawanid, a.jabatanid, b.tanggal, "
+        . " a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, "
+        . " a.atasan3, a.tgl_atasan3, a.atasan4, a.tgl_atasan4, "
+        . " a.id_jenis from hrd.t_cuti0 as a "
+        . " JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti "
+        . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' AND "
+        . " a.id_jenis IN (select distinct IFNULL(id_jenis,'') FROM hrd.jenis_cuti WHERE IFNULL(ketId,'')<>'') AND "
+        . " LEFT(b.tanggal,7)='$pbulan' AND a.karyawanid='$pkryid'";
+$query = "create TEMPORARY table $tmp04 ($query)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-//REALISASI
-$sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
-    b.pointMR, b.pointSpv, b.pointDM 
-    FROM hrd.dkd_new_real0 as a LEFT JOIN hrd.ket as b on a.ketid=b.ketId 
-    WHERE a.karyawanid='$pkryid'";
-$sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
-$query = "create TEMPORARY table $tmp03 ($sql)"; 
-mysqli_query($cnmy, $query);
-$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "ALTER TABLE $tmp04 ADD COLUMN ketid VARCHAR(3), ADD COLUMN nama_ket VARCHAR(200), ADD COLUMN pointmr INT(4), ADD COLUMN pointspv INT(4), ADD COLUMN pointdm INT(4)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp04 as a JOIN (select a.id_jenis, a.ketid, b.nama, b.pointmr, b.pointspv, b.pointdm from hrd.jenis_cuti as a join hrd.ket as b on a.ketid=b.ketid) as b "
+        . " on a.id_jenis=b.id_jenis SET a.ketid=b.ketid, a.pointmr=b.pointmr, a.pointspv=b.pointspv, a.pointdm=b.pointdm";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "INSERT INTO $tmp01 (idinput, karyawanid, jabatanid, tanggal, ketid, nama_ket, pointMR, pointSpv, pointDM) "
+        . " SELECT DISTINCT idinput, karyawanid, jabatanid, tanggal, ketid, nama_ket, pointMR, pointSpv, pointDM "
+        . " FROM $tmp04";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "DROP TEMPORARY TABLE IF EXISTS $tmp04";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+
 
 $sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, 
-    a.jenis, a.dokterid, b.namalengkap, b.gelar, b.spesialis 
+    a.jenis, a.dokterid, b.namalengkap, b.gelar, b.spesialis, 
+    a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, a.atasan3, a.tgl_atasan3, a.atasan4, a.tgl_atasan4, 
+    a.jv_with, a.from_jv 
     FROM hrd.dkd_new_real1 as a 
     LEFT JOIN dr.masterdokter as b on a.dokterid=b.id
     WHERE a.karyawanid='$pkryid'";
 $sql .=" AND LEFT(a.tanggal,7)= '$pbulan'";
-$query = "create TEMPORARY table $tmp04 ($sql)"; 
+$query = "create TEMPORARY table $tmp02 ($sql)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+                
+                //HILANGKAN 18 10
+                //$query = "UPDATE $tmp02 SET tgl_atasan2=now()";
+                //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+                //HILANGKAN
 
-//cari jabatan yang diinput
-$query = "select a.jabatanid, b.nama as nama_jabatan FROM ("
-        . " select DISTINCT jabatanid FROM $tmp01 WHERE IFNULL(jabatanid,'')<>'' "
-        . " UNION "
-        . " select DISTINCT jabatanid FROM $tmp02 WHERE IFNULL(jabatanid,'')<>''"
-        . " UNION "
-        . " select DISTINCT jabatanid FROM $tmp03 WHERE IFNULL(jabatanid,'')<>''"
-        . " UNION "
-        . " select DISTINCT jabatanid FROM $tmp04 WHERE IFNULL(jabatanid,'')<>''"
-        . " ) as a JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId";
-$tampilk=mysqli_query($cnmy, $query);
-$rowk=mysqli_fetch_array($tampilk);
-$pnamajabatan=$rowk['nama_jabatan'];
-$pjabatanid=$rowk['jabatanid'];
-
-if (empty($pnamajabatan)) $pnamajabatan=$pnmjbtkarywanpl;
-
-
-$query = "create TEMPORARY table $tmp05 (select * from $tmp02)";
+$query = "ALTER TABLE $tmp02 ADD COLUMN sudah_apv VARCHAR(1) DEFAULT 'N', ADD COLUMN jml_jv VARCHAR(1) DEFAULT '0'";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "INSERT INTO $tmp02 (idinput, karyawanid, jabatanid, tanggal, 
-    jenis, dokterid, namalengkap, gelar, spesialis) SELECT"
-        . " idinput, karyawanid, jabatanid, tanggal, "
-        . " jenis, dokterid, namalengkap, gelar, spesialis FROM $tmp04 WHERE CONCAT(karyawanid, tanggal, dokterid) NOT IN "
-        . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal, dokterid),'') FROM $tmp05 WHERE IFNULL(jenis,'') NOT IN ('JV'))";
+$query = "UPDATE $tmp02 SET atasan1='' WHERE karyawanid=IFNULL(atasan1,'')";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-
-$query = "DROP TEMPORARY TABLE $tmp05";
+$query = "UPDATE $tmp02 SET atasan2='' WHERE karyawanid=IFNULL(atasan2,'')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "UPDATE $tmp02 SET atasan3='' WHERE karyawanid=IFNULL(atasan3,'')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "UPDATE $tmp02 SET atasan4='' WHERE karyawanid=IFNULL(atasan4,'')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "UPDATE $tmp02 SET atasan2='' WHERE IFNULL(atasan1,'')=IFNULL(atasan2,'')";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
 
-$query = "ALTER TABLE $tmp01 ADD jpoint INT(4)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "UPDATE $tmp02 SET sudah_apv='Y' WHERE IFNULL(atasan1,'')<>'' AND IFNULL(tgl_atasan1,'') NOT IN ('', '0000-00-00', '0000-00-00 00:00:00') AND karyawanid<>IFNULL(atasan1,'')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "UPDATE $tmp02 SET sudah_apv='Y' WHERE IFNULL(atasan2,'')<>'' AND IFNULL(tgl_atasan2,'') NOT IN ('', '0000-00-00', '0000-00-00 00:00:00') AND karyawanid<>IFNULL(atasan2,'')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "UPDATE $tmp02 SET sudah_apv='Y' WHERE IFNULL(atasan3,'')<>'' AND IFNULL(tgl_atasan3,'') NOT IN ('', '0000-00-00', '0000-00-00 00:00:00') AND karyawanid<>IFNULL(atasan3,'')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "UPDATE $tmp02 SET sudah_apv='Y' WHERE IFNULL(atasan4,'')<>'' AND IFNULL(tgl_atasan4,'') NOT IN ('', '0000-00-00', '0000-00-00 00:00:00') AND karyawanid<>IFNULL(atasan4,'')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "DELETE FROM $tmp02 WHERE IFNULL(sudah_apv,'')='N'";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query_point="";
-if ($pjabatanid=="10" OR $pjabatanid=="18") {
-    $query_point = "UPDATE $tmp01 SET jpoint=pointSpv";
-}elseif ($pjabatanid=="08") {
-    $query_point = "UPDATE $tmp01 SET jpoint=pointDM";
-}elseif ($pjabatanid=="15") {
-    $query_point = "UPDATE $tmp01 SET jpoint=pointMR";
+
+$query = "UPDATE $tmp02 as a JOIN hrd.dkd_new_real1 as b ON IFNULL(a.from_jv,'')=IFNULL(b.nourut,'') SET a.jv_with=CASE WHEN IFNULL(b.jv_with,'')='' THEN b.karyawanid ELSE CONCAT(b.jv_with, ',', b.karyawanid) END WHERE IFNULL(a.from_jv,'') NOT IN ('', '0')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+
+
+//CEK JOIN VISIT
+
+    $query = "select distinct karyawanid, jabatanid, tanggal from $tmp02 where IFNULL(jv_with,'')<>''";
+    $query = "create TEMPORARY table $tmp05 ($query)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "ALTER TABLE $tmp05 ADD COLUMN pointtambah INT(4)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+    $query = "select distinct karyawanid, jabatanid, tanggal, jv_with from $tmp02 where IFNULL(jv_with,'')<>''";
+    $tampil=mysqli_query($cnmy, $query);
+    while ($row=mysqli_fetch_array($tampil)) {
+        $e_kryid=$row['karyawanid'];
+        $e_jbtid=$row['jabatanid'];
+        $e_tanggal=$row['tanggal'];
+        $e_namajv=$row['jv_with'];
+        
+        $ppotintambah=false;
+        $ppotint_tmbh=0;
+        if (!empty($e_namajv)) {
+            
+            $qnmjv=(explode(",",$e_namajv));
+            $qjml =count($qnmjv);
+            foreach($qnmjv as $idjv) {
+                if (!empty($idjv) AND $idjv<>$e_kryid) {
+                    
+                    
+                    if ($e_jbtid=="15") {
+                        $query_a = "select karyawanId from hrd.karyawan where karyawanId='$idjv'";
+                        $tampil_a=mysqli_query($cnmy, $query_a);
+                        $ketemu_a=mysqli_num_rows($tampil_a);
+                        if ((INT)$ketemu_a>0) {
+                            $ppotintambah=true;
+                            $ppotint_tmbh=5;
+                        }
+                    }elseif ($e_jbtid=="10" OR $e_jbtid=="18") {
+                        $query_a = "select karyawanId, jabatanId as jabatanid from hrd.karyawan where karyawanId='$idjv'";
+                        $tampil_a=mysqli_query($cnmy, $query_a);
+                        $ketemu_a=mysqli_num_rows($tampil_a);
+                        if ((INT)$ketemu_a>0) {
+                            $nrow= mysqli_fetch_array($tampil_a);
+                            $n_jbt_jv=$row['jabatanid'];
+                            $ppotintambah=true;
+                            $ppotint_tmbh=1;
+                            if ($n_jbt_jv<>"15") $ppotint_tmbh=3;
+                        }
+                    }elseif ($e_jbtid=="08") {
+                    }else{
+                    }
+                    
+                    
+                }
+            }
+            
+            if ($ppotintambah == true) {
+                $query = "UPDATE $tmp05 SET pointtambah='$ppotint_tmbh' WHERE tanggal='$e_tanggal' AND karyawanid='$e_kryid' AND jabatanid='$e_jbtid'";
+                mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            }
+            
+        }
+    }
+    
+    
+    //$query = "DROP TEMPORARY TABLE IF EXISTS $tmp05";
+    //mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+//END CEK JOIN VISIT
+
+    
+    
+
+$query = "ALTER TABLE $tmp01 ADD COLUMN jpoint INT(4)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 as a JOIN $tmp02 as b on a.karyawanid=b.karyawanid SET a.jabatanid=b.jabatanid";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 SET jpoint=pointSpv WHERE jabatanid in ('10', '18')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 SET jpoint=pointDM WHERE jabatanid in ('08')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 SET jpoint=pointMR WHERE jabatanid in ('15')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "select * from $tmp01 WHERE IFNULL(jabatanid,'')=''";
+$tampil = mysqli_query($cnmy, $query);
+$ketemu=mysqli_num_rows($tampil);
+if ((INT)$ketemu>0) {
+    echo "Jabatan Ada yang kosong";
+    goto hapusdata;
 }
 
-if (!empty($query_point)) {
-    mysqli_query($cnmy, $query_point); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "select karyawanid, COUNT(DISTINCT jabatanid) as jml from $tmp01 WHERE IFNULL(jabatanid,'')='' GROUP BY 1 HAVING COUNT(DISTINCT jabatanid)>1";
+$tampil2 = mysqli_query($cnmy, $query);
+$ketemu2=mysqli_num_rows($tampil2);
+if ((INT)$ketemu2>0) {
+    echo "Dalam satu bulan ada jabatan yang berbeda...";
+    goto hapusdata;
 }
 
-
-
-//$sql = "select distinct dokterid, namalengkap, gelar, spesialis FROM $tmp01";
-$sql = "idket INT(5), nama_ket varchar(100)";
-$query = "create TEMPORARY table $tmp05 ($sql)"; 
+$query = "karyawanid varchar(10), jabatanid varchar(5), idket INT(5), nama_ket varchar(100)";
+$query = "create TEMPORARY table $tmp03 ($query)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-unset($pinsert_data);//kosongkan array
-$pinsert_data[] = "('1', 'Aktivitas')";
-$pinsert_data[] = "('2', 'Call')";
 
-$query = "INSERT INTO $tmp05 (idket, nama_ket) values ".implode(', ', $pinsert_data);
+$query = "INSERT INTO $tmp03 (karyawanid, jabatanid, idket, nama_ket) SELECT DISTINCT karyawanid, jabatanid, '1' as idket, 'Aktivitas' as nama_ket FROM ("
+        . " SELECT DISTINCT karyawanid, jabatanid FROM $tmp01 UNION SELECT DISTINCT karyawanid, jabatanid FROM $tmp02) as tbl";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "INSERT INTO $tmp03 (karyawanid, jabatanid, idket, nama_ket) SELECT DISTINCT karyawanid, jabatanid, '2' as idket, 'Call' as nama_ket FROM ("
+        . " SELECT DISTINCT karyawanid, jabatanid FROM $tmp01 UNION SELECT DISTINCT karyawanid, jabatanid FROM $tmp02) as tbl";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
 
 $lcfieldtambah="";
 for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
@@ -166,7 +263,7 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
 if (!empty($lcfieldtambah)) {
     $lcfieldtambah .="ADD COLUMN jml VARCHAR(5)";
     
-    $query = "Alter Table $tmp05 $lcfieldtambah"; 
+    $query = "Alter Table $tmp03 $lcfieldtambah"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
 }
 
@@ -175,27 +272,31 @@ for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
     $pntgl=$ix;
     if (strlen($pntgl)<=1) $pntgl="0".$ix;
     //jpoint as diganti jadi count(distinct ketid)
-    $query = "UPDATE $tmp05 as a JOIN (select '1' as idket, jpoint as jml from $tmp01 WHERE DATE_FORMAT(tanggal,'%d')='$pntgl' GROUP BY 1) as b on "
-            . " IFNULL(a.idket,'')=IFNULL(b.idket,'') SET "
+    $query = "UPDATE $tmp03 as a JOIN (select karyawanid, '1' as idket, jpoint as jml from $tmp01 WHERE DATE_FORMAT(tanggal,'%d')='$pntgl' GROUP BY 1,2) as b on "
+            . " IFNULL(a.idket,'')=IFNULL(b.idket,'') AND a.karyawanid=b.karyawanid SET "
             . " a.".$pnmfield."=b.jml WHERE a.idket='1'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
     
-    $query = "UPDATE $tmp05 as a JOIN (select '2' as idket, count(distinct dokterid) as jml from $tmp02 "
-            . " WHERE IFNULL(jenis,'') NOT IN ('JV') AND DATE_FORMAT(tanggal,'%d')='$pntgl' GROUP BY 1) as b on "
-            . " IFNULL(a.idket,'')=IFNULL(b.idket,'') SET "
+    $query = "UPDATE $tmp03 as a JOIN (select karyawanid, '2' as idket, count(distinct dokterid) as jml from $tmp02 "
+            . " WHERE 1=1 AND DATE_FORMAT(tanggal,'%d')='$pntgl' GROUP BY 1,2) as b on "//1=1  ==> jadi : IFNULL(jenis,'') NOT IN ('JV') 
+            . " IFNULL(a.idket,'')=IFNULL(b.idket,'') AND a.karyawanid=b.karyawanid SET "
             . " a.".$pnmfield."=b.jml WHERE a.idket='2'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
+    
+    
+    //tambahan join visit
+    $query = "UPDATE $tmp03 as a JOIN (select karyawanid, '1' as idket, pointtambah from $tmp05 WHERE DATE_FORMAT(tanggal,'%d')='$pntgl' GROUP BY 1,2) as b on "
+            . " IFNULL(a.idket,'')=IFNULL(b.idket,'') AND a.karyawanid=b.karyawanid SET "
+            . " a.".$pnmfield."=IFNULL(a.".$pnmfield.",0)+IFNULL(b.pointtambah,0) WHERE a.idket='1'";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }    
+    
 }
 
 
-
 //summary persentase
-$sql = "select karyawanid, idinput, jabatanid, tanggal, ketid, nama_ket,
-    pointMR, pointSpv, pointDM, jpoint  
-    FROM $tmp01";
+$sql = "select karyawanid, idinput, jabatanid, tanggal, ketid, nama_ket, pointMR, pointSpv, pointDM, jpoint FROM $tmp01";
 $query = "create TEMPORARY table $tmp06 ($sql)"; 
-mysqli_query($cnmy, $query);
-$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "create TEMPORARY table $tmp07 (select * from $tmp06)"; 
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -205,25 +306,16 @@ $query = "INSERT INTO $tmp06 (karyawanid, idinput, jabatanid, tanggal)"
         . " (SELECT DISTINCT IFNULL(CONCAT(karyawanid, tanggal),'') FROM $tmp07)"; 
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+
+
 //ADD COLUMN jpoint DECIMAL(20,2), 
 $query = "ALTER TABLE $tmp06 ADD totakv INT(4), ADD totvisit INT(4), ADD totjv INT(4), ADD totec INT(4), ADD sudahreal VARCHAR(1)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-/*
-if ($pjabatanid=="10" OR $pjabatanid=="18") {
-    $query = "UPDATE $tmp06 SET jpoint=pointSpv";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-}elseif ($pjabatanid=="08") {
-    $query = "UPDATE $tmp06 SET jpoint=pointDM";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-}elseif ($pjabatanid=="15") {
-    $query = "UPDATE $tmp06 SET jpoint=pointMR";
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-}
-*/
 
 $query = "UPDATE $tmp06 SET totakv=1";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 
 $query = "UPDATE $tmp06 as a JOIN (select karyawanid, tanggal, count(distinct dokterid) as jml FROM 
     $tmp02 WHERE IFNULL(jenis,'') NOT IN ('JV') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totvisit=b.jml";
@@ -238,6 +330,34 @@ $query = "UPDATE $tmp06 as a JOIN (select karyawanid, tanggal, count(distinct do
     $tmp02 WHERE IFNULL(jenis,'') IN ('JV') GROUP BY 1,2) as b on a.karyawanid=b.karyawanid AND a.tanggal=b.tanggal SET a.totjv=b.jml";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 //END summary persentase
+
+
+
+
+
+$query = "select DISTINCT a.nama, a.jabatanId as jabatanid, b.nama as nama_jabatan from hrd.karyawan as a 
+    LEFT join hrd.jabatan as b on a.jabatanId=b.jabatanId 
+    where a.karyawanid='$pkryid'";
+$tampilk=mysqli_query($cnmy, $query);
+$rowk=mysqli_fetch_array($tampilk);
+$pnamakarywanpl=$rowk['nama'];
+$pjabatanid=$rowk['jabatanid'];
+$pnmjbtkarywanpl=$rowk['nama_jabatan'];
+
+//cari jabatan yang diinput
+$query = "select a.jabatanid, b.nama as nama_jabatan FROM ("
+        . " select DISTINCT jabatanid FROM $tmp01 WHERE IFNULL(jabatanid,'')<>''"
+        . " UNION "
+        . " select DISTINCT jabatanid FROM $tmp02 WHERE IFNULL(jabatanid,'')<>''"
+        . " ) as a JOIN hrd.jabatan as b on a.jabatanid=b.jabatanId";
+$tampilk=mysqli_query($cnmy, $query);
+$rowk=mysqli_fetch_array($tampilk);
+$pnamajabatan=$rowk['nama_jabatan'];
+$pjabatanid=$rowk['jabatanid'];
+
+if (empty($pnamajabatan)) $pnamajabatan=$pnmjbtkarywanpl;
+
+
 
     $bulan_array=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
         "Juni", "Juli", "Agustus", "September", 
@@ -274,6 +394,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
     $jpoint = (DOUBLE)$jab * (DOUBLE)$jml_hari_krj;
     
+    
+    
 ?>
 
 <HTML>
@@ -289,8 +411,9 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 </script>
 
 <BODY onload="initVar()">
-    <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
-    <?PHP
+    
+<?PHP
+    
     echo "<b>Monthly Report Point & Call</b><br/>";
     echo "<b>Periode : $pperiode</b><br/>";
     echo "<b>Nama : $pnamakarywanpl - $pkryid</b><br/>";
@@ -331,7 +454,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         echo "</thead>";
         echo "<tbody>";
             $no=1;
-            $query = "select * from $tmp05 order by nama_ket, idket";
+            $query = "select * from $tmp03 order by nama_ket, idket";
             $tampil0=mysqli_query($cnmy, $query);
             while ($row0=mysqli_fetch_array($tampil0)) {
                 $pketid=$row0['idket'];
@@ -524,7 +647,12 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     echo "</div>";
     
     echo "<br/><br/><br/><br/><br/>";
-    ?>
+    
+    
+    
+    
+?>
+    
 </BODY>
 
     <style>
@@ -593,6 +721,8 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     </style>
     
 </HTML>
+
+
 <?PHP
 hapusdata:
     mysqli_query($cnmy, "drop TEMPORARY table if EXISTS $tmp01");

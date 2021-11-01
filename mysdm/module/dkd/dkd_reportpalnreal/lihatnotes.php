@@ -7,6 +7,11 @@ $pkryid=$_POST['uidkry'];
 $ptgl=$_POST['utgl'];
 $pudoktid=$_POST['udoktid'];
 
+if (!isset($_SESSION['USERID'])) {
+    echo "ANDA HARUS LOGIN ULANG....";
+    exit;
+}
+
 $piduser=$_SESSION['USERID']; 
 $pidcard=$_SESSION['IDCARD'];
 $pidjbt=$_SESSION['JABATANID']; 

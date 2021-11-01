@@ -892,9 +892,9 @@ if ( $pnidmodule=="tolsresetpass" ) {
         include 'module/disc_dplchc/dplchc.php';
         
     }elseif ($_GET['module']=='uploaddatabudget'){
-        include 'module/mod_budget_uploaddatabudget/uploaddatabudget.php';
+        include 'module/budget/mod_budget_uploaddatabudget/uploaddatabudget.php';
     }elseif ($_GET['module']=='bgtuploaddatabudgetdivisi'){
-        include 'module/mod_budget_uploaddatabudget/aksi_uploaddatabudget.php';
+        include 'module/budget/mod_budget_uploaddatabudget/aksi_uploaddatabudget.php';
     }elseif ($_GET['module']=='pindacabareacust'){
         include 'module/mst_pindahcabareacust/pindahcabareacust.php';
         

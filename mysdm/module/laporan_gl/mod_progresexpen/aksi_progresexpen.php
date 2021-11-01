@@ -94,14 +94,83 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 $query = "select kodeinput, keterangan_proses, divisi, idkodeinput, tanggal, tglinput, tgltrans, bulan, "
         . " tglmintadana, tgldanasby, "
         . " periode1, periode2, karyawanid, nama_pengaju as nama_karyawan, icabangid, "
-        . " distid, dokterid, nama_realisasi, keterangan1, SUM(kredit) as jumlah "
+        . " distid, dokterid, nama_realisasi, pcm, keterangan1, SUM(kredit) as jumlah "
         . " FROM $tmp01 ";
 $query .="GROUP BY kodeinput, keterangan_proses, divisi, idkodeinput, tanggal, tglinput, tgltrans, bulan, "
         . " tglmintadana, tgldanasby, "
-        . " periode1, periode2, karyawanid, nama_pengaju, icabangid, distid, dokterid, nama_realisasi, keterangan1";
+        . " periode1, periode2, karyawanid, nama_pengaju, icabangid, distid, dokterid, nama_realisasi, pcm, keterangan1";
 $query = "create TEMPORARY table $tmp02 ($query)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+
+//INSERT DARI BR0
+
+$query = "select * from hrd.br0 WHERE tgl BETWEEN '$ptanggal01' AND '$ptanggal02' AND IFNULL(batal,'')<>'Y' AND IFNULL(retur,'')<>'Y' "
+        . " AND brid NOT IN (select distinct IFNULL(brid,'') from hrd.br0_reject) ";
+$query .=" AND karyawanid NOT IN (select distinct IFNULL(karyawanId,'') FROM hrd.karyawan WHERE divisiid='OTC')";
+if (!empty($pcabangid)) $query .= " AND icabangid='$pcabangid' ";
+else{
+    if ($fjbtid=="08") {
+        $query .= " AND ( icabangid IN (select distinct IFNULL(icabangid,'') FROM sls.idm0 where karyawanid='$fkaryawan') OR karyawanid='$fkaryawan') ";
+    }elseif ($fjbtid=="20") {
+        $query .= " AND ( icabangid IN (select distinct IFNULL(icabangid,'') FROM sls.ism0 where karyawanid='$fkaryawan') OR karyawanid='$fkaryawan') ";
+    }elseif ($fjbtid=="05") {
+        
+        $ppilregion="";
+        if ($fregion=="B") $ppilregion="B";
+        elseif ($fregion=="T") $ppilregion="T";
+        
+        $query .= " AND ( icabangid IN (select distinct IFNULL(icabangid,'') FROM mkt.icabang where region='$ppilregion') OR karyawanid='$fkaryawan') ";
+    }else{
+        
+    }
+}
+$query = "create TEMPORARY table $tmp03 ($query)";
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "DELETE FROM $tmp03 WHERE brid IN (select distinct IFNULL(idkodeinput,'') FROM $tmp01 WHERE kodeinput='1')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp03 SET jumlah=jumlah1 WHERE IFNULL(jumlah1,0)<>0";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "ALTER TABLE $tmp03 ADD COLUMN kodeinput VARCHAR(2), ADD COLUMN keterangan_proses VARCHAR(200), ADD COLUMN tanggal DATE DEFAULT '0000-00-00'";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp03 SET kodeinput='1'";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp03 as a JOIN (select DISTINCT kodeinput, keterangan_proses FROM $tmp01 WHERE kodeinput='1') as b on a.kodeinput=b.kodeinput "
+        . " SET a.keterangan_proses=b.keterangan_proses";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp03 SET keterangan_proses='BUDGET REQUEST (ETHICAL)' WHERE kodeinput='1' AND IFNULL(keterangan_proses,'')=''";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp03 SET tanggal=tgltrans";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "UPDATE $tmp03 SET tanggal=tgl WHERE IFNULL(tgltrans,'') in ('', '0000-00-00')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "INSERT INTO $tmp02 (kodeinput, keterangan_proses, divisi, idkodeinput, tanggal, tglinput, tgltrans, "
+        . " karyawanid, dokterid, icabangid, nama_realisasi, keterangan1, pcm, jumlah)"
+        . "SELECT kodeinput, keterangan_proses, divprodid, brid, tanggal, tgl, tgltrans, "
+        . " karyawanid, dokterid, icabangid, realisasi1, aktivitas1, ca, jumlah "
+        . " FROM $tmp03";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "DROP TEMPORARY TABLE $tmp03";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+//END ISERT DARI BR0
+
+
+
 
 $query = "ALTER TABLE $tmp02 ADD COLUMN nama_cabang VARCHAR(200), ADD COLUMN nama_dokter VARCHAR(200)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -196,6 +265,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     echo "<th align='center'><small>Jumlah</small></th>";
                     echo "<th align='center'><small>Cabang</small></th>";
                     echo "<th align='center'><small>Keterangan</small></th>";
+                    echo "<th align='center'><small>Status Dana</small></th>";
                 echo "</tr>";
             echo "</thead>";
             echo "<tbody>";
@@ -208,6 +278,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
                     echo "<tr>";
                     echo "<td nowrap colspan='4'><b>$nnamainput</b></td>";
+                    echo "<td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td>";
                     echo "<td nowrap>&nbsp;</td>";
@@ -234,6 +305,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         $njumlah=$row2['jumlah'];
                         $nnmcabang=$row2['nama_cabang'];
                         $nket=$row2['keterangan1'];
+                        $npcmket=$row2['pcm'];
                         
                         $ntglmintadana=$row2['tglmintadana'];//pengajuan nodivisi atau pengajuan dana ke SBY
                         $ntgldanasby=$row2['tgldanasby'];//transfer dana dari surabaya
@@ -271,6 +343,9 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                             }
                         }
                         
+                        $pnamapc="";
+                        if ($npcmket=="Y") $pnamapc="Cash Advance (PCM)";
+                        
                         echo "<tr>";
                         echo "<td nowrap>$nnmdivisi</td>";
                         echo "<td nowrap class='str'>$nidkodeinput</td>";
@@ -284,6 +359,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         echo "<td nowrap align='right'>$njumlah</td>";
                         echo "<td nowrap>$nnmcabang</td>";
                         echo "<td class='str'>$nket</td>";
+                        echo "<td class='str'>$pnamapc</td>";
                         echo "</tr>";
 
                     }

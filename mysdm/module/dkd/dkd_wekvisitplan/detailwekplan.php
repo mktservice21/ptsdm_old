@@ -46,14 +46,23 @@ $tampil=mysqli_query($cnmy, $query);
 $row=mysqli_fetch_array($tampil);
 $ntgl=$row['tanggal'];
 
-$ntanggal = date('l d F Y', strtotime($ntgl));
+if ($ntgl=="0000-00-00" OR $ntgl=="0000-00-00 00:00:00") $ntgl="";
 
-$xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
-$xtgl= date('d', strtotime($ntgl));
-$xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
-$xthn= date('Y', strtotime($ntgl));
+$ptanggal="";
 
-$ptanggal="$xhari, $xtgl $xbulan $xthn";
+if (empty($ntgl)) {
+    if (isset($_GET['intgl'])) $ptanggal=$_GET['intgl'];
+}else{
+
+    $ntanggal = date('l d F Y', strtotime($ntgl));
+
+    $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
+    $xtgl= date('d', strtotime($ntgl));
+    $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
+    $xthn= date('Y', strtotime($ntgl));
+
+    $ptanggal="$xhari, $xtgl $xbulan $xthn";
+}
 
 $nnamaket=$row['nama_ket'];
 $ncompl=$row['compl'];

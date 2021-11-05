@@ -77,6 +77,7 @@ $sql = "select a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput,
     WHERE a.karyawanid='$pkryid' AND a.tanggal='$itgl' AND a.dokterid='$pudoktid' ";
 $tampil=mysqli_query($cnmy, $sql);
 $row= mysqli_fetch_array($tampil);
+$ntglinput=$row['tglinput'];
 $pnmkaryawan= $row['namakaryawan'];
 $pnmdokt= $row['namalengkap'];
 $pnotes= $row['notes'];
@@ -100,18 +101,20 @@ if ($ptglatasan2=="0000-00-00" OR $ptglatasan2=="0000-00-00 00:00:00") $ptglatas
 if ($ptglatasan3=="0000-00-00" OR $ptglatasan3=="0000-00-00 00:00:00") $ptglatasan3="";
 if ($ptglatasan4=="0000-00-00" OR $ptglatasan4=="0000-00-00 00:00:00") $ptglatasan4="";
 
-
+$nfolderbulan = date('Ym', strtotime($ntglinput));
 $pfttd=$row['user_tandatangan'];
 $pffoto=$row['user_foto'];
 
 $pittd="Y";
 $pimages_pl=$pfttd;
 $ffolderfile="images/user_ttd/";
+$ffolderfile2="images/user_ttd/$nfolderbulan/";
 $fketttdfoto="Tanda tangan user";
 if (!empty($pffoto)) {
     $pimages_pl=$pffoto;
     $pittd="N";
     $ffolderfile="images/user_foto/";
+    $ffolderfile2="images/user_foto/$nfolderbulan/";
     $fketttdfoto="Foto user";
 }
 
@@ -347,7 +350,13 @@ if ($ptanggal_minapv>$ptgl) {
                                                 <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><?PHP echo $fketttdfoto; ?> <span class='required'></span></label>
                                                 <div class='col-md-5 col-sm-5 col-xs-12'>
                                                     <?PHP
-                                                        echo "<img class='img_ttdfoto' src='$ffolderfile/$pimages_pl' width='140px' height='150px' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\" />";
+                                                        if (file_exists("../../../".$ffolderfile2."/".$pimages_pl)) {
+                                                            $pnamafilefolder=$ffolderfile2."".$pimages_pl;
+                                                        }else{
+                                                            $pnamafilefolder=$ffolderfile."".$pimages_pl;
+                                                        }
+                                                        //echo "<img class='img_ttdfoto' src='$ffolderfile/$pimages_pl' width='140px' height='150px' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\" />";
+                                                        echo "<img class='img_ttdfoto' src='$pnamafilefolder' width='140px' height='150px' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\" />";
                                                     ?>
                                                 </div>
                                             </div>

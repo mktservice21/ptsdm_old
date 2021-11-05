@@ -1,4 +1,5 @@
 <?PHP
+    include "config/cek_akses_modul.php"; 
     include "config/koneksimysqli.php";
     $aksi="module/mod_apv_biayaluarkota/aksi_biayaluarkota.php";
     $hari_ini = date("Y-m-d");

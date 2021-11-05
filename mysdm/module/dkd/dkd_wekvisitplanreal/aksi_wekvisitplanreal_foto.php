@@ -134,8 +134,20 @@ if ($module=='dkdrealisasiplan')
         
         if ($act=="dailyinput") {
             
+            //===========================
             
-                    
+            $query = "select CURRENT_DATE() as tglinput_now";
+            $tampil_t=mysqli_query($cnmy, $query);
+            $trow= mysqli_fetch_array($tampil_t);
+            $ntglinput=$trow['tglinput_now'];
+            if ($ntglinput=="0000-00-00") $ntglinput="";
+            if (empty($ntglinput)) $ntglinput = date('Y-m-d');
+            
+            $nfolderbulan = date('Ym', strtotime($ntglinput));
+            
+            //===========================
+            
+            
             $query = "INSERT INTO hrd.dkd_new_real1 (tanggal, karyawanid, jenis, dokterid, notes, saran, jabatanid)
                 VALUES
                 ('$ptanggal', '$pkaryawanid', '$pjenis', '$pdokterid', '$pketdokt', '$psaran', '$pidjabatan')";
@@ -178,11 +190,33 @@ if ($module=='dkdrealisasiplan')
                 //mendefinisikan folder
                 
                 if ($ppilihttdfoto == "foto_by") {
+                    
+                    $pnamafoldernya="../../../images/user_foto/";
+                    if (!empty($nfolderbulan)) {
+                        $pnamafoldernya="../../../images/user_foto/".$nfolderbulan."/";
+
+                        if (!file_exists($pnamafoldernya)) {
+                            mkdir($pnamafoldernya, 0777, true);
+                        }
+
+                    }
+            
                     define('UPLOAD_DIR', '../../../images/user_foto/');
                     $pimgttd=$_POST['txt_arss'];
                     $pdata=$pimgttd;
                 }else{
-                    define('UPLOAD_DIR', '../../../images/user_ttd/');
+                    
+                    $pnamafoldernya="../../../images/user_ttd/";
+                    if (!empty($nfolderbulan)) {
+                        $pnamafoldernya="../../../images/user_ttd/".$nfolderbulan."/";
+
+                        if (!file_exists($pnamafoldernya)) {
+                            mkdir($pnamafoldernya, 0777, true);
+                        }
+
+                    }
+                    
+                    define('UPLOAD_DIR', $pnamafoldernya);
                     $pimgttd=$_POST['txtgambar'];
                     $pdata="data:".$pimgttd;
                 }

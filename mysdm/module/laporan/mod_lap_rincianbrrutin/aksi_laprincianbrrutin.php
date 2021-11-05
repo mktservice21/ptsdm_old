@@ -99,7 +99,17 @@ $pperiode2 = date("Y-m", strtotime($tgl02));
 $myperiode1 = date("F Y", strtotime($tgl01));
 $myperiode2 = date("F Y", strtotime($tgl02));
         
+$query = "select divisi, bulan, karyawanid, nama_pengaju, idkodeinput as idrutin,kodeid as nobrid, coa4, "
+        . " keterangan1, deskripsi, kredit as jumlah "
+        . " from dbproses.proses_expenses "
+        . " WHERE kodeinput='5' AND IFNULL(divisi,'') <> 'OTC' "
+        . " AND DATE_FORMAT(tanggal,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' "
+        . " $pfilterkry";
+$query = "create TEMPORARY table $tmp01 ($query)";
+mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+/*
 $query = "select divisi, idrutin, kodeperiode, bulan, karyawanid, nama_karyawan as nmkaryawan "
         . " FROM dbmaster.t_brrutin0 WHERE IFNULL(stsnonaktif,'')<>'Y' "
         . " AND IFNULL(kode,0)=1 AND IFNULL(divisi,'') <> 'OTC' "
@@ -137,6 +147,8 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
         
 $query = "UPDATE $tmp03 a set a.nama_karyawan=a.nmkaryawan, karyawanid=idrutin WHERE karyawanid IN ('0000002200', '0000002083')";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+*/
 
 //IFNULL(c.DIVISI2,'') IN ('', 'OTHERS', 'OTHER', 'HO', 'OTC', 'CHC')
 $arriddiv[]="";

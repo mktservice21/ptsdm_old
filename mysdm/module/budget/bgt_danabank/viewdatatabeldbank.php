@@ -52,7 +52,7 @@
             "processing": true,
             "serverSide": true,
             "stateSave": true,
-            "order": [[ 0, "desc" ]],
+            "order": [[ 1, "desc" ]],
             "lengthMenu": [[10, 50, 100, 10000000], [10, 50, 100, "All"]],
             "displayLength": 10,
             "columnDefs": [
@@ -60,7 +60,7 @@
                 { "orderable": false, "targets": 0 },
                 { "orderable": false, "targets": 1 },
                 { className: "text-right", "targets": [8,9] },//right
-                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }//nowrap
+                { className: "text-nowrap", "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13,14] }//nowrap
 
             ],
             "language": {
@@ -115,6 +115,8 @@
                     <th width='50px'>Debit</th>
                     <th width='50px'>Kredit</th>
                     <th width='50px'>Keterangan</th>
+                    <th width='50px'>Customer</th>
+                    <th width='50px'>Noslip</th>
                     <th width='50px'>User</th>
                     <th width='50px'>&nbsp;</th>
                 </tr>

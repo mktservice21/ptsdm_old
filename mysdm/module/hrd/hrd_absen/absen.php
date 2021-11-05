@@ -171,11 +171,11 @@ $_SESSION['IDADDRESS_SYS']=$puser_ipaddr;
                                                 <input type='text' id='e_stslok' name='e_stslok' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pstslokasi; ?>' Readonly>
                                             </div>
                                         </div>
-                                        
+
                                         <div class='form-group'>
                                             <label class='control-label col-md-4 col-sm-4 col-xs-4' for=''>&nbsp; <span class='required'></span></label>
                                             <div class='col-md-12'>
-                                                
+                                                <span id="myspan_info" class="spn_text">&nbsp;</span><br/>&nbsp;<br/>&nbsp;
                                                 <?PHP
                                                 echo "<a class='btn btn-default btn-sm' id='btn_home' href='?module=home'>Home</a>";
                                                 //echo "&nbsp; ";
@@ -351,13 +351,52 @@ if ($pmobile_yes=="Y") {
 <?PHP
 }
 ?>
-
+<style>
+    .spn_text {
+      animation: blink-animation 1s steps(5, start) infinite;
+      -webkit-animation: blink-animation 1s steps(5, start) infinite;
+    }
+    @keyframes blink-animation {
+      to {
+        visibility: hidden;
+      }
+    }
+    @-webkit-keyframes blink-animation {
+      to {
+        visibility: hidden;
+      }
+    }
+</style>
 <script type="text/javascript">
+
+    function testAsync(){
+        return new Promise((resolve,reject)=>{
+            //here our function should be implemented 
+            setTimeout(()=>{
+                getLocationPlaceholder();
+                setTimeout(function () {
+                    ShowIframeMapsAbsen('0');
+                }, 1000);
+                resolve();
+            ;} , 6000
+            );
+        });
+    }
+
+    async function callerFun(){
+        document.getElementById("myspan_info").textContent="Sedang mencari lokasi... mohon tunggu";
+        await testAsync();
+        document.getElementById("myspan_info").textContent="";
+    }
+    
+    
+    
     $(document).ready(function() {
-        getLocationPlaceholder();
-        setTimeout(function () {
-            ShowIframeMapsAbsen('0');
-        }, 1000);
+        callerFun();
+        //getLocationPlaceholder();
+        //setTimeout(function () {
+        //    ShowIframeMapsAbsen('0');
+        //}, 1000);
         //update();
     } );
     

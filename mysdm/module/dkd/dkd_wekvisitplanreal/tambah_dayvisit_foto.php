@@ -418,13 +418,18 @@ $pnamajabatan=$nr['nama'];
                                                         $pfttd=$nrd['user_tandatangan'];
                                                         $pffoto=$nrd['user_foto'];
                                                         
+                                                        $nfolderbulan = date('Ym', strtotime($ntglinput));
+                                                        
                                                         $pittd="Y";
                                                         $pimages_pl=$pfttd;
                                                         $ffolderfile="images/user_ttd/";
+                                                        $ffolderfile2="images/user_ttd/$nfolderbulan/";
+
                                                         if (!empty($pffoto)) {
                                                             $pimages_pl=$pffoto;
                                                             $pittd="N";
                                                             $ffolderfile="images/user_foto/";
+                                                            $ffolderfile2="images/user_foto/$nfolderbulan/";
                                                         }
                                                         
                                                         $pnmjenis="";
@@ -445,7 +450,7 @@ $pnamajabatan=$nr['nama'];
                                                         if (empty($pimages_pl)) $pviewuser="<b>$pnmdokt_ - $pdokterid</b>";
                                                         else {
                                                             $pviewuser="<b>$pnmdokt_ - $pdokterid</b>";
-                                                            //$pviewuser="<input type='button' value='$pnmdokt_ - $pdokterid' class='btn btn-info btn-xs' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\">";
+                                                            //$pviewuser="<input type='button' value='$pnmdokt_ - $pdokterid' class='btn btn-info btn-xs' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl', '$nfolderbulan')\">";
                                                         }
                                                         
                                                         $njammenitdetik = date('H:i:s', strtotime($ntglinput));
@@ -460,7 +465,12 @@ $pnamajabatan=$nr['nama'];
                                                         
                                                         echo "<tr>";
                                                         if (!empty($pimages_pl)) {
-                                                            echo "<td nowrap><img class='img_ttdfoto' src='$ffolderfile/$pimages_pl' width='20px' height='30px' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\" /></td>";
+                                                            if (file_exists($ffolderfile2."/".$pimages_pl)) {
+                                                                $pnamafilefolder=$ffolderfile2."".$pimages_pl;
+                                                            }else{
+                                                                $pnamafilefolder=$ffolderfile."".$pimages_pl;
+                                                            }
+                                                            echo "<td nowrap><img class='img_ttdfoto' src='$pnamafilefolder' width='20px' height='30px' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl', '$nfolderbulan')\" /></td>";
                                                         }else{
                                                             echo "<td nowrap>&nbsp;</td>";
                                                         }
@@ -745,11 +755,11 @@ Nama User : "+option_usr.text;
         
     }
     
-    function ShowDataFotoTTD(ittd, img_data) {
+    function ShowDataFotoTTD(ittd, img_data, ifbln) {
         $.ajax({
             type:"post",
             url:"module/dkd/viewdatadkd.php?module=showimagespotottd",
-            data:"uttd="+ittd+"&uimg="+img_data,
+            data:"uttd="+ittd+"&uimg="+img_data+"&ufbln="+ifbln,
             success:function(data){
                 $("#myModalImages").html(data);
             }

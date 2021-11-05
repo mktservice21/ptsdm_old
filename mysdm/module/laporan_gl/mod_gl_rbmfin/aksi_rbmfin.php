@@ -28,9 +28,7 @@
     $pidsession=$_SESSION['IDSESI'];
     
     $ppilformat="1";
-    if (($picardid=="0000000143" OR $picardid=="0000000329") AND $ppilihrpt=="excel") {
-        $ppilformat="2";
-    }
+
     
     $ppilihrpt=$_GET['ket'];
     if ($ppilihrpt=="excel") {
@@ -42,6 +40,9 @@
         header("Content-Disposition: attachment; filename=REPORT REALISASI BIAYA MARKETING.xls");
     }
     
+    if (($picardid=="0000000143" OR $picardid=="0000000329") AND $ppilihrpt=="excel") {
+        $ppilformat="2";
+    }
     
     include("config/koneksimysqli.php");
     

@@ -769,12 +769,15 @@ if ($pmodule=="cekdatasudahada") {
 }elseif ($pmodule=="showimagespotottd") {
     
 
+    $nfolderbulan=$_POST['ufbln'];
     $fttd=$_POST['uttd'];
     $fimage=$_POST['uimg'];
     if ($fttd=="Y") {
         $ffolderfile="images/user_ttd/";
+        $ffolderfile2="images/user_ttd/$nfolderbulan/";
     }else{
         $ffolderfile="images/user_foto/";
+        $ffolderfile2="images/user_foto/$nfolderbulan/";
     }
 
     ?>
@@ -805,7 +808,15 @@ if ($pmodule=="cekdatasudahada") {
                                             <center>
                                             <?PHP
                                             //echo "$ffolderfile/$fimage";
-                                            echo "<img src='$ffolderfile/$fimage' width='310px' height='390px' />";
+                                            
+                                            
+                                            if (file_exists("../../".$ffolderfile2."/".$fimage)) {
+                                                $pnamafilefolder=$ffolderfile2."".$fimage;
+                                            }else{
+                                                $pnamafilefolder=$ffolderfile."".$fimage;
+                                            }
+                                            //echo "<img src='$ffolderfile/$fimage' width='310px' height='390px' />";
+                                            echo "<img src='$pnamafilefolder' width='310px' height='390px' />";
                                             ?>
                                             </center>
                                         </div>

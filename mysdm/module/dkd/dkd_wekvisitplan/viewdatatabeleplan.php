@@ -106,6 +106,33 @@
         'Sabtu'
     );
     
+
+
+    $hari_ini = date('Y-m-d');
+    $query = "select CURRENT_DATE() as tglnow";
+    $tampilt=mysqli_query($cnmy, $query);
+    $pketemut= mysqli_num_rows($tampilt);
+    if ((INT)$pketemut>0) {
+        $trow=mysqli_fetch_array($tampilt);
+        $t_tglnow=$trow['tglnow'];
+        if ($t_tglnow=="0000-00-00") $t_tglnow="";
+
+        if (!empty($t_tglnow)) {
+            $hari_ini = $t_tglnow;
+        }
+    }
+    //$hari_ini="2021-11-06";
+    $pweekDay = date('w', strtotime($hari_ini));
+    //$hari_ini=date_create($hari_ini);
+
+    // 1=senin, 2=selasa, 3=rabu, 4= kamis, 5= jumat, 6= sabtu, 0= minggu
+    $pminggulalu=8;
+    if ((INT)$pweekDay==0) $pminggulalu=1;
+    $pminggulalu=(INT)$pminggulalu-(INT)$pweekDay;
+    $ptgllau = date('Ymd', strtotime('+'.(INT)$pminggulalu.' days', strtotime($hari_ini)));
+
+
+
 ?>
 
 
@@ -143,16 +170,19 @@
                 if (empty($ntotec)) $ntotec=0;
                 if (empty($ntotjv)) $ntotjv=0;
 
+                $ntglinputdata = date('Ymd', strtotime($ntgl));
                 $ntanggal = date('l d F Y', strtotime($ntgl));
 
                 $xhari = $hari_array[(INT)date('w', strtotime($ntgl))];
                 $xtgl= date('d', strtotime($ntgl));
                 $xbulan = $bulan_array[(INT)date('m', strtotime($ntgl))];
                 $xthn= date('Y', strtotime($ntgl));
-
+                
+                $pharinya_detail="$xhari, $xtgl $xbulan $xthn";
+                
                 $pedit="<a class='btn btn-success btn-xs' href='?module=$pmodule&act=editdata&idmenu=$pidmenu&nmun=$pidmenu&id=$pidget&nid=$ntgl'>Edit</a>";
                 $print="<a title='detail' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
-                    . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&nid=$ntgl&iprint=detail',"
+                    . "onClick=\"window.open('eksekusi3.php?module=$pmodule&brid=$cidinput&nid=$ntgl&iprint=detail&intgl=$pharinya_detail',"
                     . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
                     . "Detail</a>";
 
@@ -172,6 +202,11 @@
                 }
 
                 if ($nsudahreal=="Y") {
+                    $pedit="";
+                    $phapus="";
+                }
+                
+                if ($ntglinputdata<$ptgllau) {
                     $pedit="";
                     $phapus="";
                 }

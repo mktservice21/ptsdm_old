@@ -1186,20 +1186,25 @@ th {
                 ?> setMinDate=1-parseInt(dayToday); <?PHP
             }
             ?>
-
-            $('#e_periode1').datepicker({
-                changeMonth: true,
-                changeYear: true,
-                numberOfMonths: 1,
-                ////firstDay: 1,
-                ////minDate: "1W",
-                minDate: setMinDate, 
-                ////maxDate: "+2W -3D",
-                dateFormat: 'dd MM yy',
-                onSelect: function(dateStr) {
                     
-                }
-            });
+            <?PHP if ($pidact=="editdata"){}else{ ?>
+                
+                $('#e_periode1').datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    numberOfMonths: 1,
+                    ////firstDay: 1,
+                    ////minDate: "1W",
+                    minDate: setMinDate, 
+                    ////maxDate: "+2W -3D",
+                    dateFormat: 'dd MM yy',
+                    onSelect: function(dateStr) {
+
+                    }
+                });
+
+            <?PHP } ?>
+            
         //}
 
     });

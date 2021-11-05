@@ -59,8 +59,9 @@ $sql = "select a.karyawanId as karyawanid, a.pin, c.pin_pass, a.nama as nama_kar
         . " LEFT JOIN dbmaster.t_karyawan_posisi as c on a.karyawanid=c.karyawanId "
         . " LEFT JOIN dbmaster.sdm_users as d on a.karyawanId=d.karyawanId "
         . " LEFT JOIN mkt.icabang as f on a.icabangid=f.icabangid "
-        . " LEFT JOIN hrd.karyawan as g on a.atasanid=g.karyawanId ";
-
+        . " LEFT JOIN hrd.karyawan as g on a.atasanid=g.karyawanId "
+        . " ";
+//LEFT JOIN (select distinct karyawanid, icabangid from sls.imr0 where IFNULL(karyawanid,'')<>'') as h on a.karyawanid=h.karyawanid 
 $sql.=" WHERE 1=1 $pjabatan ";
 
 if ($fdivisi=="OTC") {

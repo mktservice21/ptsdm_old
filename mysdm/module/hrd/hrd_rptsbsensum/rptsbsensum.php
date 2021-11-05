@@ -235,8 +235,12 @@ switch($pactpilih){
                                                             echo "<option value=''>All</option>";
                                                             echo "<option value='valinval' selected>Valid / Invalid</option>";
                                                         }else{
-                                                            echo "<option value='' selected>All</option>";
-                                                            echo "<option value='valinval'>Valid / Invalid</option>";
+                                                            if ($pbolehbukall==false) {
+                                                                echo "<option value='' selected>All</option>";
+                                                            }else{
+                                                                echo "<option value='' selected>All</option>";
+                                                                echo "<option value='valinval'>Valid / Invalid</option>";
+                                                            }
                                                         }
                                                         ?>
                                                     </select>

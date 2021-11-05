@@ -94,6 +94,9 @@ if ($module=='datakaryawan' AND $act=='update')
         if (empty($patasan)) $patasan=$psm;
         if (empty($patasan)) $patasan=$pgsm;
         
+        mysqli_query($cnmy, "UPDATE hrd.karyawan set AKTIF='$paktif', atasanId='$patasan', jabatanId='$pjabatan', iCabangId='$pidcabang', areaId='$pareaid', divisiId='$pdivisi' WHERE karyawanId='$pkaryawan' LIMIT 1");
+        
+        
         mysqli_query($cnit, "UPDATE hrd.karyawan set AKTIF='$paktif', atasanId='$patasan', jabatanId='$pjabatan', iCabangId='$pidcabang', areaId='$pareaid', divisiId='$pdivisi' WHERE karyawanId='$pkaryawan' LIMIT 1");
         
         //$datasavems=SaveDataMS("dbmaster", "t_karyawan_posisi");

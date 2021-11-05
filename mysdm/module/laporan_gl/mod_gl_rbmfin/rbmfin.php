@@ -150,7 +150,10 @@
                                                 }
                                                 
                                                 if ($fgroupid=="1" OR $fgroupid=="24" OR $fgroupid=="61" OR $fgroupid=="28" OR $fgroupid=="25") {
-                                                    echo "<option value='ETH'>ETHICAL</option>";
+                                                    if ($fkaryawan=="0000000143" OR $fkaryawan=="0000000329")
+                                                        echo "<option value='ETH' selected>ETHICAL</option>";
+                                                    else
+                                                        echo "<option value='ETH'>ETHICAL</option>";
                                                 }
                                                 
                                                 ?>

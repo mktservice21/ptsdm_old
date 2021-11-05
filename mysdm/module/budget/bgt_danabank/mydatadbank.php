@@ -28,7 +28,9 @@ $columns = array(
     8=> 'CASE WHEN IFNULL(a.stsinput,"")<>"K" THEN a.jumlah ELSE "0" END',
     9=> 'CASE WHEN IFNULL(a.stsinput,"")<>"K" THEN "0" ELSE a.jumlah END',
     10=> 'a.keterangan',
-    11=> 'b.nama'
+    11=> 'a.customer',
+    12=> 'a.noslip',
+    13=> 'b.nama'
 );
 
 $nkaryawanid=$_GET['ukryid'];
@@ -70,6 +72,8 @@ if( !empty($requestData['search']['value']) ) {   // if there is a search parame
     $sql.=" OR d.nama LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR d.subnama LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.nodivisi LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.customer LIKE '%".$requestData['search']['value']."%' ";
+    $sql.=" OR a.noslip LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.divisi LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR a.coa4 LIKE '%".$requestData['search']['value']."%' ";
     $sql.=" OR c.NAMA4 LIKE '%".$requestData['search']['value']."%' ";
@@ -112,6 +116,8 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $pbulanclosing=$row['bulan_cls'];
     $pstsinput=$row['stsinput'];
     $nparentidb= $row["parentidbank"];
+    $ncustomer= $row["customer"];
+    $nnolsip= $row["noslip"];
     
 
                     
@@ -182,6 +188,8 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     $nestedData[] = $pjumlah1;
     $nestedData[] = $pjumlah2;
     $nestedData[] = $pketerangan;
+    $nestedData[] = $ncustomer;
+    $nestedData[] = $nnolsip;
     $nestedData[] = $pnmuser;
     $nestedData[] = $phapus;
     

@@ -21,14 +21,24 @@
         exit;
     }
     
-    $ppilihrpt="";
+    $pidgrouppil=$_SESSION['GROUP'];
+    $picardid=$_SESSION['IDCARD'];
+    $puserid=$_SESSION['USERID'];
     
+    
+    $ppilihrpt="";
+    $ppilformat="1";
     if (isset($_GET['ket'])) $ppilihrpt=$_GET['ket'];
     if ($ppilihrpt=="excel") {
+        $ppilformat="3";
         // Fungsi header dengan mengirimkan raw data excel
         header("Content-type: application/vnd-ms-excel");
         // Mendefinisikan nama file ekspor "hasil-export.xls"
         header("Content-Disposition: attachment; filename=Laporan Rincian Biaya Rutin.xls");
+    }
+    
+    if (($picardid=="0000000143" OR $picardid=="0000000329") AND $ppilihrpt=="excel") {
+        $ppilformat="2";
     }
     
     include("config/koneksimysqli.php");
@@ -38,16 +48,13 @@
     
     $printdate= date("d/m/Y");
     
-    
-    $pidgrouppil=$_SESSION['GROUP'];
-    $picardid=$_SESSION['IDCARD'];
-    $puserid=$_SESSION['USERID'];
-    
-    $ppilformat="1";
-    if (($picardid=="0000000143" OR $picardid=="0000000329") AND $ppilihrpt=="excel") {
-        $ppilformat="2";
+    $pboleheditcoa=false;
+    if ($pidgrouppil=="28" OR $pidgrouppil=="23" OR $pidgrouppil=="40" OR $pidgrouppil=="26" OR $pidgrouppil=="1" OR $pidgrouppil=="24") {
+        $pboleheditcoa=true;
     }
-    
+    if ($ppilihrpt=="excel") {
+        $pboleheditcoa=false;
+    }
 ?>
 
 
@@ -99,58 +106,67 @@ $pperiode2 = date("Y-m", strtotime($tgl02));
 $myperiode1 = date("F Y", strtotime($tgl01));
 $myperiode2 = date("F Y", strtotime($tgl02));
         
-$query = "select divisi, bulan, karyawanid, nama_pengaju, idkodeinput as idrutin,kodeid as nobrid, coa4, "
+$query = "select divisi, bulan, periode1, periode2, karyawanid, nama_pengaju, idkodeinput as idrutin, kodeid as nobrid, coa4, "
         . " keterangan1, deskripsi, kredit as jumlah "
         . " from dbproses.proses_expenses "
         . " WHERE kodeinput='5' AND IFNULL(divisi,'') <> 'OTC' "
         . " AND DATE_FORMAT(tanggal,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' "
-        . " $pfilterkry";
-$query = "create TEMPORARY table $tmp01 ($query)";
-mysqli_query($cnmy, $query);
-$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-
-/*
-$query = "select divisi, idrutin, kodeperiode, bulan, karyawanid, nama_karyawan as nmkaryawan "
-        . " FROM dbmaster.t_brrutin0 WHERE IFNULL(stsnonaktif,'')<>'Y' "
-        . " AND IFNULL(kode,0)=1 AND IFNULL(divisi,'') <> 'OTC' "
-        . " $pfilterapv $pfilterkry "
-        . " AND DATE_FORMAT(bulan,'%Y-%m') BETWEEN '$pperiode1' AND '$pperiode2' ";
+        . " $pfilterkry AND kodeid in $filterjenis";
 $query = "create TEMPORARY table $tmp01 ($query)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "select b.divisi, b.kodeperiode, b.bulan, b.karyawanid, b.nmkaryawan, "
-        . " a.nourut, a.idrutin, a.nobrid, a.coa, a.obat_untuk, a.tgl1, a.tgl2, a.notes, a.alasanedit_fin, "
-        . " a.qty, a.rp, a.rptotal  "
-        . " from dbmaster.t_brrutin1 as a JOIN $tmp01 as b on a.idrutin=b.idrutin WHERE 1=1 "
-        . " AND a.nobrid in $filterjenis";
+$query = "ALTER TABLE $tmp01 ADD COLUMN nama_karyawan varchar(300), ADD COLUMN nama_kode VARCHAR(200), ADD COLUMN nama_coa VARCHAR(300)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId SET a.nama_karyawan=b.nama";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 SET nama_karyawan=nama_pengaju WHERE IFNULL(karyawanid,'') IN ('0000002200', '0000002083', '')";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 as a JOIN dbmaster.coa_level4 as b on a.coa4=b.COA4 SET a.nama_coa=b.NAMA4";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp01 as a JOIN dbmaster.t_brid as b on a.nobrid=b.nobrid SET a.nama_kode=b.nama";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+
+$query = "select a.karyawanid, a.tglawal, a.nopol, b.merk, b.jenis, c.nama_jenis, b.tahun from dbmaster.t_kendaraan_pemakai a "
+        . " LEFT JOIN dbmaster.t_kendaraan b on a.nopol=b.nopol "
+        . " LEFT JOIN dbmaster.t_kendaraan_jenis c on b.jenis=c.jenis";
 $query = "create TEMPORARY table $tmp02 ($query)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-
-$query = "DELETE FROM $tmp02 WHERE IFNULL(rptotal,0)=0";
+$query = "ALTER table $tmp02 ADD COLUMN noidauto BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+$query = "CREATE UNIQUE INDEX `unx1` ON $tmp02 (noidauto)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "select a.divisi, a.kodeperiode, a.bulan, a.karyawanid, a.nmkaryawan, d.nama as nama_karyawan, "
-        . " a.nourut, a.idrutin, a.nobrid, b.nama as nama_id, a.coa, c.NAMA4 as nama_coa4, a.obat_untuk, a.tgl1, a.tgl2, a.notes, a.alasanedit_fin, "
-        . " a.qty, a.rp, a.rptotal "
-        . " from $tmp02 as a "
-        . " LEFT JOIN dbmaster.t_brid as b on a.nobrid=b.nobrid "
-        . " LEFT JOIN dbmaster.coa_level4 as c on a.coa=c.COA4 "
-        . " LEFT JOIN hrd.karyawan as d on a.karyawanid=d.karyawanid";
-$query = "create TEMPORARY table $tmp03 ($query)";
-mysqli_query($cnmy, $query);
-$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+$query = "ALTER table $tmp01 ADD COLUMN nopol VARCHAR(50), ADD COLUMN jenis VARCHAR(50), ADD COLUMN nama_merk VARCHAR(100), ADD COLUMN tahun VARCHAR(10)";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "select distinct karyawanid, DATE_FORMAT(tglawal,'%Y%m') bulan, nopol, nama_jenis, merk, tahun FROM $tmp02 order by 1,2";
+$tampil=mysqli_query($cnmy, $query);
+while ($nr= mysqli_fetch_array($tampil)) {
+    $pikryid=$nr['karyawanid'];
+    $pibln=$nr['bulan'];
+    $pinopol=$nr['nopol'];
+    $pidjenis=$nr['nama_jenis'];
+    $pnmmerk=$nr['merk'];
+    $pntahun=$nr['tahun'];
+    if (!empty($pinopol)) {
+        $query = "UPDATE $tmp01 SET nopol='$pinopol', jenis='$pidjenis', nama_merk='$pnmmerk', tahun='$pntahun' WHERE DATE_FORMAT(bulan,'%Y%m')>='$pibln' AND karyawanid='$pikryid'";
+        mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    }
+}
         
-$query = "UPDATE $tmp03 a set a.nama_karyawan=a.nmkaryawan, karyawanid=idrutin WHERE karyawanid IN ('0000002200', '0000002083')";
-mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+            
 
-*/
-
-//IFNULL(c.DIVISI2,'') IN ('', 'OTHERS', 'OTHER', 'HO', 'OTC', 'CHC')
 $arriddiv[]="";
 $arridcoa[]="";
 $arrnmcoa[]="";
@@ -243,157 +259,128 @@ while ($zr= mysqli_fetch_array($tampilk)) {
                 <th align="center" nowrap>No</th>
                 <?PHP
                 if ($psortby=="periode") {
-                    echo "<th align='center' nowrap>PERIODE</th>";
+                    echo "<th align='center' nowrap>BULAN</th>";
                     echo "<th align='center' nowrap></th>";
                     echo "<th align='center' nowrap>ID KARYAWAN</th>";
                     echo "<th align='center' nowrap>KARYAWAN</th>";
                 }else{
                     echo "<th align='center' nowrap>ID KARYAWAN</th>";
                     echo "<th align='center' nowrap>KARYAWAN</th>";
-                    echo "<th align='center' nowrap>PERIODE</th>";
+                    echo "<th align='center' nowrap>BULAN</th>";
                     echo "<th align='center' nowrap></th>";
                 }
                 ?>
                 
                 <th align="center" nowrap>ID</th>
-                <th align="center" nowrap>NAMA ID</th>
+                <th align="center" nowrap>NAMA KODE</th>
                 <th align="center" nowrap>COA</th>
                 <th align="center" nowrap>NAMA PERKIRAAN</th>
-                <th align="center" nowrap>TGL. RINCI</th>
-                <th align="center" nowrap>ATAS NAMA</th>
                 <th align="center" nowrap>JUMLAH</th>
+                <th align="center" nowrap>No. Kendaraan</th>
+                <th align="center" nowrap>NOTES</th>
                 <th align="center" nowrap>KETERANGAN</th>
-                <th align="center" nowrap>COA EDIT</th>
-                <th align="center" nowrap></th>
+                
+                <?PHP
+                if ($pboleheditcoa==true) {
+                    echo "<th align='center' nowrap>COA EDIT</th>";
+                    echo "<th align='center' nowrap></th>";
+                }
+                ?>
             </tr>
         </thead>
         <tbody>
             <?PHP
-            $ptotal=0;
+            $pnotnopol = array("07", "13", "14", "18", "05", "15", "06", "19", "17", "16", "10", "11");
+            
             $no=1;
-            $query = "select * from $tmp03 ";
-            if ($psortby=="periode") {
-                $query .= " order by DATE_FORMAT(bulan,'%Y%m'), kodeperiode, nama_karyawan, idrutin, nobrid";
-            }else{
-                $query .= " order by nama_karyawan, DATE_FORMAT(bulan,'%Y%m'), kodeperiode, idrutin, nobrid";
-            }
+            $query = "SELECT * FROM $tmp01 ORDER BY nama_karyawan, bulan, periode1, periode2, idrutin, nobrid";
             $tampil=mysqli_query($cnmy, $query);
             while ($row= mysqli_fetch_array($tampil)) {
-                
-                $pidurut=$row['nourut'];
-                $piddivisi=$row['divisi'];
+                $pidkry=$row['karyawanid'];
+                $pnmkry=$row['nama_karyawan'];
+                $pbulan=$row['bulan'];
+                $pper1=$row['periode1'];
+                $pper2=$row['periode2'];
                 $pidrutin=$row['idrutin'];
-                $pnoid=$row['nobrid'];
-                $pidkary=$row['karyawanid'];
-                $pnmkary=$row['nama_karyawan'];
-                $pblnp=$row['bulan'];
-                $pkodper=$row['kodeperiode'];
-                $pnamaid=$row['nama_id'];
-                $pcoakode=$row['coa'];
-                $pcoanama=$row['nama_coa4'];
-                $puntuk=$row['obat_untuk'];
-                $pket=$row['notes'];
-                $palasandin=$row['alasanedit_fin'];
-                if (!empty($palasandin)) $pket=$palasandin;
-                $pobatuntuk="";
-                if ($puntuk=="1") $pobatuntuk="Istri";
-                if ($puntuk=="2") $pobatuntuk="Anak";
-                $prptotal=$row['rptotal'];
-                $ptotal=(double)$ptotal+(double)$prptotal;
-                $ptgl="";
-                if (!empty($row['tgl1']) AND $row['tgl1']<>"0000-00-00") $ptgl = date("d/m/Y", strtotime($row['tgl1']));
+                $pnmkode=$row['nama_kode'];
+                $pidkode=$row['nobrid'];
+                $pidcoa=$row['coa4'];
+                $pnmcoa=$row['nama_coa'];
+                $pjumlah=$row['jumlah'];
+                $pketerangan=$row['keterangan1'];
+                $pdesnote=$row['deskripsi'];
+                $piddivisi=$row['divisi'];
+                $pnopolis=$row['nopol'];
+                
+                
+                if (in_array($pidkode, $pnotnopol)) $pnopolis="";
+                        
+                $pjumlah=BuatFormatNum($pjumlah, $ppilformat);
                 
                 if ($ppilihrpt=="excel") {
-                    $pblnp = date("d F Y", strtotime($pblnp));
+                    $pbulan = date("d F Y", strtotime($pbulan));
                 }else{
-                    $pblnp = date("F Y", strtotime($pblnp));
+                    $pbulan = date("F Y", strtotime($pbulan));
                 }
-
-                $prptotal=BuatFormatNum($prptotal, $ppilformat);
-
-
-                $pcbselect = "<select class='soflow' id='cb_coa[$pidurut]' name='cb_coa[$pidurut]'>";
-                $pcbselect .="<option value=''>--Pilih--</option>";
-                for($ix=1;$ix<count($arridcoa);$ix++) {
-                    $ziddiv=$arriddiv[$ix];
+                $pper1 = date("d/m/Y", strtotime($pper1));
+                $pper2 = date("d/m/Y", strtotime($pper2));
+                
+                $pidurut=$pidrutin."|".$pidkode;
+                
+                if ($pboleheditcoa==true) {
+                    $pinputidkry="<input type='hidden' id='txt_idkry[$pidurut]' name='txt_idkry[$pidurut]' value='$pidkry' Readonly>";
+                    $pinputidrutin="<input type='hidden' id='txt_idrutin[$pidurut]' name='txt_idrutin[$pidurut]' value='$pidrutin' Readonly>";
+                    $pinputbrid="<input type='hidden' id='txt_idbrid[$pidurut]' name='txt_idbrid[$pidurut]' value='$pidkode' Readonly>";
                     
-                    if ($ziddiv==$piddivisi) {
-                        $zidcoa=$arridcoa[$ix];
-                        $znmcoa=$arrnmcoa[$ix];
-                        if ($zidcoa==$pcoakode)
-                            $pcbselect .="<option value='$zidcoa' selected>$zidcoa $znmcoa</option>";
-                        else
-                            $pcbselect .="<option value='$zidcoa'>$zidcoa $znmcoa</option>";
-                    }
+                    $pcbselect = "<select class='soflow' id='cb_coa[$pidurut]' name='cb_coa[$pidurut]'>";
+                    $pcbselect .="<option value=''>--Pilih--</option>";
+                    for($ix=1;$ix<count($arridcoa);$ix++) {
+                        $ziddiv=$arriddiv[$ix];
 
-                }
-                
-                $pcbselect .="</select>";
-                
-                $psimpan="<input type='button' id='btnsave[]' name='btnsave[]' value='Save' "
-                        . " onclick=\"SimpanData('$pidurut', '$pidrutin', '$pnoid', 'cb_coa[$pidurut]')\">";
-                
-                if ($pidgrouppil=="28" OR $pidgrouppil=="23" OR $pidgrouppil=="40" OR $pidgrouppil=="26" OR $pidgrouppil=="1" OR $pidgrouppil=="24") {
+                        if ($ziddiv==$piddivisi) {
+                            $zidcoa=$arridcoa[$ix];
+                            $znmcoa=$arrnmcoa[$ix];
+                            if ($zidcoa==$pidcoa)
+                                $pcbselect .="<option value='$zidcoa' selected>$zidcoa $znmcoa</option>";
+                            else
+                                $pcbselect .="<option value='$zidcoa'>$zidcoa $znmcoa</option>";
+                        }
+
+                    }
+                    $pcbselect .="</select>";
+                    
+                    $psimpan="<input type='button' id='btnsave[]' name='btnsave[]' value='Save' "
+                            . " onclick=\"SimpanData('$pidurut', '$pidrutin', '$pidkode', '$pidkry', '$pidrutin', '$pidkode', 'cb_coa[$pidurut]', '$pidcoa')\">";
                 }else{
+                    $pinputidkry="";
+                    $pinputidrutin="";
+                    $pinputbrid="";
                     $pcbselect="";
                     $psimpan="";
                 }
                 
-
                 echo "<tr>";
                 echo "<td nowrap>$no</td>";
-                if ($psortby=="periode") {
-                    echo "<td nowrap>$pblnp</td>";
-                    echo "<td nowrap class='str'>$pkodper</td>";
-                    echo "<td nowrap class='str'>$pidkary</td>";
-                    echo "<td nowrap>$pnmkary</td>";
-                }else{
-                    echo "<td nowrap class='str'>$pidkary</td>";                
-                    echo "<td nowrap>$pnmkary</td>";                
-                    echo "<td nowrap>$pblnp</td>";
-                    echo "<td nowrap class='str'>$pkodper</td>";
-                }
+                echo "<td nowrap class='str'>$pidkry</td>";
+                echo "<td nowrap>$pnmkry</td>";
+                echo "<td nowrap>$pbulan</td>";
+                echo "<td nowrap>$pper1 s/d. $pper2</td>";
                 echo "<td nowrap class='str'>$pidrutin</td>";
-                echo "<td nowrap>$pnamaid</td>";
-                echo "<td nowrap class='str'>$pcoakode</td>";
-                echo "<td nowrap>$pcoanama</td>";
-                echo "<td nowrap>$ptgl</td>";
-                echo "<td nowrap>$pobatuntuk</td>";
-                echo "<td nowrap align='right'>$prptotal</td>";
-                echo "<td>$pket</td>";
-                echo "<td>$pcbselect</td>";
-                echo "<td nowrap>$psimpan &nbsp; &nbsp; &nbsp; </td>";
+                echo "<td nowrap>$pnmkode</td>";
+                echo "<td nowrap>$pidcoa</td>";
+                echo "<td nowrap>$pnmcoa</td>";
+                echo "<td nowrap align='right'>$pjumlah</td>";
+                echo "<td nowrap>$pnopolis</td>";
+                echo "<td >$pdesnote</td>";
+                echo "<td >$pketerangan</td>";
+                if ($pboleheditcoa==true) {
+                    echo "<td nowrap>$pinputidkry $pinputidrutin $pinputbrid $pcbselect</td>";
+                    echo "<td nowrap>$psimpan</td>";
+                }
                 echo "</tr>";
-
+                
                 $no++;
             }
-
-            
-            $ptotal=BuatFormatNum($ptotal, $ppilformat);
-            
-            echo "<tr>";
-            echo "<td colspan='11' align='center'><b>TOTAL</b></td>";
-            if ($ppilihrpt=="excel") {
-                
-            }else{
-                echo "<td class='divnone'></td>";
-                echo "<td class='divnone'></td>";
-                echo "<td class='divnone'></td>";
-                echo "<td class='divnone'></td>";
-                echo "<td class='divnone'></td>";
-                echo "<td class='divnone'></td>";
-                echo "<td class='divnone'></td>";
-                echo "<td class='divnone'></td>";
-                echo "<td class='divnone'></td>";
-                echo "<td class='divnone'></td>";
-            }
-            echo "<td nowrap align='right'><b>$ptotal</b></td>";
-            echo "<td></td>";
-            
-            echo "<td></td>";
-            echo "<td></td>";
-            
-            echo "</tr>";
             ?>
         </tbody>
     </table>
@@ -561,7 +548,7 @@ while ($zr= mysqli_fetch_array($tampilk)) {
     
     
     <script>
-        function SimpanData(unourut, unoid, unoiddet, ucoa) {
+        function SimpanData(unourut, unoid, unoiddet, ukryid, uidrtn, ubrid, ucoa, ucoalama) {
         
             var icoa = document.getElementById(ucoa).value;
 
@@ -569,10 +556,23 @@ while ($zr= mysqli_fetch_array($tampilk)) {
                 alert("ID kosong..."); return; false;
             }
 
+            if (ukryid=="") {
+                alert("KARYAWAN KOSONG..."); return; false;
+            }
+
+            if (uidrtn=="") {
+                alert("ID RUTIN KOSONG..."); return; false;
+            }
+
+            if (ubrid=="") {
+                alert("NOBR ID KOSONG..."); return; false;
+            }
+
             if (icoa=="") {
                 alert("COA kosong..."); return; false;
             }
-        
+            
+            //alert(ukryid+" "+uidrtn+" "+ubrid+" "+icoa)
             var r=confirm("Apakah akan menyimpan data...???")
             if (r==true) {
                 //document.write("You pressed OK!")
@@ -584,7 +584,7 @@ while ($zr= mysqli_fetch_array($tampilk)) {
                 $.ajax({
                     type:"post",
                     url:"module/laporan/mod_lap_rincianbrrutin/simpandataeditbrrutin.php?module="+module+"&act=input&idmenu="+idmenu,
-                    data:"unourut="+unourut+"&uidbrrutin="+unoid+"&uinoid="+unoiddet+"&ucoa="+icoa,
+                    data:"unourut="+unourut+"&uidbrrutin="+unoid+"&uinoid="+unoiddet+"&ukryid="+ukryid+"&uidrtn="+uidrtn+"&ubrid="+ubrid+"&ucoa="+icoa+"&ucoalama="+ucoalama,
                     success:function(data){
                         alert(data);
                     }

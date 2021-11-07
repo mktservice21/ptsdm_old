@@ -29,6 +29,7 @@
     $pdeptid=$_POST['udptid'];
     $pcabid=$_POST['ucabid'];
     $pbln=$_POST['ubln'];
+    $psortby=$_POST['usortby'];
     $pdivisi_pl="";
     
     $_SESSION['BGTUPDTHN']=$ptahunpilih;
@@ -153,72 +154,62 @@
                             <th width='40px' class='divnone'>Posting ID</th>
                             <th width='40px'>Posting Nama</th>
                             <th width='80px' class='divnone'>Kode Id</th>
-                            <th width='30px'>Kode Nama</th>
+                            <th width='30px'>Kode Nama (Sub Posting)</th>
                             <th width='30px'>Divisi</th>
                             <th width='30px'>COA</th>
                             <th width='30px'>Nama COA</th>
+                            <th width='30px'>Transaksi</th>
                             <th width='30px'>All Dep.</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?PHP
+                        //$psortby
+                        
 
-                        $query = "SELECT distinct deskripsi FROM $tmp01 ORDER BY deskripsi";
-                        $tampil=mysqli_query($cnmy, $query);
-                        while ($row= mysqli_fetch_array($tampil)) {
-                            $pdeskripsi=$row['deskripsi'];
+                        $query = "SELECT * FROM $tmp01 ";
+                        if ($psortby=="1"){
+                            $query .=" ORDER BY deskripsi, posting_nama, nama_kodeid, divisi";
+                        }else{
+                            $query .=" ORDER BY posting_nama, nama_kodeid, divisi, deskripsi";
+                        }
 
+                        $tampil2=mysqli_query($cnmy, $query);
+                        while ($row2= mysqli_fetch_array($tampil2)) {
+                            $pdeskripsi=$row2['deskripsi'];
+                            $ppostingid=$row2['postingid'];
+                            $ppostingnm=$row2['posting_nama'];
+                            $pkodeid=$row2['kodeid'];
+                            $pkodenama=$row2['nama_kodeid'];
+                            $palldep=$row2['all_dep'];
+                            $pdivisi=$row2['divisi'];
+                            $pidcoa=$row2['coa4'];
+                            $pnmcoa=$row2['nama_coa'];
+
+                            $pjumlah="";
+                            $pkodeidbr=$ppostingid."|".$pkodeid;
+
+                            $pfldjumlahrp="<input type='text' size='10px' id='e_txttotalrp[$pkodeidbr]' name='e_txttotalrp[$pkodeidbr]' onblur='HitungTotalJumlahRp()' class='input-sm inputmaskrp2' autocomplete='off' value='$pjumlah' >";
+
+                            $chkbox = "<input type='checkbox' id='chk_kodeid[$pkodeidbr]' name='chk_kodeid[]' value='$pkodeidbr' checked>";
 
                             echo "<tr>";
-                            echo "<td nowrap class='divnone'></td>";
-                            echo "<td nowrap></td>";
-                            echo "<td nowrap class='divnone'></td>";
-                            echo "<td nowrap><b>$pdeskripsi</b></td>";
-                            echo "<td nowrap class='divnone'></td>";
-                            echo "<td nowrap></td>";
-                            echo "<td nowrap></td>";
-                            echo "<td nowrap></td>";
-                            echo "<td nowrap></td>";
-                            echo "<td nowrap></td>";
+                            echo "<td nowrap class='divnone'>$chkbox</td>";
+                            echo "<td nowrap>$pfldjumlahrp</td>";
+                            echo "<td nowrap class='divnone'>$ppostingid</td>";
+                            echo "<td nowrap>$ppostingnm</td>";
+                            echo "<td nowrap class='divnone'>$pkodeid</td>";
+                            echo "<td nowrap>$pkodenama</td>";
+                            echo "<td nowrap>$pdivisi</td>";
+                            echo "<td nowrap>$pidcoa</td>";
+                            echo "<td nowrap>$pnmcoa</td>";
+                            echo "<td nowrap>$pdeskripsi</td>";
+                            echo "<td nowrap>$palldep</td>";
                             echo "</tr>";
 
-                            $query = "SELECT * FROM $tmp01 WHERE deskripsi='$pdeskripsi'";
-                            $query .=" ORDER BY deskripsi, posting_nama, nama_kodeid, divisi";
-
-                            $tampil2=mysqli_query($cnmy, $query);
-                            while ($row2= mysqli_fetch_array($tampil2)) {
-                                $ppostingid=$row2['postingid'];
-                                $ppostingnm=$row2['posting_nama'];
-                                $pkodeid=$row2['kodeid'];
-                                $pkodenama=$row2['nama_kodeid'];
-                                $palldep=$row2['all_dep'];
-                                $pdivisi=$row2['divisi'];
-                                $pidcoa=$row2['coa4'];
-                                $pnmcoa=$row2['nama_coa'];
-                                
-                                $pjumlah="";
-                                $pkodeidbr=$ppostingid."|".$pkodeid;
-                                
-                                $pfldjumlahrp="<input type='text' size='10px' id='e_txttotalrp[$pkodeidbr]' name='e_txttotalrp[$pkodeidbr]' onblur='HitungTotalJumlahRp()' class='input-sm inputmaskrp2' autocomplete='off' value='$pjumlah' >";
-                                
-                                $chkbox = "<input type='checkbox' id='chk_kodeid[$pkodeidbr]' name='chk_kodeid[]' value='$pkodeidbr' checked>";
-                                
-                                echo "<tr>";
-                                echo "<td nowrap class='divnone'>$chkbox</td>";
-                                echo "<td nowrap>$pfldjumlahrp</td>";
-                                echo "<td nowrap class='divnone'>$ppostingid</td>";
-                                echo "<td nowrap>$ppostingnm</td>";
-                                echo "<td nowrap class='divnone'>$pkodeid</td>";
-                                echo "<td nowrap>$pkodenama</td>";
-                                echo "<td nowrap>$pdivisi</td>";
-                                echo "<td nowrap>$pidcoa</td>";
-                                echo "<td nowrap>$pnmcoa</td>";
-                                echo "<td nowrap>$palldep</td>";
-                                echo "</tr>";
-
-                            }
-
                         }
+
+                        
 
                         ?>
                     </tbody>

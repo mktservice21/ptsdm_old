@@ -319,6 +319,18 @@ switch($pact){
                                 <div hidden id="div_input">
                                     
                                     <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Sort By <span class='required'></span></label>
+                                        <div class='col-xs-5'>
+                                            <select class='soflow' name='cb_sortby' id='cb_sortby' onchange="">
+                                                <?php
+                                                    echo "<option value='1'>Transaksi</option>";
+                                                    echo "<option value='2'>Posting</option>";
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Divisi <span class='required'></span></label>
                                         <div class='col-xs-5'>
                                             <select class='soflow' name='cb_divisi' id='cb_divisi' onchange="">
@@ -501,6 +513,8 @@ switch($pact){
                         var edptid = document.getElementById("cb_dept").value;
                         var ecabid = document.getElementById("cb_cabang").value;
                         var ebln = document.getElementById("cb_bulan").value;
+                        var esortby = document.getElementById("cb_sortby").value;
+                        
                         document.getElementById('e_totalsemua').value="";
                         $("#c-data").html("");
                         $("#c-data2").html("");
@@ -508,7 +522,7 @@ switch($pact){
                         $.ajax({
                             type:"post",
                             url:"module/budget/mod_budget_uploaddatabudget/inputbudget.php?module="+module+"&act="+act+"&idmenu="+idmenu,
-                            data:"ukryid="+ekryid+"&udptid="+edptid+"&udivpl="+edivpl+"&ucabid="+ecabid+"&utahun="+etahun+"&ubln="+ebln,
+                            data:"ukryid="+ekryid+"&udptid="+edptid+"&udivpl="+edivpl+"&ucabid="+ecabid+"&utahun="+etahun+"&ubln="+ebln+"&usortby="+esortby,
                             success:function(data){
                                 $("#c-data2").html(data);
                                 $("#loading").html("");

@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <div class='col-sm-12'>
                                         <b>Status</b>
                                         <div class="form-group">
@@ -122,7 +122,7 @@
                                 </div>
                                 
                                 
-                                <div class='form-group'>
+                                <div hidden class='form-group'>
                                     <div class='col-sm-12'>
                                         <b>Sort By</b>
                                         <div class="form-group">

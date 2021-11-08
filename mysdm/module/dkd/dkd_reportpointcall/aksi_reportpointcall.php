@@ -39,6 +39,24 @@ $nthn = date('Y', strtotime($ptanggal));
 $pbulan = date('Y-m', strtotime($ptanggal));
 $pperiode = date('F Y', strtotime($ptanggal));
 
+$pjmlharikerja=0;
+//CARI HARI KERJA
+for($ix=1; $ix<=(INT)$ptgl02;$ix++) {
+    $pntgl=$ix;
+    if (strlen($pntgl)<=1) $pntgl="0".$ix;
+
+    $phari = strtoupper(date('l', strtotime($nthn."-".$nbln."-".$pntgl)));
+
+    $pcollibur="";
+    if ($phari=="SATURDAY" OR $phari=="SABTU") {}
+    elseif ($phari=="SUNDAY" OR $phari=="MINGGU") {}
+    else{
+        $pjmlharikerja++;
+    }
+
+}
+
+
 
 //REALISASI
 $sql = "select a.idinput, a.karyawanid, a.jabatanid, a.tanggal, a.ketid, b.nama as nama_ket,
@@ -57,7 +75,7 @@ $query = "select DISTINCT a.idcuti as idinput, a.karyawanid, a.jabatanid, b.tang
         . " a.id_jenis from hrd.t_cuti0 as a "
         . " JOIN hrd.t_cuti1 as b on a.idcuti=b.idcuti "
         . " WHERE IFNULL(a.stsnonaktif,'')<>'Y' AND "
-        . " a.id_jenis IN (select distinct IFNULL(id_jenis,'') FROM hrd.jenis_cuti WHERE IFNULL(ketId,'')<>'') AND "
+        . " a.id_jenis IN (select distinct IFNULL(id_jenis,'') FROM hrd.jenis_cuti WHERE ( IFNULL(ketId,'')<>'' OR IFNULL(potong_hk,'')='Y' ) ) AND "
         . " LEFT(b.tanggal,7)='$pbulan' AND a.karyawanid='$pkryid'";
 $query = "create TEMPORARY table $tmp04 ($query)"; 
 mysqli_query($cnmy, $query);
@@ -69,6 +87,38 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 $query = "UPDATE $tmp04 as a JOIN (select a.id_jenis, a.ketid, b.nama, b.pointmr, b.pointspv, b.pointdm from hrd.jenis_cuti as a join hrd.ket as b on a.ketid=b.ketid) as b "
         . " on a.id_jenis=b.id_jenis SET a.ketid=b.ketid, a.pointmr=b.pointmr, a.pointspv=b.pointspv, a.pointdm=b.pointdm";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    //HARI KERJA DIKURANGIN : 08-11-2021
+    //- BENCANA ALAM - DIPOTING HARI KERJA
+    //SABTU MINGGU
+    //WFH
+    //HARI LIBUR / CUTI MASSAL
+    //SAKIT DENGAN SURAT DOKTER
+    //PISAHKAN YANG KETID NYA KOSONG
+    
+    $query = "SELECT DISTINCT karyawanid, tanggal FROM $tmp04 WHERE "
+            . " id_jenis IN (select distinct IFNULL(id_jenis,'') FROM hrd.jenis_cuti WHERE IFNULL(potong_hk,'')='Y' )"
+            . " GROUP BY 1";
+    $query = "create TEMPORARY table $tmp05 ($query)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    //BENCANA ALAM - DIPOTING HARI KERJA
+    $query = "INSERT INTO $tmp05 (karyawanid, tanggal) SELECT DISTINCT karyawanid, tanggal FROM $tmp01 WHERE ketid IN ('019')"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "DELETE FROM $tmp04 WHERE id_jenis IN (select distinct IFNULL(id_jenis,'') FROM hrd.jenis_cuti WHERE IFNULL(ketId,'')='' )";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "SELECT karyawanid, COUNT(DISTINCT tanggal) as jumlah FROM $tmp05";
+    $tampilk=mysqli_query($cnmy, $query);
+    $rowk=mysqli_fetch_array($tampilk);
+    $jml_hari_krj=(INT)$pjmlharikerja-(INT)$rowk['jumlah'];
+    
+    
+    //END PISAHKAN YANG KETID NYA KOSONG
+
 
 $query = "INSERT INTO $tmp01 (idinput, karyawanid, jabatanid, tanggal, ketid, nama_ket, pointMR, pointSpv, pointDM) "
         . " SELECT DISTINCT idinput, karyawanid, jabatanid, tanggal, ketid, nama_ket, pointMR, pointSpv, pointDM "
@@ -77,6 +127,10 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
 $query = "DROP TEMPORARY TABLE IF EXISTS $tmp04";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "DROP TEMPORARY TABLE IF EXISTS $tmp05";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
 
 
 
@@ -373,10 +427,17 @@ if (empty($pnamajabatan)) $pnamajabatan=$pnmjbtkarywanpl;
         'Sabtu'
     );
     
-    $query = "SELECT jumlah FROM hrd.hrkrj WHERE left(periode1,7)='$pbulan'";
-    $tampilk=mysqli_query($cnmy, $query);
-    $rowk=mysqli_fetch_array($tampilk);
-    $jml_hari_krj=$rowk['jumlah'];
+    
+    //HITUNG JUMALH HARI KERJA
+    
+    
+    
+    
+    
+    //$query = "SELECT jumlah FROM hrd.hrkrj WHERE left(periode1,7)='$pbulan'";
+    //$tampilk=mysqli_query($cnmy, $query);
+    //$rowk=mysqli_fetch_array($tampilk);
+    //$jml_hari_krj=$rowk['jumlah'];
 
     if ($pjabatanid=='08') {
         $jab = 4;

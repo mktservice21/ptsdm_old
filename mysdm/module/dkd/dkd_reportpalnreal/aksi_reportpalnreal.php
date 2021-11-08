@@ -70,7 +70,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $sql = "select c.nourut, c.idinput, c.karyawanid, e.nama as namakaryawan, e.jabatanid, c.tanggal, c.tglinput, 
-    c.dokterid, d.namalengkap, d.gelar, d.spesialis, '' as jenis, c.notes,
+    c.dokterid, d.namalengkap, d.gelar, d.spesialis, jenis, c.notes,
     c.atasan1, c.tgl_atasan1, c.atasan2, c.tgl_atasan2, c.atasan3, c.tgl_atasan3, c.atasan4, c.tgl_atasan4 
     FROM hrd.dkd_new1 as c JOIN dr.masterdokter as d on c.dokterid=d.id LEFT JOIN hrd.karyawan as e on c.karyawanid=e.karyawanId 
     WHERE c.karyawanid='$pkryid' ";
@@ -81,8 +81,9 @@ if (!empty($ftglfilter)) {
 }
 $query = "create TEMPORARY table $tmp02 ($sql)"; 
 mysqli_query($cnmy, $query);
-$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+$query = "UPDATE $tmp02 SET jenis='' WHERE jenis IN ('JV')"; 
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "ALTER TABLE $tmp02 ADD COLUMN saran varchar(300)"; 
 mysqli_query($cnmy, $query);

@@ -169,6 +169,11 @@ $pnamajabatan=$nr['nama'];
                         
                         <div class='clearfix'></div>
                         
+                        
+                        <div id="div_infouser" style="font-weight:bold;">
+                            
+                        </div>
+                        
                         <div class='x_panel'>
                             <div class='x_content form-horizontal form-label-left'>
 
@@ -311,11 +316,21 @@ $pnamajabatan=$nr['nama'];
                                     </div>
                                 </div>
 
+                                <div  class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
+                                    <div class='col-md-7 col-sm-7 col-xs-12'>
+                                        <?php
+                                        echo "<input type='radio' class='' name='opt_frompl' id='opt_frompl' value='fromby_all' checked  onclick=\"ShowDataUserAll()\" /> All Users";
+                                        echo "&nbsp; &nbsp; ";
+                                        echo "<input type='radio' class='' name='opt_frompl' id='opt_frompl' value='fromby_plan'  onclick=\"ShowDataUserAll()\" /> From Plan";
+                                        ?>
+                                    </div>
+                                </div>
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>User <span class='required'></span></label>
                                     <div class='col-md-9 col-sm-9 col-xs-12'>
-                                        <select class='form-control s2' name='cb_doktid' id='cb_doktid' onchange="">
+                                        <select class='form-control s2' name='cb_doktid' id='cb_doktid' onchange="ShowDataUserInfo()">
                                             <?php
                                             echo "<option value='' selected>-- Pilih --</option>";
                                             //$ipcabid="0000000094";
@@ -633,6 +648,43 @@ $pnamajabatan=$nr['nama'];
                 $("#cb_doktid").html(data);
             }
         });
+    }
+    
+    function ShowDataUserAll() {
+        $("#div_infouser").html("");
+        var ikaryawan = document.getElementById('e_idcarduser').value;
+        var iidcab = document.getElementById('cb_cabid').value;
+        var itgl = document.getElementById('e_periode1').value;
+        var checkBoxF = document.getElementById("opt_frompl");
+        var ipilihdari="all";
+        if (checkBoxF.checked == false){
+            ipilihdari="plan";
+        }
+        
+        $.ajax({
+            type:"post",
+            url:"module/dkd/viewdatadkd.php?module=viewdatadokterfrom",
+            data:"upilihdari="+ipilihdari+"&uidcab="+iidcab+"&ukaryawan="+ikaryawan+"&utgl="+itgl,
+            success:function(data){
+                $("#cb_doktid").html(data);
+            }
+        });
+        
+    }
+    
+    function ShowDataUserInfo(){
+        $("#div_infouser").html("");
+        var iiddok = document.getElementById('cb_doktid').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/dkd/viewdatadkd.php?module=viewinfouser",
+            data:"uiddok="+iiddok,
+            success:function(data){
+                $("#div_infouser").html(data);
+            }
+        });
+        
     }
     
     

@@ -70,7 +70,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $sql = "select c.nourut, c.idinput, c.karyawanid, e.nama as namakaryawan, e.jabatanid, c.tanggal, c.tglinput, 
-    c.dokterid, d.namalengkap, d.gelar, d.spesialis, jenis, c.notes,
+    c.dokterid, d.namalengkap, d.gelar, d.spesialis, c.jenis, c.notes,
     c.atasan1, c.tgl_atasan1, c.atasan2, c.tgl_atasan2, c.atasan3, c.tgl_atasan3, c.atasan4, c.tgl_atasan4 
     FROM hrd.dkd_new1 as c JOIN dr.masterdokter as d on c.dokterid=d.id LEFT JOIN hrd.karyawan as e on c.karyawanid=e.karyawanId 
     WHERE c.karyawanid='$pkryid' ";
@@ -105,7 +105,7 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 
 
 $sql = "select a.nourut, a.karyawanid, c.nama as namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
-    a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran, 
+    a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran, a.jv_with, 
     a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, a.atasan3, a.tgl_atasan3, a.atasan4, a.tgl_atasan4 
     FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
@@ -118,6 +118,14 @@ if (!empty($ftglfilter)) {
 $query = "create TEMPORARY table $tmp04 ($sql)"; 
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+
+$query = "UPDATE $tmp04 as a LEFT JOIN $tmp02 as b on "
+        . " a.karyawanid=b.karyawanid and a.dokterid=b.dokterid "
+        . " and a.tanggal=b.tanggal SET a.jenis='EC' WHERE "
+        . " IFNULL(b.dokterid,'')='' AND IFNULL(b.karyawanid,'')='' AND ifnull(a.jenis,'')='' and ifnull(a.jv_with,'')=''";
+mysqli_query($cnmy, $query);
+//$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
 

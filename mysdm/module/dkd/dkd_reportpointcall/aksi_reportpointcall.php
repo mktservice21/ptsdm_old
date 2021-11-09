@@ -69,7 +69,7 @@ mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 
-$query = "select DISTINCT a.idcuti as idinput, a.karyawanid, a.jabatanid, b.tanggal, "
+$query = "select DISTINCT a.idcuti as idinput, a.karyawanid, a.jabatanid, b.tanggal, a.keterangan, "
         . " a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, "
         . " a.atasan3, a.tgl_atasan3, a.atasan4, a.tgl_atasan4, "
         . " a.id_jenis from hrd.t_cuti0 as a "
@@ -81,11 +81,14 @@ $query = "create TEMPORARY table $tmp04 ($query)";
 mysqli_query($cnmy, $query);
 $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-$query = "ALTER TABLE $tmp04 ADD COLUMN ketid VARCHAR(3), ADD COLUMN nama_ket VARCHAR(200), ADD COLUMN pointmr INT(4), ADD COLUMN pointspv INT(4), ADD COLUMN pointdm INT(4)";
+$query = "ALTER TABLE $tmp04 ADD COLUMN nama_jenis VARCHAR(150), ADD COLUMN ketid VARCHAR(3), ADD COLUMN nama_ket VARCHAR(200), ADD COLUMN pointmr INT(4), ADD COLUMN pointspv INT(4), ADD COLUMN pointdm INT(4)";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "UPDATE $tmp04 as a JOIN (select a.id_jenis, a.ketid, b.nama, b.pointmr, b.pointspv, b.pointdm from hrd.jenis_cuti as a join hrd.ket as b on a.ketid=b.ketid) as b "
         . " on a.id_jenis=b.id_jenis SET a.ketid=b.ketid, a.pointmr=b.pointmr, a.pointspv=b.pointspv, a.pointdm=b.pointdm";
+mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+
+$query = "UPDATE $tmp04 as a JOIN hrd.jenis_cuti as b on a.id_jenis=b.id_jenis SET a.nama_jenis=b.nama_jenis";
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
@@ -97,21 +100,64 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     //SAKIT DENGAN SURAT DOKTER
     //PISAHKAN YANG KETID NYA KOSONG
     
-    $query = "SELECT DISTINCT karyawanid, tanggal FROM $tmp04 WHERE "
-            . " id_jenis IN (select distinct IFNULL(id_jenis,'') FROM hrd.jenis_cuti WHERE IFNULL(potong_hk,'')='Y' )"
-            . " GROUP BY 1";
-    $query = "create TEMPORARY table $tmp05 ($query)"; 
-    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    $ffileter_j=" id_jenis IN (select distinct IFNULL(id_jenis,'') FROM hrd.jenis_cuti WHERE IFNULL(potong_hk,'')='Y' ) ";
+    $query_potong = "SELECT DISTINCT karyawanid, tanggal FROM $tmp04 WHERE "
+            . " $ffileter_j "
+            . " ";
+    $query_potong = "create TEMPORARY table $tmp05 ($query_potong)"; 
+    mysqli_query($cnmy, $query_potong); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    unset($ar_tgl);
+    unset($ar_keterangan);
+    unset($ar_jenis);
+    
+    $ar_tgl[]="";
+    $ar_keterangan[]="";
+    $ar_jenis[]="";
+    
+    $query = "select * from $tmp04 WHERE "
+            . " $ffileter_j order by tanggal";
+    $tampil= mysqli_query($cnmy, $query);
+    while ($row= mysqli_fetch_array($tampil)) {
+        $a_tgl=$row['tanggal'];
+        $a_ket=$row['keterangan'];
+        $a_jenis=$row['nama_jenis'];
+        
+        $ar_tgl[]=$a_tgl;
+        $ar_keterangan[]=$a_ket;
+        $ar_jenis[]=$a_jenis;
+        
+    }
+    
+    
+    
     
     //BENCANA ALAM - DIPOTING HARI KERJA
-    $query = "INSERT INTO $tmp05 (karyawanid, tanggal) SELECT DISTINCT karyawanid, tanggal FROM $tmp01 WHERE ketid IN ('019')"; 
+    $ffileter_=" ketid IN ('019') ";
+    $query = "INSERT INTO $tmp05 (karyawanid, tanggal) SELECT DISTINCT karyawanid, tanggal FROM $tmp01 WHERE $ffileter_"; 
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "select tanggal, nama_ket as nama_jenis, '' as keterangan from $tmp01 WHERE "
+            . " $ffileter_ order by tanggal";
+    $tampil= mysqli_query($cnmy, $query);
+    while ($row= mysqli_fetch_array($tampil)) {
+        $a_tgl=$row['tanggal'];
+        $a_ket=$row['keterangan'];
+        $a_jenis=$row['nama_jenis'];
+        
+        $ar_tgl[]=$a_tgl;
+        $ar_keterangan[]=$a_ket;
+        $ar_jenis[]=$a_jenis;
+        
+    }
+    
     
     $query = "DELETE FROM $tmp04 WHERE id_jenis IN (select distinct IFNULL(id_jenis,'') FROM hrd.jenis_cuti WHERE IFNULL(ketId,'')='' )";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
-    $query = "SELECT karyawanid, COUNT(DISTINCT tanggal) as jumlah FROM $tmp05";
+    $query = "SELECT karyawanid, COUNT(DISTINCT tanggal) as jumlah FROM $tmp05 GROUP BY 1";
     $tampilk=mysqli_query($cnmy, $query);
     $rowk=mysqli_fetch_array($tampilk);
     $jml_hari_krj=(INT)$pjmlharikerja-(INT)$rowk['jumlah'];
@@ -706,6 +752,22 @@ if (empty($pnamajabatan)) $pnamajabatan=$pnmjbtkarywanpl;
             
             echo "<center><span $pwarnasumary><b>$psumarynya %</b></span></center>";
     echo "</div>";
+    
+    echo "<br/><br/>";
+    echo "<b><u>Notes hari kerja : </u></b><br/>";
+    
+    for($ix=1;$ix<count($ar_tgl);$ix++) {
+        $a_tgl=$ar_tgl[$ix];
+        $a_ket=$ar_keterangan[$ix];
+        $a_jenis=$ar_jenis[$ix];
+        
+        $a_tgl = date('d/m/Y', strtotime($a_tgl));
+        
+        $pnamaketjenis=$a_jenis;
+        if (!empty($a_ket)) $pnamaketjenis=$a_jenis." - ".$a_ket;
+        echo "$ix.) $a_tgl - $pnamaketjenis<br/>";
+        
+    }
     
     echo "<br/><br/><br/><br/><br/>";
     

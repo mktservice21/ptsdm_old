@@ -374,9 +374,11 @@
                                     $pidgroup_tmp="";
                                     $pidjbt_tmp="";
                                     $pidcard_tmp="";
+                                    $pdivisi_tmp="";
                                     if (isset($_SESSION['GROUP'])) $pidgroup_tmp=$_SESSION['GROUP'];
                                     if (isset($_SESSION['JABATANID'])) $pidjbt_tmp=$_SESSION['JABATANID'];
                                     if (isset($_SESSION['IDCARD'])) $pidcard_tmp=$_SESSION['IDCARD'];
+                                    if (isset($_SESSION['DIVISI'])) $pdivisi_tmp=$_SESSION['DIVISI'];
                                     
                                     $pbolehbukarept_tmp=true;
                                     
@@ -411,6 +413,10 @@
                                         }else{
                                             echo "<li><a href='?module=karyawanpassworubah&idmenu=99009&act=99009&kriteria=Y'><span class=\"badge bg-red pull-right\">new</span><span>Ubah Password</span></a></li>";
                                         }
+                                    }
+                                    
+                                    if ( ($pidjbt_tmp=="15" OR $pidjbt_tmp=="10" OR $pidjbt_tmp=="18" OR $pidjbt_tmp=="08") AND $pdivisi_tmp<>"OTC" ) {
+                                        echo "<li><a href='?module=mstsesuaidatakry&idmenu=299&act=editdata&nmun=299&kriteria=Y&id=$pidcard_tmp'><i class=\"fa fa-dropbox pull-right\"></i><span>Penyesuaian Karyawan</span></a></li>";
                                     }
                                     
                                     ?>

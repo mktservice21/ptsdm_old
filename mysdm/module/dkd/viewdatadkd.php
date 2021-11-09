@@ -837,6 +837,71 @@ if ($pmodule=="cekdatasudahada") {
     </div>
     <?PHP
     
+}elseif ($pmodule=="viewdatadokterfrom") {
+    include "../../config/koneksimysqli.php";
+    $ppilihanby=$_POST['upilihdari'];
+    $pidcab=$_POST['uidcab'];
+    $pidkry=$_POST['ukaryawan'];
+    $ptgl=$_POST['utgl'];
+    $ptgl= date('Y-m-d', strtotime($ptgl));
+
+    $pkodecabang=$pidcab;
+    $pdoktpilih="";
+    
+    if ($ppilihanby=="plan") {
+        $query = "select a.`id` as iddokter, a.namalengkap, a.gelar, a.spesialis from dr.masterdokter as a "
+                . " JOIN hrd.dkd_new1 as b on a.`id`=b.dokterid "
+                . " WHERE 1=1 ";
+        $query .=" AND b.karyawanid='$pidkry' AND b.tanggal='$ptgl' ";
+        $query .=" order by a.namalengkap, `id`";
+    }else{
+        $query = "select `id` as iddokter, namalengkap, gelar, spesialis from dr.masterdokter WHERE 1=1 ";
+        $query .=" AND icabangid='$pkodecabang' ";
+        $query .=" order by namalengkap, `id`";
+    }
+    $tampilket= mysqli_query($cnmy, $query);
+    $ketemu=mysqli_num_rows($tampilket);
+    //if ((INT)$ketemu<=0) 
+    echo "<option value='' selected>-- Pilih --</option>";
+    while ($du= mysqli_fetch_array($tampilket)) {
+        $niddokt=$du['iddokter'];
+        $nnmdokt=$du['namalengkap'];
+        $ngelar=$du['gelar'];
+        $nspesial=$du['spesialis'];
+        
+        if (!empty($pnmdokt)) $pnmdokt=rtrim($pnmdokt, ',');
+        
+        if (!empty($ngelar)) $nnmdokt =$nnmdokt." ($ngelar)";
+        
+        if ($niddokt==$pdoktpilih)
+            echo "<option value='$niddokt' selected>$nnmdokt, $nspesial - $niddokt</option>";
+        else
+            echo "<option value='$niddokt'>$nnmdokt, $nspesial - $niddokt</option>";
+
+    }
+    mysqli_close($cnmy);
+}elseif ($pmodule=="viewinfouser") {
+    include "../../config/koneksimysqli.php";
+    $pdokterid=$_POST['uiddok'];
+    
+    $query = "select `id` as iddokter, namalengkap, profesi, gelar, spesialis, nohp from dr.masterdokter WHERE 1=1 ";
+    $query .=" AND `id`='$pdokterid' ";
+    $tampilket= mysqli_query($cnmy, $query);
+    $du= mysqli_fetch_array($tampilket);
+    $pprofesi=$du['profesi'];
+    $pnamauser=$du['namalengkap'];
+    $pspesialis=$du['spesialis'];
+    $pnohp=$du['nohp'];
+    
+    if ($pprofesi=="Dokter" OR $pprofesi=="dokter") $pprofesi="User";
+    
+    $pnamalengkap=$pnamauser;
+    if (!empty($pprofesi)) $pnamalengkap=$pprofesi." - ".$pnamauser;
+    if (!empty($pspesialis)) $pnamalengkap .=", ".$pspesialis;
+    
+    echo "$pnamalengkap";
+    
+    mysqli_close($cnmy);
 }elseif ($pmodule=="xxxx") {
 }
 ?>

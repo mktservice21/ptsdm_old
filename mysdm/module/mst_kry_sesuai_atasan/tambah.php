@@ -168,14 +168,14 @@ if ($pilogin==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>KARYAWAN ID <span class='required'></span></label>
-                                    <div class='col-md-4'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <input type='text' id='e_id' name='e_id' class='form-control col-md-7 col-xs-12' value='<?PHP echo $idnya; ?>' Readonly>
                                     </div>
                                 </div>
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_nama'>NAMA <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <input type='text' id='e_nama' name='e_nama' class='form-control col-md-7 col-xs-12' value='<?PHP echo $nnmkaryawan; ?>' Readonly>
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@ if ($pilogin==true) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_jabatan'>JABATAN <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='e_jabatan' name='e_jabatan' onchange="showDataKaryawan('tambahbaru', 'e_idkaryawan')" disabled="">
                                             <?PHP
                                             $sql=mysqli_query($icnit, "SELECT jabatanId, nama FROM hrd.jabatan order by jabatanId");
@@ -203,7 +203,7 @@ if ($pilogin==true) {
                                 
                                 <div <?PHP echo $phiddenspv; ?> class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='e_spv'>SPV <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='e_spv' name='e_spv' onchange="ShowDataDM()">
                                             <?PHP
                                             $query ="select karyawanid, nama from hrd.karyawan where 1=1 ";//(aktif='Y' OR karyawanid='$atasanidspv')
@@ -234,7 +234,7 @@ if ($pilogin==true) {
 
                                 <div <?PHP echo $phiddendm; ?> class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><?PHP echo $lblnmdm; ?> <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='e_dm' name='e_dm' onchange="ShowDataSM()">
                                             <?PHP
                                             //PilihKaryawanAktif("", "-- Pilihan --", $atasaniddm, "Y", $_SESSION['STSADMIN'], "", "", "Y", $_SESSION['IDCARD'], "", "", "", "", "");
@@ -269,7 +269,7 @@ if ($pilogin==true) {
 
                                 <div <?PHP echo $phiddensm; ?> class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>SM <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='e_sm' name='e_sm' onchange="ShowDataGSM()">
                                             <?PHP
                                             //PilihKaryawanAktif("", "-- Pilihan --", $atasanidsm, "Y", $_SESSION['STSADMIN'], "", "", "Y", $_SESSION['IDCARD'], "", "", "", "", "");
@@ -305,7 +305,7 @@ if ($pilogin==true) {
 
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''><?PHP echo $lblnmgsm; ?> <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='e_gsm' name='e_gsm' onchange="">
                                             <?PHP
                                             //PilihKaryawanAktif("", "-- Pilihan --", $atasanidgsm, "Y", $_SESSION['STSADMIN'], "", "", "Y", $_SESSION['IDCARD'], "", "", "", "", "");
@@ -341,7 +341,7 @@ if ($pilogin==true) {
                                 
                                 <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DIVISI <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_divisi' name='cb_divisi' onchange="showDataArea('cb_divisi')">
                                         <?PHP
                                         
@@ -363,7 +363,7 @@ if ($pilogin==true) {
                                 
                                 <div <?PHP echo $pdivhidedivisi1; ?> class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DIVISI 1 <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_divisi1' name='cb_divisi1' onchange="ShowDataDivisi2()">
                                             <?PHP
                                                 $sql=mysqli_query($icnit, "SELECT DivProdId divisiid FROM MKT.divprod where br='Y' and DivProdId NOT IN ('HO', 'OTC', 'CAN', 'OTHER') order by nama");
@@ -383,7 +383,7 @@ if ($pilogin==true) {
                                 
                                 <div <?PHP echo $pdivhidedivisi2; ?> class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DIVISI 2 <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_divisi2' name='cb_divisi2' onchange="ShowDataDivisi3()">
                                             <?PHP
                                                 $sql=mysqli_query($icnit, "SELECT DivProdId divisiid FROM MKT.divprod where br='Y' and DivProdId NOT IN ('HO', 'OTC', 'CAN', 'OTHER', '$pdivisi1') order by nama");
@@ -402,7 +402,7 @@ if ($pilogin==true) {
                                 
                                 <div hidden class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>DIVISI 3 <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <select class='form-control input-sm' id='cb_divisi3' name='cb_divisi3'>
                                             <?PHP
                                                 $sql=mysqli_query($icnit, "SELECT DivProdId divisiid FROM MKT.divprod where br='Y' and DivProdId NOT IN ('HO', 'OTC', 'CAN', 'OTHER', '$pdivisi1', '$pdivisi2') order by nama");
@@ -425,7 +425,7 @@ if ($pilogin==true) {
                                 <!-- Save -->
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''> <span class='required'></span></label>
-                                    <div class='col-xs-5'>
+                                    <div class='col-md-5 col-sm-5 col-xs-12'>
                                         <button type='button' class='btn btn-success' onclick='disp_confirm("Simpan ?", "<?PHP echo $act; ?>")'>Save</button>
                                         <a class='btn btn-default' href="<?PHP echo "?module=home"; ?>">Back</a>
                                     </div>

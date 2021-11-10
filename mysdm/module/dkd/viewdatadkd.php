@@ -893,7 +893,7 @@ if ($pmodule=="cekdatasudahada") {
     $pspesialis=$du['spesialis'];
     $pnohp=$du['nohp'];
     
-    if ($pprofesi=="Dokter" OR $pprofesi=="dokter") $pprofesi="User";
+    //if ($pprofesi=="Dokter" OR $pprofesi=="dokter") $pprofesi="User";
     
     $pnamalengkap=$pnamauser;
     if (!empty($pprofesi)) $pnamalengkap=$pprofesi." - ".$pnamauser;

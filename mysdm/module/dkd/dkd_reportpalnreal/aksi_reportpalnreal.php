@@ -105,7 +105,7 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 
 
 $sql = "select a.nourut, a.karyawanid, c.nama as namakaryawan, a.jabatanid, a.tanggal, a.tglinput, 
-    a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran, a.jv_with, 
+    a.dokterid, d.namalengkap, d.gelar, d.spesialis, a.jenis, a.notes, a.saran, a.jv_with, a.from_jv, 
     a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, a.atasan3, a.tgl_atasan3, a.atasan4, a.tgl_atasan4 
     FROM hrd.dkd_new_real1 as a JOIN dr.masterdokter as d on a.dokterid=d.id 
     LEFT JOIN hrd.karyawan as c on a.karyawanid=c.karyawanId
@@ -123,11 +123,18 @@ $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; got
 $query = "UPDATE $tmp04 as a LEFT JOIN $tmp02 as b on "
         . " a.karyawanid=b.karyawanid and a.dokterid=b.dokterid "
         . " and a.tanggal=b.tanggal SET a.jenis='EC' WHERE "
-        . " IFNULL(b.dokterid,'')='' AND IFNULL(b.karyawanid,'')='' AND ifnull(a.jenis,'')='' and ifnull(a.jv_with,'')=''";
+        . " IFNULL(b.dokterid,'')='' AND IFNULL(b.karyawanid,'')='' AND ifnull(a.jenis,'')='' and ( ifnull(a.jv_with,'')='' OR ifnull(a.from_jv,'') IN ('','0') )";
 mysqli_query($cnmy, $query);
 //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+$query = "UPDATE $tmp04 as a LEFT JOIN $tmp02 as b on "
+        . " a.karyawanid=b.karyawanid and a.dokterid=b.dokterid "
+        . " and a.tanggal=b.tanggal SET a.jenis='JE' WHERE "
+        . " IFNULL(b.dokterid,'')='' AND IFNULL(b.karyawanid,'')='' AND ifnull(a.jenis,'') IN ('', 'JV') and ifnull(a.from_jv,'') NOT IN ('','0')";
+mysqli_query($cnmy, $query);
+//$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
+//echo "$tmp04, $tmp02"; goto hapusdata;
 
 //cari jabatan yang diinput
 $query = "select a.jabatanid, b.nama as nama_jabatan FROM ("
@@ -485,6 +492,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     
                     $pnmjenis="";
                     if ($njenis=="JV") $pnmjenis="Join Visit";
+                    elseif ($njenis=="JE") $pnmjenis="Join Visit";// JOIN VISIT TANPA PLAN
                     elseif ($njenis=="EC") $pnmjenis="Extra Call";
                     else{
                         if (!empty($njenis)) {
@@ -510,7 +518,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                             . " data-target='#myModal' onClick=\"LiatKomentar('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
                     
                     if ($pada==false) {
-                        if ($njenis=="EC") {
+                        if ($njenis=="EC" OR $njenis=="JE") {
                             $pnmjenis="";
                             $pnmdokt_="";
                         }
@@ -587,6 +595,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 
                                 $pnmjenis="";
                                 if ($njenis=="JV") $pnmjenis="Join Visit";
+                                elseif ($njenis=="JE") $pnmjenis="Join Visit";// JOIN VISIT TANPA PLAN
                                 elseif ($njenis=="EC") $pnmjenis="Extra Call";
                                 else{
                                     if (!empty($njenis)) {

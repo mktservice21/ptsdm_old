@@ -14,6 +14,7 @@
         exit;
     }
     
+    $pidcard=$_SESSION['USERID'];
     
     $piddist=$_POST['udistid'];
     $pidecab=$_POST['ucabid'];
@@ -38,6 +39,9 @@
     
     $now=date("mdYhis");
     $tmp01 =" dbtemp.tmpslsmapcustf01_".$puserid."_$now ";
+    $tmp02 =" dbtemp.tmpslsmapcustf02_".$puserid."_$now ";
+    $tmp03 =" dbtemp.tmpslsmapcustf03_".$puserid."_$now ";
+    $tmp04 =" dbtemp.tmpslsmapcustf04_".$puserid."_$now ";
     
     $query = "select distinct a.fakturid, a.tgljual, a.cabangid, a.custid, b.nama, b.nama_eth_sks "
             . " from MKT.$pnmtblsales as a "
@@ -51,9 +55,80 @@
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "SELECT DISTINCT '$piddist' as distid, a.cabangid, a.fakturid, e.iprodid, a.custid, LEFT(a.tgljual,7) as bulan "
+            . " FROM MKT.$pnmtblsales as a "
+            . " JOIN MKT.eproduk as e ON a.brgid=e.eprodid  WHERE LEFT(tgljual,7)='$pbulan' AND e.distid='$piddist'";
+    //echo "$query";
+    $query = "create TEMPORARY table $tmp02($query)"; 
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "select a.nomsales, a.distid, a.ecabangid, a.fakturid, a.iprodid, a.ecustid, LEFT(a.tgl,7) as bulan, a.tgl, a.qty, a.user1, c.nama as nama_user, b.nama as nama_produk "
+            . " from mkt.msales_new as a LEFT JOIN mkt.iproduk as b on a.iprodid=b.iprodid "
+            . " LEFT JOIN hrd.karyawan as c on LPAD(a.user1,10,'0')=c.karyawanId "
+            . " WHERE LEFT(tgl,7)='$pbulan' AND distid='$piddist' AND (a.user1='$puserid' OR a.user1='$pidcard')";
+    $query = "create TEMPORARY table $tmp03($query)"; 
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "select * from $tmp03 where concat(distId, eCabangId, fakturId, iProdId) NOT IN "
+            . " (select IFNULL(concat(IFNULL(distId,''), IFNULL(CabangId,''), IFNULL(fakturId,''), IFNULL(iProdId,'')),'') FROM $tmp02)";
+    $query = "create TEMPORARY table $tmp04($query)"; 
+    mysqli_query($cnms, $query);
+    $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    
+    
 ?>
 
     <div class='x_content'>
+        <?PHP
+        
+        $query = "SELECT * from $tmp04";
+        $tampilf= mysqli_query($cnms, $query);
+        $ketemuf=mysqli_num_rows($tampilf);
+        if ((INT)$ketemuf>0) {
+            echo "<br/><b><u>Ada Mapping yang tidak sesuai data sales</u></b><br/>";
+            echo "<table  id='datatablecustfkt2' class='table table-striped table-bordered' width='100%'>";
+                echo "<thead>";
+                echo "<tr>";
+                    echo "<th></th>";
+                    echo "<th>ID</th><th>Faktur</th><th>Produk</th><th>QTY</th><th>User</th>";
+                echo "</tr>";
+            echo "</thead>";
+            echo "<tbody>";
+            while ($frow= mysqli_fetch_array($tampilf)) {
+                $f_id=$frow['nomsales'];
+                $f_faktur=$frow['fakturid'];
+                $f_idprod=$frow['iprodid'];
+                $f_nmprod=$frow['nama_produk'];
+                $f_qty=$frow['qty'];
+                $f_userid=$frow['user1'];
+                $f_usernm=$frow['nama_user'];
+                $f_bln=$frow['bulan'];
+                $f_tgl=$frow['tgl'];
+                
+                $pbtnhapussalah="<input type='button' value='Hapus' class='btn btn-danger btn-xs' onClick=\"HapusDataSalahMapping('$piddist', '$f_tgl', '$f_id', '$f_faktur', '$f_idprod', '$f_userid')\">";
+                
+                echo "<tr>";
+                echo "<td nowrap>$pbtnhapussalah</td>";
+                echo "<td nowrap>$f_id</td>";
+                echo "<td nowrap>$f_faktur</td>";
+                echo "<td nowrap>$f_nmprod</td>";
+                echo "<td nowrap align='right'>$f_qty</td>";
+                echo "<td nowrap>$f_usernm</td>";
+                echo "</tr>";
+                
+            }
+            echo "</tbody>";
+            echo "</table>";
+            
+            echo "<br/><br/>";
+        }
+        
+        ?>
+        
         <table id='datatablecustfkt' class='table table-striped table-bordered' width='100%'>
             <thead>
                 <tr>
@@ -166,11 +241,48 @@
             }
         });
     }
+    
+    
+    function HapusDataSalahMapping(sdisid, stgl, skode, ifaktur, iproduk, idusr) {
+        if (skode=="") {
+            alert("Tidak ada data yang akan dihapus...");
+            return false;
+        }
+        
+        var cmt = confirm('Apakah akan hapus data... ???');
+        if (cmt == false) {
+            return false;
+        }
+        
+        var myurl = window.location;
+        var urlku = new URL(myurl);
+        var module = urlku.searchParams.get("module");
+        var idmenu = urlku.searchParams.get("idmenu");
+        var act = urlku.searchParams.get("act");
+        
+        $.ajax({
+            type:"post",
+            url:"module/map_bagisalesmanual/aksi_bagisalesmanual.php?module="+module+"&act=hapusdatasalahmapinguser",
+            data:"ukode="+skode+"&uproduk="+iproduk+"&ufakturid="+ifaktur+"&uidusr="+idusr+"&udistid="+sdisid+"&utgljual="+stgl,
+            success:function(data){
+                var istatus=data.trim();
+                if (istatus=="berhasil") {
+                    disp_viewdata();
+                }else{
+                    alert(data);
+                }
+                
+            }
+        });
+    }
 </script>
 
 <?PHP
 hapusdata:
     mysqli_query($cnms, "drop TEMPORARY table $tmp01");
+    mysqli_query($cnms, "drop TEMPORARY table $tmp02");
+    mysqli_query($cnms, "drop TEMPORARY table $tmp03");
+    mysqli_query($cnms, "drop TEMPORARY table $tmp04");
     
     mysqli_close($cnms);
 ?>

@@ -53,6 +53,15 @@ if ($pmodule=="simpanapv") {
                     . " IFNULL(tgl_atasan3,'') IN ('', '0000-00-00', '0000-00-00 00:00:00') LIMIT 1";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
+            
+            
+            $query = "UPDATE hrd.dkd_new_real1 SET tgl_atasan2=NOW() WHERE nourut='$pidinput' AND atasan2='$pkryidapv' AND "
+                    . " tanggal='$itgl' and karyawanid='$pkryid' and dokterid='$pudoktid' AND "
+                    . " ( IFNULL(atasan1,'')='' AND IFNULL(tgl_atasan1,'') IN ('', '0000-00-00', '0000-00-00 00:00:00') ) AND "
+                    . " IFNULL(tgl_atasan2,'') IN ('', '0000-00-00', '0000-00-00 00:00:00') AND "
+                    . " IFNULL(tgl_atasan3,'') IN ('', '0000-00-00', '0000-00-00 00:00:00') LIMIT 1";
+            mysqli_query($cnmy, $query);
+            $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
 
             $berhasil="berhasil approve";
             

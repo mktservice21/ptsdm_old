@@ -136,6 +136,9 @@ if ($module=="appdirrutin") {
                     $query = "UPDATE dbmaster.t_brrutin0 as a SET a.dir='$karyawanapv', a.tgl_dir=NOW(), a.gbr_dir='$gbrapv' WHERE a.idrutin IN $noidbr AND (IFNULL(a.tgl_dir,'')='' OR IFNULL(a.tgl_dir,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') AND a.jabatanid IN ('05')";
                     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
                                         
+                    $query = "UPDATE dbmaster.t_ca0 as a SET a.dir='$karyawanapv', a.tgl_dir=NOW(), a.gbr_dir='$gbrapv' WHERE a.idca IN $noidbr AND (IFNULL(a.tgl_dir,'')='' OR IFNULL(a.tgl_dir,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') AND a.jabatanid IN ('05')";
+                    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+                                        
                 }elseif ($papproveby=="apvspv") {
                     $query = "UPDATE dbmaster.t_brrutin0 SET tgl_atasan2=NOW(), atasan2='', gbr_atasan2=NULL WHERE idrutin IN $noidbr AND IFNULL(atasan2,'')='' AND (IFNULL(tgl_atasan2,'')='' OR IFNULL(tgl_atasan2,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(tgl_atasan1,'')<>'' AND IFNULL(tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00')";
                     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
@@ -198,6 +201,9 @@ if ($module=="appdirrutin") {
                 }elseif ($papproveby=="apvcoo") {
                     
                     $query = "UPDATE dbmaster.t_brrutin0 as a SET a.tgl_dir=NULL, a.gbr_dir=NULL WHERE a.idrutin IN $noidbr AND (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_dir,'')<>'' AND IFNULL(a.tgl_dir,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') AND a.jabatanid IN ('05')";
+                    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+                    
+                    $query = "UPDATE dbmaster.t_ca0 as a SET a.tgl_dir=NULL, a.gbr_dir=NULL WHERE a.idca IN $noidbr AND (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') AND (IFNULL(a.tgl_dir,'')<>'' AND IFNULL(a.tgl_dir,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') AND a.jabatanid IN ('05')";
                     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
                     
                 }elseif ($papproveby=="apvspv") {

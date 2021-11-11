@@ -73,7 +73,7 @@
     
 
 
-//icabangid='$icabangid_map' AND areaid='$areaid_map' AND 
+	//icabangid='$icabangid_map' AND areaid='$areaid_map' AND 
     $query = "SELECT nama FROM MKT.icust WHERE icustid='$icustid_map'";
     $tampil=mysqli_query($cnms, $query);
     $row=mysqli_fetch_array($tampil);
@@ -112,14 +112,13 @@
     $query = "create TEMPORARY table $tmp01 ($query)"; 
     mysqli_query($cnms, $query);
     $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    //a.icabangid=c.icabangid AND b.areaid=c.areaid AND 
-    $query = "select a.nomsales, a.distid, ecabangid, a.ecustid, a.icabangid, b.areaid, a.icustid, c.nama as nmicust, "
-            . " a.fakturid, a.tgl, b.iprodid, b.qty, b.src, d.nama as nama_cabang, e.nama as nama_area "
-            . " from MKT.msales0 as a LEFT "
-            . " JOIN MKT.msales1 as b on a.nomsales=b.nomsales "
-            . " LEFT JOIN MKT.icust as c on a.icustid=c.icustid "
+    //a.icabangid=c.icabangid AND a.areaid=c.areaid AND 
+    
+    $query = "select a.nomsales, a.distid, ecabangid, a.ecustid, a.icabangid, a.areaid, a.icustid, c.nama as nmicust, "
+            . " a.fakturid, a.tgl, a.iprodid, a.qty, a.src, d.nama as nama_cabang, e.nama as nama_area "
+            . " from MKT.msales_new as a LEFT JOIN MKT.icust as c on a.icustid=c.icustid "
             . " LEFT JOIN MKT.icabang as d on a.icabangid=d.icabangid "
-            . " LEFT JOIN MKT.iarea as e on a.icabangid=e.icabangid AND b.areaid=e.areaid WHERE "
+            . " LEFT JOIN MKT.iarea as e on a.icabangid=e.icabangid AND a.areaid=e.areaid WHERE "
             . " a.distid='$piddist' and a.ecabangid='$pidecab' and a.fakturid='$pnmfilter' AND left(a.tgl,7)='$pbulan'";
     $query = "create TEMPORARY table $tmp02 ($query)"; 
     mysqli_query($cnms, $query);
@@ -134,10 +133,10 @@
     
     $query = "UPDATE $tmp01 as a JOIN mkt.iproduk as b on a.iprodid=b.iprodid SET a.divisiprod=b.DivProdId"; 
     mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+	
     $query = "DELETE FROM $tmp01 WHERE IFNULL(divisiprod,'')='OTC'";
     //mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
-    
+	
     
     //echo "$pnamadist, $pnmtblsales, $pnamaecabang, $pecusid - $pnmecust - $icabangid_map ($pnmcabang) - $areaid_map ($pnmarea), $icustid_map - $pnmicustsdm";
 ?>
@@ -205,7 +204,7 @@
                     $pqty=$row['qbeli'];
                     $ptgljual=$row['tgljual'];
                     $pqtysplte=$row['qtysdhsplt'];
-                    $pidvisisi=$row['divisiprod'];
+					$pidvisisi=$row['divisiprod'];
                     
                     /*
                     $query = "select sum(qty) as qtysp from $tmp02 WHERE iprodid='$pidprod'";
@@ -236,7 +235,7 @@
                     if ($pidvisisi=="OTC" OR $pidvisisi=="CHC") {
                         $pbtnmaping="$pidvisisi";
                     }
-                    
+					
                     echo "<tr>";
                     echo "<td nowrap>$pnamaprod</td>";
                     echo "<td nowrap align='right'>$pqty</td>";

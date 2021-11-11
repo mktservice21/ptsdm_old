@@ -281,6 +281,143 @@ session_start();
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     
+    
+    //CA
+    
+    $query = "select FORMAT(a.jumlah,0) as jumlah, a.idca, 'CASH ADVANCE' as nama_kode, "
+            . " a.tgl, a.bulan, a.karyawanid, b.nama as nama_karyawan, a.jabatanid, a.divisi, a.divi, "
+            . " CASE WHEN IFNULL(a.divisi,'')='OTC' THEN a.icabangid_o ELSE a.icabangid END as icabangid, "
+            . " CASE WHEN IFNULL(a.divisi,'')='OTC' THEN a.areaid_o ELSE a.areaid END as areaid, "
+            . " a.keterangan, "
+            . " a.atasan1, a.tgl_atasan1, a.atasan2, a.tgl_atasan2, a.atasan3, a.tgl_atasan3, a.atasan4, a.tgl_atasan4, "
+            . " a.fin, a.tgl_fin, a.tgl_dir, "
+            . " a.gbr_atasan1, a.gbr_atasan2, a.gbr_atasan3, a.gbr_atasan4 "
+            . " from dbmaster.t_ca0 as a "
+            . " JOIN hrd.karyawan as b on a.karyawanid=b.karyawanId "
+            . " WHERE 1=1 ";
+    $query .=" AND ( (a.tgl BETWEEN '$pbulan1' AND '$pbulan2') "
+            . " OR (a.bulan BETWEEN '$pbulan1' AND '$pbulan2') "
+            . " )";
+    
+    if ($pmodule=="lkrtnapvprbychc") {
+        $query .= " AND a.divisi IN ('OTC', 'CHC') ";
+    }elseif ($pmodule=="lkrtnapvprbyho") {
+        $query .= " AND a.divisi IN ('HO') ";
+    }elseif ($pmodule=="appdirrutin") {
+        //$query .= " AND a.divisi NOT IN ('OTC', 'CHC') ";
+    }else{
+        $query .= " AND a.divisi NOT IN ('OTC', 'CHC', 'HO') ";
+    }
+    
+    if ($papproveby=="apvdm") {
+        $query .= " AND a.atasan2='$pkaryawanid' ";
+    }elseif ($papproveby=="apvsm") {
+        $query .= " AND a.atasan3='$pkaryawanid' ";
+    }elseif ($papproveby=="apvgsm") {
+        $query .= " AND a.atasan4='$pkaryawanid' ";//AND a.jabatanid NOT IN ('15', '38')
+    }elseif ($papproveby=="apvcoo") {
+        $query .= " AND ( a.karyawanid='0000000158' OR a.karyawanid='0000000159' OR a.karyawanid='$pkaryawanid' OR a.atasan4='$pkaryawanid' OR a.dir='$pkaryawanid' ) ";
+    }elseif ($papproveby=="apvmgrchc") {
+        $query .= " AND a.atasan4='$pkaryawanid' ";
+    }elseif ($papproveby=="apvatasanho") {//, 
+        $query .= " AND a.atasan4='$pkaryawanid' ";
+    }else{
+        $query .= " AND a.atasan1='$pkaryawanid' ";
+    }
+    
+    if ($ppilihsts=="REJECT") {
+        $query .=" AND IFNULL(a.stsnonaktif,'')='Y' ";
+    }else{
+        
+        $query .=" AND IFNULL(a.stsnonaktif,'')<>'Y' ";
+        if ($ppilihsts=="ALLDATA") {
+
+        }else{
+            if ($ppilihsts=="APPROVE") {
+                if ($papproveby=="apvdm") {
+                    $query .= " AND (IFNULL(a.tgl_atasan2,'')='' OR IFNULL(a.tgl_atasan2,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvsm") {
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')='' OR IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvgsm") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvcoo") {
+                    //$query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    //$query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                    //$query .= " AND (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    
+                    
+                    $query .= " AND ( ";
+                    $query .= " (IFNULL(a.tgl_dir,'')='' OR IFNULL(a.tgl_dir,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " OR ";
+                    $query .= " (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " ) ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_fin,'')='' OR IFNULL(a.tgl_fin,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    
+                    
+                }elseif ($papproveby=="apvmgrchc") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvatasanho") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')='' OR IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }else{
+                    $query .= " AND (IFNULL(a.tgl_atasan1,'')='' OR IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')='0000-00-00 00:00:00') ";
+                }
+            }elseif ($ppilihsts=="UNAPPROVE") {
+                if ($papproveby=="apvdm") {
+                    $query .= " AND (IFNULL(a.tgl_atasan2,'')<>'' AND IFNULL(a.tgl_atasan2,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvsm") {
+                    $query .= " AND (IFNULL(a.tgl_atasan3,'')<>'' AND IFNULL(a.tgl_atasan3,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvgsm") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvcoo") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvmgrchc") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }elseif ($papproveby=="apvatasanho") {
+                    $query .= " AND (IFNULL(a.tgl_atasan4,'')<>'' AND IFNULL(a.tgl_atasan4,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }else{
+                    $query .= " AND (IFNULL(a.tgl_atasan1,'')<>'' AND IFNULL(a.tgl_atasan1,'0000-00-00 00:00:00')<>'0000-00-00 00:00:00') ";
+                }
+            }
+        }
+        
+    }
+    
+    
+    //echo $query."<br/>";
+    $query = "create TEMPORARY table $tmp03 ($query)"; 
+    mysqli_query($cnmy, $query);
+    $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "ALTER table $tmp03 ADD nama_cabang varchar(200), ADD COLUMN nama_area varchar(200)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp03 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid SET a.nama_cabang=b.nama WHERE divisi NOT IN ('OTC', 'CHC')"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp03 as a JOIN mkt.iarea as b on a.icabangid=b.icabangid AND a.areaid=b.areaid SET a.nama_area=b.nama WHERE divisi NOT IN ('OTC', 'CHC')"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp03 as a JOIN mkt.icabang_o as b on a.icabangid=b.icabangid_o SET a.nama_cabang=b.nama WHERE divisi IN ('OTC', 'CHC')"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp03 as a JOIN mkt.iarea_o as b on a.icabangid=b.icabangid_o AND a.areaid=b.areaid_o SET a.nama_area=b.nama WHERE divisi IN ('OTC', 'CHC')"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "ALTER TABLE $tmp03 ADD COLUMN pbukti VARCHAR(1)"; 
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    $query = "INSERT INTO $tmp01 (jumlah, idca, idrutin, kode, nama_kode, tgl, bulan, karyawanid, nama_karyawan, jabatanid, divisi, divi, icabangid, areaid, keterangan, atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3, atasan4, tgl_atasan4, fin, tgl_fin, tgl_dir, gbr_atasan1, gbr_atasan2, gbr_atasan3, gbr_atasan4)"
+            . " SELECT jumlah, idca, idca as idrutin, '3' as kode, nama_kode, tgl, bulan, karyawanid, nama_karyawan, jabatanid, divisi, divi, icabangid, areaid, keterangan, atasan1, tgl_atasan1, atasan2, tgl_atasan2, atasan3, tgl_atasan3, atasan4, tgl_atasan4, fin, tgl_fin, tgl_dir, gbr_atasan1, gbr_atasan2, gbr_atasan3, gbr_atasan4 "
+            . " FROM $tmp03";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    
+    //END CA
 ?>
 
 
@@ -472,12 +609,18 @@ echo "</div>";
                     $nper2=$row1['periode2'];
                     $njabatanid=$row1['jabatanid'];
                     $ppsudhbukti=$row1['pbukti'];
+                    $pkodepilih=$row1['kode'];
                     
                     $nbulan= date("F Y", strtotime($nbulan));
-                    $nper1= date("d/m/Y", strtotime($nper1));
-                    $nper2= date("d/m/Y", strtotime($nper2));
                     
-                    $nperiodepengajuan="$nbulan ($nper1 - $nper2)";
+                    if ($pkodepilih=="3") {
+                        $nperiodepengajuan="$nbulan";
+                    }else{
+                        $nper1= date("d/m/Y", strtotime($nper1));
+                        $nper2= date("d/m/Y", strtotime($nper2));
+
+                        $nperiodepengajuan="$nbulan ($nper1 - $nper2)";
+                    }
                     
                     $ptglatasan1=$row1['tgl_atasan1'];
                     $ptglatasan2=$row1['tgl_atasan2'];
@@ -491,7 +634,6 @@ echo "</div>";
                     $pidatasan3=$row1['atasan3'];
                     $pidatasan4=$row1['atasan4'];
                     $puserfin=$row1['fin'];
-                    $pkodepilih=$row1['kode'];
                     $pdivisi=$row1['divisi'];
                     
                     
@@ -535,6 +677,13 @@ echo "</div>";
                                     . "$pidrutin</a>";
                             
                         }
+                    }
+                    
+                    if ($pkodepilih=="3") {
+                        $pprint="<a style='font-size:11px;' title='Print / Cetak' href='#' class='btn btn-info btn-xs' data-toggle='modal' "
+                            . "onClick=\"window.open('eksekusi3.php?module=entrybrcash&brid=$pidrutin&iprint=print',"
+                            . "'Ratting','width=700,height=500,left=500,top=100,scrollbars=yes,toolbar=yes,status=1,pagescrool=yes')\"> "
+                            . "$pidrutin</a>";
                     }
                     
                     $ceklisnya = "<input type='checkbox' value='$pidrutin' name='chkbox_br[]' id='chkbox_br[$pidrutin]' class='cekbr'>";

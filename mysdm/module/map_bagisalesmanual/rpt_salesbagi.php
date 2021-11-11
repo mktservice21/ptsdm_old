@@ -55,9 +55,9 @@ $pnamadist=$row['nama'];
 $pnmtblsales=$row['sls_data'];
     
     
-$query = "select a.nomsales, a.icabangid, b.areaid, a.icustid, a.distid, a.ecustid, a.ecabangid, a.tgl, a.fakturid, 
-        b.iprodid, LPAD(a.user1,'10','0') as user1, b.qty 
-        from MKT.msales0 as a join MKT.msales1 as b on a.noMSales=b.noMsales
+$query = "select a.nomsales, a.icabangid, a.areaid, a.icustid, a.distid, a.ecustid, a.ecabangid, a.tgl, a.fakturid, 
+        a.iprodid, LPAD(a.user1,'10','0') as user1, a.qty 
+        from MKT.msales_new as a 
         WHERE a.distid='$pdistid' AND a.eCabangId='$pecabid' AND left(a.tgl,7)='$pbulan' ";
 if ($pidjbt=="38" AND $pidgrp<>"24") {
     $query .=" AND ( a.icabangid IN (SELECT IFNULL(icabangid,'') FROM hrd.rsm_auth WHERE karyawanid='$fkaryawanid') OR a.user1='$puser' ) ";
@@ -226,7 +226,10 @@ mysqli_query($cnms, $query); $erropesan = mysqli_error($cnms); if (!empty($errop
                     echo "<td nowrap>$no</td>";
                     echo "<td nowrap>$pnmcuste ($pidecust)</td>";
                     echo "<td nowrap>$pnmcusti ($pidicust)</td>";
-                    echo "<td nowrap>$pnmcab ($pidcab) - $pnmarea ($pidarea)</td>";
+                    if (!empty($pnmarea))
+                        echo "<td nowrap>$pnmcab ($pidcab) - $pnmarea ($pidarea)</td>";
+                    else
+                        echo "<td nowrap>$pnmcab ($pidcab)</td>";
                     echo "<td nowrap>$pfakturid</td>";
                     echo "<td nowrap>$ptgljual</td>";
                     echo "<td nowrap>$pnmproduk ($pidprod)</td>";

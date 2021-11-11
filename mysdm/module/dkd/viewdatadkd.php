@@ -893,13 +893,12 @@ if ($pmodule=="cekdatasudahada") {
     $pspesialis=$du['spesialis'];
     $pnohp=$du['nohp'];
     
-    //if ($pprofesi=="Dokter" OR $pprofesi=="dokter") $pprofesi="User";
-    
     $pnamalengkap=$pnamauser;
-    if (!empty($pprofesi)) $pnamalengkap=$pprofesi." - ".$pnamauser;
-    if (!empty($pspesialis)) $pnamalengkap .=", ".$pspesialis;
+    if (!empty($pspesialis)) $pnamalengkap =$pnamauser.", ".$pspesialis;
+    if (!empty($pprofesi)) $pnamalengkap .=" (".$pprofesi.")";
     
     echo "$pnamalengkap";
+    if (!empty($pnohp)) echo "<br/>No. Telp : $pnohp";
     
     mysqli_close($cnmy);
 }elseif ($pmodule=="xxxx") {

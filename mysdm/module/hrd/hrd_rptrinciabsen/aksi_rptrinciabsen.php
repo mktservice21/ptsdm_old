@@ -429,6 +429,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<th align='center' rowspan='2'><small>Durasi</small></th>";
                 echo "<th align='center' rowspan='2'><small>&nbsp;</small></th>";
                 echo "<th align='center' rowspan='2'><small>U.M</small></th>";
+                echo "<th align='center' rowspan='2'><small>Prediksi</small></th>";
             echo "</tr>";
             
             echo "<tr>";
@@ -475,7 +476,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 
                 
                 //$nstatusabs="WFO";$njampulang="13:30";
-                
+                $pstsprediksi="";
                 $pselisih_jam="";
                 $pselisih_ist="";
                 $pselisih_telat="";
@@ -541,6 +542,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         if ((INT)substr($pselisih_jam,0,2)>=(INT)$pjamkerja) {
                             $puangmakan="<a href=\"#/prediksi_uang_makan\"><i class=\"fa fa-money\"></i></a>";
                             $pjmlwfo_ok++;
+                            $pstsprediksi="prediksi";
                         }
                         
                     }
@@ -560,6 +562,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                 echo "<td nowrap >$pselisih_jam</td>";
                 echo "<td nowrap >&nbsp; <b>$nstatusabs</b> &nbsp;</td>";
                 echo "<td nowrap >&nbsp; <b>$puangmakan</b> &nbsp;</td>";
+                echo "<td nowrap >$pstsprediksi</td>";
                 echo "</tr>";
                 
                 $no++;

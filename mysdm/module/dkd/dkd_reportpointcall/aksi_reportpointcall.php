@@ -107,6 +107,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     $query_potong = "create TEMPORARY table $tmp05 ($query_potong)"; 
     mysqli_query($cnmy, $query_potong); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $pnotehk=false;
     unset($ar_tgl);
     unset($ar_keterangan);
     unset($ar_jenis);
@@ -127,6 +128,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
         $ar_keterangan[]=$a_ket;
         $ar_jenis[]=$a_jenis;
         
+        $pnotehk=true;
     }
     
     
@@ -753,20 +755,22 @@ if (empty($pnamajabatan)) $pnamajabatan=$pnmjbtkarywanpl;
             echo "<center><span $pwarnasumary><b>$psumarynya %</b></span></center>";
     echo "</div>";
     
-    echo "<br/><br/>";
-    echo "<b><u>Notes hari kerja : </u></b><br/>";
-    
-    for($ix=1;$ix<count($ar_tgl);$ix++) {
-        $a_tgl=$ar_tgl[$ix];
-        $a_ket=$ar_keterangan[$ix];
-        $a_jenis=$ar_jenis[$ix];
-        
-        $a_tgl = date('d/m/Y', strtotime($a_tgl));
-        
-        $pnamaketjenis=$a_jenis;
-        if (!empty($a_ket)) $pnamaketjenis=$a_jenis." - ".$a_ket;
-        echo "$ix.) $a_tgl - $pnamaketjenis<br/>";
-        
+    if ($pnotehk==true) {
+        echo "<br/><br/>";
+        echo "<b><u>Notes hari kerja : </u></b><br/>";
+
+        for($ix=1;$ix<count($ar_tgl);$ix++) {
+            $a_tgl=$ar_tgl[$ix];
+            $a_ket=$ar_keterangan[$ix];
+            $a_jenis=$ar_jenis[$ix];
+
+            $a_tgl = date('d/m/Y', strtotime($a_tgl));
+
+            $pnamaketjenis=$a_jenis;
+            if (!empty($a_ket)) $pnamaketjenis=$a_jenis." - ".$a_ket;
+            echo "$ix.) $a_tgl - $pnamaketjenis<br/>";
+
+        }
     }
     
     echo "<br/><br/><br/><br/><br/>";

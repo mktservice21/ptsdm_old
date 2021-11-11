@@ -201,7 +201,7 @@
                     <div class='col-xs-4'>
                         <select class='soflow' name='cb_custid' id='cb_custid' onchange="">
                             <?php
-                            echo "<option value='' selected>--Pilih--</option>";
+                            echo "<option value='' selected>--Pilih--</option>"; 
                             $query = "select icustid, nama from MKT.icust WHERE ( (IFNULL(aktif,'')<>'N' AND icabangid='$pcabidmap' and areaid='$pareaidmap' AND IFNULL(nama,'')<>'') OR icustid='$picustid' )order by nama";
                             $tampila= mysqli_query($cnms, $query);
                             $ketemua= mysqli_num_rows($tampila);

@@ -1,5 +1,5 @@
 <?PHP
-
+//server
 date_default_timezone_set('Asia/Jakarta');
 ini_set("memory_limit","512M");
 ini_set('max_execution_time', 0);
@@ -81,6 +81,7 @@ if (!empty($ftglfilter)) {
 }
 $query = "create TEMPORARY table $tmp02 ($sql)"; 
 mysqli_query($cnmy, $query);
+$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
 $query = "UPDATE $tmp02 SET jenis='' WHERE jenis IN ('JV')"; 
 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
@@ -134,7 +135,6 @@ $query = "UPDATE $tmp04 as a LEFT JOIN $tmp02 as b on "
 mysqli_query($cnmy, $query);
 //$erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
 
-//echo "$tmp04, $tmp02"; goto hapusdata;
 
 //cari jabatan yang diinput
 $query = "select a.jabatanid, b.nama as nama_jabatan FROM ("
@@ -492,7 +492,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     
                     $pnmjenis="";
                     if ($njenis=="JV") $pnmjenis="Join Visit";
-                    elseif ($njenis=="JE") $pnmjenis="Join Visit";// JOIN VISIT TANPA PLAN
+					elseif ($njenis=="JE") $pnmjenis="Join Visit";// JOIN VISIT TANPA PLAN
                     elseif ($njenis=="EC") $pnmjenis="Extra Call";
                     else{
                         if (!empty($njenis)) {
@@ -595,7 +595,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 
                                 $pnmjenis="";
                                 if ($njenis=="JV") $pnmjenis="Join Visit";
-                                elseif ($njenis=="JE") $pnmjenis="Join Visit";// JOIN VISIT TANPA PLAN
+								elseif ($njenis=="JE") $pnmjenis="Join Visit";// JOIN VISIT TANPA PLAN
                                 elseif ($njenis=="EC") $pnmjenis="Extra Call";
                                 else{
                                     if (!empty($njenis)) {

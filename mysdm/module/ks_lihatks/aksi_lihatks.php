@@ -16,10 +16,13 @@ include "config/fungsi_combo.php";
 include "config/fungsi_sql.php";
 include("config/common.php");
 include "config/fungsi_ubahget_id.php";
-
+        
+$pjabatanid=$_SESSION['JABATANID'];
 $pidgroup=$_SESSION['GROUP'];
 $pidjabatan=$_SESSION['JABATANID'];
 $puserid=$_SESSION['USERID'];
+$pidcard=$_SESSION['IDCARD'];
+
 $now=date("mdYhis");
 $tmp01 =" dbtemp.tmptariklhtks01_".$puserid."_$now ";
 $tmp02 =" dbtemp.tmptariklhtks02_".$puserid."_$now ";
@@ -32,6 +35,15 @@ $pkaryawanid="";
 $pdokterid="";
 $pbln="";
 
+$pbolehbukamaping=false;
+$query = "select karyawanid from hrd.ks1_buka_maping WHERE karyawanid='$pidcard' AND IFNULL(aktif,'')='Y'";
+$tampil=mysqli_query($cnmy, $query);
+$ketemu=mysqli_num_rows($tampil);
+if ((INT)$ketemu>0) $pbolehbukamaping=true;
+
+if ($pidgroup=="1" OR $pidgroup=="24") {
+    $pbolehbukamaping=true;
+}
 
 if ($pmodule=="lihatdataksusr") {
     $pkaryawanid = $_GET['iid']; 
@@ -616,10 +628,10 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
 
         echo "</table>";
         
-        $pgroupid=$_SESSION['GROUP'];
-        $pjabatanid=$_SESSION['JABATANID'];
+
         
-        if ($pgroupid=="1" OR $pgroupid=="24") {// OR $pjabatanid=="38"
+        if ($pbolehbukamaping==true) {
+            
             mysqli_query($cnmy, "drop TEMPORARY table $tmp01");
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
             
@@ -678,11 +690,12 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                     
                                     $pjmlbr=number_format($pjmlbr,0,",",",");
                                     
-                                    $nbutton="<button type='button' class='btn btn-dark btn-xs' data-toggle='modal' "
-                                            . " data-target='#myModal' onClick=\"MappingKIKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter', '$pdivisi', '$pbrid')\">Mapping KI</button>";
+                                    $pnmaspanbtn="btn_saveki".$no;
+                                    $nbutton="<span id='$pnmaspanbtn' name='$pnmaspanbtn'><button type='button' class='btn btn-dark btn-xs' data-toggle='modal' "
+                                            . " data-target='#myModal' onClick=\"MappingKIKeKSBARU('$pbolehbukamaping', '$pnmaspanbtn', '$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter', '$pdivisi', '$pbrid')\">Mapping KI</button></span>";
                                 
                                     if (!empty($niddokterdsu)) {
-                                        $nbutton = "SUDAH MAPPING";
+                                        $nbutton = "<span id='$pnmaspanbtn' name='$pnmaspanbtn'>SUDAH MAPPING</span>";
                                     }
                                     
                                     echo "<tr>";
@@ -743,13 +756,14 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 }
                                  * 
                                  */
-
-                                $nbutton="<button type='button' class='btn btn-success btn-xs' data-toggle='modal' "
-                                        . " data-target='#myModal' onClick=\"MappingKeKSBARU('$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter', '$nidapotik', '$nnmapotik', '$ntypeapotik')\">Mapping</button>";
+                                
+                                $pnmaspanbtn="btn_save".$no;
+                                $nbutton="<span id='$pnmaspanbtn' name='$pnmaspanbtn'><button type='button' class='btn btn-success btn-xs' data-toggle='modal' "
+                                        . " data-target='#myModal' onClick=\"MappingKeKSBARU('$pbolehbukamaping', '$pnmaspanbtn', '$pkaryawanid', '$pnamakarywanpl', '$pdokterid', '$pnamadokter', '$nidapotik', '$nnmapotik', '$ntypeapotik')\">Mapping</button></span>";
 
 
                                 if (!empty($niddokterdsu)) {
-                                    $nbutton = "SUDAH MAPPING";
+                                    $nbutton = "<span id='$pnmaspanbtn' name='$pnmaspanbtn'>SUDAH MAPPING</span>";
                                 }
                                 
                                 echo "<tr>";
@@ -871,7 +885,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             });
         }
         
-        function MappingKIKeKSBARU(eidkry, enmkry, eiddokt, enmdokt, edivisi, ebrid){
+        function MappingKIKeKSBARU(sKey, enmspanbtn, eidkry, enmkry, eiddokt, enmdokt, edivisi, ebrid){
             var eidapt="";
             var enmapt="";
             var etypapt="";
@@ -879,18 +893,18 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             $.ajax({
                 type:"post",
                 url:"module/ks_lihatks/mapingkikeksbaru.php?module=mapingkiksnew",
-                data:"uidkry="+eidkry+"&unmkry="+enmkry+"&uiddokt="+eiddokt+"&unmdokt="+enmdokt+"&udivisi="+edivisi+"&ubrid="+ebrid+"&uidapt="+eidapt+"&unmapt="+enmapt+"&utypapt="+etypapt,
+                data:"ukey="+sKey+"&unmspanbtn="+enmspanbtn+"&uidkry="+eidkry+"&unmkry="+enmkry+"&uiddokt="+eiddokt+"&unmdokt="+enmdokt+"&udivisi="+edivisi+"&ubrid="+ebrid+"&uidapt="+eidapt+"&unmapt="+enmapt+"&utypapt="+etypapt,
                 success:function(data){
                     $("#myModal").html(data);
                 }
             });
         }
         
-        function MappingKeKSBARU(eidkry, enmkry, eiddokt, enmdokt, eidapt, enmapt, etypapt){
+        function MappingKeKSBARU(sKey, enmspanbtn, eidkry, enmkry, eiddokt, enmdokt, eidapt, enmapt, etypapt){
             $.ajax({
                 type:"post",
                 url:"module/ks_lihatks/mapingkeksbaru.php?module=mapingksnew",
-                data:"uidkry="+eidkry+"&unmkry="+enmkry+"&uiddokt="+eiddokt+"&unmdokt="+enmdokt+"&uidapt="+eidapt+"&unmapt="+enmapt+"&utypapt="+etypapt,
+                data:"ukey="+sKey+"&unmspanbtn="+enmspanbtn+"&uidkry="+eidkry+"&unmkry="+enmkry+"&uiddokt="+eiddokt+"&unmdokt="+enmdokt+"&uidapt="+eidapt+"&unmapt="+enmapt+"&utypapt="+etypapt,
                 success:function(data){
                     $("#myModal").html(data);
                 }

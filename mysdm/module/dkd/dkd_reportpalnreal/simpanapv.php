@@ -53,8 +53,8 @@ if ($pmodule=="simpanapv") {
                     . " IFNULL(tgl_atasan3,'') IN ('', '0000-00-00', '0000-00-00 00:00:00') LIMIT 1";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-            
-            
+
+
             $query = "UPDATE hrd.dkd_new_real1 SET tgl_atasan2=NOW() WHERE nourut='$pidinput' AND atasan2='$pkryidapv' AND "
                     . " tanggal='$itgl' and karyawanid='$pkryid' and dokterid='$pudoktid' AND "
                     . " ( IFNULL(atasan1,'')='' AND IFNULL(tgl_atasan1,'') IN ('', '0000-00-00', '0000-00-00 00:00:00') ) AND "
@@ -62,7 +62,8 @@ if ($pmodule=="simpanapv") {
                     . " IFNULL(tgl_atasan3,'') IN ('', '0000-00-00', '0000-00-00 00:00:00') LIMIT 1";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; mysqli_close($cnmy); exit; }
-
+			
+			
             $berhasil="berhasil approve";
             
         }elseif ($papvby=="SM") {
@@ -131,19 +132,39 @@ if ($pmodule=="simpanapv") {
     if (!empty($ptglatasan3)) $ptglatasan3 = date('d F Y H:i:s', strtotime($ptglatasan3));
     if (!empty($ptglatasan4)) $ptglatasan4 = date('d F Y H:i:s', strtotime($ptglatasan4));
     
+    
+    $pokespv="";
+    $pokedm="";
+    $pokesm="";
+    $pokegsm="";
+    
     if (!empty($ptglatasan1) AND !empty($patasan1)) {
-        echo "<b>Sudah Approve SPV/AM : </b>$pnmatasan1<br/>Tgl : $ptglatasan1<br/><br/>";
+        //echo "<b>Sudah Approve SPV/AM : </b>$pnmatasan1<br/>Tgl : $ptglatasan1<br/><br/>";
+        $pokespv="<b>Sudah Approve SPV/AM : </b>$pnmatasan1<br/>Tgl : $ptglatasan1<br/><br/>";
     }
     if (!empty($ptglatasan2) AND !empty($patasan2)) {
-        echo "<b>Sudah Approve DM : </b>$pnmatasan2<br/>Tgl : $ptglatasan2<br/><br/>";
+        //echo "<b>Sudah Approve DM : </b>$pnmatasan2<br/>Tgl : $ptglatasan2<br/><br/>";
+        $pokedm="<b>Sudah Approve DM : </b>$pnmatasan2<br/>Tgl : $ptglatasan2<br/><br/>";
     }
     if (!empty($ptglatasan3) AND !empty($patasan3)) {
-        echo "<b>Sudah Approve SM : </b>$pnmatasan3<br/>Tgl : $ptglatasan3<br/><br/>";
+        //echo "<b>Sudah Approve SM : </b>$pnmatasan3<br/>Tgl : $ptglatasan3<br/><br/>";
+        $pokesm="<b>Sudah Approve SM : </b>$pnmatasan3<br/>Tgl : $ptglatasan3<br/><br/>";
     }
     if (!empty($ptglatasan4) AND !empty($patasan4)) {
-        echo "<b>Sudah Approve GSM : </b>$pnmatasan4<br/>Tgl : $ptglatasan4<br/><br/>";
+        //echo "<b>Sudah Approve GSM : </b>$pnmatasan4<br/>Tgl : $ptglatasan4<br/><br/>";
+        $pokegsm="<b>Sudah Approve GSM : </b>$pnmatasan4<br/>Tgl : $ptglatasan4<br/><br/>";
     }
     
+    $pokeapv="";
+    if ($papvby=="SPV") $pokeapv=$pokespv;
+    elseif ($papvby=="DM") $pokeapv=$pokedm;
+    elseif ($papvby=="SM") $pokeapv=$pokesm;
+    elseif ($papvby=="GSM") $pokeapv=$pokegsm;
+    
+    //if (empty($pokeapv)) $pokeapv="GAGAL APPROVE...";
+    
+    
+    echo $pokeapv;
     mysqli_close($cnmy);
     exit;
     

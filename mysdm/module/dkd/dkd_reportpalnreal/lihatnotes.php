@@ -78,6 +78,7 @@ $sql = "select a.karyawanid, c.nama as namakaryawan, a.tanggal, a.tglinput,
 $tampil=mysqli_query($cnmy, $sql);
 $row= mysqli_fetch_array($tampil);
 $ntglinput=$row['tglinput'];
+
 $pnmkaryawan= $row['namakaryawan'];
 $pnmdokt= $row['namalengkap'];
 $pnotes= $row['notes'];
@@ -114,7 +115,7 @@ if (!empty($pffoto)) {
     $pimages_pl=$pffoto;
     $pittd="N";
     $ffolderfile="images/user_foto/";
-    $ffolderfile2="images/user_foto/$nfolderbulan/";
+	$ffolderfile2="images/user_foto/$nfolderbulan/";
     $fketttdfoto="Foto user";
 }
 
@@ -356,7 +357,7 @@ if ($ptanggal_minapv>$ptgl) {
                                                             $pnamafilefolder=$ffolderfile."".$pimages_pl;
                                                         }
                                                         //echo "<img class='img_ttdfoto' src='$ffolderfile/$pimages_pl' width='140px' height='150px' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\" />";
-                                                        echo "<img class='img_ttdfoto' src='$pnamafilefolder' width='140px' height='150px' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\" />";
+														echo "<img class='img_ttdfoto' src='$pnamafilefolder' width='140px' height='150px' data-toggle='modal' data-target='#myModalImages' onClick=\"ShowDataFotoTTD('$pittd', '$pimages_pl')\" />";
                                                     ?>
                                                 </div>
                                             </div>
@@ -448,7 +449,7 @@ if ($ptanggal_minapv>$ptgl) {
         
         
         <div class='modal-footer'>
-            <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+            <button type='button' class='btn btn-default' data-dismiss='modal' id="btnclose">Close</button>
         </div>
     </div>
 </div>
@@ -481,6 +482,35 @@ if ($ptanggal_minapv>$ptgl) {
                 url:"module/dkd/dkd_reportpalnreal/simpanapv.php?module=simpanapv",
                 data:"uapvby="+iapvby+"&ukryapv="+ikryapv+"&unourut="+inourut+"&ukryid="+ikryid+"&utgl="+itgl+"&udoktid="+idoktid,
                 success:function(data){
+                    var tconfrm_d = myTrim(data);
+                    var iberhasil=tconfrm_d.substring(0, 8);
+                    
+                    if (iberhasil=="berhasil") {
+                        
+                        $.ajax({
+                            type:"post",
+                            url:"module/dkd/dkd_reportpalnreal/simpanapv.php?module=caridataapv",
+                            data:"uapvby="+iapvby+"&ukryapv="+ikryapv+"&unourut="+inourut+"&ukryid="+ikryid+"&utgl="+itgl+"&udoktid="+idoktid,
+                            success:function(data){
+                                var tconfrm_g = myTrim(data);
+                                var iberhasil_g=tconfrm_g.substring(0, 5);
+                                
+                                if (iberhasil_g=="GAGAL" || iberhasil_g=="") {
+                                    alert("Tidak ada data yang diapprove");
+                                }else{
+                                    //alert(data);
+                                    document.getElementById("btnclose").click();
+                                }
+                                
+                            }
+                        });
+                        
+                    }else{
+                        alert("Gagal Approve...");
+                    }
+                    
+                    //window.location.reload(true);
+                    /*
                     alert(data);
                     
                     $.ajax({
@@ -491,12 +521,17 @@ if ($ptanggal_minapv>$ptgl) {
                             $("#div_sts").html(data);
                         }
                     });
-                    
+                    */
                     
                 }
             });
             
         }
+        
+        function myTrim(x) {
+            return x.replace(/^\s+|\s+$/gm,'');
+        }
+    
     </script>
 
 <?PHP

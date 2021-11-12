@@ -29,8 +29,8 @@ switch($pactpilih){
         $flvlposisi=$_SESSION['LVLPOSISI'];
         $fdivisi=$_SESSION['DIVISI'];
         $ppilihancabang="";
-        
-        $philangkan_nonkry=true;
+		
+		$philangkan_nonkry=true;
 
         $pfilterkaryawan="";
         $pfilterkaryawan2="";
@@ -258,9 +258,9 @@ switch($pactpilih){
                                                                     
                                                                     $query .= " AND (IFNULL(tglkeluar,'0000-00-00')='0000-00-00' OR IFNULL(tglkeluar,'')='') ";
                                                                     $query .= " AND nama NOT IN ('ACCOUNTING') AND karyawanId NOT IN ('0000002200', '0000002083')";
-                                                                }    
+                                                                }
                                                             }
-                                                            
+															
                                                             if ($philangkan_nonkry==true) {
                                                                 $query .=" AND LEFT(nama,4) NOT IN ('NN -', 'DR -', 'DM -', 'BDG ', 'OTH.', 'TO. ', 'BGD-', 'JKT ', 'MR -', 'MR S')  "
                                                                         . " and LEFT(nama,7) NOT IN ('NN DM - ', 'MR SBY1')  "

@@ -10,8 +10,36 @@ $fdivisi=$_SESSION['DIVISI'];
         
 include "../../config/koneksimysqli.php";
 include "../../config/koneksimysqli_ms.php";
-$pidbr=$_POST['uidkry'];
 
+
+$pfiltercabpilih="";
+
+if ($fjbtid=="38") {
+    $query = "select DISTINCT icabangid from hrd.rsm_auth WHERE karyawanid='$fkaryawan'";
+    $tampil= mysqli_query($cnmy, $query);
+    while ($row=mysqli_fetch_array($tampil)) {
+        $ncabid=$row['icabangid'];
+        
+        $pfiltercabpilih .="'".$ncabid."',";
+    }
+    
+}
+
+
+if (!empty($pfiltercabpilih)) {
+    $pfiltercabpilih="(".substr($pfiltercabpilih, 0, -1).")";
+}else{
+    $pfiltercabpilih="('')";
+}
+        
+if ($fgroupid=="1" OR $fgroupid=="24") {
+    $pfiltercabpilih="";
+}
+
+
+$pidbr=$_POST['uidkry'];
+$pbolehbukamaping=$_POST['ukey'];
+$pnmspanbtn=$_POST['unmspanbtn'];
 $pidkry=$_POST['uidkry'];
 $pnmkry=$_POST['unmkry'];
 $piddokt=$_POST['uiddokt'];
@@ -84,7 +112,9 @@ if ((INT)$ketemud>0) {
                                 
                                 <div class='form-group'>
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>MR <span class='required'></span></label>
-                                    <div class='col-md-8'>
+                                    <div class='col-md-8 col-sm-8 col-xs-12'>
+                                        <input type='hidden' id='e_oke' name='e_oke' class='form-control col-md-7 col-xs-12' value='' Readonly>
+                                        <input type='hidden' id='e_nmspanbtn' name='e_nmspanbtn' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmspanbtn; ?>' Readonly>
                                         <input type='hidden' id='e_idkry' name='e_idkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidkry; ?>' Readonly>
                                         <input type='text' id='e_nmkry' name='e_nmkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidkry." - ".$pnmkry; ?>' Readonly>
                                     </div>
@@ -92,7 +122,7 @@ if ((INT)$ketemud>0) {
                                 
                                 <div class='form-group' style="margin-top:40px;">
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>User <span class='required'></span></label>
-                                    <div class='col-md-8'>
+                                    <div class='col-md-8 col-sm-8 col-xs-12'>
                                         <input type='hidden' id='e_iddokt' name='e_iddokt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piddokt; ?>' Readonly>
                                         <input type='text' id='e_nmdokt' name='e_nmdokt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $piddokt." - ".$pnmdokt; ?>' Readonly>
                                     </div>
@@ -100,7 +130,7 @@ if ((INT)$ketemud>0) {
                                 
                                 <div class='form-group' style="margin-top:80px;">
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>Apotik <span class='required'></span></label>
-                                    <div class='col-md-8'>
+                                    <div class='col-md-8 col-sm-8 col-xs-12'>
                                         <input type='hidden' id='e_idapt' name='e_idapt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidapt; ?>' Readonly>
                                         <input type='text' id='e_nmapt' name='e_nmapt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pidapt." - ".$pnmapt; ?>' Readonly>
                                     </div>
@@ -108,7 +138,7 @@ if ((INT)$ketemud>0) {
                                 
                                 <div class='form-group' style="margin-top:120px;">
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>Cabang <span class='required'></span></label>
-                                    <div class='col-md-8'>
+                                    <div class='col-md-8 col-sm-8 col-xs-12'>
                                         
                                         <select class='soflow' id="cb_cabang" name="cb_cabang" onchange="ShowDataCabang()">
                                             <?PHP                                                  
@@ -120,7 +150,7 @@ if ((INT)$ketemud>0) {
                                                 if ($fgroupid=="24" or $fgroupid=="1") {
                                                 }else{
                                                     if (!empty($pfiltercabpilih)) {
-                                                        //$query_cb .=" AND iCabangId IN $pfiltercabpilih ";
+                                                        $query_cb .=" AND iCabangId IN $pfiltercabpilih ";
                                                     }
                                                 }
                                                 $query_cb .=" AND LEFT(nama,5) NOT IN ('OTC -', 'ETH -', 'PEA -')";
@@ -164,7 +194,7 @@ if ((INT)$ketemud>0) {
                                 
                                 <div class='form-group' style="margin-top:160px;">
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>Area <span class='required'></span></label>
-                                    <div class='col-md-8'>
+                                    <div class='col-md-8 col-sm-8 col-xs-12'>
                                         
                                         <select class='soflow' id="cb_area" name="cb_area" onchange="ShowDataDokter()">
                                             <?PHP
@@ -191,7 +221,7 @@ if ((INT)$ketemud>0) {
                                 
                                 <div class='form-group' style="margin-top:200px;">
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>User <span class='required'></span></label>
-                                    <div class='col-md-8'>
+                                    <div class='col-md-8 col-sm-8 col-xs-12'>
                                         <select class='soflow s3' id="cb_dokt" name="cb_dokt" onchange="ShowDataOutelt()" style="width: 340px;">
                                             <?PHP
                                                 echo "<option value='' selected>-- Pilih --</option>";
@@ -232,7 +262,7 @@ if ((INT)$ketemud>0) {
                                 
                                 <div class='form-group' style="margin-top:240px;">
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>Lokasi Praktek <span class='required'></span></label>
-                                    <div class='col-md-8'>
+                                    <div class='col-md-8 col-sm-8 col-xs-12'>
                                         <!-- cb_outlet = idpraktek -->
                                         <select class='soflow s2' id="cb_outlet" name="cb_outlet" onchange="" style="width: 340px;">
                                             <?PHP
@@ -289,15 +319,14 @@ if ((INT)$ketemud>0) {
 
                                 <div class='form-group' style="margin-top:290px;">
                                     <label class='control-label col-md-4 col-sm-4 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
-                                    <div class='col-md-8'>
+                                    <div class='col-md-8 col-sm-8 col-xs-12'>
                                         <?PHP
                                         if ($psudahmaping==true) {
                                             echo "SUDAH MAPPING...";
                                         }else{
-                                        ?>
-                                            <button type='button' class='btn btn-success' id="ibuttonsave" onclick='disp_confirm_maping("Simpan ?", "<?PHP echo "simpan"; ?>")'>Simpan</button>
-
-                                        <?PHP
+                                            if ($pbolehbukamaping==true) {
+                                                echo "<button type='button' class='btn btn-success' id='ibuttonsave' onclick=\"disp_confirm_maping('Simpan ?', 'simpan')\">Simpan</button>";
+                                            }
                                         }
                                         ?>
                                     </div>
@@ -507,7 +536,24 @@ Data yang sudah tersimpan tidak bisa diubah kembali...";
                     url:"module/ks_lihatks/simpandatamapingnewks.php?module="+module+"&act=simpanksnew&idmenu="+idmenu,
                     data:"ukryid="+ikryid+"&udoktid="+idoktid+"&uaptid="+iaptid+"&udcabid="+idcabid+"&uareaid="+iareaid+"&uoutletid="+ioutletid+"&udsudoktid="+idsudoktid,
                     success:function(data){
-                        document.getElementById("ibuttonsave").disabled = true;
+                        var tconfrm_d = myTrim(data);
+                        
+                        if (tconfrm_d=="berhasil") {
+                            
+                            document.getElementById('e_oke').value="Y";
+                            document.getElementById("ibuttonsave").disabled = true;
+                            
+                            
+                            var icbuser = document.getElementById("cb_dokt");
+                            var inmuser = icbuser.options[icbuser.selectedIndex].text;
+
+                            var icbotl = document.getElementById("cb_outlet");
+                            var inmotl = icbotl.options[icbotl.selectedIndex].text;
+
+                            var ispanbtn = document.getElementById('e_nmspanbtn').value;
+                            document.getElementById(ispanbtn).textContent="Berhasil Mapping ke User : "+inmuser+" ("+inmotl+")";
+                            
+                        }
                         alert(data);
                     }
                 });
@@ -519,6 +565,10 @@ Data yang sudah tersimpan tidak bisa diubah kembali...";
         }
         
         
+    }
+    
+    function myTrim(x) {
+        return x.replace(/^\s+|\s+$/gm,'');
     }
     
 </script>

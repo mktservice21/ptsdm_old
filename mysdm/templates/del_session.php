@@ -742,4 +742,11 @@
     $_SESSION['COAPOSDEP1']="";
     $_SESSION['COAPOSDIP2']="";
     
+    
+    //MANAJ APPROVE BR BY MKT
+    $_SESSION['MUAPVBRMKTSTS']="";
+    $_SESSION['MUAPVBRMKTBLN1']="";
+    $_SESSION['MUAPVBRMKTBLN2']="";
+    
+    
 ?>

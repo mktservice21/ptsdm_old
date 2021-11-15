@@ -6,6 +6,7 @@ $pidinput=$_POST['unourut'];
 $pkryid=$_POST['uidkry'];
 $ptgl=$_POST['utgl'];
 $pudoktid=$_POST['udoktid'];
+$pidspan=$_POST['uidspan'];
 
 if (!isset($_SESSION['USERID'])) {
     echo "ANDA HARUS LOGIN ULANG....";
@@ -417,7 +418,7 @@ if ($ptanggal_minapv>$ptgl) {
                                                         }else{
                                                             //belum approve atasan sebelumnya
                                                             if ($pbolehapprove==true) {
-                                                                echo "<button type='button' id='btnakv' class='btn btn-info add-aktv' onclick=\"Disp_ApproveData('$pwwnang_', '$apvby_', '$pidinput', '$pkryid', '$ptgl', '$pudoktid')\">Approve</button>";
+                                                                echo "<button type='button' id='btnakv' class='btn btn-info add-aktv' onclick=\"Disp_ApproveData('$pwwnang_', '$apvby_', '$pidinput', '$pkryid', '$ptgl', '$pudoktid', '$pidspan')\">Approve</button>";
                                                             }else{
                                                                 if ($psudahmelewatihari==true) {
                                                                     echo "<span style='color:red;'><b>Tidak bisa approve, karena sudah melewati batas hari approve.<br/>Maksimal 3 hari</b></span>";
@@ -468,7 +469,7 @@ if ($ptanggal_minapv>$ptgl) {
     <!-- Custom Theme Scripts -->
     
     <script>
-        function Disp_ApproveData(iapvby, ikryapv, inourut, ikryid, itgl, idoktid) {
+        function Disp_ApproveData(iapvby, ikryapv, inourut, ikryid, itgl, idoktid, eidspan) {
             //alert(iapvby+", "+ikryapv+", "+inourut);
             
             var pText_="Apakah akan approve data...?";
@@ -499,6 +500,8 @@ if ($ptanggal_minapv>$ptgl) {
                                     alert("Tidak ada data yang diapprove");
                                 }else{
                                     //alert(data);
+                                    //document.getElementById(eidspan).css('color','Green');
+                                    document.getElementById(eidspan).setAttribute("style", "color:green;");
                                     document.getElementById("btnclose").click();
                                 }
                                 

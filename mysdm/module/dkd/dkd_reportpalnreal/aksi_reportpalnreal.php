@@ -444,7 +444,7 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
             
         echo "</tr>";
         
-        
+        $pnospan_=1;
         $query = "select distinct tanggal, karyawanid from $tmp06 order by karyawanid, tanggal";
         $tampil1=mysqli_query($cnmy, $query);
         while ($row1=mysqli_fetch_array($tampil1)) {
@@ -511,8 +511,10 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                     $pstsvisitreal="plan";
                     if ($pada==true) $pstsvisitreal="realisasi";
                     
+                    $pdokter_nm_span="spn_".$pnospan_;
+                    
                     $plihatnotes="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
-                            . " data-target='#myModal' onClick=\"LiatNotes('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
+                            . " data-target='#myModal' onClick=\"LiatNotes('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid', '$pdokter_nm_span')\">Lihat Notes</button>";
                     
                     $plihatkomen="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
                             . " data-target='#myModal' onClick=\"LiatKomentar('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
@@ -616,8 +618,10 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 
                                 $pidget=encodeString($nkaryawanid);
                                 
+                                $pdokter_nm_span="spn_".$pnospan_;
+                                
                                 $plihatnotes="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
-                                        . " data-target='#myModal' onClick=\"LiatNotes('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Lihat Notes</button>";
+                                        . " data-target='#myModal' onClick=\"LiatNotes('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid', '$pdokter_nm_span')\">Lihat Notes</button>";
                                 
                                 $plihatkomen="<button type='button' class='btn btn-default btn-xs' data-toggle='modal' "
                                         . " data-target='#myModal' onClick=\"LiatKomentar('$pstsvisitreal', '$cnourut', '$nkaryawanid', '$ntgl', '$ndoktid')\">Isi Komentar</button>";
@@ -654,14 +658,18 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                                 if (!empty($pnmjenis)) {
                                     $pnmdokt_="($pnmjenis) ".$pnmdokt_;
                                 }
+                                
+                                
                                 echo "<td nowrap>$pjam</td>";
                                 //echo "<td nowrap>$pnmjenis</td>";
-                                echo "<td nowrap $pwarnaapv>$pnmdokt_</td>";
+                                echo "<td nowrap $pwarnaapv><span id='$pdokter_nm_span'>$pnmdokt_</span></td>";
                                 echo "<td >$plihatnotes</td>";
                                 echo "<td >$plihatkomen</td>";
 
                                 echo "</tr>";
                                 $ifirst=true;
+                                $pnospan_++;
+                                
                             }
                             
                         }
@@ -675,12 +683,17 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
                         if (!empty($pnmjenis)) {
                             $pnmdokt_="($pnmjenis) ".$pnmdokt_;
                         }
-                                
+                        
+                        $pdokter_nm_span="spn_".$pnospan_;
+                        
                         echo "<td nowrap>$pjam</td>";
                         //echo "<td nowrap>$pnmjenis</td>";
-                        echo "<td nowrap>$pnmdokt_</td>";
+                        echo "<td nowrap><span id='$pdokter_nm_span'>$pnmdokt_</span></td>";
                         echo "<td >$plihatnotes</td>";
                         echo "<td >$plihatkomen</td>";
+                        
+                        $pnospan_++;
+                        
                     }
 
                     echo "</tr>";
@@ -776,11 +789,11 @@ mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($errop
     </script>
     
     <script>
-        function LiatNotes(ests, enourut, eidkry, etgl, edoktid){
+        function LiatNotes(ests, enourut, eidkry, etgl, edoktid, eidspan){
             $.ajax({
                 type:"post",
                 url:"module/dkd/dkd_reportpalnreal/lihatnotes.php?module=viewnotes",
-                data:"usts="+ests+"&unourut="+enourut+"&uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid,
+                data:"usts="+ests+"&unourut="+enourut+"&uidkry="+eidkry+"&utgl="+etgl+"&udoktid="+edoktid+"&uidspan="+eidspan,
                 success:function(data){
                     $("#myModal").html(data);
                 }

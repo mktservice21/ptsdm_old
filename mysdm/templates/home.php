@@ -1002,6 +1002,8 @@ if ( $pnidmodule=="tolsresetpass" ) {
         include 'module/coa_posting/mod_potingperdep/potingperdep.php';
     }elseif ($_GET['module']=='reportporgresbr'){
         include 'module/laporan_gl/mod_progresexpen/progresexpen.php';
+    }elseif ($_GET['module']=='approvebrquestbymkt'){
+        include 'module/manaj_user/mod_apvbrbymkt/apvbrbymkt.php';
         
 
     }else{

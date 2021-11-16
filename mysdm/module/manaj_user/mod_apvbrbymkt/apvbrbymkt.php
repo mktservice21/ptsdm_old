@@ -63,7 +63,7 @@ if (!empty($_SESSION['MUAPVBRMKTBLN2'])) $tgl_akhir=$_SESSION['MUAPVBRMKTBLN2'];
         <div class='col-md-12 col-sm-12 col-xs-12'>
             <div class='x_panel'>
                 
-                <div hidden class='col-md-12 col-sm-12 col-xs-12'>
+                <div class='col-md-12 col-sm-12 col-xs-12'>
                     <h2>
                         <?PHP
                         

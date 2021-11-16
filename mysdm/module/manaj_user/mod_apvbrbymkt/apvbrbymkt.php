@@ -9,7 +9,8 @@ if (isset($_GET['module'])) $pmodule=$_GET['module'];
 if (isset($_GET['idmenu'])) $pidmenu=$_GET['idmenu'];
 if (isset($_GET['act'])) $pact=$_GET['act'];
 
-include "config/cek_akses_modul.php";
+//include "config/cek_akses_modul.php";
+include "config/cek_akses_modul_menu.php";
 $aksi="module/manaj_user/mod_apvbrbymkt/aksi_apvbrbymkt.php";
 $hari_ini = date("Y-m-d");
 $tgl_pertama = date('F Y', strtotime('-1 month', strtotime($hari_ini)));

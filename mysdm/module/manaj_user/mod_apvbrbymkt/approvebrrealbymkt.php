@@ -15,6 +15,11 @@ include "../../../config/fungsi_ubahget_id.php";
 
 $psudahmaping=false;
 $pdokterid_uc=$_POST['udoktid'];
+$pfilterbrid=$_POST['uidbr'];
+$pkryidapv=$_POST['ukryapv'];
+$pkrynmapv=$_POST['ukryapvnm'];
+$pkryjbtapv=$_POST['ukryjbt'];
+$pkryjbtnmapv=$_POST['unmjbt'];
 
 $pdokterid = decodeString($pdokterid_uc);
 
@@ -84,12 +89,21 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                         </div>
                                     </div>
 
+                                    <div hidden class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Br ID <span class='required'></span></label>
+                                        <div class='col-md-6 col-sm-6 col-xs-12'>
+                                            <textarea class='form-control col-md-7 col-xs-12' id='e_brid' name='e_brid'><?PHP echo $pfilterbrid; ?></textarea>
+                                        </div>
+                                    </div>
+
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Alamat <span class='required'></span></label>
                                         <div class='col-md-8 col-sm-8 col-xs-12'>
                                             <input type='text' id='e_alamat' name='e_alamat' class='form-control col-md-7 col-xs-12' value='<?PHP echo $palamat1; ?>' Readonly>
                                         </div>
                                     </div>
+
+
 
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No HP <span class='required'></span></label>
@@ -126,6 +140,16 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                         </div>
                                     </div>
                                     
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Approve By <span class='required'></span></label>
+                                        <div class='col-md-8 col-sm-8 col-xs-12'>
+                                            <input type='hidden' id='e_apvidkry' name='e_apvidkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkryidapv; ?>' Readonly>
+                                            <input type='hidden' id='e_apvjbt' name='e_apvjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkryjbtapv; ?>' Readonly>
+                                            <input type='text' id='e_apvnmkry' name='e_apvnmkry' class='form-control col-md-7 col-xs-12' value='<?PHP echo "$pkrynmapv ($pkryidapv)"; ?>' Readonly>
+                                            <input type='text' id='e_apvnmjbt' name='e_apvnmjbt' class='form-control col-md-7 col-xs-12' value='<?PHP echo "$pkryjbtnmapv ($pkryjbtapv)"; ?>' Readonly>
+                                        </div>
+                                    </div>
                                     
 
                                 </div>
@@ -173,6 +197,9 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
     function disp_confirm_approve(pText_, ket, data_img) {
         //chk_userveri, chk_norekveri, chk_tanggung
         var iiduser =document.getElementById('e_iduser').value;
+        var ibrid =document.getElementById('e_brid').value;
+        var iidkryapv =document.getElementById('e_apvidkry').value;
+        var iidjbtapv =document.getElementById('e_apvjbt').value;
         var ichk_usrveri =document.getElementById('chk_userveri');
         var iveriuser="N";
         if (ichk_usrveri.checked==true) {
@@ -193,6 +220,14 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
         
         //alert(iveriuser+" | "+inorekuser+" | "+itanggungjwb); return false;
         
+        if (iidkryapv=="") {
+            alert("Karyawan Approve Kosong");
+            return false;
+        }
+        if (iidjbtapv=="") {
+            alert("Jabatan Karyawan Approve Kosong");
+            return false;
+        }
         
         if (iiduser=="") {
             alert("ID KOSONG...");
@@ -213,7 +248,15 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                 var idmenu = urlku.searchParams.get("idmenu");
                 //document.write("You pressed OK!")
                 
-                alert(data_img);
+                $.ajax({
+                    type:"post",
+                    url:"module/manaj_user/mod_apvbrbymkt/simpanbbrrealttd.php?module="+module+"&act=simpanbrrealapvbymkt&idmenu="+idmenu,
+                    data:"uiduser="+iiduser+"&udataimage="+data_img+"&ubrid="+ibrid+"&uidkryapv="+iidkryapv+"&uidjbtapv="+iidjbtapv+
+                            "&uveriuser="+iveriuser+"&unorekuser="+inorekuser+"&utanggungjwb="+itanggungjwb,
+                    success:function(data){
+                        alert(data);
+                    }
+                });
                 
                 
             }

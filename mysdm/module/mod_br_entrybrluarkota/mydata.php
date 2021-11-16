@@ -215,6 +215,10 @@ while( $row=mysqli_fetch_array($query) ) {  // preparing an array
     
     if (!empty($apvfin)) $allbutton= $print;
     
+    if ($_SESSION['GROUP']=="61") {
+        $allbutton= "$print $edit";
+    }
+    
     $nestedData[] = $no;
     $nestedData[] = $allbutton;
     $nestedData[] = $idno;

@@ -201,21 +201,21 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
         var iidkryapv =document.getElementById('e_apvidkry').value;
         var iidjbtapv =document.getElementById('e_apvjbt').value;
         var ichk_usrveri =document.getElementById('chk_userveri');
-        var iveriuser="N";
+        var iveriuser="";
         if (ichk_usrveri.checked==true) {
-            iveriuser="Y";
+            iveriuser="VUSER";
         }
         
         var ichk_norek =document.getElementById('chk_norekveri');
-        var inorekuser="N";
+        var inorekuser="";
         if (ichk_norek.checked==true) {
-            inorekuser="Y";
+            inorekuser="VNOREK";
         }
         
         var ichk_tanggung =document.getElementById('chk_tanggung');
-        var itanggungjwb="N";
+        var itanggungjwb="";
         if (ichk_tanggung.checked==true) {
-            itanggungjwb="Y";
+            itanggungjwb="VTANGGUNG";
         }
         
         //alert(iveriuser+" | "+inorekuser+" | "+itanggungjwb); return false;

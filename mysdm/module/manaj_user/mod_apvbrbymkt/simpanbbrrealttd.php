@@ -81,22 +81,26 @@
                 
                 $query_updt="";
                 if ($pkaryawanapprovejbt=="08") {
-                    $query_updt = "UPDATE hrd.br0_apvreal SET atasan2='$pkaryawanapproveid', tgl_atasan2=NOW() WHERE brid IN $filter_br AND "
-                            . " IFNULL(tgl_atasan2,'') IN ('', '0000-00-00 00:00:00') AND "
-                            . " IFNULL(tgl_atasan3,'') IN ('', '0000-00-00 00:00:00')";
+                    $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
+                            . " a.atasan2='$pkaryawanapproveid', a.tgl_atasan2=NOW(), b.gbr_atasan2='$pdataimage' WHERE a.brid IN $filter_br AND "
+                            . " IFNULL(a.tgl_atasan2,'') IN ('', '0000-00-00 00:00:00') AND "
+                            . " IFNULL(a.tgl_atasan3,'') IN ('', '0000-00-00 00:00:00')";
                 }elseif ($pkaryawanapprovejbt=="10" OR $pkaryawanapprovejbt=="18") {
-                    $query_updt = "UPDATE hrd.br0_apvreal SET atasan1='$pkaryawanapproveid', tgl_atasan1=NOW() WHERE brid IN $filter_br AND "
-                            . " IFNULL(tgl_atasan1,'') IN ('', '0000-00-00 00:00:00') AND "
-                            . " IFNULL(tgl_atasan2,'') IN ('', '0000-00-00 00:00:00') AND "
-                            . " IFNULL(tgl_atasan3,'') IN ('', '0000-00-00 00:00:00')";
+                    $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
+                            . " a.atasan1='$pkaryawanapproveid', a.tgl_atasan1=NOW(), b.gbr_atasan1='$pdataimage' WHERE a.brid IN $filter_br AND "
+                            . " IFNULL(a.tgl_atasan1,'') IN ('', '0000-00-00 00:00:00') AND "
+                            . " IFNULL(a.tgl_atasan2,'') IN ('', '0000-00-00 00:00:00') AND "
+                            . " IFNULL(a.tgl_atasan3,'') IN ('', '0000-00-00 00:00:00')";
                 }elseif ($pkaryawanapprovejbt=="20") {
-                    $query_updt = "UPDATE hrd.br0_apvreal SET atasan3='$pkaryawanapproveid', tgl_atasan3=NOW() WHERE brid IN $filter_br AND "
-                            . " IFNULL(tgl_atasan3,'') IN ('', '0000-00-00 00:00:00') AND "
-                            . " IFNULL(tgl_atasan4,'') IN ('', '0000-00-00 00:00:00')";
+                    $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
+                            . " a.atasan3='$pkaryawanapproveid', a.tgl_atasan3=NOW(), b.gbr_atasan3='$pdataimage' WHERE a.brid IN $filter_br AND "
+                            . " IFNULL(a.tgl_atasan3,'') IN ('', '0000-00-00 00:00:00') AND "
+                            . " IFNULL(a.tgl_atasan4,'') IN ('', '0000-00-00 00:00:00')";
                 }elseif ($pkaryawanapprovejbt=="05") {
-                    $query_updt = "UPDATE hrd.br0_apvreal SET atasan4='$pkaryawanapproveid', tgl_atasan4=NOW() WHERE brid IN $filter_br AND "
-                            . " IFNULL(tgl_atasan3,'') NOT IN ('', '0000-00-00 00:00:00') AND "
-                            . " IFNULL(tgl_atasan4,'') IN ('', '0000-00-00 00:00:00')";
+                    $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
+                            . " a.atasan4='$pkaryawanapproveid', a.tgl_atasan4=NOW(), b.gbr_atasan4='$pdataimage' WHERE a.brid IN $filter_br AND "
+                            . " IFNULL(a.tgl_atasan3,'') NOT IN ('', '0000-00-00 00:00:00') AND "
+                            . " IFNULL(a.tgl_atasan4,'') IN ('', '0000-00-00 00:00:00')";
                 }
 
                 if (!empty($query_updt)) {

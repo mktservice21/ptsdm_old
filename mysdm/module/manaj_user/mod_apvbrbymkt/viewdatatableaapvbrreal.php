@@ -63,14 +63,19 @@ ini_set('max_execution_time', 0);
     }
     
     
-    $tampil=mysqli_query($cnmy, "select jabatanId from hrd.karyawan where karyawanid='$pkaryawanid'");
+    $tampil=mysqli_query($cnmy, "select jabatanId, nama from hrd.karyawan where karyawanid='$pkaryawanid'");
     $pr= mysqli_fetch_array($tampil);
     $pjabatanid=$pr['jabatanId'];
+    $pnama_approve=$pr['nama'];
     if (empty($pjabatanid)) {
         $tampil=mysqli_query($cnmy, "select jabatanId from dbmaster.t_karyawan_posisi where karyawanid='$pkaryawanid'");
         $pr= mysqli_fetch_array($tampil);
         $pjabatanid=$pr['jabatanId'];
     }
+    
+    $tampil=mysqli_query($cnmy, "select nama as nama_jabatan from hrd.jabatan where jabatanId='$pjabatanid'");
+    $pr= mysqli_fetch_array($tampil);
+    $pnama_jabatan=$pr['nama_jabatan'];
     
     $papproveby="";
     if ($pjabatanid=="18" OR $pjabatanid=="10") {
@@ -199,8 +204,22 @@ ini_set('max_execution_time', 0);
                 $query = "SELECT DISTINCT dokterid, nama_dokter FROM $tmp01 ORDER BY nama_dokter, dokterid";
                 $tampil=mysqli_query($cnmy, $query);
                 while ($row= mysqli_fetch_array($tampil)) {
+                    
                     $ndoktid=$row['dokterid'];
                     $ndoktnm=$row['nama_dokter'];
+                    
+                    $filter_br="";
+                    
+                    if (!empty($ndoktid)) {
+                        $query_ = "SELECT distinct brid FROM $tmp01 WHERE IFNULL(dokterid,'')='$ndoktid' ORDER BY brid";
+                        $tampil_1=mysqli_query($cnmy, $query_);
+                        while ($nrow= mysqli_fetch_array($tampil_1)) {
+                            $nbrid=$nrow['brid'];
+
+                            $filter_br .="".$nbrid.",";
+                        }
+                        if (!empty($filter_br)) $filter_br="".substr($filter_br, 0, -1)."";
+                    }
                     
                     $pidnoget="";
                     $ndoktid_="";
@@ -230,7 +249,7 @@ ini_set('max_execution_time', 0);
                                 . " data-target='#myModal' onClick=\"LengkapiDataUser('$pidnoget')\">Lengkapi Data</button>";
                         
                         $pbtnapprovedata="<button type='button' id='$pnamebtnfld_apv' name='$pnamebtnfld_apv' class='btn btn-dark btn-xs' data-toggle='modal' "
-                                . " data-target='#myModal' onClick=\"ApproveDataUser('$pidnoget')\">Approve</button>";
+                                . " data-target='#myModal' onClick=\"ApproveDataUser('$pkaryawanid', '$pnama_approve', '$pjabatanid', '$pnama_jabatan', '$pidnoget', '$filter_br')\">Approve</button>";
                     }
                     
                     echo "<tr style='font-weight:bold;'>";
@@ -396,12 +415,21 @@ ini_set('max_execution_time', 0);
         
     }
     
-    function ApproveDataUser(edoktid) {
+    function ApproveDataUser(ekryapv, ekryapvnm, ekryjbt, enmjbt, edoktid, eidbr) {
         $("#myModal").html("");
+        if (ekryapv=="") {
+            alert("Karyawan Approve Kosong");
+            return false;
+        }
+        if (ekryjbt=="") {
+            alert("Jabatan Karyawan Approve Kosong");
+            return false;
+        }
+        
         $.ajax({
             type:"post",
             url:"module/manaj_user/mod_apvbrbymkt/approvebrrealbymkt.php?module=viewdatauserforapv",
-            data:"udoktid="+edoktid,
+            data:"udoktid="+edoktid+"&uidbr="+eidbr+"&ukryapv="+ekryapv+"&ukryapvnm="+ekryapvnm+"&ukryjbt="+ekryjbt+"&unmjbt="+enmjbt,
             success:function(data){
                 $("#myModal").html(data);
             }

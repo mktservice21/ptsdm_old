@@ -173,6 +173,7 @@
         $now=date("mdYhis");
         $tmpbudgetreq01 =" dbtemp.DTBUDGETBRREKAPSBYOTC01_$_SESSION[IDCARD]$now ";
         $tmpbudgetreq02 =" dbtemp.DTBUDGETBRREKAPSBYOTC02_$_SESSION[IDCARD]$now ";
+        $tmpbudgetreq03 =" dbtemp.DTBUDGETBRREKAPSBYOTC03_$_SESSION[IDCARD]$now ";
     
 	$query = "select * from dbmaster.t_suratdana_br1 WHERE idinput='$pidspd'";//echo"$query";
         $sql = "create TEMPORARY table $tmpbudgetreq02 ($query)";
@@ -187,6 +188,25 @@
         $sql = "UPDATE $tmpbudgetreq01 a JOIN $tmpbudgetreq02 b on a.brOtcId=b.bridinput SET a.jumlah=b.amount";
         mysqli_query($cnmy, $sql);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        $sql = "ALTER TABLE $tmpbudgetreq01 ADD COLUMN noslip_adj VARCHAR(1) DEFAULT 'N'";
+        mysqli_query($cnmy, $sql); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        $query = "select a.* from $tmpbudgetreq01 as a JOIN (select bridinput from $tmpbudgetreq02 where ifnull(jml_adj,0)<>0) as b "
+                . " on a.brOtcId=b.bridinput";
+        $sql = "create TEMPORARY  table $tmpbudgetreq03 ($query)";
+        mysqli_query($cnmy, $sql); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        $sql = "UPDATE $tmpbudgetreq03 SET keterangan2='', keterangan1='', jumlah='0', realisasi='0'";
+        mysqli_query($cnmy, $sql); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        $sql = "UPDATE $tmpbudgetreq03 as a JOIN $tmpbudgetreq02 as b on a.brOtcId=b.bridinput SET a.noslip_adj='Y', a.keterangan1=b.aktivitas1, a.jumlah=b.jml_adj, a.realisasi=b.jml_adj";
+        mysqli_query($cnmy, $sql); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        $sql = "INSERT INTO $tmpbudgetreq01 SELECT * FROM $tmpbudgetreq03";
+        mysqli_query($cnmy, $sql); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
+        
+        
         
 
 	$query = "select * from $tmpbudgetreq01 order by noslip, tglrpsby,tgltrans";
@@ -238,6 +258,7 @@
 		$icabangid_o = $row['icabangid_o'];
 		$keterangan1 = $row['keterangan1'];
 		$keterangan2 = $row['keterangan2'];
+		$pnosliphilangkan = $row['noslip_adj'];
                 
                 if ($nbatalkan=="Y") {
                     $keterangan2 .=" (".$nbatalkan_alasan.")";
@@ -284,6 +305,8 @@
 			echo "<td><small>&nbsp;</small></td>";
 		}
 		
+                if ($pnosliphilangkan=="Y") $noslip_="";
+                
 		if ($noslip_=='') {
 			echo "<td align=center><small>&nbsp;</small></td>";
 		} else {
@@ -444,6 +467,7 @@ if (empty($_SESSION['srid'])) {
     hapusdata:
         mysqli_query($cnmy, "drop temporary table $tmpbudgetreq01");
         mysqli_query($cnmy, "drop temporary table $tmpbudgetreq02");
+        mysqli_query($cnmy, "drop temporary table $tmpbudgetreq03");
         mysqli_close($cnmy);
 ?>
 

@@ -12,6 +12,7 @@ ini_set('max_execution_time', 0);
     }
     
     $pidgroup=$_SESSION['GROUP'];
+    $pidjabatan_login=$_SESSION['JABATANID'];
     
     include "../../../config/koneksimysqli.php";
     include "../../../config/fungsi_ubahget_id.php";
@@ -151,7 +152,10 @@ ini_set('max_execution_time', 0);
     $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "ALTER TABLE $tmp01 ADD COLUMN nama_karyawan VARCHAR(200), ADD COLUMN nama_cabang VARCHAR(200), "
-            . " ADD COLUMN nama_dokter VARCHAR(200), ADD COLUMN nama_mr VARCHAR(200)";
+            . " ADD COLUMN nama_dokter VARCHAR(200), ADD COLUMN nama_mr VARCHAR(200), "
+            . " ADD COLUMN appvspv VARCHAR(1) DEFAULT 'N', ADD COLUMN appvdm VARCHAR(1) DEFAULT 'N', "
+            . " ADD COLUMN appvsm VARCHAR(1) DEFAULT 'N', ADD COLUMN appvgsm VARCHAR(1) DEFAULT 'N', "
+            . " ADD COLUMN appvdir VARCHAR(1) DEFAULT 'N'";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
     $query = "UPDATE $tmp01 as a JOIN hrd.karyawan as b on a.karyawanid=b.karyawanid SET a.nama_karyawan=b.nama";
@@ -166,7 +170,61 @@ ini_set('max_execution_time', 0);
     $query = "UPDATE $tmp01 as a JOIN mkt.icabang as b on a.icabangid=b.icabangid SET a.nama_cabang=b.nama";
     mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "UPDATE $tmp01 as a JOIN hrd.br0_apvreal as b on a.brid=b.brid SET a.appvspv='Y' WHERE IFNULL(atasan1,'')<>'' AND IFNULL(tgl_atasan1,'') NOT IN ('', '0000-00-00 00:00:00', '0000-00-00')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
     
+    $query = "UPDATE $tmp01 as a JOIN hrd.br0_apvreal as b on a.brid=b.brid SET a.appvdm='Y' WHERE IFNULL(atasan2,'')<>'' AND IFNULL(tgl_atasan2,'') NOT IN ('', '0000-00-00 00:00:00', '0000-00-00')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 as a JOIN hrd.br0_apvreal as b on a.brid=b.brid SET a.appvsm='Y' WHERE IFNULL(atasan3,'')<>'' AND IFNULL(tgl_atasan3,'') NOT IN ('', '0000-00-00 00:00:00', '0000-00-00')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 as a JOIN hrd.br0_apvreal as b on a.brid=b.brid SET a.appvgsm='Y' WHERE IFNULL(atasan4,'')<>'' AND IFNULL(tgl_atasan4,'') NOT IN ('', '0000-00-00 00:00:00', '0000-00-00')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    $query = "UPDATE $tmp01 as a JOIN hrd.br0_apvreal as b on a.brid=b.brid SET a.appvdir='Y' WHERE IFNULL(atasan5,'')<>'' AND IFNULL(tgl_atasan5,'') NOT IN ('', '0000-00-00 00:00:00', '0000-00-00')";
+    mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+    
+    if ($ppilihsts=="APPROVE") {
+        if ($papproveby=="apvspv") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvspv,'')='Y' OR IFNULL(appvdm,'')='Y' OR IFNULL(appvsm,'')='Y' OR IFNULL(appvgsm,'')='Y' OR IFNULL(appvdir,'')='Y'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvdm") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvdm,'')='Y' OR IFNULL(appvsm,'')='Y' OR IFNULL(appvgsm,'')='Y' OR IFNULL(appvdir,'')='Y'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvsm") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvsm,'')='Y' OR IFNULL(appvgsm,'')='Y' OR IFNULL(appvdir,'')='Y'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvgsm") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvgsm,'')='Y' OR IFNULL(appvdir,'')='Y'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvcoo") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvdir,'')='Y'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }
+    }elseif ($ppilihsts=="UNAPPROVE") {
+        if ($papproveby=="apvspv") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvspv,'')='N' AND IFNULL(appvdm,'')='N' AND IFNULL(appvsm,'')='N' AND IFNULL(appvgsm,'')='N' AND IFNULL(appvdir,'')='N'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvdm") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvdm,'')='N' AND IFNULL(appvsm,'')='N' AND IFNULL(appvgsm,'')='N' AND IFNULL(appvdir,'')='N'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvsm") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvsm,'')='N' AND IFNULL(appvgsm,'')='N' AND IFNULL(appvdir,'')='N'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvgsm") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvgsm,'')='N' AND IFNULL(appvdir,'')='N'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }elseif ($papproveby=="apvcoo") {
+            $query = "DELETE FROM $tmp01 WHERE IFNULL(appvdir,'')='N'";
+            mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; goto hapusdata; }
+        }
+    }
+    
+    $pmarketing=false;
+    if (empty($pidjabatan_login) OR $pidjabatan_login=="18" OR $pidjabatan_login=="10" OR $pidjabatan_login=="08" OR $pidjabatan_login=="20" OR $pidjabatan_login=="05" OR $pidjabatan_login=="01") {
+        $pmarketing=true;
+    }
     
     echo "<div style='font-weight:bold; color:blue;'>";
     if ($ppilihsts=="APPROVE") {
@@ -241,20 +299,32 @@ ini_set('max_execution_time', 0);
                     
                     $pbtnlinkwa="";
                     $pbtnlengkapidata="";
+                    $pbtndatarekening="";
                     $pbtnapprovedata="";
+                    
                     if (!empty($pidnoget)) {
                         $pbtnlinkwa = "<input type='button' id='$pnamebtnfld_wa' name='$pnamebtnfld_wa' class='btn btn-info btn-xs' value='Link WA' onClick=\"\">";
-                        
-                        $pbtnlengkapidata="<button type='button' id='$pnamebtnfld_ld' name='$pnamebtnfld_ld' class='btn btn-warning btn-xs' data-toggle='modal' "
+
+                        $pbtnlengkapidata="<button type='button' id='$pnamebtnfld_ld' name='$pnamebtnfld_ld' class='btn btn-default btn-xs' data-toggle='modal' "
                                 . " data-target='#myModal' onClick=\"LengkapiDataUser('$pidnoget')\">Lengkapi Data</button>";
-                        
+
+                        $pbtndatarekening="<button type='button' id='$pnamebtnfld_ld' name='$pnamebtnfld_ld' class='btn btn-warning btn-xs' data-toggle='modal' "
+                                . " data-target='#myModal' onClick=\"IsiRekeningDataUser('$pidnoget')\">Isi Data Rekening</button>";
+
                         $pbtnapprovedata="<button type='button' id='$pnamebtnfld_apv' name='$pnamebtnfld_apv' class='btn btn-dark btn-xs' data-toggle='modal' "
                                 . " data-target='#myModal' onClick=\"ApproveDataUser('$pkaryawanid', '$pnama_approve', '$pjabatanid', '$pnama_jabatan', '$pidnoget', '$filter_br')\">Approve</button>";
                     }
                     
+                    if ($ppilihsts=="APPROVE") {
+                        
+                    }elseif ($ppilihsts=="UNAPPROVE") {
+                        $pbtnapprovedata="";
+                    }
+                    
+                    
                     echo "<tr style='font-weight:bold;'>";
                     echo "<td nowrap>$no</td>";
-                    echo "<td nowrap>$pbtnshow $pbtnlinkwa $pbtnlengkapidata $pbtnapprovedata</td>";
+                    echo "<td nowrap>$pbtnshow $pbtnlinkwa $pbtnlengkapidata $pbtndatarekening $pbtnapprovedata</td>";
                     echo "<td nowrap>$ndoktnm ($ndoktid_)</td>";
                     echo "</tr>";
                     
@@ -268,6 +338,8 @@ ini_set('max_execution_time', 0);
                         echo "<table id='mydatatable2' class='table table-striped table-bordered tbl2' width='100%' border='1px solid black'>";
                             echo "<tr>";
                                 echo "<th>No</th>";
+                                echo "<th>&nbsp;</th>";
+                                echo "<th>ID</th>";
                                 echo "<th>Cabang</th>";
                                 echo "<th>Karyawan</th>";
                                 echo "<th>MR</th>";
@@ -287,6 +359,7 @@ ini_set('max_execution_time', 0);
                             $query = "SELECT * FROM $tmp01 WHERE IFNULL(dokterid,'')='$ndoktid_pilih' ORDER BY nama_dokter, dokterid, tgl, tgltrans";
                             $tampil2=mysqli_query($cnmy, $query);
                             while ($row2= mysqli_fetch_array($tampil2)) {
+                                $nnobrid=$row2['brid'];
                                 $nkryid=$row2['karyawanid'];
                                 $nkrynm=$row2['nama_karyawan'];
                                 $nmrid=$row2['mrid'];
@@ -320,9 +393,18 @@ ini_set('max_execution_time', 0);
                                 elseif ($ndivisi=="PEACO") $nnamadivisi="PEACOCK";
                                 elseif ($ndivisi=="PIGEO") $nnamadivisi="PIGEON";
                                 
+                                $nnobrid_enc=encodeString($nnobrid);
+                                $pbtndatarekening="<button type='button' id='$pnamebtnfld_ld' name='$pnamebtnfld_ld' class='btn btn-warning btn-xs' data-toggle='modal' "
+                                        . " data-target='#myModal' onClick=\"IsiRekeningBRKIDataUser('$pidnoget', '$nnobrid_enc')\">Edit Rekening</button>";
+                                
+                                if ($pmarketing == true) {
+                                    $pbtndatarekening="";
+                                }
                                 
                                 echo "<tr>";
                                 echo "<td nowrap>$precno</td>";
+                                echo "<td nowrap>$pbtndatarekening</td>";
+                                echo "<td nowrap>$nnobrid</td>";
                                 echo "<td nowrap>$ncabnm</td>";
                                 echo "<td nowrap>$nkrynm</td>";
                                 echo "<td nowrap>$nmrnm</td>";
@@ -406,8 +488,34 @@ ini_set('max_execution_time', 0);
         $("#myModal").html("");
         $.ajax({
             type:"post",
-            url:"module/manaj_user/mod_apvbrbymkt/lengkapidatausr.php?module=viewdatauser",
+            url:"module/manaj_user/mod_apvbrbymkt/form_lengkapidatauser.php?module=viewdatauser",
             data:"udoktid="+edoktid,
+            success:function(data){
+                $("#myModal").html(data);
+            }
+        });
+        
+    }
+    
+    function IsiRekeningDataUser(edoktid) {
+        $("#myModal").html("");
+        $.ajax({
+            type:"post",
+            url:"module/manaj_user/mod_apvbrbymkt/form_isirekening.php?module=viewrekdatauser",
+            data:"udoktid="+edoktid,
+            success:function(data){
+                $("#myModal").html(data);
+            }
+        });
+        
+    }
+    
+    function IsiRekeningBRKIDataUser(edoktid, ebrid) {
+        $("#myModal").html("");
+        $.ajax({
+            type:"post",
+            url:"module/manaj_user/mod_apvbrbymkt/form_isirekeningbr.php?module=viewrekdatauserbrki",
+            data:"udoktid="+edoktid+"&ubrid="+ebrid,
             success:function(data){
                 $("#myModal").html(data);
             }
@@ -428,7 +536,7 @@ ini_set('max_execution_time', 0);
         
         $.ajax({
             type:"post",
-            url:"module/manaj_user/mod_apvbrbymkt/approvebrrealbymkt.php?module=viewdatauserforapv",
+            url:"module/manaj_user/mod_apvbrbymkt/form_approvettd.php?module=viewdatauserforapv",
             data:"udoktid="+edoktid+"&uidbr="+eidbr+"&ukryapv="+ekryapv+"&ukryapvnm="+ekryapvnm+"&ukryjbt="+ekryjbt+"&unmjbt="+enmjbt,
             success:function(data){
                 $("#myModal").html(data);

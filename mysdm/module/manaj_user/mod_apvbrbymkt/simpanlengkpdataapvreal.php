@@ -58,6 +58,7 @@
                 $pnowea = str_replace("'", "", $pnowea);
                 $pnowea = str_replace('"', "", $pnowea);
                 $pnowea = str_replace('_', "", $pnowea);
+                $pnowea="+".TRIM($pnowea);
             }
 
             if (!empty($pidbank)) {

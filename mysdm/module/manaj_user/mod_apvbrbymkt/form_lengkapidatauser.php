@@ -35,6 +35,7 @@ $pbank="";//$row['norek_bank'];
 $pnorekuser="";//$row['norek_user'];
 $pnorekatasnama="";//$row['norek_atas'];
 
+if (empty($pnowa)) $pnowa="+62";
 
 
 if ($ptgllahir=="0000-00-00") $ptgllahir="";
@@ -149,7 +150,8 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No WA <span class='required'></span></label>
                                         <div class='col-md-4 col-sm-4 col-xs-12'>
-                                            <input type='text' id='e_nowa' name='e_nowa' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnowa; ?>' data-mask="____________">
+                                            <!--<input type='text' id='e_nowa' name='e_nowa' class='form-control col-md-7 col-xs-12' value='<?PHP //echo $pnowa; ?>' data-mask="____________">-->
+                                            <input type='text' id='e_nowa' name='e_nowa' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnowa; ?>' placeholder="+6285115622134">
                                             <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
                                         </div>
                                     </div>
@@ -275,9 +277,17 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
             return false;
         }
         
-        if (new_wa=="") {
+        if (new_wa=="" || new_wa=="+62") {
             alert("no wa harus diisi...");
             return false;
+        }else{
+            var iforma_wa=new_wa.substring(0, 3);
+            if (iforma_wa=="+62") {
+            }else{
+                alert("format no wa tidak sesuai...\n\
+harus +62");
+                return false;
+            }
         }
         
         var pText_="";
@@ -354,6 +364,11 @@ $(document).ready(function() {
 });
 </script>
 <script>
+    document.getElementById('e_nowa').addEventListener('input', function (e) {
+        var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,3})/);
+        e.target.value = '+' + x[1] + '' + x[2] + '' + x[3] + '' + x[4] + '' + x[5];
+    });
+    
     Array.prototype.forEach.call(document.body.querySelectorAll("*[data-mask]"), applyDataMask);
     function applyDataMask(field) {
         var mask = field.dataset.mask.split('');

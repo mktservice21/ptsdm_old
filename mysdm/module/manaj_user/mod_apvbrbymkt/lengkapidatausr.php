@@ -18,7 +18,7 @@ $pdokterid_uc=$_POST['udoktid'];
 
 $pdokterid = decodeString($pdokterid_uc);
 
-$query = "select dokterid, nama, spid, bagian, alamat1, alamat2, kota, telp, telp2, hp, nowa, tgllahir, norek_bank, norek_user, norek_atas from hrd.dokter where dokterid='$pdokterid'";
+$query = "select dokterid, nama, spid, bagian, alamat1, alamat2, kota, telp, telp2, hp, nowa, tgllahir from hrd.dokter where dokterid='$pdokterid'";
 $tampil= mysqli_query($cnmy, $query);
 $row=mysqli_fetch_array($tampil);
 
@@ -31,9 +31,9 @@ $ptelp=$row['telp'];
 $pnohp=$row['hp'];
 $pnowa=$row['nowa'];
 $ptgllahir=$row['tgllahir'];
-$pbank=$row['norek_bank'];
-$pnorekuser=$row['norek_user'];
-$pnorekatasnama=$row['norek_atas'];
+$pbank="";//$row['norek_bank'];
+$pnorekuser="";//$row['norek_user'];
+$pnorekatasnama="";//$row['norek_atas'];
 
 
 
@@ -154,12 +154,13 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                         </div>
                                     </div>
                                     
-                                    <div class='form-group'>
+                                    <div hidden class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bank <span class='required'></span></label>
                                         <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <?PHP
                                             echo "<select class='form-control input-sm' id='e_idbank' name='e_idbank'>";
                                                 echo "<option value='' selected></option>";
+                                                /*
                                                 $query = "select KDBANK, NAMA from dbmaster.bank ORDER BY NAMA";
                                                 $tampil=mysqli_query($cnmy, $query);
                                                 while ($nr= mysqli_fetch_array($tampil)) {
@@ -171,20 +172,20 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                                     else
                                                         echo "<option value='$r_idbank'>$r_nmbank</option>";
                                                 }
-                                            
+                                                */
                                             echo "</select>";
                                             ?>
                                         </div>
                                     </div>
                                     
-                                    <div class='form-group'>
+                                    <div hidden class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No Rekening <span class='required'></span></label>
                                         <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <input type='text' id='e_norek' name='e_norek' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnorekuser; ?>' >
                                         </div>
                                     </div>
                                     
-                                    <div class='form-group'>
+                                    <div hidden class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Rekening Atas Nama <span class='required'></span></label>
                                         <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <input type='text' id='e_atsnmrek' name='e_atsnmrek' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnorekatasnama; ?>' >
@@ -295,7 +296,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                 
                 $.ajax({
                     type:"post",
-                    url:"module/manaj_user/mod_apvbrbymkt/simpabbrrealapv.php?module="+module+"&act=simpanbrrealbymkt&idmenu="+idmenu,
+                    url:"module/manaj_user/mod_apvbrbymkt/simpanbbrrealapv.php?module="+module+"&act=simpanbrrealbymkt&idmenu="+idmenu,
                     data:"uiduser="+iiduser+"&uspesial="+ispesial+"&utgllahir="+itgllahir+"&ualamat="+ialamat+
                             "&ukota="+ikota+"&unohp="+inohp+"&unowa="+inowa+
                             "&uidbank="+iidbank+"&unorek="+inorek+"&uatasnama="+iatasnama,

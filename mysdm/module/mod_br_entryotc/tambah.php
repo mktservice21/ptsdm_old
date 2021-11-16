@@ -1101,30 +1101,42 @@ if ($_GET['act']=="editdata"){
                                                         echo "<option value='pph23'>PPH23</option>";
                                                         echo "<option value='pph10'>PPH Pasal 4 ayat 2 (10%)</option>";
                                                         echo "<option value='pph15'>PPH Hadiah (15%)</option>";
+                                                        echo "<option value='pph11'>PPH21 Non NPWP (3%)</option>";
                                                     }elseif ($pjnspph=="pph23") {
                                                         echo "<option value=''></option>";
                                                         echo "<option value='pph21'>PPH21</option>";
                                                         echo "<option value='pph23' selected>PPH23</option>";
                                                         echo "<option value='pph10'>PPH Pasal 4 ayat 2 (10%)</option>";
                                                         echo "<option value='pph15'>PPH Hadiah (15%)</option>";
+                                                        echo "<option value='pph11'>PPH21 Non NPWP (3%)</option>";
                                                     }elseif ($pjnspph=="pph10") {
                                                         echo "<option value=''></option>";
                                                         echo "<option value='pph21'>PPH21</option>";
                                                         echo "<option value='pph23'>PPH23</option>";
                                                         echo "<option value='pph10' selected>PPH Pasal 4 ayat 2 (10%)</option>";
                                                         echo "<option value='pph15'>PPH Hadiah (15%)</option>";
+                                                        echo "<option value='pph11'>PPH21 Non NPWP (3%)</option>";
                                                     }elseif ($pjnspph=="pph15") {
                                                         echo "<option value=''></option>";
                                                         echo "<option value='pph21'>PPH21</option>";
                                                         echo "<option value='pph23'>PPH23</option>";
                                                         echo "<option value='pph10'>PPH Pasal 4 ayat 2 (10%)</option>";
                                                         echo "<option value='pph15' selected>PPH Hadiah (15%)</option>";
+                                                        echo "<option value='pph11'>PPH21 Non NPWP (3%)</option>";
+                                                    }elseif ($pjnspph=="pph11") {// PPH 21 non npwp
+                                                        echo "<option value=''></option>";
+                                                        echo "<option value='pph21'>PPH21</option>";
+                                                        echo "<option value='pph23'>PPH23</option>";
+                                                        echo "<option value='pph10'>PPH Pasal 4 ayat 2 (10%)</option>";
+                                                        echo "<option value='pph15'>PPH Hadiah (15%)</option>";
+                                                        echo "<option value='pph11' selected>PPH21 Non NPWP (3%)</option>";
                                                     }else{
                                                         echo "<option value='' selected></option>";
                                                         echo "<option value='pph21'>PPH21</option>";
                                                         echo "<option value='pph23'>PPH23</option>";
                                                         echo "<option value='pph10'>PPH Pasal 4 ayat 2 (10%)</option>";
                                                         echo "<option value='pph15'>PPH Hadiah (15%)</option>";
+                                                        echo "<option value='pph11'>PPH21 Non NPWP (3%)</option>";
                                                     }
                                                     ?>
                                                 </select>
@@ -1631,6 +1643,9 @@ if ($_GET['act']=="editdata"){
         }else if (epph=="pph15") {
             document.getElementById("e_jmlpph").value = "15";
             HitungPPH();
+        }else if (epph=="pph11") {
+            document.getElementById("e_jmlpph").value = "3";
+            HitungPPH();
         }else{
             document.getElementById("e_jmlpph").value = "0";
             document.getElementById("e_jmlrppph").value = "0";
@@ -1682,6 +1697,9 @@ if ($_GET['act']=="editdata"){
                     e_totrppph = (idpp_pilih * npph / 100);
                 }else if (epph=="pph15") {
                     npph = "15";
+                    e_totrppph = (idpp_pilih * npph / 100);
+                }else if (epph=="pph11") {
+                    npph = "3";
                     e_totrppph = (idpp_pilih * npph / 100);
                 }
             }
@@ -1744,7 +1762,7 @@ if ($_GET['act']=="editdata"){
             idpp_pilih=erpjmljasa;
         }*/
         
-        if ( (epph=="pph21" || epph=="pph23" || epph=="pph10" || epph=="pph15") && echkpilihsby==false ) {
+        if ( (epph=="pph21" || epph=="pph23" || epph=="pph10" || epph=="pph15" || epph=="pph11") && echkpilihsby==false ) {
             e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(nrpppn) - parseFloat(nrppph) ) );
         }else{
             e_totrpusulan=( ( parseFloat(idpp_pilih)+parseFloat(nrpppn)));

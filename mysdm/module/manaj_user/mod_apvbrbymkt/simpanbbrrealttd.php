@@ -36,6 +36,13 @@
             $pverinorek=$_POST['unorekuser'];
             $ptanggungjawab=$_POST['utanggungjwb'];
             
+            $pverifikasidata="";
+            if (!empty($pveriuser)) $pverifikasidata .=$pveriuser.",";
+            if (!empty($pverinorek)) $pverifikasidata .=$pverinorek.",";
+            if (!empty($ptanggungjawab)) $pverifikasidata .=$ptanggungjawab.",";
+            
+            if (!empty($pverifikasidata)) $pverifikasidata="".substr($pverifikasidata, 0, -1)."";
+            
             unset($pinsert_data);//kosongkan array
             unset($pinsert_data_img);//kosongkan array
             $pinsertdata=false;
@@ -47,7 +54,7 @@
                     $tampil=mysqli_query($cnmy, $query);
                     $ketemu= mysqli_num_rows($tampil);
                     if ((INT)$ketemu<=0) {
-                        $pinsert_data[] = "('$rowbrid', '$pkaryawanapproveid', NOW())";
+                        $pinsert_data[] = "('$rowbrid', '$pkaryawanapproveid', NOW(), '$pverifikasidata')";
                         $pinsert_data_img[] = "('$rowbrid', '$pdataimage')";
                         $pinsertdata=true;
                     }else{
@@ -59,16 +66,16 @@
             
             if ($pinsertdata == true) {
                 if ($pkaryawanapprovejbt=="08") {
-                    $query_ins = "INSERT INTO hrd.br0_apvreal (brid, atasan2, tgl_atasan2) VALUES ".implode(', ', $pinsert_data);
+                    $query_ins = "INSERT INTO hrd.br0_apvreal (brid, atasan2, tgl_atasan2, notes_atasan2) VALUES ".implode(', ', $pinsert_data);
                     $query_img = "INSERT INTO dbttd.t_br0_ttd_apvreal (brid, gbr_atasan2) VALUES ".implode(', ', $pinsert_data_img);
                 }elseif ($pkaryawanapprovejbt=="10" OR $pkaryawanapprovejbt=="18") {
-                    $query_ins = "INSERT INTO hrd.br0_apvreal (brid, atasan1, tgl_atasan1) VALUES ".implode(', ', $pinsert_data);
+                    $query_ins = "INSERT INTO hrd.br0_apvreal (brid, atasan1, tgl_atasan1, notes_atasan1) VALUES ".implode(', ', $pinsert_data);
                     $query_img = "INSERT INTO dbttd.t_br0_ttd_apvreal (brid, gbr_atasan1) VALUES ".implode(', ', $pinsert_data_img);
                 }elseif ($pkaryawanapprovejbt=="20") {
-                    $query_ins = "INSERT INTO hrd.br0_apvreal (brid, atasan3, tgl_atasan3) VALUES ".implode(', ', $pinsert_data);
+                    $query_ins = "INSERT INTO hrd.br0_apvreal (brid, atasan3, tgl_atasan3, notes_atasan3) VALUES ".implode(', ', $pinsert_data);
                     $query_img = "INSERT INTO dbttd.t_br0_ttd_apvreal (brid, gbr_atasan3) VALUES ".implode(', ', $pinsert_data_img);
                 }elseif ($pkaryawanapprovejbt=="05") {
-                    $query_ins = "INSERT INTO hrd.br0_apvreal (brid, atasan4, tgl_atasan4) VALUES ".implode(', ', $pinsert_data);
+                    $query_ins = "INSERT INTO hrd.br0_apvreal (brid, atasan4, tgl_atasan4, notes_atasan4) VALUES ".implode(', ', $pinsert_data);
                     $query_img = "INSERT INTO dbttd.t_br0_ttd_apvreal (brid, gbr_atasan4) VALUES ".implode(', ', $pinsert_data_img);
                 }
                 if (!empty($query_ins)) {
@@ -82,23 +89,23 @@
                 $query_updt="";
                 if ($pkaryawanapprovejbt=="08") {
                     $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
-                            . " a.atasan2='$pkaryawanapproveid', a.tgl_atasan2=NOW(), b.gbr_atasan2='$pdataimage' WHERE a.brid IN $filter_br AND "
+                            . " a.atasan2='$pkaryawanapproveid', a.tgl_atasan2=NOW(), b.gbr_atasan2='$pdataimage', a.notes_atasan2='$pverifikasidata' WHERE a.brid IN $filter_br AND "
                             . " IFNULL(a.tgl_atasan2,'') IN ('', '0000-00-00 00:00:00') AND "
                             . " IFNULL(a.tgl_atasan3,'') IN ('', '0000-00-00 00:00:00')";
                 }elseif ($pkaryawanapprovejbt=="10" OR $pkaryawanapprovejbt=="18") {
                     $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
-                            . " a.atasan1='$pkaryawanapproveid', a.tgl_atasan1=NOW(), b.gbr_atasan1='$pdataimage' WHERE a.brid IN $filter_br AND "
+                            . " a.atasan1='$pkaryawanapproveid', a.tgl_atasan1=NOW(), b.gbr_atasan1='$pdataimage', a.notes_atasan1='$pverifikasidata' WHERE a.brid IN $filter_br AND "
                             . " IFNULL(a.tgl_atasan1,'') IN ('', '0000-00-00 00:00:00') AND "
                             . " IFNULL(a.tgl_atasan2,'') IN ('', '0000-00-00 00:00:00') AND "
                             . " IFNULL(a.tgl_atasan3,'') IN ('', '0000-00-00 00:00:00')";
                 }elseif ($pkaryawanapprovejbt=="20") {
                     $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
-                            . " a.atasan3='$pkaryawanapproveid', a.tgl_atasan3=NOW(), b.gbr_atasan3='$pdataimage' WHERE a.brid IN $filter_br AND "
+                            . " a.atasan3='$pkaryawanapproveid', a.tgl_atasan3=NOW(), b.gbr_atasan3='$pdataimage', a.notes_atasan3='$pverifikasidata' WHERE a.brid IN $filter_br AND "
                             . " IFNULL(a.tgl_atasan3,'') IN ('', '0000-00-00 00:00:00') AND "
                             . " IFNULL(a.tgl_atasan4,'') IN ('', '0000-00-00 00:00:00')";
                 }elseif ($pkaryawanapprovejbt=="05") {
                     $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
-                            . " a.atasan4='$pkaryawanapproveid', a.tgl_atasan4=NOW(), b.gbr_atasan4='$pdataimage' WHERE a.brid IN $filter_br AND "
+                            . " a.atasan4='$pkaryawanapproveid', a.tgl_atasan4=NOW(), b.gbr_atasan4='$pdataimage', a.notes_atasan4='$pverifikasidata' WHERE a.brid IN $filter_br AND "
                             . " IFNULL(a.tgl_atasan3,'') NOT IN ('', '0000-00-00 00:00:00') AND "
                             . " IFNULL(a.tgl_atasan4,'') IN ('', '0000-00-00 00:00:00')";
                 }

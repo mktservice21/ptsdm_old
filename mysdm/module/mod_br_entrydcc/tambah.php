@@ -1079,8 +1079,8 @@ $pjabatanid = $row['jabatanId'];
                                         </div>
                                     </div>
                                 </div>
-                                
-                                
+								
+								
                                 <br/>
                                 <div class='form-group'>
                                     <label class='control-label col-md-3 col-sm-3 col-xs-12' for='' style="color:blue;">&nbsp; <span class='required'></span></label>
@@ -1227,7 +1227,7 @@ $pjabatanid = $row['jabatanId'];
             
             
     function showCOANya(){
-        document.getElementById('spn_kode').value = "Kode : Kosong";
+		document.getElementById('spn_kode').value = "Kode : Kosong";
         var ediv = document.getElementById('cb_divisi').value;
         $.ajax({
             type:"post",
@@ -1241,7 +1241,7 @@ $pjabatanid = $row['jabatanId'];
     }
     
     function showKodeNyaNon(){
-        document.getElementById('spn_kode').value = "Kode : Kosong";
+		document.getElementById('spn_kode').value = "Kode : Kosong";
         var ediv = document.getElementById('cb_divisi').value;
         var ecoa = document.getElementById('cb_coa').value;
 
@@ -1250,7 +1250,7 @@ $pjabatanid = $row['jabatanId'];
             url:"module/mod_br_entrydcc/viewdata.php?module=viewdatacombokodenon",
             data:"udiv="+ediv+"&ucoa="+ecoa,
             success:function(data){
-                $("#cb_kode").html(data);
+            $("#cb_kode").html(data);
                 
                 var select = document.getElementById('cb_kode');
                 var option = select.options[select.selectedIndex];
@@ -1258,11 +1258,12 @@ $pjabatanid = $row['jabatanId'];
                     option.text="Kode : Kosong";
                 }
                 document.getElementById('spn_kode').innerText = option.text;
-                
+				
             }
         });
     }
-    
+	
+	
     function showDariKode() {
         var select = document.getElementById('cb_kode');
         var option = select.options[select.selectedIndex];
@@ -1271,6 +1272,7 @@ $pjabatanid = $row['jabatanId'];
         }
         document.getElementById('spn_kode').innerText = option.text;
     }
+	
     
     function showYangMembuat() {
         var icab = document.getElementById('e_idcabang').value;

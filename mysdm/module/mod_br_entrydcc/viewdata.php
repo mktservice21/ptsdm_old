@@ -494,7 +494,204 @@ if ($pmodule=="viewdatacombocoa") {
 	
     mysqli_close($cnmy);
     
-}elseif ($pmodule=="xx") {
+}elseif ($pmodule=="viewinputnorek") {
+    include "../../config/koneksimysqli.php";
+    
+    $pkey=$_POST['ukey'];
+    $pbrid=$_POST['ubrid'];
+    $pidrek_br="";
+    
+    $pbank="";
+    $pnmbank="";
+    $pkcpbank="";
+    $pnorekuser="";
+    $pnoreksesuai="N";
+    
+    $rprelalisasi="";
+    $pchkjenisreal1="";
+    $pchkjenisreal2="checked";
+    $pnmreal_readonly="";
+    $prelasijenis="";
+    
+    $preadonly1="";
+    $phiddenform="";
+    if ($pkey=="2") {
+        $phiddenform="hidden";
+        $pidrek_br=$_POST['urekid'];
+        
+        $query = "select a.id_rekening, a.dokterid, a.idbank, b.NAMA as nama_bank, a.kcp, "
+                . " a.norekening, a.atasnama, a.norek_sesuai, a.relasi_norek "
+                . " from hrd.dokter_norekening as a "
+                . " LEFT JOIN dbmaster.bank as b on a.idbank=b.KDBANK WHERE a.id_rekening='$pidrek_br'";
+        $tampil=mysqli_query($cnmy, $query);
+        $nr= mysqli_fetch_array($tampil);
+
+        $pbank=$nr['idbank'];
+        $pnmbank=$nr['nama_bank'];
+        $pkcpbank=$nr['kcp'];
+        $rprelalisasi=$nr['atasnama'];
+        $pnorekuser=$nr['norekening'];
+        $pnoreksesuai=$nr['norek_sesuai'];
+        $prelasijenis=$nr['relasi_norek'];
+        
+        if ($pnoreksesuai=="Y") {
+            $pchkjenisreal1="checked";
+            $pchkjenisreal2="";
+        }
+        
+        $preadonly1=" readonly ";
+        
+    }else{
+        
+    }
+    
+    
+?>
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bank <span class='required'></span></label>
+        <div class='col-md-9 col-sm-9 col-xs-12'>
+            <?PHP
+            echo "<select class='form-control input-sm' id='e_idbank' name='e_idbank'>";
+                
+
+                $query = "select KDBANK, NAMA from dbmaster.bank WHERE 1=1 ";
+                if ($pkey=="2") {
+                    $query .=" AND KDBANK='$pbank' ";
+                }else{
+                    echo "<option value='' selected></option>";
+                }
+                $query .=" ORDER BY NAMA";
+                $tampil=mysqli_query($cnmy, $query);
+                while ($nr= mysqli_fetch_array($tampil)) {
+                    $r_idbank=$nr['KDBANK'];
+                    $r_nmbank=$nr['NAMA'];
+
+                    if ($r_idbank==$pbank)
+                        echo "<option value='$r_idbank' selected>$r_nmbank</option>";
+                    else
+                        echo "<option value='$r_idbank'>$r_nmbank</option>";
+                }
+
+            echo "</select>";
+            ?>
+        </div>
+    </div>
+
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>KCP <span class='required'></span></label>
+        <div class='col-md-9 col-sm-9 col-xs-12'>
+            <input type='text' id='e_kcpbank' name='e_kcpbank' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkcpbank; ?>' <?PHP echo $preadonly1; ?> >
+        </div>
+    </div>
+
+    <div class='form-group'>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No Rekening <span class='required'></span></label>
+        <div class='col-md-9 col-sm-9 col-xs-12'>
+            <input type='text' id='e_norek' name='e_norek' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnorekuser; ?>' <?PHP echo $preadonly1; ?> >
+        </div>
+    </div>
+
+
+
+
+    <div id="div_real">
+
+        <div class='form-group'>
+            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis Realisasi <span class='required'></span></label>
+            <div class='col-xs-9'>
+                <div style="margin-bottom:2px;">
+                    <input type="radio" id="chksesuai" name="rb_jenisreal" value="1" <?PHP echo $pchkjenisreal1; ?> onclick="CekDataRealisasi()"> Sesuai Nama Dokter &nbsp;
+                    <input type="radio" id="chkrelasi" name="rb_jenisreal" value="0" <?PHP echo $pchkjenisreal2; ?> onclick="CekDataRealisasi()"> Relasi Dokter &nbsp;
+                </div>
+            </div>
+        </div>
+
+
+        <div class='form-group'>
+            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                Realisasi (Atasa Nama Rekening)
+                <span class='required'></span></label>
+            <div class='col-xs-9'>
+                <input list="namarealisasi" id="e_realisasi" name="e_realisasi" autocomplete='off' class='form-control col-md-7 col-xs-12' value="<?PHP echo $rprelalisasi; ?>"  >
+            </div>
+        </div>
+
+        <div id="n_jnsrelasi">
+            <div class='form-group'>
+                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                    Relasi (istri /suami /anak /dsb.)
+                    <span class='required'></span></label>
+                <div class='col-xs-9'>
+                    <input type='text' id='e_nmrealasi' name='e_nmrealasi' class='form-control col-md-7 col-xs-12' value="<?PHP echo $prelasijenis; ?>"  >
+                </div>
+            </div>
+        </div>
+
+        <div <?PHP echo $phiddenform; ?> id="n_jnsrelasi">
+            <div class='form-group'>
+                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                    &nbsp;
+                    <span class='required'></span></label>
+                <div class='col-xs-9'>
+                    <?PHP
+                        $pbtndatarekening="<button type='button' id='btn_saveidrek' name='btn_saveidrek' class='btn btn-info btn-xs' "
+                                . " onClick=\"disp_confirm_saverekdatauserbr()\">Save Data Rekening</button>";
+                    
+                        $pbtndatacancel="<button type='button' id='btn_cnlidrek' name='btn_cnlidrek' class='btn btn-default btn-xs' "
+                                . " onClick=\"IsiRekeningDataUser('2')\">Cancel</button>";
+                        echo "$pbtndatarekening $pbtndatacancel";
+                    ?>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<?PHP
+    
+    mysqli_close($cnmy);
+    
+}elseif ($pmodule=="viewdatanoreknew") {
+    include "../../config/koneksimysqli.php";
+    
+    $pdokteridmr=$_POST['udoktid'];
+    $pkey=$_POST['ukey'];
+    
+    $pidrek_br="";
+    if ($pkey=="2") {
+        $pidrek_br=$_POST['ulstid'];
+        
+        if (empty($pidrek_br) OR $pidrek_br=="0") {
+            $query = "select id_rekening FROM hrd.dokter_norekening WHERE dokterid='$pdokteridmr' ORDER BY id_rekening DESC LIMIT 1";
+            $tampil_=mysqli_query($cnmy, $query);
+            $row= mysqli_fetch_array($tampil_);
+            $pidrek_br=$row['id_rekening'];//last input
+        }
+    }
+    
+    echo "<option value='' selected></option>";
+
+    $query = "select a.id_rekening, a.dokterid, a.idbank, b.NAMA as nama_bank, a.kcp, "
+            . " a.norekening, a.atasnama, a.relasi_norek "
+            . " from hrd.dokter_norekening as a "
+            . " LEFT JOIN dbmaster.bank as b on a.idbank=b.KDBANK WHERE a.dokterid='$pdokteridmr' ORDER BY b.NAMA";
+    $tampil=mysqli_query($cnmy, $query);
+    while ($nr= mysqli_fetch_array($tampil)) {
+        $r_idrek=$nr['id_rekening'];
+        $r_idbank=$nr['idbank'];
+        $r_nmbank=$nr['nama_bank'];
+        $r_an=$nr['atasnama'];
+        $r_norek=$nr['norekening'];
+
+        $pnama_rek="$r_idrek - $r_an ($r_norek) - $r_nmbank";
+        if ($r_idrek==$pidrek_br)
+            echo "<option value='$r_idrek' selected>$pnama_rek</option>";
+        else
+            echo "<option value='$r_idrek'>$pnama_rek</option>";
+    }
+                                            
+    mysqli_close($cnmy);
 }elseif ($pmodule=="xx") {
 }
 ?>

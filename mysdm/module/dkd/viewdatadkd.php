@@ -249,6 +249,7 @@ if ($pmodule=="cekdatasudahada") {
     $query_kry="";
     
     $philangkan_nonkry=true;
+    $pfilterhanyajbt= " ('15', '10', '18') ";
     
     if (empty($pidcab)) {
         include "../../config/fungsi_sql.php";
@@ -283,6 +284,7 @@ if ($pmodule=="cekdatasudahada") {
                         . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                         . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
             }
+            if (!empty($pfilterhanyajbt)) $query_kry .=" AND jabatanid IN $pfilterhanyajbt ";
             
         }else{
             $query_kry = "select karyawanId as karyawanid, nama as nama 
@@ -304,6 +306,8 @@ if ($pmodule=="cekdatasudahada") {
                     . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                     . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
         }
+        if (!empty($pfilterhanyajbt)) $query_kry .=" AND jabatanid IN $pfilterhanyajbt ";
+        
         $query_kry .=" ORDER BY nama";
         //echo "<option value='' selected>$pidjabatan | $pfilterkaryawan</option>";
     }else{
@@ -327,6 +331,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }else{
@@ -348,6 +353,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND b.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by b.nama";
             }
@@ -368,6 +374,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }elseif ($pidjbt=="10") {
@@ -383,6 +390,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }else{
@@ -407,6 +415,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND b.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by b.nama";
             }
@@ -438,6 +447,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }else{
@@ -462,6 +472,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND b.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by b.nama";
             }
@@ -485,6 +496,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }elseif ($pidjbt=="10") {
@@ -500,6 +512,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }elseif ($pidjbt=="08") {
@@ -521,6 +534,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }else{
@@ -550,6 +564,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND b.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by b.nama";
             }
@@ -569,6 +584,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }elseif ($pidjbt=="10") {
@@ -584,6 +600,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }elseif ($pidjbt=="08") {
@@ -599,6 +616,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }elseif ($pidjbt=="20") {
@@ -612,6 +630,8 @@ if ($pmodule=="cekdatasudahada") {
                         . " and LEFT(nama,3) NOT IN ('TO.', 'TO-', 'DR ', 'DR-', 'JKT', 'NN-', 'TO ') "
                         . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                         . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
+                
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND c.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by c.nama";
             }else{
@@ -640,6 +660,7 @@ if ($pmodule=="cekdatasudahada") {
                             . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                             . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                 }
+                if (!empty($pfilterhanyajbt)) $query_kry .=" AND b.jabatanid IN $pfilterhanyajbt ";
                 
                 $query_kry .=" Order by b.nama";
             }

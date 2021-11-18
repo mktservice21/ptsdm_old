@@ -206,7 +206,7 @@ function ReloadTandaTangan(){
 Ulangi Klik Tombol Approve/Save/Simpan/Update")
                 return false;
             }
-            disp_confirm_approve("Simpan ?", "dailyinput", data);
+            disp_confirm_approve("Simpan ?", "simpanapvreal", data);
         });
 }
 

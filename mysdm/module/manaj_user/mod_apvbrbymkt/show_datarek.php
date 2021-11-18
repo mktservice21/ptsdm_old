@@ -19,6 +19,7 @@
                     <th width='10px'>KCP</th>
                     <th width='10px'>No Rekening</th>
                     <th width='10px'>Atas Nama</th>
+                    <th width='10px'>Sesuai User</th>
                     <th width='10px'>Relasi</th>
                     <th width='10px'>Input User</th>
                 </tr>
@@ -26,7 +27,7 @@
             <tbody>
                 <?PHP
                 $no=1;
-                $query = "select a.idbank, b.NAMA as nama_bank, a.kcp, a.norekening, a.atasnama, a.relasi_norek, a.tglinput, "
+                $query = "select a.idbank, b.NAMA as nama_bank, a.kcp, a.norekening, a.atasnama, a.norek_sesuai, a.relasi_norek, a.tglinput, "
                         . " a.inputby, c.nama as nama_input "
                         . " from hrd.dokter_norekening as a LEFT JOIN dbmaster.bank as b on a.idbank=b.KDBANK "
                         . " LEFT JOIN hrd.karyawan as c on a.inputby=c.karyawanId "
@@ -38,8 +39,12 @@
                     $ukcp=$urow['kcp'];
                     $unorek=$urow['norekening'];
                     $uatasnm=$urow['atasnama'];
+                    $usesuaiusr=$urow['norek_sesuai'];
                     $urelasi=$urow['relasi_norek'];
                     $uuserinputnm=$urow['nama_input'];
+                                            
+                    $unmsesuairek="Ya";
+                    if ($usesuaiusr=="N") $unmsesuairek="Tidak";
 
                     echo "<tr>";
                     echo "<td nowrap>$no</td>";
@@ -47,6 +52,7 @@
                     echo "<td nowrap>$ukcp</td>";
                     echo "<td nowrap>$unorek</td>";
                     echo "<td nowrap>$uatasnm</td>";
+                    echo "<td nowrap>$unmsesuairek</td>";
                     echo "<td nowrap>$urelasi</td>";
                     echo "<td nowrap>$uuserinputnm</td>";
                     echo "</tr>";

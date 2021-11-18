@@ -14,6 +14,7 @@ include "../../../config/fungsi_ubahget_id.php";
 
 
 $psudahmaping=false;
+$ptombolappv=$_POST['ubtn'];
 $pdokterid_uc=$_POST['udoktid'];
 $pfilterbrid=$_POST['uidbr'];
 $pkryidapv=$_POST['ukryapv'];
@@ -55,7 +56,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
         
         <div class='modal-header'>
             <button type='button' class='close' data-dismiss='modal'>&times;</button>
-            <h4 class='modal-title'>Lengkapi Data User</h4>
+            <h4 class='modal-title'>Verifikasi Realisasi Budget Request (KI)</h4>
         </div>
         <br/>
         <div class="">
@@ -78,6 +79,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                     <div class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>ID <span class='required'></span></label>
                                         <div class='col-md-4 col-sm-4 col-xs-12'>
+                                            <input type='hidden' id='e_tombolapv' name='e_tombolapv' class='form-control col-md-7 col-xs-12' value='<?PHP echo $ptombolappv; ?>' Readonly>
                                             <input type='text' id='e_iduser' name='e_iduser' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pdokterid; ?>' Readonly>
                                         </div>
                                     </div>
@@ -120,7 +122,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                         </div>
                                     </div>
 
-                                    <div class='form-group'>
+                                    <div hidden class='form-group'>
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                         <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <?PHP
@@ -196,10 +198,13 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
     
     function disp_confirm_approve(pText_, ket, data_img) {
         //chk_userveri, chk_norekveri, chk_tanggung
+        var ibtnapv =document.getElementById('e_tombolapv').value;
         var iiduser =document.getElementById('e_iduser').value;
         var ibrid =document.getElementById('e_brid').value;
         var iidkryapv =document.getElementById('e_apvidkry').value;
+        var inmkryapv =document.getElementById('e_apvnmkry').value;
         var iidjbtapv =document.getElementById('e_apvjbt').value;
+        var inmjbtapv =document.getElementById('e_apvnmjbt').value;
         var ichk_usrveri =document.getElementById('chk_userveri');
         var iveriuser="";
         if (ichk_usrveri.checked==true) {
@@ -234,9 +239,22 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
             return false;
         }
         
+        $.ajax({
+            type:"post",
+            url:"module/manaj_user/mod_apvbrbymkt/form_verifikasittd.php?module=viewdatauserveri",
+            data:"ubtnapv="+ibtnapv+"&uiduser="+iiduser+"&udataimage="+data_img+"&ubrid="+ibrid+"&uidkryapv="+iidkryapv+"&uidjbtapv="+iidjbtapv+
+                    "&unmkryapv="+inmkryapv+"&unmjbtapv="+inmjbtapv,
+            success:function(data){
+                $("#myModal").html(data);
+            }
+        });
+        return false;
+        
+        
+        
         var pText_="";
         
-        pText_="Apakah akan melakukan approve data...";
+        pText_="Apakah akan melakukan verifikasi data...?";
         
         ok_ = 1;
         if (ok_) {

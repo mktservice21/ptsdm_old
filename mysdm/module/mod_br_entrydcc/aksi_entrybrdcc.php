@@ -91,6 +91,12 @@ if ($pmodule=='entrybrdcc')
         $pcabangytd=$_POST['e_iddaerah'];
         
         
+        $prek_idrekening=$_POST['e_idrek'];
+        $prek_bankid=$_POST['e_idbank'];
+        $prek_kcp=$_POST['e_kcpbank'];
+        $prek_norek=$_POST['e_norek'];
+        
+        
         
         
         $pnmrelasireal="";
@@ -189,6 +195,7 @@ if ($pmodule=='entrybrdcc')
         */
         
         //echo "$kodenya, $ptglinput, $ptgltransf<br/>$pdivprodid, $pcoa, $pkode, $pkaryawan, $pidcabang<br/>$paktivitas1<br/>$pjenisuang, $prpnya, $pnmrealisasi, $prpcn, $pnoslip, $pwilgabungan<br>Jbt : $pjabatanid, daerah : $pcabangytd<br/>Lamp : $pinplampiran, $pinpca, $pinpsby"; mysqli_close($cnmy); exit;
+        //echo "$prek_idrekening, $prek_bankid, $prek_kcp, $prek_norek"; exit;
         
         if ($pact=="simpan") {
             
@@ -225,10 +232,12 @@ if ($pmodule=='entrybrdcc')
             //INSERT INTO
             $query = "insert into hrd.br0 (brid, tgl, divprodid, COA4, kode, user1, aktivitas1, aktivitas2, ccyid, "
                     . " jumlah, cn, realisasi1, karyawanid, icabangid, KODEWILAYAH, idcabang, "
-                    . " lampiran, ca, via, noslip, mrid, dokterId, realisasi2, idkontak) VALUES"
+                    . " lampiran, ca, via, noslip, mrid, dokterId, realisasi2, idkontak, "
+                    . " id_rekening, br_idbank, br_kcp, br_norek) VALUES"
                     . " ('$kodenya', '$ptglinput', '$pdivprodid', '$pcoa', '$pkode', '$puserid', '$paktivitas1', '$paktivitas2', '$pjenisuang', "
                     . " '$prpnya', '$prpcn', '$pnmrealisasi', '$pkaryawan', '$pidcabang', '$pwilgabungan', '$pcabangytd', "
-                    . " '$pinplampiran', '$pinpca', '$pinpsby', '$pnoslip', '$pmrid', '$pdoktermrid', '$pnmrelasireal', '$pchkrealjenis')";
+                    . " '$pinplampiran', '$pinpca', '$pinpsby', '$pnoslip', '$pmrid', '$pdoktermrid', '$pnmrelasireal', '$pchkrealjenis', "
+                    . " '$prek_idrekening', '$prek_bankid', '$prek_kcp', '$prek_norek')";
             mysqli_query($cnmy, $query);
             $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
             
@@ -262,10 +271,11 @@ if ($pmodule=='entrybrdcc')
                 . " jumlah='$prpnya', cn='$prpcn', realisasi1='$pnmrealisasi', realisasi2='$pnmrelasireal', idkontak='$pchkrealjenis', "
                 . " karyawanid='$pkaryawan', icabangid='$pidcabang', KODEWILAYAH='$pwilgabungan', idcabang='$pcabangytd', "
                 . " lampiran='$pinplampiran', ca='$pinpca', via='$pinpsby', "
-                . " noslip='$pnoslip', mrid='$pmrid', dokterId='$pdoktermrid' WHERE brid='$kodenya' LIMIT 1";
+                . " noslip='$pnoslip', mrid='$pmrid', dokterId='$pdoktermrid', "
+                . " id_rekening='$prek_idrekening', br_idbank='$prek_bankid', br_kcp='$prek_kcp', br_norek='$prek_norek' WHERE brid='$kodenya' LIMIT 1";
         mysqli_query($cnmy, $query);
         $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo $erropesan; exit; }
-            
+        
             
         
         //DCC/DSS

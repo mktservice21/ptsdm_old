@@ -228,13 +228,14 @@ ini_set('max_execution_time', 0);
     
     echo "<div style='font-weight:bold; color:blue;'>";
     if ($ppilihsts=="APPROVE") {
-        echo "DATA YANG BELUM DIAPPROVE";
+        echo "DATA YANG BELUM VERIFIKASI";
     }elseif ($ppilihsts=="UNAPPROVE") {
-        echo "DATA YANG SUDAH DIAPPROVE";
+        echo "DATA YANG SUDAH VERIFIKASI";
     }elseif ($ppilihsts=="REJECT") {
         echo "DATA REJECT";
     }
     echo "</div>";
+    
     
 ?>
 
@@ -269,7 +270,20 @@ ini_set('max_execution_time', 0);
                     $filter_br="";
                     
                     if (!empty($ndoktid)) {
-                        $query_ = "SELECT distinct brid FROM $tmp01 WHERE IFNULL(dokterid,'')='$ndoktid' ORDER BY brid";
+                        $query_ = "SELECT distinct brid FROM $tmp01 WHERE IFNULL(dokterid,'')='$ndoktid' ";
+                        if ($papproveby=="apvspv") {
+                            $query_ .=" AND ( (IFNULL(appvspv,'')<>'Y' AND IFNULL(appvdm,'')<>'Y' AND IFNULL(appvsm,'')<>'Y') OR karyawanid='$pkaryawanid') ";
+                        }elseif ($papproveby=="apvdm") {
+                            //$query_ .=" AND ( (IFNULL(appvspv,'')='Y' AND IFNULL(appvdm,'')<>'Y' AND IFNULL(appvsm,'')<>'Y') OR karyawanid='$pkaryawanid') ";
+                            $query_ .=" AND ( (IFNULL(appvdm,'')<>'Y' AND IFNULL(appvsm,'')<>'Y') OR karyawanid='$pkaryawanid') ";
+                        }elseif ($papproveby=="apvsm") {
+                            $query_ .=" AND ( (IFNULL(appvdm,'')='Y' AND IFNULL(appvsm,'')<>'Y' AND IFNULL(appvgsm,'')<>'Y') OR karyawanid='$pkaryawanid') ";
+                        }elseif ($papproveby=="apvgsm") {
+                            $query_ .=" AND ( (IFNULL(appvsm,'')='Y' AND IFNULL(appvgsm,'')<>'Y' AND IFNULL(appvdir,'')<>'Y') OR karyawanid='$pkaryawanid') ";
+                        }elseif ($papproveby=="apvcoo") {
+
+                        }
+                        $query_ .=" ORDER BY brid";
                         $tampil_1=mysqli_query($cnmy, $query_);
                         while ($nrow= mysqli_fetch_array($tampil_1)) {
                             $nbrid=$nrow['brid'];
@@ -303,7 +317,7 @@ ini_set('max_execution_time', 0);
                     $pbtnapprovedata="";
                     
                     if (!empty($pidnoget)) {
-                        $pbtnlinkwa = "<input type='button' id='$pnamebtnfld_wa' name='$pnamebtnfld_wa' class='btn btn-info btn-xs' value='Link WA' onClick=\"\">";
+                        $pbtnlinkwa = "<input type='button' id='$pnamebtnfld_wa' name='$pnamebtnfld_wa' class='btn btn-info btn-xs' value='Link WA' onClick=\"KirimLinkWA('$ndoktid')\">";
 
                         $pbtnlengkapidata="<button type='button' id='$pnamebtnfld_ld' name='$pnamebtnfld_ld' class='btn btn-default btn-xs' data-toggle='modal' "
                                 . " data-target='#myModal' onClick=\"LengkapiDataUser('$pidnoget')\">Lengkapi Data</button>";
@@ -312,13 +326,15 @@ ini_set('max_execution_time', 0);
                                 . " data-target='#myModal' onClick=\"IsiRekeningDataUser('$pidnoget')\">Isi Data Rekening</button>";
 
                         $pbtnapprovedata="<button type='button' id='$pnamebtnfld_apv' name='$pnamebtnfld_apv' class='btn btn-dark btn-xs' data-toggle='modal' "
-                                . " data-target='#myModal' onClick=\"ApproveDataUser('$pkaryawanid', '$pnama_approve', '$pjabatanid', '$pnama_jabatan', '$pidnoget', '$filter_br')\">Approve</button>";
+                                . " data-target='#myModal' onClick=\"ApproveDataUser('$pnamebtnfld_apv', '$pkaryawanid', '$pnama_approve', '$pjabatanid', '$pnama_jabatan', '$pidnoget', '$filter_br')\">Approve</button>";
                     }
                     
                     if ($ppilihsts=="APPROVE") {
                         
+    
                     }elseif ($ppilihsts=="UNAPPROVE") {
                         $pbtnapprovedata="";
+                        $pbtndatarekening="";
                     }
                     
                     
@@ -373,6 +389,12 @@ ini_set('max_execution_time', 0);
                                 $nket1=$row2['aktivitas1'];
                                 $nket2=$row2['aktivitas2'];
                                 
+                                $npapvspv=$row2['appvspv'];
+                                $npapvdm=$row2['appvdm'];
+                                $npapvsm=$row2['appvsm'];
+                                $npapvgsm=$row2['appvgsm'];
+                                $npapvdir=$row2['appvdir'];
+                                
                                 $ntgl=$row2['tgl'];
                                 $ntgltrans=$row2['tgltrans'];
                                 
@@ -400,6 +422,7 @@ ini_set('max_execution_time', 0);
                                 if ($pmarketing == true) {
                                     $pbtndatarekening="";
                                 }
+                                
                                 
                                 echo "<tr>";
                                 echo "<td nowrap>$precno</td>";
@@ -523,7 +546,7 @@ ini_set('max_execution_time', 0);
         
     }
     
-    function ApproveDataUser(ekryapv, ekryapvnm, ekryjbt, enmjbt, edoktid, eidbr) {
+    function ApproveDataUser(ebtn, ekryapv, ekryapvnm, ekryjbt, enmjbt, edoktid, eidbr) {
         $("#myModal").html("");
         if (ekryapv=="") {
             alert("Karyawan Approve Kosong");
@@ -537,11 +560,49 @@ ini_set('max_execution_time', 0);
         $.ajax({
             type:"post",
             url:"module/manaj_user/mod_apvbrbymkt/form_approvettd.php?module=viewdatauserforapv",
-            data:"udoktid="+edoktid+"&uidbr="+eidbr+"&ukryapv="+ekryapv+"&ukryapvnm="+ekryapvnm+"&ukryjbt="+ekryjbt+"&unmjbt="+enmjbt,
+            data:"ubtn="+ebtn+"&udoktid="+edoktid+"&uidbr="+eidbr+"&ukryapv="+ekryapv+"&ukryapvnm="+ekryapvnm+"&ukryjbt="+ekryjbt+"&unmjbt="+enmjbt,
             success:function(data){
                 $("#myModal").html(data);
             }
         });
+        
+    }
+    
+    
+    function KirimLinkWA(edoktid) {
+        if (edoktid=="") {
+            alert("ID USER KOSONG...");
+            return false;
+        }
+        
+        var pText_="";
+        
+        pText_="Confirm...?";
+        
+        ok_ = 1;
+        if (ok_) {
+            var r=confirm(pText_)
+            if (r==true) {
+                var myurl = window.location;
+                var urlku = new URL(myurl);
+                var module = urlku.searchParams.get("module");
+                var idmenu = urlku.searchParams.get("idmenu");
+                //document.write("You pressed OK!")
+                
+                $.ajax({
+                    type:"post",
+                    url:"module/manaj_user/mod_apvbrbymkt/simpankirimlinkwa.php?module="+module+"&act=simpankirimwabls&idmenu="+idmenu,
+                    data:"uiduser="+edoktid,
+                    success:function(data){
+                        alert(data);
+                    }
+                });
+                
+            }
+        } else {
+            //document.write("You pressed Cancel!")
+            return 0;
+        }
         
     }
     

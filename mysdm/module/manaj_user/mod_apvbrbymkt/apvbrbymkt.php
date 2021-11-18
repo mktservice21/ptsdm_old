@@ -31,6 +31,7 @@ if (!empty($_SESSION['MUAPVBRMKTBLN2'])) $tgl_akhir=$_SESSION['MUAPVBRMKTBLN2'];
 ?>
 
 <div class='modal fade' id='myModal' role='dialog' class='no-print'></div>
+<div class='modal fade' id='myModal2' role='dialog' class='no-print'></div>
 <div class="">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="title_left">
@@ -38,7 +39,7 @@ if (!empty($_SESSION['MUAPVBRMKTBLN2'])) $tgl_akhir=$_SESSION['MUAPVBRMKTBLN2'];
                 <?PHP
                 switch($pact){
                     default:
-                        $judul="Approve Realisasi Budget Request (KI)";
+                        $judul="Verifikasi Realisasi Budget Request (KI)";
                         $pbtnlist_dsb1="disabled";
                         $pbtnlist_dsb2="";
                         break;
@@ -68,9 +69,9 @@ if (!empty($_SESSION['MUAPVBRMKTBLN2'])) $tgl_akhir=$_SESSION['MUAPVBRMKTBLN2'];
                     <h2>
                         <?PHP
                         
-                        echo "<input class='btn btn-default' type=button value='List Approve Realisasi BR (KI)' "
+                        echo "<input class='btn btn-default' type=button value='List Data Verifikasi Realisasi BRU (KI)' "
                             . " onclick=\"window.location.href='?module=$pmodule&idmenu=$pidmenu&act=apvbrrealbymk'\" $pbtnlist_dsb1 > ";
-                        echo "<input class='btn btn-info' type=button value='List Approve Budget Request User' "
+                        echo "<input class='btn btn-info' type=button value='List Data Approve BRU' "
                             . " onclick=\"window.location.href='?module=$pmodule&idmenu=$pidmenu&act=apvbruserbymk'\" $pbtnlist_dsb2 > ";
                         
                         echo "<small></small>";

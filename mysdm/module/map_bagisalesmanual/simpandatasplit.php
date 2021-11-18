@@ -134,7 +134,7 @@
             $pidprod=$_POST['uproduk'];
             $pfakturid=$_POST['ufakturid'];
             
-            $query = "DELETE FROM MKT.msales_new WHERE nomsales='$pkodeinput' AND fakturid='$pfakturid' AND iprodid='$pidprod' AND  LIMIT 1";
+            $query = "DELETE FROM MKT.msales_new WHERE nomsales='$pkodeinput' AND fakturid='$pfakturid' AND iprodid='$pidprod' LIMIT 1";
             $result = mysqli_query($cnms, $query);
             mysqli_close($cnms);
             echo "berhasil";

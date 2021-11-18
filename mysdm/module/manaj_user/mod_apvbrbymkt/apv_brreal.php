@@ -85,8 +85,8 @@
             <div class='col-md-12 col-sm-12 col-xs-12'>
                 <div class="well" style="overflow: auto; ">
                     <?PHP
-                        echo "<input onclick=\"pilihData('approve')\" class='btn btn-warning btn-sm' type='button' name='buttonview1' value='Lihat Belum Approve' > ";
-                        echo "<input onclick=\"pilihData('unapprove')\" class='btn btn-success btn-sm' type='button' name='buttonview2' value='Lihat Sudah Approve' > ";
+                        echo "<input onclick=\"pilihData('approve')\" class='btn btn-warning btn-sm' type='button' name='buttonview1' value='Lihat Belum Verfikasi' > ";
+                        echo "<input onclick=\"pilihData('unapprove')\" class='btn btn-success btn-sm' type='button' name='buttonview2' value='Lihat Sudah Verfikasi' > ";
                     ?>
                 </div>
             </div>

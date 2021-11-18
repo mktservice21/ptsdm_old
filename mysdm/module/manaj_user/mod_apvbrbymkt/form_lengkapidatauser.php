@@ -18,11 +18,12 @@ $pdokterid_uc=$_POST['udoktid'];
 
 $pdokterid = decodeString($pdokterid_uc);
 
-$query = "select dokterid, nama, spid, bagian, alamat1, alamat2, kota, telp, telp2, hp, nowa, tgllahir from hrd.dokter where dokterid='$pdokterid'";
+$query = "select dokterid, nama, jekel, spid, bagian, alamat1, alamat2, kota, telp, telp2, hp, nowa, tgllahir from hrd.dokter where dokterid='$pdokterid'";
 $tampil= mysqli_query($cnmy, $query);
 $row=mysqli_fetch_array($tampil);
 
 $pnamadokt=$row['nama'];
+$pjekel=$row['jekel'];
 $pspdokt=$row['spid'];
 $palamat1=$row['alamat1'];
 $palamat2=$row['alamat2'];
@@ -87,6 +88,29 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Nama User <span class='required'></span></label>
                                         <div class='col-md-6 col-sm-6 col-xs-12'>
                                             <input type='text' id='e_nmdokt' name='e_nmdokt' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnamadokt; ?>' Readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis Kelamin <span class='required'></span></label>
+                                        <div class='col-md-4 col-sm-4 col-xs-12'>
+                                            <?PHP
+                                            echo "<select class='form-control input-sm' id='e_jekel' name='e_jekel'>";
+                                                if ($pjekel=="L") {
+                                                    echo "<option value=''>--Pilih--</option>";
+                                                    echo "<option value='L' selected>Laki-Laki</option>";
+                                                    echo "<option value='P'>Perempuan</option>";
+                                                }elseif ($pjekel=="P") {
+                                                    echo "<option value=''>--Pilih--</option>";
+                                                    echo "<option value='L'>Laki-Laki</option>";
+                                                    echo "<option value='P' selected>Perempuan</option>";
+                                                }else{
+                                                    echo "<option value='' selected>--Pilih--</option>";
+                                                    echo "<option value='L'>Laki-Laki</option>";
+                                                    echo "<option value='P'>Perempuan</option>";
+                                                }
+                                            echo "</select>";
+                                            ?>
                                         </div>
                                     </div>
 
@@ -249,6 +273,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
     
     function disp_confirm_simpandatauser() {
         var iiduser =document.getElementById('e_iduser').value;
+        var ijkel =document.getElementById('e_jekel').value;
         var ispesial =document.getElementById('e_idspesial').value;
         var itgllahir =document.getElementById('e_tgllahir').value;
         var ialamat =document.getElementById('e_alamat').value;
@@ -264,6 +289,11 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
         
         if (iiduser=="") {
             alert("ID KOSONG...");
+            return false;
+        }
+        
+        if (ijkel=="") {
+            alert("Jenis Kelamin harus diisi...");
             return false;
         }
         
@@ -292,7 +322,7 @@ harus +62");
         
         var pText_="";
         
-        pText_="Apakah akan melakukan simpan data...";
+        pText_="Apakah akan melakukan simpan data...?";
         
         ok_ = 1;
         if (ok_) {
@@ -309,7 +339,7 @@ harus +62");
                     url:"module/manaj_user/mod_apvbrbymkt/simpanlengkpdataapvreal.php?module="+module+"&act=simpanbrrealbymkt&idmenu="+idmenu,
                     data:"uiduser="+iiduser+"&uspesial="+ispesial+"&utgllahir="+itgllahir+"&ualamat="+ialamat+
                             "&ukota="+ikota+"&unohp="+inohp+"&unowa="+inowa+
-                            "&uidbank="+iidbank+"&unorek="+inorek+"&uatasnama="+iatasnama,
+                            "&uidbank="+iidbank+"&unorek="+inorek+"&uatasnama="+iatasnama+"&ujkel="+ijkel,
                     success:function(data){
                         alert(data);
                     }

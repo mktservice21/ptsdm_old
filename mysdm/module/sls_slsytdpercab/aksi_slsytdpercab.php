@@ -9,6 +9,7 @@ $puser=$_SESSION['IDCARD'];
 $pmyidcard=$_SESSION['IDCARD'];
 $pmyjabatanid=$_SESSION['JABATANID'];
 $pmynamlengkap=$_SESSION['NAMALENGKAP'];
+$pgroupid=$_SESSION['GROUP'];
 
 if (empty($puser)) {
     echo "ANDA HARUS LOGIN ULANG....!!!";
@@ -66,6 +67,48 @@ $tmp03 ="dbtemp.TEMPSLSYTDCB03_".$puser."_$now$milliseconds";
 
 include("config/koneksimysqli_ms.php");
 
+
+$filterdivpprod_exp = "";
+
+$filterdivpprod="";
+$filterdivpprod_pilih="";
+$query = "SELECT DISTINCT divprodid FROM ms.penempatan_pm WHERE karyawanid='$pmyidcard'";
+$tampil= mysqli_query($cnms, $query);
+while ($r2= mysqli_fetch_array($tampil)) {
+    $pdivp=$r2['divprodid'];
+    
+    if (strpos($filterdivpprod, $pdivp)==false) $filterdivpprod .="'".$pdivp."',";
+}
+
+if (!empty($filterdivpprod)) $filterdivpprod_pilih=" (".substr($filterdivpprod, 0, -1).")";
+
+
+$filterprodukexp="";
+$filterprodukexp_pilih="";
+$query = "SELECT DISTINCT iprodid FROM sls.maklon_liniproduk WHERE 1=1 ";
+if (!empty($filterdivpprod_pilih)) $query .=" AND divprodid IN $filterdivpprod_pilih ";
+else $query .=" AND divprodid IN ('NONE_PILIH') ";
+
+$tampil= mysqli_query($cnms, $query);
+while ($r21= mysqli_fetch_array($tampil)) {
+    $piprodp=$r21['iprodid'];
+
+    if (strpos($filterprodukexp, $piprodp)==false) $filterprodukexp .="'".$piprodp."',";
+}
+
+if (!empty($filterprodukexp)) $filterprodukexp_pilih=" (".substr($filterprodukexp, 0, -1).")";
+
+
+
+if (!empty($filterdivpprod_pilih) AND !empty($filterprodukexp_pilih)) {
+    $filterdivpprod_exp = " AND ( divprodid IN $filterdivpprod_pilih OR iprodid IN $filterprodukexp_pilih )";
+}else{
+    if (!empty($filterdivpprod_pilih)) $filterdivpprod_exp = " AND divprodid IN $filterdivpprod_pilih ";
+    else if (!empty($filterprodukexp_pilih)) $filterdivpprod_exp = " AND iprodid IN $filterprodukexp_pilih ";
+}
+    
+    
+
 $query = "select nama from sls.icabang where icabangid='$pcab'";
 $tampil= mysqli_query($cnms, $query);
 $rs= mysqli_fetch_array($tampil);
@@ -107,6 +150,10 @@ if (!empty($pidregion)) $filter_region=" AND icabangid IN (select distinct icaba
 
 $query = "select * from sls.sales WHERE YEAR(bulan) BETWEEN '$ptahun1' AND '$ptahun2' "
         . " $filter_cabang $filter_region ";
+if ($pmyjabatanid=="06" OR $pmyjabatanid=="22" OR $pgroupid=="30") {
+    $query .=" $filterdivpprod_exp ";
+}
+
 $query = "CREATE TEMPORARY TABLE $tmp01 ($query)";
 mysqli_query($cnms, $query);
 $erropesan = mysqli_error($cnms); if (!empty($erropesan)) { echo "$erropesan"; goto hapusdata; }

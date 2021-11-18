@@ -268,7 +268,9 @@ switch($pactpilih){
                                                                         . " AND LEFT(nama,5) NOT IN ('OTH -', 'NN AM', 'NN DR', 'TO - ', 'SBY -', 'RS. P') "
                                                                         . " AND LEFT(nama,6) NOT IN ('SBYTO-', 'MR SBY') ";
                                                             }
-
+                                                            
+                                                            $query .= " AND ( jabatanid IN ('15', '10', '18') OR karyawanid='$fkaryawan') ";
+                                                            
                                                             $query .= " ORDER BY nama";
 
 

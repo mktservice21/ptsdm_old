@@ -12,7 +12,7 @@ if ($pmodule=="viewnorekeningdata") {
     $pidrek=$_POST['urekid'];
     
     $query = "select a.id_rekening, a.dokterid, a.idbank, b.NAMA as nama_bank, a.kcp, "
-            . " a.norekening, a.atasnama, a.relasi_norek "
+            . " a.norekening, a.atasnama, a.norek_sesuai, a.relasi_norek "
             . " from hrd.dokter_norekening as a "
             . " LEFT JOIN dbmaster.bank as b on a.idbank=b.KDBANK WHERE a.id_rekening='$pidrek'";
     $tampil=mysqli_query($cnmy, $query);
@@ -23,12 +23,16 @@ if ($pmodule=="viewnorekeningdata") {
     $pkcpbank=$nr['kcp'];
     $pnorekatasnama=$nr['atasnama'];
     $pnorekuser=$nr['norekening'];
+    $pnoreksesuai=$nr['norek_sesuai'];
     $pnmrelasi=$nr['relasi_norek'];
     
     $psesuai_="Y";
     if (!empty($pnmrelasi)) {
         $psesuai_="N";
     }
+    
+    if ($pnoreksesuai=="Y") $psesuai_="Y";
+    elseif ($pnoreksesuai=="N") $psesuai_="N";
     
 ?>
 
@@ -76,7 +80,7 @@ if ($pmodule=="viewnorekeningdata") {
     </div>
 
     <div class='form-group'>
-        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Relasi (istri/anak/dll.) <span class='required'></span></label>
+        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Relasi (istri /suami /anak /dsb.) <span class='required'></span></label>
         <div class='col-md-5 col-sm-5 col-xs-12'>
             <input type='text' id='e_relasinorek' name='e_relasinorek' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmrelasi; ?>' placeholder="diisi jika atas nama no rekening tidak sesuai user" Readonly>
         </div>

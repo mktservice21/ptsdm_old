@@ -30,7 +30,10 @@
         $pidkcp=$_POST['ukcp'];
         $pnorekening=$_POST['unorek'];
         $pnorekatasnama=$_POST['uatasnama'];
+        $psesuairek=$_POST['usesuai'];
         $pnamarelasi=$_POST['unmrelasi'];
+        
+        if ($psesuairek=="Y") $pnamarelasi="";
         
         if (!empty($piddokt)) {
         
@@ -67,8 +70,8 @@
             $tampilrek= mysqli_query($cnmy, $query_rek);
             $ketemu_rek=mysqli_num_rows($tampilrek);
             if ((INT)$ketemu_rek<=0) {
-                $query = "INSERT INTO hrd.dokter_norekening(dokterid, idbank, kcp, norekening, atasnama, relasi_norek, inputby)VALUES"
-                        . " ('$piddokt', '$pidbank', '$pidkcp', '$pnorekening', '$pnorekatasnama', '$pnamarelasi', '$pidcard')";
+                $query = "INSERT INTO hrd.dokter_norekening(dokterid, idbank, kcp, norekening, atasnama, norek_sesuai, relasi_norek, inputby)VALUES"
+                        . " ('$piddokt', '$pidbank', '$pidkcp', '$pnorekening', '$pnorekatasnama', '$psesuairek', '$pnamarelasi', '$pidcard')";
                 mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "error insert norekening"; mysqli_close($cnmy); exit; }
             }else{
                 mysqli_close($cnmy);

@@ -102,7 +102,8 @@
                     $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
                             . " a.atasan3='$pkaryawanapproveid', a.tgl_atasan3=NOW(), b.gbr_atasan3='$pdataimage', a.notes_atasan3='$pverifikasidata' WHERE a.brid IN $filter_br AND "
                             . " IFNULL(a.tgl_atasan3,'') IN ('', '0000-00-00 00:00:00') AND "
-                            . " IFNULL(a.tgl_atasan4,'') IN ('', '0000-00-00 00:00:00')";
+                            . " IFNULL(a.tgl_atasan4,'') IN ('', '0000-00-00 00:00:00') AND "
+                            . " IFNULL(a.tgl_atasan2,'') NOT IN ('', '0000-00-00 00:00:00')";
                 }elseif ($pkaryawanapprovejbt=="05") {
                     $query_updt = "UPDATE hrd.br0_apvreal as a JOIN dbttd.t_br0_ttd_apvreal as b on a.brid=b.brid SET "
                             . " a.atasan4='$pkaryawanapproveid', a.tgl_atasan4=NOW(), b.gbr_atasan4='$pdataimage', a.notes_atasan4='$pverifikasidata' WHERE a.brid IN $filter_br AND "

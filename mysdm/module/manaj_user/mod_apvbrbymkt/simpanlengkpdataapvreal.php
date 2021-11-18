@@ -35,6 +35,7 @@
         $pidbank=$_POST['uidbank'];
         $pnorekening=$_POST['unorek'];
         $pnorekatasnama=$_POST['uatasnama'];
+        $pjekel=$_POST['ujkel'];
         
         if (!empty($piddokt)) {
         
@@ -80,7 +81,7 @@
             }
 
             $query = "UPDATE hrd.dokter SET spid='$pidspesial', tgllahir='0000-00-00', alamat1='$palamat', kota='$pkota', hp='$pnohape', "
-                    . " nowa='$pnowea', updateby='$pidcard', updatedate=NOW() where dokterid='$piddokt' LIMIT 1";
+                    . " nowa='$pnowea', jekel='$pjekel', updateby='$pidcard', updatedate=NOW() where dokterid='$piddokt' LIMIT 1";
             mysqli_query($cnmy, $query); $erropesan = mysqli_error($cnmy); if (!empty($erropesan)) { echo "error update user"; mysqli_close($cnmy); exit; }
             
             if (!empty($ptgllahir)) {

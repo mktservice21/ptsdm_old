@@ -108,8 +108,13 @@ $pmrid="";
 
 $piddaerah="";
 
+$pbank="";
+$pkcpbank="";
+$pnorekuser="";
+        
 $pdokteridmr="";
 $pnamadokter="";
+$pidrek_br="";
 
 $paktivitas1="";
 $paktivitas2="";
@@ -199,6 +204,7 @@ if ($pact=="editdata") {
     $pkaryawanid=$r['karyawanId'];
     $pmrid=$r['mrid'];
     $pdokteridmr=$r['dokterId'];
+    $pidrek_br=$r['id_rekening'];
     $pidcabang=$r['icabangid'];
     $paktivitas1=$r['aktivitas1'];
     $paktivitas2=$r['aktivitas2'];
@@ -209,7 +215,24 @@ if ($pact=="editdata") {
     $pviapil=$r['via'];
     
     $piddaerah=$r['idcabang'];
-
+    $prelasijenis=TRIM($r['realisasi2']);
+    
+    if ($pidrek_br=="0") $pidrek_br="";
+    if (!empty($pidrek_br)) {
+        $query_r = "select * from hrd.dokter_norekening WHERE id_rekening='$pidrek_br'";
+        $tampil_r=mysqli_query($cnmy, $query_r);
+        $r_row= mysqli_fetch_array($tampil_r);
+        
+        $pbank=$r_row['idbank'];
+        $pkcpbank=$r_row['kcp'];
+        $pnorekuser=$r_row['norekening'];
+        $rprelalisasi=$r_row['atasnama'];
+        $prelasijenis=TRIM($r_row['relasi_norek']);
+    }else{
+        $pbank=$r['br_idbank'];
+        $pkcpbank=$r['br_kcp'];
+        $pnorekuser=$r['br_norek'];
+    }
 
     
 
@@ -248,7 +271,7 @@ if ($pact=="editdata") {
     }
     
     
-    $prelasijenis=TRIM($r['realisasi2']);
+    
     
     if (!empty($pdokteridmr)) {
         $prel2_tojenis=$r['idkontak'];
@@ -963,52 +986,147 @@ $pjabatanid = $row['jabatanId'];
                                         <input type='text' id='e_jmlusulan' name='e_jmlusulan' class='form-control col-md-7 col-xs-12 inputmaskrp2' value="<?PHP echo $rpjumlah; ?>" <?PHP echo $pjmlreadonly; ?> >
                                     </div><!--disabled='disabled'-->
                                 </div>
-
-                                <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis Realisasi <span class='required'></span></label>
-                                    <div class='col-xs-9'>
-                                        <div style="margin-bottom:2px;">
-                                            <input type="radio" id="chksesuai" name="rb_jenisreal" value="1" <?PHP echo $pchkjenisreal1; ?> onclick="CekDataRealisasi()"> Sesuai Nama Dokter &nbsp;
-                                            <input type="radio" id="chkrelasi" name="rb_jenisreal" value="0" <?PHP echo $pchkjenisreal2; ?> onclick="CekDataRealisasi()"> Relasi Dokter &nbsp;
-                                        </div>
-                                    </div>
-                                </div>
+                                
                                 
                                 <div class='form-group'>
-                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
-                                        <button type='button' class='btn btn-default btn-xs' onclick='CariNamaDokter()'>Realisasi</button> 
-                                        <span class='required'></span></label>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Transfer ke Rekening <span class='required'></span></label>
                                     <div class='col-xs-9'>
-                                        <input type='hidden' id='e_realisasix' name='e_realisasix' class='form-control col-md-7 col-xs-12' value="<?PHP echo $rprelalisasi; ?>" <?PHP echo $pnmreal_readonly; ?> >
-                                        
-                                        <input list="namarealisasi" id="e_realisasi" name="e_realisasi" autocomplete='off' class='form-control col-md-7 col-xs-12' value="<?PHP echo $rprelalisasi; ?>">
-                                            <datalist id="namarealisasi">
-                                                <?PHP
-                                                if ($pact=="editdata") {
-                                                    $query = "select distinct realisasi1 as nmrealisasi from hrd.br0 WHERE dokterid='$pdokteridmr' AND IFNULL(dokterid,'') NOT IN ('', '0', '(blank)')";
-                                                    $tampild= mysqli_query($cnmy, $query);
-                                                    while ($nrd= mysqli_fetch_array($tampild)) {
-                                                        $pnamareal=$nrd['nmrealisasi'];
+                                        <?PHP
+                                        echo "<select class='form-control input-sm' id='e_idrek' name='e_idrek' onchange=\"IsiRekeningDataUser(2)\">";
+                                            echo "<option value='' selected></option>";
 
-                                                        echo "<option value='$pnamareal'>";
+                                            $query = "select a.id_rekening, a.dokterid, a.idbank, b.NAMA as nama_bank, a.kcp, "
+                                                    . " a.norekening, a.atasnama, a.relasi_norek "
+                                                    . " from hrd.dokter_norekening as a "
+                                                    . " LEFT JOIN dbmaster.bank as b on a.idbank=b.KDBANK WHERE a.dokterid='$pdokteridmr' ORDER BY b.NAMA";
+                                            $tampil=mysqli_query($cnmy, $query);
+                                            while ($nr= mysqli_fetch_array($tampil)) {
+                                                $r_idrek=$nr['id_rekening'];
+                                                $r_idbank=$nr['idbank'];
+                                                $r_nmbank=$nr['nama_bank'];
+                                                $r_an=$nr['atasnama'];
+                                                $r_norek=$nr['norekening'];
+
+                                                $pnama_rek="$r_idrek - $r_an ($r_norek) - $r_nmbank";
+                                                if ($r_idrek==$pidrek_br)
+                                                    echo "<option value='$r_idrek' selected>$pnama_rek</option>";
+                                                else
+                                                    echo "<option value='$r_idrek'>$pnama_rek</option>";
+                                            }
+
+                                        echo "</select>";
+                                        ?>
+                                    </div><!--disabled='disabled'-->
+                                </div>
+                                
+                                
+                                <div class='form-group'>
+                                    <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
+                                    <div class='col-xs-9'>
+                                        <?PHP
+                                            $pbtndatarekening="<button type='button' id='btn_idrek' name='btn_idrek' class='btn btn-warning btn-xs' "
+                                                    . " onClick=\"IsiRekeningDataUser(1)\">Isi Data Rekening</button>";
+                                            echo $pbtndatarekening;
+                                        ?>
+                                    </div><!--disabled='disabled'-->
+                                </div>
+                                
+                                <div id="div_rekening">
+                                
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Bank <span class='required'></span></label>
+                                        <div class='col-md-9 col-sm-9 col-xs-12'>
+                                            <?PHP
+                                            echo "<select class='form-control input-sm' id='e_idbank' name='e_idbank'>";
+                                                echo "<option value='' selected></option>";
+                                                if ($pact=="editdata") {
+                                                    $query = "select KDBANK, NAMA from dbmaster.bank WHERE KDBANK='$pbank' ORDER BY NAMA";
+                                                    $tampil=mysqli_query($cnmy, $query);
+                                                    while ($nr= mysqli_fetch_array($tampil)) {
+                                                        $r_idbank=$nr['KDBANK'];
+                                                        $r_nmbank=$nr['NAMA'];
+
+                                                        if ($r_idbank==$pbank)
+                                                            echo "<option value='$r_idbank' selected>$r_nmbank</option>";
+                                                        else
+                                                            echo "<option value='$r_idbank'>$r_nmbank</option>";
                                                     }
                                                 }
-                                                ?>
-                                        </datalist>
-                                    </div>
-                                </div>
-                                
-                                <div id="n_jnsrelasi">
-                                    <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
-                                            Relasi (istri /suami /anak /dsb.)
-                                            <span class='required'></span></label>
-                                        <div class='col-xs-9'>
-                                            <input type='text' id='e_nmrealasi' name='e_nmrealasi' class='form-control col-md-7 col-xs-12' value="<?PHP echo $prelasijenis; ?>" >
+                                            echo "</select>";
+                                            ?>
                                         </div>
                                     </div>
-                                </div>
+                                    
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>KCP <span class='required'></span></label>
+                                        <div class='col-md-9 col-sm-9 col-xs-12'>
+                                            <input type='text' id='e_kcpbank' name='e_kcpbank' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pkcpbank; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='form-group'>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>No Rekening <span class='required'></span></label>
+                                        <div class='col-md-9 col-sm-9 col-xs-12'>
+                                            <input type='text' id='e_norek' name='e_norek' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnorekuser; ?>' Readonly>
+                                        </div>
+                                    </div>
+                                    
                                 
+                                
+                                
+                                    <div id="div_real">
+
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Jenis Realisasi <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                <div style="margin-bottom:2px;">
+                                                    <input type="radio" id="chksesuai" name="rb_jenisreal" value="1" <?PHP echo $pchkjenisreal1; ?> onclick="CekDataRealisasi()"> Sesuai Nama Dokter &nbsp;
+                                                    <input type="radio" id="chkrelasi" name="rb_jenisreal" value="0" <?PHP echo $pchkjenisreal2; ?> onclick="CekDataRealisasi()"> Relasi Dokter &nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class='form-group'>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                                                <button type='button' class='btn btn-default btn-xs' onclick='CariNamaDokter()'>Realisasi</button> 
+                                                <span class='required'></span></label>
+                                            <div class='col-xs-9'>
+                                                <input type='hidden' id='e_realisasix' name='e_realisasix' class='form-control col-md-7 col-xs-12' value="<?PHP echo $rprelalisasi; ?>" <?PHP echo $pnmreal_readonly; ?> >
+
+                                                <input list="namarealisasi" id="e_realisasi" name="e_realisasi" autocomplete='off' class='form-control col-md-7 col-xs-12' value="<?PHP echo $rprelalisasi; ?>">
+                                                    <datalist id="namarealisasi">
+                                                        <?PHP
+                                                        if ($pact=="editdata") {
+                                                            $query = "select distinct realisasi1 as nmrealisasi from hrd.br0 WHERE dokterid='$pdokteridmr' AND IFNULL(dokterid,'') NOT IN ('', '0', '(blank)')";
+                                                            $tampild= mysqli_query($cnmy, $query);
+                                                            while ($nrd= mysqli_fetch_array($tampild)) {
+                                                                $pnamareal=$nrd['nmrealisasi'];
+
+                                                                echo "<option value='$pnamareal'>";
+                                                            }
+                                                        }
+                                                        ?>
+                                                </datalist>
+                                            </div>
+                                        </div>
+
+                                        <div id="n_jnsrelasi">
+                                            <div class='form-group'>
+                                                <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>
+                                                    Relasi (istri /suami /anak /dsb.)
+                                                    <span class='required'></span></label>
+                                                <div class='col-xs-9'>
+                                                    <input type='text' id='e_nmrealasi' name='e_nmrealasi' class='form-control col-md-7 col-xs-12' value="<?PHP echo $prelasijenis; ?>" >
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    
+                                </div>
                                 
                                 
                                 <div hidden>
@@ -1744,6 +1862,7 @@ $pjabatanid = $row['jabatanId'];
             data:"uiddok="+iiddok,
             success:function(data){
                 $("#namarealisasi").html(data);
+                ShowDataRekningUser('1', '');
                 //$("#e_realisasi").html(data);
             }
         });
@@ -1817,4 +1936,140 @@ $pjabatanid = $row['jabatanId'];
         document.getElementById("e_blnmulai").value="";
         document.getElementById("e_aktivitas").focus();
     }
+    
+    
+    function IsiRekeningDataUser(sKey) {
+        if (sKey=="1") {
+            ShowDataRekningUser('1', '');
+            document.getElementById("btn_idrek").disabled = true;
+        }else{
+            document.getElementById("btn_idrek").disabled = false;
+        }
+        
+        var ebrid =document.getElementById('e_nobr').value;
+        var edoktid =document.getElementById('e_iddokter').value;
+        var ecab =document.getElementById('e_idcabang').value;
+        var ebuat =document.getElementById('e_idkaryawan').value;
+        var emr =document.getElementById('cb_mr').value;
+        var erekid =document.getElementById('e_idrek').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/mod_br_entrydcc/viewdata.php?module=viewinputnorek",
+            data:"ukey="+sKey+"&udoktid="+edoktid+"&ucab="+ecab+"&ubuat="+ebuat+"&umr="+emr+"&urekid="+erekid+"&ubrid="+ebrid,
+            success:function(data){
+                $("#div_rekening").html(data);
+            }
+        });
+        
+    }
+    
+    
+    function disp_confirm_saverekdatauserbr() {
+        var iiduser =document.getElementById('e_iddokter').value;
+        
+        
+        var iidbank =document.getElementById('e_idbank').value;
+        var ikcp =document.getElementById('e_kcpbank').value;
+        var inorek =document.getElementById('e_norek').value;
+        var iatasnama =document.getElementById('e_realisasi').value;
+        var inmrelasi =document.getElementById('e_nmrealasi').value;
+        
+        
+        
+        var ichksesuai=document.getElementById("chksesuai").checked;
+        var isesuai="Y";
+        
+        if (iiduser=="") {
+            alert("Dokter belum dipilih...");
+            return false;
+        }
+        
+        if (iidbank=="") {
+            alert("Bank masih kosong...");
+            //return false;
+        }
+        
+        if (inorek=="") {
+            alert("no rekening harus diisi...");
+            return false;
+        }
+        
+        if (iatasnama=="") {
+            alert("realisasi (atas nama rekening) harus diisi...");
+            return false;
+        }
+        
+        if (ichksesuai==false) {
+            if (inmrelasi=="") {
+                alert("relasi (istri/anak/dll.) harus diisi...");
+                return false;
+            }
+            isesuai="N";
+        }
+        
+        var pText_="";
+        
+        pText_="Apakah akan melakukan simpan data...";
+        
+        ok_ = 1;
+        if (ok_) {
+            var r=confirm(pText_)
+            if (r==true) {
+                var myurl = window.location;
+                var urlku = new URL(myurl);
+                var module = urlku.searchParams.get("module");
+                var idmenu = urlku.searchParams.get("idmenu");
+                //document.write("You pressed OK!")
+                
+                $.ajax({
+                    type:"post",
+                    url:"module/mod_br_entrydcc/simpanisinorekbr.php?module="+module+"&act=simpanbrrealbymkt&idmenu="+idmenu,
+                    data:"uiduser="+iiduser+"&uidbank="+iidbank+"&ukcp="+ikcp+"&unorek="+inorek+"&uatasnama="+iatasnama+"&usesuai="+isesuai+"&unmrelasi="+inmrelasi,
+                    success:function(data){
+                        //var iberhasil=tconfrm_d.substring(0, 8);
+                        var tconfrm_d = myTrim(data);
+                        var myarrconf = tconfrm_d.split("-");
+                        var iberhasil=myarrconf[0];
+                        
+                        if (iberhasil=="berhasil") {
+                            var ilstid=myarrconf[1];
+                            
+                            alert(iberhasil);
+                            ShowDataRekningUser('2', ilstid);
+                        }else{
+                            alert("Tidak ada data yang diinput... \n\
+"+data);
+                        }
+                    }
+                });
+                
+            }
+        } else {
+            //document.write("You pressed Cancel!")
+            return 0;
+        }
+    }
+    
+    function ShowDataRekningUser(sKey, ilst) {
+        var edoktid =document.getElementById('e_iddokter').value;
+        var ecab =document.getElementById('e_idcabang').value;
+        var ebuat =document.getElementById('e_idkaryawan').value;
+        var emr =document.getElementById('cb_mr').value;
+        
+        $.ajax({
+            type:"post",
+            url:"module/mod_br_entrydcc/viewdata.php?module=viewdatanoreknew",
+            data:"ukey="+sKey+"&ulstid="+ilst+"&udoktid="+edoktid,
+            success:function(data){
+                $("#e_idrek").html(data);
+            }
+        });
+        
+    }
+    
+    function myTrim(x) {
+        return x.replace(/^\s+|\s+$/gm,'');
+    }
+    
 </script>

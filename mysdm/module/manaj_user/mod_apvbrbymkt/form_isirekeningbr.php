@@ -28,7 +28,7 @@ $pketerangan1=$brow['aktivitas1'];
 $pketerangan2=$brow['aktivitas2'];
 
 $query = "select a.id_rekening, a.dokterid, a.idbank, b.NAMA as nama_bank, a.kcp, "
-        . " a.norekening, a.atasnama, a.relasi_norek "
+        . " a.norekening, a.atasnama, a.norek_sesuai, a.relasi_norek "
         . " from hrd.dokter_norekening as a "
         . " LEFT JOIN dbmaster.bank as b on a.idbank=b.KDBANK WHERE a.id_rekening='$pidrek_br'";
 $tampil=mysqli_query($cnmy, $query);
@@ -39,6 +39,7 @@ $pnmbank=$nr['nama_bank'];
 $pkcpbank=$nr['kcp'];
 $pnorekatasnama=$nr['atasnama'];
 $pnorekuser=$nr['norekening'];
+$pnoreksesuai=$nr['norek_sesuai'];
 $pnmrelasi=$nr['relasi_norek'];
 
 
@@ -63,7 +64,15 @@ if ($ptgllahir=="0000-00-00") $ptgllahir="";
 if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
 
 
-
+    $psesuai_="Y";
+    if (!empty($pnmrelasi)) {
+        $psesuai_="N";
+    }
+    
+    if ($pnoreksesuai=="Y") $psesuai_="Y";
+    elseif ($pnoreksesuai=="N") $psesuai_="N";
+    
+    
 ?>
 
 
@@ -208,13 +217,17 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                             <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                             <div class='col-md-4 col-sm-4 col-xs-12'>
                                                 <?PHP
-                                                echo "<label><input type='checkbox' class='js-switch' id='chk_sesuai' name='chk_sesuai' value='Y' checked> Rekening Sesuai User</label>";
+                                                if ($psesuai_=="Y"){
+                                                    echo "<label><input type='checkbox' class='js-switch' id='chk_sesuai' name='chk_sesuai' value='Y' checked> Rekening Sesuai User</label>";
+                                                }else{
+                                                    echo "<label><input type='checkbox' class='js-switch' id='chk_sesuai' name='chk_sesuai' value='' > Rekening Sesuai User</label>";
+                                                }
                                                 ?>
                                             </div>
                                         </div>
 
                                         <div class='form-group'>
-                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Relasi (istri/anak/dll.) <span class='required'></span></label>
+                                            <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Relasi (istri /suami /anak /dsb.) <span class='required'></span></label>
                                             <div class='col-md-5 col-sm-5 col-xs-12'>
                                                 <input type='text' id='e_relasinorek' name='e_relasinorek' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmrelasi; ?>' placeholder="diisi jika atas nama no rekening tidak sesuai user" Readonly>
                                             </div>
@@ -343,7 +356,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
         
         var pText_="";
         
-        pText_="Apakah akan melakukan simpan data...";
+        pText_="Apakah akan melakukan simpan data...?";
         
         ok_ = 1;
         if (ok_) {

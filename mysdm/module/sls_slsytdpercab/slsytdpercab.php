@@ -91,7 +91,7 @@
         if ($_SESSION['GROUP']=="1" OR $_SESSION['GROUP']=="24") {
             $filtercabangbyadmin="";
         }else{
-            if (!empty($filtercabangbyadmin)) $filtercabangbyadmin = " AND iCabangId IN $filtercabangbyadmin ";
+            if (!empty($filtercabangbyadmin)) $filtercabangbyadmin = " AND a.iCabangId IN $filtercabangbyadmin ";
             if (!empty($filiddivisipil)) $filiddivisipil = " AND DivProdId IN $filiddivisipil ";
 
         }
@@ -186,43 +186,61 @@
                                             <div class='col-md-9 col-sm-9 col-xs-12'>
                                                 <select class='form-control' name='cb_cabang' id='cb_cabang'>
                                                     <?PHP
-													if ($_SESSION['IDCARD']=="0000000175") {
-														echo "<option value=''>--Pilihan--</option>";
-													}else{
-														if ($pmyjabatanid!="15" AND $pmyjabatanid!="10" AND $pmyjabatanid!="18")  echo "<option value=''>-- Pilih --</option>";
-														
-														$query = "select iCabangId, nama from sls.icabang where "
-																. " aktif='Y' $filtercabangbyadmin ";
-														$query .=" order by nama";
-														$tampil = mysqli_query($cnms, $query);
-														while ($rx= mysqli_fetch_array($tampil)) {
-															$nidcab=$rx['iCabangId'];
-															$nnmcab=$rx['nama'];
-															if ($pidcabangpil==$nidcab)
-																echo "<option value='$nidcab' selected>$nnmcab</option>";
-															else
-																echo "<option value='$nidcab'>$nnmcab</option>";
-														}
-														
-														$query = "select iCabangId, nama from sls.icabang where "
-																. " IFNULL(aktif,'')<>'Y' ";
-														$query .=" AND LEFT(nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
-														$query .=" order by nama";
-														$tampil = mysqli_query($cnms, $query);
-														$ketemunon=mysqli_num_rows($tampil);
-														if ($ketemunon>0) {
-															echo "<option value='NONAKTIFPL'></option>";
-															echo "<option value='NONAKTIFPL'>-- Non Aktif --</option>";
-															while ($rx= mysqli_fetch_array($tampil)) {
-																$nidcab=$rx['iCabangId'];
-																$nnmcab=$rx['nama'];
-																if ($pidcabangpil==$nidcab)
-																	echo "<option value='$nidcab' selected>$nnmcab</option>";
-																else
-																	echo "<option value='$nidcab'>$nnmcab</option>";
-															}
-														}
-													}
+                                                        if ($_SESSION['IDCARD']=="0000000175") {
+                                                                echo "<option value=''>--Pilihan--</option>";
+                                                        }else{
+                                                            if ($pmyjabatanid!="15" AND $pmyjabatanid!="10" AND $pmyjabatanid!="18")  echo "<option value=''>-- Pilih --</option>";
+
+                                                            $query = "select a.iCabangId, a.nama, c.nama as nama_karyawan from sls.icabang as a "
+                                                                    . " LEFT JOIN (select DISTINCT karyawanid, icabangid from sls.idm0 WHERE ifnull(aktif,'')<>'N') as b "
+                                                                    . " on a.icabangid=b.icabangid "
+                                                                    . " LEFT JOIN hrd.karyawan as c on b.karyawanid=c.karyawanid "
+                                                                    . " where a.aktif='Y' $filtercabangbyadmin ";
+                                                            $query .=" order by a.nama";
+                                                            $tampil = mysqli_query($cnms, $query);
+                                                            while ($rx= mysqli_fetch_array($tampil)) {
+                                                                $nidcab=$rx['iCabangId'];
+                                                                $nnmcab=$rx['nama'];
+                                                                $nnmkaryawan=$rx['nama_karyawan'];
+
+                                                                $pcabnama=$nnmcab;
+                                                                if (!empty($nnmkaryawan)) $pcabnama="$nnmcab ($nnmkaryawan)";
+
+                                                                if ($pidcabangpil==$nidcab)
+                                                                    echo "<option value='$nidcab' selected>$pcabnama</option>";
+                                                                else
+                                                                    echo "<option value='$nidcab'>$pcabnama</option>";
+                                                            }
+
+                                                            $query = "select a.iCabangId, a.nama, c.nama as nama_karyawan from sls.icabang as a "
+                                                                    . " LEFT JOIN (select DISTINCT karyawanid, icabangid from sls.idm0 WHERE ifnull(aktif,'')<>'N') as b "
+                                                                    . " on a.icabangid=b.icabangid "
+                                                                    . " LEFT JOIN hrd.karyawan as c on b.karyawanid=c.karyawanid "
+                                                                    . " where a.aktif<>'Y' ";
+                                                            $query .=" AND LEFT(a.nama,5) NOT IN ('OTC -', 'PEA -', 'ETH -')";
+                                                            $query .=" order by a.nama";
+                                                            
+                                                            $tampil = mysqli_query($cnms, $query);
+                                                            $ketemunon=mysqli_num_rows($tampil);
+                                                            if ($ketemunon>0) {
+                                                                echo "<option value='NONAKTIFPL'></option>";
+                                                                echo "<option value='NONAKTIFPL'>-- Non Aktif --</option>";
+                                                                while ($rx= mysqli_fetch_array($tampil)) {
+                                                                    $nidcab=$rx['iCabangId'];
+                                                                    $nnmcab=$rx['nama'];
+                                                                    
+                                                                    $nnmkaryawan=$rx['nama_karyawan'];
+
+                                                                    $pcabnama=$nnmcab;
+                                                                    if (!empty($nnmkaryawan)) $pcabnama="$nnmcab ($nnmkaryawan)";
+                                                                    
+                                                                    if ($pidcabangpil==$nidcab)
+                                                                        echo "<option value='$nidcab' selected>$pcabnama</option>";
+                                                                    else
+                                                                        echo "<option value='$nidcab'>$pcabnama</option>";
+                                                                }
+                                                            }
+                                                        }
                                                     ?>
                                                 </select>
                                             </div>

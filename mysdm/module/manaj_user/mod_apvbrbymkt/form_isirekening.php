@@ -36,6 +36,7 @@ $pkcpbank="";//$row['kcp'];
 $pnorekuser="";//$row['norek_user'];
 $pnorekatasnama="";//$row['norek_atas'];
 $pnmrelasi="";//$row['relasi_norek'];
+$pnoreksesuai="";//$row['norek_sesuai'];
 
 
 
@@ -163,15 +164,15 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                         <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>&nbsp; <span class='required'></span></label>
                                         <div class='col-md-4 col-sm-4 col-xs-12'>
                                             <?PHP
-                                            echo "<label><input type='checkbox' class='js-switch' id='chk_sesuai' name='chk_sesuai' value='Y' checked> Rekening Sesuai User</label>";
+                                            echo "<label><input type='checkbox' class='js-switch' id='chk_sesuai' name='chk_sesuai' value='Y' checked onclick=\"ShowDariCekRelasi()\"> Rekening Sesuai User</label>";
                                             ?>
                                         </div>
                                     </div>
                                     
                                     <div class='form-group'>
-                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Relasi (istri/anak/dll.) <span class='required'></span></label>
+                                        <label class='control-label col-md-3 col-sm-3 col-xs-12' for=''>Relasi (istri /suami /anak /dsb.) <span class='required'></span></label>
                                         <div class='col-md-5 col-sm-5 col-xs-12'>
-                                            <input type='text' id='e_relasinorek' name='e_relasinorek' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmrelasi; ?>' placeholder="diisi jika atas nama no rekening tidak sesuai user">
+                                            <input type='text' id='e_relasinorek' name='e_relasinorek' class='form-control col-md-7 col-xs-12' value='<?PHP echo $pnmrelasi; ?>' placeholder="diisi jika atas nama no rekening tidak sesuai user" Readonly>
                                         </div>
                                     </div>
 
@@ -207,6 +208,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                             <th width='10px'>KCP</th>
                                             <th width='10px'>No Rekening</th>
                                             <th width='10px'>Atas Nama</th>
+                                            <th width='10px'>Sesuai User</th>
                                             <th width='10px'>Relasi</th>
                                             <th width='10px'>Input User</th>
                                         </tr>
@@ -214,7 +216,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                     <tbody>
                                         <?PHP
                                         $no=1;
-                                        $query = "select a.idbank, b.NAMA as nama_bank, a.kcp, a.norekening, a.atasnama, a.relasi_norek, a.tglinput, "
+                                        $query = "select a.idbank, b.NAMA as nama_bank, a.kcp, a.norekening, a.atasnama, a.norek_sesuai, a.relasi_norek, a.tglinput, "
                                                 . " a.inputby, c.nama as nama_input "
                                                 . " from hrd.dokter_norekening as a LEFT JOIN dbmaster.bank as b on a.idbank=b.KDBANK "
                                                 . " LEFT JOIN hrd.karyawan as c on a.inputby=c.karyawanId "
@@ -226,8 +228,12 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                             $ukcp=$urow['kcp'];
                                             $unorek=$urow['norekening'];
                                             $uatasnm=$urow['atasnama'];
+                                            $usesuaiusr=$urow['norek_sesuai'];
                                             $urelasi=$urow['relasi_norek'];
                                             $uuserinputnm=$urow['nama_input'];
+                                            
+                                            $unmsesuairek="Ya";
+                                            if ($usesuaiusr=="N") $unmsesuairek="Tidak";
                                             
                                             echo "<tr>";
                                             echo "<td nowrap>$no</td>";
@@ -235,6 +241,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                                             echo "<td nowrap>$ukcp</td>";
                                             echo "<td nowrap>$unorek</td>";
                                             echo "<td nowrap>$uatasnm</td>";
+                                            echo "<td nowrap>$unmsesuairek</td>";
                                             echo "<td nowrap>$urelasi</td>";
                                             echo "<td nowrap>$uuserinputnm</td>";
                                             echo "</tr>";
@@ -284,7 +291,18 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
 </style>
 
 <script>
-    
+
+    function ShowDariCekRelasi() {
+        var ichksesuai =document.getElementById('chk_sesuai');
+        if (ichksesuai.checked==false) {
+            document.getElementById('e_relasinorek').readOnly = false;
+        }else{
+            document.getElementById('e_relasinorek').value="";
+            document.getElementById('e_relasinorek').readOnly = true;
+        }
+        
+    }
+                                        
     function disp_confirm_simpanrekdatauser() {
         var iiduser =document.getElementById('e_iduser').value;
         
@@ -294,6 +312,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
         var iatasnama =document.getElementById('e_atsnmrek').value;
         var inmrelasi =document.getElementById('e_relasinorek').value;
         var ichksesuai =document.getElementById('chk_sesuai');
+        var isesuai="Y";
         
         if (iiduser=="") {
             alert("ID KOSONG...");
@@ -320,11 +339,12 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                 alert("relasi (istri/anak/dll.) harus diisi...");
                 return false;
             }
+            isesuai="N";
         }
         
         var pText_="";
         
-        pText_="Apakah akan melakukan simpan data...";
+        pText_="Apakah akan melakukan simpan data...?";
         
         ok_ = 1;
         if (ok_) {
@@ -339,7 +359,7 @@ if (!empty($ptgllahir)) $ptgllahir = date('d/mm/Y', strtotime($ptgllahir));
                 $.ajax({
                     type:"post",
                     url:"module/manaj_user/mod_apvbrbymkt/simpanisinorek.php?module="+module+"&act=simpanbrrealbymkt&idmenu="+idmenu,
-                    data:"uiduser="+iiduser+"&uidbank="+iidbank+"&ukcp="+ikcp+"&unorek="+inorek+"&uatasnama="+iatasnama+"&unmrelasi="+inmrelasi,
+                    data:"uiduser="+iiduser+"&uidbank="+iidbank+"&ukcp="+ikcp+"&unorek="+inorek+"&uatasnama="+iatasnama+"&usesuai="+isesuai+"&unmrelasi="+inmrelasi,
                     success:function(data){
                         alert(data);
                         
